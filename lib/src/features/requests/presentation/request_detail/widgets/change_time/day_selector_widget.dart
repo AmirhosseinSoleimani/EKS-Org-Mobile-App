@@ -1,0 +1,141 @@
+import 'package:eks_sana_plus_org/src/features/requests/domain/entities/time_table_response_entity.dart';
+import 'package:eks_sana_plus_org/src/features/requests/presentation/request_detail/cubit/request_detail_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/requests/presentation/request_detail/cubit/request_detail_state.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class DaySelectorWidget extends StatelessWidget {
+  final List<DayScheduleEntity?> days;
+
+  const DaySelectorWidget({super.key, required this.days});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<RequestDetailCubit, RequestDetailState>(
+      buildWhen: (previous, current) => current.maybeWhen(
+        daySelected: (_) => true,
+        getTimesSuccess: (_) => true,
+        timeSelected: (_) => true,
+        orElse: () => false,
+      ),
+      builder: (context, state) {
+        final cubit = context.read<RequestDetailCubit>();
+
+        if (cubit.selectedDay == null && days.isNotEmpty) {
+          WidgetsBinding.instance.addPostFrameCallback((_) {
+            final firstNonNull = days.firstWhere((e) => e != null, orElse: () => null);
+            if (firstNonNull != null) cubit.selectDay(firstNonNull);
+          });
+        }
+
+        return _DayListView(
+          days: days,
+          selectedDay:cubit.selectedDay,
+        );
+      },
+    );
+  }
+}
+
+class _DayListView extends StatelessWidget {
+  final List<DayScheduleEntity?> days;
+  final DayScheduleEntity? selectedDay;
+
+  const _DayListView({
+    required this.days,
+    required this.selectedDay,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.read<RequestDetailCubit>();
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return SizedBox(
+      height: screenWidth * 0.24,
+      child: ListView.separated(
+        scrollDirection: Axis.horizontal,
+        itemCount: days.length,
+        separatorBuilder: (_, __) => const SizedBox(width: AppSize.s16),
+        itemBuilder: (context, index) {
+          final day = days[index];
+          if (day == null) return const SizedBox.shrink();
+
+          final isSelected = day.id == selectedDay?.id;
+
+          return _DayItem(
+            day: day,
+            isSelected: isSelected,
+            onTap: () => cubit.selectDay(day),
+          );
+        },
+      ),
+    );
+  }
+}
+
+class _DayItem extends StatelessWidget {
+  final DayScheduleEntity day;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  const _DayItem({
+    required this.day,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    final screenWidth = MediaQuery.of(context).size.width;
+
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(AppPadding.p8),
+        width: screenWidth * 0.21,
+        decoration: BoxDecoration(
+          color: isSelected
+              ? colorScheme.onSecondaryContainer
+              : colorScheme.surface,
+          borderRadius: BorderRadius.circular(12),
+          border: Border.all(
+            color: isSelected
+                ? colorScheme.onSecondaryContainer
+                : colorScheme.onInverseSurface,
+          ),
+        ),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            TitleLargeText(
+              text: day.dayName ?? '',
+              fontSize: AppSize.s14,
+              color: isSelected
+                  ? colorScheme.onPrimary
+                  : colorScheme.onPrimaryFixedVariant,
+            ),
+            TitleLargeText(
+              text: _getDayFromDateString(day.date),
+              fontSize: AppSize.s20,
+              color: isSelected
+                  ? colorScheme.onPrimary
+                  : colorScheme.onPrimaryFixedVariant,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  String _getDayFromDateString(String? date) {
+    if (date == null || date.isEmpty) return '-';
+    final parts = date.split('/');
+    if (parts.length != 3) return '-';
+    return parts[2];
+  }
+}
+

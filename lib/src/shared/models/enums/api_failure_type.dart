@@ -1,0 +1,1 @@
+enum ApiFailureType { connection, general }
