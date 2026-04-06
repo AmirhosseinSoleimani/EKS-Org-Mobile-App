@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 class BottomNavPage extends StatelessWidget {
@@ -23,20 +24,22 @@ class BottomNavPage extends StatelessWidget {
       bottomNavigationBar: BottomNavigationBar(
         currentIndex: navigationShell.currentIndex,
         onTap: _onTap,
+        backgroundColor: Theme.of(context).colorScheme.onPrimary,
         type: BottomNavigationBarType.fixed,
         items: const [
+          BottomNavigationBarItem(
+            icon: Icon(Icons.home),
+            label: "داشبورد",
+          ),
+          BottomNavigationBarItem(
+            icon: Icon(Icons.handyman),
+            label: "خدمات",
+          ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bar_chart),
             label: "گزارش شاخص",
           ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.miscellaneous_services),
-            label: "خدمات",
-          ),
-          BottomNavigationBarItem(
-            icon: Icon(Icons.dashboard),
-            label: "داشبورد",
-          ),
+
         ],
       ),
     );

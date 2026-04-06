@@ -32,8 +32,6 @@ import '../features/authentication/domain/use_cases/otp_validator_use_case.dart'
     as _i458;
 import '../features/authentication/domain/use_cases/phone_number_validator_use_case.dart'
     as _i826;
-import '../features/authentication/domain/use_cases/send_opt_code_use_case.dart'
-    as _i563;
 import '../features/authentication/presentation/login/cubit/login_cubit.dart'
     as _i566;
 import '../features/bottom_navigation_bar/data/remote/data_soures/main_remote_data_source.dart'
@@ -293,8 +291,6 @@ _i174.GetIt $initGetIt(
       ));
   gh.lazySingleton<_i139.LoginUseCase>(
       () => _i139.LoginUseCase(gh<_i716.AuthRepository>()));
-  gh.lazySingleton<_i563.SendOTPCodeUseCase>(
-      () => _i563.SendOTPCodeUseCase(gh<_i716.AuthRepository>()));
   gh.lazySingleton<_i565.UrgentRequestUseCase>(
       () => _i565.UrgentRequestUseCase(gh<_i854.MainRepository>()));
   gh.lazySingleton<_i499.FetchProfileUseCase>(
@@ -345,7 +341,7 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i994.UpdateUserUseCase>(
       () => _i994.UpdateUserUseCase(gh<_i74.UserRepository>()));
   gh.factory<_i566.LoginCubit>(() => _i566.LoginCubit(
-        gh<_i563.SendOTPCodeUseCase>(),
+        gh<_i139.LoginUseCase>(),
         gh<_i826.PhoneNumberValidatorUseCase>(),
       ));
   gh.factory<_i336.BottomNavigationBarCubit>(() =>

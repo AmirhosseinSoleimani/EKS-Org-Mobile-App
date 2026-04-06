@@ -9,8 +9,8 @@ class DashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  Scaffold(
-      body: Container(color:Colors.red,child: const Center(child: Text("داشبورد"))),
+    return  const Scaffold(
+      body:  Center(child: Text("داشبورد")),
     );
   }
 }
