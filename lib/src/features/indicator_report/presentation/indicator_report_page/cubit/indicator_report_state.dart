@@ -1,0 +1,15 @@
+part of 'indicator_report_cubit.dart';
+
+@freezed
+class IndicatorReportState with _$IndicatorReportState {
+  const factory IndicatorReportState.idle() = _Idle;
+
+  const factory IndicatorReportState.loading() = _Loading;
+
+  const factory IndicatorReportState.loaded() = _Loaded;
+
+  const factory IndicatorReportState.error({
+    required String message,
+  }) = _Error;
+}
+
