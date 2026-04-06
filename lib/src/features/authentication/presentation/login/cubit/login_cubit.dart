@@ -1,7 +1,6 @@
 import 'package:eks_sana_plus_org/src/common/constants/app_constants.dart';
-import 'package:eks_sana_plus_org/src/features/authentication/domain/entity/send_otp_code_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/authentication/domain/use_cases/login_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/authentication/domain/use_cases/phone_number_validator_use_case.dart';
-import 'package:eks_sana_plus_org/src/features/authentication/domain/use_cases/send_opt_code_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/authentication/presentation/login/cubit/login_state.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
@@ -11,18 +10,17 @@ import 'package:url_launcher/url_launcher.dart';
 
 @injectable
 class LoginCubit extends Cubit<LoginState> {
-
-  final SendOTPCodeUseCase _sendOTPCodeUseCase;
+  final LoginUseCase loginUseCase;
   final PhoneNumberValidatorUseCase _phoneNumberValidatorUseCase;
 
-  LoginCubit(
-      this._sendOTPCodeUseCase,
+  LoginCubit(this.loginUseCase,
       this._phoneNumberValidatorUseCase,
       ) : super(const LoginState.idle()) {
-    phoneNumberController.addListener(_onChanged);
+    userNameController.addListener(_onChanged);
   }
 
-  final phoneNumberController = TextEditingController();
+  final userNameController = TextEditingController();
+  final passwordController = TextEditingController();
 
   final validationNotifier = ValueNotifier<bool>(false);
 
@@ -32,17 +30,15 @@ class LoginCubit extends Cubit<LoginState> {
 
 
   void _onChanged() {
-    validationNotifier.value = phoneNumberController.text.length == 11;
+    validationNotifier.value = userNameController.text.length == 11;
   }
 
   void privacyPolicyUrl() => launchUrl(Uri.parse(AppConstants.privacyPolicyUrl));
 
-  Future<void> sendOTPCode() async {
-    emit(const LoginState.loading());
-    final result = await _sendOTPCodeUseCase.call(
-        SendOtpCodeRequestEntity(
-          mobileNumber: phoneNumberController.text,
-        )
+  Future<void> login() async {
+    /* emit(const LoginState.loading());
+    final result = await loginUseCase.call(
+
       );
       result.whenOrNull(
         success: (_, __, ___) => emit(const LoginState.success()),
@@ -54,7 +50,7 @@ class LoginCubit extends Cubit<LoginState> {
         );
         },
       connectionError: () => emit(const LoginState.connectionError()),
-    );
+    );*/
   }
 
   void onLogoAnimationFinished() {
@@ -63,8 +59,9 @@ class LoginCubit extends Cubit<LoginState> {
 
   @override
   Future<void> close() {
-    phoneNumberController.removeListener(_onChanged);
-    phoneNumberController.dispose();
+    userNameController.removeListener(_onChanged);
+    userNameController.dispose();
+    passwordController.dispose();
     validationNotifier.dispose();
     return super.close();
   }

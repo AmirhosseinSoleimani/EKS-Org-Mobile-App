@@ -40,8 +40,10 @@ class TextFormFieldWidget extends StatefulWidget {
     this.floatingLabelBehavior = FloatingLabelBehavior.auto,
     this.maxLength,
     this.textDirection,
+    this.obscureText,
   });
 
+  final bool? obscureText;
   final TextEditingController? controller;
   final FocusNode? focusNode;
   final VoidCallback? onTap;
@@ -120,6 +122,7 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
           onFieldSubmitted: widget.onFieldSubmitted,
           onChanged: widget.onChanged,
           cursorHeight: AppSize.s24,
+          obscureText: widget.obscureText ?? false,
           cursorColor: widget.cursorColor,
           autofocus: widget.autofocus ?? false,
           key: widget.newKey,
@@ -131,7 +134,6 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
           textCapitalization: widget.textCapitalization ?? TextCapitalization.none,
           style: widget.textStyle ?? textTheme.labelMedium,
           decoration: InputDecoration(
-
             counterText: '',
             errorStyle: textTheme.labelSmall?.copyWith(
               color: colorScheme.error

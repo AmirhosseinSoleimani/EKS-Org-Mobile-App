@@ -82,3 +82,62 @@ flutter:
     - assets/svg/
     - assets/fonts/
 
+  fonts:
+    - family: iransans_x
+      fonts:
+        - asset: assets/fonts/iransans_x/iran_sans_x_heavy.ttf
+          weight: 900
+        - asset: assets/fonts/iransans_x/iran_sans_x_extra_bold.ttf
+          weight: 800
+        - asset: assets/fonts/iransans_x/iran_sans_x_bold.ttf
+          weight: 700
+        - asset: assets/fonts/iransans_x/iran_sans_x_medium.ttf
+          weight: 500
+        - asset: assets/fonts/iransans_x/iran_sans_x_regular.ttf
+          weight: 400
+        - asset: assets/fonts/iransans_x/iran_sans_x_ight.ttf
+          weight: 300
+        - asset: assets/fonts/iransans_x/iran_sans_x_ultra_light.ttf
+          weight: 200
+        - asset: assets/fonts/iransans_x/iran_sans_x_thin.ttf
+          weight: 100
+
+    - family: Roboto
+      fonts:
+        - asset: assets/fonts/roboto/Roboto-Thin.ttf
+          weight: 100
+        - asset: assets/fonts/roboto/Roboto-ThinItalic.ttf
+          weight: 100
+          style: italic
+
+        - asset: assets/fonts/roboto/Roboto-Light.ttf
+          weight: 300
+        - asset: assets/fonts/roboto/Roboto-LightItalic.ttf
+          weight: 300
+          style: italic
+
+        - asset: assets/fonts/roboto/Roboto-Regular.ttf
+          weight: 400
+        - asset: assets/fonts/roboto/Roboto-Italic.ttf
+          weight: 400
+          style: italic
+
+        - asset: assets/fonts/roboto/Roboto-Medium.ttf
+          weight: 500
+        - asset: assets/fonts/roboto/Roboto-MediumItalic.ttf
+          weight: 500
+          style: italic
+
+        - asset: assets/fonts/roboto/Roboto-Bold.ttf
+          weight: 700
+        - asset: assets/fonts/roboto/Roboto-BoldItalic.ttf
+          weight: 700
+          style: italic
+
+        - asset: assets/fonts/roboto/Roboto-Black.ttf
+          weight: 900
+        - asset: assets/fonts/roboto/Roboto-BlackItalic.ttf
+          weight: 900
+          style: italic
+
+

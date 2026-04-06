@@ -21,10 +21,10 @@ class SubmitButtonWidget extends StatelessWidget {
             return InkwellButtonWidget(
               onTap: canSubmit ? () {
                 if (formKey.currentState?.validate() ?? false) {
-                  cubit.sendOTPCode();
+                  cubit.login();
                 }
               } : () {},
-              backgroundColor: (isValid || (isValid && isLoading)) ? Theme.of(context).colorScheme.primary : Theme.of(context).colorScheme.inverseSurface,
+              backgroundColor:  Theme.of(context).colorScheme.primary,
               showLoading: isLoading,
               title: 'ورود',
             );

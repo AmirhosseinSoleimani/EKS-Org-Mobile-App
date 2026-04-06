@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/features/authentication/presentation/login/login_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
@@ -26,13 +27,22 @@ class Routes {
 
     return GoRouter(
       navigatorKey: parentNavigatorKey,
-      initialLocation: DashboardPage.path,
+      initialLocation: LoginPage.path,
       refreshListenable: startupGuard,
       observers: [
         routeObserver
       ],
 
       routes: [
+        GoRoute(
+          path: LoginPage.path,
+          name: LoginPage.name,
+          pageBuilder: (context, state) =>
+              getPage(
+                child: const LoginPage(),
+                state: state,
+              ),
+        ),
         StatefulShellRoute.indexedStack(
           builder: (context, state, navigationShell) {
             return BottomNavPage(
