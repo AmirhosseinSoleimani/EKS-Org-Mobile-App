@@ -34,9 +34,9 @@ class DatePickerWidget extends StatelessWidget {
     return TextFormFieldWidget(
       readOnly: true,
       labelText: labelText,
-      hintStyle: theme.textTheme.displayMedium?.copyWith(fontSize: AppSize.s16, color: theme.colorScheme.onSecondaryFixed),
-      labelStyle: theme.textTheme.displayMedium?.copyWith(fontSize: AppSize.s16),
-      textStyle: theme.textTheme.displayMedium?.copyWith(fontSize: AppSize.s16),
+      hintStyle: theme.textTheme.displayMedium?.copyWith(fontSize: AppSize.s14, color: theme.colorScheme.inverseSurface),
+      labelStyle: theme.textTheme.displayMedium?.copyWith(fontSize: AppSize.s14),
+      textStyle: theme.textTheme.displayMedium?.copyWith(fontSize: AppSize.s14),
       controller: controller,
       hintText: hintText,
       textAlign: TextAlign.right,

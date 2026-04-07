@@ -58,7 +58,7 @@ class _IndicatorFiltersRowState extends State<IndicatorFiltersRow> {
     _overlayEntry = OverlayEntry(
       builder: (_) => DateDropdown(
         position: offset,
-        width: box.size.width,
+        width: box.size.width + 50,
         initialFromDate: cubit.selectedFromDate != null
             ? Jalali.fromDateTime(cubit.selectedFromDate!)
             : null,

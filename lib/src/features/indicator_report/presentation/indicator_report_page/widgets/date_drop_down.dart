@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/date_picker_widget/date_picker_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/inkwell_button_widget/inkwell_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
@@ -8,8 +9,8 @@ class DateDropdown extends StatefulWidget {
   final double width;
   final VoidCallback onDismiss;
   final void Function(Jalali? from, Jalali? to) onApply;
-  final Jalali? initialFromDate;  // اضافه شد
-  final Jalali? initialToDate;    // اضافه شد
+  final Jalali? initialFromDate;
+  final Jalali? initialToDate;
 
   const DateDropdown({
     super.key,
@@ -57,7 +58,7 @@ class _DateDropdownState extends State<DateDropdown> {
         ),
         Positioned(
           top: widget.position.dy + AppSize.s40,
-          left: widget.position.dx,
+          left: widget.position.dx - 50,
           width: widget.width,
           child: Material(
             elevation: 4,
@@ -86,12 +87,12 @@ class _DateDropdownState extends State<DateDropdown> {
                   Space.h12,
                   SizedBox(
                     width: double.infinity,
-                    child: ElevatedButton(
-                      onPressed: () {
+                    child: InkwellButtonWidget(
+                      title: 'اعمال فیلتر',
+                      onTap: () {
                         widget.onApply(_fromDate, _toDate);
                         widget.onDismiss();
                       },
-                      child: const Text('اعمال'),
                     ),
                   ),
                 ],
