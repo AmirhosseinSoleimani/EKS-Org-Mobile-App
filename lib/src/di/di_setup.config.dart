@@ -101,6 +101,8 @@ import '../features/requests/presentation/request_detail/cubit/request_detail_cu
     as _i55;
 import '../features/requests/presentation/request_list/cubit/request_list_cubit.dart'
     as _i736;
+import '../features/services/presentation/selected_service_page/cubit/selected_service_cubit.dart'
+    as _i851;
 import '../routes/startup_guard.dart' as _i238;
 import '../services/local_service/session_local_storage_service/data/data_source/secure_session_storage_mobile_impl.dart'
     as _i577;
@@ -205,6 +207,7 @@ _i174.GetIt $initGetIt(
   final appModule = _$AppModule();
   gh.factory<_i757.AppCubit>(() => _i757.AppCubit());
   gh.factory<_i190.ThemeCubit>(() => _i190.ThemeCubit());
+  gh.factory<_i851.SelectedServiceCubit>(() => _i851.SelectedServiceCubit());
   gh.singleton<_i882.PanelController>(
       () => slidingPanelControllerModule.panelController);
   gh.singleton<_i466.DioTokenInterceptor>(

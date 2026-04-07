@@ -1,14 +1,14 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'cubit/indicator_report_cubit.dart';
 import '../../../../shared/widgets/app_bar_widget/main_app_bar.dart';
-import 'widgets/indicator_filters_row.dart';
+import 'cubit/indicator_report_cubit.dart';
 import 'widgets/indicator_report_viewer.dart';
 
 class IndicatorReportPage extends StatelessWidget {
@@ -70,13 +70,13 @@ class _IndicatorReportView extends StatelessWidget {
             padding: const EdgeInsets.all(AppSize.s16),
             child: Column(
               children: [
-                const IndicatorFiltersRow(),
+                const FiltersRow(),
                 const SizedBox(height: AppSize.s24),
                 BlocBuilder<IndicatorReportCubit, IndicatorReportState>(
                   builder: (context, state) {
                     final cubit = context.read<IndicatorReportCubit>();
 
-                    return state.when(
+                    return state.maybeWhen(
                       idle: () => const SizedBox.shrink(),
 
                       loading: () => const Center(
@@ -89,18 +89,7 @@ class _IndicatorReportView extends StatelessWidget {
                       loaded: () => IndicatorReportViewer(
                         indicatorReport: cubit.indicatorReport,
                       ),
-
-                      error: (_) => cubit.indicatorReport != null
-                          ? IndicatorReportViewer(
-                        indicatorReport: cubit.indicatorReport,
-                      )
-                          : const SizedBox.shrink(),
-
-                      connectionError: () => cubit.indicatorReport != null
-                          ? IndicatorReportViewer(
-                        indicatorReport: cubit.indicatorReport,
-                      )
-                          : const SizedBox.shrink(),
+                      orElse: SizedBox.shrink,
                     );
                   },
                 ),

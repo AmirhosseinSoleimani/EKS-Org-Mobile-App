@@ -1,21 +1,21 @@
-import 'package:eks_sana_plus_org/src/features/indicator_report/presentation/indicator_report_page/cubit/indicator_report_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/indicator_report/presentation/indicator_report_page/widgets/date_drop_down.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
-import 'indicator_filter_button.dart';
+import '../../../features/indicator_report/presentation/indicator_report_page/cubit/indicator_report_cubit.dart';
+import '../../resources/value_manager.dart';
+import 'date_drop_down.dart';
+import 'filter_button.dart';
 import 'service_drop_down.dart';
 
-class IndicatorFiltersRow extends StatefulWidget {
-  const IndicatorFiltersRow({super.key});
+class FiltersRow extends StatefulWidget {
+  const FiltersRow({super.key});
 
   @override
-  State<IndicatorFiltersRow> createState() => _IndicatorFiltersRowState();
+  State<FiltersRow> createState() => _FiltersRowState();
 }
 
-class _IndicatorFiltersRowState extends State<IndicatorFiltersRow> {
+class _FiltersRowState extends State<FiltersRow> {
   final _serviceKey = GlobalKey();
   final _dateKey = GlobalKey();
   OverlayEntry? _overlayEntry;
@@ -92,7 +92,7 @@ class _IndicatorFiltersRowState extends State<IndicatorFiltersRow> {
             valueListenable: cubit.selectedFromDateNotifier,
             builder: (_, fromDate, __) => ValueListenableBuilder(
               valueListenable: cubit.selectedToDateNotifier,
-              builder: (_, toDate, __) => IndicatorFilterButton(
+              builder: (_, toDate, __) => FilterButton(
                 title: fromDate != null || toDate != null
                     ? "تاریخ انتخاب شده"
                     : "فیلتر بر اساس تاریخ",
@@ -106,7 +106,7 @@ class _IndicatorFiltersRowState extends State<IndicatorFiltersRow> {
           key: _serviceKey,
           child: ValueListenableBuilder(
             valueListenable: cubit.selectedServiceTypeNotifier,
-            builder: (_, serviceType, __) => IndicatorFilterButton(
+            builder: (_, serviceType, __) => FilterButton(
               title: serviceType?.label ?? "نوع خدمت",
               onTap: _showServiceDropdown,
             ),

@@ -2,12 +2,12 @@ import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 
-class IndicatorFilterButton extends StatelessWidget {
+class FilterButton extends StatelessWidget {
   final String title;
   final VoidCallback onTap;
   final IconData icon;
 
-  const IndicatorFilterButton({
+  const FilterButton({
     super.key,
     required this.title,
     required this.onTap,
