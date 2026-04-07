@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/bottom_navigation_bar/presentation/pages/bottom_nav_page.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/presentation/dashboard_page.dart';
-import 'package:eks_sana_plus_org/src/features/indicator_report/presentation/indicator_report_page.dart';
+import 'package:eks_sana_plus_org/src/features/indicator_report/presentation/indicator_report_page/indicator_report_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/services_page.dart';
 import 'startup_guard.dart';
 
@@ -66,22 +66,6 @@ class Routes {
                 ),
               ],
             ),
-            /// INDICATOR REPORT
-            StatefulShellBranch(
-              navigatorKey: indicatorNavigatorKey,
-              routes: [
-                GoRoute(
-                  path: IndicatorReportPage.path,
-                  name: IndicatorReportPage.name,
-                  pageBuilder: (context, state) =>
-                      getPage(
-                        child: const IndicatorReportPage(),
-                        state: state,
-                      ),
-                ),
-              ],
-            ),
-
             /// SERVICES
             StatefulShellBranch(
               navigatorKey: servicesNavigatorKey,
@@ -97,7 +81,21 @@ class Routes {
                 ),
               ],
             ),
-
+            /// INDICATOR REPORT
+            StatefulShellBranch(
+              navigatorKey: indicatorNavigatorKey,
+              routes: [
+                GoRoute(
+                  path: IndicatorReportPage.path,
+                  name: IndicatorReportPage.name,
+                  pageBuilder: (context, state) =>
+                      getPage(
+                        child: const IndicatorReportPage(),
+                        state: state,
+                      ),
+                ),
+              ],
+            ),
           ],
         )
 

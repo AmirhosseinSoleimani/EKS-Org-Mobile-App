@@ -39,7 +39,6 @@ class BottomNavPage extends StatelessWidget {
             icon: Icon(Icons.bar_chart),
             label: "گزارش شاخص",
           ),
-
         ],
       ),
     );

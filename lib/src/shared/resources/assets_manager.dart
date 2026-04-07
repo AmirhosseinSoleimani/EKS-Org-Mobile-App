@@ -4,11 +4,14 @@ import 'package:flutter/material.dart';
 class ImageManager {
   static const String _basePath = 'assets/images/png/';
   static const String logo = '${_basePath}emdad_khodro_logo.png';
+  static const String noInternetIcon = '${_basePath}no_internet_icon.png';
+
+
+  //not used yet
   static const String logoSingle = '${_basePath}emdad_khodro_logo_single.png';
   static const String iranFlag = '${_basePath}iran_flag.png';
 
   static const String noInternet = '${_basePath}no_internet.png';
-  static const String noInternetIcon = '${_basePath}no_internet_icon.png';
   static const String addCar = '${_basePath}add_car.png';
   static const String activeSubscription = '${_basePath}active_subscription.png';
   static const String errorImage = '${_basePath}error_image.png';
