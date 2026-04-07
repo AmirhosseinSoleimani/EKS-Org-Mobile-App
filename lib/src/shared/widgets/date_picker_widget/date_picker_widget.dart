@@ -14,11 +14,15 @@ class DatePickerWidget extends StatelessWidget {
   final Jalali? lastDate;
   final Widget? suffixIcon;
   final FutureOr<void> Function(Jalali?)? onTap;
+  final String labelText;
+  final String hintText;
 
   const DatePickerWidget({
     super.key,
     this.onTap,
     required this.controller,
+    required this.labelText,
+    required this.hintText,
     this.initialDate,
     this.lastDate,
     this.suffixIcon,
@@ -29,12 +33,12 @@ class DatePickerWidget extends StatelessWidget {
     final theme = Theme.of(context);
     return TextFormFieldWidget(
       readOnly: true,
-      labelText: 'تاریخ تولد',
+      labelText: labelText,
       hintStyle: theme.textTheme.displayMedium?.copyWith(fontSize: AppSize.s16, color: theme.colorScheme.onSecondaryFixed),
       labelStyle: theme.textTheme.displayMedium?.copyWith(fontSize: AppSize.s16),
       textStyle: theme.textTheme.displayMedium?.copyWith(fontSize: AppSize.s16),
       controller: controller,
-      hintText: 'انتخاب تاریخ تولد',
+      hintText: hintText,
       textAlign: TextAlign.right,
       textDirection: TextDirection.ltr,
       onTap: () async{
