@@ -48,6 +48,18 @@ import '../features/bottom_navigation_bar/domain/use_case/urgent_request_usecase
     as _i565;
 import '../features/bottom_navigation_bar/presentation/cubit/bottom_navigation_bar_cubit.dart'
     as _i336;
+import '../features/indicator_report/data/data_sources/indicator_report_data_source.dart'
+    as _i691;
+import '../features/indicator_report/data/data_sources/indicator_report_data_source_impl.dart'
+    as _i87;
+import '../features/indicator_report/data/repositories/indicator_report_repository_impl.dart'
+    as _i282;
+import '../features/indicator_report/data/service/indicator_report_service.dart'
+    as _i140;
+import '../features/indicator_report/domain/repositories/indicator_report_repository.dart'
+    as _i227;
+import '../features/indicator_report/domain/use_cases/fetch_report_list_use_case.dart'
+    as _i986;
 import '../features/requests/data/remote/data_source/request_history_data_source.dart'
     as _i1056;
 import '../features/requests/data/remote/data_source/request_history_data_source_impl.dart'
@@ -236,6 +248,8 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i634.InvoiceService>(
       () => _i634.InvoiceService(gh<_i361.Dio>()));
   gh.lazySingleton<_i313.UserService>(() => _i313.UserService(gh<_i361.Dio>()));
+  gh.lazySingleton<_i140.IndicatorReportService>(
+      () => _i140.IndicatorReportService(gh<_i361.Dio>()));
   gh.lazySingleton<_i475.MainRemoteDataSource>(
       () => _i203.MainRemoteDataSourceImpl(gh<_i438.MainService>()));
   gh.lazySingleton<_i471.GetCurrentNetworkStatusUseCase>(() =>
@@ -245,6 +259,10 @@ _i174.GetIt $initGetIt(
       () => _i1061.ObserveNetworkUseCase(gh<_i422.ObserveNetworkRepository>()));
   gh.lazySingleton<_i1056.RequestDataSource>(
       () => _i30.RequestHistoryDataSourceImpl(gh<_i1048.RequestService>()));
+  gh.lazySingleton<_i691.IndicatorReportDataSource>(() =>
+      _i87.IndicatorReportDataSourceImpl(gh<_i140.IndicatorReportService>()));
+  gh.lazySingleton<_i227.IndicatorReportRepository>(() =>
+      _i282.IndicatorReportRepositoryImpl(gh<_i1056.RequestDataSource>()));
   gh.lazySingleton<_i479.AuthRemoteDataSource>(
       () => _i51.AuthRemoteDataSourceImpl(gh<_i626.AuthService>()));
   gh.lazySingleton<_i314.RequestRepository>(
@@ -269,6 +287,8 @@ _i174.GetIt $initGetIt(
       () => _i702.GetAllRequestListUseCase(gh<_i314.RequestRepository>()));
   gh.lazySingleton<_i31.UpdatePaymentUseCase>(
       () => _i31.UpdatePaymentUseCase(gh<_i314.RequestRepository>()));
+  gh.lazySingleton<_i986.FetchReportListUseCase>(() =>
+      _i986.FetchReportListUseCase(gh<_i227.IndicatorReportRepository>()));
   gh.lazySingleton<_i242.ConfirmHomeServiceInvoiceUseCase>(() =>
       _i242.ConfirmHomeServiceInvoiceUseCase(gh<_i829.InvoiceRepository>()));
   gh.lazySingleton<_i981.FetchInvoiceUseCase>(

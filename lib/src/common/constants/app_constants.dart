@@ -1,9 +1,6 @@
 import 'dart:math';
 
 
-
-enum ServiceType { aidService, homeService }
-
 enum PermissionOutcome { ok, gpsOff, permanentlyDenied, denied, serviceError }
 
 enum CarGroupFactory { saipaGroupCar, otherGroupCar }

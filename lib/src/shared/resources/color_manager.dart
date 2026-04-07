@@ -7,6 +7,7 @@ class ColorDarkManager {
 }
 
 class ColorLightManager {
+  const ColorLightManager._();
 
   static const transparent = Colors.transparent;
 

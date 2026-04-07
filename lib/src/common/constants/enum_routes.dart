@@ -1,1 +1,0 @@
-enum EnumRoutes { subscription, other }
