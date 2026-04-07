@@ -2,13 +2,14 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'cubit/indicator_report_cubit.dart';
 import 'widgets/app_bar/indicator_report_app_bar.dart';
 import 'widgets/indicator_filters_row.dart';
-import 'widgets/indicator_report_list.dart';
+import 'widgets/indicator_report_viewer.dart';
 
 class IndicatorReportPage extends StatelessWidget {
   static const path = "/indicator-report";
@@ -57,45 +58,54 @@ class _IndicatorReportView extends StatelessWidget {
       },
       child: Scaffold(
         appBar: const IndicatorReportAppBar(),
-        body: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppSize.s16),
-          child: Column(
-            children: [
-              const IndicatorFiltersRow(),
-              const SizedBox(height: AppSize.s24),
-              BlocBuilder<IndicatorReportCubit, IndicatorReportState>(
-                builder: (context, state) {
-                  final cubit = context.read<IndicatorReportCubit>();
+        body: ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(
+            dragDevices: {
+              PointerDeviceKind.touch,
+              PointerDeviceKind.mouse,
+            },
+          ),
+          child: SingleChildScrollView(
 
-                  return state.when(
-                    idle: () => const SizedBox.shrink(),
+            padding: const EdgeInsets.all(AppSize.s16),
+            child: Column(
+              children: [
+                const IndicatorFiltersRow(),
+                const SizedBox(height: AppSize.s24),
+                BlocBuilder<IndicatorReportCubit, IndicatorReportState>(
+                  builder: (context, state) {
+                    final cubit = context.read<IndicatorReportCubit>();
 
-                    loading: () => const Center(
-                      child: Padding(
-                        padding: EdgeInsets.only(top: AppSize.s40),
-                        child: CircularProgressIndicator(),
+                    return state.when(
+                      idle: () => const SizedBox.shrink(),
+
+                      loading: () => const Center(
+                        child: Padding(
+                          padding: EdgeInsets.only(top: AppSize.s40),
+                          child: CircularProgressIndicator(),
+                        ),
                       ),
-                    ),
 
-                    loaded: () => IndicatorReportData(
-                      indicatorReport: cubit.indicatorReport,
-                    ),
+                      loaded: () => IndicatorReportViewer(
+                        indicatorReport: cubit.indicatorReport,
+                      ),
 
-                    error: (_) => cubit.indicatorReport != null
-                        ? IndicatorReportData(
-                      indicatorReport: cubit.indicatorReport,
-                    )
-                        : const SizedBox.shrink(),
+                      error: (_) => cubit.indicatorReport != null
+                          ? IndicatorReportViewer(
+                        indicatorReport: cubit.indicatorReport,
+                      )
+                          : const SizedBox.shrink(),
 
-                    connectionError: () => cubit.indicatorReport != null
-                        ? IndicatorReportData(
-                      indicatorReport: cubit.indicatorReport,
-                    )
-                        : const SizedBox.shrink(),
-                  );
-                },
-              ),
-            ],
+                      connectionError: () => cubit.indicatorReport != null
+                          ? IndicatorReportViewer(
+                        indicatorReport: cubit.indicatorReport,
+                      )
+                          : const SizedBox.shrink(),
+                    );
+                  },
+                ),
+              ],
+            ),
           ),
         ),
       ),
