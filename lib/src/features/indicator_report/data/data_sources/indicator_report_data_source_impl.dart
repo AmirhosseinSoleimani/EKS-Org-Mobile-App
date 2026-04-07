@@ -12,7 +12,7 @@ class IndicatorReportDataSourceImpl extends IndicatorReportDataSource {
   IndicatorReportDataSourceImpl(this._service);
 
   @override
-  Future<BaseListResponse<IndicatorReportModel?>> fetchReportList(
+  Future<BaseSingleResponse<IndicatorReportModel?>> fetchIndicatorReport(
           ReportParamModel param) async =>
       await _service.fetchReportList(param.toJson());
 }

@@ -1,23 +1,20 @@
+import 'package:eks_sana_plus_org/src/features/indicator_report/domain/entity/indicatior_report_entity.dart';
 import 'package:flutter/material.dart';
 
-class IndicatorReportList extends StatelessWidget {
-  final List items;
+class IndicatorReportData extends StatelessWidget {
+  final IndicatorReportEntity? indicatorReport;
 
-  const IndicatorReportList({
+  const IndicatorReportData({
     super.key,
-    required this.items,
+    required this.indicatorReport,
   });
 
   @override
   Widget build(BuildContext context) {
-    if (items.isEmpty) {
-      return const Center(
-        child: Text("موردی یافت نشد"),
-      );
-    }
+
 
     return ListView.builder(
-      itemCount: items.length,
+      itemCount: 1,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemBuilder: (context, index) {

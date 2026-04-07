@@ -19,5 +19,5 @@ abstract class IndicatorReportService {
   factory IndicatorReportService(Dio dio) = _IndicatorReportService;
 
   @POST('/api/IndexReport/IndexReport')
-  Future<BaseListResponse<IndicatorReportModel?>> fetchReportList(@Body() Map<String, dynamic> body);
+  Future<BaseSingleResponse<IndicatorReportModel?>> fetchReportList(@Body() Map<String, dynamic> body);
 }

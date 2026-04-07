@@ -6,15 +6,15 @@ import 'package:eks_sana_plus_org/src/shared/usecase/use_case.dart';
 import 'package:injectable/injectable.dart';
 
 @lazySingleton
-class FetchReportListUseCase extends BaseUseCase<
-    ApiResult<List<IndicatorReportEntity?>>, ReportParamEntity> {
-  FetchReportListUseCase(this._repository);
+class FetchIndicatorReportUseCase extends BaseUseCase<
+    ApiResult<IndicatorReportEntity?>, ReportParamEntity> {
+  FetchIndicatorReportUseCase(this._repository);
 
   final IndicatorReportRepository _repository;
 
   @override
-  Future<ApiResult<List<IndicatorReportEntity?>>> call(
+  Future<ApiResult<IndicatorReportEntity?>> call(
       ReportParamEntity arg) async {
-    return await _repository.fetchReportList(arg);
+    return await _repository.fetchIndicatorReport(arg);
   }
 }

@@ -22,7 +22,7 @@ class _IndicatorReportService implements IndicatorReportService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<BaseListResponse<IndicatorReportModel?>> fetchReportList(
+  Future<BaseSingleResponse<IndicatorReportModel?>> fetchReportList(
       Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -30,7 +30,7 @@ class _IndicatorReportService implements IndicatorReportService {
     final _data = <String, dynamic>{};
     _data.addAll(body);
     final _options =
-        _setStreamType<BaseListResponse<IndicatorReportModel>>(Options(
+        _setStreamType<BaseSingleResponse<IndicatorReportModel>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -47,9 +47,9 @@ class _IndicatorReportService implements IndicatorReportService {
               baseUrl,
             )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseListResponse<IndicatorReportModel?> _value;
+    late BaseSingleResponse<IndicatorReportModel?> _value;
     try {
-      _value = BaseListResponse<IndicatorReportModel?>.fromJson(
+      _value = BaseSingleResponse<IndicatorReportModel?>.fromJson(
         _result.data!,
         (json) => json == null
             ? null

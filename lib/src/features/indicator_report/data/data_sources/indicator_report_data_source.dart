@@ -3,6 +3,6 @@ import 'package:eks_sana_plus_org/src/features/indicator_report/data/models/repo
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 
 abstract class IndicatorReportDataSource {
-  Future<BaseListResponse<IndicatorReportModel?>> fetchReportList(
+  Future<BaseSingleResponse<IndicatorReportModel?>> fetchIndicatorReport(
       ReportParamModel param);
 }

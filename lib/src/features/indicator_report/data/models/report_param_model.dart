@@ -11,7 +11,7 @@ class ReportParamModel extends ReportParamEntity {
     final map = <String, dynamic>{};
 
     if (serviceType != null) {
-      map['serviceType'] = serviceType;
+      map['serviceType'] = serviceType!.value;
     }
 
     if (fromDateTime != null) {

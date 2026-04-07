@@ -9,7 +9,10 @@ class IndicatorReportState with _$IndicatorReportState {
   const factory IndicatorReportState.loaded() = _Loaded;
 
   const factory IndicatorReportState.error({
-    required String message,
+    required BottomSheetMessageModel message,
   }) = _Error;
+
+
+  const factory IndicatorReportState.connectionError() = _ConnectionError;
 }
 

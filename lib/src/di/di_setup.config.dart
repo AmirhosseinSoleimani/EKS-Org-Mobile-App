@@ -58,8 +58,10 @@ import '../features/indicator_report/data/service/indicator_report_service.dart'
     as _i140;
 import '../features/indicator_report/domain/repositories/indicator_report_repository.dart'
     as _i227;
-import '../features/indicator_report/domain/use_cases/fetch_report_list_use_case.dart'
-    as _i986;
+import '../features/indicator_report/domain/use_cases/fetch_indicator_report_use_case.dart'
+    as _i375;
+import '../features/indicator_report/presentation/indicator_report_page/cubit/indicator_report_cubit.dart'
+    as _i951;
 import '../features/requests/data/remote/data_source/request_history_data_source.dart'
     as _i1056;
 import '../features/requests/data/remote/data_source/request_history_data_source_impl.dart'
@@ -261,12 +263,13 @@ _i174.GetIt $initGetIt(
       () => _i30.RequestHistoryDataSourceImpl(gh<_i1048.RequestService>()));
   gh.lazySingleton<_i691.IndicatorReportDataSource>(() =>
       _i87.IndicatorReportDataSourceImpl(gh<_i140.IndicatorReportService>()));
-  gh.lazySingleton<_i227.IndicatorReportRepository>(() =>
-      _i282.IndicatorReportRepositoryImpl(gh<_i1056.RequestDataSource>()));
   gh.lazySingleton<_i479.AuthRemoteDataSource>(
       () => _i51.AuthRemoteDataSourceImpl(gh<_i626.AuthService>()));
   gh.lazySingleton<_i314.RequestRepository>(
       () => _i230.RequestRepositoryImpl(gh<_i1056.RequestDataSource>()));
+  gh.lazySingleton<_i227.IndicatorReportRepository>(() =>
+      _i282.IndicatorReportRepositoryImpl(
+          gh<_i691.IndicatorReportDataSource>()));
   gh.lazySingleton<_i1039.UserDataSource>(
       () => _i793.UserDataSourceImpl(gh<_i313.UserService>()));
   gh.lazySingleton<_i716.AuthRepository>(() => _i781.AuthRepositoryImpl(
@@ -287,8 +290,8 @@ _i174.GetIt $initGetIt(
       () => _i702.GetAllRequestListUseCase(gh<_i314.RequestRepository>()));
   gh.lazySingleton<_i31.UpdatePaymentUseCase>(
       () => _i31.UpdatePaymentUseCase(gh<_i314.RequestRepository>()));
-  gh.lazySingleton<_i986.FetchReportListUseCase>(() =>
-      _i986.FetchReportListUseCase(gh<_i227.IndicatorReportRepository>()));
+  gh.lazySingleton<_i375.FetchIndicatorReportUseCase>(() =>
+      _i375.FetchIndicatorReportUseCase(gh<_i227.IndicatorReportRepository>()));
   gh.lazySingleton<_i242.ConfirmHomeServiceInvoiceUseCase>(() =>
       _i242.ConfirmHomeServiceInvoiceUseCase(gh<_i829.InvoiceRepository>()));
   gh.lazySingleton<_i981.FetchInvoiceUseCase>(
@@ -360,6 +363,8 @@ _i174.GetIt $initGetIt(
       () => _i776.SetThemeUseCase(gh<_i74.UserRepository>()));
   gh.lazySingleton<_i994.UpdateUserUseCase>(
       () => _i994.UpdateUserUseCase(gh<_i74.UserRepository>()));
+  gh.factory<_i951.IndicatorReportCubit>(() =>
+      _i951.IndicatorReportCubit(gh<_i375.FetchIndicatorReportUseCase>()));
   gh.factory<_i566.LoginCubit>(() => _i566.LoginCubit(
         gh<_i139.LoginUseCase>(),
         gh<_i826.PhoneNumberValidatorUseCase>(),
