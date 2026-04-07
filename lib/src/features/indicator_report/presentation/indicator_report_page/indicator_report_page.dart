@@ -7,7 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'cubit/indicator_report_cubit.dart';
-import 'widgets/app_bar/indicator_report_app_bar.dart';
+import '../../../../shared/widgets/app_bar_widget/main_app_bar.dart';
 import 'widgets/indicator_filters_row.dart';
 import 'widgets/indicator_report_viewer.dart';
 
@@ -57,7 +57,7 @@ class _IndicatorReportView extends StatelessWidget {
         );
       },
       child: Scaffold(
-        appBar: const IndicatorReportAppBar(),
+        appBar: const MainAppBar(title: "گزارش شاخص"),
         body: ScrollConfiguration(
           behavior: ScrollConfiguration.of(context).copyWith(
             dragDevices: {

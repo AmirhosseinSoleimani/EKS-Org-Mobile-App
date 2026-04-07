@@ -11,9 +11,8 @@ import 'package:eks_sana_plus_org/src/features/requests/presentation/request_det
 import 'package:eks_sana_plus_org/src/features/requests/presentation/request_detail/widgets/request_detail_car_info_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
 import 'package:eks_sana_plus_org/src/shared/extensions/string_extensions.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/app_bar_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/main_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
@@ -47,16 +46,9 @@ class RequestDetailPage extends StatelessWidget {
               context.pop(BottomSheetAction.positive);
             },
             child: Scaffold(
-              appBar: AppBarWidget(
+              appBar: MainAppBar(
                 title: 'جزئیات درخواست',
-                leading: IconButton(
-                  icon: Icon(
-                    IconManager.arrowBack,
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
-                  onPressed: () =>
-                      Navigator.of(context).pop(BottomSheetAction.positive),
-                ),
+
               ),
               body: BlocListener<RequestDetailCubit, RequestDetailState>(
                 listener: (context, state) {

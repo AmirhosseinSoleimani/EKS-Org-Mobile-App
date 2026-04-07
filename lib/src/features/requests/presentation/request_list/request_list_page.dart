@@ -8,7 +8,7 @@ import 'package:eks_sana_plus_org/src/features/requests/presentation/request_lis
 import 'package:eks_sana_plus_org/src/routes/app_routing.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/app_bar_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/main_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
@@ -31,7 +31,7 @@ class RequestListPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => getIt<RequestListCubit>()..init(),
       child: const Scaffold(
-        appBar: AppBarWidget(
+        appBar: MainAppBar(
           title: 'تاریخچه درخواست ها',
         ),
         body: RequestListViewWrapper(),
