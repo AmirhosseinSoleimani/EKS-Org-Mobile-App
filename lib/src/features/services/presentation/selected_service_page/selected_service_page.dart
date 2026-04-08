@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'cubit/selected_service_cubit.dart';
-import 'widgets/service_list_viewer.dart';
+import 'widgets/request_list_viewer.dart';
 import 'widgets/services_filters_box.dart';
 
 class SelectedServicesPage extends StatelessWidget {
@@ -86,8 +86,8 @@ class _SelectedServicesView extends StatelessWidget {
                                 child: CircularProgressIndicator(),
                               ),
                             ),
-                        loaded: () => const ServiceListViewer(
-                              items: [],
+                        loaded: () =>  RequestListViewer(
+                              items: cubit.buildFakeRequests(),
                             ),
                         orElse: SizedBox.shrink);
                   },
