@@ -11,7 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'cubit/selected_service_cubit.dart';
 import 'widgets/service_list_viewer.dart';
-import 'widgets/services_filters_row.dart';
+import 'widgets/services_filters_box.dart';
 
 class SelectedServicesPage extends StatelessWidget {
   static const path = "/selected-services";
@@ -74,7 +74,7 @@ class _SelectedServicesView extends StatelessWidget {
             padding: const EdgeInsets.all(AppSize.s16),
             child: Column(
               children: [
-                ServicesFiltersRow(cubit: cubit),
+                ServicesFiltersBox(cubit: cubit),
                 const SizedBox(height: AppSize.s24),
                 BlocBuilder<SelectedServiceCubit, SelectedServiceState>(
                   builder: (context, state) {

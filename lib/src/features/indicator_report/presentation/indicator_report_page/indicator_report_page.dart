@@ -5,7 +5,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/date_drop_down.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/service_drop_down.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/overlay_drop_down_menu.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -138,12 +138,13 @@ class _IndicatorReportView extends StatelessWidget {
           valueListenable: cubit.selectedServiceTypeNotifier,
           builder: (_, serviceType, __) {
             return FilterButton(
-              title: serviceType?.label ?? "نوع خدمت",
+              title: serviceType.label,
               expand: true,
               overlayBuilder: (context, position, width, dismiss) {
-                return ServiceDropdown(
+                return OverlayDropdownMenu<ServiceType>(
                   position: position,
                   width: width,
+                  items: ServiceType.values,
                   onDismiss: dismiss,
                   onSelect: (value) {
                     cubit.setServiceType(value);

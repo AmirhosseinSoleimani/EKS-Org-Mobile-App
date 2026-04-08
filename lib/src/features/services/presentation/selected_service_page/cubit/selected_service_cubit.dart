@@ -1,5 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:eks_sana_plus_org/src/common/constants/request_status.dart';
+import 'package:eks_sana_plus_org/src/common/constants/time_period.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -21,6 +22,11 @@ class SelectedServiceCubit extends Cubit<SelectedServiceState> {
 
   RequestStatus? get selectedStatus => _selectedStatusNotifier.value;
 
+  final selectedTimePeriodNotifier = ValueNotifier<TimePeriod>(TimePeriod.all);
+
+
+  TimePeriod get selectedTimePeriod => selectedTimePeriodNotifier.value;
+
   final requestNumberController = TextEditingController();
   final phoneController = TextEditingController();
   final chassisNumberController = TextEditingController();
@@ -28,9 +34,14 @@ class SelectedServiceCubit extends Cubit<SelectedServiceState> {
   final cityController = TextEditingController();
   final provinceController = TextEditingController();
 
-  void setStatus(RequestStatus? status) {
+  void setSelectedStatus(RequestStatus status) {
     _selectedStatusNotifier.value = status;
   }
+
+  void setSelectedTimePeriod(TimePeriod timePeriod) {
+    selectedTimePeriodNotifier.value = timePeriod;
+  }
+
 
   void init(){}
 

@@ -1,4 +1,3 @@
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 class FilterButton extends StatefulWidget {
@@ -65,15 +64,15 @@ class _FilterButtonState extends State<FilterButton> {
 
   @override
   Widget build(BuildContext context) {
-    final button = InkWell(
+    return InkWell(
       key: _key,
       onTap: _toggleOverlay,
-      borderRadius: BorderRadius.circular(AppSize.s8),
+      borderRadius: BorderRadius.circular(8),
       child: Container(
-        padding: const EdgeInsets.all(AppPadding.p8),
+        padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(AppSize.s8),
+          borderRadius: BorderRadius.circular(8),
           border: Border.all(color: Colors.grey.shade300),
         ),
         child: Row(
@@ -81,22 +80,16 @@ class _FilterButtonState extends State<FilterButton> {
             Expanded(
               child: BodyMediumText(
                 text: widget.title,
-                fontSize: AppPadding.p12,
                 maxLines: 1,
               ),
             ),
-            Space.w4,
-            Icon(widget.icon, size: AppSize.s24),
+            const SizedBox(width: 4),
+            Icon(widget.icon, size: 20),
           ],
         ),
       ),
     );
 
-    if (widget.expand) {
-      return Expanded(child: button);
-    }
-
-    return button;
   }
 }
 

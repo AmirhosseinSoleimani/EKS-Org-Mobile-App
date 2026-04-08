@@ -1,4 +1,8 @@
-enum RequestStatus {
+import 'package:flutter/material.dart';
+
+import '../../shared/widgets/filter_widgets/interfaces/dropdown_item.dart';
+
+enum RequestStatus implements DropdownItem {
   waitingPreInvoiceApproval(-4, 'در انتظار تایید پیش‌فاکتور'),
   waitingAddress(-3, 'در انتظار ثبت آدرس'),
   waitingInfoCompletion(-2, 'در انتظار تکمیل اطلاعات'),
@@ -15,12 +19,18 @@ enum RequestStatus {
   closed(9, 'بسته');
 
   final int value;
-  final String title;
 
-  const RequestStatus(this.value, this.title);
+  @override
+  final String label;
+
+  @override
+  Widget? leading(BuildContext context) {
+    return null;
+  }
+
+  const RequestStatus(this.value, this.label);
 
   static RequestStatus fromValue(int? value) {
-    if (value == null) return RequestStatus.unknown;
     return RequestStatus.values.firstWhere(
       (e) => e.value == value,
       orElse: () => RequestStatus.unknown,
