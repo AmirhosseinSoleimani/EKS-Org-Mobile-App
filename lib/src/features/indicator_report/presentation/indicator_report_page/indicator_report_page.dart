@@ -1,7 +1,11 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/date_drop_down.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/service_drop_down.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -31,6 +35,7 @@ class _IndicatorReportView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cubit = context.read<IndicatorReportCubit>();
     return BlocListener<IndicatorReportCubit, IndicatorReportState>(
       listener: (context, state) {
         state.whenOrNull(
@@ -38,12 +43,10 @@ class _IndicatorReportView extends StatelessWidget {
             BottomSheetMessage.showErrorWithAction(
               context: context,
               data: message,
-              onPositive: context.read<IndicatorReportCubit>().loadReports,
+              onPositive: cubit.loadReports,
             );
           },
           connectionError: () {
-            final cubit = context.read<IndicatorReportCubit>();
-
             BottomSheetMessage.showCustom(
               context: context,
               content: NoInternetBottomSheet(
@@ -70,12 +73,10 @@ class _IndicatorReportView extends StatelessWidget {
             padding: const EdgeInsets.all(AppSize.s16),
             child: Column(
               children: [
-                const FiltersRow(),
+                buildFiltersRow(cubit),
                 const SizedBox(height: AppSize.s24),
                 BlocBuilder<IndicatorReportCubit, IndicatorReportState>(
                   builder: (context, state) {
-                    final cubit = context.read<IndicatorReportCubit>();
-
                     return state.maybeWhen(
                       idle: () => const SizedBox.shrink(),
 
@@ -98,6 +99,62 @@ class _IndicatorReportView extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  FiltersRow buildFiltersRow(IndicatorReportCubit cubit) {
+    return FiltersRow(
+      filters: [
+        ValueListenableBuilder(
+          valueListenable: cubit.selectedFromDateNotifier,
+          builder: (_, fromDate, __) {
+            return ValueListenableBuilder(
+              valueListenable: cubit.selectedToDateNotifier,
+              builder: (_, toDate, __) {
+                return FilterButton(
+                  title: fromDate != null || toDate != null
+                      ? "تاریخ انتخاب شده"
+                      : "فیلتر بر اساس تاریخ",
+                  expand: true,
+                  overlayBuilder: (context, position, width, dismiss) {
+                    return DateDropdown(
+                      position: position,
+                      width: width + 50,
+                      onDismiss: dismiss,
+                      onApply: (from, to) {
+                        if (from != null) cubit.setFromDate(from.toDateTime());
+                        if (to != null) cubit.setToDate(to.toDateTime());
+                        cubit.loadReports();
+                        dismiss();
+                      },
+                    );
+                  },
+                );
+              },
+            );
+          },
+        ),
+        ValueListenableBuilder(
+          valueListenable: cubit.selectedServiceTypeNotifier,
+          builder: (_, serviceType, __) {
+            return FilterButton(
+              title: serviceType?.label ?? "نوع خدمت",
+              expand: true,
+              overlayBuilder: (context, position, width, dismiss) {
+                return ServiceDropdown(
+                  position: position,
+                  width: width,
+                  onDismiss: dismiss,
+                  onSelect: (value) {
+                    cubit.setServiceType(value);
+                    dismiss();
+                  },
+                );
+              },
+            );
+          },
+        )
+      ],
     );
   }
 }

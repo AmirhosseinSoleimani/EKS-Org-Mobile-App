@@ -1,50 +1,102 @@
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
-
-class FilterButton extends StatelessWidget {
+class FilterButton extends StatefulWidget {
   final String title;
-  final VoidCallback onTap;
   final IconData icon;
+  final bool expand;
+
+  final Widget Function(
+      BuildContext context,
+      Offset position,
+      double width,
+      VoidCallback dismiss,
+      )? overlayBuilder;
 
   const FilterButton({
     super.key,
     required this.title,
-    required this.onTap,
     this.icon = Icons.keyboard_arrow_down,
+    this.expand = false,
+    this.overlayBuilder,
   });
 
   @override
+  State<FilterButton> createState() => _FilterButtonState();
+}
+
+class _FilterButtonState extends State<FilterButton> {
+  final _key = GlobalKey();
+  OverlayEntry? _overlayEntry;
+
+  void _removeOverlay() {
+    _overlayEntry?.remove();
+    _overlayEntry = null;
+  }
+
+  void _toggleOverlay() {
+    if (widget.overlayBuilder == null) return;
+
+    if (_overlayEntry != null) {
+      _removeOverlay();
+      return;
+    }
+
+    final box = _key.currentContext!.findRenderObject() as RenderBox;
+    final offset = box.localToGlobal(Offset.zero);
+
+    _overlayEntry = OverlayEntry(
+      builder: (_) => widget.overlayBuilder!(
+        context,
+        offset,
+        box.size.width,
+        _removeOverlay,
+      ),
+    );
+
+    Overlay.of(context).insert(_overlayEntry!);
+  }
+
+  @override
+  void dispose() {
+    _removeOverlay();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Expanded(
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppSize.s8),
-        child: Container(
-          padding: const EdgeInsets.all(AppPadding.p8),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(AppSize.s8),
-            border: Border.all(color: Colors.grey.shade300),
-          ),
-          child: Row(
-            children: [
-              Expanded(
-                child: BodyMediumText(
-                  text: title,
-                  fontSize: AppPadding.p12,
-                  maxLines: 1,
-                ),
+    final button = InkWell(
+      key: _key,
+      onTap: _toggleOverlay,
+      borderRadius: BorderRadius.circular(AppSize.s8),
+      child: Container(
+        padding: const EdgeInsets.all(AppPadding.p8),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(AppSize.s8),
+          border: Border.all(color: Colors.grey.shade300),
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: BodyMediumText(
+                text: widget.title,
+                fontSize: AppPadding.p12,
+                maxLines: 1,
               ),
-              Space.w4,
-              Icon(
-                icon,
-                size: AppSize.s24,
-              ),
-            ],
-          ),
+            ),
+            Space.w4,
+            Icon(widget.icon, size: AppSize.s24),
+          ],
         ),
       ),
     );
+
+    if (widget.expand) {
+      return Expanded(child: button);
+    }
+
+    return button;
   }
 }
+

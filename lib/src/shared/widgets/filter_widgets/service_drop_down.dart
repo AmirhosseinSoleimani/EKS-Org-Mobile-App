@@ -36,7 +36,9 @@ class ServiceDropdown extends StatelessWidget {
               mainAxisSize: MainAxisSize.min,
               children: ServiceType.values
                   .map((type) => InkWell(
-                        onTap: () => onSelect(type),
+                        onTap: () {
+                          onSelect(type);
+                        },
                         child: Padding(
                           padding: const EdgeInsets.symmetric(
                             horizontal: AppPadding.p12,

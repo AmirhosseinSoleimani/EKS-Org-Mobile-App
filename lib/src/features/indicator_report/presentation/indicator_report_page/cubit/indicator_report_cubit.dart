@@ -39,13 +39,13 @@ class IndicatorReportCubit extends Cubit<IndicatorReportState> {
       toDateTime: selectedToDate,
     );
     ///////
-    await Future.delayed(Duration(seconds: 2));
-    indicatorReport = getMockData();
-    _safeEmit(const IndicatorReportState.loaded());
+   // await Future.delayed(Duration(seconds: 2));
+   // indicatorReport = getMockData();
+   // _safeEmit(const IndicatorReportState.loaded());
     /////
 
 
-  /*  final result = await _fetchReportListUseCase(param);
+   final result = await _fetchReportListUseCase(param);
 
     result.whenOrNull(
       success: (data, failures, resultCode) async {
@@ -64,7 +64,7 @@ class IndicatorReportCubit extends Cubit<IndicatorReportState> {
       },
       connectionError: () =>
           _safeEmit(const IndicatorReportState.connectionError()),
-    );*/
+    );
   }
   void setServiceType(ServiceType type) {
     selectedServiceTypeNotifier.value = type;

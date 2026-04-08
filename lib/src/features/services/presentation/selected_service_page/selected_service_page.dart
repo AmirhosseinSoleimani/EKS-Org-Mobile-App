@@ -11,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'cubit/selected_service_cubit.dart';
 import 'widgets/service_list_viewer.dart';
+import 'widgets/services_filters_row.dart';
 
 class SelectedServicesPage extends StatelessWidget {
   static const path = "/selected-services";
@@ -36,6 +37,7 @@ class _SelectedServicesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cubit = context.read<SelectedServiceCubit>();
     return BlocListener<SelectedServiceCubit, SelectedServiceState>(
       listener: (context, state) {
         state.whenOrNull(
@@ -43,12 +45,10 @@ class _SelectedServicesView extends StatelessWidget {
             BottomSheetMessage.showErrorWithAction(
               context: context,
               data: message,
-              onPositive: context.read<SelectedServiceCubit>().init,
+              onPositive: cubit.init,
             );
           },
           connectionError: () {
-            final cubit = context.read<SelectedServiceCubit>();
-
             BottomSheetMessage.showCustom(
               context: context,
               content: NoInternetBottomSheet(
@@ -74,12 +74,10 @@ class _SelectedServicesView extends StatelessWidget {
             padding: const EdgeInsets.all(AppSize.s16),
             child: Column(
               children: [
-                const FiltersRow(),
+                ServicesFiltersRow(cubit: cubit),
                 const SizedBox(height: AppSize.s24),
                 BlocBuilder<SelectedServiceCubit, SelectedServiceState>(
                   builder: (context, state) {
-                    final cubit = context.read<SelectedServiceCubit>();
-
                     return state.maybeWhen(
                         idle: () => const SizedBox.shrink(),
                         loading: () => const Center(

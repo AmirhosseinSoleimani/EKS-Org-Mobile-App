@@ -1,4 +1,4 @@
-import 'package:eks_sana_plus_org/src/features/requests/domain/entities/enums/request_status.dart';
+import 'package:eks_sana_plus_org/src/common/constants/request_status.dart';
 import 'package:eks_sana_plus_org/src/features/requests/domain/entities/enums/request_type.dart';
 import 'package:eks_sana_plus_org/src/features/requests/domain/entities/request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/requests/domain/use_case/get_all_request_list_use_case.dart';

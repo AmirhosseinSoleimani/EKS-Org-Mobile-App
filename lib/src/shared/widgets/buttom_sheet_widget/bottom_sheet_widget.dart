@@ -42,7 +42,7 @@ class BottomSheetWidget extends StatelessWidget {
     final theme = Theme.of(context);
     final media = MediaQuery.of(context);
 
-    final maxHeight = media.size.height * 0.6;
+    final maxHeight = media.size.height * 0.7;
 
     final hasTitle = title.trim().isNotEmpty;
     final hasMessage = message.trim().isNotEmpty;
