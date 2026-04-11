@@ -37,7 +37,7 @@ class _RequestService implements RequestService {
     )
             .compose(
               _dio.options,
-              '/api/AidServiceRequest/GetByFilterJson',
+              '/api/AidServiceRequestOrg/GetByFilterJson',
               queryParameters: queryParameters,
               data: _data,
             )

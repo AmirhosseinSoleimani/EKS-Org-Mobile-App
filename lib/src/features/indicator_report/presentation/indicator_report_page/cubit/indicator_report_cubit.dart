@@ -98,8 +98,6 @@ class IndicatorReportCubit extends Cubit<IndicatorReportState> {
 
 
   //todo remove this faker func
-// در IndicatorReportCubit
-
   IndicatorReportEntity getMockData() {
     return const IndicatorReportEntity(
       serviceRequestEmdadgarFollowUpWithTabletPercent: 0.0,

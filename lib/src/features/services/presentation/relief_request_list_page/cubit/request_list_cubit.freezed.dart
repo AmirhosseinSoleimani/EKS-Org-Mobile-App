@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'selected_service_cubit.dart';
+part of 'relief_request_list_cubit.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -15,7 +15,7 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$SelectedServiceState {
+mixin _$ReliefRequestListState {
   @optionalTypeArgs
   TResult when<TResult extends Object?>({
     required TResult Function() idle,
@@ -75,17 +75,16 @@ mixin _$SelectedServiceState {
 }
 
 /// @nodoc
-abstract class $SelectedServiceStateCopyWith<$Res> {
-  factory $SelectedServiceStateCopyWith(SelectedServiceState value,
-          $Res Function(SelectedServiceState) then) =
-      _$SelectedServiceStateCopyWithImpl<$Res, SelectedServiceState>;
+abstract class $RequestListStateCopyWith<$Res> {
+  factory $RequestListStateCopyWith(
+          ReliefRequestListState value, $Res Function(ReliefRequestListState) then) =
+      _$RequestListStateCopyWithImpl<$Res, ReliefRequestListState>;
 }
 
 /// @nodoc
-class _$SelectedServiceStateCopyWithImpl<$Res,
-        $Val extends SelectedServiceState>
-    implements $SelectedServiceStateCopyWith<$Res> {
-  _$SelectedServiceStateCopyWithImpl(this._value, this._then);
+class _$RequestListStateCopyWithImpl<$Res, $Val extends ReliefRequestListState>
+    implements $RequestListStateCopyWith<$Res> {
+  _$RequestListStateCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -102,7 +101,7 @@ abstract class _$$IdleImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$IdleImplCopyWithImpl<$Res>
-    extends _$SelectedServiceStateCopyWithImpl<$Res, _$IdleImpl>
+    extends _$RequestListStateCopyWithImpl<$Res, _$IdleImpl>
     implements _$$IdleImplCopyWith<$Res> {
   __$$IdleImplCopyWithImpl(_$IdleImpl _value, $Res Function(_$IdleImpl) _then)
       : super(_value, _then);
@@ -115,7 +114,7 @@ class _$IdleImpl implements _Idle {
 
   @override
   String toString() {
-    return 'SelectedServiceState.idle()';
+    return 'RequestListState.idle()';
   }
 
   @override
@@ -208,7 +207,7 @@ class _$IdleImpl implements _Idle {
   }
 }
 
-abstract class _Idle implements SelectedServiceState {
+abstract class _Idle implements ReliefRequestListState {
   const factory _Idle() = _$IdleImpl;
 }
 
@@ -221,7 +220,7 @@ abstract class _$$LoadingImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$LoadingImplCopyWithImpl<$Res>
-    extends _$SelectedServiceStateCopyWithImpl<$Res, _$LoadingImpl>
+    extends _$RequestListStateCopyWithImpl<$Res, _$LoadingImpl>
     implements _$$LoadingImplCopyWith<$Res> {
   __$$LoadingImplCopyWithImpl(
       _$LoadingImpl _value, $Res Function(_$LoadingImpl) _then)
@@ -235,7 +234,7 @@ class _$LoadingImpl implements _Loading {
 
   @override
   String toString() {
-    return 'SelectedServiceState.loading()';
+    return 'RequestListState.loading()';
   }
 
   @override
@@ -328,7 +327,7 @@ class _$LoadingImpl implements _Loading {
   }
 }
 
-abstract class _Loading implements SelectedServiceState {
+abstract class _Loading implements ReliefRequestListState {
   const factory _Loading() = _$LoadingImpl;
 }
 
@@ -341,7 +340,7 @@ abstract class _$$LoadedImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$LoadedImplCopyWithImpl<$Res>
-    extends _$SelectedServiceStateCopyWithImpl<$Res, _$LoadedImpl>
+    extends _$RequestListStateCopyWithImpl<$Res, _$LoadedImpl>
     implements _$$LoadedImplCopyWith<$Res> {
   __$$LoadedImplCopyWithImpl(
       _$LoadedImpl _value, $Res Function(_$LoadedImpl) _then)
@@ -355,7 +354,7 @@ class _$LoadedImpl implements _Loaded {
 
   @override
   String toString() {
-    return 'SelectedServiceState.loaded()';
+    return 'RequestListState.loaded()';
   }
 
   @override
@@ -448,7 +447,7 @@ class _$LoadedImpl implements _Loaded {
   }
 }
 
-abstract class _Loaded implements SelectedServiceState {
+abstract class _Loaded implements ReliefRequestListState {
   const factory _Loaded() = _$LoadedImpl;
 }
 
@@ -463,7 +462,7 @@ abstract class _$$ErrorImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$ErrorImplCopyWithImpl<$Res>
-    extends _$SelectedServiceStateCopyWithImpl<$Res, _$ErrorImpl>
+    extends _$RequestListStateCopyWithImpl<$Res, _$ErrorImpl>
     implements _$$ErrorImplCopyWith<$Res> {
   __$$ErrorImplCopyWithImpl(
       _$ErrorImpl _value, $Res Function(_$ErrorImpl) _then)
@@ -493,7 +492,7 @@ class _$ErrorImpl implements _Error {
 
   @override
   String toString() {
-    return 'SelectedServiceState.error(message: $message)';
+    return 'RequestListState.error(message: $message)';
   }
 
   @override
@@ -594,7 +593,7 @@ class _$ErrorImpl implements _Error {
   }
 }
 
-abstract class _Error implements SelectedServiceState {
+abstract class _Error implements ReliefRequestListState {
   const factory _Error({required final BottomSheetMessageModel message}) =
       _$ErrorImpl;
 
@@ -613,7 +612,7 @@ abstract class _$$ConnectionErrorImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$ConnectionErrorImplCopyWithImpl<$Res>
-    extends _$SelectedServiceStateCopyWithImpl<$Res, _$ConnectionErrorImpl>
+    extends _$RequestListStateCopyWithImpl<$Res, _$ConnectionErrorImpl>
     implements _$$ConnectionErrorImplCopyWith<$Res> {
   __$$ConnectionErrorImplCopyWithImpl(
       _$ConnectionErrorImpl _value, $Res Function(_$ConnectionErrorImpl) _then)
@@ -627,7 +626,7 @@ class _$ConnectionErrorImpl implements _ConnectionError {
 
   @override
   String toString() {
-    return 'SelectedServiceState.connectionError()';
+    return 'RequestListState.connectionError()';
   }
 
   @override
@@ -720,6 +719,6 @@ class _$ConnectionErrorImpl implements _ConnectionError {
   }
 }
 
-abstract class _ConnectionError implements SelectedServiceState {
+abstract class _ConnectionError implements ReliefRequestListState {
   const factory _ConnectionError() = _$ConnectionErrorImpl;
 }

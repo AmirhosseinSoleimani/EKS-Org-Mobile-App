@@ -1,20 +1,30 @@
 import 'package:bloc/bloc.dart';
 import 'package:eks_sana_plus_org/src/common/constants/request_status.dart';
 import 'package:eks_sana_plus_org/src/common/constants/time_period.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_home_service_request_list_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_relief_request_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
 import '../../../domain/entities/abstract/base_request_entity.dart';
 
-part 'selected_service_cubit.freezed.dart';
-part 'selected_service_state.dart';
+part 'request_list_cubit.freezed.dart';
+
+part 'home_service_request_list_state.dart';
 
 @injectable
-class SelectedServiceCubit extends Cubit<SelectedServiceState> {
-  SelectedServiceCubit() : super(const SelectedServiceState.idle());
+class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
+  HomeServiceRequestListCubit(this._getHomeServiceRequestListUseCase)
+      : super(const HomeServiceRequestListState.idle());
+
+  final GetHomeServiceRequestListUseCase _getHomeServiceRequestListUseCase;
+
+  final List<BaseRequestEntity> requestList = <BaseRequestEntity>[];
 
   final ValueNotifier<RequestStatus?> _selectedStatusNotifier =
       ValueNotifier(null);
@@ -46,13 +56,41 @@ class SelectedServiceCubit extends Cubit<SelectedServiceState> {
     selectedTimePeriodNotifier.value = timePeriod;
   }
 
+  void init() async {
+    _safeEmit(const HomeServiceRequestListState.loading());
 
-  void init() async{
-    emit(const SelectedServiceState.loading());
-    await Future.delayed(const Duration(seconds: 1));
-    emit(const SelectedServiceState.loaded());
+    /*final param = ReportParamEntity(
+      serviceType: selectedServiceType,
+      fromDateTime: selectedFromDate,
+      toDateTime: selectedToDate,
+    );*/
+
+    final result = await _getHomeServiceRequestListUseCase();
+
+    result.whenOrNull(
+      success: (data, failures, resultCode) async {
+        requestList.clear();
+        requestList.addAll(data);
+        _safeEmit(const HomeServiceRequestListState.loaded());
+      },
+      failure: (error, msg) {
+        _safeEmit(
+          HomeServiceRequestListState.error(
+            message: BottomSheetMessageModel(
+              message: msg ?? 'خطای غیر منتظره',
+              title: '',
+            ),
+          ),
+        );
+      },
+      connectionError: () =>
+          _safeEmit(const HomeServiceRequestListState.connectionError()),
+    );
   }
 
+  void _safeEmit(HomeServiceRequestListState state) {
+    if (!isClosed) emit(state);
+  }
 
   @override
   Future<void> close() {
@@ -68,7 +106,7 @@ class SelectedServiceCubit extends Cubit<SelectedServiceState> {
 
   List<BaseRequestEntity> buildFakeRequests() {
     return const[
-      ReliefRequestEntity(
+      HomeServiceRequestEntity(
         id: 1,
         trackCode: 12345,
         firstName: "علی",
@@ -85,54 +123,12 @@ class SelectedServiceCubit extends Cubit<SelectedServiceState> {
         requestStatusTitle: "در انتظار تخصیص",
         requestDateJalali: "1405/01/17",
         requestTime: "15:30",
-        defectId: 1,
-        defectTitle: "حمل خودرو",
-        isUrgentRequest: false,
-        emdadServiceTitle: "حمل خودرو",
-      ),
-      ReliefRequestEntity(
-        id: 2,
-        trackCode: 54321,
-        firstName: "مهدی",
-        lastName: "محمدی",
-        latitude: 35.7,
-        longitude: 51.4,
-        aidAddress: "تهران، پونک",
-        cityName: "تهران",
-        provinceName: "تهران",
-        carName: "کوئیک S",
-        carProductionYear: 1404,
-        licensePlate: "34 ب 777 11",
-        requestStatus: 2,
-        requestStatusTitle: "در حال انجام",
-        requestDateJalali: "1405/01/18",
-        requestTime: "12:00",
-        defectId: 2,
-        defectTitle: "تعویض باتری",
-        isUrgentRequest: true,
-        emdadServiceTitle: "تعویض باتری",
-      ),
-      ReliefRequestEntity(
-        id: 3,
-        trackCode: 99999,
-        firstName: "حسین",
-        lastName: "کاظمی",
-        latitude: 35.7,
-        longitude: 51.4,
-        aidAddress: "تهران، صادقیه",
-        cityName: "تهران",
-        provinceName: "تهران",
-        carName: "تیبا",
-        carProductionYear: 1401,
-        licensePlate: "55 ج 222 88",
-        requestStatus: 3,
-        requestStatusTitle: "اتمام",
-        requestDateJalali: "1405/01/19",
-        requestTime: "10:00",
-        defectId: 3,
-        defectTitle: "حمل خودرو",
-        isUrgentRequest: false,
-        emdadServiceTitle: "حمل خودرو",
+        agencyCode: '12',
+        agencyName: 'test',
+        bookedDateTimeJalali:"1405/01/17",
+        emdadgarName: 'milad',
+        emdadServiceCategoryTitle: 'test cat',
+        requestDay: '1',
       ),
     ];
   }

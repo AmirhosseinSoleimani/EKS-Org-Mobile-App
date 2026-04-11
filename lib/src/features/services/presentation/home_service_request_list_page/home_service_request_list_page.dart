@@ -1,5 +1,5 @@
-import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_list_viewer.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/main_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
@@ -9,36 +9,32 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'cubit/selected_service_cubit.dart';
-import 'widgets/request_list_viewer.dart';
+import 'cubit/home_service_request_list_cubit.dart';
 import 'widgets/services_filters_box.dart';
 
-class SelectedServicesPage extends StatelessWidget {
-  static const path = "/selected-services";
-  static const name = "selected-services";
+class HomeServiceRequestListPage extends StatelessWidget {
+  static const path = "/home-service-page";
+  static const name = "home-service-page";
 
-  final ServiceType serviceType;
-
-  const SelectedServicesPage({super.key, required this.serviceType});
+  const HomeServiceRequestListPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<SelectedServiceCubit>()..init(),
-      child: _SelectedServicesView(serviceType: serviceType),
+      create: (_) => getIt<HomeServiceRequestListCubit>()..init(),
+      child: const _SelectedServicesView(),
     );
   }
 }
 
 class _SelectedServicesView extends StatelessWidget {
-  final ServiceType serviceType;
-
-  const _SelectedServicesView({required this.serviceType});
+  const _SelectedServicesView();
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<SelectedServiceCubit>();
-    return BlocListener<SelectedServiceCubit, SelectedServiceState>(
+    final cubit = context.read<HomeServiceRequestListCubit>();
+    return BlocListener<HomeServiceRequestListCubit,
+        HomeServiceRequestListState>(
       listener: (context, state) {
         state.whenOrNull(
           error: (message) {
@@ -62,7 +58,7 @@ class _SelectedServicesView extends StatelessWidget {
         );
       },
       child: Scaffold(
-        appBar: MainAppBar(title: "درخواست های ${serviceType.label}"),
+        appBar: const MainAppBar(title: 'درخواست های خدمت در محل'),
         body: ScrollConfiguration(
           behavior: ScrollConfiguration.of(context).copyWith(
             dragDevices: {
@@ -75,7 +71,8 @@ class _SelectedServicesView extends StatelessWidget {
             child: Column(
               children: [
                 ServicesFiltersBox(cubit: cubit),
-                BlocBuilder<SelectedServiceCubit, SelectedServiceState>(
+                BlocBuilder<HomeServiceRequestListCubit,
+                    HomeServiceRequestListState>(
                   builder: (context, state) {
                     return state.maybeWhen(
                         idle: () => const SizedBox.shrink(),
@@ -94,7 +91,7 @@ class _SelectedServicesView extends StatelessWidget {
                                       text: '${cubit.requestCount} درخواست',
                                     )),
                                 RequestListViewer(
-                                  items: cubit.buildFakeRequests(),
+                                  items: cubit.requestList,
                                 ),
                               ],
                             ),

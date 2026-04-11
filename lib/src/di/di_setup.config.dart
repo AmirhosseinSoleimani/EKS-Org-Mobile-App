@@ -75,12 +75,16 @@ import '../features/services/domain/repository/request_repository.dart'
     as _i603;
 import '../features/services/domain/repository/request_repository_share_data.dart'
     as _i838;
-import '../features/services/domain/usecases/get_all_request_list_use_case.dart'
-    as _i559;
+import '../features/services/domain/usecases/get_home_service_request_list_use_case.dart'
+    as _i809;
+import '../features/services/domain/usecases/get_relief_request_list_use_case.dart'
+    as _i192;
+import '../features/services/presentation/home_service_request_list_page/cubit/home_service_request_list_cubit.dart'
+    as _i1013;
+import '../features/services/presentation/relief_request_list_page/cubit/relief_request_list_cubit.dart'
+    as _i1048;
 import '../features/services/presentation/request_detail/cubit/request_detail_cubit.dart'
     as _i802;
-import '../features/services/presentation/selected_service_page/cubit/selected_service_cubit.dart'
-    as _i851;
 import '../routes/startup_guard.dart' as _i238;
 import '../services/local_service/session_local_storage_service/data/data_source/secure_session_storage_mobile_impl.dart'
     as _i577;
@@ -187,7 +191,6 @@ _i174.GetIt $initGetIt(
   gh.factory<_i336.BottomNavigationBarCubit>(
       () => _i336.BottomNavigationBarCubit());
   gh.factory<_i190.ThemeCubit>(() => _i190.ThemeCubit());
-  gh.factory<_i851.SelectedServiceCubit>(() => _i851.SelectedServiceCubit());
   gh.factory<_i802.RequestDetailCubit>(() => _i802.RequestDetailCubit());
   gh.singleton<_i882.PanelController>(
       () => slidingPanelControllerModule.panelController);
@@ -326,8 +329,15 @@ _i174.GetIt $initGetIt(
             gh<_i74.UserRepository>(),
             gh<_i422.FetchCarSelectedUseCase>(),
           ));
-  gh.lazySingleton<_i559.GetReliefRequestListUseCase>(
-      () => _i559.GetReliefRequestListUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i192.GetReliefRequestListUseCase>(
+      () => _i192.GetReliefRequestListUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i809.GetHomeServiceRequestListUseCase>(() =>
+      _i809.GetHomeServiceRequestListUseCase(gh<_i603.RequestRepository>()));
+  gh.factory<_i1048.ReliefRequestListCubit>(() =>
+      _i1048.ReliefRequestListCubit(gh<_i192.GetReliefRequestListUseCase>()));
+  gh.factory<_i1013.HomeServiceRequestListCubit>(() =>
+      _i1013.HomeServiceRequestListCubit(
+          gh<_i809.GetHomeServiceRequestListUseCase>()));
   return getIt;
 }
 

@@ -1,14 +1,15 @@
-import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
-import 'package:eks_sana_plus_org/src/features/authentication/presentation/login/login_page.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/request_detail_page.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/selected_service_page/selected_service_page.dart';
-import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
+import 'package:eks_sana_plus_org/src/features/authentication/presentation/login/login_page.dart';
 import 'package:eks_sana_plus_org/src/features/bottom_navigation_bar/presentation/pages/bottom_nav_page.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/presentation/dashboard_page.dart';
 import 'package:eks_sana_plus_org/src/features/indicator_report/presentation/indicator_report_page/indicator_report_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/home_service_request_list_page/home_service_request_list_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/relief_request_list_page/request_list_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/request_detail_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/services_page/services_page.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
 import 'startup_guard.dart';
 
 final RouteObserver<ModalRoute<void>> routeObserver =
@@ -30,7 +31,7 @@ class Routes {
 
     return GoRouter(
       navigatorKey: parentNavigatorKey,
-      initialLocation: RequestDetailPage.path,
+      initialLocation: LoginPage.path,
       refreshListenable: startupGuard,
       observers: [
         routeObserver
@@ -80,12 +81,18 @@ class Routes {
                       getPage(child: const ServicesPage(), state: state),
                   routes: [
                     GoRoute(
-                      path: SelectedServicesPage.path,
-                      name: SelectedServicesPage.name,
+                      path: ReliefRequestListPage.path,
+                      name: ReliefRequestListPage.name,
                       pageBuilder: (context, state) => getPage(
-                        child: SelectedServicesPage(
-                          serviceType: state.extra as ServiceType,
-                        ),
+                        child: const ReliefRequestListPage(),
+                        state: state,
+                      ),
+                    ),
+                    GoRoute(
+                      path: HomeServiceRequestListPage.path,
+                      name: HomeServiceRequestListPage.name,
+                      pageBuilder: (context, state) => getPage(
+                        child: const HomeServiceRequestListPage(),
                         state: state,
                       ),
                     ),

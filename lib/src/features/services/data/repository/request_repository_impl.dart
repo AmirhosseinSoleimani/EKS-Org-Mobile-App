@@ -25,7 +25,7 @@ class RequestRepositoryImpl extends RequestRepository {
   }
 
   @override
-  Future<ApiResult<List<HomeServiceRequestEntity>>> fetchHomeServiceRequestList() async {
+  Future<ApiResult<List<HomeServiceRequestEntity>>> getHomeServiceRequestList() async {
     try {
       final result = await _dataSource.getHomeServiceRequestList();
       return result.toApiResult();

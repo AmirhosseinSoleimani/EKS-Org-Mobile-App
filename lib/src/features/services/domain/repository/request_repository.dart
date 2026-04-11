@@ -5,5 +5,5 @@ import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_
 abstract class RequestRepository {
   Future<ApiResult<List<ReliefRequestEntity>>> getReliefRequestList();
 
-  Future<ApiResult<List<HomeServiceRequestEntity>>> fetchHomeServiceRequestList();
+  Future<ApiResult<List<HomeServiceRequestEntity>>> getHomeServiceRequestList();
 }
