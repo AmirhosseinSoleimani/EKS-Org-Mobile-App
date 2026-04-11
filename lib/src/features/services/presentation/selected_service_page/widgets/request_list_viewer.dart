@@ -14,6 +14,7 @@ class RequestListViewer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListView.separated(
+      physics: const NeverScrollableScrollPhysics(),
       shrinkWrap: true,
       padding: const EdgeInsets.all(16),
       itemCount: items.length,

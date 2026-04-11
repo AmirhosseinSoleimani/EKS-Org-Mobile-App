@@ -36,6 +36,8 @@ class SelectedServiceCubit extends Cubit<SelectedServiceState> {
   final cityController = TextEditingController();
   final provinceController = TextEditingController();
 
+  get requestCount => 200;
+
   void setSelectedStatus(RequestStatus status) {
     _selectedStatusNotifier.value = status;
   }
@@ -47,7 +49,7 @@ class SelectedServiceCubit extends Cubit<SelectedServiceState> {
 
   void init() async{
     emit(const SelectedServiceState.loading());
-    await Future.delayed(Duration(seconds: 2));
+    await Future.delayed(Duration(seconds: 1));
     emit(const SelectedServiceState.loaded());
   }
 

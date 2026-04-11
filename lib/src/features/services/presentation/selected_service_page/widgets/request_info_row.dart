@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 
 class RequestInfoRow extends StatelessWidget {
@@ -20,11 +21,9 @@ class RequestInfoRow extends StatelessWidget {
           size: 20,
           color: Colors.grey,
         ),
-
         const SizedBox(width: 8),
-
         Expanded(
-          child: Text(text),
+          child: BodyMediumText(text: text),
         )
       ],
     );

@@ -43,25 +43,23 @@ class RequestCard extends StatelessWidget {
             serviceColor: serviceColor,
             serviceIcon: serviceIcon,
           ),
-
-          const SizedBox(height: 12),
-
+          const SizedBox(height: 16),
           RequestInfoRow(
-            icon: Icons.person_outline,
+            icon: Icons.person,
             text: "${request.firstName} ${request.lastName}",
           ),
 
           const SizedBox(height: 8),
 
           RequestInfoRow(
-            icon: Icons.location_on_outlined,
+            icon: Icons.location_on,
             text: request.aidAddress,
           ),
 
           const SizedBox(height: 8),
 
           RequestInfoRow(
-            icon: Icons.check_circle_outline,
+            icon: Icons.check_circle,
             text: "${request.carName} - ${request.licensePlate}",
           ),
 
@@ -73,10 +71,13 @@ class RequestCard extends StatelessWidget {
           ),
 
           const SizedBox(height: 12),
-
-          const Divider(height: 1),
-
+          Divider(
+            height: 1,
+            color: Theme.of(context).colorScheme.tertiaryFixed,
+          ),
+          const SizedBox(height: 12),
           RequestDetailsButton(
+
             onPressed: () {},
           )
         ],

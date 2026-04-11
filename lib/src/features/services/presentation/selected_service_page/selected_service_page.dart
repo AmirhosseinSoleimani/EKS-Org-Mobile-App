@@ -3,8 +3,8 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/main_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -75,7 +75,12 @@ class _SelectedServicesView extends StatelessWidget {
             child: Column(
               children: [
                 ServicesFiltersBox(cubit: cubit),
-                const SizedBox(height: AppSize.s24),
+                const SizedBox(height: AppSize.s16),
+                 Align(
+                    alignment: AlignmentDirectional.topStart,
+                    child: BodyMediumText(
+                      text: '${cubit.requestCount} درخواست',
+                    )),
                 BlocBuilder<SelectedServiceCubit, SelectedServiceState>(
                   builder: (context, state) {
                     return state.maybeWhen(

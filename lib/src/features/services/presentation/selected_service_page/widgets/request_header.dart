@@ -1,4 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/material.dart';
 
 class RequestHeader extends StatelessWidget {
@@ -36,12 +38,12 @@ class RequestHeader extends StatelessWidget {
             children: [
               Row(
                 children: [
-                  Text("${request.trackCode}"),
+                  BodyMediumText(text: "${request.trackCode}"),
                   const Spacer(),
-                  Text(request.requestDateJalali),
+                  BodyMediumText(text:  request.requestDateJalali),
                 ],
               ),
-              const SizedBox(height: 6),
+              const SizedBox(height: 8),
               Container(
                 padding:
                     const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
@@ -49,7 +51,7 @@ class RequestHeader extends StatelessWidget {
                   border: Border.all(color: Colors.grey.shade300),
                   borderRadius: BorderRadius.circular(50),
                 ),
-                child: Text(request.requestStatusTitle),
+                child: BodySmallText(text: request.requestStatusTitle),
               ),
             ],
           ),
