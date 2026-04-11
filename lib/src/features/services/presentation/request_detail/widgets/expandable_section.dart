@@ -4,12 +4,14 @@ class ExpandableSection extends StatefulWidget {
   final Widget header;
   final Widget child;
   final bool isExpanded;
+  final Widget? brief;
 
   const ExpandableSection({
     super.key,
     required this.header,
     required this.child,
     this.isExpanded = false,
+    this.brief,
   });
 
   @override
@@ -48,8 +50,12 @@ class _ExpandableSectionState extends State<ExpandableSection> {
             child: Padding(
               padding: const EdgeInsets.all(16),
               child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Expanded(child: widget.header),
+                  if (!isExpanded && widget.brief != null) ...[
+                    Expanded(child: widget.brief!),
+                  ],
                   Icon(
                     isExpanded
                         ? Icons.keyboard_arrow_up

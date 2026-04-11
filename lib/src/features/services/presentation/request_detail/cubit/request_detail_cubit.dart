@@ -1,7 +1,6 @@
 import 'package:bloc/bloc.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/enums/request_detail_section.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -36,9 +35,8 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
     emdadServiceTitle: "حمل خودرو",
   );
 
-  final Set<RequestDetailSection> openedSections = {
-    RequestDetailSection.mapLocation,
-  };
+  bool get isRelief => selectedRequest is ReliefRequestEntity;
+
 
   Future<void> init() async {
     _safeEmit(const RequestDetailState.loaded());
@@ -47,9 +45,5 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
 
   void _safeEmit(RequestDetailState state) {
     if (!isClosed) emit(state);
-  }
-
-  bool isExpanded(RequestDetailSection section) {
-    return openedSections.contains(section);
   }
 }

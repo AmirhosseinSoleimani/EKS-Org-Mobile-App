@@ -1,7 +1,6 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/cubit/request_detail_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/enums/request_detail_section.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_row.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/main_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
@@ -12,6 +11,8 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'widgets/agent_info_detail_section.dart';
+import 'widgets/customer_info_detail_section.dart';
 import 'widgets/expandable_section.dart';
 import 'widgets/status_label.dart';
 
@@ -76,60 +77,45 @@ class RequestDetailPage extends StatelessWidget {
                             loaded: () => Column(
                                   children: [
                                     ExpandableSection(
-                                      isExpanded: cubit.isExpanded(
-                                          RequestDetailSection.header),
+                                      isExpanded: false,
                                       header: Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
                                         children: [
-                                          BodySmallText(text:
-                                            "${cubit.selectedRequest.trackCode} | ${cubit.selectedRequest.requestDateJalali} - ${cubit.selectedRequest.requestTime}",
+                                          BodySmallText(
+                                            text:
+                                                "${cubit.selectedRequest.trackCode} | ${cubit.selectedRequest.requestDateJalali} - ${cubit.selectedRequest.requestTime}",
                                           ),
                                           const SizedBox(height: 6),
-                                          StatusLabel(text:cubit.selectedRequest
-                                              .requestStatusTitle,
-                                          color: Colors.greenAccent,),
-                                        ],
-                                      ),
-                                      child: const SizedBox(),
-                                    ),
-                                    ExpandableSection(
-                                      isExpanded: cubit.isExpanded(
-                                        RequestDetailSection.customerInfo,
-                                      ),
-                                      header: const Text("اطلاعات مشتری"),
-                                      child: Column(
-                                        children: [
-                                          KeyValueRow(
-                                            label: "نام",
-                                            value: cubit.selectedRequest.firstName ?? "-",
-                                          ),
-                                          KeyValueRow(
-                                            label: "نام خانوادگی",
-                                            value: cubit.selectedRequest.lastName ?? "-",
-                                          ),
-                                          KeyValueRow(
-                                            label: "کد ملی",
-                                            value: cubit.selectedRequest.nationalNumber ?? "-",
-                                          ),
-                                          KeyValueRow(
-                                            label: "شماره موبایل",
-                                            value: cubit.selectedRequest.customerMobileNumber ?? "-",
-                                          ),
-                                          KeyValueRow(
-                                            label: "نوع شخص",
-                                            value: cubit.selectedRequest.personTypeTitle ?? "-",
-                                          ),
-                                          KeyValueRow(
-                                            label: "جنسیت",
-                                            value: cubit.selectedRequest.genderTitle ?? "-",
+                                          StatusLabel(
+                                            text: cubit.selectedRequest
+                                                .requestStatusTitle,
+                                            color: Colors.greenAccent,
                                           ),
                                         ],
                                       ),
+                                      child: RequestDetailSection(cubit: cubit),
                                     ),
                                     ExpandableSection(
-                                      isExpanded: cubit.isExpanded(
-                                          RequestDetailSection.mapLocation),
+                                      isExpanded: false,
+                                      brief: BodySmallText(
+                                        text:
+                                            "${cubit.selectedRequest.firstName} ${cubit.selectedRequest.lastName} | ${cubit.selectedRequest.customerMobileNumber ?? "-"}",
+                                      ),
+                                      header: const BodyMediumText(
+                                          text: "اطلاعات مشتری"),
+                                      child: CustomerInfoDetailSection(
+                                          cubit: cubit),
+                                    ),
+                                    ExpandableSection(
+                                      isExpanded: false,
+                                      header: const BodyMediumText(
+                                          text: "اطلاعات امداد رسان"),
+                                      child:
+                                          AgentInfoDetailSection(cubit: cubit),
+                                    ),
+                                    const ExpandableSection(
+                                      isExpanded: true,
                                       header:
                                           const Text("موقعیت درخواست روی نقشه"),
                                       child: const SizedBox(
