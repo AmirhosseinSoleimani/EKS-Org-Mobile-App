@@ -49,7 +49,7 @@ class SelectedServiceCubit extends Cubit<SelectedServiceState> {
 
   void init() async{
     emit(const SelectedServiceState.loading());
-    await Future.delayed(Duration(seconds: 1));
+    await Future.delayed(const Duration(seconds: 1));
     emit(const SelectedServiceState.loaded());
   }
 

@@ -13,7 +13,7 @@ abstract class RequestService {
   @factoryMethod
   factory RequestService(Dio dio) = _RequestService;
 
-  @POST('/api/AidServiceRequest/GetByFilterJson')
+  @POST('/api/AidServiceRequestOrg/GetByFilterJson')
   Future<BaseListResponse<ReliefRequestModel>> getReliefRequestList(@Body() Map<String, dynamic> body);
 
   @POST('/api/HomeServiceRequest/GetByFilterJson')

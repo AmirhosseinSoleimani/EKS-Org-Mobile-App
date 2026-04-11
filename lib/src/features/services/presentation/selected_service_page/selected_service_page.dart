@@ -75,12 +75,6 @@ class _SelectedServicesView extends StatelessWidget {
             child: Column(
               children: [
                 ServicesFiltersBox(cubit: cubit),
-                const SizedBox(height: AppSize.s16),
-                 Align(
-                    alignment: AlignmentDirectional.topStart,
-                    child: BodyMediumText(
-                      text: '${cubit.requestCount} درخواست',
-                    )),
                 BlocBuilder<SelectedServiceCubit, SelectedServiceState>(
                   builder: (context, state) {
                     return state.maybeWhen(
@@ -91,8 +85,18 @@ class _SelectedServicesView extends StatelessWidget {
                                 child: CircularProgressIndicator(),
                               ),
                             ),
-                        loaded: () =>  RequestListViewer(
-                              items: cubit.buildFakeRequests(),
+                        loaded: () => Column(
+                              children: [
+                                const SizedBox(height: AppSize.s16),
+                                Align(
+                                    alignment: AlignmentDirectional.topStart,
+                                    child: BodyMediumText(
+                                      text: '${cubit.requestCount} درخواست',
+                                    )),
+                                RequestListViewer(
+                                  items: cubit.buildFakeRequests(),
+                                ),
+                              ],
                             ),
                         orElse: SizedBox.shrink);
                   },

@@ -10,6 +10,17 @@ class ReliefRequestEntity extends BaseRequestEntity {
 
   final String emdadServiceTitle;
 
+  final String? hamlReasonTitle;
+  final String? wheelQuestionTitle;
+
+  final String? emdadgarAssignDistanceTitle;
+  final String? emdadgarAssignDurationTitle;
+
+  final String? assignDate;
+  final String? assignTime;
+
+  final String? dispatcher;
+
   const ReliefRequestEntity({
     required super.id,
     required super.trackCode,
@@ -27,10 +38,23 @@ class ReliefRequestEntity extends BaseRequestEntity {
     required super.requestStatusTitle,
     required super.requestDateJalali,
     required super.requestTime,
+    super.customerMobileNumber,
+    super.description,
+    super.carColorTitle,
+    super.carEngineNumber,
+    super.genderTitle,
+    super.personTypeTitle,
     required this.defectId,
     required this.defectTitle,
     required this.isUrgentRequest,
     required this.emdadServiceTitle,
+    this.hamlReasonTitle,
+    this.wheelQuestionTitle,
+    this.emdadgarAssignDistanceTitle,
+    this.emdadgarAssignDurationTitle,
+    this.assignDate,
+    this.assignTime,
+    this.dispatcher,
   });
 
   ReliefRequestEntity copyWith({
@@ -82,6 +106,12 @@ class ReliefRequestEntity extends BaseRequestEntity {
       defectTitle: defectTitle,
       isUrgentRequest: isUrgentRequest,
       emdadServiceTitle: emdadServiceTitle,
+      customerMobileNumber: customerMobileNumber,
+      description: description,
+      carColorTitle: carColorTitle,
+      carEngineNumber: carEngineNumber,
+      genderTitle: genderTitle,
+      personTypeTitle: personTypeTitle,
     );
   }
 }

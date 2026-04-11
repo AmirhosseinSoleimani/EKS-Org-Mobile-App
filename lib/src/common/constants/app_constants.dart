@@ -24,7 +24,7 @@ class AppConstants {
   static const String baseSocketUrl = "ws://emdadapi.emdadsaipa.ir/api/Notification/Connect/";
   static const String appImagesUrl = "https://emdadapi.emdadsaipa.ir/content/mobile-app-images/";
 
-  ///internal test server
+  ///amir system test server
   static const String baseApiUrl = "http://172.16.170.65:11002";
 
   // static const String baseApiUrl = "http://172.16.4.97:5120";
@@ -35,55 +35,15 @@ class AppConstants {
   ///owner(EKS) internal test server
   // static const String baseApiUrl = "http://192.168.0.68:5010";
 
-  ///**** Develop ****
-  ///dev server is unavailable
-  // static const String baseApiUrl = "https://emdadapi.behpardaz.net";
-  // static const String carImagesUrl = "https://emdadapi.behpardaz.net/content/car-images/";
-  // static const String baseSocketUrl = "ws://emdadapi.behpardaz.net/api/Notification/Connect/";
-  // static const String appImagesUrl = "https://emdadapi.behpardaz.net/content/mobile-app-images/";
 
-  // static const String baseApiUrl = "http://172.16.170.56:15253";
-  // static const String baseApiUrl = "http://172.16.170.56:5253";
-  // static const String baseApiUrl = "http://172.16.170.51:5253";
-  // static const String baseApiUrl = "http://172.16.170.49:5253";
-  ///erfan
-  // static const String baseApiUrl = "http://172.16.170.53:5253";
 
-  ///ali
-   //static const String baseApiUrl = "http://172.16.170.96:5253";
 
   ///karimi
   //static const String baseApiUrl = "http://172.16.170.40:5253";
-  // static const String baseApiUrl = "http://172.16.170.52:5253";
-  // static const String baseApiUrl = "http://172.16.170.93:5253";
-  // static const String carImagesUrl = "https://emdadapi.behpardaz.net/content/car-images/";
-  // static const String baseSocketUrl = "ws://emdadapi.behpardaz.net/api/Notification/Connect/";
-  // static const String appImagesUrl = "https://emdadapi.behpardaz.net/content/mobile-app-images/";
 
-  ///
-  ///
-
-  static const String fontFamily = "Iransans";
-  static const String persianNumberFontFamily = "Vazirmatn";
-  static const double defaultPadding = 16.0;
-  static const double defaultBoarderRadius = 30;
-  static const double defaultTextFieldHeight = 35;
-
-  static const String hiveBox = "emdad_khodro";
-  static const String hiveCarDataDocument = "careData";
-  static const String hiveUserDataDocument = "userData";
-  static const String hiveDefectsDataDocument = "defectsData";
-  static const String hiveFeatureItemsDataDocument = "FeatureItemsData";
-  static const String hiveAgents = "agentsData";
-  static const String hiveGasStation = "gasStationData";
-  static const String hiveToken = "token";
-  static const String hiveTheme = "theme";
-  static const String hiveBiometric = "biometric";
 
   static bool isIOS = false;
 
-  // static const String mapIrApiKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjQxZmNiZjFjMzZkMWQ2ODY2Y2VmZDg5ZDcyYjkzOWNlOWU3N2FlZGFmOTZkYzVhMGU3Mjk4YTdmMTUwOTY3ZjNlOTQxYmMxYTE1ZWFiNmQwIn0.eyJhdWQiOiIxODA2MSIsImp0aSI6IjQxZmNiZjFjMzZkMWQ2ODY2Y2VmZDg5ZDcyYjkzOWNlOWU3N2FlZGFmOTZkYzVhMGU3Mjk4YTdmMTUwOTY3ZjNlOTQxYmMxYTE1ZWFiNmQwIiwiaWF0IjoxNjUzMzg3MDkxLCJuYmYiOjE2NTMzODcwOTEsImV4cCI6MTY1NTk3OTA5MSwic3ViIjoiIiwic2NvcGVzIjpbImJhc2ljIl19.jDw7w-nTooFaIOmB5ufzDhGu5ESYzD_jUDkvfHh6HunR8Jk3dORUXoHwFw54vCZW4OS9Vrnyv5M1Qd-VJZ9KgMboM_vx5R3bzOCnsCr9IKZ7k3J_EXZzQgYdf1m9G0TNijr5Y9mIWKZPVyt-FODyeg0BzjS-YaxYKLioy0LzUUzDG4OgA9bn-MvlbmZA2zTwwqCpjF89DwUuCkghtehrPtW_VSn_sJ4y6dhcngDiW6hJmD8HGFmOGH1WDp31aZxukkp3QYEl0fihhh23vgU7ll7Oiz4pTztLoErOd_6QL7xxmGjaTcsh8L8os3lz-h34GqOlREozkyTVp6V4pgcMlA";
-  // static const String mapIrApiKey = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjQxMGJlNDBkNGY1YjJhZDJjMTFlYmUxMWQzNmNmYjc3YjNhZDNiN2QzZDU1NjVhOTczNjUwZDZjYTJiYTE3MzNmZjVkYmFlODgzYWEyNDkzIn0.eyJhdWQiOiIyMjY5MSIsImp0aSI6IjQxMGJlNDBkNGY1YjJhZDJjMTFlYmUxMWQzNmNmYjc3YjNhZDNiN2QzZDU1NjVhOTczNjUwZDZjYTJiYTE3MzNmZjVkYmFlODgzYWEyNDkzIiwiaWF0IjoxNjg2NTU5MzcxLCJuYmYiOjE2ODY1NTkzNzEsImV4cCI6MTY4OTE1MTM3MSwic3ViIjoiIiwic2NvcGVzIjpbImJhc2ljIl19.cmHPNGDJqCY2IhAIoU5sBv4LseNlMRmh7lVIceNnkARZoAfb8IUFf2t3Xca1FWp8rtWiVXcdQPdoYMAZ-hm0nxIp4emqGgicoAA7p20Dc_P13GCONeZdWFYnqEefeA1F93HNySU37pfcVZGEd21q8nLqqDCgmzXIHu-rZD975eUoGTPKFP4nOGlWxVNqmaac-yD7WIQJvrO9z7e5zUg-Z4NUVjtEljFKc1oh_pnom4uloLdQbu8wrNgRA9vqGEb3N4Lr3sHUjKUJTv_TJWABIm8_5-maTfT6sUKj8Elz4MZX-MF_aTDkac0u7r0xbo6OBx07LNnn_pC5ZobFmrJzFw";
   static String mapIrApiKey = mapIrKeys[Random().nextInt(mapIrKeys.length)];
   static String mapIrUrlTemplate =
       'https://map.ir/shiveh/xyz/1.0.0/Shiveh:Shiveh@EPSG:3857@png/{z}/{x}/{y}.png?x-api-key=$mapIrApiKey';
@@ -93,11 +53,7 @@ class AppConstants {
   static const String parsiMapApiToken =
       'p133a42ed78f324f7787c67c45de3d44a363398b54';
 
-  ///keys below generated for emdadgar app, temporary placed here to use in emdadkhah too.
-  ///try add more keys for emdadkhah app.
-  ///in future map SDK or keys using may change
-  ///set a key just for search and address API call
-  ///
+
 
   // static const String mapIrKeyForSearchAddress = "eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiIsImp0aSI6IjQxZmNiZjFjMzZkMWQ2ODY2Y2VmZDg5ZDcyYjkzOWNlOWU3N2FlZGFmOTZkYzVhMGU3Mjk4YTdmMTUwOTY3ZjNlOTQxYmMxYTE1ZWFiNmQwIn0.eyJhdWQiOiIxODA2MSIsImp0aSI6IjQxZmNiZjFjMzZkMWQ2ODY2Y2VmZDg5ZDcyYjkzOWNlOWU3N2FlZGFmOTZkYzVhMGU3Mjk4YTdmMTUwOTY3ZjNlOTQxYmMxYTE1ZWFiNmQwIiwiaWF0IjoxNjUzMzg3MDkxLCJuYmYiOjE2NTMzODcwOTEsImV4cCI6MTY1NTk3OTA5MSwic3ViIjoiIiwic2NvcGVzIjpbImJhc2ljIl19.jDw7w-nTooFaIOmB5ufzDhGu5ESYzD_jUDkvfHh6HunR8Jk3dORUXoHwFw54vCZW4OS9Vrnyv5M1Qd-VJZ9KgMboM_vx5R3bzOCnsCr9IKZ7k3J_EXZzQgYdf1m9G0TNijr5Y9mIWKZPVyt-FODyeg0BzjS-YaxYKLioy0LzUUzDG4OgA9bn-MvlbmZA2zTwwqCpjF89DwUuCkghtehrPtW_VSn_sJ4y6dhcngDiW6hJmD8HGFmOGH1WDp31aZxukkp3QYEl0fihhh23vgU7ll7Oiz4pTztLoErOd_6QL7xxmGjaTcsh8L8os3lz-h34GqOlREozkyTVp6V4pgcMlA";
   static const String mapIrKeyForSearchAddress1 =
@@ -129,20 +85,11 @@ class AppConstants {
   static const String telegramUrl = "https://t.me/emdadsaipa";
   static const String aparatUrl = "https://www.aparat.com/emdadsaipa";
 
-  static const String googlePlayUrl =
-      "https://play.google.com/store/apps/details?id=net.behpardaz.eks";
+
 
   ///privacy policy url
   static const String privacyPolicyUrl = 'https://emdad.behpardaz.net/privacypolicy.html';
 
-  /// current version app
-  static String currentAppVersion = 'Not Specified';
-  static String appUrl = '';
-
-  static String pwaLink = "";
-  static bool navigateToSendRequst = false;
-  static String mobileNumberInLink = "";
-  static bool isAndroidPwa = false;
 
   ///initial constant values
   static const double defaultLatitude = 35.699719;

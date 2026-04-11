@@ -22,6 +22,12 @@ class ReliefRequestModel extends ReliefRequestEntity {
     required super.defectTitle,
     required super.isUrgentRequest,
     required super.emdadServiceTitle,
+    super.customerMobileNumber,
+    super.description,
+    super.carColorTitle,
+    super.carEngineNumber,
+    super.genderTitle,
+    super.personTypeTitle,
   });
 
   factory ReliefRequestModel.fromJson(Map<String, dynamic> json) {

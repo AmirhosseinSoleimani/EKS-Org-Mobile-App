@@ -27,6 +27,13 @@ abstract class BaseRequestEntity {
   final String requestDateJalali;
   final String requestTime;
 
+  final String? customerMobileNumber;
+  final String? description;
+  final String? carColorTitle;
+  final String? carEngineNumber;
+  final String? genderTitle;
+  final String? personTypeTitle;
+
   const BaseRequestEntity({
     required this.id,
     required this.trackCode,
@@ -46,5 +53,11 @@ abstract class BaseRequestEntity {
     required this.requestTime,
     this.chassisNumber,
     this.nationalNumber,
+    this.customerMobileNumber,
+    this.description,
+    this.carColorTitle,
+    this.carEngineNumber,
+    this.genderTitle,
+    this.personTypeTitle,
   });
 }

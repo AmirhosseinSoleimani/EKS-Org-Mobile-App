@@ -12,6 +12,12 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
   final String agencyName;
   final String agencyCode;
 
+  final String? requestDateTime;
+  final String? requestDayTime;
+  final bool? vip;
+  final String? vipConditionTitle;
+  final String? emdadProductTitle;
+
   const HomeServiceRequestEntity({
     required super.id,
     required super.trackCode,
@@ -29,12 +35,23 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
     required super.requestStatusTitle,
     required super.requestDateJalali,
     required super.requestTime,
+    super.customerMobileNumber,
+    super.description,
+    super.carColorTitle,
+    super.carEngineNumber,
+    super.genderTitle,
+    super.personTypeTitle,
     required this.requestDay,
     required this.bookedDateTimeJalali,
     required this.emdadServiceCategoryTitle,
     required this.emdadgarName,
     required this.agencyName,
     required this.agencyCode,
+    this.requestDateTime,
+    this.requestDayTime,
+    this.vip,
+    this.vipConditionTitle,
+    this.emdadProductTitle,
   });
 
   HomeServiceRequestEntity copyWith({

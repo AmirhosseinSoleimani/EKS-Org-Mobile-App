@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/authentication/presentation/login/login_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/request_detail_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/selected_service_page/selected_service_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -29,7 +30,7 @@ class Routes {
 
     return GoRouter(
       navigatorKey: parentNavigatorKey,
-      initialLocation: LoginPage.path,
+      initialLocation: RequestDetailPage.path,
       refreshListenable: startupGuard,
       observers: [
         routeObserver
@@ -108,8 +109,16 @@ class Routes {
               ],
             ),
           ],
-        )
-
+        ),
+        GoRoute(
+          path: RequestDetailPage.path,
+          name: RequestDetailPage.name,
+          pageBuilder: (context, state) =>
+              getPage(
+                child: const RequestDetailPage(),
+                state: state,
+              ),
+        ),
       ],
     );
   }

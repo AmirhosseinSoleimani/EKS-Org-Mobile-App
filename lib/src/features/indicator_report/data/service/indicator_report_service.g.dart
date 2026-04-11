@@ -37,7 +37,7 @@ class _IndicatorReportService implements IndicatorReportService {
     )
             .compose(
               _dio.options,
-              '/api/IndexReport/IndexReport',
+              '/api/IndexReportOrg/IndexReport',
               queryParameters: queryParameters,
               data: _data,
             )
