@@ -14,7 +14,7 @@ class StatusLabel extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
         color: color.withAlpha(51), // ≈ 20%
         border: Border.all(color: color),
@@ -23,6 +23,7 @@ class StatusLabel extends StatelessWidget {
       child: BodySmallText(
         text: text,
         color: color,
+        fontSize: 10,
       ),
     );
   }

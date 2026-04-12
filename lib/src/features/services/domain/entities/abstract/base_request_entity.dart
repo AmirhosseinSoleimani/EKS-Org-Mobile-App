@@ -35,6 +35,8 @@ abstract class BaseRequestEntity {
   final String? genderTitle;
   final String? personTypeTitle;
   final String? dispatcher;
+  final bool isGuaranty;
+  final bool isSubscription;
 
   //em info
   final String? emFullName;
@@ -81,5 +83,7 @@ abstract class BaseRequestEntity {
     this.dispatcher,
     this.emRepresentationName,
     this.emRepresentationCode,
+    this.isGuaranty = false,
+    this.isSubscription = false,
   });
 }

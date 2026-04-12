@@ -80,22 +80,7 @@ class RequestDetailPage extends StatelessWidget {
                                   children: [
                                     ExpandableSection(
                                       isExpanded: false,
-                                      header: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          BodySmallText(
-                                            text:
-                                                "${cubit.selectedRequest.trackCode} | ${cubit.selectedRequest.requestDateJalali} - ${cubit.selectedRequest.requestTime}",
-                                          ),
-                                          const SizedBox(height: 6),
-                                          StatusLabel(
-                                            text: cubit.selectedRequest
-                                                .requestStatusTitle,
-                                            color: Colors.greenAccent,
-                                          ),
-                                        ],
-                                      ),
+                                      header: _buildStatusSection(cubit),
                                       child: RequestDetailSection(cubit: cubit),
                                     ),
                                     ExpandableSection(
@@ -132,7 +117,7 @@ class RequestDetailPage extends StatelessWidget {
                                      ExpandableSection(
                                       isExpanded: true,
                                       header:
-                                          const Text("موقعیت درخواست روی نقشه"),
+                                          const BodyMediumText(text: "موقعیت درخواست روی نقشه"),
                                       child:  RequestLocationDetailSection(
                                         latitude:
                                         cubit.selectedRequest.latitude,
@@ -165,5 +150,50 @@ class RequestDetailPage extends StatelessWidget {
             )),
       ),
     );
+  }
+
+  Column _buildStatusSection(RequestDetailCubit cubit) {
+    return Column(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        BodySmallText(
+                                          text:
+                                              "${cubit.selectedRequest.trackCode} | ${cubit.selectedRequest.requestDateJalali} - ${cubit.selectedRequest.requestTime}",
+                                        ),
+                                        const SizedBox(height: 6),
+                                        Row(
+                                          children: [
+                                            StatusLabel(
+                                              text: cubit.selectedRequest
+                                                  .requestStatusTitle,
+                                              color: Colors.purple,
+                                            ),
+                                            Space.w8,
+                                            StatusLabel(
+                                              text: cubit.selectedRequest
+                                                      .isGuaranty
+                                                  ? "گارانتی دارد"
+                                                  : "گارانتی ندارد",
+                                              color: cubit.selectedRequest
+                                                      .isGuaranty
+                                                  ? Colors.greenAccent
+                                                  : Colors.red,
+                                            ),
+                                            Space.w8,
+                                            StatusLabel(
+                                              text: cubit.selectedRequest
+                                                      .isSubscription
+                                                  ? "مشترک"
+                                                  : "غیر مشترک",
+                                              color: cubit.selectedRequest
+                                                      .isSubscription
+                                                  ? Colors.greenAccent
+                                                  : Colors.red,
+                                            )
+                                          ],
+                                        ),
+                                      ],
+                                    );
   }
 }
