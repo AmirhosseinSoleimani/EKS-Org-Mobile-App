@@ -6,6 +6,7 @@ abstract class BaseRequestEntity {
   final String lastName;
 
   final String? chassisNumber;
+  final String? kilometer;
   final String? nationalNumber;
 
   final double latitude;
@@ -33,6 +34,17 @@ abstract class BaseRequestEntity {
   final String? carEngineNumber;
   final String? genderTitle;
   final String? personTypeTitle;
+  final String? dispatcher;
+
+  //em info
+  final String? emFullName;
+  final String? emMobileNumber1;
+  final String? emVehicleTypeTitle;
+  final int? emVehicleType;
+  final String? emVehicleSubTypeTitle;
+  final int? emVehicleSubType;
+  final String? emRepresentationName;
+  final String? emRepresentationCode;
 
   const BaseRequestEntity({
     required this.id,
@@ -52,6 +64,7 @@ abstract class BaseRequestEntity {
     required this.requestDateJalali,
     required this.requestTime,
     this.chassisNumber,
+    this.kilometer,
     this.nationalNumber,
     this.customerMobileNumber,
     this.description,
@@ -59,5 +72,14 @@ abstract class BaseRequestEntity {
     this.carEngineNumber,
     this.genderTitle,
     this.personTypeTitle,
+    this.emFullName,
+    this.emMobileNumber1,
+    this.emVehicleTypeTitle,
+    this.emVehicleType,
+    this.emVehicleSubTypeTitle,
+    this.emVehicleSubType,
+    this.dispatcher,
+    this.emRepresentationName,
+    this.emRepresentationCode,
   });
 }

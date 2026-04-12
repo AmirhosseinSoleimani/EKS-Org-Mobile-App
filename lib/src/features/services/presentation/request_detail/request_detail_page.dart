@@ -12,8 +12,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'widgets/agent_info_detail_section.dart';
+import 'widgets/car_info_detail_section.dart';
 import 'widgets/customer_info_detail_section.dart';
 import 'widgets/expandable_section.dart';
+import 'widgets/request_location_detail_section.dart';
 import 'widgets/status_label.dart';
 
 class RequestDetailPage extends StatelessWidget {
@@ -111,16 +113,45 @@ class RequestDetailPage extends StatelessWidget {
                                       isExpanded: false,
                                       header: const BodyMediumText(
                                           text: "اطلاعات امداد رسان"),
-                                      child:
-                                          AgentInfoDetailSection(cubit: cubit),
+                                      child: AgentInfoDetailSection(
+                                          selectedRequest:
+                                              cubit.selectedRequest),
+                                    ),
+                                    ExpandableSection(
+                                      isExpanded: false,
+                                      header: const BodyMediumText(
+                                          text: "اطلاعات خودرو"),
+                                      child: CarInfoDetailSection(cubit: cubit),
                                     ),
                                     const ExpandableSection(
+                                      isExpanded: false,
+                                      header: const BodyMediumText(
+                                          text: "تاریخچه پیگیری"),
+                                      child: SizedBox(),
+                                    ),
+                                     ExpandableSection(
                                       isExpanded: true,
                                       header:
                                           const Text("موقعیت درخواست روی نقشه"),
-                                      child: const SizedBox(
+                                      child:  RequestLocationDetailSection(
+                                        latitude:
+                                        cubit.selectedRequest.latitude,
+                                        longitude:
+                                        cubit.selectedRequest.longitude,
+                                        city: cubit.selectedRequest.cityName,
+                                        province: cubit
+                                            .selectedRequest.provinceName,
+                                        address:
+                                        cubit.selectedRequest.aidAddress,
+                                      ),
+                                    ),
+                                    const ExpandableSection(
+                                      isExpanded: false,
+                                      header:
+                                          const Text("تاریخچه وضعیت درخواست"),
+                                      child: SizedBox(
                                         height: 200,
-                                        child: Placeholder(),
+                                        child: SizedBox(),
                                       ),
                                     ),
                                   ],

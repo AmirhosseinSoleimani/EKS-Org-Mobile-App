@@ -1,3 +1,6 @@
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/cubit/request_detail_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_row.dart';
 import 'package:flutter/material.dart';
@@ -5,10 +8,10 @@ import 'package:flutter/material.dart';
 class AgentInfoDetailSection extends StatelessWidget {
   const AgentInfoDetailSection({
     super.key,
-    required this.cubit,
+    required this.selectedRequest,
   });
 
-  final RequestDetailCubit cubit;
+  final BaseRequestEntity selectedRequest;
 
   @override
   Widget build(BuildContext context) {
@@ -16,27 +19,54 @@ class AgentInfoDetailSection extends StatelessWidget {
       children: [
         KeyValueRow(
           label: "نام",
-          value: cubit.selectedRequest.firstName ?? "-",
-        ),
-        KeyValueRow(
-          label: "نام خانوادگی",
-          value: cubit.selectedRequest.lastName ?? "-",
-        ),
-        KeyValueRow(
-          label: "کد ملی",
-          value: cubit.selectedRequest.nationalNumber ?? "-",
+          value: selectedRequest.carName ?? "-",
         ),
         KeyValueRow(
           label: "شماره موبایل",
-          value: cubit.selectedRequest.customerMobileNumber ?? "-",
+          value: selectedRequest.emMobileNumber1 ?? "-",
         ),
         KeyValueRow(
-          label: "نوع شخص",
-          value: cubit.selectedRequest.personTypeTitle ?? "-",
+          label: "نوع ناوگان",
+          value: selectedRequest.emVehicleTypeTitle ?? "-",
+        ),
+
+        KeyValueRow(
+          label: "نوع خودرو",
+          value: selectedRequest.emVehicleSubTypeTitle ?? "-",
         ),
         KeyValueRow(
-          label: "جنسیت",
-          value: cubit.selectedRequest.genderTitle ?? "-",
+          label: "مسافت طی شده",
+          value: selectedRequest.kilometer ?? "-",
+        ),
+        KeyValueRow(
+          label: "اعزام کننده",
+          value: selectedRequest.dispatcher ?? "-",
+        ),
+        KeyValueRow(
+          label: "نمایندگی (کد نمایندگی)",
+          value: '${selectedRequest.emRepresentationName} (${selectedRequest.emRepresentationCode})',
+        ),
+        if(selectedRequest is ReliefRequestEntity)...[
+          KeyValueRow(
+            label: "مسافت طی شده",
+            value: (selectedRequest as ReliefRequestEntity).emdadgarAssignDistanceTitle ?? '-',
+          ),
+          KeyValueRow(
+            label: "مسافت حمل شده خودرو",
+            value: (selectedRequest as ReliefRequestEntity).emdadgarAssignDistanceTitle ?? '-',
+          ),
+          KeyValueRow(
+            label: "ایراد ارزیابی شده",
+            value: (selectedRequest as ReliefRequestEntity).emdadServiceTitle ?? '-',
+          ),
+          KeyValueRow(
+            label: "سرویس ارائه شده",
+            value: (selectedRequest as ReliefRequestEntity).emdadServiceTitle ?? '-',
+          ),
+        ],
+        KeyValueRow(
+          label: "توضیحات امداد رسان",
+          value: selectedRequest.description ?? '-',
         ),
       ],
     );
