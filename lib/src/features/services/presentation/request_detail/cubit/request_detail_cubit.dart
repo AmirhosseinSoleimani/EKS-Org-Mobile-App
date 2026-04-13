@@ -5,15 +5,15 @@ import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
-part 'request_detail_state.dart';
 part 'request_detail_cubit.freezed.dart';
+
+part 'request_detail_state.dart';
 
 @injectable
 class RequestDetailCubit extends Cubit<RequestDetailState> {
   RequestDetailCubit() : super(const RequestDetailState.idle());
 
    BaseRequestEntity selectedRequest = ReliefRequestEntity(
-    id: 1,
     trackCode: 12345,
     firstName: "علی",
     lastName: "رضایی",

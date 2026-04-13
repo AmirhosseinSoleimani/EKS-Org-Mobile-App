@@ -22,7 +22,6 @@ class ReliefRequestEntity extends BaseRequestEntity {
   final String? dispatcher;
 
   const ReliefRequestEntity({
-    required super.id,
     required super.trackCode,
     required super.firstName,
     required super.lastName,
@@ -61,7 +60,6 @@ class ReliefRequestEntity extends BaseRequestEntity {
     bool? isUrgentRequest,
   }) {
     return ReliefRequestEntity(
-      id: id,
       trackCode: trackCode,
       firstName: firstName,
       lastName: lastName,
@@ -86,7 +84,6 @@ class ReliefRequestEntity extends BaseRequestEntity {
 
   ReliefRequestModel toModel() {
     return ReliefRequestModel(
-      id: id,
       trackCode: trackCode,
       firstName: firstName,
       lastName: lastName,

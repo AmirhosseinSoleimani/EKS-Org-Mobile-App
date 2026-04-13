@@ -107,7 +107,6 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
   List<BaseRequestEntity> buildFakeRequests() {
     return const[
       HomeServiceRequestEntity(
-        id: 1,
         trackCode: 12345,
         firstName: "علی",
         lastName: "رضایی",

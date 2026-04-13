@@ -10,9 +10,9 @@ import 'package:injectable/injectable.dart';
 
 import '../../../domain/entities/abstract/base_request_entity.dart';
 
-part 'request_list_cubit.freezed.dart';
-
 part 'relief_request_list_state.dart';
+
+part 'request_list_cubit.freezed.dart';
 
 @injectable
 class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
@@ -104,7 +104,6 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
   List<BaseRequestEntity> buildFakeRequests() {
     return const[
       ReliefRequestEntity(
-        id: 1,
         trackCode: 12345,
         firstName: "علی",
         lastName: "رضایی",
@@ -126,7 +125,6 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
         emdadServiceTitle: "حمل خودرو",
       ),
       ReliefRequestEntity(
-        id: 2,
         trackCode: 54321,
         firstName: "مهدی",
         lastName: "محمدی",
@@ -148,7 +146,6 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
         emdadServiceTitle: "تعویض باتری",
       ),
       ReliefRequestEntity(
-        id: 3,
         trackCode: 99999,
         firstName: "حسین",
         lastName: "کاظمی",
