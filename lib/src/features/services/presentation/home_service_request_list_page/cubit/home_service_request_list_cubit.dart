@@ -59,12 +59,6 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
   void fetchRequestList() async {
     _safeEmit(const HomeServiceRequestListState.loading());
 
-    /*final param = ReportParamEntity(
-      serviceType: selectedServiceType,
-      fromDateTime: selectedFromDate,
-      toDateTime: selectedToDate,
-    );*/
-
     final result = await _getHomeServiceRequestListUseCase();
 
     result.whenOrNull(
@@ -102,33 +96,5 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
     provinceController.dispose();
     _selectedStatusNotifier.dispose();
     return super.close();
-  }
-
-  List<BaseRequestEntity> buildFakeRequests() {
-    return const[
-      HomeServiceRequestEntity(
-        trackCode: 12345,
-        firstName: "علی",
-        lastName: "رضایی",
-        latitude: 35.7,
-        longitude: 51.4,
-        aidAddress: "تهران، خیابان آزادی",
-        cityName: "تهران",
-        provinceName: "تهران",
-        carName: "پراید 131",
-        carProductionYear: 1402,
-        licensePlate: "12 الف 345 67",
-        requestStatus: 1,
-        requestStatusTitle: "در انتظار تخصیص",
-        requestDateJalali: "1405/01/17",
-        requestTime: "15:30",
-        agencyCode: '12',
-        agencyName: 'test',
-        bookedDateTimeJalali:"1405/01/17",
-        emdadgarName: 'milad',
-        emdadServiceCategoryTitle: 'test cat',
-        requestDay: '1',
-      ),
-    ];
   }
 }
