@@ -65,40 +65,38 @@ class _SelectedServicesView extends StatelessWidget {
               PointerDeviceKind.mouse,
             },
           ),
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(AppSize.s16),
             child: Column(
               children: [
-                ServicesFiltersBox(cubit: cubit),
-                BlocBuilder<ReliefRequestListCubit, ReliefRequestListState>(
+              Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: ServicesFiltersBox(cubit: cubit)),
+              Expanded(
+                child:
+                    BlocBuilder<ReliefRequestListCubit, ReliefRequestListState>(
                   builder: (context, state) {
                     return state.maybeWhen(
                         idle: () => const SizedBox.shrink(),
                         loading: () => const Center(
-                              child: Padding(
-                                padding: EdgeInsets.only(top: AppSize.s40),
-                                child: CircularProgressIndicator(),
-                              ),
+                        child: CircularProgressIndicator(),
+                      ),
+                      loaded: () => SingleChildScrollView(
+                        padding: const EdgeInsets.all(AppSize.s16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            BodyMediumText(
+                              text: '${cubit.requestList.length} درخواست',
                             ),
-                        loaded: () => Column(
-                              children: [
-                                const SizedBox(height: AppSize.s16),
-                                Align(
-                                    alignment: AlignmentDirectional.topStart,
-                                    child: BodyMediumText(
-                                      text:
-                                          '${cubit.requestList.length} درخواست',
-                                    )),
-                                RequestListViewer(
-                                  items: cubit.requestList,
-                                ),
-                              ],
-                            ),
-                        orElse: SizedBox.shrink);
+                            RequestListViewer(items: cubit.requestList),
+                          ],
+                        ),
+                      ),
+                      orElse: () => const SizedBox.shrink(),
+                    );
                   },
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
