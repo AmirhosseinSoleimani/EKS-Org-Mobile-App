@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_r
 
 class ReliefRequestModel extends ReliefRequestEntity {
   const ReliefRequestModel({
+    super.id,
     super.trackCode,
     super.firstName,
     super.lastName,
@@ -51,6 +52,7 @@ class ReliefRequestModel extends ReliefRequestEntity {
 
   factory ReliefRequestModel.fromJson(Map<String, dynamic>? json) {
     return ReliefRequestModel(
+      id: json?['id'],
       trackCode: json?['trackCode'],
       firstName: json?['firstName'],
       lastName: json?['lastName'],

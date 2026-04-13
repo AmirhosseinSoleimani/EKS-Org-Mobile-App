@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_ser
 
 class HomeServiceRequestModel extends HomeServiceRequestEntity {
   const HomeServiceRequestModel({
+    super.id,
     super.trackCode,
     super.firstName,
     super.lastName,
@@ -52,6 +53,7 @@ class HomeServiceRequestModel extends HomeServiceRequestEntity {
 
   factory HomeServiceRequestModel.fromJson(Map<String, dynamic>? json) {
     return HomeServiceRequestModel(
+      id: json?['id'],
       trackCode: json?['trackCode'],
       firstName: json?['firstName'],
       lastName: json?['lastName'],

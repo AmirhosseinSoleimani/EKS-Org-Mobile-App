@@ -19,6 +19,7 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
   final String? emdadProductTitle;
 
   const HomeServiceRequestEntity({
+    super.id,
     super.trackCode,
     super.firstName,
     super.lastName,
@@ -68,6 +69,7 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
   });
 
   HomeServiceRequestEntity copyWith({
+    int? id,
     int? trackCode,
     String? firstName,
     String? lastName,
@@ -116,6 +118,7 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
     String? emdadProductTitle,
   }) {
     return HomeServiceRequestEntity(
+      id: id ?? this.id,
       trackCode: trackCode ?? this.trackCode,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
@@ -166,9 +169,9 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
       emdadProductTitle: emdadProductTitle ?? this.emdadProductTitle,
     );
   }
-
   HomeServiceRequestModel toModel() {
     return HomeServiceRequestModel(
+      id: id,
       trackCode: trackCode,
       firstName: firstName,
       lastName: lastName,
@@ -190,6 +193,31 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
       emdadgarName: emdadgarName,
       agencyName: agencyName,
       agencyCode: agencyCode,
+      customerMobileNumber: customerMobileNumber,
+      description: description,
+      carColorTitle: carColorTitle,
+      carEngineNumber: carEngineNumber,
+      genderTitle: genderTitle,
+      personTypeTitle: personTypeTitle,
+      chassisNumber: chassisNumber,
+      kilometer: kilometer,
+      nationalNumber: nationalNumber,
+      dispatcher: dispatcher,
+      emFullName: emFullName,
+      emMobileNumber1: emMobileNumber1,
+      emVehicleTypeTitle: emVehicleTypeTitle,
+      emVehicleType: emVehicleType,
+      emVehicleSubTypeTitle: emVehicleSubTypeTitle,
+      emVehicleSubType: emVehicleSubType,
+      emRepresentationName: emRepresentationName,
+      emRepresentationCode: emRepresentationCode,
+      isGuaranty: isGuaranty,
+      isSubscription: isSubscription,
+      requestDateTime: requestDateTime,
+      requestDayTime: requestDayTime,
+      vip: vip,
+      vipConditionTitle: vipConditionTitle,
+      emdadProductTitle: emdadProductTitle,
     );
   }
 }

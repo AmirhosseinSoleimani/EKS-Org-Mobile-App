@@ -56,12 +56,6 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
   void fetchRequestList() async {
     _safeEmit(const ReliefRequestListState.loading());
 
-    /*final param = ReportParamEntity(
-      serviceType: selectedServiceType,
-      fromDateTime: selectedFromDate,
-      toDateTime: selectedToDate,
-    );*/
-
     final result = await _getReliefRequestListUseCase();
 
     result.whenOrNull(
@@ -99,73 +93,5 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
     provinceController.dispose();
     _selectedStatusNotifier.dispose();
     return super.close();
-  }
-
-  List<BaseRequestEntity> buildFakeRequests() {
-    return const[
-      ReliefRequestEntity(
-        trackCode: 12345,
-        firstName: "علی",
-        lastName: "رضایی",
-        latitude: 35.7,
-        longitude: 51.4,
-        aidAddress: "تهران، خیابان آزادی",
-        cityName: "تهران",
-        provinceName: "تهران",
-        carName: "پراید 131",
-        carProductionYear: 1402,
-        licensePlate: "12 الف 345 67",
-        requestStatus: 1,
-        requestStatusTitle: "در انتظار تخصیص",
-        requestDateJalali: "1405/01/17",
-        requestTime: "15:30",
-        defectId: 1,
-        defectTitle: "حمل خودرو",
-        isUrgentRequest: false,
-        emdadServiceTitle: "حمل خودرو",
-      ),
-      ReliefRequestEntity(
-        trackCode: 54321,
-        firstName: "مهدی",
-        lastName: "محمدی",
-        latitude: 35.7,
-        longitude: 51.4,
-        aidAddress: "تهران، پونک",
-        cityName: "تهران",
-        provinceName: "تهران",
-        carName: "کوئیک S",
-        carProductionYear: 1404,
-        licensePlate: "34 ب 777 11",
-        requestStatus: 2,
-        requestStatusTitle: "در حال انجام",
-        requestDateJalali: "1405/01/18",
-        requestTime: "12:00",
-        defectId: 2,
-        defectTitle: "تعویض باتری",
-        isUrgentRequest: true,
-        emdadServiceTitle: "تعویض باتری",
-      ),
-      ReliefRequestEntity(
-        trackCode: 99999,
-        firstName: "حسین",
-        lastName: "کاظمی",
-        latitude: 35.7,
-        longitude: 51.4,
-        aidAddress: "تهران، صادقیه",
-        cityName: "تهران",
-        provinceName: "تهران",
-        carName: "تیبا",
-        carProductionYear: 1401,
-        licensePlate: "55 ج 222 88",
-        requestStatus: 3,
-        requestStatusTitle: "اتمام",
-        requestDateJalali: "1405/01/19",
-        requestTime: "10:00",
-        defectId: 3,
-        defectTitle: "حمل خودرو",
-        isUrgentRequest: false,
-        emdadServiceTitle: "حمل خودرو",
-      ),
-    ];
   }
 }

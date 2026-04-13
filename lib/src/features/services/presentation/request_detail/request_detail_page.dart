@@ -20,15 +20,14 @@ import 'widgets/request_location_detail_section.dart';
 import 'widgets/status_label.dart';
 
 class RequestDetailPage extends StatelessWidget {
-  const RequestDetailPage({super.key});
-
+  const RequestDetailPage({super.key, this.id});
+  final int? id;
   static const path = "/request-detail-page";
   static const name = "request-detail-page";
 
   @override
   Widget build(BuildContext context) {
     final cubit = getIt<RequestDetailCubit>();
-
     return BlocProvider(
       create: (_) => cubit..init(),
       child: BlocListener<RequestDetailCubit, RequestDetailState>(

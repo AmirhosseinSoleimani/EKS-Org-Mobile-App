@@ -120,11 +120,13 @@ class Routes {
         GoRoute(
           path: RequestDetailPage.path,
           name: RequestDetailPage.name,
-          pageBuilder: (context, state) =>
-              getPage(
-                child: const RequestDetailPage(),
-                state: state,
-              ),
+          pageBuilder: (context, state) {
+            final int? id = state.extra as int?;
+            return getPage(
+              child: RequestDetailPage(id: id),
+              state: state,
+            );
+          },
         ),
       ],
     );

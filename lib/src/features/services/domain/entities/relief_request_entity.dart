@@ -20,6 +20,7 @@ class ReliefRequestEntity extends BaseRequestEntity {
   final String? assignTime;
 
   const ReliefRequestEntity({
+    super.id,
     super.trackCode,
     super.firstName,
     super.lastName,
@@ -68,6 +69,7 @@ class ReliefRequestEntity extends BaseRequestEntity {
   });
 
   ReliefRequestEntity copyWith({
+    int? id,
     int? trackCode,
     String? firstName,
     String? lastName,
@@ -115,6 +117,7 @@ class ReliefRequestEntity extends BaseRequestEntity {
     String? assignTime,
   }) {
     return ReliefRequestEntity(
+      id: id ?? this.id,
       trackCode: trackCode ?? this.trackCode,
       firstName: firstName ?? this.firstName,
       lastName: lastName ?? this.lastName,
@@ -168,6 +171,7 @@ class ReliefRequestEntity extends BaseRequestEntity {
 
   ReliefRequestModel toModel() {
     return ReliefRequestModel(
+      id: id,
       trackCode: trackCode,
       firstName: firstName,
       lastName: lastName,
@@ -193,6 +197,26 @@ class ReliefRequestEntity extends BaseRequestEntity {
       carEngineNumber: carEngineNumber,
       genderTitle: genderTitle,
       personTypeTitle: personTypeTitle,
+      assignDate: assignDate,
+      assignTime: assignTime,
+      chassisNumber: chassisNumber,
+      kilometer: kilometer,
+      isGuaranty: isGuaranty,
+      dispatcher: dispatcher,
+      emFullName: emFullName,
+      emRepresentationCode: emRepresentationCode,
+      emVehicleTypeTitle: emVehicleTypeTitle,
+      nationalNumber: nationalNumber,
+      isSubscription: isSubscription,
+      emVehicleSubTypeTitle: emVehicleSubTypeTitle,
+      emMobileNumber1: emMobileNumber1,
+      emdadgarAssignDistanceTitle: emdadgarAssignDistanceTitle,
+      emVehicleType: emVehicleType,
+      emRepresentationName: emRepresentationName,
+      emVehicleSubType: emVehicleSubType,
+      emdadgarAssignDurationTitle: emdadgarAssignDurationTitle,
+      hamlReasonTitle: hamlReasonTitle,
+      wheelQuestionTitle: wheelQuestionTitle,
     );
   }
 }

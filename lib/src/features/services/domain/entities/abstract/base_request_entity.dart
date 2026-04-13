@@ -1,4 +1,5 @@
 abstract class BaseRequestEntity {
+  final int? id;
   final int? trackCode;
 
   final String? firstName;
@@ -48,6 +49,7 @@ abstract class BaseRequestEntity {
   final String? emRepresentationCode;
 
   const BaseRequestEntity({
+    this.id,
     this.trackCode,
     this.firstName,
     this.lastName,

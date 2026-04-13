@@ -1,5 +1,7 @@
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/request_detail_page.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 import 'request_details_button.dart';
 import 'request_header.dart';
@@ -77,8 +79,8 @@ class RequestCard extends StatelessWidget {
           ),
           const SizedBox(height: 12),
           RequestDetailsButton(
-
-            onPressed: () {},
+            onPressed: () =>
+                context.push(RequestDetailPage.path, extra: request.id),
           )
         ],
       ),
