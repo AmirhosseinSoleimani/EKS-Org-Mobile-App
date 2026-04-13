@@ -1,7 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/cubit/request_detail_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_row.dart';
 import 'package:flutter/material.dart';
 
@@ -36,7 +34,7 @@ class AgentInfoDetailSection extends StatelessWidget {
         ),
         KeyValueRow(
           label: "مسافت طی شده",
-          value: selectedRequest.kilometer ?? "-",
+          value: selectedRequest.kilometer.toString(),
         ),
         KeyValueRow(
           label: "اعزام کننده",

@@ -14,14 +14,14 @@ class CarInfoDetailSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final request = cubit.selectedRequest;
-    final carTag = request.licensePlate;
+    final carTag = request.licensePlate ?? '';
     final plate = CarPlateParser.parse(carTag);
 
     return Column(
       children: [
         KeyValueRow(
           label: "نام",
-          value: request.carName,
+          value: request.carName ?? '-',
         ),
         KeyValueRow(
           label: "شماره شاسی",

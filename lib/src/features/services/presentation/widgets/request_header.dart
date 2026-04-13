@@ -40,7 +40,7 @@ class RequestHeader extends StatelessWidget {
                 children: [
                   BodyMediumText(text: "${request.trackCode}"),
                   const Spacer(),
-                  BodyMediumText(text:  request.requestDateJalali),
+                  BodyMediumText(text: request.requestDateJalali ?? ''),
                 ],
               ),
               const SizedBox(height: 8),
@@ -51,7 +51,7 @@ class RequestHeader extends StatelessWidget {
                   border: Border.all(color: Colors.grey.shade300),
                   borderRadius: BorderRadius.circular(50),
                 ),
-                child: BodySmallText(text: request.requestStatusTitle),
+                child: BodySmallText(text: request.requestStatusTitle ?? ''),
               ),
             ],
           ),

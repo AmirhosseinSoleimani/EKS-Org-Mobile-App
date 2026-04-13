@@ -169,28 +169,28 @@ class RequestDetailPage extends StatelessWidget {
                                           children: [
                                             StatusLabel(
                                               text: cubit.selectedRequest
-                                                  .requestStatusTitle,
+                                                  .requestStatusTitle ?? '-',
                                               color: Colors.purple,
                                             ),
                                             Space.w8,
                                             StatusLabel(
                                               text: cubit.selectedRequest
-                                                      .isGuaranty
+                                                      .isGuaranty??false
                                                   ? "گارانتی دارد"
                                                   : "گارانتی ندارد",
                                               color: cubit.selectedRequest
-                                                      .isGuaranty
+                                                      .isGuaranty??false
                                                   ? Colors.greenAccent
                                                   : Colors.red,
                                             ),
                                             Space.w8,
                                             StatusLabel(
                                               text: cubit.selectedRequest
-                                                      .isSubscription
+                                                      .isSubscription??false
                                                   ? "مشترک"
                                                   : "غیر مشترک",
                                               color: cubit.selectedRequest
-                                                      .isSubscription
+                                                      .isSubscription??false
                                                   ? Colors.greenAccent
                                                   : Colors.red,
                                             )

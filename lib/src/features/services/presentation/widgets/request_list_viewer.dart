@@ -34,10 +34,10 @@ class RequestListViewer extends StatelessWidget {
 
   String _resolveServiceTitle(BaseRequestEntity entity) {
     if (entity is ReliefRequestEntity) {
-      return entity.defectTitle;
+      return entity.defectTitle ?? '';
     }
     if (entity is HomeServiceRequestEntity) {
-      return entity.emdadServiceCategoryTitle;
+      return entity.emdadServiceCategoryTitle ?? '';
     }
     return "";
   }

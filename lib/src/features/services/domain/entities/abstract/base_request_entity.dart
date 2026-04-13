@@ -1,31 +1,31 @@
 abstract class BaseRequestEntity {
-  final int trackCode;
+  final int? trackCode;
 
-  final String firstName;
-  final String lastName;
+  final String? firstName;
+  final String? lastName;
 
   final String? chassisNumber;
-  final String? kilometer;
+  final int? kilometer;
   final String? nationalNumber;
 
-  final double latitude;
-  final double longitude;
+  final double? latitude;
+  final double? longitude;
 
-  final String aidAddress;
+  final String? aidAddress;
 
-  final String cityName;
-  final String provinceName;
+  final String? cityName;
+  final String? provinceName;
 
-  final String carName;
-  final int carProductionYear;
+  final String? carName;
+  final int? carProductionYear;
 
-  final String licensePlate;
+  final String? licensePlate;
 
-  final int requestStatus;
-  final String requestStatusTitle;
+  final int? requestStatus;
+  final String? requestStatusTitle;
 
-  final String requestDateJalali;
-  final String requestTime;
+  final String? requestDateJalali;
+  final String? requestTime;
 
   final String? customerMobileNumber;
   final String? description;
@@ -34,8 +34,8 @@ abstract class BaseRequestEntity {
   final String? genderTitle;
   final String? personTypeTitle;
   final String? dispatcher;
-  final bool isGuaranty;
-  final bool isSubscription;
+  final bool? isGuaranty;
+  final bool? isSubscription;
 
   //em info
   final String? emFullName;
@@ -48,21 +48,21 @@ abstract class BaseRequestEntity {
   final String? emRepresentationCode;
 
   const BaseRequestEntity({
-    required this.trackCode,
-    required this.firstName,
-    required this.lastName,
-    required this.latitude,
-    required this.longitude,
-    required this.aidAddress,
-    required this.cityName,
-    required this.provinceName,
-    required this.carName,
-    required this.carProductionYear,
-    required this.licensePlate,
-    required this.requestStatus,
-    required this.requestStatusTitle,
-    required this.requestDateJalali,
-    required this.requestTime,
+    this.trackCode,
+    this.firstName,
+    this.lastName,
+    this.latitude,
+    this.longitude,
+    this.aidAddress,
+    this.cityName,
+    this.provinceName,
+    this.carName,
+    this.carProductionYear,
+    this.licensePlate,
+    this.requestStatus,
+    this.requestStatusTitle,
+    this.requestDateJalali,
+    this.requestTime,
     this.chassisNumber,
     this.kilometer,
     this.nationalNumber,

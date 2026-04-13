@@ -53,7 +53,7 @@ class RequestCard extends StatelessWidget {
 
           RequestInfoRow(
             icon: Icons.location_on,
-            text: request.aidAddress,
+            text: request.aidAddress ?? '',
           ),
 
           const SizedBox(height: 8),

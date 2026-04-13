@@ -28,7 +28,7 @@ class RequestDetailSection extends StatelessWidget {
         KeyValueRow(
           label: cubit.isRelief ? "ایراد خودرو" : "سرویس انتخاب شده",
           value: cubit.isRelief
-              ? (cubit.selectedRequest as ReliefRequestEntity).defectTitle
+              ? (cubit.selectedRequest as ReliefRequestEntity).defectTitle ?? '-'
               : (cubit.selectedRequest as HomeServiceRequestEntity)
               .emdadProductTitle ??
               "-",
