@@ -45,7 +45,7 @@ class ServicesFiltersBox extends StatelessWidget {
                       title: "اعمال فیلتر",
                       backgroundColor: Theme.of(context).colorScheme.primary,
                       onTap: () {
-                        cubit.init();
+                        cubit.fetchRequestList();
                         context.pop();
                       },
                     ),
@@ -75,6 +75,7 @@ class ServicesFiltersBox extends StatelessWidget {
                       onDismiss: dismiss,
                       onSelect: (value) {
                         cubit.setSelectedStatus(value);
+                        cubit.fetchRequestList();
                         dismiss();
                       },
                     );
@@ -101,6 +102,7 @@ class ServicesFiltersBox extends StatelessWidget {
                   onDismiss: dismiss,
                   onSelect: (value) {
                     cubit.setSelectedTimePeriod(value);
+                    cubit.fetchRequestList();
                     dismiss();
                   },
                 );
