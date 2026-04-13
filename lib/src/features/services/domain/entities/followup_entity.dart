@@ -24,6 +24,7 @@ class FollowupEntity {
   final String? insertTime;
   final int? serviceRequestId;
   final int? serviceType;
+  final String? description;
 
   const FollowupEntity({
     this.id,
@@ -49,6 +50,7 @@ class FollowupEntity {
     this.insertTime,
     this.serviceRequestId,
     this.serviceType,
+    this.description,
   });
 
   FollowupEntity copyWith({
@@ -73,6 +75,7 @@ class FollowupEntity {
     String? insertDateTime,
     String? insertDateTimeJalali,
     String? insertTime,
+    String? description,
     int? serviceRequestId,
     int? serviceType,
   }) {
@@ -101,6 +104,7 @@ class FollowupEntity {
       insertTime: insertTime ?? this.insertTime,
       serviceRequestId: serviceRequestId ?? this.serviceRequestId,
       serviceType: serviceType ?? this.serviceType,
+      description: description ?? this.description,
     );
   }
 
@@ -128,5 +132,6 @@ class FollowupEntity {
     insertTime: insertTime,
     serviceRequestId: serviceRequestId,
     serviceType: serviceType,
+    description: description,
   );
 }

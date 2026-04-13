@@ -19,7 +19,6 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
   final String? emdadProductTitle;
 
   const HomeServiceRequestEntity({
-    required super.id,
     required super.trackCode,
     required super.firstName,
     required super.lastName,
@@ -59,7 +58,6 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
     String? bookedDateTimeJalali,
   }) {
     return HomeServiceRequestEntity(
-      id: id,
       trackCode: trackCode,
       firstName: firstName,
       lastName: lastName,
@@ -86,7 +84,6 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
 
   HomeServiceRequestModel toModel() {
     return HomeServiceRequestModel(
-      id: id,
       trackCode: trackCode,
       firstName: firstName,
       lastName: lastName,

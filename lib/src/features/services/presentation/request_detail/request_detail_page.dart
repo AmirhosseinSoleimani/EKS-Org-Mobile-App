@@ -15,6 +15,7 @@ import 'widgets/agent_info_detail_section.dart';
 import 'widgets/car_info_detail_section.dart';
 import 'widgets/customer_info_detail_section.dart';
 import 'widgets/expandable_section.dart';
+import 'widgets/request_followup_history_section.dart';
 import 'widgets/request_location_detail_section.dart';
 import 'widgets/status_label.dart';
 
@@ -112,7 +113,9 @@ class RequestDetailPage extends StatelessWidget {
                                       isExpanded: false,
                                       header: const BodyMediumText(
                                           text: "تاریخچه پیگیری"),
-                                      child: SizedBox(),
+                                      child: RequestFollowupHistorySection(
+                                        items: []/*cubit.*/,
+                                      ),
                                     ),
                                      ExpandableSection(
                                       isExpanded: true,

@@ -25,6 +25,7 @@ class FollowupModel extends FollowupEntity {
     super.insertTime,
     super.serviceRequestId,
     super.serviceType,
+    super.description,
   });
 
   factory FollowupModel.fromJson(Map<String, dynamic> json) {
@@ -52,6 +53,7 @@ class FollowupModel extends FollowupEntity {
       insertTime: json["insertTime"],
       serviceRequestId: json["serviceRequestId"],
       serviceType: json["serviceType"],
+      description: json["description"],
     );
   }
 }

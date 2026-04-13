@@ -12,6 +12,7 @@ import 'package:connectivity_plus/connectivity_plus.dart' as _i895;
 import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
+import 'package:location/location.dart' as _i645;
 import 'package:sliding_up_panel/sliding_up_panel.dart' as _i882;
 
 import '../app/cubit/app_cubit/app_cubit.dart' as _i757;
@@ -113,6 +114,42 @@ import '../shared/features/invoice/domain/use_case/fetch_pre_invoice_on_the_fly_
     as _i349;
 import '../shared/features/invoice/domain/use_case/fetch_pre_invoice_use_case.dart'
     as _i949;
+import '../shared/features/map/data/data_source/location_permission_data_source.dart'
+    as _i221;
+import '../shared/features/map/data/data_source/location_permission_data_source_impl.dart'
+    as _i1040;
+import '../shared/features/map/data/data_source/map_data_source.dart' as _i971;
+import '../shared/features/map/data/data_source/map_data_source_impl.dart'
+    as _i583;
+import '../shared/features/map/data/repository_impl/location_permission_repository_impl.dart'
+    as _i838;
+import '../shared/features/map/data/repository_impl/map_repository_impl.dart'
+    as _i810;
+import '../shared/features/map/data/repository_impl/map_share_data_repository_impl.dart'
+    as _i173;
+import '../shared/features/map/data/service/location_permission_service.dart'
+    as _i988;
+import '../shared/features/map/data/service/map_service.dart' as _i929;
+import '../shared/features/map/domain/repository/location_permission_repository.dart'
+    as _i995;
+import '../shared/features/map/domain/repository/map_repository.dart' as _i92;
+import '../shared/features/map/domain/repository/map_share_data_repository.dart'
+    as _i837;
+import '../shared/features/map/domain/usecase/apply_high_accuracy_use_case.dart'
+    as _i296;
+import '../shared/features/map/domain/usecase/ensure_location_reading_use_case.dart'
+    as _i283;
+import '../shared/features/map/domain/usecase/fetch_address_info_use_case.dart'
+    as _i406;
+import '../shared/features/map/domain/usecase/fetch_address_to_location_use_case.dart'
+    as _i739;
+import '../shared/features/map/domain/usecase/fetch_location_to_address_use_case.dart'
+    as _i730;
+import '../shared/features/map/domain/usecase/get_current_location_use_case.dart'
+    as _i705;
+import '../shared/features/map/domain/usecase/set_address_info_use_case.dart'
+    as _i453;
+import '../shared/features/map/presentation/cubit/map_cubit.dart' as _i84;
 import '../shared/features/observe_network/data/data_source/observe_network_data_source.dart'
     as _i333;
 import '../shared/features/observe_network/data/data_source/observe_network_data_source_impl.dart'
@@ -206,16 +243,31 @@ _i174.GetIt $initGetIt(
       () => _i826.PhoneNumberValidatorUseCase());
   gh.lazySingleton<_i838.RequestRepositoryShareData>(
       () => _i318.RequestRepositoryShareDataImpl());
+  gh.lazySingleton<_i837.MapShareDataRepository>(
+      () => _i173.MapShareDataRepositoryImpl());
+  gh.lazySingleton<_i988.ILocationDeviceService>(
+      () => _i988.LocationDeviceService(gh<_i645.Location>()));
   gh.lazySingleton<_i308.SessionStorage>(
     () => _i577.SessionStorageMobileImpl(),
     registerFor: {_mobile},
   );
+  gh.lazySingleton<_i988.IPermissionDeviceService>(
+      () => _i988.PermissionDeviceService());
   gh.lazySingleton<_i528.ConnectivityService>(
       () => _i528.ConnectivityServiceImpl(gh<_i895.Connectivity>()));
+  gh.lazySingleton<_i406.FetchAddressInfoUseCase>(
+      () => _i406.FetchAddressInfoUseCase(gh<_i837.MapShareDataRepository>()));
+  gh.lazySingleton<_i453.SetAddressInfoUseCase>(
+      () => _i453.SetAddressInfoUseCase(gh<_i837.MapShareDataRepository>()));
   gh.lazySingleton<_i308.SessionStorage>(
     () => _i718.SessionStorageWebImpl(),
     registerFor: {_web},
   );
+  gh.lazySingleton<_i221.LocationPermissionDataSource>(
+      () => _i1040.LocationPermissionDataSourceImpl(
+            gh<_i988.ILocationDeviceService>(),
+            gh<_i988.IPermissionDeviceService>(),
+          ));
   gh.singleton<_i361.Dio>(() => networkModule.dio(
         gh<_i466.DioTokenInterceptor>(),
         gh<_i137.PrettyDioLogger>(),
@@ -233,6 +285,7 @@ _i174.GetIt $initGetIt(
       () => _i140.IndicatorReportService(gh<_i361.Dio>()));
   gh.lazySingleton<_i483.RequestService>(
       () => _i483.RequestService(gh<_i361.Dio>()));
+  gh.lazySingleton<_i929.MapService>(() => _i929.MapService(gh<_i361.Dio>()));
   gh.lazySingleton<_i475.MainRemoteDataSource>(
       () => _i203.MainRemoteDataSourceImpl(gh<_i438.MainService>()));
   gh.lazySingleton<_i471.GetCurrentNetworkStatusUseCase>(() =>
@@ -240,8 +293,13 @@ _i174.GetIt $initGetIt(
           gh<_i422.ObserveNetworkRepository>()));
   gh.lazySingleton<_i1061.ObserveNetworkUseCase>(
       () => _i1061.ObserveNetworkUseCase(gh<_i422.ObserveNetworkRepository>()));
+  gh.lazySingleton<_i971.MapDataSource>(
+      () => _i583.MapDataSourceImpl(gh<_i929.MapService>()));
   gh.lazySingleton<_i691.IndicatorReportDataSource>(() =>
       _i87.IndicatorReportDataSourceImpl(gh<_i140.IndicatorReportService>()));
+  gh.lazySingleton<_i995.LocationPermissionRepository>(() =>
+      _i838.LocationPermissionRepositoryImpl(
+          gh<_i221.LocationPermissionDataSource>()));
   gh.lazySingleton<_i479.AuthRemoteDataSource>(
       () => _i51.AuthRemoteDataSourceImpl(gh<_i626.AuthService>()));
   gh.lazySingleton<_i1016.RequestDataSource>(
@@ -251,6 +309,16 @@ _i174.GetIt $initGetIt(
           gh<_i691.IndicatorReportDataSource>()));
   gh.lazySingleton<_i1039.UserDataSource>(
       () => _i793.UserDataSourceImpl(gh<_i313.UserService>()));
+  gh.lazySingleton<_i296.ApplyHighAccuracyUseCase>(() =>
+      _i296.ApplyHighAccuracyUseCase(gh<_i995.LocationPermissionRepository>()));
+  gh.lazySingleton<_i283.EnsureLocationReadingUseCase>(() =>
+      _i283.EnsureLocationReadingUseCase(
+          gh<_i995.LocationPermissionRepository>()));
+  gh.lazySingleton<_i705.GetCurrentLocationUseCase>(() =>
+      _i705.GetCurrentLocationUseCase(
+          gh<_i995.LocationPermissionRepository>()));
+  gh.lazySingleton<_i92.MapRepository>(
+      () => _i810.MapRepositoryImpl(gh<_i971.MapDataSource>()));
   gh.lazySingleton<_i716.AuthRepository>(() => _i781.AuthRepositoryImpl(
         gh<_i479.AuthRemoteDataSource>(),
         gh<_i308.SessionStorage>(),
@@ -290,6 +358,10 @@ _i174.GetIt $initGetIt(
       ));
   gh.lazySingleton<_i603.RequestRepository>(
       () => _i794.RequestRepositoryImpl(gh<_i1016.RequestDataSource>()));
+  gh.lazySingleton<_i739.FetchAddressToLocationUseCase>(
+      () => _i739.FetchAddressToLocationUseCase(gh<_i92.MapRepository>()));
+  gh.lazySingleton<_i730.FetchLocationToAddressUseCase>(
+      () => _i730.FetchLocationToAddressUseCase(gh<_i92.MapRepository>()));
   gh.lazySingleton<_i216.FetchBaseUserInfoUseCase>(
       () => _i216.FetchBaseUserInfoUseCase(gh<_i74.UserRepository>()));
   gh.lazySingleton<_i422.FetchCarSelectedUseCase>(
@@ -329,6 +401,15 @@ _i174.GetIt $initGetIt(
             gh<_i74.UserRepository>(),
             gh<_i422.FetchCarSelectedUseCase>(),
           ));
+  gh.factory<_i84.MapCubit>(() => _i84.MapCubit(
+        gh<_i406.FetchAddressInfoUseCase>(),
+        gh<_i283.EnsureLocationReadingUseCase>(),
+        gh<_i296.ApplyHighAccuracyUseCase>(),
+        gh<_i705.GetCurrentLocationUseCase>(),
+        gh<_i730.FetchLocationToAddressUseCase>(),
+        gh<_i453.SetAddressInfoUseCase>(),
+        gh<_i739.FetchAddressToLocationUseCase>(),
+      ));
   gh.lazySingleton<_i192.GetReliefRequestListUseCase>(
       () => _i192.GetReliefRequestListUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i809.GetHomeServiceRequestListUseCase>(() =>
