@@ -10,7 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import 'cubit/home_service_request_list_cubit.dart';
-import 'widgets/services_filters_box.dart';
+import 'widgets/filters_box.dart';
 
 class HomeServiceRequestListPage extends StatelessWidget {
   static const path = "/home-service-page";
@@ -21,7 +21,7 @@ class HomeServiceRequestListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<HomeServiceRequestListCubit>()..init(),
+      create: (_) => getIt<HomeServiceRequestListCubit>()..fetchRequestList(),
       child: const _SelectedServicesView(),
     );
   }
@@ -41,14 +41,14 @@ class _SelectedServicesView extends StatelessWidget {
             BottomSheetMessage.showErrorWithAction(
               context: context,
               data: message,
-              onPositive: cubit.init,
+              onPositive: cubit.fetchRequestList,
             );
           },
           connectionError: () {
             BottomSheetMessage.showCustom(
               context: context,
               content: NoInternetBottomSheet(
-                onRetry: cubit.init,
+                onRetry: cubit.fetchRequestList,
               ),
               actionWidget: const SizedBox.shrink(),
               isDismissible: false,
@@ -70,7 +70,7 @@ class _SelectedServicesView extends StatelessWidget {
             children: [
               Padding(
                   padding: const EdgeInsets.all(16),
-                  child: ServicesFiltersBox(cubit: cubit)),
+                  child: FiltersBox(cubit: cubit)),
               Expanded(
                 child: BlocBuilder<HomeServiceRequestListCubit,
                     HomeServiceRequestListState>(

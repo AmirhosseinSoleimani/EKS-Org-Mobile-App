@@ -56,7 +56,7 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
     selectedTimePeriodNotifier.value = timePeriod;
   }
 
-  void init() async {
+  void fetchRequestList() async {
     _safeEmit(const HomeServiceRequestListState.loading());
 
     /*final param = ReportParamEntity(

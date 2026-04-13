@@ -11,10 +11,10 @@ import 'package:eks_sana_plus_org/src/shared/widgets/inkwell_button_widget/inkwe
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class ServicesFiltersBox extends StatelessWidget {
+class FiltersBox extends StatelessWidget {
   final ReliefRequestListCubit cubit;
 
-  const ServicesFiltersBox({
+  const FiltersBox({
     super.key,
     required this.cubit,
   });

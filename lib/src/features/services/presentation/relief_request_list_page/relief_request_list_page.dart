@@ -1,5 +1,5 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/relief_request_list_page/widgets/services_filters_box.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/relief_request_list_page/widgets/filters_box.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_list_viewer.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/main_app_bar.dart';
@@ -21,7 +21,7 @@ class ReliefRequestListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<ReliefRequestListCubit>()..init(),
+      create: (_) => getIt<ReliefRequestListCubit>()..fetchRequestList(),
       child: const _SelectedServicesView(),
     );
   }
@@ -40,14 +40,14 @@ class _SelectedServicesView extends StatelessWidget {
             BottomSheetMessage.showErrorWithAction(
               context: context,
               data: message,
-              onPositive: cubit.init,
+              onPositive: cubit.fetchRequestList,
             );
           },
           connectionError: () {
             BottomSheetMessage.showCustom(
               context: context,
               content: NoInternetBottomSheet(
-                onRetry: cubit.init,
+                onRetry: cubit.fetchRequestList,
               ),
               actionWidget: const SizedBox.shrink(),
               isDismissible: false,
@@ -69,7 +69,7 @@ class _SelectedServicesView extends StatelessWidget {
               children: [
               Padding(
                   padding: const EdgeInsets.all(16),
-                  child: ServicesFiltersBox(cubit: cubit)),
+                  child: FiltersBox(cubit: cubit)),
               Expanded(
                 child:
                     BlocBuilder<ReliefRequestListCubit, ReliefRequestListState>(

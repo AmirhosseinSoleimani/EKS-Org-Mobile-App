@@ -11,10 +11,10 @@ import 'package:eks_sana_plus_org/src/shared/widgets/inkwell_button_widget/inkwe
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-class ServicesFiltersBox extends StatelessWidget {
+class FiltersBox extends StatelessWidget {
   final HomeServiceRequestListCubit cubit;
 
-  const ServicesFiltersBox({
+  const FiltersBox({
     super.key,
     required this.cubit,
   });
@@ -45,7 +45,7 @@ class ServicesFiltersBox extends StatelessWidget {
                       title: "اعمال فیلتر",
                       backgroundColor: Theme.of(context).colorScheme.primary,
                       onTap: () {
-                        cubit.init();
+                        cubit.fetchRequestList();
                         context.pop();
                       },
                     ),
@@ -75,6 +75,7 @@ class ServicesFiltersBox extends StatelessWidget {
                       onDismiss: dismiss,
                       onSelect: (value) {
                         cubit.setSelectedStatus(value);
+                        cubit.fetchRequestList();
                         dismiss();
                       },
                     );
@@ -101,6 +102,7 @@ class ServicesFiltersBox extends StatelessWidget {
                   onDismiss: dismiss,
                   onSelect: (value) {
                     cubit.setSelectedTimePeriod(value);
+                    cubit.fetchRequestList();
                     dismiss();
                   },
                 );

@@ -53,7 +53,7 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
     selectedTimePeriodNotifier.value = timePeriod;
   }
 
-  void init() async {
+  void fetchRequestList() async {
     _safeEmit(const ReliefRequestListState.loading());
 
     /*final param = ReportParamEntity(
