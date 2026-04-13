@@ -88,7 +88,7 @@ class _SelectedServicesView extends StatelessWidget {
                                 Align(
                                     alignment: AlignmentDirectional.topStart,
                                     child: BodyMediumText(
-                                      text: '${cubit.requestCount} درخواست',
+                                      text: '${cubit.requestList.length} درخواست',
                                     )),
                                 RequestListViewer(
                                   items: cubit.requestList,
