@@ -61,6 +61,7 @@ import '../features/dashboard/domain/repositories/dashboard_report_repository.da
     as _i135;
 import '../features/dashboard/domain/use_cases/get_dashboard_data_use_case.dart'
     as _i208;
+import '../features/dashboard/presentation/cubit/dashboard_cubit.dart' as _i932;
 import '../features/indicator_report/data/data_sources/indicator_report_data_source.dart'
     as _i691;
 import '../features/indicator_report/data/data_sources/indicator_report_data_source_impl.dart'
@@ -439,6 +440,8 @@ _i174.GetIt $initGetIt(
   gh.factory<_i1013.HomeServiceRequestListCubit>(() =>
       _i1013.HomeServiceRequestListCubit(
           gh<_i809.GetHomeServiceRequestListUseCase>()));
+  gh.factory<_i932.DashboardCubit>(
+      () => _i932.DashboardCubit(gh<_i208.GetDashboardDataUseCase>()));
   return getIt;
 }
 

@@ -1,4 +1,15 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
+import 'package:eks_sana_plus_org/src/di/di_setup.dart';
+import 'package:eks_sana_plus_org/src/features/dashboard/presentation/cubit/dashboard_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/dashboard/presentation/widgets/filters_box.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/main_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/stat_row_card/stat_row_card.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DashboardPage extends StatelessWidget {
   static const path = "/dashboard";
@@ -8,10 +19,108 @@ class DashboardPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return  const Scaffold(
-      body:  Center(child: Text("داشبورد")),
+    return BlocProvider(
+      create: (_) => getIt<DashboardCubit>()..loadDashboardData(),
+      child: const _DashboardView(),
     );
   }
 }
 
+class _DashboardView extends StatelessWidget {
+  const _DashboardView();
 
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.read<DashboardCubit>();
+    return BlocListener<DashboardCubit, DashboardState>(
+      listener: (context, state) {
+        state.whenOrNull(
+          error: (message) {
+            BottomSheetMessage.showErrorWithAction(
+              context: context,
+              data: message,
+              onPositive: cubit.loadDashboardData,
+            );
+          },
+          connectionError: () {
+            BottomSheetMessage.showCustom(
+              context: context,
+              content: NoInternetBottomSheet(
+                onRetry: cubit.loadDashboardData,
+              ),
+              actionWidget: const SizedBox.shrink(),
+              isDismissible: false,
+              enableDrag: false,
+            );
+          },
+        );
+      },
+      child: Scaffold(
+        appBar: const MainAppBar(title: "داشبورد"),
+        body: ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(
+            dragDevices: {
+              PointerDeviceKind.touch,
+              PointerDeviceKind.mouse,
+            },
+          ),
+          child: Column(
+            children: [
+              Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: FiltersBox(cubit: cubit)),
+              Expanded(
+                child:
+                BlocBuilder<DashboardCubit, DashboardState>(
+                  builder: (context, state) {
+                    return state.maybeWhen(
+                      idle: () => const SizedBox.shrink(),
+                      loading: () => const Center(
+                        child: CircularProgressIndicator(),
+                      ),
+                      loaded: () => SingleChildScrollView(
+                        padding: const EdgeInsets.all(AppSize.s16),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            StatRowCard(
+                              title: 'تعداد کل تماس‌های ورودی',
+                              value: cubit.dashboardData?.totalCallLogCount.toString() ?? '-',
+                              serviceType: cubit.selectedServiceType,
+                            ),
+                            StatRowCard(
+                              title: 'تعداد کل درخواست‌ها',
+                              value: cubit.dashboardData?.totalServiceRequests.toString()?? '-',
+                              serviceType: cubit.selectedServiceType,
+                            ),
+                            StatRowCard(
+                              title: 'تعداد کل درخواست های اضظراری',
+                              value: cubit.dashboardData?.totalUrgentRequests.toString()?? '-',
+                              serviceType: cubit.selectedServiceType,
+                            ),
+                            StatRowCard(
+                              title: 'تعداد استفاده از اپلیکیشن',
+                              value: cubit.dashboardData?.followUpTabletCount.toString()?? '-',
+                              serviceType: cubit.selectedServiceType,
+                            ),
+                            StatRowCard(
+                              title: 'درصد پیگیری با اپلیکیشن',
+                              value: '${cubit.dashboardData?.followUpTabletPercent.toStringAsFixed(1)}%',
+                              serviceType: cubit.selectedServiceType,
+                            ),
+                          ],
+                        )
+
+                      ),
+                      orElse: () => const SizedBox.shrink(),
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
