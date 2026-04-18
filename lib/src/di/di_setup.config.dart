@@ -26,10 +26,6 @@ import '../features/authentication/domain/repositories/auth_repository.dart'
     as _i716;
 import '../features/authentication/domain/use_cases/login_use_case.dart'
     as _i139;
-import '../features/authentication/domain/use_cases/otp_number_validator_use_case.dart'
-    as _i632;
-import '../features/authentication/domain/use_cases/otp_validator_use_case.dart'
-    as _i458;
 import '../features/authentication/domain/use_cases/phone_number_validator_use_case.dart'
     as _i826;
 import '../features/authentication/presentation/login/cubit/login_cubit.dart'
@@ -197,10 +193,6 @@ _i174.GetIt $initGetIt(
       () => networkModule.dioTokenInterceptor);
   gh.singleton<_i137.PrettyDioLogger>(() => networkModule.prettyDioLogger);
   gh.lazySingleton<_i238.StartupGuard>(() => appModule.startupGuard);
-  gh.lazySingleton<_i632.OtpNumberValidatorUseCase>(
-      () => _i632.OtpNumberValidatorUseCase());
-  gh.lazySingleton<_i458.OtpValidatorUseCase>(
-      () => _i458.OtpValidatorUseCase());
   gh.lazySingleton<_i826.PhoneNumberValidatorUseCase>(
       () => _i826.PhoneNumberValidatorUseCase());
   gh.lazySingleton<_i296.RequestRepositoryShareData>(

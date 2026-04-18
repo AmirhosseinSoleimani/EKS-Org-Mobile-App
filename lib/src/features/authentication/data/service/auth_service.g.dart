@@ -22,7 +22,7 @@ class _AuthService implements AuthService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<BaseSingleResponse<SendOtpCodeResponseModel?>> sendOtpCode(
+  Future<BaseSingleResponse<LoginResponseModel?>> login(
       Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -30,14 +30,14 @@ class _AuthService implements AuthService {
     final _data = <String, dynamic>{};
     _data.addAll(body);
     final _options =
-        _setStreamType<BaseSingleResponse<SendOtpCodeResponseModel>>(Options(
+        _setStreamType<BaseSingleResponse<LoginResponseModel>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
     )
             .compose(
               _dio.options,
-              '/api/User/SendLoginOtp',
+              '/api/User/Login',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -47,53 +47,13 @@ class _AuthService implements AuthService {
               baseUrl,
             )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseSingleResponse<SendOtpCodeResponseModel?> _value;
+    late BaseSingleResponse<LoginResponseModel?> _value;
     try {
-      _value = BaseSingleResponse<SendOtpCodeResponseModel?>.fromJson(
+      _value = BaseSingleResponse<LoginResponseModel?>.fromJson(
         _result.data!,
         (json) => json == null
             ? null
-            : SendOtpCodeResponseModel.fromJson(json as Map<String, dynamic>),
-      );
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
-  Future<BaseSingleResponse<UserModel?>> login(
-      Map<String, dynamic> body) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(body);
-    final _options = _setStreamType<BaseSingleResponse<UserModel>>(Options(
-      method: 'POST',
-      headers: _headers,
-      extra: _extra,
-    )
-        .compose(
-          _dio.options,
-          '/api/User/Login',
-          queryParameters: queryParameters,
-          data: _data,
-        )
-        .copyWith(
-            baseUrl: _combineBaseUrls(
-          _dio.options.baseUrl,
-          baseUrl,
-        )));
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseSingleResponse<UserModel?> _value;
-    try {
-      _value = BaseSingleResponse<UserModel?>.fromJson(
-        _result.data!,
-        (json) => json == null
-            ? null
-            : UserModel.fromJson(json as Map<String, dynamic>),
+            : LoginResponseModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);

@@ -23,14 +23,11 @@ class UserNameTextFormFieldWidget extends StatelessWidget {
       labelText: "نام کاربری",
       controller: controller,
       autofocus: false,
-      textInputType: TextInputType.phone,
+      textInputType: TextInputType.name,
       textAlign: TextAlign.start,
       textInputAction: TextInputAction.done,
-      validator: (value) => cubit.phoneNumberValidate(value),
-      textInputFormatter: [
-        FilteringTextInputFormatter.digitsOnly,
-        LengthLimitingTextInputFormatter(11),
-      ],
+      //validator: (value) => cubit.phoneNumberValidate(value),
+     
     );
   }
 }
