@@ -67,14 +67,11 @@ class _LoginFormCard extends StatefulWidget {
 }
 
 class _LoginFormCardState extends State<_LoginFormCard> {
-  final _usernameController = TextEditingController();
-  final _passwordController = TextEditingController();
 
   final _formKey = GlobalKey<FormState>();
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final cubit = context.read<LoginCubit>();
     return BlocListener<LoginCubit, LoginState>(
       listener: (context, state) {

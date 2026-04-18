@@ -6,7 +6,9 @@ class BodyMediumText extends StatelessWidget {
   final double? lineHeight;
   final Color? color;
   final TextAlign? textAlign;
+  final int? maxLines;
   final TextDirection? textDirection;
+  final TextOverflow textOverflow;
 
   const BodyMediumText({
     super.key,
@@ -15,6 +17,8 @@ class BodyMediumText extends StatelessWidget {
     this.color,
     this.textAlign,
     this.lineHeight,
+    this.maxLines,
+    this.textOverflow = TextOverflow.ellipsis,
     this.textDirection = TextDirection.rtl,
   });
 
@@ -24,6 +28,8 @@ class BodyMediumText extends StatelessWidget {
       text,
       textDirection: textDirection,
       textAlign: textAlign,
+      overflow: textOverflow,
+      maxLines: maxLines,
       style: Theme.of(context)
           .textTheme
           .bodyMedium

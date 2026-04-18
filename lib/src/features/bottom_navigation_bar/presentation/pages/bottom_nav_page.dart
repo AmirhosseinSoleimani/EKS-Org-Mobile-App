@@ -32,14 +32,13 @@ class BottomNavPage extends StatelessWidget {
             label: "داشبورد",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.handyman),
+            icon: Icon(Icons.build),
             label: "خدمات",
           ),
           BottomNavigationBarItem(
             icon: Icon(Icons.bar_chart),
             label: "گزارش شاخص",
           ),
-
         ],
       ),
     );

@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 class ImageManager {
   static const String _basePath = 'assets/images/png/';
   static const String logo = '${_basePath}emdad_khodro_logo.png';
-  static const String logoSingle = '${_basePath}emdad_khodro_logo_single.png';
-  static const String iranFlag = '${_basePath}iran_flag.png';
-
-  static const String noInternet = '${_basePath}no_internet.png';
   static const String noInternetIcon = '${_basePath}no_internet_icon.png';
+  static const String iranFlag = '${_basePath}iran_flag.png';
+  static const String customerMarker = '${_basePath}customer-marker.png';
+
+  //not used yet
+  static const String logoSingle = '${_basePath}emdad_khodro_logo_single.png';
+  static const String noInternet = '${_basePath}no_internet.png';
   static const String addCar = '${_basePath}add_car.png';
   static const String activeSubscription = '${_basePath}active_subscription.png';
   static const String errorImage = '${_basePath}error_image.png';
@@ -33,7 +35,10 @@ class ImageManager {
 
 class SvgManager {
   static const String _basePath = 'assets/svg/';
+  static const String homeServiceLocation = '${_basePath}home_service_location.svg';
+  static const String location = '${_basePath}location.svg';
 
+  //not used yet
   static const String emptyWallet = '${_basePath}empty-wallet-add.svg';
   static const String home =  '${_basePath}home.svg';
   static const String homeFilled =  '${_basePath}home_filled.svg';
