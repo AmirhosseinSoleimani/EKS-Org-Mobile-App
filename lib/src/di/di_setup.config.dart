@@ -76,8 +76,12 @@ import '../features/services/domain/repository/request_repository.dart'
     as _i603;
 import '../features/services/domain/repository/request_repository_share_data.dart'
     as _i838;
+import '../features/services/domain/usecases/get_home_service_request_by_id_use_case.dart'
+    as _i63;
 import '../features/services/domain/usecases/get_home_service_request_list_use_case.dart'
     as _i809;
+import '../features/services/domain/usecases/get_relief_request_by_id_use_case.dart'
+    as _i672;
 import '../features/services/domain/usecases/get_relief_request_list_use_case.dart'
     as _i192;
 import '../features/services/presentation/home_service_request_list_page/cubit/home_service_request_list_cubit.dart'
@@ -235,12 +239,12 @@ _i174.GetIt $initGetIt(
       () => networkModule.dioTokenInterceptor);
   gh.singleton<_i137.PrettyDioLogger>(() => networkModule.prettyDioLogger);
   gh.lazySingleton<_i238.StartupGuard>(() => appModule.startupGuard);
+  gh.lazySingleton<_i826.PhoneNumberValidatorUseCase>(
+      () => _i826.PhoneNumberValidatorUseCase());
   gh.lazySingleton<_i632.OtpNumberValidatorUseCase>(
       () => _i632.OtpNumberValidatorUseCase());
   gh.lazySingleton<_i458.OtpValidatorUseCase>(
       () => _i458.OtpValidatorUseCase());
-  gh.lazySingleton<_i826.PhoneNumberValidatorUseCase>(
-      () => _i826.PhoneNumberValidatorUseCase());
   gh.lazySingleton<_i838.RequestRepositoryShareData>(
       () => _i318.RequestRepositoryShareDataImpl());
   gh.lazySingleton<_i837.MapShareDataRepository>(
@@ -410,10 +414,14 @@ _i174.GetIt $initGetIt(
         gh<_i453.SetAddressInfoUseCase>(),
         gh<_i739.FetchAddressToLocationUseCase>(),
       ));
-  gh.lazySingleton<_i192.GetReliefRequestListUseCase>(
-      () => _i192.GetReliefRequestListUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i809.GetHomeServiceRequestListUseCase>(() =>
       _i809.GetHomeServiceRequestListUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i192.GetReliefRequestListUseCase>(
+      () => _i192.GetReliefRequestListUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i63.GetReliefRequestByIdUseCase>(
+      () => _i63.GetReliefRequestByIdUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i672.GetReliefRequestByIdUseCase>(
+      () => _i672.GetReliefRequestByIdUseCase(gh<_i603.RequestRepository>()));
   gh.factory<_i1048.ReliefRequestListCubit>(() =>
       _i1048.ReliefRequestListCubit(gh<_i192.GetReliefRequestListUseCase>()));
   gh.factory<_i1013.HomeServiceRequestListCubit>(() =>

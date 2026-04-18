@@ -25,9 +25,30 @@ class RequestRepositoryImpl extends RequestRepository {
   }
 
   @override
+  Future<ApiResult<ReliefRequestEntity?>> getReliefRequestById(int id) async {
+    try {
+      final result = await _dataSource.getReliefRequestById(id);
+      return result.toApiResult();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
   Future<ApiResult<List<HomeServiceRequestEntity>>> getHomeServiceRequestList() async {
     try {
       final result = await _dataSource.getHomeServiceRequestList();
+      return result.toApiResult();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<HomeServiceRequestEntity?>> getHomeServiceRequestById(
+      int id) async {
+    try {
+      final result = await _dataSource.getHomeServiceRequestById(id);
       return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);

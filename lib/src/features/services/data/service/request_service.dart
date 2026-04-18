@@ -16,6 +16,14 @@ abstract class RequestService {
   @POST('/api/AidServiceRequest/GetByFilterJson')
   Future<BaseListResponse<ReliefRequestModel>> getReliefRequestList(@Body() Map<String, dynamic> body);
 
+  @GET('api/AidServiceRequest/GetById')
+  Future<BaseSingleResponse<ReliefRequestModel>> getReliefRequestById(
+      @Queries() Map<String, dynamic> query);
+
   @POST('/api/HomeServiceRequest/GetByFilterJson')
   Future<BaseListResponse<HomeServiceRequestModel>> getHomeServiceRequestList(@Body() Map<String, dynamic> body);
+
+  @GET('/api/HomeServiceRequest/GetById')
+  Future<BaseSingleResponse<HomeServiceRequestModel>> getHomeServiceRequestById(
+      @Queries() Map<String, dynamic> query);
 }

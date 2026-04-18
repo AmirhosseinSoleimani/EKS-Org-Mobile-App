@@ -61,6 +61,45 @@ class _RequestService implements RequestService {
   }
 
   @override
+  Future<BaseSingleResponse<ReliefRequestModel>> getReliefRequestById(
+      Map<String, dynamic> query) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.addAll(query);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options =
+        _setStreamType<BaseSingleResponse<ReliefRequestModel>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              'api/AidServiceRequest/GetById',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseSingleResponse<ReliefRequestModel> _value;
+    try {
+      _value = BaseSingleResponse<ReliefRequestModel>.fromJson(
+        _result.data!,
+        (json) => ReliefRequestModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
   Future<BaseListResponse<HomeServiceRequestModel>> getHomeServiceRequestList(
       Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
@@ -89,6 +128,46 @@ class _RequestService implements RequestService {
     late BaseListResponse<HomeServiceRequestModel> _value;
     try {
       _value = BaseListResponse<HomeServiceRequestModel>.fromJson(
+        _result.data!,
+        (json) =>
+            HomeServiceRequestModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseSingleResponse<HomeServiceRequestModel>> getHomeServiceRequestById(
+      Map<String, dynamic> query) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.addAll(query);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options =
+        _setStreamType<BaseSingleResponse<HomeServiceRequestModel>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/HomeServiceRequest/GetById',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseSingleResponse<HomeServiceRequestModel> _value;
+    try {
+      _value = BaseSingleResponse<HomeServiceRequestModel>.fromJson(
         _result.data!,
         (json) =>
             HomeServiceRequestModel.fromJson(json as Map<String, dynamic>),
