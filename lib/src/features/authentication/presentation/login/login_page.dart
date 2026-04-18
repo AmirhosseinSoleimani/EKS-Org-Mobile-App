@@ -5,7 +5,11 @@ import 'package:eks_sana_plus_org/src/features/authentication/presentation/login
 import 'package:eks_sana_plus_org/src/features/authentication/presentation/login/widgets/user_name_text_form_field.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/presentation/dashboard_page.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/logo_widget/logo_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/material.dart';
@@ -76,13 +80,22 @@ class _LoginFormCardState extends State<_LoginFormCard> {
     return BlocListener<LoginCubit, LoginState>(
       listener: (context, state) {
         state.whenOrNull(
-            error: (errorMessage) {
-
-            },
-            success: () => context.go(DashboardPage.path),
-            connectionError: () {
-
-            },);
+          success: () => context.go(DashboardPage.path),
+          error: (message) {
+            SnakeBarWidget.showError(context: context, message: message);
+          },
+          connectionError: () {
+            BottomSheetMessage.showCustom(
+              context: context,
+              content: NoInternetBottomSheet(
+                onRetry: cubit.login,
+              ),
+              actionWidget: const SizedBox.shrink(),
+              isDismissible: false,
+              enableDrag: false,
+            );
+          },
+        );
       },
       child: Container(
         width: double.infinity,
