@@ -219,6 +219,45 @@ class _RequestService implements RequestService {
     return _value;
   }
 
+  @override
+  Future<BaseSingleResponse<CartableCycleListModel>> getCartableCycleList(
+      Map<String, dynamic> query) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(query);
+    final _options =
+        _setStreamType<BaseSingleResponse<CartableCycleListModel>>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/Cartable/GetServiceRequestMessageFlow',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseSingleResponse<CartableCycleListModel> _value;
+    try {
+      _value = BaseSingleResponse<CartableCycleListModel>.fromJson(
+        _result.data!,
+        (json) => CartableCycleListModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||

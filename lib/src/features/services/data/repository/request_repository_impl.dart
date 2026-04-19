@@ -1,7 +1,8 @@
 import 'package:eks_sana_plus_org/src/features/services/data/data_source/request_history_data_source.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/cartable_cycle_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/non_cooperation_list_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/non_cooperation_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_operation_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/repository/request_repository.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
@@ -58,7 +59,17 @@ class RequestRepositoryImpl extends RequestRepository {
   }
 
   @override
-  Future<ApiResult<NonCooperationListEntity?>> getNonCooperationList(NonCooperationParamEntity param) async {
+  Future<ApiResult<NonCooperationListEntity?>> getNonCooperationList(RequestOperationParamEntity param) async {
+    try {
+      final result = await _dataSource.getNonCooperationList(param.toModel());
+      return result.toApiResult();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<CartableCycleListEntity?>> getCartableCycleList(RequestOperationParamEntity param) async {
     try {
       final result = await _dataSource.getNonCooperationList(param.toModel());
       return result.toApiResult();

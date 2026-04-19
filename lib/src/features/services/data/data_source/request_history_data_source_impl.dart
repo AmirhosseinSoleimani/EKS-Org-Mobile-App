@@ -1,6 +1,7 @@
+import 'package:eks_sana_plus_org/src/features/services/data/models/cartable_cycle_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/non_cooperation_list_model.dart';
-import 'package:eks_sana_plus_org/src/features/services/data/models/params/non_cooperation_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/request_operation_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/relief_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/service/request_service.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
@@ -32,6 +33,10 @@ class RequestDataSourceImpl extends RequestDataSource {
 
   @override
   Future<BaseSingleResponse<NonCooperationListModel>> getNonCooperationList(
-          NonCooperationParamModel param) async =>
+          RequestOperationParamModel param) async =>
       await _service.getNonCooperationList(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<CartableCycleListModel>> getCartableCycleList(RequestOperationParamModel param)async =>
+      await _service.getCartableCycleList(param.toJson());
 }

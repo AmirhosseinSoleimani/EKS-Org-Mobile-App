@@ -1,15 +1,15 @@
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/non_cooperation_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_operation_param_entity.dart';
 
-class NonCooperationParamModel extends NonCooperationParamEntity {
-  const NonCooperationParamModel({
+class RequestOperationParamModel extends RequestOperationParamEntity {
+  const RequestOperationParamModel({
     required super.serviceType,
     required super.requestId,
     super.pageSize,
     super.page,
   });
 
-  factory NonCooperationParamModel.fromJson(Map<String, dynamic> json) {
-    return NonCooperationParamModel(
+  factory RequestOperationParamModel.fromJson(Map<String, dynamic> json) {
+    return RequestOperationParamModel(
       serviceType: json['serviceType'],
       requestId: json['serviceRequestId'],
       pageSize: json['pageSize'],

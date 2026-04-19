@@ -74,6 +74,8 @@ import '../features/services/domain/repository/request_repository_share_data.dar
     as _i838;
 import '../features/services/domain/usecases/fetch_selected_request_item_use_case.dart'
     as _i376;
+import '../features/services/domain/usecases/get_cartable_list_use_case.dart'
+    as _i910;
 import '../features/services/domain/usecases/get_home_service_request_by_id_use_case.dart'
     as _i63;
 import '../features/services/domain/usecases/get_home_service_request_list_use_case.dart'
@@ -430,6 +432,8 @@ _i174.GetIt $initGetIt(
       () => _i707.GetNonCooperationListUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i672.GetReliefRequestByIdUseCase>(
       () => _i672.GetReliefRequestByIdUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i910.GetCartableListUseCase>(
+      () => _i910.GetCartableListUseCase(gh<_i603.RequestRepository>()));
   gh.factory<_i1048.ReliefRequestListCubit>(() =>
       _i1048.ReliefRequestListCubit(gh<_i192.GetReliefRequestListUseCase>()));
   gh.factory<_i1013.HomeServiceRequestListCubit>(() =>

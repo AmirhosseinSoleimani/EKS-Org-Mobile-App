@@ -1,26 +1,26 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
-import 'package:eks_sana_plus_org/src/features/services/data/models/params/non_cooperation_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/request_operation_param_model.dart';
 
-class NonCooperationParamEntity {
+class RequestOperationParamEntity {
   final ServiceType serviceType;
   final int requestId;
   final int? pageSize;
   final int? page;
 
-  const NonCooperationParamEntity({
+  const RequestOperationParamEntity({
     required this.serviceType,
    required this.requestId,
     this.pageSize,
     this.page,
   });
 
-  NonCooperationParamEntity copyWith({
+  RequestOperationParamEntity copyWith({
     ServiceType? serviceType,
     int? requestId,
     int? pageSize,
     int? page,
   }) {
-    return NonCooperationParamEntity(
+    return RequestOperationParamEntity(
       serviceType: serviceType ?? this.serviceType,
       requestId: requestId ?? this.requestId,
       pageSize: pageSize ?? this.pageSize,
@@ -28,8 +28,8 @@ class NonCooperationParamEntity {
     );
   }
 
-  NonCooperationParamModel toModel() {
-    return NonCooperationParamModel(
+  RequestOperationParamModel toModel() {
+    return RequestOperationParamModel(
       serviceType: serviceType,
       requestId: requestId,
       pageSize: pageSize,

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart' hide Headers;
+import 'package:eks_sana_plus_org/src/features/services/data/models/cartable_cycle_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/non_cooperation_list_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/relief_request_model.dart';
@@ -30,5 +31,9 @@ abstract class RequestService {
 
   @POST('/api/LackOfCooperation/getLackOfCooperationList')
   Future<BaseSingleResponse<NonCooperationListModel>> getNonCooperationList(
+      @Body() Map<String, dynamic> query);
+
+  @POST('/api/Cartable/GetServiceRequestMessageFlow')
+  Future<BaseSingleResponse<CartableCycleListModel>> getCartableCycleList(
       @Body() Map<String, dynamic> query);
 }

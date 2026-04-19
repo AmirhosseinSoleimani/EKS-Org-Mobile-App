@@ -3,7 +3,7 @@ import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/non_cooperation_item_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/non_cooperation_list_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/non_cooperation_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_operation_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/fetch_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_non_cooperation_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
@@ -62,7 +62,7 @@ class NonCooperationCubit extends Cubit<NonCooperationState> {
     items.clear();
 
     final result = await _getNonCooperationListUseCase(
-      NonCooperationParamEntity(
+      RequestOperationParamEntity(
         serviceType: ServiceType.homeService,
         requestId: requestId ?? 0,
         page: _page,
@@ -105,7 +105,7 @@ class NonCooperationCubit extends Cubit<NonCooperationState> {
     _page++;
 
     final result = await _getNonCooperationListUseCase(
-      NonCooperationParamEntity(
+      RequestOperationParamEntity(
         serviceType: ServiceType.homeService,
         requestId: 2300350,
         page: _page,
