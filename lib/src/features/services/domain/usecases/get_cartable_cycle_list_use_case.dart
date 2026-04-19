@@ -7,11 +7,11 @@ import 'package:injectable/injectable.dart';
 import '../entities/params/request_operation_param_entity.dart';
 
 @lazySingleton
-class GetCartableListUseCase extends BaseUseCase<
+class GetCartableCycleListUseCase extends BaseUseCase<
     ApiResult<CartableCycleListEntity?>, RequestOperationParamEntity> {
   final RequestRepository _repository;
 
-  GetCartableListUseCase(this._repository);
+  GetCartableCycleListUseCase(this._repository);
 
   @override
   Future<ApiResult<CartableCycleListEntity?>> call(arg) async {

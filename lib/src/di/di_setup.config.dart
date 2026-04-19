@@ -74,7 +74,7 @@ import '../features/services/domain/repository/request_repository_share_data.dar
     as _i838;
 import '../features/services/domain/usecases/fetch_selected_request_item_use_case.dart'
     as _i376;
-import '../features/services/domain/usecases/get_cartable_list_use_case.dart'
+import '../features/services/domain/usecases/get_cartable_cycle_list_use_case.dart'
     as _i910;
 import '../features/services/domain/usecases/get_home_service_request_by_id_use_case.dart'
     as _i63;
@@ -88,6 +88,8 @@ import '../features/services/domain/usecases/get_relief_request_list_use_case.da
     as _i192;
 import '../features/services/domain/usecases/set_selected_request_item_use_case.dart'
     as _i369;
+import '../features/services/presentation/cartable_cycle_page/cubit/cartable_cycle_cubit.dart'
+    as _i1029;
 import '../features/services/presentation/home_service_request_list_page/cubit/home_service_request_list_cubit.dart'
     as _i1013;
 import '../features/services/presentation/non_cooperation_page/cubit/non_cooperation_cubit.dart'
@@ -432,14 +434,18 @@ _i174.GetIt $initGetIt(
       () => _i707.GetNonCooperationListUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i672.GetReliefRequestByIdUseCase>(
       () => _i672.GetReliefRequestByIdUseCase(gh<_i603.RequestRepository>()));
-  gh.lazySingleton<_i910.GetCartableListUseCase>(
-      () => _i910.GetCartableListUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i910.GetCartableCycleListUseCase>(
+      () => _i910.GetCartableCycleListUseCase(gh<_i603.RequestRepository>()));
   gh.factory<_i1048.ReliefRequestListCubit>(() =>
       _i1048.ReliefRequestListCubit(gh<_i192.GetReliefRequestListUseCase>()));
   gh.factory<_i1013.HomeServiceRequestListCubit>(() =>
       _i1013.HomeServiceRequestListCubit(
           gh<_i809.GetHomeServiceRequestListUseCase>()));
   gh.factory<_i165.NonCooperationCubit>(() => _i165.NonCooperationCubit(
+        gh<_i707.GetNonCooperationListUseCase>(),
+        gh<_i376.FetchSelectedRequestItemUseCase>(),
+      ));
+  gh.factory<_i1029.CartableCycleCubit>(() => _i1029.CartableCycleCubit(
         gh<_i707.GetNonCooperationListUseCase>(),
         gh<_i376.FetchSelectedRequestItemUseCase>(),
       ));

@@ -1,90 +1,90 @@
 import 'package:eks_sana_plus_org/src/features/services/data/models/cartable_cycle_model.dart';
 
 class CartableCycleItemEntity {
-  final int id;
-  final int serviceType;
-  final int serviceRequestId;
-  final String guid;
-  final bool isBeginningOfCycle;
-  final bool isEndingOfCycle;
-  final int type;
-  final int flowId;
-  final String flowCode;
-  final String cycleId;
-  final String subject;
-  final int status;
-  final String statusTitle;
-  final int stepId;
-  final String stepTitle;
-  final String relatedTelNo;
-  final int relatedCallLogId;
-  final int serviceRequestTrackCode;
-  final int senderType;
-  final String senderTypeName;
-  final String senderTypeTitle;
-  final int senderId;
-  final String senderFullName;
-  final int receiverType;
-  final String receiverTypeName;
-  final String receiverTypeTitle;
-  final int receiverId;
-  final String receiverUid;
-  final String receiverFullName;
-  final String description;
-  final String descriptionHtml;
-  final bool isActive;
-  final bool isDeleted;
-  final int priority;
-  final bool snoozeTimeElapsed;
-  final String displayTime;
-  final String typeTitle;
-  final String sendDateTime;
-  final String sendDateJalali;
-  final String sendTime;
-  final bool dueTimeIsPassed;
+  final int? id;
+  final int? serviceType;
+  final int? serviceRequestId;
+  final String? guid;
+  final bool? isBeginningOfCycle;
+  final bool? isEndingOfCycle;
+  final int? type;
+  final int? flowId;
+  final String? flowCode;
+  final String? cycleId;
+  final String? subject;
+  final int? status;
+  final String? statusTitle;
+  final int? stepId;
+  final String? stepTitle;
+  final String? relatedTelNo;
+  final int? relatedCallLogId;
+  final int? serviceRequestTrackCode;
+  final int? senderType;
+  final String? senderTypeName;
+  final String? senderTypeTitle;
+  final int? senderId;
+  final String? senderFullName;
+  final int? receiverType;
+  final String? receiverTypeName;
+  final String? receiverTypeTitle;
+  final int? receiverId;
+  final String? receiverUid;
+  final String? receiverFullName;
+  final String? description;
+  final String? descriptionHtml;
+  final bool? isActive;
+  final bool? isDeleted;
+  final int? priority;
+  final bool? snoozeTimeElapsed;
+  final String? displayTime;
+  final String? typeTitle;
+  final String? sendDateTime;
+  final String? sendDateJalali;
+  final String? sendTime;
+  final bool? dueTimeIsPassed;
 
   const CartableCycleItemEntity({
-    required this.id,
-    required this.serviceType,
-    required this.serviceRequestId,
-    required this.guid,
-    required this.isBeginningOfCycle,
-    required this.isEndingOfCycle,
-    required this.type,
-    required this.flowId,
-    required this.flowCode,
-    required this.cycleId,
-    required this.subject,
-    required this.status,
-    required this.statusTitle,
-    required this.stepId,
-    required this.stepTitle,
-    required this.relatedTelNo,
-    required this.relatedCallLogId,
-    required this.serviceRequestTrackCode,
-    required this.senderType,
-    required this.senderTypeName,
-    required this.senderTypeTitle,
-    required this.senderId,
-    required this.senderFullName,
-    required this.receiverType,
-    required this.receiverTypeName,
-    required this.receiverTypeTitle,
-    required this.receiverId,
-    required this.receiverUid,
-    required this.receiverFullName,
-    required this.description,
-    required this.descriptionHtml,
-    required this.isActive,
-    required this.isDeleted,
-    required this.priority,
-    required this.snoozeTimeElapsed,
-    required this.displayTime,
-    required this.typeTitle,
-    required this.sendDateTime,
-    required this.sendDateJalali,
-    required this.sendTime,
-    required this.dueTimeIsPassed,
+    this.id,
+    this.serviceType,
+    this.serviceRequestId,
+    this.guid,
+    this.isBeginningOfCycle,
+    this.isEndingOfCycle,
+    this.type,
+    this.flowId,
+    this.flowCode,
+    this.cycleId,
+    this.subject,
+    this.status,
+    this.statusTitle,
+    this.stepId,
+    this.stepTitle,
+    this.relatedTelNo,
+    this.relatedCallLogId,
+    this.serviceRequestTrackCode,
+    this.senderType,
+    this.senderTypeName,
+    this.senderTypeTitle,
+    this.senderId,
+    this.senderFullName,
+    this.receiverType,
+    this.receiverTypeName,
+    this.receiverTypeTitle,
+    this.receiverId,
+    this.receiverUid,
+    this.receiverFullName,
+    this.description,
+    this.descriptionHtml,
+    this.isActive,
+    this.isDeleted,
+    this.priority,
+    this.snoozeTimeElapsed,
+    this.displayTime,
+    this.typeTitle,
+    this.sendDateTime,
+    this.sendDateJalali,
+    this.sendTime,
+    this.dueTimeIsPassed,
   });
 
   CartableCycleItemEntity copyWith({

@@ -1,10 +1,9 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/non_cooperation_page/cubit/non_cooperation_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/cartable_cycle_page/cubit/cartable_cycle_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/non_cooperation_list_view.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/main_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
@@ -14,16 +13,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../widgets/request_status_section.dart';
 
-class NonCooperationPage extends StatelessWidget {
-  static const path = "/non-cooperation-page";
-  static const name = "non-cooperation-page";
+class CartableCyclePage extends StatelessWidget {
+  static const path = "/cartable-cycle-page";
+  static const name = "cartable-cycle-page";
 
-  const NonCooperationPage({super.key});
+  const CartableCyclePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<NonCooperationCubit>()..init(),
+      create: (_) => getIt<CartableCycleCubit>()..init(),
       child: const _SelectedServicesView(),
     );
   }
@@ -34,8 +33,8 @@ class _SelectedServicesView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<NonCooperationCubit>();
-    return BlocListener<NonCooperationCubit, NonCooperationState>(
+    final cubit = context.read<CartableCycleCubit>();
+    return BlocListener<CartableCycleCubit, CartableCycleState>(
       listener: (context, state) {
         state.whenOrNull(
           error: (message) {
@@ -59,7 +58,7 @@ class _SelectedServicesView extends StatelessWidget {
         );
       },
       child: Scaffold(
-          appBar: const SimpleAppBar(title: "لیست عدم همکاری"),
+          appBar: const SimpleAppBar(title: "چرخه کارتابل"),
           body: ScrollConfiguration(
             behavior: ScrollConfiguration.of(context).copyWith(
               dragDevices: {
@@ -71,7 +70,7 @@ class _SelectedServicesView extends StatelessWidget {
               padding: const EdgeInsets.all(AppSize.s16),
               child: Column(
                 children: [
-                  BlocBuilder<NonCooperationCubit, NonCooperationState>(
+                  BlocBuilder<CartableCycleCubit, CartableCycleState>(
                     builder: (context, state) {
                       return state.maybeWhen(
                           idle: () => const SizedBox.shrink(),
@@ -112,7 +111,7 @@ class _SelectedServicesView extends StatelessWidget {
     );
   }
 
-  RequestStatusSection buildRequestStatusSection(NonCooperationCubit cubit) {
+  RequestStatusSection buildRequestStatusSection(CartableCycleCubit cubit) {
     return RequestStatusSection(
       trackCode: cubit.selectedRequest?.trackCode.toString() ?? '-',
       requestDateJalali:
