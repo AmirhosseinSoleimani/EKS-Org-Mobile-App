@@ -1,5 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/non_cooperation_item_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/non_cooperation/cubit/non_cooperation_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/non_cooperation_page/cubit/non_cooperation_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_wiget_row.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';

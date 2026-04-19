@@ -1,5 +1,5 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/non_cooperation/cubit/non_cooperation_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/non_cooperation_page/cubit/non_cooperation_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/non_cooperation_list_view.dart';
@@ -14,8 +14,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../widgets/request_status_section.dart';
 
 class NonCooperationPage extends StatelessWidget {
-  static const path = "/non_cooperation-page";
-  static const name = "non_cooperation-page";
+  static const path = "/non_cooperation_page-page";
+  static const name = "non_cooperation_page-page";
 
   const NonCooperationPage({super.key});
 

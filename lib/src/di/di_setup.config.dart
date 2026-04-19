@@ -88,8 +88,8 @@ import '../features/services/domain/usecases/set_selected_request_item_use_case.
     as _i369;
 import '../features/services/presentation/home_service_request_list_page/cubit/home_service_request_list_cubit.dart'
     as _i1013;
-import '../features/services/presentation/non_cooperation/cubit/non_cooperation_cubit.dart'
-    as _i1047;
+import '../features/services/presentation/non_cooperation_page/cubit/non_cooperation_cubit.dart'
+    as _i165;
 import '../features/services/presentation/relief_request_list_page/cubit/relief_request_list_cubit.dart'
     as _i1048;
 import '../features/services/presentation/request_detail/cubit/request_detail_cubit.dart'
@@ -435,7 +435,7 @@ _i174.GetIt $initGetIt(
   gh.factory<_i1013.HomeServiceRequestListCubit>(() =>
       _i1013.HomeServiceRequestListCubit(
           gh<_i809.GetHomeServiceRequestListUseCase>()));
-  gh.factory<_i1047.NonCooperationCubit>(() => _i1047.NonCooperationCubit(
+  gh.factory<_i165.NonCooperationCubit>(() => _i165.NonCooperationCubit(
         gh<_i707.GetNonCooperationListUseCase>(),
         gh<_i376.FetchSelectedRequestItemUseCase>(),
       ));

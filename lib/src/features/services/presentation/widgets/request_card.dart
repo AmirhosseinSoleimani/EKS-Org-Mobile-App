@@ -3,6 +3,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/request_det
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
+import 'operation_menu.dart';
 import 'request_details_button.dart';
 import 'request_header.dart';
 import 'request_info_row.dart';
@@ -78,10 +79,21 @@ class RequestCard extends StatelessWidget {
             color: Theme.of(context).colorScheme.tertiaryFixed,
           ),
           const SizedBox(height: 12),
-          RequestDetailsButton(
-            onPressed: () =>
-                context.push(RequestDetailPage.path, extra: request.id),
-          )
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              Expanded(
+                child: RequestDetailsButton(
+                  onPressed: () =>
+                      context.push(RequestDetailPage.path, extra: request.id),
+                ),
+              ),
+              const SizedBox(width: 12),
+              OperationMenu(
+                requestId: request.id ?? 0,
+              ),
+            ],
+          ),
         ],
       ),
     );

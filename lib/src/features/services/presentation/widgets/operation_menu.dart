@@ -1,0 +1,78 @@
+import 'package:eks_sana_plus_org/src/features/services/presentation/non_cooperation_page/non_cooperation_page.dart';
+import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
+
+class OperationMenu extends StatelessWidget {
+  final int requestId;
+
+  const OperationMenu({
+    super.key,
+    required this.requestId,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return PopupMenuButton<OperationItem>(
+      elevation: 8,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(8),
+      ),
+      onSelected: (item) {
+        context.push(item.route, extra: requestId);
+      },
+      itemBuilder: (context) {
+        return OperationItem.values.map((item) {
+          return PopupMenuItem(
+            value: item,
+            child: Text(item.label),
+          );
+        }).toList();
+      },
+      child: Row(
+        children: [
+          const Icon(Icons.more_vert, size: 22),
+          const SizedBox(width: 6),
+          Text(
+            "عملیات",
+            style: Theme.of(context)
+                .textTheme
+                .bodyMedium
+                ?.copyWith(fontWeight: FontWeight.w600),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+
+enum OperationItem {
+  requestStatusHistory(
+    label: 'تاریخچه وضعیت درخواست',
+    route: NonCooperationPage.path,
+  ),
+  kartableCycle(
+    label: 'چرخه کارتابل',
+    route: NonCooperationPage.path,
+  ),
+  nonCooperationList(
+    label: 'لیست عدم همکاری',
+    route: NonCooperationPage.path,
+  ),
+  chassisRequestHistory(
+    label: 'تاریخچه درخواست شاسی',
+    route: NonCooperationPage.path,
+  ),
+  evaluationHistory(
+    label: 'تاریخچه ارزیابی',
+    route: NonCooperationPage.path,
+  );
+
+  final String label;
+  final String route;
+
+  const OperationItem({
+    required this.label,
+    required this.route,
+  });
+}
