@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/features/services/presentation/cartable_cycle_page/cartable_cycle_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/non_cooperation_page/non_cooperation_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -53,7 +54,7 @@ enum OperationItem {
   ),
   kartableCycle(
     label: 'چرخه کارتابل',
-    route: NonCooperationPage.path,
+    route: CartableCyclePage.path,
   ),
   nonCooperationList(
     label: 'لیست عدم همکاری',
