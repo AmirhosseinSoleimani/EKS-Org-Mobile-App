@@ -37,7 +37,7 @@ class _AuthService implements AuthService {
     )
             .compose(
               _dio.options,
-              '/api/User/Login',
+              '/api/UserOrg/Login',
               queryParameters: queryParameters,
               data: _data,
             )

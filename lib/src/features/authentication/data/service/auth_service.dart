@@ -13,6 +13,6 @@ abstract class AuthService {
   @factoryMethod
   factory AuthService(Dio dio) = _AuthService;
 
-  @POST('/api/User/Login')
+  @POST('/api/UserOrg/Login')
   Future<BaseSingleResponse<LoginResponseModel?>> login(@Body() Map<String, dynamic> body);
 }

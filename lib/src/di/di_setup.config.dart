@@ -402,10 +402,10 @@ _i174.GetIt $initGetIt(
         gh<_i453.SetAddressInfoUseCase>(),
         gh<_i739.FetchAddressToLocationUseCase>(),
       ));
-  gh.lazySingleton<_i192.GetReliefRequestListUseCase>(
-      () => _i192.GetReliefRequestListUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i809.GetHomeServiceRequestListUseCase>(() =>
       _i809.GetHomeServiceRequestListUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i192.GetReliefRequestListUseCase>(
+      () => _i192.GetReliefRequestListUseCase(gh<_i603.RequestRepository>()));
   gh.factory<_i1048.ReliefRequestListCubit>(() =>
       _i1048.ReliefRequestListCubit(gh<_i192.GetReliefRequestListUseCase>()));
   gh.factory<_i1013.HomeServiceRequestListCubit>(() =>
