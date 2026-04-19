@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart' hide Headers;
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/non_cooperation_list_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/relief_request_model.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 import 'package:injectable/injectable.dart';
@@ -23,7 +24,11 @@ abstract class RequestService {
   @POST('/api/HomeServiceRequest/GetByFilterJson')
   Future<BaseListResponse<HomeServiceRequestModel>> getHomeServiceRequestList(@Body() Map<String, dynamic> body);
 
-  @GET('/api/HomeServiceRequest/GetById')
+  @POST('/api/HomeServiceRequest/GetById')
   Future<BaseSingleResponse<HomeServiceRequestModel>> getHomeServiceRequestById(
+      @Queries() Map<String, dynamic> query);
+
+  @POST('/api/LackOfCooperation/getLackOfCooperationList')
+  Future<BaseSingleResponse<NonCooperationListModel>> getNonCooperationList(
       @Queries() Map<String, dynamic> query);
 }

@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/services/data/data_source/request_history_data_source.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/non_cooperation_list_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/repository/request_repository.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
@@ -49,6 +50,16 @@ class RequestRepositoryImpl extends RequestRepository {
       int id) async {
     try {
       final result = await _dataSource.getHomeServiceRequestById(id);
+      return result.toApiResult();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<NonCooperationListEntity?>> getNonCooperationList() async {
+    try {
+      final result = await _dataSource.getNonCooperationList();
       return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);

@@ -149,7 +149,7 @@ class _RequestService implements RequestService {
     const Map<String, dynamic>? _data = null;
     final _options =
         _setStreamType<BaseSingleResponse<HomeServiceRequestModel>>(Options(
-      method: 'GET',
+      method: 'POST',
       headers: _headers,
       extra: _extra,
     )
@@ -171,6 +171,46 @@ class _RequestService implements RequestService {
         _result.data!,
         (json) =>
             HomeServiceRequestModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseSingleResponse<NonCooperationListModel>> getNonCooperationList(
+      Map<String, dynamic> query) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.addAll(query);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options =
+        _setStreamType<BaseSingleResponse<NonCooperationListModel>>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/LackOfCooperation/GetByFilterJson',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseSingleResponse<NonCooperationListModel> _value;
+    try {
+      _value = BaseSingleResponse<NonCooperationListModel>.fromJson(
+        _result.data!,
+        (json) =>
+            NonCooperationListModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);

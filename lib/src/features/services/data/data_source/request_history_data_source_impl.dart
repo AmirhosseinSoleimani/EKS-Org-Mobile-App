@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/non_cooperation_list_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/relief_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/service/request_service.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
@@ -28,4 +29,8 @@ class RequestDataSourceImpl extends RequestDataSource {
   Future<BaseSingleResponse<HomeServiceRequestModel>> getHomeServiceRequestById(
           int id) async =>
       await _service.getHomeServiceRequestById({"id": id});
+
+  @override
+  Future<BaseSingleResponse<NonCooperationListModel>>
+      getNonCooperationList() async => await _service.getNonCooperationList({});
 }
