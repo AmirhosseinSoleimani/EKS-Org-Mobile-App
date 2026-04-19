@@ -72,6 +72,8 @@ import '../features/services/domain/repository/request_repository.dart'
     as _i603;
 import '../features/services/domain/repository/request_repository_share_data.dart'
     as _i838;
+import '../features/services/domain/usecases/fetch_selected_request_item_use_case.dart'
+    as _i376;
 import '../features/services/domain/usecases/get_home_service_request_by_id_use_case.dart'
     as _i63;
 import '../features/services/domain/usecases/get_home_service_request_list_use_case.dart'
@@ -82,6 +84,8 @@ import '../features/services/domain/usecases/get_relief_request_by_id_use_case.d
     as _i672;
 import '../features/services/domain/usecases/get_relief_request_list_use_case.dart'
     as _i192;
+import '../features/services/domain/usecases/set_selected_request_item_use_case.dart'
+    as _i369;
 import '../features/services/presentation/home_service_request_list_page/cubit/home_service_request_list_cubit.dart'
     as _i1013;
 import '../features/services/presentation/non_cooperation/cubit/non_cooperation_cubit.dart'
@@ -253,6 +257,12 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i988.IPermissionDeviceService>(
       () => _i988.PermissionDeviceService());
+  gh.lazySingleton<_i376.FetchSelectedRequestItemUseCase>(() =>
+      _i376.FetchSelectedRequestItemUseCase(
+          gh<_i838.RequestRepositoryShareData>()));
+  gh.lazySingleton<_i369.SetSelectedRequestItemUseCase>(() =>
+      _i369.SetSelectedRequestItemUseCase(
+          gh<_i838.RequestRepositoryShareData>()));
   gh.lazySingleton<_i528.ConnectivityService>(
       () => _i528.ConnectivityServiceImpl(gh<_i895.Connectivity>()));
   gh.lazySingleton<_i406.FetchAddressInfoUseCase>(
@@ -422,11 +432,13 @@ _i174.GetIt $initGetIt(
       () => _i672.GetReliefRequestByIdUseCase(gh<_i603.RequestRepository>()));
   gh.factory<_i1048.ReliefRequestListCubit>(() =>
       _i1048.ReliefRequestListCubit(gh<_i192.GetReliefRequestListUseCase>()));
-  gh.factory<_i1047.NonCooperationCubit>(() =>
-      _i1047.NonCooperationCubit(gh<_i707.GetNonCooperationListUseCase>()));
   gh.factory<_i1013.HomeServiceRequestListCubit>(() =>
       _i1013.HomeServiceRequestListCubit(
           gh<_i809.GetHomeServiceRequestListUseCase>()));
+  gh.factory<_i1047.NonCooperationCubit>(() => _i1047.NonCooperationCubit(
+        gh<_i707.GetNonCooperationListUseCase>(),
+        gh<_i376.FetchSelectedRequestItemUseCase>(),
+      ));
   return getIt;
 }
 

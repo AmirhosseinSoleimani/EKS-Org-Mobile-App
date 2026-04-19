@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/non_cooperation_item_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/non_cooperation_list_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/non_cooperation_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/usecases/fetch_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_non_cooperation_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -15,14 +16,17 @@ part 'non_cooperation_state.dart';
 @injectable
 class NonCooperationCubit extends Cubit<NonCooperationState> {
   final GetNonCooperationListUseCase _getNonCooperationListUseCase;
+  final FetchSelectedRequestItemUseCase _fetchSelectedRequestItemUseCase;
 
-  NonCooperationCubit(this._getNonCooperationListUseCase)
-      : super(const NonCooperationState.idle());
-
-  NonCooperationListEntity? _listEntity;
+  NonCooperationCubit(
+    this._getNonCooperationListUseCase,
+    this._fetchSelectedRequestItemUseCase,
+  ) : super(const NonCooperationState.idle());
+  
   BaseRequestEntity? selectedRequest;
   final List<NonCooperationItemEntity> items = [];
 
+  int? requestId;
   int _page = 1;
   final int _pageSize = 3;
 
@@ -31,6 +35,28 @@ class NonCooperationCubit extends Cubit<NonCooperationState> {
   Future<void> init() async {
     emit(const NonCooperationState.loading());
 
+    final BaseRequestEntity? cachedRequest =
+        await _fetchSelectedRequestItemUseCase();
+
+    if (cachedRequest == null) {
+      _safeEmit(
+        const NonCooperationState.error(
+          message: BottomSheetMessageModel(
+            title: 'خطا',
+            message: 'در دریافت اطلاعات درخواست مشکلی رخ داد.',
+          ),
+        ),
+      );
+      return;
+    }
+
+    selectedRequest = cachedRequest;
+    requestId = cachedRequest.id;
+
+    await _loadNonCooperationList();
+  }
+
+  Future<void> _loadNonCooperationList() async {
     _page = 1;
     _hasMore = true;
     items.clear();
@@ -38,7 +64,7 @@ class NonCooperationCubit extends Cubit<NonCooperationState> {
     final result = await _getNonCooperationListUseCase(
       NonCooperationParamEntity(
         serviceType: ServiceType.homeService,
-        requestId: 2300350,
+        requestId: requestId ?? 0,
         page: _page,
         pageSize: _pageSize,
       ),
