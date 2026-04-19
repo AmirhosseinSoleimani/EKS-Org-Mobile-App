@@ -4,15 +4,17 @@ import 'package:eks_sana_plus_org/src/shared/usecase/use_case.dart';
 import 'package:injectable/injectable.dart';
 
 import '../entities/non_cooperation_list_entity.dart';
+import '../entities/params/non_cooperation_param_entity.dart';
 
 @lazySingleton
-class GetNonCooperationListUseCase extends BaseUseCaseNoArgs {
+class GetNonCooperationListUseCase extends BaseUseCase<
+    ApiResult<NonCooperationListEntity?>, NonCooperationParamEntity> {
   final RequestRepository _repository;
 
   GetNonCooperationListUseCase(this._repository);
 
   @override
-  Future<ApiResult<NonCooperationListEntity?>> call() async {
-    return await _repository.getNonCooperationList();
+  Future<ApiResult<NonCooperationListEntity?>> call(arg) async {
+    return await _repository.getNonCooperationList(arg);
   }
 }

@@ -37,7 +37,7 @@ class _RequestService implements RequestService {
     )
             .compose(
               _dio.options,
-              '/api/AidServiceRequest/GetByFilterJson',
+              '/api/AidServiceRequest/GetAidServiceRequestList',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -115,7 +115,7 @@ class _RequestService implements RequestService {
     )
             .compose(
               _dio.options,
-              '/api/HomeServiceRequest/GetByFilterJson',
+              '/api/HomeServiceRequest/GetHomeServiceRequestList',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -195,7 +195,7 @@ class _RequestService implements RequestService {
     )
             .compose(
               _dio.options,
-              '/api/LackOfCooperation/GetByFilterJson',
+              '/api/LackOfCooperation/getLackOfCooperationList',
               queryParameters: queryParameters,
               data: _data,
             )

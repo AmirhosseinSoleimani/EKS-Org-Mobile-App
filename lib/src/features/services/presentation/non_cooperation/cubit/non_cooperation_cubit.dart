@@ -1,15 +1,17 @@
 import 'package:bloc/bloc.dart';
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/non_cooperation_item_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/non_cooperation_list_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/non_cooperation_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_non_cooperation_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:injectable/injectable.dart';
 
 part 'non_cooperation_cubit.freezed.dart';
-
 part 'non_cooperation_state.dart';
-
+@injectable
 class NonCooperationCubit extends Cubit<NonCooperationState> {
   final GetNonCooperationListUseCase _getNonCooperationListUseCase;
 
@@ -27,7 +29,12 @@ class NonCooperationCubit extends Cubit<NonCooperationState> {
   Future<void> init() async {
     emit(const NonCooperationState.loading());
 
-    final result = await _getNonCooperationListUseCase();
+    final result = await _getNonCooperationListUseCase(
+        const NonCooperationParamEntity(
+            serviceType: ServiceType.homeService,
+            requestId: 2300350,
+            page: 1,
+            pageSize: 2));
     result.whenOrNull(
       success: (data, failures, resultCode) async {
         _listEntity = data;
