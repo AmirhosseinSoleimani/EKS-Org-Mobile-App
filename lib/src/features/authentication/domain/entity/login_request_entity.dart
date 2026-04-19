@@ -2,27 +2,27 @@ import 'package:eks_sana_plus_org/src/features/authentication/data/models/login_
 
 class LoginRequestEntity {
   const LoginRequestEntity({
-    this.otpCode,
-    this.fcmToken,
+    this.userName,
+    this.password,
   });
 
-  final String? otpCode;
-  final String? fcmToken;
+  final String? userName;
+  final String? password;
 
   LoginRequestEntity copyWith({
     String? otpCode,
     String? fcmToken,
   }) {
     return LoginRequestEntity(
-      otpCode: otpCode ?? this.otpCode,
-      fcmToken: fcmToken ?? this.fcmToken,
+      userName: otpCode ?? this.userName,
+      password: fcmToken ?? this.password,
     );
   }
 
   LoginRequestModel toModel() {
     return LoginRequestModel(
-      otpCode: otpCode,
-      fcmToken: fcmToken,
+      userName: userName,
+      password: password,
     );
   }
 }

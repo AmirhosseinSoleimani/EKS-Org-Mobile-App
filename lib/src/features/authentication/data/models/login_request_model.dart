@@ -2,12 +2,12 @@ import 'package:eks_sana_plus_org/src/features/authentication/domain/entity/logi
 
 class LoginRequestModel extends LoginRequestEntity{
   const LoginRequestModel({
-    super.otpCode,
-    super.fcmToken,
+    super.userName,
+    super.password,
   });
 
   Map<String, dynamic> toJson() => {
-    'FcmToken': fcmToken,
-    'OTP': otpCode,
+    'username': userName,
+    'password': password,
   };
 }

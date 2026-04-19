@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/common/constants/app_constants.dart';
+import 'package:eks_sana_plus_org/src/features/authentication/domain/entity/login_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/authentication/domain/use_cases/login_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/authentication/domain/use_cases/phone_number_validator_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/authentication/presentation/login/cubit/login_state.dart';
@@ -36,10 +37,12 @@ class LoginCubit extends Cubit<LoginState> {
   void privacyPolicyUrl() => launchUrl(Uri.parse(AppConstants.privacyPolicyUrl));
 
   Future<void> login() async {
-    /* emit(const LoginState.loading());
-    final result = await loginUseCase.call(
-
-      );
+     emit(const LoginState.loading());
+     final loginParam = LoginRequestEntity(
+       userName: userNameController.text,
+     password: passwordController.text,
+     );
+    final result = await loginUseCase.call(loginParam);
       result.whenOrNull(
         success: (_, __, ___) => emit(const LoginState.success()),
         failure: (error, failure) {
@@ -50,11 +53,7 @@ class LoginCubit extends Cubit<LoginState> {
         );
         },
       connectionError: () => emit(const LoginState.connectionError()),
-    );*/
-  }
-
-  void onLogoAnimationFinished() {
-    emit(const LoginState.animationCompleted());
+    );
   }
 
   @override

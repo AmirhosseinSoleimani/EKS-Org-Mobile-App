@@ -12,6 +12,8 @@ class NonCooperationState with _$NonCooperationState {
     required BottomSheetMessageModel message,
   }) = _Error;
 
+  const factory NonCooperationState.loadingMore() = _LoadingMore;
+
 
   const factory NonCooperationState.connectionError() = _ConnectionError;
 }

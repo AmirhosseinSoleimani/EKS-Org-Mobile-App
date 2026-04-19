@@ -16,7 +16,8 @@ class KeyValueWidgetRow extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 6),
       child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           // Label
           Expanded(
@@ -25,14 +26,8 @@ class KeyValueWidgetRow extends StatelessWidget {
           ),
 
           const SizedBox(width: 12),
-
-          // Value (any widget you want)
-          Expanded(
-            flex: 2,
-            child: Align(
-              alignment: Alignment.centerRight,
-              child: value,
-            ),
+          Flexible(
+            child: value,
           ),
         ],
       ),

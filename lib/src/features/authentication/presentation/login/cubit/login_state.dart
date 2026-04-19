@@ -12,8 +12,6 @@ class LoginState with _$LoginState {
 
   const factory LoginState.success() = _Succes;
 
-  const factory LoginState.animationCompleted() = _AnimationCompleted;
-
   const factory LoginState.connectionError() = _ConnectionError;
 
 }

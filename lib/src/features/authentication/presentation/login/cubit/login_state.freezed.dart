@@ -22,7 +22,6 @@ mixin _$LoginState {
     required TResult Function(String errorMessage) error,
     required TResult Function() loading,
     required TResult Function() success,
-    required TResult Function() animationCompleted,
     required TResult Function() connectionError,
   }) =>
       throw _privateConstructorUsedError;
@@ -32,7 +31,6 @@ mixin _$LoginState {
     TResult? Function(String errorMessage)? error,
     TResult? Function()? loading,
     TResult? Function()? success,
-    TResult? Function()? animationCompleted,
     TResult? Function()? connectionError,
   }) =>
       throw _privateConstructorUsedError;
@@ -42,7 +40,6 @@ mixin _$LoginState {
     TResult Function(String errorMessage)? error,
     TResult Function()? loading,
     TResult Function()? success,
-    TResult Function()? animationCompleted,
     TResult Function()? connectionError,
     required TResult orElse(),
   }) =>
@@ -53,7 +50,6 @@ mixin _$LoginState {
     required TResult Function(_Error value) error,
     required TResult Function(_Loading value) loading,
     required TResult Function(_Succes value) success,
-    required TResult Function(_AnimationCompleted value) animationCompleted,
     required TResult Function(_ConnectionError value) connectionError,
   }) =>
       throw _privateConstructorUsedError;
@@ -63,7 +59,6 @@ mixin _$LoginState {
     TResult? Function(_Error value)? error,
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Succes value)? success,
-    TResult? Function(_AnimationCompleted value)? animationCompleted,
     TResult? Function(_ConnectionError value)? connectionError,
   }) =>
       throw _privateConstructorUsedError;
@@ -73,7 +68,6 @@ mixin _$LoginState {
     TResult Function(_Error value)? error,
     TResult Function(_Loading value)? loading,
     TResult Function(_Succes value)? success,
-    TResult Function(_AnimationCompleted value)? animationCompleted,
     TResult Function(_ConnectionError value)? connectionError,
     required TResult orElse(),
   }) =>
@@ -139,7 +133,6 @@ class _$IdleImpl implements _Idle {
     required TResult Function(String errorMessage) error,
     required TResult Function() loading,
     required TResult Function() success,
-    required TResult Function() animationCompleted,
     required TResult Function() connectionError,
   }) {
     return idle();
@@ -152,7 +145,6 @@ class _$IdleImpl implements _Idle {
     TResult? Function(String errorMessage)? error,
     TResult? Function()? loading,
     TResult? Function()? success,
-    TResult? Function()? animationCompleted,
     TResult? Function()? connectionError,
   }) {
     return idle?.call();
@@ -165,7 +157,6 @@ class _$IdleImpl implements _Idle {
     TResult Function(String errorMessage)? error,
     TResult Function()? loading,
     TResult Function()? success,
-    TResult Function()? animationCompleted,
     TResult Function()? connectionError,
     required TResult orElse(),
   }) {
@@ -182,7 +173,6 @@ class _$IdleImpl implements _Idle {
     required TResult Function(_Error value) error,
     required TResult Function(_Loading value) loading,
     required TResult Function(_Succes value) success,
-    required TResult Function(_AnimationCompleted value) animationCompleted,
     required TResult Function(_ConnectionError value) connectionError,
   }) {
     return idle(this);
@@ -195,7 +185,6 @@ class _$IdleImpl implements _Idle {
     TResult? Function(_Error value)? error,
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Succes value)? success,
-    TResult? Function(_AnimationCompleted value)? animationCompleted,
     TResult? Function(_ConnectionError value)? connectionError,
   }) {
     return idle?.call(this);
@@ -208,7 +197,6 @@ class _$IdleImpl implements _Idle {
     TResult Function(_Error value)? error,
     TResult Function(_Loading value)? loading,
     TResult Function(_Succes value)? success,
-    TResult Function(_AnimationCompleted value)? animationCompleted,
     TResult Function(_ConnectionError value)? connectionError,
     required TResult orElse(),
   }) {
@@ -292,7 +280,6 @@ class _$ErrorImpl implements _Error {
     required TResult Function(String errorMessage) error,
     required TResult Function() loading,
     required TResult Function() success,
-    required TResult Function() animationCompleted,
     required TResult Function() connectionError,
   }) {
     return error(errorMessage);
@@ -305,7 +292,6 @@ class _$ErrorImpl implements _Error {
     TResult? Function(String errorMessage)? error,
     TResult? Function()? loading,
     TResult? Function()? success,
-    TResult? Function()? animationCompleted,
     TResult? Function()? connectionError,
   }) {
     return error?.call(errorMessage);
@@ -318,7 +304,6 @@ class _$ErrorImpl implements _Error {
     TResult Function(String errorMessage)? error,
     TResult Function()? loading,
     TResult Function()? success,
-    TResult Function()? animationCompleted,
     TResult Function()? connectionError,
     required TResult orElse(),
   }) {
@@ -335,7 +320,6 @@ class _$ErrorImpl implements _Error {
     required TResult Function(_Error value) error,
     required TResult Function(_Loading value) loading,
     required TResult Function(_Succes value) success,
-    required TResult Function(_AnimationCompleted value) animationCompleted,
     required TResult Function(_ConnectionError value) connectionError,
   }) {
     return error(this);
@@ -348,7 +332,6 @@ class _$ErrorImpl implements _Error {
     TResult? Function(_Error value)? error,
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Succes value)? success,
-    TResult? Function(_AnimationCompleted value)? animationCompleted,
     TResult? Function(_ConnectionError value)? connectionError,
   }) {
     return error?.call(this);
@@ -361,7 +344,6 @@ class _$ErrorImpl implements _Error {
     TResult Function(_Error value)? error,
     TResult Function(_Loading value)? loading,
     TResult Function(_Succes value)? success,
-    TResult Function(_AnimationCompleted value)? animationCompleted,
     TResult Function(_ConnectionError value)? connectionError,
     required TResult orElse(),
   }) {
@@ -423,7 +405,6 @@ class _$LoadingImpl implements _Loading {
     required TResult Function(String errorMessage) error,
     required TResult Function() loading,
     required TResult Function() success,
-    required TResult Function() animationCompleted,
     required TResult Function() connectionError,
   }) {
     return loading();
@@ -436,7 +417,6 @@ class _$LoadingImpl implements _Loading {
     TResult? Function(String errorMessage)? error,
     TResult? Function()? loading,
     TResult? Function()? success,
-    TResult? Function()? animationCompleted,
     TResult? Function()? connectionError,
   }) {
     return loading?.call();
@@ -449,7 +429,6 @@ class _$LoadingImpl implements _Loading {
     TResult Function(String errorMessage)? error,
     TResult Function()? loading,
     TResult Function()? success,
-    TResult Function()? animationCompleted,
     TResult Function()? connectionError,
     required TResult orElse(),
   }) {
@@ -466,7 +445,6 @@ class _$LoadingImpl implements _Loading {
     required TResult Function(_Error value) error,
     required TResult Function(_Loading value) loading,
     required TResult Function(_Succes value) success,
-    required TResult Function(_AnimationCompleted value) animationCompleted,
     required TResult Function(_ConnectionError value) connectionError,
   }) {
     return loading(this);
@@ -479,7 +457,6 @@ class _$LoadingImpl implements _Loading {
     TResult? Function(_Error value)? error,
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Succes value)? success,
-    TResult? Function(_AnimationCompleted value)? animationCompleted,
     TResult? Function(_ConnectionError value)? connectionError,
   }) {
     return loading?.call(this);
@@ -492,7 +469,6 @@ class _$LoadingImpl implements _Loading {
     TResult Function(_Error value)? error,
     TResult Function(_Loading value)? loading,
     TResult Function(_Succes value)? success,
-    TResult Function(_AnimationCompleted value)? animationCompleted,
     TResult Function(_ConnectionError value)? connectionError,
     required TResult orElse(),
   }) {
@@ -549,7 +525,6 @@ class _$SuccesImpl implements _Succes {
     required TResult Function(String errorMessage) error,
     required TResult Function() loading,
     required TResult Function() success,
-    required TResult Function() animationCompleted,
     required TResult Function() connectionError,
   }) {
     return success();
@@ -562,7 +537,6 @@ class _$SuccesImpl implements _Succes {
     TResult? Function(String errorMessage)? error,
     TResult? Function()? loading,
     TResult? Function()? success,
-    TResult? Function()? animationCompleted,
     TResult? Function()? connectionError,
   }) {
     return success?.call();
@@ -575,7 +549,6 @@ class _$SuccesImpl implements _Succes {
     TResult Function(String errorMessage)? error,
     TResult Function()? loading,
     TResult Function()? success,
-    TResult Function()? animationCompleted,
     TResult Function()? connectionError,
     required TResult orElse(),
   }) {
@@ -592,7 +565,6 @@ class _$SuccesImpl implements _Succes {
     required TResult Function(_Error value) error,
     required TResult Function(_Loading value) loading,
     required TResult Function(_Succes value) success,
-    required TResult Function(_AnimationCompleted value) animationCompleted,
     required TResult Function(_ConnectionError value) connectionError,
   }) {
     return success(this);
@@ -605,7 +577,6 @@ class _$SuccesImpl implements _Succes {
     TResult? Function(_Error value)? error,
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Succes value)? success,
-    TResult? Function(_AnimationCompleted value)? animationCompleted,
     TResult? Function(_ConnectionError value)? connectionError,
   }) {
     return success?.call(this);
@@ -618,7 +589,6 @@ class _$SuccesImpl implements _Succes {
     TResult Function(_Error value)? error,
     TResult Function(_Loading value)? loading,
     TResult Function(_Succes value)? success,
-    TResult Function(_AnimationCompleted value)? animationCompleted,
     TResult Function(_ConnectionError value)? connectionError,
     required TResult orElse(),
   }) {
@@ -631,132 +601,6 @@ class _$SuccesImpl implements _Succes {
 
 abstract class _Succes implements LoginState {
   const factory _Succes() = _$SuccesImpl;
-}
-
-/// @nodoc
-abstract class _$$AnimationCompletedImplCopyWith<$Res> {
-  factory _$$AnimationCompletedImplCopyWith(_$AnimationCompletedImpl value,
-          $Res Function(_$AnimationCompletedImpl) then) =
-      __$$AnimationCompletedImplCopyWithImpl<$Res>;
-}
-
-/// @nodoc
-class __$$AnimationCompletedImplCopyWithImpl<$Res>
-    extends _$LoginStateCopyWithImpl<$Res, _$AnimationCompletedImpl>
-    implements _$$AnimationCompletedImplCopyWith<$Res> {
-  __$$AnimationCompletedImplCopyWithImpl(_$AnimationCompletedImpl _value,
-      $Res Function(_$AnimationCompletedImpl) _then)
-      : super(_value, _then);
-}
-
-/// @nodoc
-
-class _$AnimationCompletedImpl implements _AnimationCompleted {
-  const _$AnimationCompletedImpl();
-
-  @override
-  String toString() {
-    return 'LoginState.animationCompleted()';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType && other is _$AnimationCompletedImpl);
-  }
-
-  @override
-  int get hashCode => runtimeType.hashCode;
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function() idle,
-    required TResult Function(String errorMessage) error,
-    required TResult Function() loading,
-    required TResult Function() success,
-    required TResult Function() animationCompleted,
-    required TResult Function() connectionError,
-  }) {
-    return animationCompleted();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function()? idle,
-    TResult? Function(String errorMessage)? error,
-    TResult? Function()? loading,
-    TResult? Function()? success,
-    TResult? Function()? animationCompleted,
-    TResult? Function()? connectionError,
-  }) {
-    return animationCompleted?.call();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function()? idle,
-    TResult Function(String errorMessage)? error,
-    TResult Function()? loading,
-    TResult Function()? success,
-    TResult Function()? animationCompleted,
-    TResult Function()? connectionError,
-    required TResult orElse(),
-  }) {
-    if (animationCompleted != null) {
-      return animationCompleted();
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_Idle value) idle,
-    required TResult Function(_Error value) error,
-    required TResult Function(_Loading value) loading,
-    required TResult Function(_Succes value) success,
-    required TResult Function(_AnimationCompleted value) animationCompleted,
-    required TResult Function(_ConnectionError value) connectionError,
-  }) {
-    return animationCompleted(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_Idle value)? idle,
-    TResult? Function(_Error value)? error,
-    TResult? Function(_Loading value)? loading,
-    TResult? Function(_Succes value)? success,
-    TResult? Function(_AnimationCompleted value)? animationCompleted,
-    TResult? Function(_ConnectionError value)? connectionError,
-  }) {
-    return animationCompleted?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_Idle value)? idle,
-    TResult Function(_Error value)? error,
-    TResult Function(_Loading value)? loading,
-    TResult Function(_Succes value)? success,
-    TResult Function(_AnimationCompleted value)? animationCompleted,
-    TResult Function(_ConnectionError value)? connectionError,
-    required TResult orElse(),
-  }) {
-    if (animationCompleted != null) {
-      return animationCompleted(this);
-    }
-    return orElse();
-  }
-}
-
-abstract class _AnimationCompleted implements LoginState {
-  const factory _AnimationCompleted() = _$AnimationCompletedImpl;
 }
 
 /// @nodoc
@@ -801,7 +645,6 @@ class _$ConnectionErrorImpl implements _ConnectionError {
     required TResult Function(String errorMessage) error,
     required TResult Function() loading,
     required TResult Function() success,
-    required TResult Function() animationCompleted,
     required TResult Function() connectionError,
   }) {
     return connectionError();
@@ -814,7 +657,6 @@ class _$ConnectionErrorImpl implements _ConnectionError {
     TResult? Function(String errorMessage)? error,
     TResult? Function()? loading,
     TResult? Function()? success,
-    TResult? Function()? animationCompleted,
     TResult? Function()? connectionError,
   }) {
     return connectionError?.call();
@@ -827,7 +669,6 @@ class _$ConnectionErrorImpl implements _ConnectionError {
     TResult Function(String errorMessage)? error,
     TResult Function()? loading,
     TResult Function()? success,
-    TResult Function()? animationCompleted,
     TResult Function()? connectionError,
     required TResult orElse(),
   }) {
@@ -844,7 +685,6 @@ class _$ConnectionErrorImpl implements _ConnectionError {
     required TResult Function(_Error value) error,
     required TResult Function(_Loading value) loading,
     required TResult Function(_Succes value) success,
-    required TResult Function(_AnimationCompleted value) animationCompleted,
     required TResult Function(_ConnectionError value) connectionError,
   }) {
     return connectionError(this);
@@ -857,7 +697,6 @@ class _$ConnectionErrorImpl implements _ConnectionError {
     TResult? Function(_Error value)? error,
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Succes value)? success,
-    TResult? Function(_AnimationCompleted value)? animationCompleted,
     TResult? Function(_ConnectionError value)? connectionError,
   }) {
     return connectionError?.call(this);
@@ -870,7 +709,6 @@ class _$ConnectionErrorImpl implements _ConnectionError {
     TResult Function(_Error value)? error,
     TResult Function(_Loading value)? loading,
     TResult Function(_Succes value)? success,
-    TResult Function(_AnimationCompleted value)? animationCompleted,
     TResult Function(_ConnectionError value)? connectionError,
     required TResult orElse(),
   }) {

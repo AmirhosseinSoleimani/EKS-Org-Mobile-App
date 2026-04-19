@@ -27,10 +27,6 @@ import '../features/authentication/domain/repositories/auth_repository.dart'
     as _i716;
 import '../features/authentication/domain/use_cases/login_use_case.dart'
     as _i139;
-import '../features/authentication/domain/use_cases/otp_number_validator_use_case.dart'
-    as _i632;
-import '../features/authentication/domain/use_cases/otp_validator_use_case.dart'
-    as _i458;
 import '../features/authentication/domain/use_cases/phone_number_validator_use_case.dart'
     as _i826;
 import '../features/authentication/presentation/login/cubit/login_cubit.dart'
@@ -245,10 +241,6 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i238.StartupGuard>(() => appModule.startupGuard);
   gh.lazySingleton<_i826.PhoneNumberValidatorUseCase>(
       () => _i826.PhoneNumberValidatorUseCase());
-  gh.lazySingleton<_i632.OtpNumberValidatorUseCase>(
-      () => _i632.OtpNumberValidatorUseCase());
-  gh.lazySingleton<_i458.OtpValidatorUseCase>(
-      () => _i458.OtpValidatorUseCase());
   gh.lazySingleton<_i838.RequestRepositoryShareData>(
       () => _i318.RequestRepositoryShareDataImpl());
   gh.lazySingleton<_i837.MapShareDataRepository>(
@@ -424,10 +416,10 @@ _i174.GetIt $initGetIt(
       () => _i192.GetReliefRequestListUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i63.GetReliefRequestByIdUseCase>(
       () => _i63.GetReliefRequestByIdUseCase(gh<_i603.RequestRepository>()));
-  gh.lazySingleton<_i672.GetReliefRequestByIdUseCase>(
-      () => _i672.GetReliefRequestByIdUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i707.GetNonCooperationListUseCase>(
       () => _i707.GetNonCooperationListUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i672.GetReliefRequestByIdUseCase>(
+      () => _i672.GetReliefRequestByIdUseCase(gh<_i603.RequestRepository>()));
   gh.factory<_i1048.ReliefRequestListCubit>(() =>
       _i1048.ReliefRequestListCubit(gh<_i192.GetReliefRequestListUseCase>()));
   gh.factory<_i1047.NonCooperationCubit>(() =>

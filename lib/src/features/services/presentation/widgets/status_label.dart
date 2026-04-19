@@ -4,11 +4,13 @@ import 'package:flutter/material.dart';
 class StatusLabel extends StatelessWidget {
   final String text;
   final Color color;
+  final bool fillColor;
 
   const StatusLabel({
     super.key,
     required this.text,
     required this.color,
+     this.fillColor = true,
   });
 
   @override
@@ -16,7 +18,7 @@ class StatusLabel extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
       decoration: BoxDecoration(
-        color: color.withAlpha(51), // ≈ 20%
+        color: fillColor? color.withAlpha(51): Colors.transparent, // ≈ 20%
         border: Border.all(color: color),
         borderRadius: BorderRadius.circular(50),
       ),
@@ -24,6 +26,7 @@ class StatusLabel extends StatelessWidget {
         text: text,
         color: color,
         fontSize: 10,
+        textAlign: TextAlign.center,
       ),
     );
   }

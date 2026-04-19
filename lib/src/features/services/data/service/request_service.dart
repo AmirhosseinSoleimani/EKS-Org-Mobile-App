@@ -30,5 +30,5 @@ abstract class RequestService {
 
   @POST('/api/LackOfCooperation/getLackOfCooperationList')
   Future<BaseSingleResponse<NonCooperationListModel>> getNonCooperationList(
-      @Queries() Map<String, dynamic> query);
+      @Body() Map<String, dynamic> query);
 }

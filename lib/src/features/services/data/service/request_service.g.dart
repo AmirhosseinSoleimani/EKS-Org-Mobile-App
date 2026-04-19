@@ -184,9 +184,9 @@ class _RequestService implements RequestService {
       Map<String, dynamic> query) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    queryParameters.addAll(query);
     final _headers = <String, dynamic>{};
-    const Map<String, dynamic>? _data = null;
+    final _data = <String, dynamic>{};
+    _data.addAll(query);
     final _options =
         _setStreamType<BaseSingleResponse<NonCooperationListModel>>(Options(
       method: 'POST',

@@ -21,7 +21,7 @@ class SubmitButtonWidget extends StatelessWidget {
           builder: (_, isValid, __) {
             final canSubmit = !isLoading && isValid;
             return InkwellButtonWidget(
-              onTap:()=>  context.go(DashboardPage.path) /*canSubmit ? () {
+              onTap:()=> cubit.login() /*canSubmit ? () {
                 if (formKey.currentState?.validate() ?? false) {
                   cubit.login();
                 }
