@@ -1,0 +1,61 @@
+import '../../domain/entities/evaluation_history_item_entity.dart';
+
+class EvaluationHistoryItemModel extends EvaluationHistoryItemEntity {
+  const EvaluationHistoryItemModel({
+    super.id,
+    super.firstName,
+    super.lastName,
+    super.insertUserName,
+    super.insertDateTime,
+    super.insertDateTimeJalali,
+    super.defectInfoTitle,
+    super.emdadServiceCategoryTitle,
+    super.distanceToCustomer,
+    super.distanceHamlCustomer,
+    super.isAccepted,
+    super.stopTime,
+    super.useDakal,
+    super.payAvarezi,
+    super.emdadgarNavganTypeTitle,
+    super.arriveDateTime,
+    super.arriveDateTimeJalali,
+    super.endWorkDateTime,
+    super.endWorkDateTimeJalali,
+    super.assignTrackerName,
+    super.arriveTrackerName,
+    super.endWorkTrackerName,
+    super.invoiceId,
+    super.statusTitle,
+    super.hasImage,
+  });
+
+  factory EvaluationHistoryItemModel.fromJson(Map<String, dynamic> json) {
+    return EvaluationHistoryItemModel(
+      id: json['id'],
+      firstName: json['firstName'],
+      lastName: json['lastName'],
+      insertUserName: json['insertUserName'],
+      insertDateTime: json['insertDateTime'],
+      insertDateTimeJalali: json['insertDateTimeJalali'],
+      defectInfoTitle: json['defectInfoTitle'],
+      emdadServiceCategoryTitle: json['emdadServiceCategoryTitle'],
+      distanceToCustomer: (json['distanceToCustomer'] as num?)?.toDouble(),
+      distanceHamlCustomer: (json['distanceHamlCustomer'] as num?)?.toDouble(),
+      isAccepted: json['isAccepted'],
+      stopTime: json['stopTime'],
+      useDakal: json['useDakal'],
+      payAvarezi: json['payAvarezi'],
+      emdadgarNavganTypeTitle: json['emdadgarNavganTypeTitle'],
+      arriveDateTime: json['arriveDateTime'],
+      arriveDateTimeJalali: json['arriveDateTimeJalali'],
+      endWorkDateTime: json['endWorkDateTime'],
+      endWorkDateTimeJalali: json['endWorkDateTimeJalali'],
+      assignTrackerName: json['assignTrackerName'],
+      arriveTrackerName: json['arriveTrackerName'],
+      endWorkTrackerName: json['endWorkTrackerName'],
+      invoiceId: json['invoiceId'],
+      statusTitle: json['statusTitle'],
+      hasImage: json['hasImage'],
+    );
+  }
+}
