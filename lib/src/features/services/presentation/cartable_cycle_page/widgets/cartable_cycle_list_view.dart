@@ -83,10 +83,20 @@ class CartableCycleListView extends StatelessWidget {
                     label: "دریافت کننده",
                     value: item.receiverFullName ?? "-",
                   ),
-                  KeyValueRow(
-                    label: "توضیحات",
-                    value: item.description ?? "-",
-                  ),
+                  if (item.description != null &&
+                      item.description!.isNotEmpty) ...[
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const BodySmallText(text: 'توضیحات'),
+                        Space.h8,
+                        BodySmallText(
+                          text: item.description!,
+                          textAlign: TextAlign.start,
+                        ),
+                      ],
+                    )
+                  ]
                 ],
               );
 
