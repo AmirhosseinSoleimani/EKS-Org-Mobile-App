@@ -75,7 +75,7 @@ import '../features/services/domain/repository/request_repository_share_data.dar
 import '../features/services/domain/usecases/fetch_selected_request_item_use_case.dart'
     as _i376;
 import '../features/services/domain/usecases/get_cartable_cycle_list_use_case.dart'
-    as _i910;
+    as _i765;
 import '../features/services/domain/usecases/get_home_service_request_by_id_use_case.dart'
     as _i63;
 import '../features/services/domain/usecases/get_home_service_request_list_use_case.dart'
@@ -434,8 +434,8 @@ _i174.GetIt $initGetIt(
       () => _i707.GetNonCooperationListUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i672.GetReliefRequestByIdUseCase>(
       () => _i672.GetReliefRequestByIdUseCase(gh<_i603.RequestRepository>()));
-  gh.lazySingleton<_i910.GetCartableCycleListUseCase>(
-      () => _i910.GetCartableCycleListUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i765.GetCartableCycleListUseCase>(
+      () => _i765.GetCartableCycleListUseCase(gh<_i603.RequestRepository>()));
   gh.factory<_i1048.ReliefRequestListCubit>(() =>
       _i1048.ReliefRequestListCubit(gh<_i192.GetReliefRequestListUseCase>()));
   gh.factory<_i1013.HomeServiceRequestListCubit>(() =>
@@ -446,7 +446,7 @@ _i174.GetIt $initGetIt(
         gh<_i376.FetchSelectedRequestItemUseCase>(),
       ));
   gh.factory<_i1029.CartableCycleCubit>(() => _i1029.CartableCycleCubit(
-        gh<_i707.GetNonCooperationListUseCase>(),
+        gh<_i765.GetCartableCycleListUseCase>(),
         gh<_i376.FetchSelectedRequestItemUseCase>(),
       ));
   return getIt;

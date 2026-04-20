@@ -1,11 +1,11 @@
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/vertical_line_indicator.dart';
 import 'package:flutter/material.dart';
 
-class NonCooperationTimelineItem extends StatelessWidget {
+class TimelineItemCard extends StatelessWidget {
   final Widget icon;
   final List<Widget> children;
 
-  const NonCooperationTimelineItem({
+  const TimelineItemCard({
     super.key,
     required this.icon,
     required this.children,

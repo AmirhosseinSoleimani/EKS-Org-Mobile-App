@@ -1,5 +1,6 @@
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/non_cooperation_item_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/non_cooperation_page/cubit/non_cooperation_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/cartable_cycle_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/cartable_cycle_page/cubit/cartable_cycle_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_row.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_wiget_row.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
@@ -8,14 +9,13 @@ import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_tex
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../request_detail/widgets/key_value_row.dart';
-import 'non_cooperation_item.dart';
+import '../../widgets/timeline_item_card.dart';
 
-class NonCooperationListView extends StatelessWidget {
-  final List<NonCooperationItemEntity> items;
+class CartableCycleListView extends StatelessWidget {
+  final List<CartableCycleItemEntity> items;
   final Widget icon;
 
-  const NonCooperationListView({
+  const CartableCycleListView({
     super.key,
     required this.items,
     required this.icon,
@@ -39,7 +39,7 @@ class NonCooperationListView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const BodySmallText(text: "لیست درخواست های عدم همکاری"),
+          const BodySmallText(text: "لیست چرخه کارتابل"),
           const SizedBox(height: 16),
           ListView.builder(
             shrinkWrap: true,
@@ -47,34 +47,41 @@ class NonCooperationListView extends StatelessWidget {
             itemCount: items.length,
             itemBuilder: (context, index) {
               final item = items[index];
-              return NonCooperationTimelineItem(
+              return  TimelineItemCard(
                 icon: icon,
                 children: [
                   KeyValueRow(
-                    label: "نام نمایندگی (کد نمایندگی)",
+                    label: "شماره درخواست",
+                    value: item.serviceRequestTrackCode?.toString() ?? "-",
+                  ),
+                  KeyValueRow(
+                    label: "تاریخ ثبت پیغام",
                     value:
-                        "${item.agencyName ?? '-'} (${item.agencyCode ?? '-'})",
-                  ),
-                  KeyValueRow(
-                    label: "نام امدادرسان",
-                    value: item.aidPerName ?? "-",
-                  ),
-                  KeyValueRow(
-                    label: "ثبت کننده",
-                    value: item.authorFullname ?? "-",
-                  ),
-                  KeyValueRow(
-                    label: "تاریخ و ساعت ثبت",
-                    value:
-                        "${item.submitDateJalali ?? '-'} - ${item.submitTime ?? '-'}",
+                    "${item.sendDateJalali ?? '-'} - ${item.sendTime ?? '-'}",
                   ),
                   KeyValueWidgetRow(
-                    label: "نوع عدم همکاری",
+                    label: "وضعیت درخواست",
                     value: StatusLabel(
-                      text: item.typeOfLackTitle ?? "-",
+                      text: item.statusTitle ?? "-",
                       color: Colors.grey,
                       fillColor: false,
                     ),
+                  ),
+                  KeyValueWidgetRow(
+                    label: "مرحله",
+                    value: StatusLabel(
+                      text: item.stepTitle ?? "-",
+                      color: Colors.grey,
+                      fillColor: false,
+                    ),
+                  ),
+                  KeyValueRow(
+                    label: "ثبت کننده",
+                    value: item.senderFullName ?? "-",
+                  ),
+                  KeyValueRow(
+                    label: "دریافت کننده",
+                    value: item.receiverFullName ?? "-",
                   ),
                   KeyValueRow(
                     label: "توضیحات",
@@ -82,11 +89,12 @@ class NonCooperationListView extends StatelessWidget {
                   ),
                 ],
               );
+
             },
           ),
-          BlocBuilder<NonCooperationCubit, NonCooperationState>(
+          BlocBuilder<CartableCycleCubit, CartableCycleState>(
             builder: (context, state) {
-              final cubit = context.read<NonCooperationCubit>();
+              final cubit = context.read<CartableCycleCubit>();
 
               if (!cubit.hasMore) {
                 return const SizedBox();

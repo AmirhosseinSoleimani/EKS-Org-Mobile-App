@@ -2,7 +2,6 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cartable_cycle_page/cubit/cartable_cycle_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/non_cooperation_list_view.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
@@ -12,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../widgets/request_status_section.dart';
+import 'widgets/cartable_cycle_list_view.dart';
 
 class CartableCyclePage extends StatelessWidget {
   static const path = "/cartable-cycle-page";
@@ -91,10 +91,10 @@ class _SelectedServicesView extends StatelessWidget {
                                     ),
                                   ),
                                   Space.h16,
-                                  NonCooperationListView(
+                                  CartableCycleListView(
                                     items: cubit.items,
                                     icon: const Icon(
-                                      Icons.do_not_disturb_on,
+                                      Icons.autorenew_sharp,
                                       color: Colors.grey,
                                       size: 20,
                                     ),
