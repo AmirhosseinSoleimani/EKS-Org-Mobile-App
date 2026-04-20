@@ -12,7 +12,7 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'widgets/agent_info_detail_section.dart';
+import '../widgets/agent_info_detail_section.dart';
 import 'widgets/car_info_detail_section.dart';
 import 'widgets/customer_info_detail_section.dart';
 import 'widgets/expandable_section.dart';
