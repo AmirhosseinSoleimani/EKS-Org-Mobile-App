@@ -26,17 +26,18 @@ class CartableCyclePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<CartableCycleCubit>()..init(),
-      child: const _SelectedServicesView(),
+      child: const _View(),
     );
   }
 }
 
-class _SelectedServicesView extends StatelessWidget {
-  const _SelectedServicesView();
+class _View extends StatelessWidget {
+  const _View();
 
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<CartableCycleCubit>();
+
     return BlocListener<CartableCycleCubit, CartableCycleState>(
       listener: (context, state) {
         state.whenOrNull(
@@ -61,80 +62,96 @@ class _SelectedServicesView extends StatelessWidget {
         );
       },
       child: Scaffold(
-          appBar: const SimpleAppBar(title: "چرخه کارتابل"),
-          body: ScrollConfiguration(
-            behavior: ScrollConfiguration.of(context).copyWith(
-              dragDevices: {
-                PointerDeviceKind.touch,
-                PointerDeviceKind.mouse,
-              },
-            ),
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSize.s16),
-              child: Column(
-                children: [
-                  BlocBuilder<CartableCycleCubit, CartableCycleState>(
-                    builder: (context, state) {
-                      return state.maybeWhen(
-                          idle: () => const SizedBox.shrink(),
-                          loading: () => const Center(
-                                child: Padding(
-                                  padding: EdgeInsets.only(top: AppSize.s40),
-                                  child: CircularProgressIndicator(),
-                                ),
-                              ),
-                          loaded: () => Column(
-                                children: [
-                                  ExpandableSection(
-                                    isExpanded: false,
-                                    header: buildRequestStatusSection(cubit),
-                                    child: RequestDetailSection(
-                                      selectedRequest: cubit.selectedRequest,
-                                      showCustomerInfo: true,
-                                    ),
-                                  ),
-                                  Space.h16,
-                                  if(cubit.selectedRequest != null)...[
-                                    ExpandableSection(
-                                      brief: BodySmallText(
-                                        text:
-                                            "${cubit.selectedRequest?.emFullName ?? ''} | ${cubit.selectedRequest?.emMobileNumber1 ?? ""}",
-                                      ),
-                                      isExpanded: false,
-                                      header: const BodyMediumText(
-                                          text: "اطلاعات امداد رسان"),
-                                      child: AgentInfoDetailSection(
-                                          selectedRequest:
-                                          cubit.selectedRequest!),
-                                    ),
-                                  ],
+        appBar: const SimpleAppBar(title: "چرخه کارتابل"),
+        body: const _Body(),
+      ),
+    );
+  }
+}
 
-                                  Space.h16,
-                                  CartableCycleListView(
-                                    items: cubit.items,
-                                    icon: const Icon(
-                                      Icons.autorenew_sharp,
-                                      color: Colors.grey,
-                                      size: 20,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                          orElse: SizedBox.shrink);
-                    },
-                  ),
-                ],
+class _Body extends StatelessWidget {
+  const _Body();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<CartableCycleCubit, CartableCycleState>(
+      builder: (context, state) {
+        return state.maybeWhen(
+          idle: () => const SizedBox.shrink(),
+
+          loading: () => const Center(
+            child: CircularProgressIndicator(),
+          ),
+
+          loaded: () => const _LoadedView(),
+
+          orElse: () => const SizedBox.shrink(),
+        );
+      },
+    );
+  }
+}
+
+class _LoadedView extends StatelessWidget {
+  const _LoadedView();
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.read<CartableCycleCubit>();
+
+    return ScrollConfiguration(
+      behavior: ScrollConfiguration.of(context).copyWith(
+        dragDevices: {
+          PointerDeviceKind.touch,
+          PointerDeviceKind.mouse,
+        },
+      ),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppSize.s16),
+        child: Column(
+          children: [
+            ExpandableSection(
+              isExpanded: false,
+              header: _buildRequestStatusSection(cubit),
+              child: RequestDetailSection(
+                selectedRequest: cubit.selectedRequest,
+                showCustomerInfo: true,
               ),
             ),
-          )),
+            if (cubit.selectedRequest != null) ...[
+              ExpandableSection(
+                brief: BodySmallText(
+                  text:
+                  "${cubit.selectedRequest?.emFullName ?? ''} | ${cubit.selectedRequest?.emMobileNumber1 ?? ""}",
+                ),
+                isExpanded: false,
+                header: const BodyMediumText(text: "اطلاعات امداد رسان"),
+                child: AgentInfoDetailSection(
+                  selectedRequest: cubit.selectedRequest!,
+                ),
+              ),
+            ],
+            Space.h8,
+            CartableCycleListView(
+              items: cubit.items,
+              icon: const Icon(
+                Icons.autorenew_sharp,
+                color: Colors.grey,
+                size: 20,
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 
-  RequestStatusSection buildRequestStatusSection(CartableCycleCubit cubit) {
+  RequestStatusSection _buildRequestStatusSection(
+      CartableCycleCubit cubit) {
     return RequestStatusSection(
       trackCode: cubit.selectedRequest?.trackCode.toString() ?? '-',
       requestDateJalali:
-          cubit.selectedRequest?.requestDateJalali.toString() ?? '-',
+      cubit.selectedRequest?.requestDateJalali.toString() ?? '-',
       requestTime: cubit.selectedRequest?.requestTime.toString() ?? '-',
       requestStatusTitle: cubit.selectedRequest?.requestStatusTitle,
       isGuaranty: cubit.selectedRequest?.isGuaranty ?? false,

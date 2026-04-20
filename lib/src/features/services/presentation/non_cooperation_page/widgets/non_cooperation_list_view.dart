@@ -39,7 +39,7 @@ class NonCooperationListView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const BodySmallText(text: "لیست درخواست های عدم همکاری"),
+          const BodyMediumText(text: "لیست درخواست های عدم همکاری"),
           const SizedBox(height: 16),
           ListView.builder(
             shrinkWrap: true,

@@ -34,7 +34,7 @@ class Routes {
 
     return GoRouter(
       navigatorKey: parentNavigatorKey,
-      initialLocation: EvaluationHistoryPage.path,
+      initialLocation: CartableCyclePage.path,
       refreshListenable: startupGuard,
       observers: [
         routeObserver
