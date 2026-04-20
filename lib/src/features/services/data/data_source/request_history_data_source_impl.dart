@@ -16,7 +16,7 @@ class RequestDataSourceImpl extends RequestDataSource {
 
   @override
   Future<BaseListResponse<ReliefRequestModel>> getReliefRequestList() async =>
-      await _service.getReliefRequestList({"Filter":{"Logic":"and","Filters":[{"Field":"requestStatus","Operator":"eq","Value":-100}]},"Sort":[],"Skip":0,"PageSize":50});
+      await _service.getReliefRequestList({});
 
   @override
   Future<BaseSingleResponse<ReliefRequestModel>> getReliefRequestById(

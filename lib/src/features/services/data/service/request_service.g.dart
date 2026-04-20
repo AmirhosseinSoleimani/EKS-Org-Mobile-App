@@ -37,7 +37,7 @@ class _RequestService implements RequestService {
     )
             .compose(
               _dio.options,
-              '/api/AidServiceRequest/GetAidServiceRequestList',
+              '/api/AidServiceRequestOrg/GetAidServiceRequestList',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -115,7 +115,7 @@ class _RequestService implements RequestService {
     )
             .compose(
               _dio.options,
-              '/api/HomeServiceRequest/GetHomeServiceRequestList',
+              '/api/HomeServiceRequestOrg/GetHomeServiceRequestList',
               queryParameters: queryParameters,
               data: _data,
             )

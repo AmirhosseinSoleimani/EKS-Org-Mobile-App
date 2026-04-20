@@ -33,7 +33,7 @@ class Routes {
 
     return GoRouter(
       navigatorKey: parentNavigatorKey,
-      initialLocation: ServicesPage.path,
+      initialLocation: LoginPage.path,
       refreshListenable: startupGuard,
       observers: [
         routeObserver
