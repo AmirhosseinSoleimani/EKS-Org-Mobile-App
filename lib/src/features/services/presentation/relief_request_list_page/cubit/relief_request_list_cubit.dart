@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:eks_sana_plus_org/src/common/constants/request_status.dart';
 import 'package:eks_sana_plus_org/src/common/constants/time_period.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_relief_request_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
@@ -55,8 +56,18 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
 
   void fetchRequestList() async {
     _safeEmit(const ReliefRequestListState.loading());
+    final RequestFilterParamEntity paramEntity = RequestFilterParamEntity(
+      chassisNumber: chassisNumberController.text,
+      serviceRequestId: requestNumberController.text,
+      callMobileNumber: phoneController.text,
+      cityName: cityController.text,
+      provinceName: provinceController.text,
+      requestStatus: selectedStatus ?? RequestStatus.openRequests,
+      rescuerName: rescuerNameController.text,
+      timePeriod: selectedTimePeriod
+    );
 
-    final result = await _getReliefRequestListUseCase();
+    final result = await _getReliefRequestListUseCase(paramEntity);
 
     result.whenOrNull(
       success: (data, failures, resultCode) async {

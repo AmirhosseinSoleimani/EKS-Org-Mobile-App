@@ -82,15 +82,13 @@ class RequestCard extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Expanded(
-                child: RequestDetailsButton(
-                  onPressed: () =>
-                      context.push(RequestDetailPage.path, extra: request.id),
-                ),
-              ),
-              const SizedBox(width: 12),
               OperationMenu(
                 requestId: request.id ?? 0,
+              ),
+              const SizedBox(width: 12),
+              RequestDetailsButton(
+                onPressed: () =>
+                    context.push(RequestDetailPage.path, extra: request.id),
               ),
             ],
           ),

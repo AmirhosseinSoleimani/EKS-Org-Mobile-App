@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:eks_sana_plus_org/src/common/constants/request_status.dart';
 import 'package:eks_sana_plus_org/src/common/constants/time_period.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_home_service_request_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_relief_request_list_use_case.dart';
@@ -58,8 +59,18 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
 
   void fetchRequestList() async {
     _safeEmit(const HomeServiceRequestListState.loading());
-
-    final result = await _getHomeServiceRequestListUseCase();
+    final RequestFilterParamEntity paramEntity = RequestFilterParamEntity(
+        chassisNumber: chassisNumberController.text,
+        serviceRequestId: requestNumberController.text,
+        callMobileNumber: phoneController.text,
+        cityName: cityController.text,
+        provinceName: provinceController.text,
+        requestStatus: selectedStatus ?? RequestStatus.openRequests,
+        rescuerName: rescuerNameController.text,
+        timePeriod: selectedTimePeriod
+    );
+    
+    final result = await _getHomeServiceRequestListUseCase(paramEntity);
 
     result.whenOrNull(
       success: (data, failures, resultCode) async {

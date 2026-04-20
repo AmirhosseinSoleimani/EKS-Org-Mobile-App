@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/features/services/data/data_source/request
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/cartable_cycle_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/non_cooperation_list_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_operation_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/repository/request_repository.dart';
@@ -18,9 +19,9 @@ class RequestRepositoryImpl extends RequestRepository {
   );
 
   @override
-  Future<ApiResult<List<ReliefRequestEntity>>> getReliefRequestList() async {
+  Future<ApiResult<List<ReliefRequestEntity>>> getReliefRequestList(RequestFilterParamEntity param) async {
     try {
-      final result = await _dataSource.getReliefRequestList();
+      final result = await _dataSource.getReliefRequestList(param.toModel());
       return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);
@@ -38,9 +39,9 @@ class RequestRepositoryImpl extends RequestRepository {
   }
 
   @override
-  Future<ApiResult<List<HomeServiceRequestEntity>>> getHomeServiceRequestList() async {
+  Future<ApiResult<List<HomeServiceRequestEntity>>> getHomeServiceRequestList(RequestFilterParamEntity param) async {
     try {
-      final result = await _dataSource.getHomeServiceRequestList();
+      final result = await _dataSource.getHomeServiceRequestList(param.toModel());
       return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);

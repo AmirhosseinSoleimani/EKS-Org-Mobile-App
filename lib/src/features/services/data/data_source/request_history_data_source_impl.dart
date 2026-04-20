@@ -1,6 +1,7 @@
 import 'package:eks_sana_plus_org/src/features/services/data/models/cartable_cycle_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/non_cooperation_list_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/request_filter_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/request_operation_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/relief_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/service/request_service.dart';
@@ -15,8 +16,8 @@ class RequestDataSourceImpl extends RequestDataSource {
   RequestDataSourceImpl(this._service);
 
   @override
-  Future<BaseListResponse<ReliefRequestModel>> getReliefRequestList() async =>
-      await _service.getReliefRequestList({});
+  Future<BaseListResponse<ReliefRequestModel>> getReliefRequestList(RequestFilterParamModel param) async =>
+      await _service.getReliefRequestList(param.toJson());
 
   @override
   Future<BaseSingleResponse<ReliefRequestModel>> getReliefRequestById(
@@ -24,8 +25,8 @@ class RequestDataSourceImpl extends RequestDataSource {
       await _service.getReliefRequestById({"id": id});
 
   @override
-  Future<BaseListResponse<HomeServiceRequestModel>> getHomeServiceRequestList() async =>
-      await _service.getHomeServiceRequestList({"Filter":{"Logic":"and","Filters":[{"Field":"requestStatus","Operator":"eq","Value":-100}]},"Sort":[],"Skip":0,"PageSize":50});
+  Future<BaseListResponse<HomeServiceRequestModel>> getHomeServiceRequestList(RequestFilterParamModel param) async =>
+      await _service.getHomeServiceRequestList(param.toJson());
 
   @override
   Future<BaseSingleResponse<HomeServiceRequestModel>> getHomeServiceRequestById(
