@@ -25,6 +25,9 @@ class EvaluationHistoryItemEntity {
   final String? endWorkTrackerName;
   final int? invoiceId;
   final String? statusTitle;
+  final String? description;
+  final String? cancelReasonTitle;
+  final String? cancelReasonDetailTitle;
   final bool? hasImage;
 
   const EvaluationHistoryItemEntity({
@@ -53,6 +56,9 @@ class EvaluationHistoryItemEntity {
     this.invoiceId,
     this.statusTitle,
     this.hasImage,
+    this.description,
+    this.cancelReasonTitle,
+    this.cancelReasonDetailTitle,
   });
 
   EvaluationHistoryItemEntity copyWith({
@@ -80,6 +86,9 @@ class EvaluationHistoryItemEntity {
     String? endWorkTrackerName,
     int? invoiceId,
     String? statusTitle,
+    String? description,
+     String? cancelReasonTitle,
+     String? cancelReasonDetailTitle,
     bool? hasImage,
   }) {
     return EvaluationHistoryItemEntity(
@@ -111,6 +120,9 @@ class EvaluationHistoryItemEntity {
       invoiceId: invoiceId ?? this.invoiceId,
       statusTitle: statusTitle ?? this.statusTitle,
       hasImage: hasImage ?? this.hasImage,
+      description: description ?? this.description,
+      cancelReasonTitle: cancelReasonTitle ?? this.cancelReasonTitle,
+      cancelReasonDetailTitle: cancelReasonDetailTitle ?? this.cancelReasonDetailTitle,
     );
   }
 
@@ -141,6 +153,9 @@ class EvaluationHistoryItemEntity {
       invoiceId: invoiceId,
       statusTitle: statusTitle,
       hasImage: hasImage,
+      description: description,
+      cancelReasonTitle: cancelReasonTitle,
+      cancelReasonDetailTitle: cancelReasonDetailTitle,
     );
   }
 }

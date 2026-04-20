@@ -76,6 +76,8 @@ import '../features/services/domain/usecases/fetch_selected_request_item_use_cas
     as _i376;
 import '../features/services/domain/usecases/get_cartable_cycle_list_use_case.dart'
     as _i765;
+import '../features/services/domain/usecases/get_evaluation_history_list_use_case.dart'
+    as _i467;
 import '../features/services/domain/usecases/get_home_service_request_by_id_use_case.dart'
     as _i63;
 import '../features/services/domain/usecases/get_home_service_request_list_use_case.dart'
@@ -90,6 +92,8 @@ import '../features/services/domain/usecases/set_selected_request_item_use_case.
     as _i369;
 import '../features/services/presentation/cartable_cycle_page/cubit/cartable_cycle_cubit.dart'
     as _i1029;
+import '../features/services/presentation/evaluation_history/cubit/evaluation_history_cubit.dart'
+    as _i154;
 import '../features/services/presentation/home_service_request_list_page/cubit/home_service_request_list_cubit.dart'
     as _i1013;
 import '../features/services/presentation/non_cooperation_page/cubit/non_cooperation_cubit.dart'
@@ -436,8 +440,14 @@ _i174.GetIt $initGetIt(
       () => _i672.GetReliefRequestByIdUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i765.GetCartableCycleListUseCase>(
       () => _i765.GetCartableCycleListUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i467.GetEvaluationHistoryListUseCase>(() =>
+      _i467.GetEvaluationHistoryListUseCase(gh<_i603.RequestRepository>()));
   gh.factory<_i1048.ReliefRequestListCubit>(() =>
       _i1048.ReliefRequestListCubit(gh<_i192.GetReliefRequestListUseCase>()));
+  gh.factory<_i154.EvaluationHistoryCubit>(() => _i154.EvaluationHistoryCubit(
+        gh<_i467.GetEvaluationHistoryListUseCase>(),
+        gh<_i376.FetchSelectedRequestItemUseCase>(),
+      ));
   gh.factory<_i1013.HomeServiceRequestListCubit>(() =>
       _i1013.HomeServiceRequestListCubit(
           gh<_i809.GetHomeServiceRequestListUseCase>()));

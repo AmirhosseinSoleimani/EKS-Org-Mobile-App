@@ -27,6 +27,9 @@ class EvaluationHistoryItemModel extends EvaluationHistoryItemEntity {
     super.invoiceId,
     super.statusTitle,
     super.hasImage,
+    super.description,
+    super.cancelReasonTitle,
+    super.cancelReasonDetailTitle,
   });
 
   factory EvaluationHistoryItemModel.fromJson(Map<String, dynamic> json) {
@@ -56,6 +59,9 @@ class EvaluationHistoryItemModel extends EvaluationHistoryItemEntity {
       invoiceId: json['invoiceId'],
       statusTitle: json['statusTitle'],
       hasImage: json['hasImage'],
+      description: json['description'],
+      cancelReasonTitle: json['cancelReasonTitle'],
+      cancelReasonDetailTitle: json['cancelReasonDetailTitle'],
     );
   }
 }

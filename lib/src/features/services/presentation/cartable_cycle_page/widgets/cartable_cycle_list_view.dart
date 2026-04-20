@@ -49,6 +49,22 @@ class CartableCycleListView extends StatelessWidget {
               final item = items[index];
               return  TimelineItemCard(
                 icon: icon,
+                expandedChildren:
+                    (item.description != null && item.description!.isNotEmpty)
+                        ? [
+                            Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const BodySmallText(text: 'توضیحات'),
+                                Space.h8,
+                                BodySmallText(
+                                  text: item.description!,
+                                  textAlign: TextAlign.start,
+                                ),
+                              ],
+                            )
+                          ]
+                        : const [],
                 children: [
                   KeyValueRow(
                     label: "شماره درخواست",
@@ -64,7 +80,7 @@ class CartableCycleListView extends StatelessWidget {
                     value: StatusLabel(
                       text: item.statusTitle ?? "-",
                       color: Colors.grey,
-                      fillColor: false,
+                      variant: StatusLabelVariant.outlined,
                     ),
                   ),
                   KeyValueWidgetRow(
@@ -72,7 +88,7 @@ class CartableCycleListView extends StatelessWidget {
                     value: StatusLabel(
                       text: item.stepTitle ?? "-",
                       color: Colors.grey,
-                      fillColor: false,
+                      variant: StatusLabelVariant.outlined,
                     ),
                   ),
                   KeyValueRow(
@@ -83,20 +99,6 @@ class CartableCycleListView extends StatelessWidget {
                     label: "دریافت کننده",
                     value: item.receiverFullName ?? "-",
                   ),
-                  if (item.description != null &&
-                      item.description!.isNotEmpty) ...[
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const BodySmallText(text: 'توضیحات'),
-                        Space.h8,
-                        BodySmallText(
-                          text: item.description!,
-                          textAlign: TextAlign.start,
-                        ),
-                      ],
-                    )
-                  ]
                 ],
               );
 

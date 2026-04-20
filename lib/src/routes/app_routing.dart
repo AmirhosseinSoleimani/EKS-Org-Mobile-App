@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/features/bottom_navigation_bar/presentatio
 import 'package:eks_sana_plus_org/src/features/dashboard/presentation/dashboard_page.dart';
 import 'package:eks_sana_plus_org/src/features/indicator_report/presentation/indicator_report_page/indicator_report_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cartable_cycle_page/cartable_cycle_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_history/evaluation_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/home_service_request_list_page/home_service_request_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/non_cooperation_page/non_cooperation_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/relief_request_list_page/relief_request_list_page.dart';
@@ -33,7 +34,7 @@ class Routes {
 
     return GoRouter(
       navigatorKey: parentNavigatorKey,
-      initialLocation: LoginPage.path,
+      initialLocation: EvaluationHistoryPage.path,
       refreshListenable: startupGuard,
       observers: [
         routeObserver
@@ -143,6 +144,14 @@ class Routes {
           name: CartableCyclePage.name,
           pageBuilder: (context, state) => getPage(
             child: const CartableCyclePage(),
+            state: state,
+          ),
+        ),
+        GoRoute(
+          path: EvaluationHistoryPage.path,
+          name: EvaluationHistoryPage.name,
+          pageBuilder: (context, state) => getPage(
+            child: const EvaluationHistoryPage(),
             state: state,
           ),
         ),

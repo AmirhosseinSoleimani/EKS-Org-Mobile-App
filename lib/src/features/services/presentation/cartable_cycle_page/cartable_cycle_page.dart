@@ -1,13 +1,14 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cartable_cycle_page/cubit/cartable_cycle_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/agent_info_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/agent_info_detail_section.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -95,6 +96,10 @@ class _SelectedServicesView extends StatelessWidget {
                                   Space.h16,
                                   if(cubit.selectedRequest != null)...[
                                     ExpandableSection(
+                                      brief: BodySmallText(
+                                        text:
+                                            "${cubit.selectedRequest?.emFullName ?? ''} | ${cubit.selectedRequest?.emMobileNumber1 ?? ""}",
+                                      ),
                                       isExpanded: false,
                                       header: const BodyMediumText(
                                           text: "اطلاعات امداد رسان"),

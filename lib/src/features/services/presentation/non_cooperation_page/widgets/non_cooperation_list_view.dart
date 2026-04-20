@@ -73,7 +73,7 @@ class NonCooperationListView extends StatelessWidget {
                     value: StatusLabel(
                       text: item.typeOfLackTitle ?? "-",
                       color: Colors.grey,
-                      fillColor: false,
+                      variant: StatusLabelVariant.outlined,
                     ),
                   ),
                   KeyValueRow(

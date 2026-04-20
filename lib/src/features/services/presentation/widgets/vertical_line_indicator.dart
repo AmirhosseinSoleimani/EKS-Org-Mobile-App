@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 
-class VerticallineIndicator extends StatelessWidget {
+class VerticalLineIndicator extends StatelessWidget {
   final Widget icon;
   final Color color;
 
-  const VerticallineIndicator({
+  const VerticalLineIndicator({
     super.key,
     required this.icon,
     this.color = Colors.grey,
@@ -18,7 +18,7 @@ class VerticallineIndicator extends StatelessWidget {
         Expanded(
           child: Container(
             width: 2,
-            color: color.withOpacity(0.5),
+            color: color.withOpacity(0.2),
           ),
         ),
         Container(
