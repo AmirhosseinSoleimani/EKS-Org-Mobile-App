@@ -90,6 +90,8 @@ import '../features/services/domain/usecases/get_relief_request_by_id_use_case.d
     as _i672;
 import '../features/services/domain/usecases/get_relief_request_list_use_case.dart'
     as _i192;
+import '../features/services/domain/usecases/get_request_followup_history_use_case.dart'
+    as _i67;
 import '../features/services/domain/usecases/get_request_status_history_use_case.dart'
     as _i955;
 import '../features/services/domain/usecases/set_selected_request_item_use_case.dart'
@@ -250,7 +252,6 @@ _i174.GetIt $initGetIt(
   gh.factory<_i336.BottomNavigationBarCubit>(
       () => _i336.BottomNavigationBarCubit());
   gh.factory<_i190.ThemeCubit>(() => _i190.ThemeCubit());
-  gh.factory<_i802.RequestDetailCubit>(() => _i802.RequestDetailCubit());
   gh.singleton<_i882.PanelController>(
       () => slidingPanelControllerModule.panelController);
   gh.singleton<_i466.DioTokenInterceptor>(
@@ -452,6 +453,8 @@ _i174.GetIt $initGetIt(
       _i955.GetRequestStatusHistoryUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i786.GetEmdadgarInfoUseCase>(
       () => _i786.GetEmdadgarInfoUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i67.GetRequestFollowupHistoryUseCase>(() =>
+      _i67.GetRequestFollowupHistoryUseCase(gh<_i603.RequestRepository>()));
   gh.factory<_i1048.ReliefRequestListCubit>(() => _i1048.ReliefRequestListCubit(
         gh<_i192.GetReliefRequestListUseCase>(),
         gh<_i369.SetSelectedRequestItemUseCase>(),
@@ -476,6 +479,12 @@ _i174.GetIt $initGetIt(
   gh.factory<_i154.EvaluationHistoryCubit>(() => _i154.EvaluationHistoryCubit(
         gh<_i467.GetEvaluationHistoryListUseCase>(),
         gh<_i376.FetchSelectedRequestItemUseCase>(),
+      ));
+  gh.factory<_i802.RequestDetailCubit>(() => _i802.RequestDetailCubit(
+        gh<_i376.FetchSelectedRequestItemUseCase>(),
+        gh<_i672.GetReliefRequestByIdUseCase>(),
+        gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+        gh<_i67.GetRequestFollowupHistoryUseCase>(),
       ));
   gh.factory<_i1029.CartableCycleCubit>(() => _i1029.CartableCycleCubit(
         gh<_i765.GetCartableCycleListUseCase>(),

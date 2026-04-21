@@ -35,4 +35,6 @@ abstract class RequestDataSource {
 
   Future<BaseSingleResponse<EmdadgarInfoModel>> getEmdadgarInfo(
       ServiceRequestParamModel param);
+
+  Future<BaseSingleResponse<EmdadgarInfoModel>> getRequestFollowUp();
 }

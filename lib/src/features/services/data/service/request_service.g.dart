@@ -76,7 +76,7 @@ class _RequestService implements RequestService {
     )
             .compose(
               _dio.options,
-              'api/AidServiceRequestOrg/GetById',
+              '/api/AidServiceRequestOrg/GetById',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -356,6 +356,45 @@ class _RequestService implements RequestService {
             .compose(
               _dio.options,
               '/api/NewEmdadgarOrg/GetEmdadgarByServiceRequestId',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseSingleResponse<EmdadgarInfoModel> _value;
+    try {
+      _value = BaseSingleResponse<EmdadgarInfoModel>.fromJson(
+        _result.data!,
+        (json) => EmdadgarInfoModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseSingleResponse<EmdadgarInfoModel>> getRequestFollowUp(
+      Map<String, dynamic> query) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(query);
+    final _options =
+        _setStreamType<BaseSingleResponse<EmdadgarInfoModel>>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/RequestFollowUpOrg/GetByFilterJson',
               queryParameters: queryParameters,
               data: _data,
             )

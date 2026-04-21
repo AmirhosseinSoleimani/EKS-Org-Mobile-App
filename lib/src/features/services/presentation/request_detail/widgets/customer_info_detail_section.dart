@@ -16,27 +16,27 @@ class CustomerInfoDetailSection extends StatelessWidget {
       children: [
         KeyValueRow(
           label: "نام",
-          value: cubit.selectedRequest.firstName ?? "-",
+          value: cubit.selectedRequest?.firstName ?? "-",
         ),
         KeyValueRow(
           label: "نام خانوادگی",
-          value: cubit.selectedRequest.lastName ?? "-",
+          value: cubit.selectedRequest?.lastName ?? "-",
         ),
         KeyValueRow(
           label: "کد ملی",
-          value: cubit.selectedRequest.nationalNumber ?? "-",
+          value: cubit.selectedRequest?.nationalNumber ?? "-",
         ),
         KeyValueRow(
           label: "شماره موبایل",
-          value: cubit.selectedRequest.customerMobileNumber ?? "-",
+          value: cubit.selectedRequest?.customerMobileNumber ?? "-",
         ),
         KeyValueRow(
           label: "نوع شخص",
-          value: cubit.selectedRequest.personTypeTitle ?? "-",
+          value: cubit.selectedRequest?.personTypeTitle ?? "-",
         ),
         KeyValueRow(
           label: "جنسیت",
-          value: cubit.selectedRequest.genderTitle ?? "-",
+          value: cubit.selectedRequest?.genderTitle ?? "-",
         ),
       ],
     );

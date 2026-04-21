@@ -25,7 +25,7 @@ class RequestDataSourceImpl extends RequestDataSource {
 
   @override
   Future<BaseSingleResponse<ReliefRequestModel>> getReliefRequestById(
-          int id) async =>
+      int id) async =>
       await _service.getReliefRequestById({"id": id});
 
   @override
@@ -34,11 +34,11 @@ class RequestDataSourceImpl extends RequestDataSource {
 
   @override
   Future<BaseSingleResponse<HomeServiceRequestModel>> getHomeServiceRequestById(
-          int id) async => await _service.getHomeServiceRequestById({"id": id});
+      int id) async => await _service.getHomeServiceRequestById({"id": id});
 
   @override
   Future<BaseSingleResponse<NonCooperationListModel>> getNonCooperationList(
-          RequestOperationParamModel param) async =>
+      RequestOperationParamModel param) async =>
       await _service.getNonCooperationList(param.toJson());
 
   @override
@@ -47,16 +47,20 @@ class RequestDataSourceImpl extends RequestDataSource {
 
   @override
   Future<BaseListResponse<EvaluationHistoryItemModel>> getEvaluationHistory(
-          ServiceRequestParamModel param) async =>
+      ServiceRequestParamModel param) async =>
       await _service.getEvaluationHistory(param.toJson());
 
   @override
   Future<BaseSingleResponse<RequestStatusHistoryListModel>>
-      getRequestStatusHistory(RequestOperationParamModel param) async =>
-          await _service.getRequestStatusHistory(param.toJson());
+  getRequestStatusHistory(RequestOperationParamModel param) async =>
+      await _service.getRequestStatusHistory(param.toJson());
 
   @override
   Future<BaseSingleResponse<EmdadgarInfoModel>> getEmdadgarInfo(
-          ServiceRequestParamModel param) async =>
+      ServiceRequestParamModel param) async =>
       await _service.getEmdadgarInfo(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<EmdadgarInfoModel>> getRequestFollowUp() async =>
+      await _service.getRequestFollowUp({});
 }

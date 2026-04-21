@@ -14,34 +14,34 @@ class CarInfoDetailSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final request = cubit.selectedRequest;
-    final carTag = request.licensePlate ?? '';
+    final carTag = request?.licensePlate ?? '';
     final plate = CarPlateParser.parse(carTag);
 
     return Column(
       children: [
         KeyValueRow(
           label: "نام",
-          value: request.carName ?? '-',
+          value: request?.carName ?? '-',
         ),
         KeyValueRow(
           label: "شماره شاسی",
-          value: request.chassisNumber ?? "-",
+          value: request?.chassisNumber ?? "-",
         ),
         KeyValueRow(
           label: "شماره موتور",
-          value: request.carEngineNumber ?? "-",
+          value: request?.carEngineNumber ?? "-",
         ),
         KeyValueRow(
           label: "رنگ",
-          value: request.carColorTitle ?? "-",
+          value: request?.carColorTitle ?? "-",
         ),
         KeyValueRow(
           label: "سال ساخت",
-          value: request.carProductionYear.toString(),
+          value: request?.carProductionYear.toString() ?? '-',
         ),
         KeyValueRow(
           label: "کیلومتر مشتری",
-          value: request.kilometer?.toString() ?? "-",
+          value: request?.kilometer?.toString() ?? "-",
         ),
         if (request is ReliefRequestEntity) ...[
           KeyValueRow(

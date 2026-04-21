@@ -18,7 +18,6 @@ import 'widgets/customer_info_detail_section.dart';
 import 'widgets/expandable_section.dart';
 import 'widgets/request_followup_history_section.dart';
 import 'widgets/request_location_detail_section.dart';
-import '../widgets/status_label.dart';
 
 class RequestDetailPage extends StatelessWidget {
   const RequestDetailPage({super.key, this.id});
@@ -82,12 +81,27 @@ class RequestDetailPage extends StatelessWidget {
                                     ExpandableSection(
                                       isExpanded: false,
                                       header: RequestStatusSection(
-                                        trackCode: cubit.selectedRequest.trackCode.toString(),
-                                        requestDateJalali: cubit.selectedRequest.requestDateJalali.toString(),
-                                        requestTime: cubit.selectedRequest.requestTime.toString(),
-                                        requestStatusTitle: cubit.selectedRequest.requestStatusTitle,
-                                        isGuaranty: cubit.selectedRequest.isGuaranty ?? false,
-                                        isSubscription: cubit.selectedRequest.isSubscription ?? false,
+                                        trackCode: cubit
+                                                .selectedRequest?.trackCode
+                                                .toString() ??
+                                            '',
+                                        requestDateJalali: cubit.selectedRequest
+                                                ?.requestDateJalali
+                                                .toString() ??
+                                            '',
+                                        requestTime: cubit
+                                                .selectedRequest?.requestTime
+                                                .toString() ??
+                                            '',
+                                        requestStatusTitle: cubit
+                                            .selectedRequest
+                                            ?.requestStatusTitle,
+                                        isGuaranty:
+                                            cubit.selectedRequest?.isGuaranty ??
+                                                false,
+                                        isSubscription: cubit.selectedRequest
+                                                ?.isSubscription ??
+                                            false,
                                       ),
                                       child: RequestDetailSection(selectedRequest: cubit.selectedRequest),
                                     ),
@@ -95,7 +109,8 @@ class RequestDetailPage extends StatelessWidget {
                                       isExpanded: false,
                                       brief: BodySmallText(
                                         text:
-                                            "${cubit.selectedRequest.firstName} ${cubit.selectedRequest.lastName} | ${cubit.selectedRequest.customerMobileNumber ?? "-"}",
+                                            "${cubit.selectedRequest?.firstName ?? ''} ${cubit.selectedRequest?.lastName ?? ''} "
+                                            "| ${cubit.selectedRequest?.customerMobileNumber ?? "-"}",
                                       ),
                                       header: const BodyMediumText(
                                           text: "اطلاعات مشتری"),
@@ -108,7 +123,7 @@ class RequestDetailPage extends StatelessWidget {
                                           text: "اطلاعات امداد رسان"),
                                       child: AgentInfoDetailSection(
                                           selectedRequest:
-                                              cubit.selectedRequest),
+                                              cubit.selectedRequest!),
                                     ),
                                     ExpandableSection(
                                       isExpanded: false,
@@ -116,12 +131,12 @@ class RequestDetailPage extends StatelessWidget {
                                           text: "اطلاعات خودرو"),
                                       child: CarInfoDetailSection(cubit: cubit),
                                     ),
-                                    const ExpandableSection(
+                                    ExpandableSection(
                                       isExpanded: false,
                                       header: const BodyMediumText(
                                           text: "تاریخچه پیگیری"),
                                       child: RequestFollowupHistorySection(
-                                        items: []/*cubit.*/,
+                                        items: cubit.followups,
                                       ),
                                     ),
                                      ExpandableSection(
@@ -130,23 +145,14 @@ class RequestDetailPage extends StatelessWidget {
                                           const BodyMediumText(text: "موقعیت درخواست روی نقشه"),
                                       child:  RequestLocationDetailSection(
                                         latitude:
-                                        cubit.selectedRequest.latitude,
+                                            cubit.selectedRequest?.latitude,
                                         longitude:
-                                        cubit.selectedRequest.longitude,
-                                        city: cubit.selectedRequest.cityName,
-                                        province: cubit
-                                            .selectedRequest.provinceName,
+                                            cubit.selectedRequest?.longitude,
+                                        city: cubit.selectedRequest?.cityName,
+                                        province:
+                                            cubit.selectedRequest?.provinceName,
                                         address:
-                                        cubit.selectedRequest.aidAddress,
-                                      ),
-                                    ),
-                                    const ExpandableSection(
-                                      isExpanded: false,
-                                      header:
-                                          const Text("تاریخچه وضعیت درخواست"),
-                                      child: SizedBox(
-                                        height: 200,
-                                        child: SizedBox(),
+                                            cubit.selectedRequest?.aidAddress,
                                       ),
                                     ),
                                   ],

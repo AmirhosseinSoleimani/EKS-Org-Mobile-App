@@ -91,8 +91,10 @@ class RequestCard extends StatelessWidget {
               ),
               const SizedBox(width: 12),
               RequestDetailsButton(
-                onPressed: () =>
-                    context.push(RequestDetailPage.path, extra: request.id),
+                onPressed: () {
+                  onSelected(request);
+                  context.push(RequestDetailPage.path, extra: request.id);
+                },
               ),
             ],
           ),
