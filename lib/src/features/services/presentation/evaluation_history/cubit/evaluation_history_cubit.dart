@@ -29,92 +29,8 @@ class EvaluationHistoryCubit extends Cubit<EvaluationHistoryState> {
   final List<EvaluationHistoryItemEntity> items = [];
 
   int? requestId;
-  Future<void> init() async {
 
 
-    emit(const EvaluationHistoryState.loading());
-
-    await Future.delayed(const Duration(seconds: 2));
-
-    selectedRequest = const ReliefRequestEntity(
-      id: 123,
-      trackCode: 124,
-      requestDateJalali: "1405/01/31",
-      requestTime: "07:54:39",
-      requestStatusTitle: "تکمیل شده",
-      isGuaranty: false,
-      isSubscription: false,
-    );
-
-    items.clear();
-
-    items.addAll([
-      EvaluationHistoryItemEntity(
-        id: 1034162,
-        firstName: "مدیر",
-        lastName: "سیستم",
-        insertUserName: "مدیر سیستم",
-        insertDateTime: "2026-04-20T07:54:39",
-        insertDateTimeJalali: "1405/01/31 07:54:39",
-        cancelReasonTitle: "در محل حاضر نبود (امدادخواه)",
-        cancelReasonDetailTitle: "سوء استفاده از خودرو مشترک",
-        emdadServiceCategoryTitle: "کنسل مجاز",
-        distanceToCustomer: 0.0,
-        distanceHamlCustomer: 0.0,
-        isAccepted: false,
-        stopTime: 0,
-        useDakal: false,
-        payAvarezi: false,
-        emdadgarNavganTypeTitle: "خودروي سواري",
-        arriveDateTime: "2026-04-18T17:30:00",
-        arriveDateTimeJalali: "1405/01/29 17:30:00",
-        endWorkDateTime: "2026-04-20T00:00:00",
-        endWorkDateTimeJalali: "1405/01/31 00:00:00",
-        assignTrackerName: "مدیر سیستم",
-        arriveTrackerName: "مدیر سیستم",
-        endWorkTrackerName: "مدیر سیستم",
-        invoiceId: -1,
-        statusTitle: "ثبت اولیه",
-        description: "نمونه توضیحات تست",
-        hasImage: false,
-      ),
-      EvaluationHistoryItemEntity(
-        id: 1034161,
-        firstName: "مدیر",
-        lastName: "سیستم",
-        insertUserName: "مدیر سیستم",
-        insertDateTime: "2026-04-20T07:54:26",
-        insertDateTimeJalali: "1405/01/31 07:54:26",
-        cancelReasonTitle: "در محل حاضر نبود (امدادخواه)",
-        cancelReasonDetailTitle: "سوء استفاده از خودرو مشترک",
-        emdadServiceCategoryTitle: "کنسل مجاز",
-        distanceToCustomer: 0.0,
-        distanceHamlCustomer: 0.0,
-        isAccepted: false,
-        stopTime: 0,
-        useDakal: false,
-        payAvarezi: false,
-        emdadgarNavganTypeTitle: "خودروي سواري",
-        arriveDateTime: "2026-04-18T17:30:00",
-        arriveDateTimeJalali: "1405/01/29 17:30:00",
-        endWorkDateTime: "2026-04-20T00:00:00",
-        endWorkDateTimeJalali: "1405/01/31 00:00:00",
-        assignTrackerName: "مدیر سیستم",
-        arriveTrackerName: "مدیر سیستم",
-        endWorkTrackerName: "مدیر سیستم",
-        invoiceId: -1,
-        statusTitle: "تکمیل شده",
-        description: "توضیحات آیتم دوم",
-        hasImage: false,
-      ),
-    ]);
-
-    _safeEmit(const EvaluationHistoryState.loaded());
-  }
-
-
-
-/*
   Future<void> init() async {
     emit(const EvaluationHistoryState.loading());
 
@@ -137,7 +53,7 @@ class EvaluationHistoryCubit extends Cubit<EvaluationHistoryState> {
     requestId = cachedRequest.id;
 
     await _loadEvaluationHistoryList();
-  }*/
+  }
 
   Future<void> _loadEvaluationHistoryList() async {
 
