@@ -64,7 +64,7 @@ class CartableCycleCubit extends Cubit<CartableCycleState> {
     final result = await _getCartableCycleListUseCase(
       RequestOperationParamEntity(
         serviceType: ServiceType.homeService,
-        requestId: 87813,
+        requestId: selectedRequest?.id ?? 0,
         page: _page,
         pageSize: _pageSize,
       ),
@@ -100,7 +100,7 @@ class CartableCycleCubit extends Cubit<CartableCycleState> {
     final result = await _getCartableCycleListUseCase(
       RequestOperationParamEntity(
         serviceType: ServiceType.homeService,
-        requestId: 87813,
+        requestId: selectedRequest?.id ?? 0,
         page: _page,
         pageSize: _pageSize,
       ),
