@@ -5,11 +5,11 @@ import 'package:eks_sana_plus_org/src/shared/usecase/use_case.dart';
 import 'package:injectable/injectable.dart';
 
 @lazySingleton
-class GetReliefRequestByIdUseCase
+class GetHomeServiceRequestByIdUseCase
     extends BaseUseCase<ApiResult<HomeServiceRequestEntity?>, int> {
   final RequestRepository _repository;
 
-  GetReliefRequestByIdUseCase(this._repository);
+  GetHomeServiceRequestByIdUseCase(this._repository);
 
   @override
   Future<ApiResult<HomeServiceRequestEntity?>> call(arg) async {

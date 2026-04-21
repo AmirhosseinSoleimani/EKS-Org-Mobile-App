@@ -1,11 +1,13 @@
 import 'package:eks_sana_plus_org/src/features/services/data/models/cartable_cycle_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/evaluation_history_item_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/non_cooperation_list_model.dart';
-import 'package:eks_sana_plus_org/src/features/services/data/models/params/evaluation_history_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/request_filter_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/request_operation_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/service_request_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/relief_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/request_status_history_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/service/request_service.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 import 'package:injectable/injectable.dart';
@@ -44,7 +46,17 @@ class RequestDataSourceImpl extends RequestDataSource {
       await _service.getCartableCycleList(param.toJson());
 
   @override
-  Future<BaseListResponse<EvaluationHistoryItemModel>> getEvaluationHistory(EvaluationHistoryParamModel param) async =>
-    await _service.getEvaluationHistory(param.toJson());
+  Future<BaseListResponse<EvaluationHistoryItemModel>> getEvaluationHistory(
+          ServiceRequestParamModel param) async =>
+      await _service.getEvaluationHistory(param.toJson());
 
+  @override
+  Future<BaseSingleResponse<RequestStatusHistoryListModel>>
+      getRequestStatusHistory(RequestOperationParamModel param) async =>
+          await _service.getRequestStatusHistory(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<EmdadgarInfoModel>> getEmdadgarInfo(
+          ServiceRequestParamModel param) async =>
+      await _service.getEmdadgarInfo(param.toJson());
 }

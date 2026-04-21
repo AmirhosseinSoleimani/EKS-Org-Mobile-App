@@ -61,7 +61,7 @@ class _View extends StatelessWidget {
           },
         );
       },
-      child: Scaffold(
+      child: const Scaffold(
         appBar: const SimpleAppBar(title: "چرخه کارتابل"),
         body: const _Body(),
       ),

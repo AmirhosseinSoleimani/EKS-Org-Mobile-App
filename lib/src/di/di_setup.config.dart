@@ -76,6 +76,8 @@ import '../features/services/domain/usecases/fetch_selected_request_item_use_cas
     as _i376;
 import '../features/services/domain/usecases/get_cartable_cycle_list_use_case.dart'
     as _i765;
+import '../features/services/domain/usecases/get_emdadgar_info_use_case.dart'
+    as _i786;
 import '../features/services/domain/usecases/get_evaluation_history_list_use_case.dart'
     as _i467;
 import '../features/services/domain/usecases/get_home_service_request_by_id_use_case.dart'
@@ -88,6 +90,8 @@ import '../features/services/domain/usecases/get_relief_request_by_id_use_case.d
     as _i672;
 import '../features/services/domain/usecases/get_relief_request_list_use_case.dart'
     as _i192;
+import '../features/services/domain/usecases/get_request_status_history_use_case.dart'
+    as _i955;
 import '../features/services/domain/usecases/set_selected_request_item_use_case.dart'
     as _i369;
 import '../features/services/presentation/cartable_cycle_page/cubit/cartable_cycle_cubit.dart'
@@ -102,6 +106,8 @@ import '../features/services/presentation/relief_request_list_page/cubit/relief_
     as _i1048;
 import '../features/services/presentation/request_detail/cubit/request_detail_cubit.dart'
     as _i802;
+import '../features/services/presentation/request_status_history_page/cubit/request_status_history_cubit.dart'
+    as _i563;
 import '../routes/startup_guard.dart' as _i238;
 import '../services/local_service/session_local_storage_service/data/data_source/secure_session_storage_mobile_impl.dart'
     as _i577;
@@ -432,8 +438,8 @@ _i174.GetIt $initGetIt(
       _i809.GetHomeServiceRequestListUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i192.GetReliefRequestListUseCase>(
       () => _i192.GetReliefRequestListUseCase(gh<_i603.RequestRepository>()));
-  gh.lazySingleton<_i63.GetReliefRequestByIdUseCase>(
-      () => _i63.GetReliefRequestByIdUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i63.GetHomeServiceRequestByIdUseCase>(() =>
+      _i63.GetHomeServiceRequestByIdUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i707.GetNonCooperationListUseCase>(
       () => _i707.GetNonCooperationListUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i672.GetReliefRequestByIdUseCase>(
@@ -442,17 +448,29 @@ _i174.GetIt $initGetIt(
       () => _i765.GetCartableCycleListUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i467.GetEvaluationHistoryListUseCase>(() =>
       _i467.GetEvaluationHistoryListUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i955.GetRequestStatusHistoryUseCase>(() =>
+      _i955.GetRequestStatusHistoryUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i786.GetEmdadgarInfoUseCase>(
+      () => _i786.GetEmdadgarInfoUseCase(gh<_i603.RequestRepository>()));
   gh.factory<_i1048.ReliefRequestListCubit>(() =>
       _i1048.ReliefRequestListCubit(gh<_i192.GetReliefRequestListUseCase>()));
-  gh.factory<_i154.EvaluationHistoryCubit>(() => _i154.EvaluationHistoryCubit(
-        gh<_i467.GetEvaluationHistoryListUseCase>(),
-        gh<_i376.FetchSelectedRequestItemUseCase>(),
-      ));
   gh.factory<_i1013.HomeServiceRequestListCubit>(() =>
       _i1013.HomeServiceRequestListCubit(
           gh<_i809.GetHomeServiceRequestListUseCase>()));
+  gh.factory<_i563.RequestStatusHistoryCubit>(
+      () => _i563.RequestStatusHistoryCubit(
+            gh<_i955.GetRequestStatusHistoryUseCase>(),
+            gh<_i376.FetchSelectedRequestItemUseCase>(),
+            gh<_i672.GetReliefRequestByIdUseCase>(),
+            gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+            gh<_i786.GetEmdadgarInfoUseCase>(),
+          ));
   gh.factory<_i165.NonCooperationCubit>(() => _i165.NonCooperationCubit(
         gh<_i707.GetNonCooperationListUseCase>(),
+        gh<_i376.FetchSelectedRequestItemUseCase>(),
+      ));
+  gh.factory<_i154.EvaluationHistoryCubit>(() => _i154.EvaluationHistoryCubit(
+        gh<_i467.GetEvaluationHistoryListUseCase>(),
         gh<_i376.FetchSelectedRequestItemUseCase>(),
       ));
   gh.factory<_i1029.CartableCycleCubit>(() => _i1029.CartableCycleCubit(

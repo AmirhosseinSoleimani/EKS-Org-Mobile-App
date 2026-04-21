@@ -4,12 +4,12 @@ import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_
 import 'package:eks_sana_plus_org/src/shared/usecase/use_case.dart';
 import 'package:injectable/injectable.dart';
 
-import '../entities/params/evaluation_history_param_entity.dart';
+import '../entities/params/service_request_param_entity.dart';
 
 @lazySingleton
 class GetEvaluationHistoryListUseCase extends BaseUseCase<
     ApiResult<List<EvaluationHistoryItemEntity>>,
-    EvaluationHistoryParamEntity> {
+    ServiceRequestParamEntity> {
   final RequestRepository _repository;
 
   GetEvaluationHistoryListUseCase(this._repository);

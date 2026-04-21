@@ -9,6 +9,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/home_servic
 import 'package:eks_sana_plus_org/src/features/services/presentation/non_cooperation_page/non_cooperation_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/relief_request_list_page/relief_request_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/request_detail_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/request_status_history_page/request_status_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/services_page/services_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -34,7 +35,7 @@ class Routes {
 
     return GoRouter(
       navigatorKey: parentNavigatorKey,
-      initialLocation: CartableCyclePage.path,
+      initialLocation: RequestStatusHistoryPage.path,
       refreshListenable: startupGuard,
       observers: [
         routeObserver
@@ -152,6 +153,14 @@ class Routes {
           name: EvaluationHistoryPage.name,
           pageBuilder: (context, state) => getPage(
             child: const EvaluationHistoryPage(),
+            state: state,
+          ),
+        ),
+        GoRoute(
+          path: RequestStatusHistoryPage.path,
+          name: RequestStatusHistoryPage.name,
+          pageBuilder: (context, state) => getPage(
+            child: const RequestStatusHistoryPage(),
             state: state,
           ),
         ),

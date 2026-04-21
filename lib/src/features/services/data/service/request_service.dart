@@ -1,9 +1,11 @@
 import 'package:dio/dio.dart' hide Headers;
 import 'package:eks_sana_plus_org/src/features/services/data/models/cartable_cycle_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/evaluation_history_item_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/non_cooperation_list_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/relief_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/request_status_history_model.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
@@ -40,5 +42,13 @@ abstract class RequestService {
 
   @POST('/api/AidServiceEvaluationOrg/GetEvaluationsByServiceRequestId')
   Future<BaseListResponse<EvaluationHistoryItemModel>> getEvaluationHistory(
+      @Body() Map<String, dynamic> query);
+
+  @POST('/api/ServiceRequestHistory/GetByFilterJson')
+  Future<BaseSingleResponse<RequestStatusHistoryListModel>> getRequestStatusHistory(
+      @Body() Map<String, dynamic> query);
+
+  @POST('/api/NewEmdadgar/GetEmdadgarByServiceRequestId')
+  Future<BaseSingleResponse<EmdadgarInfoModel>> getEmdadgarInfo(
       @Body() Map<String, dynamic> query);
 }

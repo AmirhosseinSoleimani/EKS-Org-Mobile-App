@@ -1,11 +1,13 @@
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/cartable_cycle_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/evaluation_history_item_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/non_cooperation_list_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/evaluation_history_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/service_request_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_operation_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/request_status_history_entity.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 
 abstract class RequestRepository {
@@ -27,5 +29,11 @@ abstract class RequestRepository {
       RequestOperationParamEntity param);
 
   Future<ApiResult<List<EvaluationHistoryItemEntity>>> getEvaluationHistory(
-      EvaluationHistoryParamEntity param);
+      ServiceRequestParamEntity param);
+
+  Future<ApiResult<RequestStatusHistoryListEntity>> getRequestStatusHistory(
+      RequestOperationParamEntity param);
+
+  Future<ApiResult<EmdadgarInfoEntity?>> getEmdadgarInfo(
+      ServiceRequestParamEntity param);
 }

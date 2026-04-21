@@ -2,7 +2,7 @@ import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/evaluation_history_item_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/evaluation_history_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/service_request_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/fetch_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_evaluation_history_list_use_case.dart';
@@ -144,7 +144,7 @@ class EvaluationHistoryCubit extends Cubit<EvaluationHistoryState> {
     items.clear();
 
     final result = await _getEvaluationHistoryListUseCase(
-      EvaluationHistoryParamEntity(
+      ServiceRequestParamEntity(
         serviceType: selectedRequest is HomeServiceRequestEntity
             ? ServiceType.homeService.value
             : ServiceType.reliefService.value,

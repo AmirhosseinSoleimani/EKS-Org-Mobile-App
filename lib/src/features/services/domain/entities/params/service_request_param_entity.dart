@@ -1,26 +1,26 @@
-import 'package:eks_sana_plus_org/src/features/services/data/models/params/evaluation_history_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/service_request_param_model.dart';
 
-class EvaluationHistoryParamEntity {
+class ServiceRequestParamEntity {
   final int? serviceRequestId;
   final int? serviceType;
 
-  const EvaluationHistoryParamEntity({
+  const ServiceRequestParamEntity({
     this.serviceRequestId,
     this.serviceType,
   });
 
-  EvaluationHistoryParamEntity copyWith({
+  ServiceRequestParamEntity copyWith({
     int? serviceRequestId,
     int? serviceType,
   }) {
-    return EvaluationHistoryParamEntity(
+    return ServiceRequestParamEntity(
       serviceRequestId: serviceRequestId ?? this.serviceRequestId,
       serviceType: serviceType ?? this.serviceType,
     );
   }
 
-  EvaluationHistoryParamModel toModel() {
-    return EvaluationHistoryParamModel(
+  ServiceRequestParamModel toModel() {
+    return ServiceRequestParamModel(
       serviceRequestId: serviceRequestId,
       serviceType: serviceType,
     );
