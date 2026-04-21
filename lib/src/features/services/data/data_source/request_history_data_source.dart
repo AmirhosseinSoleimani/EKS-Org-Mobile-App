@@ -24,7 +24,7 @@ abstract class RequestDataSource {
   Future<BaseSingleResponse<NonCooperationListModel>> getNonCooperationList(
       RequestOperationParamModel param);
 
-  Future<BaseSingleResponse<CartableCycleListModel>> getCartableCycleList(
+  Future<BaseListResponse<CartableCycleItemModel>> getCartableCycleList(
       RequestOperationParamModel param);
 
   Future<BaseListResponse<EvaluationHistoryItemModel>> getEvaluationHistory(

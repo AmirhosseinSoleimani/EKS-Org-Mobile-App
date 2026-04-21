@@ -37,7 +37,7 @@ abstract class RequestService {
       @Body() Map<String, dynamic> query);
 
   @POST('/api/CartableOrg/GetServiceRequestMessageFlow')
-  Future<BaseSingleResponse<CartableCycleListModel>> getCartableCycleList(
+  Future<BaseListResponse<CartableCycleItemModel>> getCartableCycleList(
       @Body() Map<String, dynamic> query);
 
   @POST('/api/AidServiceEvaluationOrg/GetEvaluationsByServiceRequestId')

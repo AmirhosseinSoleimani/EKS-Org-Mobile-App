@@ -42,7 +42,7 @@ class RequestDataSourceImpl extends RequestDataSource {
       await _service.getNonCooperationList(param.toJson());
 
   @override
-  Future<BaseSingleResponse<CartableCycleListModel>> getCartableCycleList(RequestOperationParamModel param)async =>
+  Future<BaseListResponse<CartableCycleItemModel>> getCartableCycleList(RequestOperationParamModel param)async =>
       await _service.getCartableCycleList(param.toJson());
 
   @override

@@ -72,14 +72,7 @@ class CartableCycleCubit extends Cubit<CartableCycleState> {
 
     result.whenOrNull(
       success: (data, failures, resultCode) {
-        if (data != null) {
-          items.addAll(data.items);
-
-          if (data.items.length < _pageSize) {
-            _hasMore = false;
-          }
-        }
-
+        items.addAll(data);
         _safeEmit(const CartableCycleState.loaded());
       },
       failure: (error, msg) {
@@ -115,15 +108,13 @@ class CartableCycleCubit extends Cubit<CartableCycleState> {
 
     result.whenOrNull(
       success: (data, failures, resultCode) {
-        if (data != null) {
-          if (data.items.isEmpty) {
-            _hasMore = false;
-          } else {
-            items.addAll(data.items);
+        if (data.isEmpty) {
+          _hasMore = false;
+        } else {
+          items.addAll(data);
 
-            if (data.items.length < _pageSize) {
-              _hasMore = false;
-            }
+          if (data.length < _pageSize) {
+            _hasMore = false;
           }
         }
 

@@ -25,7 +25,7 @@ abstract class RequestRepository {
   Future<ApiResult<NonCooperationListEntity?>> getNonCooperationList(
       RequestOperationParamEntity param);
 
-  Future<ApiResult<CartableCycleListEntity?>> getCartableCycleList(
+  Future<ApiResult<List<CartableCycleItemEntity>>> getCartableCycleList(
       RequestOperationParamEntity param);
 
   Future<ApiResult<List<EvaluationHistoryItemEntity>>> getEvaluationHistory(

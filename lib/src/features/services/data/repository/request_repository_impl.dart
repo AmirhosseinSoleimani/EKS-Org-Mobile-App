@@ -74,7 +74,7 @@ class RequestRepositoryImpl extends RequestRepository {
   }
 
   @override
-  Future<ApiResult<CartableCycleListEntity?>> getCartableCycleList(RequestOperationParamEntity param) async {
+  Future<ApiResult<List<CartableCycleItemEntity>>> getCartableCycleList(RequestOperationParamEntity param) async {
     try {
       final result = await _dataSource.getCartableCycleList(param.toModel());
       return result.toApiResult();

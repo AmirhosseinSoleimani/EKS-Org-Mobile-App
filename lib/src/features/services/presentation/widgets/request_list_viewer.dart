@@ -1,4 +1,5 @@
 
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
@@ -27,7 +28,7 @@ class RequestListViewer extends StatelessWidget {
         return RequestCard(
           request: item,
           serviceTitle: _resolveServiceTitle(item),
-          serviceColor: Colors.blue,
+          serviceColor: item.serviceType?.serviceColor ?? ServiceType.reliefService.serviceColor,
           serviceIcon: Icons.build,
           onSelected: onSelected,
         );

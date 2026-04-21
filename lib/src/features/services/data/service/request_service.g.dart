@@ -220,7 +220,7 @@ class _RequestService implements RequestService {
   }
 
   @override
-  Future<BaseSingleResponse<CartableCycleListModel>> getCartableCycleList(
+  Future<BaseListResponse<CartableCycleItemModel>> getCartableCycleList(
       Map<String, dynamic> query) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -228,7 +228,7 @@ class _RequestService implements RequestService {
     final _data = <String, dynamic>{};
     _data.addAll(query);
     final _options =
-        _setStreamType<BaseSingleResponse<CartableCycleListModel>>(Options(
+        _setStreamType<BaseListResponse<CartableCycleItemModel>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -245,11 +245,11 @@ class _RequestService implements RequestService {
               baseUrl,
             )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseSingleResponse<CartableCycleListModel> _value;
+    late BaseListResponse<CartableCycleItemModel> _value;
     try {
-      _value = BaseSingleResponse<CartableCycleListModel>.fromJson(
+      _value = BaseListResponse<CartableCycleItemModel>.fromJson(
         _result.data!,
-        (json) => CartableCycleListModel.fromJson(json as Map<String, dynamic>),
+        (json) => CartableCycleItemModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);

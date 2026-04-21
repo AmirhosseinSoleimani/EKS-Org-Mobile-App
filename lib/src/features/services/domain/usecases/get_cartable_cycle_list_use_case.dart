@@ -8,13 +8,13 @@ import '../entities/params/request_operation_param_entity.dart';
 
 @lazySingleton
 class GetCartableCycleListUseCase extends BaseUseCase<
-    ApiResult<CartableCycleListEntity?>, RequestOperationParamEntity> {
+    ApiResult<List<CartableCycleItemEntity>>, RequestOperationParamEntity> {
   final RequestRepository _repository;
 
   GetCartableCycleListUseCase(this._repository);
 
   @override
-  Future<ApiResult<CartableCycleListEntity?>> call(arg) async {
+  Future<ApiResult<List<CartableCycleItemEntity>>> call(arg) async {
     return await _repository.getCartableCycleList(arg);
   }
 }
