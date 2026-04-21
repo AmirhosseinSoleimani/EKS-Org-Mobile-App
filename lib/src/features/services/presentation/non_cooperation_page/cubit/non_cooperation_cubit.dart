@@ -63,8 +63,8 @@ class NonCooperationCubit extends Cubit<NonCooperationState> {
 
     final result = await _getNonCooperationListUseCase(
       RequestOperationParamEntity(
-        serviceType: ServiceType.homeService,
-        requestId: requestId ?? 0,
+        serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
+        serviceRequestTrackCode: selectedRequest?.trackCode ?? 0,
         page: _page,
         pageSize: _pageSize,
       ),

@@ -3,7 +3,8 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/r
 class RequestOperationParamModel extends RequestOperationParamEntity {
   const RequestOperationParamModel({
     required super.serviceType,
-    required super.requestId,
+    super.requestId,
+    super.serviceRequestTrackCode,
     super.pageSize,
     super.page,
   });
@@ -12,6 +13,7 @@ class RequestOperationParamModel extends RequestOperationParamEntity {
     return RequestOperationParamModel(
       serviceType: json['serviceType'],
       requestId: json['serviceRequestId'],
+      serviceRequestTrackCode: json['serviceRequestTrackCode'],
       pageSize: json['pageSize'],
       page: json['page'],
     );
@@ -21,6 +23,7 @@ class RequestOperationParamModel extends RequestOperationParamEntity {
     return {
       "serviceType": serviceType.value,
       "serviceRequestId": requestId,
+      "serviceRequestTrackCode": serviceRequestTrackCode,
       "pageSize": pageSize,
       "page": page,
     };
