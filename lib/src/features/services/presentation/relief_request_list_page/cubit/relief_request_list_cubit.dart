@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/common/constants/time_period.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_relief_request_list_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/usecases/set_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -17,10 +18,11 @@ part 'request_list_cubit.freezed.dart';
 
 @injectable
 class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
-  ReliefRequestListCubit(this._getReliefRequestListUseCase)
+  ReliefRequestListCubit(this._getReliefRequestListUseCase, this._setSelectedRequestItemUseCase)
       : super(const ReliefRequestListState.idle());
 
   final GetReliefRequestListUseCase _getReliefRequestListUseCase;
+  final SetSelectedRequestItemUseCase _setSelectedRequestItemUseCase;
 
   final List<BaseRequestEntity> requestList = <BaseRequestEntity>[];
 
@@ -92,6 +94,15 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
 
   void _safeEmit(ReliefRequestListState state) {
     if (!isClosed) emit(state);
+  }
+
+
+  Future<void> cacheSelectedRequest(BaseRequestEntity request) async {
+    try {
+      await _setSelectedRequestItemUseCase(request);
+    } catch (e) {
+      debugPrint("cacheSelectedRequest ERROR → $e");
+    }
   }
 
   @override

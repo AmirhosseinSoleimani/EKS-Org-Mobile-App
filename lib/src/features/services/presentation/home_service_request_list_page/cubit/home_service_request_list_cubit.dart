@@ -6,6 +6,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/r
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_home_service_request_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_relief_request_list_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/usecases/set_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -20,10 +21,12 @@ part 'home_service_request_list_state.dart';
 
 @injectable
 class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
-  HomeServiceRequestListCubit(this._getHomeServiceRequestListUseCase)
+  HomeServiceRequestListCubit(this._getHomeServiceRequestListUseCase,
+      this._setSelectedRequestItemUseCase)
       : super(const HomeServiceRequestListState.idle());
 
   final GetHomeServiceRequestListUseCase _getHomeServiceRequestListUseCase;
+  final SetSelectedRequestItemUseCase _setSelectedRequestItemUseCase;
 
   final List<BaseRequestEntity> requestList = <BaseRequestEntity>[];
 
@@ -95,6 +98,14 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
 
   void _safeEmit(HomeServiceRequestListState state) {
     if (!isClosed) emit(state);
+  }
+
+  Future<void> cacheSelectedRequest(BaseRequestEntity request) async {
+    try {
+      await _setSelectedRequestItemUseCase(request);
+    } catch (e) {
+      debugPrint("cacheSelectedRequest ERROR → $e");
+    }
   }
 
   @override

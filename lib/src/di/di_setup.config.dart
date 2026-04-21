@@ -452,11 +452,10 @@ _i174.GetIt $initGetIt(
       _i955.GetRequestStatusHistoryUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i786.GetEmdadgarInfoUseCase>(
       () => _i786.GetEmdadgarInfoUseCase(gh<_i603.RequestRepository>()));
-  gh.factory<_i1048.ReliefRequestListCubit>(() =>
-      _i1048.ReliefRequestListCubit(gh<_i192.GetReliefRequestListUseCase>()));
-  gh.factory<_i1013.HomeServiceRequestListCubit>(() =>
-      _i1013.HomeServiceRequestListCubit(
-          gh<_i809.GetHomeServiceRequestListUseCase>()));
+  gh.factory<_i1048.ReliefRequestListCubit>(() => _i1048.ReliefRequestListCubit(
+        gh<_i192.GetReliefRequestListUseCase>(),
+        gh<_i369.SetSelectedRequestItemUseCase>(),
+      ));
   gh.factory<_i563.RequestStatusHistoryCubit>(
       () => _i563.RequestStatusHistoryCubit(
             gh<_i955.GetRequestStatusHistoryUseCase>(),
@@ -469,6 +468,11 @@ _i174.GetIt $initGetIt(
         gh<_i707.GetNonCooperationListUseCase>(),
         gh<_i376.FetchSelectedRequestItemUseCase>(),
       ));
+  gh.factory<_i1013.HomeServiceRequestListCubit>(
+      () => _i1013.HomeServiceRequestListCubit(
+            gh<_i809.GetHomeServiceRequestListUseCase>(),
+            gh<_i369.SetSelectedRequestItemUseCase>(),
+          ));
   gh.factory<_i154.EvaluationHistoryCubit>(() => _i154.EvaluationHistoryCubit(
         gh<_i467.GetEvaluationHistoryListUseCase>(),
         gh<_i376.FetchSelectedRequestItemUseCase>(),

@@ -21,22 +21,22 @@ abstract class RequestService {
   @POST('/api/AidServiceRequestOrg/GetAidServiceRequestList')
   Future<BaseListResponse<ReliefRequestModel>> getReliefRequestList(@Body() Map<String, dynamic> body);
 
-  @GET('api/AidServiceRequest/GetById')
+  @GET('api/AidServiceRequestOrg/GetById')
   Future<BaseSingleResponse<ReliefRequestModel>> getReliefRequestById(
       @Queries() Map<String, dynamic> query);
 
   @POST('/api/HomeServiceRequestOrg/GetHomeServiceRequestList')
   Future<BaseListResponse<HomeServiceRequestModel>> getHomeServiceRequestList(@Body() Map<String, dynamic> body);
 
-  @POST('/api/HomeServiceRequest/GetById')
+  @POST('/api/HomeServiceRequestOrg/GetById')
   Future<BaseSingleResponse<HomeServiceRequestModel>> getHomeServiceRequestById(
       @Queries() Map<String, dynamic> query);
 
-  @POST('/api/LackOfCooperation/getLackOfCooperationList')
+  @POST('/api/LackOfCooperationOrg/getLackOfCooperationList')
   Future<BaseSingleResponse<NonCooperationListModel>> getNonCooperationList(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/Cartable/GetServiceRequestMessageFlow')
+  @POST('/api/CartableOrg/GetServiceRequestMessageFlow')
   Future<BaseSingleResponse<CartableCycleListModel>> getCartableCycleList(
       @Body() Map<String, dynamic> query);
 
@@ -44,11 +44,11 @@ abstract class RequestService {
   Future<BaseListResponse<EvaluationHistoryItemModel>> getEvaluationHistory(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/ServiceRequestHistory/GetByFilterJson')
+  @POST('/api/ServiceRequestHistoryOrg/GetByFilterJson')
   Future<BaseSingleResponse<RequestStatusHistoryListModel>> getRequestStatusHistory(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/NewEmdadgar/GetEmdadgarByServiceRequestId')
+  @POST('/api/NewEmdadgarOrg/GetEmdadgarByServiceRequestId')
   Future<BaseSingleResponse<EmdadgarInfoModel>> getEmdadgarInfo(
       @Body() Map<String, dynamic> query);
 }

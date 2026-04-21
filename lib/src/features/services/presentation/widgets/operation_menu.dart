@@ -1,14 +1,19 @@
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cartable_cycle_page/cartable_cycle_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_history/evaluation_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/non_cooperation_page/non_cooperation_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/request_status_history_page/request_status_history_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class OperationMenu extends StatelessWidget {
-  final int requestId;
+  final BaseRequestEntity request;
+  final Function(BaseRequestEntity) onSelected;
 
   const OperationMenu({
     super.key,
-    required this.requestId,
+    required this.request,
+    required this.onSelected,
   });
 
   @override
@@ -19,7 +24,8 @@ class OperationMenu extends StatelessWidget {
         borderRadius: BorderRadius.circular(8),
       ),
       onSelected: (item) {
-        context.push(item.route, extra: requestId);
+        onSelected(request);
+        context.push(item.route, extra: request.id);
       },
       itemBuilder: (context) {
         return OperationItem.values.map((item) {
@@ -50,7 +56,7 @@ class OperationMenu extends StatelessWidget {
 enum OperationItem {
   requestStatusHistory(
     label: 'تاریخچه وضعیت درخواست',
-    route: NonCooperationPage.path,
+    route: RequestStatusHistoryPage.path,
   ),
   kartableCycle(
     label: 'چرخه کارتابل',
@@ -60,13 +66,13 @@ enum OperationItem {
     label: 'لیست عدم همکاری',
     route: NonCooperationPage.path,
   ),
-  chassisRequestHistory(
+  /* chassisRequestHistory(
     label: 'تاریخچه درخواست شاسی',
     route: NonCooperationPage.path,
-  ),
+  ),*/
   evaluationHistory(
     label: 'تاریخچه ارزیابی',
-    route: NonCooperationPage.path,
+    route: EvaluationHistoryPage.path,
   );
 
   final String label;

@@ -8,8 +8,10 @@ import 'request_card.dart';
 
 class RequestListViewer extends StatelessWidget {
   final List<BaseRequestEntity> items;
-
-  const RequestListViewer({super.key, required this.items});
+  final Function(BaseRequestEntity) onSelected;
+  const RequestListViewer({super.key, required this.items,
+    required this.onSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +29,7 @@ class RequestListViewer extends StatelessWidget {
           serviceTitle: _resolveServiceTitle(item),
           serviceColor: Colors.blue,
           serviceIcon: Icons.build,
+          onSelected: onSelected,
         );
       },
     );

@@ -76,7 +76,7 @@ class _RequestService implements RequestService {
     )
             .compose(
               _dio.options,
-              'api/AidServiceRequest/GetById',
+              'api/AidServiceRequestOrg/GetById',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -155,7 +155,7 @@ class _RequestService implements RequestService {
     )
             .compose(
               _dio.options,
-              '/api/HomeServiceRequest/GetById',
+              '/api/HomeServiceRequestOrg/GetById',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -195,7 +195,7 @@ class _RequestService implements RequestService {
     )
             .compose(
               _dio.options,
-              '/api/LackOfCooperation/getLackOfCooperationList',
+              '/api/LackOfCooperationOrg/getLackOfCooperationList',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -235,7 +235,7 @@ class _RequestService implements RequestService {
     )
             .compose(
               _dio.options,
-              '/api/Cartable/GetServiceRequestMessageFlow',
+              '/api/CartableOrg/GetServiceRequestMessageFlow',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -315,7 +315,7 @@ class _RequestService implements RequestService {
     )
                 .compose(
                   _dio.options,
-                  '/api/ServiceRequestHistory/GetByFilterJson',
+                  '/api/ServiceRequestHistoryOrg/GetByFilterJson',
                   queryParameters: queryParameters,
                   data: _data,
                 )
@@ -355,7 +355,7 @@ class _RequestService implements RequestService {
     )
             .compose(
               _dio.options,
-              '/api/NewEmdadgar/GetEmdadgarByServiceRequestId',
+              '/api/NewEmdadgarOrg/GetEmdadgarByServiceRequestId',
               queryParameters: queryParameters,
               data: _data,
             )

@@ -15,6 +15,7 @@ class RequestCard extends StatelessWidget {
   final String serviceTitle;
   final Color serviceColor;
   final IconData serviceIcon;
+  final Function(BaseRequestEntity) onSelected;
 
   const RequestCard({
     super.key,
@@ -22,6 +23,7 @@ class RequestCard extends StatelessWidget {
     required this.serviceTitle,
     required this.serviceColor,
     required this.serviceIcon,
+    required this.onSelected,
   });
 
   @override
@@ -83,7 +85,9 @@ class RequestCard extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               OperationMenu(
-                requestId: request.id ?? 0,
+                request: request,
+                onSelected: onSelected,
+
               ),
               const SizedBox(width: 12),
               RequestDetailsButton(
