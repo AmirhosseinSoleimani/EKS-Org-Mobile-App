@@ -11,6 +11,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_home
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_relief_request_by_id_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_request_status_history_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/base/cubit/operation_base_cubit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
@@ -39,14 +40,14 @@ class RequestStatusHistoryCubit
   EmdadgarInfoEntity? emdadgarInfo;
   List<RequestStatusHistoryItemEntity> items = [];
 
-  /*@override
+  @override
   Future<void> init() async {
     emitLoading();
 
     selectedRequest = await _fetchSelectedRequestItemUseCase();
 
     if (selectedRequest == null) {
-      emitError("در دریافت اطلاعات اولیه مشکلی رخ داد.");
+      emitError(const BottomSheetMessageModel(title: '',message: 'در دریافت اطلاعات اولیه مشکلی رخ داد.'));
       return;
     }
 
@@ -57,9 +58,9 @@ class RequestStatusHistoryCubit
     }
 
     await _fetchHistory();
-  }*/
+  }
 
-  @override
+ /* @override
   Future<void> init() async {
     emitLoading();
     await Future.delayed(const Duration(milliseconds: 300));
@@ -69,7 +70,7 @@ class RequestStatusHistoryCubit
     _fillMockHistory();
 
     emitLoaded();
-  }
+  }*/
 
   void _fillMockRequest() {
     selectedRequest = const ReliefRequestEntity(
@@ -199,7 +200,7 @@ class RequestStatusHistoryCubit
         emitLoaded();
       },
       failure: (error, message) {
-        emitError(message ?? 'خطای نامشخص در دریافت تاریخچه');
+        emitError(BottomSheetMessageModel(title: '',message:message ?? 'خطای نامشخص در دریافت تاریخچه'));
       },
       connectionError: () {
         emitConnectionError();

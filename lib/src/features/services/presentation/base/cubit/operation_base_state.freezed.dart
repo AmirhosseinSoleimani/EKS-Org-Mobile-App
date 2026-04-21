@@ -21,7 +21,7 @@ mixin _$OperationBaseState<T> {
     required TResult Function() loading,
     required TResult Function() loaded,
     required TResult Function() loadingMore,
-    required TResult Function(String message) error,
+    required TResult Function(BottomSheetMessageModel message) error,
     required TResult Function() connectionError,
   }) =>
       throw _privateConstructorUsedError;
@@ -30,7 +30,7 @@ mixin _$OperationBaseState<T> {
     TResult? Function()? loading,
     TResult? Function()? loaded,
     TResult? Function()? loadingMore,
-    TResult? Function(String message)? error,
+    TResult? Function(BottomSheetMessageModel message)? error,
     TResult? Function()? connectionError,
   }) =>
       throw _privateConstructorUsedError;
@@ -39,7 +39,7 @@ mixin _$OperationBaseState<T> {
     TResult Function()? loading,
     TResult Function()? loaded,
     TResult Function()? loadingMore,
-    TResult Function(String message)? error,
+    TResult Function(BottomSheetMessageModel message)? error,
     TResult Function()? connectionError,
     required TResult orElse(),
   }) =>
@@ -134,7 +134,7 @@ class _$LoadingImpl<T> implements _Loading<T> {
     required TResult Function() loading,
     required TResult Function() loaded,
     required TResult Function() loadingMore,
-    required TResult Function(String message) error,
+    required TResult Function(BottomSheetMessageModel message) error,
     required TResult Function() connectionError,
   }) {
     return loading();
@@ -146,7 +146,7 @@ class _$LoadingImpl<T> implements _Loading<T> {
     TResult? Function()? loading,
     TResult? Function()? loaded,
     TResult? Function()? loadingMore,
-    TResult? Function(String message)? error,
+    TResult? Function(BottomSheetMessageModel message)? error,
     TResult? Function()? connectionError,
   }) {
     return loading?.call();
@@ -158,7 +158,7 @@ class _$LoadingImpl<T> implements _Loading<T> {
     TResult Function()? loading,
     TResult Function()? loaded,
     TResult Function()? loadingMore,
-    TResult Function(String message)? error,
+    TResult Function(BottomSheetMessageModel message)? error,
     TResult Function()? connectionError,
     required TResult orElse(),
   }) {
@@ -254,7 +254,7 @@ class _$LoadedImpl<T> implements _Loaded<T> {
     required TResult Function() loading,
     required TResult Function() loaded,
     required TResult Function() loadingMore,
-    required TResult Function(String message) error,
+    required TResult Function(BottomSheetMessageModel message) error,
     required TResult Function() connectionError,
   }) {
     return loaded();
@@ -266,7 +266,7 @@ class _$LoadedImpl<T> implements _Loaded<T> {
     TResult? Function()? loading,
     TResult? Function()? loaded,
     TResult? Function()? loadingMore,
-    TResult? Function(String message)? error,
+    TResult? Function(BottomSheetMessageModel message)? error,
     TResult? Function()? connectionError,
   }) {
     return loaded?.call();
@@ -278,7 +278,7 @@ class _$LoadedImpl<T> implements _Loaded<T> {
     TResult Function()? loading,
     TResult Function()? loaded,
     TResult Function()? loadingMore,
-    TResult Function(String message)? error,
+    TResult Function(BottomSheetMessageModel message)? error,
     TResult Function()? connectionError,
     required TResult orElse(),
   }) {
@@ -374,7 +374,7 @@ class _$LoadingMoreImpl<T> implements _LoadingMore<T> {
     required TResult Function() loading,
     required TResult Function() loaded,
     required TResult Function() loadingMore,
-    required TResult Function(String message) error,
+    required TResult Function(BottomSheetMessageModel message) error,
     required TResult Function() connectionError,
   }) {
     return loadingMore();
@@ -386,7 +386,7 @@ class _$LoadingMoreImpl<T> implements _LoadingMore<T> {
     TResult? Function()? loading,
     TResult? Function()? loaded,
     TResult? Function()? loadingMore,
-    TResult? Function(String message)? error,
+    TResult? Function(BottomSheetMessageModel message)? error,
     TResult? Function()? connectionError,
   }) {
     return loadingMore?.call();
@@ -398,7 +398,7 @@ class _$LoadingMoreImpl<T> implements _LoadingMore<T> {
     TResult Function()? loading,
     TResult Function()? loaded,
     TResult Function()? loadingMore,
-    TResult Function(String message)? error,
+    TResult Function(BottomSheetMessageModel message)? error,
     TResult Function()? connectionError,
     required TResult orElse(),
   }) {
@@ -459,7 +459,7 @@ abstract class _$$ErrorImplCopyWith<T, $Res> {
           _$ErrorImpl<T> value, $Res Function(_$ErrorImpl<T>) then) =
       __$$ErrorImplCopyWithImpl<T, $Res>;
   @useResult
-  $Res call({String message});
+  $Res call({BottomSheetMessageModel message});
 }
 
 /// @nodoc
@@ -479,7 +479,7 @@ class __$$ErrorImplCopyWithImpl<T, $Res>
       null == message
           ? _value.message
           : message // ignore: cast_nullable_to_non_nullable
-              as String,
+              as BottomSheetMessageModel,
     ));
   }
 }
@@ -490,7 +490,7 @@ class _$ErrorImpl<T> implements _Error<T> {
   const _$ErrorImpl(this.message);
 
   @override
-  final String message;
+  final BottomSheetMessageModel message;
 
   @override
   String toString() {
@@ -520,7 +520,7 @@ class _$ErrorImpl<T> implements _Error<T> {
     required TResult Function() loading,
     required TResult Function() loaded,
     required TResult Function() loadingMore,
-    required TResult Function(String message) error,
+    required TResult Function(BottomSheetMessageModel message) error,
     required TResult Function() connectionError,
   }) {
     return error(message);
@@ -532,7 +532,7 @@ class _$ErrorImpl<T> implements _Error<T> {
     TResult? Function()? loading,
     TResult? Function()? loaded,
     TResult? Function()? loadingMore,
-    TResult? Function(String message)? error,
+    TResult? Function(BottomSheetMessageModel message)? error,
     TResult? Function()? connectionError,
   }) {
     return error?.call(message);
@@ -544,7 +544,7 @@ class _$ErrorImpl<T> implements _Error<T> {
     TResult Function()? loading,
     TResult Function()? loaded,
     TResult Function()? loadingMore,
-    TResult Function(String message)? error,
+    TResult Function(BottomSheetMessageModel message)? error,
     TResult Function()? connectionError,
     required TResult orElse(),
   }) {
@@ -596,9 +596,9 @@ class _$ErrorImpl<T> implements _Error<T> {
 }
 
 abstract class _Error<T> implements OperationBaseState<T> {
-  const factory _Error(final String message) = _$ErrorImpl<T>;
+  const factory _Error(final BottomSheetMessageModel message) = _$ErrorImpl<T>;
 
-  String get message;
+  BottomSheetMessageModel get message;
   @JsonKey(ignore: true)
   _$$ErrorImplCopyWith<T, _$ErrorImpl<T>> get copyWith =>
       throw _privateConstructorUsedError;
@@ -645,7 +645,7 @@ class _$ConnectionErrorImpl<T> implements _ConnectionError<T> {
     required TResult Function() loading,
     required TResult Function() loaded,
     required TResult Function() loadingMore,
-    required TResult Function(String message) error,
+    required TResult Function(BottomSheetMessageModel message) error,
     required TResult Function() connectionError,
   }) {
     return connectionError();
@@ -657,7 +657,7 @@ class _$ConnectionErrorImpl<T> implements _ConnectionError<T> {
     TResult? Function()? loading,
     TResult? Function()? loaded,
     TResult? Function()? loadingMore,
-    TResult? Function(String message)? error,
+    TResult? Function(BottomSheetMessageModel message)? error,
     TResult? Function()? connectionError,
   }) {
     return connectionError?.call();
@@ -669,7 +669,7 @@ class _$ConnectionErrorImpl<T> implements _ConnectionError<T> {
     TResult Function()? loading,
     TResult Function()? loaded,
     TResult Function()? loadingMore,
-    TResult Function(String message)? error,
+    TResult Function(BottomSheetMessageModel message)? error,
     TResult Function()? connectionError,
     required TResult orElse(),
   }) {
