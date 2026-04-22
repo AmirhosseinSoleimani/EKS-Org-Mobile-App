@@ -1,7 +1,9 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/chassis_request_history_entity.dart';
 
 class ChassisRequestHistoryModel extends ChassisRequestHistoryEntity {
   const ChassisRequestHistoryModel({
+    required super.serviceType,
     super.id,
     super.trackingCode,
     super.insertDateTime,
@@ -48,6 +50,7 @@ class ChassisRequestHistoryModel extends ChassisRequestHistoryEntity {
       vipConditionTitle: json['vipConditionTitle'],
       chassisNumber: json['chassisNumber'],
       carName: json['carName'],
+      serviceType: ServiceType.fromValue(json['type']),
     );
   }
 }
