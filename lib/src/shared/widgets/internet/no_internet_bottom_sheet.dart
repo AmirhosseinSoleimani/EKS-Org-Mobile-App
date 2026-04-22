@@ -20,6 +20,7 @@ class NoInternetBottomSheet extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: AppPadding.p8),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _buildImage(screenSize),
           const SizedBox(height: AppSize.s24),
