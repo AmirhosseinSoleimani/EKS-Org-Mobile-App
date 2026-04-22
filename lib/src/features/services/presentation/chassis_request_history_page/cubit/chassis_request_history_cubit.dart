@@ -9,7 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
-part 'chassis_number_history_cubit.freezed.dart';
+part 'chassis_request_history_cubit.freezed.dart';
 
 part 'chassis_request_history_state.dart';
 
@@ -91,7 +91,7 @@ class ChassisRequestHistoryCubit extends Cubit<ChassisRequestHistoryState> {
         isGauranty: false,
         status: 1,
         statusTitle: "در صف بررسی",
-        type: 3,
+        type: 1,
         typeTitle: "حمل ویژه",
         agencyCode: "9922",
         defectTitle: "موتور - داغ کردن",
