@@ -1,31 +1,27 @@
+import 'dart:ui';
+
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_history/cubit/evaluation_history_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/agent_info_detail_section.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/chassis_request_history_page/cubit/chassis_request_history_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_status_section.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'widgets/evaluation_history_list_view.dart';
+import 'widgets/chassis_request_history_list_viewer.dart';
 
-class EvaluationHistoryPage extends StatelessWidget {
-  static const path = "/evaluation-history-page";
-  static const name = "evaluation-history-page";
+class ChassisRequestHistoryPage extends StatelessWidget {
+  static const path = "/chassis-request-history-page";
+  static const name = "chassis-request-history-page";
 
-  const EvaluationHistoryPage({super.key});
+  const ChassisRequestHistoryPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<EvaluationHistoryCubit>()..init(),
+      create: (_) => getIt<ChassisRequestHistoryCubit>()..init(),
       child: const _View(),
     );
   }
@@ -36,9 +32,9 @@ class _View extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<EvaluationHistoryCubit>();
+    final cubit = context.read<ChassisRequestHistoryCubit>();
 
-    return BlocListener<EvaluationHistoryCubit, EvaluationHistoryState>(
+    return BlocListener<ChassisRequestHistoryCubit, ChassisRequestHistoryState>(
       listener: (context, state) {
         state.whenOrNull(
           error: (message) {
@@ -62,7 +58,7 @@ class _View extends StatelessWidget {
         );
       },
       child: const Scaffold(
-        appBar: SimpleAppBar(title: "تاریخچه ارزیابی"),
+        appBar: SimpleAppBar(title: "تاریخچه بر اساس شماره شاسی"),
         body: _Body(),
       ),
     );
@@ -74,7 +70,7 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<EvaluationHistoryCubit, EvaluationHistoryState>(
+    return BlocBuilder<ChassisRequestHistoryCubit, ChassisRequestHistoryState>(
       builder: (context, state) {
         return state.maybeWhen(
           idle: () => const SizedBox.shrink(),
@@ -94,7 +90,7 @@ class _LoadedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<EvaluationHistoryCubit>();
+    final cubit = context.read<ChassisRequestHistoryCubit>();
 
     return ScrollConfiguration(
       behavior: ScrollConfiguration.of(context).copyWith(
@@ -105,45 +101,13 @@ class _LoadedView extends StatelessWidget {
       ),
       child: SingleChildScrollView(
         padding: const EdgeInsets.all(AppSize.s16),
-        child: Column(
-          children: [
-            ExpandableSection(
-              isExpanded: false,
-              header: buildRequestStatusSection(cubit),
-              child: RequestDetailSection(
-                selectedRequest: cubit.selectedRequest,
-                showCustomerInfo: true,
-              ),
-            ),
-            if (cubit.selectedRequest != null) ...[
-              ExpandableSection(
-                brief: BodySmallText(
-                  text:
-                  "${cubit.emdadgarInfo?.agencyName ?? ''} | ${cubit.emdadgarInfo?.mobile ?? ""}",
-                ),
-                isExpanded: false,
-                header: const BodyMediumText(text: "اطلاعات امداد رسان"),
-                child: AgentInfoDetailSection(
-                  selectedRequest: cubit.selectedRequest!,
-                ),
-              ),
-            ],
-            Space.h8,
-            EvaluationListView(
-              items: cubit.items,
-              icon: const Icon(
-                Icons.date_range_rounded,
-                color: Colors.grey,
-                size: 20,
-              ),
-            ),
-          ],
-        ),
+        child: ChassisRequestHistoryListViewer(items: cubit.items),
       ),
     );
   }
 
-  RequestStatusSection buildRequestStatusSection(EvaluationHistoryCubit cubit) {
+  RequestStatusSection buildRequestStatusSection(
+      ChassisRequestHistoryCubit cubit) {
     return RequestStatusSection(
       trackCode: cubit.selectedRequest?.trackCode.toString() ?? '-',
       requestDateJalali:
