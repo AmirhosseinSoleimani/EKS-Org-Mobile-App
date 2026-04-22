@@ -16,9 +16,6 @@ class RequestStatusHistoryItemModel extends RequestStatusHistoryItemEntity {
   });
 
   factory RequestStatusHistoryItemModel.fromJson(Map<String, dynamic> json) {
-    print("XXXXXXXXXXXXXXXXXXXXXXXXXXXX ss");
-    print(json);
-    print("XXXXXXXXXXXXXXXXXXXXXXXXXXXX ss");
     return RequestStatusHistoryItemModel(
       id: json['id'],
       description: json['description'],
@@ -41,13 +38,11 @@ class RequestStatusHistoryListModel extends RequestStatusHistoryListEntity {
   });
 
   factory RequestStatusHistoryListModel.fromJson(Map<String, dynamic> json) {
-    final data = json['data'];
-
     return RequestStatusHistoryListModel(
-      records: (data['records'] as List)
+      records: (json['records'] as List)
           .map((e) => RequestStatusHistoryItemModel.fromJson(e))
           .toList(),
-      count: data['count'] ?? 0,
+      count: json['count'] ?? 0,
     );
   }
 }

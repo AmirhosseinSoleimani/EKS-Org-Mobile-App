@@ -76,7 +76,7 @@ class _RequestService implements RequestService {
     )
             .compose(
               _dio.options,
-              '/api/AidServiceRequestOrg/GetById',
+              '/api/AidServiceRequestOrg/GetAidServiceRequestById',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -155,7 +155,7 @@ class _RequestService implements RequestService {
     )
             .compose(
               _dio.options,
-              '/api/HomeServiceRequestOrg/GetById',
+              '/api/HomeServiceRequestOrg/GetServiceRequest',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -355,7 +355,7 @@ class _RequestService implements RequestService {
     )
             .compose(
               _dio.options,
-              '/api/NewEmdadgarOrg/GetEmdadgarByServiceRequestId',
+              '/api/EmdadgarOrg/GetEmdadgarByServiceRequestId',
               queryParameters: queryParameters,
               data: _data,
             )

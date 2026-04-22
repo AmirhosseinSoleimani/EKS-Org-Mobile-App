@@ -1,0 +1,29 @@
+import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:flutter/material.dart';
+
+import 'svg_widget/svg_src.dart';
+import 'svg_widget/svg_widget.dart';
+import 'text_widgets/title_large_text.dart';
+
+class EmptyListWidget extends StatelessWidget {
+  const EmptyListWidget({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const SvgWidget(
+          src: SvgAsset(SvgManager.emptyList),
+        ),
+        Space.h16,
+        TitleLargeText(
+          text: 'هیچ موردی جهت نمایش وجود ندارد',
+          color: Theme.of(context).colorScheme.onPrimaryFixed,
+          fontSize: AppSize.s16,
+        )
+      ],
+    );
+  }
+}

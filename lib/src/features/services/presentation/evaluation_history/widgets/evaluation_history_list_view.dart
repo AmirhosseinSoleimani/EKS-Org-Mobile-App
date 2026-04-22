@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/evaluati
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_row.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_wiget_row.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/status_label.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 
@@ -19,6 +20,8 @@ class EvaluationListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isEmpty = items.isEmpty;
+
     return Container(
       padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
@@ -36,7 +39,16 @@ class EvaluationListView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const BodyMediumText(text: "تاریخچه ارزیابی"),
-          const SizedBox(height: 6),
+          const SizedBox(height: 8),
+          if (isEmpty)
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.62,
+              child: const Center(
+                child: EmptyListWidget(),
+              ),
+            ),
+
+          if (!isEmpty)
           ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),

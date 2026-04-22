@@ -21,14 +21,14 @@ abstract class RequestService {
   @POST('/api/AidServiceRequestOrg/GetAidServiceRequestList')
   Future<BaseListResponse<ReliefRequestModel>> getReliefRequestList(@Body() Map<String, dynamic> body);
 
-  @GET('/api/AidServiceRequestOrg/GetById')
+  @GET('/api/AidServiceRequestOrg/GetAidServiceRequestById')
   Future<BaseSingleResponse<ReliefRequestModel>> getReliefRequestById(
       @Queries() Map<String, dynamic> query);
 
   @POST('/api/HomeServiceRequestOrg/GetHomeServiceRequestList')
   Future<BaseListResponse<HomeServiceRequestModel>> getHomeServiceRequestList(@Body() Map<String, dynamic> body);
 
-  @POST('/api/HomeServiceRequestOrg/GetById')
+  @POST('/api/HomeServiceRequestOrg/GetServiceRequest')
   Future<BaseSingleResponse<HomeServiceRequestModel>> getHomeServiceRequestById(
       @Queries() Map<String, dynamic> query);
 
@@ -48,7 +48,7 @@ abstract class RequestService {
   Future<BaseSingleResponse<RequestStatusHistoryListModel>> getRequestStatusHistory(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/NewEmdadgarOrg/GetEmdadgarByServiceRequestId')
+  @POST('/api/EmdadgarOrg/GetEmdadgarByServiceRequestId')
   Future<BaseSingleResponse<EmdadgarInfoModel>> getEmdadgarInfo(
       @Body() Map<String, dynamic> query);
 

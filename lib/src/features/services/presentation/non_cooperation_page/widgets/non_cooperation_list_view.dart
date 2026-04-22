@@ -3,8 +3,8 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/non_coopera
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_wiget_row.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -23,6 +23,8 @@ class NonCooperationListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isEmpty = items.isEmpty;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -40,8 +42,16 @@ class NonCooperationListView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const BodyMediumText(text: "لیست درخواست های عدم همکاری"),
-          const SizedBox(height: 16),
-          ListView.builder(
+          const SizedBox(height: 8),
+          if (isEmpty)
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.62,
+              child: const Center(
+                child: EmptyListWidget(),
+              ),
+            ),
+          if (!isEmpty)
+            ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),
             itemCount: items.length,

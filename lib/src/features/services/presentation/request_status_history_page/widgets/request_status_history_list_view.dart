@@ -3,6 +3,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/base/cubit/
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_row.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_status_history_page/cubit/request_status_history_cubit.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/material.dart';
@@ -22,6 +23,8 @@ class RequestStatusHistoryListView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isEmpty = items.isEmpty;
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -39,7 +42,15 @@ class RequestStatusHistoryListView extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const BodyMediumText(text: "تاریخچه وضعیت درخواست"),
-          const SizedBox(height: 16),
+          const SizedBox(height: 8),
+          if (isEmpty)
+            SizedBox(
+              height: MediaQuery.of(context).size.height * 0.62,
+              child: const Center(
+                child: EmptyListWidget(),
+              ),
+            ),
+          if (!isEmpty)
           ListView.builder(
             shrinkWrap: true,
             physics: const NeverScrollableScrollPhysics(),

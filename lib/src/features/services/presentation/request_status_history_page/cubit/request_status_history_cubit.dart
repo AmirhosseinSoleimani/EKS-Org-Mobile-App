@@ -53,106 +53,11 @@ class RequestStatusHistoryCubit
 
     await _refreshRequestData();
 
-    if ((selectedRequest?.requestStatus ?? 0) > 1) {
+   if ((selectedRequest?.requestStatus ?? 0) > 1) {
       await _fetchEmdadgarInfo();
     }
 
     await _fetchHistory();
-  }
-
- /* @override
-  Future<void> init() async {
-    emitLoading();
-    await Future.delayed(const Duration(milliseconds: 300));
-
-    _fillMockRequest();
-    _fillMockEmdadgarInfo();
-    _fillMockHistory();
-
-    emitLoaded();
-  }*/
-
-  void _fillMockRequest() {
-    selectedRequest = const ReliefRequestEntity(
-      id: 30200,
-      trackCode: 87813,
-      firstName: "حمیدرضا",
-      lastName: "قلی زاده",
-      callMobileNumber: "+989120000000",
-      chassisNumber: "NAS861110S1175818",
-      nationalNumber: "0063787520",
-      aidAddress:
-      "گیشا، خ. علیایی، بعد از خ. علیرضا کسروی، خ. حسین فرحزادی",
-      licensePlate: "34 د 199 77",
-      kilometer: 2600,
-      carName: "کوئیک S آپشنال",
-      carEngineNumber: "I5553056",
-      carGroupTitle: "کوئیک",
-      carFactoryTitle: "سایپا",
-
-      requestStatus: 7,
-      requestStatusTitle: "اتمام کار",
-
-      emMobileNumber1: "09212086820",
-
-      hasEmdadgar: true,
-      requestDateTimeJalali: "1404/12/06 08:00",
-      insertDateTime: "2026-02-24T15:33:48",
-      insertDateTimeJalali: "1404/12/05 15:33",
-      serviceType: ServiceType.reliefService,
-    );
-  }
-
-  void _fillMockEmdadgarInfo() {
-    emdadgarInfo = EmdadgarInfoEntity(
-      id: 14046,
-      startDateText: "1404/02/27",
-      endDateText: "1405/12/29",
-      shiftTypeText: "امدادرسان",
-      shiftTypeId: 2,
-      planningId: 51965,
-      mobile: "09212086820",
-      agencyName: "شهرام محمدي",
-      agencyCodeLabel: "H014",
-      plakText: "93 ص 356 44",
-      khodroTypeText: "سایپا 151",
-      shiftName: "شیفت روز خدمات درمحل",
-      isActive: true,
-    );
-  }
-
-  void _fillMockHistory() {
-    items = [
-      RequestStatusHistoryItemEntity(
-        id: 13919242,
-        description:
-        "درخواست '87813' برای مشتری با نام حمیدرضا قلی زاده ",
-        insertUserName: "مدیر سیستم",
-        title: "ثبت درخواست",
-        insertDateTimeJalali: "1404/12/05",
-        insertTime: "15:34:01",
-      ),
-      RequestStatusHistoryItemEntity(
-        id: 13919319,
-        description:
-        "وضعیت درخواست از در انتظار تایید پیش فاکتور مشتری به رزرو تغییر کرد ",
-        insertUserName: "مدیر سیستم",
-        title: "تغییر وضعیت درخواست",
-        insertDateTimeJalali: "1404/12/09",
-        insertTime: "08:17:03",
-      ),
-      RequestStatusHistoryItemEntity(
-        id: 13919320,
-        description:
-        "امدادگر شهرام محمدي با وضعیت رزرو ثبت گردید",
-        insertUserName: "مدیر سیستم",
-        title: "اعزام امدادرسان",
-        insertDateTimeJalali: "1404/12/09",
-        insertTime: "08:17:05",
-      ),
-    ];
-
-    _hasMore = false; // چون داده ثابت است
   }
 
   Future<void> _refreshRequestData() async {

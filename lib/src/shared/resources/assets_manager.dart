@@ -37,6 +37,8 @@ class SvgManager {
   static const String _basePath = 'assets/svg/';
   static const String homeServiceLocation = '${_basePath}home_service_location.svg';
   static const String location = '${_basePath}location.svg';
+  static const String emptyList = '${_basePath}empty_list.svg';
+
 
   //not used yet
   static const String emptyWallet = '${_basePath}empty-wallet-add.svg';
@@ -57,7 +59,6 @@ class SvgManager {
   static const String edit = '${_basePath}edit.svg';
   static const String healthHistory = '${_basePath}health_history.svg';
   static const String logout = '${_basePath}logout.svg';
-  static const String emptyList = '${_basePath}empty_list.svg';
   static const String emergencyAssistanceRoundedSquare = '${_basePath}emergency_assistance_rounded_square.svg';
 
 }
