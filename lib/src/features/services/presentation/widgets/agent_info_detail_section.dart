@@ -1,15 +1,14 @@
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_row.dart';
 import 'package:flutter/material.dart';
 
 class AgentInfoDetailSection extends StatelessWidget {
   const AgentInfoDetailSection({
     super.key,
-    required this.selectedRequest,
+    required this.agentInfo,
   });
 
-  final BaseRequestEntity selectedRequest;
+  final EmdadgarInfoEntity agentInfo;
 
   @override
   Widget build(BuildContext context) {
@@ -17,54 +16,59 @@ class AgentInfoDetailSection extends StatelessWidget {
       children: [
         KeyValueRow(
           label: "نام",
-          value: selectedRequest.carName ?? "-",
+          value: agentInfo.agencyName ?? "-",
         ),
         KeyValueRow(
           label: "شماره موبایل",
-          value: selectedRequest.emMobileNumber1 ?? "-",
+          value: agentInfo.mobile ?? agentInfo.irancellMobile ?? "-",
         ),
         KeyValueRow(
           label: "نوع ناوگان",
-          value: selectedRequest.emVehicleTypeTitle ?? "-",
+          value: agentInfo.navganTypeText ?? "-",
         ),
 
         KeyValueRow(
           label: "نوع خودرو",
-          value: selectedRequest.emVehicleSubTypeTitle ?? "-",
+          value: agentInfo.khodroTypeText ?? "-",
         ),
         KeyValueRow(
           label: "مسافت طی شده",
-          value: selectedRequest.kilometer.toString(),
+          value: agentInfo.distanceKmToOrigin != null
+              ? "${agentInfo.distanceKmToOrigin}"
+              : "-",
         ),
         KeyValueRow(
           label: "اعزام کننده",
-          value: selectedRequest.dispatcher ?? "-",
+          value: agentInfo.agencyCodeLabel ?? "-",
         ),
         KeyValueRow(
           label: "نمایندگی (کد نمایندگی)",
-          value: '${selectedRequest.emRepresentationName} (${selectedRequest.emRepresentationCode})',
+          value: agentInfo.agencyName != null
+              ? "${agentInfo.agencyName} (${agentInfo.agencyCode ?? '-'})"
+              : "-",
         ),
-        if(selectedRequest is ReliefRequestEntity)...[
+
+        /* if(agentInfo is ReliefRequestEntity)...[
           KeyValueRow(
             label: "مسافت طی شده",
-            value: (selectedRequest as ReliefRequestEntity).emdadgarAssignDistanceTitle ?? '-',
+            value: (agentInfo as ReliefRequestEntity).emdadgarAssignDistanceTitle ?? '-',
           ),
           KeyValueRow(
             label: "مسافت حمل شده خودرو",
-            value: (selectedRequest as ReliefRequestEntity).emdadgarAssignDistanceTitle ?? '-',
+            value: (agentInfo as ReliefRequestEntity).emdadgarAssignDistanceTitle ?? '-',
           ),
           KeyValueRow(
             label: "ایراد ارزیابی شده",
-            value: (selectedRequest as ReliefRequestEntity).emdadServiceTitle ?? '-',
+            value: (agentInfo as ReliefRequestEntity).emdadServiceTitle ?? '-',
           ),
           KeyValueRow(
             label: "سرویس ارائه شده",
-            value: (selectedRequest as ReliefRequestEntity).emdadServiceTitle ?? '-',
+            value: (agentInfo as ReliefRequestEntity).emdadServiceTitle ?? '-',
           ),
-        ],
+        ],*/
         KeyValueRow(
           label: "توضیحات امداد رسان",
-          value: selectedRequest.description ?? '-',
+          value: agentInfo.statusTitle ?? '-',
         ),
       ],
     );

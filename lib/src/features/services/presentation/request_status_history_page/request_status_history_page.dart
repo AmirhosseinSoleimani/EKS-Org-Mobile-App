@@ -86,7 +86,7 @@ class RequestStatusHistoryLoadedView extends StatelessWidget {
                 showCustomerInfo: true,
               ),
             ),
-            if (_hasAgentInfo(cubit.selectedRequest)) ...[
+            if (cubit.emdadgarInfo != null) ...[
               ExpandableSection(
                 brief: BodySmallText(
                   text:
@@ -95,7 +95,7 @@ class RequestStatusHistoryLoadedView extends StatelessWidget {
                 isExpanded: false,
                 header: const BodyMediumText(text: "اطلاعات امداد رسان"),
                 child: AgentInfoDetailSection(
-                  selectedRequest: cubit.selectedRequest!,
+                  agentInfo: cubit.emdadgarInfo!,
                 ),
               ),
             ],
@@ -112,10 +112,6 @@ class RequestStatusHistoryLoadedView extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  bool _hasAgentInfo(BaseRequestEntity? req) {
-    return req?.hasEmdadgar ?? false;
   }
 
   RequestStatusSection _buildRequestStatusSection(BaseRequestEntity? request) {
