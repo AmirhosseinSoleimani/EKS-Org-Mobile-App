@@ -68,5 +68,5 @@ class RequestDataSourceImpl extends RequestDataSource {
 
   @override
   Future<BaseListResponse<ChassisRequestHistoryModel>> getChassisRequestHistoryList(ChassisParamModel param)  async =>
-      await _service.getChassisRequestHistoryList({});
+      await _service.getChassisRequestHistoryList(param.toJson());
 }

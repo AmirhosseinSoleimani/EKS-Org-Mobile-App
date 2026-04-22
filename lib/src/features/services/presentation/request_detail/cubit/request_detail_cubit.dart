@@ -1,9 +1,11 @@
 import 'package:bloc/bloc.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/followup_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/service_request_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/fetch_selected_request_item_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_emdadgar_info_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_home_service_request_by_id_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_relief_request_by_id_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_request_followup_history_use_case.dart';
@@ -21,15 +23,18 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
     this._getReliefRequestByIdUseCase,
     this._getHomeServiceRequestByIdUseCase,
     this._getRequestFollowupHistoryUseCase,
+    this._getEmdadgarInfoUseCase,
   ) : super(const RequestDetailState.idle());
 
   final FetchSelectedRequestItemUseCase _fetchSelectedRequestItemUseCase;
   final GetReliefRequestByIdUseCase _getReliefRequestByIdUseCase;
   final GetHomeServiceRequestByIdUseCase _getHomeServiceRequestByIdUseCase;
   final GetRequestFollowupHistoryUseCase _getRequestFollowupHistoryUseCase;
+  final GetEmdadgarInfoUseCase _getEmdadgarInfoUseCase;
 
   BaseRequestEntity? selectedRequest;
   List<FollowupEntity> followups = [];
+  EmdadgarInfoEntity? emdadgarInfo;
 
   bool get isRelief =>
       selectedRequest?.serviceType == ServiceType.reliefService;
@@ -47,8 +52,6 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
                 message: "درخواستی برای نمایش جزئیات انتخاب نشده است.")));
         return;
       }
-
-      selectedRequest = cachedRequest;
 
       final int? requestId = cachedRequest.id;
 
@@ -103,21 +106,13 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
         );
       }
 
-     /* if (state is RequestDetailError ||
-          state is RequestDetailConnectionError) {
-        return;
-      }*/
+      await _fetchEmdadgarInfo();
 
-      final followupResult = await _getRequestFollowupHistoryUseCase(requestId
-      /*  ServiceRequestParamEntity(
-          serviceRequestId: requestId,
-          serviceType: selectedRequest!.serviceType,
-        ),*/
-      );
+      final followupResult = await _getRequestFollowupHistoryUseCase(requestId);
 
       followupResult.whenOrNull(
         success: (data, failures, resultCode) {
-          followups = data ?? [];
+          followups = data;
         },
         failure: (error, msg) {
           _safeEmit(
@@ -142,6 +137,21 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
             message: "درخواستی برای نمایش جزئیات انتخاب نشده است."),
       ));
     }
+  }
+
+  Future<void> _fetchEmdadgarInfo() async {
+    final param = ServiceRequestParamEntity(
+      serviceRequestId: selectedRequest!.id,
+      serviceType: selectedRequest!.serviceType?.value ?? 1,
+    );
+
+    final result = await _getEmdadgarInfoUseCase(param);
+
+    result.whenOrNull(
+      success: (data, _, __) {
+        emdadgarInfo = data;
+      },
+    );
   }
 
   void _safeEmit(RequestDetailState state) {

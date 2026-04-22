@@ -115,7 +115,7 @@ class _LoadedView extends StatelessWidget {
                 showCustomerInfo: true,
               ),
             ),
-            if (cubit.selectedRequest != null) ...[
+            if (cubit.emdadgarInfo != null) ...[
               ExpandableSection(
                 brief: BodySmallText(
                   text:
@@ -124,7 +124,7 @@ class _LoadedView extends StatelessWidget {
                 isExpanded: false,
                 header: const BodyMediumText(text: "اطلاعات امداد رسان"),
                 child: AgentInfoDetailSection(
-                  selectedRequest: cubit.selectedRequest!,
+                  agentInfo: cubit.emdadgarInfo!,
                 ),
               ),
             ],

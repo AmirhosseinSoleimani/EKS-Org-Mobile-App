@@ -117,14 +117,15 @@ class RequestDetailPage extends StatelessWidget {
                                       child: CustomerInfoDetailSection(
                                           cubit: cubit),
                                     ),
-                                    ExpandableSection(
-                                      isExpanded: false,
-                                      header: const BodyMediumText(
-                                          text: "اطلاعات امداد رسان"),
-                                      child: AgentInfoDetailSection(
-                                          selectedRequest:
-                                              cubit.selectedRequest!),
-                                    ),
+                                    if (cubit.emdadgarInfo != null) ...[
+                                     ExpandableSection(
+                                       isExpanded: false,
+                                       header: const BodyMediumText(
+                                           text: "اطلاعات امداد رسان"),
+                                       child: AgentInfoDetailSection(
+                                           agentInfo: cubit.emdadgarInfo!),
+                                     ),
+                                   ],
                                     ExpandableSection(
                                       isExpanded: false,
                                       header: const BodyMediumText(

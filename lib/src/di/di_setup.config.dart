@@ -320,16 +320,16 @@ _i174.GetIt $initGetIt(
       _i16.ObserveNetworkRepositoryImpl(gh<_i333.ObserveNetworkDataSource>()));
   gh.lazySingleton<_i626.AuthService>(() => _i626.AuthService(gh<_i361.Dio>()));
   gh.lazySingleton<_i438.MainService>(() => _i438.MainService(gh<_i361.Dio>()));
-  gh.lazySingleton<_i634.InvoiceService>(
-      () => _i634.InvoiceService(gh<_i361.Dio>()));
-  gh.lazySingleton<_i313.UserService>(() => _i313.UserService(gh<_i361.Dio>()));
+  gh.lazySingleton<_i585.DashboardReportService>(
+      () => _i585.DashboardReportService(gh<_i361.Dio>()));
   gh.lazySingleton<_i140.IndicatorReportService>(
       () => _i140.IndicatorReportService(gh<_i361.Dio>()));
   gh.lazySingleton<_i483.RequestService>(
       () => _i483.RequestService(gh<_i361.Dio>()));
+  gh.lazySingleton<_i634.InvoiceService>(
+      () => _i634.InvoiceService(gh<_i361.Dio>()));
   gh.lazySingleton<_i929.MapService>(() => _i929.MapService(gh<_i361.Dio>()));
-  gh.lazySingleton<_i585.DashboardReportService>(
-      () => _i585.DashboardReportService(gh<_i361.Dio>()));
+  gh.lazySingleton<_i313.UserService>(() => _i313.UserService(gh<_i361.Dio>()));
   gh.lazySingleton<_i475.MainRemoteDataSource>(
       () => _i203.MainRemoteDataSourceImpl(gh<_i438.MainService>()));
   gh.lazySingleton<_i471.GetCurrentNetworkStatusUseCase>(() =>
@@ -460,28 +460,28 @@ _i174.GetIt $initGetIt(
         gh<_i453.SetAddressInfoUseCase>(),
         gh<_i739.FetchAddressToLocationUseCase>(),
       ));
-  gh.lazySingleton<_i809.GetHomeServiceRequestListUseCase>(() =>
-      _i809.GetHomeServiceRequestListUseCase(gh<_i603.RequestRepository>()));
-  gh.lazySingleton<_i192.GetReliefRequestListUseCase>(
-      () => _i192.GetReliefRequestListUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i765.GetCartableCycleListUseCase>(
+      () => _i765.GetCartableCycleListUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i581.GetChassisRequestHistoryListUseCase>(() =>
+      _i581.GetChassisRequestHistoryListUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i786.GetEmdadgarInfoUseCase>(
+      () => _i786.GetEmdadgarInfoUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i467.GetEvaluationHistoryListUseCase>(() =>
+      _i467.GetEvaluationHistoryListUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i63.GetHomeServiceRequestByIdUseCase>(() =>
       _i63.GetHomeServiceRequestByIdUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i809.GetHomeServiceRequestListUseCase>(() =>
+      _i809.GetHomeServiceRequestListUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i707.GetNonCooperationListUseCase>(
       () => _i707.GetNonCooperationListUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i672.GetReliefRequestByIdUseCase>(
       () => _i672.GetReliefRequestByIdUseCase(gh<_i603.RequestRepository>()));
-  gh.lazySingleton<_i765.GetCartableCycleListUseCase>(
-      () => _i765.GetCartableCycleListUseCase(gh<_i603.RequestRepository>()));
-  gh.lazySingleton<_i467.GetEvaluationHistoryListUseCase>(() =>
-      _i467.GetEvaluationHistoryListUseCase(gh<_i603.RequestRepository>()));
-  gh.lazySingleton<_i955.GetRequestStatusHistoryUseCase>(() =>
-      _i955.GetRequestStatusHistoryUseCase(gh<_i603.RequestRepository>()));
-  gh.lazySingleton<_i786.GetEmdadgarInfoUseCase>(
-      () => _i786.GetEmdadgarInfoUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i192.GetReliefRequestListUseCase>(
+      () => _i192.GetReliefRequestListUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i67.GetRequestFollowupHistoryUseCase>(() =>
       _i67.GetRequestFollowupHistoryUseCase(gh<_i603.RequestRepository>()));
-  gh.lazySingleton<_i581.GetChassisRequestHistoryListUseCase>(() =>
-      _i581.GetChassisRequestHistoryListUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i955.GetRequestStatusHistoryUseCase>(() =>
+      _i955.GetRequestStatusHistoryUseCase(gh<_i603.RequestRepository>()));
   gh.factory<_i154.EvaluationHistoryCubit>(() => _i154.EvaluationHistoryCubit(
         gh<_i467.GetEvaluationHistoryListUseCase>(),
         gh<_i376.FetchSelectedRequestItemUseCase>(),
@@ -493,6 +493,12 @@ _i174.GetIt $initGetIt(
         gh<_i192.GetReliefRequestListUseCase>(),
         gh<_i369.SetSelectedRequestItemUseCase>(),
       ));
+  gh.factory<_i165.NonCooperationCubit>(() => _i165.NonCooperationCubit(
+        gh<_i707.GetNonCooperationListUseCase>(),
+        gh<_i376.FetchSelectedRequestItemUseCase>(),
+        gh<_i672.GetReliefRequestByIdUseCase>(),
+        gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      ));
   gh.factory<_i932.DashboardCubit>(
       () => _i932.DashboardCubit(gh<_i208.GetDashboardDataUseCase>()));
   gh.factory<_i563.RequestStatusHistoryCubit>(
@@ -503,30 +509,30 @@ _i174.GetIt $initGetIt(
             gh<_i63.GetHomeServiceRequestByIdUseCase>(),
             gh<_i786.GetEmdadgarInfoUseCase>(),
           ));
-  gh.factory<_i165.NonCooperationCubit>(() => _i165.NonCooperationCubit(
-        gh<_i707.GetNonCooperationListUseCase>(),
+  gh.factory<_i1029.CartableCycleCubit>(() => _i1029.CartableCycleCubit(
+        gh<_i765.GetCartableCycleListUseCase>(),
         gh<_i376.FetchSelectedRequestItemUseCase>(),
+        gh<_i672.GetReliefRequestByIdUseCase>(),
+        gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+        gh<_i786.GetEmdadgarInfoUseCase>(),
+      ));
+  gh.factory<_i802.RequestDetailCubit>(() => _i802.RequestDetailCubit(
+        gh<_i376.FetchSelectedRequestItemUseCase>(),
+        gh<_i672.GetReliefRequestByIdUseCase>(),
+        gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+        gh<_i67.GetRequestFollowupHistoryUseCase>(),
+        gh<_i786.GetEmdadgarInfoUseCase>(),
       ));
   gh.factory<_i1013.HomeServiceRequestListCubit>(
       () => _i1013.HomeServiceRequestListCubit(
             gh<_i809.GetHomeServiceRequestListUseCase>(),
             gh<_i369.SetSelectedRequestItemUseCase>(),
           ));
-  gh.factory<_i802.RequestDetailCubit>(() => _i802.RequestDetailCubit(
-        gh<_i376.FetchSelectedRequestItemUseCase>(),
-        gh<_i672.GetReliefRequestByIdUseCase>(),
-        gh<_i63.GetHomeServiceRequestByIdUseCase>(),
-        gh<_i67.GetRequestFollowupHistoryUseCase>(),
-      ));
   gh.factory<_i891.ChassisRequestHistoryCubit>(
       () => _i891.ChassisRequestHistoryCubit(
             gh<_i581.GetChassisRequestHistoryListUseCase>(),
             gh<_i376.FetchSelectedRequestItemUseCase>(),
           ));
-  gh.factory<_i1029.CartableCycleCubit>(() => _i1029.CartableCycleCubit(
-        gh<_i765.GetCartableCycleListUseCase>(),
-        gh<_i376.FetchSelectedRequestItemUseCase>(),
-      ));
   return getIt;
 }
 
