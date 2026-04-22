@@ -3,7 +3,6 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_operation_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/service_request_param_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/request_status_history_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/fetch_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_emdadgar_info_use_case.dart';
@@ -122,7 +121,7 @@ class RequestStatusHistoryCubit
 
     final result = await _getRequestStatusHistoryUseCase(
       RequestOperationParamEntity(
-        serviceType: ServiceType.homeService,
+        serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
         requestId: selectedRequest?.id ?? 0,
         page: _page,
         pageSize: _pageSize,

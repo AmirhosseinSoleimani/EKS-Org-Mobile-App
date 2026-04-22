@@ -71,7 +71,7 @@ class RequestStatusHistoryListView extends StatelessWidget {
                   KeyValueRow(
                     label: 'تاریخ و ساعت ثبت',
                     value:
-                        '${item.insertDateTimeJalali ?? '-'} - ${item.insertTime ?? ''}',
+                        item.insertDateTime ?? '-',
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
