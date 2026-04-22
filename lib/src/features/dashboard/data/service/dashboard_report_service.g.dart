@@ -36,7 +36,7 @@ class _DashboardReportService implements DashboardReportService {
     )
         .compose(
           _dio.options,
-          '/api/IndexReport/IndexDashboard',
+          '/api/IndexReportOrg/IndexDashboard',
           queryParameters: queryParameters,
           data: _data,
         )

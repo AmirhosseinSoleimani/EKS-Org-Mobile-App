@@ -13,6 +13,6 @@ abstract class DashboardReportService {
   @factoryMethod
   factory DashboardReportService(Dio dio) = _DashboardReportService;
 
-  @POST('/api/IndexReport/IndexDashboard')
+  @POST('/api/IndexReportOrg/IndexDashboard')
   Future<BaseSingleResponse<DashboardModel?>> getDashboardData(@Body() Map<String, dynamic> body);
 }

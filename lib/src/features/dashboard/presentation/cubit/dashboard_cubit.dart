@@ -2,6 +2,7 @@ import 'package:bloc/bloc.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/domain/entities/chart_data_entity.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/domain/entities/dashboard_entity.dart';
+import 'package:eks_sana_plus_org/src/features/dashboard/domain/entities/dashboard_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/domain/use_cases/get_dashboard_data_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter/material.dart';
@@ -35,16 +36,10 @@ class DashboardCubit extends Cubit<DashboardState> {
   void loadDashboardData() async {
     _safeEmit(const DashboardState.loading());
 
-    //////////////////////////////////////////////
-    await Future.delayed(const Duration(seconds: 1));
-    dashboardData = _buildFakeDashboardEntity();
-    _safeEmit(const DashboardState.loaded());
-    //////////////////////////////////////////////
-
-    /*final param = DashboardParamEntity(
+    final param = DashboardParamEntity(
       serviceType: selectedServiceType,
-      fromDateTime: selectedFromDate,
-      toDateTime: selectedToDate,
+      fromDateTime: DateTime(2026,04,22),
+      toDateTime: DateTime(2026,04,22),
     );
 
     final result = await _getDashboardDataUseCase(param);
@@ -65,7 +60,7 @@ class DashboardCubit extends Cubit<DashboardState> {
         );
       },
       connectionError: () => _safeEmit(const DashboardState.connectionError()),
-    );*/
+    );
   }
 
   void setServiceType(ServiceType type) {
