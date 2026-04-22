@@ -119,7 +119,7 @@ class _LoadedView extends StatelessWidget {
               ExpandableSection(
                 brief: BodySmallText(
                   text:
-                      "${cubit.selectedRequest?.emFullName ?? ''} | ${cubit.selectedRequest?.emMobileNumber1 ?? ""}",
+                  "${cubit.emdadgarInfo?.agencyName ?? ''} | ${cubit.emdadgarInfo?.mobile ?? ""}",
                 ),
                 isExpanded: false,
                 header: const BodyMediumText(text: "اطلاعات امداد رسان"),
