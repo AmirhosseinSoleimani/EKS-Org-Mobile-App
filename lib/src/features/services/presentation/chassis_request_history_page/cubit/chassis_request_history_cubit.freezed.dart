@@ -81,17 +81,18 @@ mixin _$ChassisRequestHistoryState {
 }
 
 /// @nodoc
-abstract class $ChassisNumberHistoryStateCopyWith<$Res> {
-  factory $ChassisNumberHistoryStateCopyWith(ChassisRequestHistoryState value,
+abstract class $ChassisRequestHistoryStateCopyWith<$Res> {
+  factory $ChassisRequestHistoryStateCopyWith(ChassisRequestHistoryState value,
           $Res Function(ChassisRequestHistoryState) then) =
-      _$ChassisNumberHistoryStateCopyWithImpl<$Res, ChassisRequestHistoryState>;
+      _$ChassisRequestHistoryStateCopyWithImpl<$Res,
+          ChassisRequestHistoryState>;
 }
 
 /// @nodoc
-class _$ChassisNumberHistoryStateCopyWithImpl<$Res,
+class _$ChassisRequestHistoryStateCopyWithImpl<$Res,
         $Val extends ChassisRequestHistoryState>
-    implements $ChassisNumberHistoryStateCopyWith<$Res> {
-  _$ChassisNumberHistoryStateCopyWithImpl(this._value, this._then);
+    implements $ChassisRequestHistoryStateCopyWith<$Res> {
+  _$ChassisRequestHistoryStateCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -108,7 +109,7 @@ abstract class _$$IdleImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$IdleImplCopyWithImpl<$Res>
-    extends _$ChassisNumberHistoryStateCopyWithImpl<$Res, _$IdleImpl>
+    extends _$ChassisRequestHistoryStateCopyWithImpl<$Res, _$IdleImpl>
     implements _$$IdleImplCopyWith<$Res> {
   __$$IdleImplCopyWithImpl(_$IdleImpl _value, $Res Function(_$IdleImpl) _then)
       : super(_value, _then);
@@ -121,7 +122,7 @@ class _$IdleImpl implements _Idle {
 
   @override
   String toString() {
-    return 'ChassisNumberHistoryState.idle()';
+    return 'ChassisRequestHistoryState.idle()';
   }
 
   @override
@@ -233,7 +234,7 @@ abstract class _$$LoadingImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$LoadingImplCopyWithImpl<$Res>
-    extends _$ChassisNumberHistoryStateCopyWithImpl<$Res, _$LoadingImpl>
+    extends _$ChassisRequestHistoryStateCopyWithImpl<$Res, _$LoadingImpl>
     implements _$$LoadingImplCopyWith<$Res> {
   __$$LoadingImplCopyWithImpl(
       _$LoadingImpl _value, $Res Function(_$LoadingImpl) _then)
@@ -247,7 +248,7 @@ class _$LoadingImpl implements _Loading {
 
   @override
   String toString() {
-    return 'ChassisNumberHistoryState.loading()';
+    return 'ChassisRequestHistoryState.loading()';
   }
 
   @override
@@ -359,7 +360,7 @@ abstract class _$$LoadedImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$LoadedImplCopyWithImpl<$Res>
-    extends _$ChassisNumberHistoryStateCopyWithImpl<$Res, _$LoadedImpl>
+    extends _$ChassisRequestHistoryStateCopyWithImpl<$Res, _$LoadedImpl>
     implements _$$LoadedImplCopyWith<$Res> {
   __$$LoadedImplCopyWithImpl(
       _$LoadedImpl _value, $Res Function(_$LoadedImpl) _then)
@@ -373,7 +374,7 @@ class _$LoadedImpl implements _Loaded {
 
   @override
   String toString() {
-    return 'ChassisNumberHistoryState.loaded()';
+    return 'ChassisRequestHistoryState.loaded()';
   }
 
   @override
@@ -487,7 +488,7 @@ abstract class _$$ErrorImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$ErrorImplCopyWithImpl<$Res>
-    extends _$ChassisNumberHistoryStateCopyWithImpl<$Res, _$ErrorImpl>
+    extends _$ChassisRequestHistoryStateCopyWithImpl<$Res, _$ErrorImpl>
     implements _$$ErrorImplCopyWith<$Res> {
   __$$ErrorImplCopyWithImpl(
       _$ErrorImpl _value, $Res Function(_$ErrorImpl) _then)
@@ -517,7 +518,7 @@ class _$ErrorImpl implements _Error {
 
   @override
   String toString() {
-    return 'ChassisNumberHistoryState.error(message: $message)';
+    return 'ChassisRequestHistoryState.error(message: $message)';
   }
 
   @override
@@ -643,7 +644,7 @@ abstract class _$$LoadingMoreImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$LoadingMoreImplCopyWithImpl<$Res>
-    extends _$ChassisNumberHistoryStateCopyWithImpl<$Res, _$LoadingMoreImpl>
+    extends _$ChassisRequestHistoryStateCopyWithImpl<$Res, _$LoadingMoreImpl>
     implements _$$LoadingMoreImplCopyWith<$Res> {
   __$$LoadingMoreImplCopyWithImpl(
       _$LoadingMoreImpl _value, $Res Function(_$LoadingMoreImpl) _then)
@@ -657,7 +658,7 @@ class _$LoadingMoreImpl implements _LoadingMore {
 
   @override
   String toString() {
-    return 'ChassisNumberHistoryState.loadingMore()';
+    return 'ChassisRequestHistoryState.loadingMore()';
   }
 
   @override
@@ -769,8 +770,8 @@ abstract class _$$ConnectionErrorImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$ConnectionErrorImplCopyWithImpl<$Res>
-    extends _$ChassisNumberHistoryStateCopyWithImpl<$Res, _$ConnectionErrorImpl>
-    implements _$$ConnectionErrorImplCopyWith<$Res> {
+    extends _$ChassisRequestHistoryStateCopyWithImpl<$Res,
+        _$ConnectionErrorImpl> implements _$$ConnectionErrorImplCopyWith<$Res> {
   __$$ConnectionErrorImplCopyWithImpl(
       _$ConnectionErrorImpl _value, $Res Function(_$ConnectionErrorImpl) _then)
       : super(_value, _then);
@@ -783,7 +784,7 @@ class _$ConnectionErrorImpl implements _ConnectionError {
 
   @override
   String toString() {
-    return 'ChassisNumberHistoryState.connectionError()';
+    return 'ChassisRequestHistoryState.connectionError()';
   }
 
   @override

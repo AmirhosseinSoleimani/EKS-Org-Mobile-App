@@ -28,7 +28,7 @@ class ChassisRequestHistoryCubit extends Cubit<ChassisRequestHistoryState> {
   final List<ChassisRequestHistoryEntity> items = [];
 
 
-  void loadFakeData() {
+  /*void loadFakeData() {
     items.clear();
 
     items.addAll([
@@ -111,16 +111,15 @@ class ChassisRequestHistoryCubit extends Cubit<ChassisRequestHistoryState> {
   Future<void> init() async {
     loadFakeData();
   }
-}
+}*/
 
 
-  /*Future<void> init() async {
+  Future<void> init() async {
     emit(const ChassisRequestHistoryState.loading());
 
-    final BaseRequestEntity? cachedRequest =
+    selectedRequest  =
         await _fetchSelectedRequestItemUseCase();
-
-    if (cachedRequest == null) {
+    if (selectedRequest == null) {
       _safeEmit(
         const ChassisRequestHistoryState.error(
           message: BottomSheetMessageModel(
@@ -133,9 +132,9 @@ class ChassisRequestHistoryCubit extends Cubit<ChassisRequestHistoryState> {
     }
 
     await _loadChassisNumberHistoryList();
-  }*/
+  }
 
-/*  Future<void> _loadChassisNumberHistoryList() async {
+ Future<void> _loadChassisNumberHistoryList() async {
     items.clear();
 
     final result = await _getChassisRequestHistoryListUseCase(
@@ -165,4 +164,4 @@ class ChassisRequestHistoryCubit extends Cubit<ChassisRequestHistoryState> {
   void _safeEmit(ChassisRequestHistoryState state) {
     if (!isClosed) emit(state);
   }
-}*/
+}
