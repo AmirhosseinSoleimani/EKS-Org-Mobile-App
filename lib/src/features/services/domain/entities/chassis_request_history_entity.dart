@@ -1,0 +1,124 @@
+import 'package:eks_sana_plus_org/src/features/services/data/models/chassis_request_history_model.dart';
+
+class ChassisRequestHistoryEntity {
+  final int? id;
+  final int? trackingCode;
+  final String? insertDateTime;
+  final String? insertDateTimeJalali;
+  final bool? isSubscription;
+  final int? subscriptionId;
+  final bool? isGauranty;
+  final int? status;
+  final String? statusTitle;
+  final int? type;
+  final String? typeTitle;
+  final String? agencyCode;
+  final String? defectTitle;
+  final String? service;
+  final String? mobileNumber;
+  final String? description;
+  final bool? hamlAzad;
+  final bool? vip;
+  final String? vipConditionTitle;
+  final String? chassisNumber;
+  final String? carName;
+
+  const ChassisRequestHistoryEntity({
+    this.id,
+    this.trackingCode,
+    this.insertDateTime,
+    this.insertDateTimeJalali,
+    this.isSubscription,
+    this.subscriptionId,
+    this.isGauranty,
+    this.status,
+    this.statusTitle,
+    this.type,
+    this.typeTitle,
+    this.agencyCode,
+    this.defectTitle,
+    this.service,
+    this.mobileNumber,
+    this.description,
+    this.hamlAzad,
+    this.vip,
+    this.vipConditionTitle,
+    this.chassisNumber,
+    this.carName,
+  });
+
+  ChassisRequestHistoryEntity copyWith({
+    int? id,
+    int? trackingCode,
+    String? insertDateTime,
+    String? insertDateTimeJalali,
+    bool? isSubscription,
+    int? subscriptionId,
+    bool? isGauranty,
+    int? status,
+    String? statusTitle,
+    int? type,
+    String? typeTitle,
+    String? agencyCode,
+    String? defectTitle,
+    String? service,
+    String? mobileNumber,
+    String? description,
+    bool? hamlAzad,
+    bool? vip,
+    String? vipConditionTitle,
+    String? chassisNumber,
+    String? carName,
+  }) {
+    return ChassisRequestHistoryEntity(
+      id: id ?? this.id,
+      trackingCode: trackingCode ?? this.trackingCode,
+      insertDateTime: insertDateTime ?? this.insertDateTime,
+      insertDateTimeJalali:
+      insertDateTimeJalali ?? this.insertDateTimeJalali,
+      isSubscription: isSubscription ?? this.isSubscription,
+      subscriptionId: subscriptionId ?? this.subscriptionId,
+      isGauranty: isGauranty ?? this.isGauranty,
+      status: status ?? this.status,
+      statusTitle: statusTitle ?? this.statusTitle,
+      type: type ?? this.type,
+      typeTitle: typeTitle ?? this.typeTitle,
+      agencyCode: agencyCode ?? this.agencyCode,
+      defectTitle: defectTitle ?? this.defectTitle,
+      service: service ?? this.service,
+      mobileNumber: mobileNumber ?? this.mobileNumber,
+      description: description ?? this.description,
+      hamlAzad: hamlAzad ?? this.hamlAzad,
+      vip: vip ?? this.vip,
+      vipConditionTitle: vipConditionTitle ?? this.vipConditionTitle,
+      chassisNumber: chassisNumber ?? this.chassisNumber,
+      carName: carName ?? this.carName,
+    );
+  }
+
+  ChassisRequestHistoryModel toModel() {
+    return ChassisRequestHistoryModel(
+      id: id,
+      trackingCode: trackingCode,
+      insertDateTime: insertDateTime,
+      insertDateTimeJalali: insertDateTimeJalali,
+      isSubscription: isSubscription,
+      subscriptionId: subscriptionId,
+      isGauranty: isGauranty,
+      status: status,
+      statusTitle: statusTitle,
+      type: type,
+      typeTitle: typeTitle,
+      agencyCode: agencyCode,
+      defectTitle: defectTitle,
+      service: service,
+      mobileNumber: mobileNumber,
+      description: description,
+      hamlAzad: hamlAzad,
+      vip: vip,
+      vipConditionTitle: vipConditionTitle,
+      chassisNumber: chassisNumber,
+      carName: carName,
+    );
+  }
+}

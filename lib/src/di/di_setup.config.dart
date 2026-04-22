@@ -76,6 +76,8 @@ import '../features/services/domain/usecases/fetch_selected_request_item_use_cas
     as _i376;
 import '../features/services/domain/usecases/get_cartable_cycle_list_use_case.dart'
     as _i765;
+import '../features/services/domain/usecases/get_chassis_request_history_list_use_case.dart'
+    as _i581;
 import '../features/services/domain/usecases/get_emdadgar_info_use_case.dart'
     as _i786;
 import '../features/services/domain/usecases/get_evaluation_history_list_use_case.dart'
@@ -455,6 +457,8 @@ _i174.GetIt $initGetIt(
       () => _i786.GetEmdadgarInfoUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i67.GetRequestFollowupHistoryUseCase>(() =>
       _i67.GetRequestFollowupHistoryUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i581.GetChassisRequestHistoryListUseCase>(() =>
+      _i581.GetChassisRequestHistoryListUseCase(gh<_i603.RequestRepository>()));
   gh.factory<_i154.EvaluationHistoryCubit>(() => _i154.EvaluationHistoryCubit(
         gh<_i467.GetEvaluationHistoryListUseCase>(),
         gh<_i376.FetchSelectedRequestItemUseCase>(),

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart' hide Headers;
 import 'package:eks_sana_plus_org/src/features/services/data/models/cartable_cycle_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/chassis_request_history_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/evaluation_history_item_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
@@ -54,5 +55,9 @@ abstract class RequestService {
 
   @POST('/api/RequestFollowUpOrg/GetByFilterJson')
   Future<BaseSingleResponse<EmdadgarInfoModel>> getRequestFollowUp(
+      @Body() Map<String, dynamic> query);
+
+  @POST('/api/CustomerViewAllOrg/GetServiceRequests')
+  Future<BaseListResponse<ChassisRequestHistoryModel>> getChassisRequestHistoryList(
       @Body() Map<String, dynamic> query);
 }

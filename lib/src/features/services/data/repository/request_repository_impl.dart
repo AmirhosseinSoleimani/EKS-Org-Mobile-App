@@ -1,10 +1,12 @@
 import 'package:eks_sana_plus_org/src/features/services/data/data_source/request_history_data_source.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/cartable_cycle_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/chassis_request_history_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/evaluation_history_item_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/followup_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/non_cooperation_list_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/chassis_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/service_request_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_operation_param_entity.dart';
@@ -119,6 +121,16 @@ class RequestRepositoryImpl extends RequestRepository {
   Future<ApiResult<List<FollowupEntity>>> getRequestFollowupHistory() async {
     try {
       final result = await _dataSource.getRequestFollowUp();
+      return result.toApiResult();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<List<ChassisRequestHistoryEntity>>> getChassisRequestHistoryList(ChassisParamEntity param) async {
+    try {
+      final result = await _dataSource.getChassisRequestHistoryList(param.toModel());
       return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);
