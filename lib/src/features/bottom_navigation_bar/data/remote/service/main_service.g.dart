@@ -2,18 +2,16 @@
 
 part of 'main_service.dart';
 
+// dart format off
+
 // **************************************************************************
 // RetrofitGenerator
 // **************************************************************************
 
-// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element
+// ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations,unused_element_parameter,avoid_unused_constructor_parameters,unreachable_from_main
 
 class _MainService implements MainService {
-  _MainService(
-    this._dio, {
-    this.baseUrl,
-    this.errorLogger,
-  });
+  _MainService(this._dio, {this.baseUrl, this.errorLogger});
 
   final Dio _dio;
 
@@ -23,29 +21,23 @@ class _MainService implements MainService {
 
   @override
   Future<BaseSingleResponse<UrgentRequestModel>> sendUrgentRequest(
-      Map<String, dynamic> body) async {
+    Map<String, dynamic> body,
+  ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body);
-    final _options =
-        _setStreamType<BaseSingleResponse<UrgentRequestModel>>(Options(
-      method: 'POST',
-      headers: _headers,
-      extra: _extra,
-    )
-            .compose(
-              _dio.options,
-              '/api/Emdad/SendUrgentRequest',
-              queryParameters: queryParameters,
-              data: _data,
-            )
-            .copyWith(
-                baseUrl: _combineBaseUrls(
-              _dio.options.baseUrl,
-              baseUrl,
-            )));
+    final _options = _setStreamType<BaseSingleResponse<UrgentRequestModel>>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/api/Emdad/SendUrgentRequest',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late BaseSingleResponse<UrgentRequestModel> _value;
     try {
@@ -54,7 +46,7 @@ class _MainService implements MainService {
         (json) => UrgentRequestModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options);
+      errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
     return _value;
@@ -73,10 +65,7 @@ class _MainService implements MainService {
     return requestOptions;
   }
 
-  String _combineBaseUrls(
-    String dioBaseUrl,
-    String? baseUrl,
-  ) {
+  String _combineBaseUrls(String dioBaseUrl, String? baseUrl) {
     if (baseUrl == null || baseUrl.trim().isEmpty) {
       return dioBaseUrl;
     }
@@ -90,3 +79,5 @@ class _MainService implements MainService {
     return Uri.parse(dioBaseUrl).resolveUri(url).toString();
   }
 }
+
+// dart format on

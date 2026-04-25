@@ -43,12 +43,12 @@ class DatePickerWidget extends StatelessWidget {
       textDirection: TextDirection.ltr,
       onTap: () async{
         Jalali? picked = await showPersianDatePicker(
-          initialEntryMode: PDatePickerEntryMode.calendarOnly,
+          initialEntryMode: PersianDatePickerEntryMode.calendarOnly,
             context: context,
             initialDate: initialDate ?? Jalali.now(),
             firstDate: Jalali(1300, 1),
             lastDate: lastDate ?? Jalali.now(),
-            initialDatePickerMode: PDatePickerMode.year,
+            initialDatePickerMode: PersianDatePickerMode.year,
             builder: (_, child) {
               return Theme(
                 data: ThemeData(
@@ -86,7 +86,7 @@ class DatePickerWidget extends StatelessWidget {
                       labelSmall: getRegularStyle(fontSize: AppSize.s14, color: ColorLightManager.surface),
                     ).apply(fontFamily: FontConstants.fontFamilyPersian,
                     ),
-                    dialogTheme: DialogTheme(
+                    dialogTheme: DialogThemeData(
                       backgroundColor: Theme.of(context).colorScheme.surface,
                       shadowColor:Theme.of(context).colorScheme.surface,
                       surfaceTintColor: Theme.of(context).colorScheme.surface,

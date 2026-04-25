@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:eks_sana_plus_org/src/common/constants/app_constants.dart';
+import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/address_info_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/address_to_location_response_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/map_request_entity.dart';
@@ -152,10 +153,9 @@ class MapCubit extends Cubit<MapState> {
         (a.longitude - b.longitude).abs() > eps;
   }
 
-  void onMapMoved(MapPosition position) {
-    if (position.center == null) return;
+  void onMapMoved(MapCamera position) {
     _moveThrottle.run(() {
-      final center = lat_lng.LatLng(position.center!.latitude, position.center!.longitude);
+      final center = lat_lng.LatLng(position.center.latitude, position.center.longitude);
       if(_movedEnough(_location, center)) {
         _location = center;
       }
