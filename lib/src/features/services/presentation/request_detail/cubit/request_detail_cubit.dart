@@ -36,15 +36,14 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
   List<FollowupEntity> followups = [];
   EmdadgarInfoEntity? emdadgarInfo;
 
-  bool get isRelief =>
-      selectedRequest?.serviceType == ServiceType.reliefService;
+
 
   Future<void> init() async {
     _safeEmit(const RequestDetailState.loading());
 
     try {
       final cachedRequest = await _fetchSelectedRequestItemUseCase();
-
+      bool  isRelief  = cachedRequest?.serviceType == ServiceType.reliefService;
       if (cachedRequest == null) {
         _safeEmit(const RequestDetailState.error(
             message: BottomSheetMessageModel(
