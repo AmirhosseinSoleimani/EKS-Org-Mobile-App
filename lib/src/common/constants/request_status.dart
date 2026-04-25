@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import '../../shared/widgets/filter_widgets/interfaces/dropdown_item.dart';
 
 enum RequestStatus implements DropdownItem {
+  openRequests(-100, 'درخواست های باز'),
   waitingPreInvoiceApproval(-4, 'در انتظار تایید پیش‌فاکتور'),
   waitingAddress(-3, 'در انتظار ثبت آدرس'),
   waitingInfoCompletion(-2, 'در انتظار تکمیل اطلاعات'),

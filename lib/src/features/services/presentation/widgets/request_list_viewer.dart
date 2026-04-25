@@ -1,4 +1,5 @@
 
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
@@ -8,8 +9,10 @@ import 'request_card.dart';
 
 class RequestListViewer extends StatelessWidget {
   final List<BaseRequestEntity> items;
-
-  const RequestListViewer({super.key, required this.items});
+  final Function(BaseRequestEntity) onSelected;
+  const RequestListViewer({super.key, required this.items,
+    required this.onSelected,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -25,8 +28,9 @@ class RequestListViewer extends StatelessWidget {
         return RequestCard(
           request: item,
           serviceTitle: _resolveServiceTitle(item),
-          serviceColor: Colors.blue,
+          serviceColor: item.serviceType?.serviceColor ?? ServiceType.reliefService.serviceColor,
           serviceIcon: Icons.build,
+          onSelected: onSelected,
         );
       },
     );

@@ -7,7 +7,7 @@ class LoginResponseModel extends LoginResponseEntity{
 
   factory LoginResponseModel.fromJson(Map<String, dynamic> json) {
     return LoginResponseModel(
-      token: json['token'],
+      token: json['sessionId'],
     );
   }
 }

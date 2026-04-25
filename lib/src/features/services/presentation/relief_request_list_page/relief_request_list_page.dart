@@ -87,7 +87,8 @@ class _SelectedServicesView extends StatelessWidget {
                             BodyMediumText(
                               text: '${cubit.requestList.length} درخواست',
                             ),
-                            RequestListViewer(items: cubit.requestList),
+                            RequestListViewer(items: cubit.requestList,
+                            onSelected: cubit.cacheSelectedRequest,),
                           ],
                         ),
                       ),

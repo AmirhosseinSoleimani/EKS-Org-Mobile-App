@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 
 class ReliefRequestModel extends ReliefRequestEntity {
@@ -48,56 +49,150 @@ class ReliefRequestModel extends ReliefRequestEntity {
     super.emdadgarAssignDurationTitle,
     super.assignDate,
     super.assignTime,
+    super.serviceType,
+    super.agencyVehicleLabelCode,
+    super.assignDateTimeJalali,
+    super.callMobileNumber,
+    super.carFactory,
+    super.carFactoryTitle,
+    super.carGroupTitle,
+    super.carInfoGuid,
+    super.carInfoId,
+    super.carModelId,
+    super.emdadgarId,
+    super.garantyCarTipId,
+    super.garantyDescription,
+    super.garantyEndDate,
+    super.garantyIsGaranty,
+    super.garantyLastKilometer,
+    super.garantyReceptionDate,
+    super.garantySiteDescription,
+    super.garantyStartDate,
+    super.garantyStatusCode,
+    super.hasEmdadgar,
+    super.insertDateTime,
+    super.insertDateTimeJalali,
+    super.invoiceDocumentGuid,
+    super.isSaipa,
+    super.personType,
+    super.planningId,
+    super.requestDateTimeJalali,
+    super.vehicleUsageId,
+    super.vehicleUsageTitle,
+    super.wageGroupType,
+    super.weightGroupTitle,
   });
-
   factory ReliefRequestModel.fromJson(Map<String, dynamic>? json) {
+    if (json == null) return const ReliefRequestModel();
+
     return ReliefRequestModel(
-      id: json?['id'],
-      trackCode: json?['trackCode'],
-      firstName: json?['firstName'],
-      lastName: json?['lastName'],
-      latitude: (json?['latitude'] as num?)?.toDouble() ?? 0.0,
-      longitude: (json?['longitude'] as num?)?.toDouble() ?? 0.0,
-      aidAddress: json?['aidAddress'],
-      cityName: json?['cityName'],
-      provinceName: json?['provinceName'],
-      carName: json?['carName'],
-      carProductionYear: json?['carProductionYear'],
-      licensePlate: json?['licensePlate'],
-      requestStatus: json?['requestStatus'],
-      requestStatusTitle: json?['requestStatusTitle'],
-      requestDateJalali: json?['requestDateJalali'],
-      requestTime: json?['requestTime'],
-      customerMobileNumber: json?['customerMobileNumber'],
-      description: json?['description'],
-      carColorTitle: json?['carColorTitle'],
-      carEngineNumber: json?['carEngineNumber'],
-      genderTitle: json?['genderTitle'],
-      personTypeTitle: json?['personTypeTitle'],
-      chassisNumber: json?['chassisNumber'],
-      kilometer: json?['kilometer'],
-      nationalNumber: json?['nationalNumber'],
-      dispatcher: json?['dispatcher'],
-      emFullName: json?['emFullName'],
-      emMobileNumber1: json?['emMobileNumber1'],
-      emVehicleTypeTitle: json?['emVehicleTypeTitle'],
-      emVehicleType: json?['emVehicleType'],
-      emVehicleSubTypeTitle: json?['emVehicleSubTypeTitle'],
-      emVehicleSubType: json?['emVehicleSubType'],
-      emRepresentationName: json?['emRepresentationName'],
-      emRepresentationCode: json?['emRepresentationCode'],
-      isGuaranty: json?['isGuaranty'] ?? false,
-      isSubscription: json?['isSubscription'] ?? false,
-      defectId: json?['defectId'],
-      defectTitle: json?['defectTitle'],
-      isUrgentRequest: json?['isUrgentRequest'] ?? false,
-      emdadServiceTitle: json?['emdadServiceTitle'],
-      hamlReasonTitle: json?['hamlReasonTitle'],
-      wheelQuestionTitle: json?['wheelQuestionTitle'],
-      emdadgarAssignDistanceTitle: json?['emdadgarAssignDistanceTitle'],
-      emdadgarAssignDurationTitle: json?['emdadgarAssignDurationTitle'],
-      assignDate: json?['assignDate'],
-      assignTime: json?['assignTime'],
+      // Base fields
+      id: json['serviceRequestId'] ?? json['id'],
+      trackCode: json['trackCode'],
+      firstName: json['firstName'],
+      lastName: json['lastName'],
+
+      chassisNumber: json['chassisNumber'],
+      kilometer: json['kilometer'],
+      nationalNumber: json['nationalNumber'],
+
+      latitude: (json['latitude'] as num?)?.toDouble(),
+      longitude: (json['longitude'] as num?)?.toDouble(),
+
+      aidAddress: json['aidAddress'],
+
+      cityName: json['cityName'],
+      provinceName: json['provinceName'],
+
+      carName: json['carName'],
+      carProductionYear: json['carProductionYear'],
+      licensePlate: json['licensePlate'],
+
+      requestStatus: json['requestStatus'],
+      requestStatusTitle: json['requestStatusTitle'],
+
+      requestDateJalali: json['requestDateJalali'],
+      requestTime: json['requestTime'],
+
+      customerMobileNumber: json['customerMobileNumber'],
+      description: json['description'],
+      carColorTitle: json['carColorTitle'],
+      carEngineNumber: json['carEngineNumber'],
+      genderTitle: json['genderTitle'],
+      personTypeTitle: json['personTypeTitle'],
+
+      dispatcher: json['dispatcher'],
+
+      isGuaranty: json['isGuaranty'] ?? false,
+      isSubscription: json['subscription'] ?? json['isSubscription'] ?? false,
+
+      emFullName: json['emdadgarName'] ?? json['emFullName'],
+      emMobileNumber1: json['emdadgarMobile'] ?? json['emMobileNumber1'],
+      emVehicleTypeTitle: json['emdadgarNavganType'] ?? json['emVehicleTypeTitle'],
+      emVehicleType: json['emVehicleType'],
+      emVehicleSubTypeTitle: json['emdadgarKhodroType'] ?? json['emVehicleSubTypeTitle'],
+      emVehicleSubType: json['emVehicleSubType'],
+      emRepresentationName: json['agencyName'] ?? json['emRepresentationName'],
+      emRepresentationCode: json['agencyCode'] ?? json['emRepresentationCode'],
+
+      agencyVehicleLabelCode: json['agencyVehicleLabelCode'],
+
+      callMobileNumber: json['callMobileNumber'],
+      personType: json['personType'],
+
+      carInfoId: json['carInfoId'],
+      carModelId: json['carModelId'],
+      carInfoGuid: json['carInfoGuid'],
+
+      carGroupTitle: json['carGroupTitle'],
+      carFactory: json['carFactory'],
+      carFactoryTitle: json['carFactoryTitle'],
+      isSaipa: json['isSaipa'],
+
+      insertDateTime: json['insertDateTime'],
+      insertDateTimeJalali: json['insertDateTimeJalali'],
+
+      vehicleUsageId: json['vehicleUsageId'],
+      vehicleUsageTitle: json['vehicleUsageTitle'],
+
+      wageGroupType: json['wageGroupType'],
+      weightGroupTitle: json['weightGroupTitle'],
+
+      hasEmdadgar: json['hasEmdadgar'],
+      planningId: json['planningId'],
+      emdadgarId: json['emdadgarId'],
+
+      assignDate: json['assignDate'],
+      assignDateTimeJalali: json['assignDateTimeJalali'],
+
+      // Garanty Fields
+      garantyStartDate: json['garanty_StartDate'],
+      garantyEndDate: json['garanty_EndDate'],
+      garantyReceptionDate: json['garanty_ReceptionDate'],
+      garantyLastKilometer: json['garanty_LastKilometer'],
+      garantyStatusCode: json['garanty_StatusCode'],
+      garantyIsGaranty: json['garanty_IsGaranty'],
+      garantyDescription: json['garanty_Description'],
+      garantyCarTipId: json['garanty_CarTipId'],
+      garantySiteDescription: json['garanty_SiteDescription'],
+
+      invoiceDocumentGuid: json['invoiceDocumentGuid'],
+      requestDateTimeJalali: json['requestDateTimeJalali'],
+
+      defectId: json['defectId'],
+      defectTitle: json['defectTitle'],
+      isUrgentRequest: json['isUrgentRequest'] ?? false,
+      emdadServiceTitle: json['emdadServiceTitle'],
+      hamlReasonTitle: json['hamlReasonTitle'],
+      wheelQuestionTitle: json['wheelQuestionTitle'],
+
+      emdadgarAssignDistanceTitle: json['emdadgarAssignDistanceTitle'],
+      emdadgarAssignDurationTitle: json['emdadgarAssignDurationTitle'],
+
+      assignTime: json['assignTime'],
+
+      serviceType: ServiceType.reliefService,
     );
   }
+
 }

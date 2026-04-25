@@ -85,10 +85,8 @@ class _SelectedServicesView extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            BodyMediumText(
-                              text: '${cubit.requestList.length} درخواست',
-                            ),
-                            RequestListViewer(items: cubit.requestList),
+                            BodyMediumText(text: '${cubit.requestList.length} درخواست'),
+                            RequestListViewer(items: cubit.requestList,onSelected: cubit.cacheSelectedRequest),
                           ],
                         ),
                       ),

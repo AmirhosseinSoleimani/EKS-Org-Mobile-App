@@ -1,6 +1,7 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/cubit/request_detail_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_status_section.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/main_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
@@ -11,13 +12,12 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'widgets/agent_info_detail_section.dart';
+import '../widgets/agent_info_detail_section.dart';
 import 'widgets/car_info_detail_section.dart';
 import 'widgets/customer_info_detail_section.dart';
 import 'widgets/expandable_section.dart';
 import 'widgets/request_followup_history_section.dart';
 import 'widgets/request_location_detail_section.dart';
-import 'widgets/status_label.dart';
 
 class RequestDetailPage extends StatelessWidget {
   const RequestDetailPage({super.key, this.id});
@@ -80,40 +80,64 @@ class RequestDetailPage extends StatelessWidget {
                                   children: [
                                     ExpandableSection(
                                       isExpanded: false,
-                                      header: _buildStatusSection(cubit),
-                                      child: RequestDetailSection(cubit: cubit),
+                                      header: RequestStatusSection(
+                                        trackCode: cubit
+                                                .selectedRequest?.trackCode
+                                                .toString() ??
+                                            '',
+                                        requestDateJalali: cubit.selectedRequest
+                                                ?.requestDateJalali
+                                                .toString() ??
+                                            '',
+                                        requestTime: cubit
+                                                .selectedRequest?.requestTime
+                                                .toString() ??
+                                            '',
+                                        requestStatusTitle: cubit
+                                            .selectedRequest
+                                            ?.requestStatusTitle,
+                                        isGuaranty:
+                                            cubit.selectedRequest?.isGuaranty ??
+                                                false,
+                                        isSubscription: cubit.selectedRequest
+                                                ?.isSubscription ??
+                                            false,
+                                      ),
+                                      child: RequestDetailSection(selectedRequest: cubit.selectedRequest),
                                     ),
                                     ExpandableSection(
                                       isExpanded: false,
                                       brief: BodySmallText(
                                         text:
-                                            "${cubit.selectedRequest.firstName} ${cubit.selectedRequest.lastName} | ${cubit.selectedRequest.customerMobileNumber ?? "-"}",
+                                            "${cubit.selectedRequest?.firstName ?? ''} ${cubit.selectedRequest?.lastName ?? ''} "
+                                            "| ${cubit.selectedRequest?.customerMobileNumber ?? "-"}",
                                       ),
                                       header: const BodyMediumText(
                                           text: "اطلاعات مشتری"),
                                       child: CustomerInfoDetailSection(
                                           cubit: cubit),
                                     ),
-                                    ExpandableSection(
-                                      isExpanded: false,
-                                      header: const BodyMediumText(
-                                          text: "اطلاعات امداد رسان"),
-                                      child: AgentInfoDetailSection(
-                                          selectedRequest:
-                                              cubit.selectedRequest),
-                                    ),
+                                    if (cubit.emdadgarInfo != null) ...[
+                                     ExpandableSection(
+                                       isExpanded: false,
+                                       header: const BodyMediumText(
+                                           text: "اطلاعات امداد رسان"),
+                                       child: AgentInfoDetailSection(
+                                           agentInfo: cubit.emdadgarInfo!),
+                                     ),
+                                   ],
                                     ExpandableSection(
                                       isExpanded: false,
                                       header: const BodyMediumText(
                                           text: "اطلاعات خودرو"),
                                       child: CarInfoDetailSection(cubit: cubit),
                                     ),
-                                    const ExpandableSection(
+                                    ExpandableSection(
                                       isExpanded: false,
                                       header: const BodyMediumText(
                                           text: "تاریخچه پیگیری"),
                                       child: RequestFollowupHistorySection(
-                                        items: []/*cubit.*/,
+                                        items: cubit.followups,
                                       ),
                                     ),
                                      ExpandableSection(
@@ -122,23 +146,14 @@ class RequestDetailPage extends StatelessWidget {
                                           const BodyMediumText(text: "موقعیت درخواست روی نقشه"),
                                       child:  RequestLocationDetailSection(
                                         latitude:
-                                        cubit.selectedRequest.latitude,
+                                            cubit.selectedRequest?.latitude,
                                         longitude:
-                                        cubit.selectedRequest.longitude,
-                                        city: cubit.selectedRequest.cityName,
-                                        province: cubit
-                                            .selectedRequest.provinceName,
+                                            cubit.selectedRequest?.longitude,
+                                        city: cubit.selectedRequest?.cityName,
+                                        province:
+                                            cubit.selectedRequest?.provinceName,
                                         address:
-                                        cubit.selectedRequest.aidAddress,
-                                      ),
-                                    ),
-                                    const ExpandableSection(
-                                      isExpanded: false,
-                                      header:
-                                          const Text("تاریخچه وضعیت درخواست"),
-                                      child: SizedBox(
-                                        height: 200,
-                                        child: SizedBox(),
+                                            cubit.selectedRequest?.aidAddress,
                                       ),
                                     ),
                                   ],
@@ -152,50 +167,5 @@ class RequestDetailPage extends StatelessWidget {
             )),
       ),
     );
-  }
-
-  Column _buildStatusSection(RequestDetailCubit cubit) {
-    return Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        BodySmallText(
-                                          text:
-                                              "${cubit.selectedRequest.trackCode} | ${cubit.selectedRequest.requestDateJalali} - ${cubit.selectedRequest.requestTime}",
-                                        ),
-                                        const SizedBox(height: 6),
-                                        Row(
-                                          children: [
-                                            StatusLabel(
-                                              text: cubit.selectedRequest
-                                                  .requestStatusTitle ?? '-',
-                                              color: Colors.purple,
-                                            ),
-                                            Space.w8,
-                                            StatusLabel(
-                                              text: cubit.selectedRequest
-                                                      .isGuaranty??false
-                                                  ? "گارانتی دارد"
-                                                  : "گارانتی ندارد",
-                                              color: cubit.selectedRequest
-                                                      .isGuaranty??false
-                                                  ? Colors.greenAccent
-                                                  : Colors.red,
-                                            ),
-                                            Space.w8,
-                                            StatusLabel(
-                                              text: cubit.selectedRequest
-                                                      .isSubscription??false
-                                                  ? "مشترک"
-                                                  : "غیر مشترک",
-                                              color: cubit.selectedRequest
-                                                      .isSubscription??false
-                                                  ? Colors.greenAccent
-                                                  : Colors.red,
-                                            )
-                                          ],
-                                        ),
-                                      ],
-                                    );
   }
 }

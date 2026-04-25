@@ -1,16 +1,18 @@
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/cubit/request_detail_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_row.dart';
 import 'package:flutter/material.dart';
 
 class RequestDetailSection extends StatelessWidget {
   const RequestDetailSection({
     super.key,
-    required this.cubit,
+    required this.selectedRequest,
+    this.showCustomerInfo = false,
   });
 
-  final RequestDetailCubit cubit;
+  final BaseRequestEntity? selectedRequest;
+  final bool showCustomerInfo;
 
   @override
   Widget build(BuildContext context) {
@@ -18,40 +20,54 @@ class RequestDetailSection extends StatelessWidget {
       children: [
         KeyValueRow(
           label: "شماره درخواست",
-          value: cubit.selectedRequest.trackCode.toString(),
-        ),
+        value: selectedRequest?.trackCode.toString() ?? '-',
+      ),
         KeyValueRow(
           label: "زمان ثبت",
           value:
-          "${cubit.selectedRequest.requestDateJalali} - ${cubit.selectedRequest.requestTime}",
-        ),
+            "${selectedRequest?.requestDateJalali ?? '-'} - ${selectedRequest?.requestTime ?? '-'}",
+      ),
         KeyValueRow(
-          label: cubit.isRelief ? "ایراد خودرو" : "سرویس انتخاب شده",
-          value: cubit.isRelief
-              ? (cubit.selectedRequest as ReliefRequestEntity).defectTitle ?? '-'
-              : (cubit.selectedRequest as HomeServiceRequestEntity)
-              .emdadProductTitle ??
-              "-",
+        label: isRelief ? "ایراد خودرو" : "سرویس انتخاب شده",
+        value: isRelief
+            ? (selectedRequest as ReliefRequestEntity).defectTitle ?? '-'
+            : (selectedRequest as HomeServiceRequestEntity).emdadProductTitle ??
+                "-",
         ),
-        if (cubit.selectedRequest is ReliefRequestEntity)
-          KeyValueRow(
+      if (selectedRequest is ReliefRequestEntity)
+        KeyValueRow(
             label: "وضعیت خودرو",
-            value: (cubit.selectedRequest as ReliefRequestEntity)
-                .hamlReasonTitle ??
-                "-",
+          value:
+              (selectedRequest as ReliefRequestEntity).hamlReasonTitle ?? "-",
           ),
-        if (cubit.selectedRequest is ReliefRequestEntity)
-          KeyValueRow(
-            label: "وضعیت چرخ‌ها",
-            value: (cubit.selectedRequest as ReliefRequestEntity)
-                .wheelQuestionTitle ??
-                "-",
-          ),
+      if (selectedRequest is ReliefRequestEntity)
         KeyValueRow(
-          label: "توضیحات مشتری",
-          value: cubit.selectedRequest.description ?? "-",
+            label: "وضعیت چرخ‌ها",
+          value: (selectedRequest as ReliefRequestEntity).wheelQuestionTitle ??
+              "-",
+          ),
+      if (showCustomerInfo) ...[
+        KeyValueRow(
+          label: "نام مشتری",
+          value:
+              "${selectedRequest?.firstName ?? "-"} ${selectedRequest?.lastName ?? ""}"
+                  .trim(),
+        ),
+        KeyValueRow(
+          label: "شماره تماس مشتری",
+          value: selectedRequest?.customerMobileNumber ?? "-",
+        ),
+        KeyValueRow(
+          label: "آدرس",
+          value: selectedRequest?.aidAddress ?? "-",
         ),
       ],
-    );
+      KeyValueRow(
+          label: "توضیحات مشتری",
+        value: selectedRequest?.description ?? "-",
+      ),
+    ]);
   }
+
+  bool get isRelief => selectedRequest is ReliefRequestEntity;
 }
