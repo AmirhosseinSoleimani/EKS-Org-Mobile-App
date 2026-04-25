@@ -85,7 +85,7 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
         _safeEmit(
           HomeServiceRequestListState.error(
             message: BottomSheetMessageModel(
-              message: msg ?? 'خطای غیر منتظره',
+              message: msg ?? error.toString(),
               title: '',
             ),
           ),

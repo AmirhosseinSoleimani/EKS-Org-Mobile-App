@@ -48,7 +48,7 @@ class LoginCubit extends Cubit<LoginState> {
         failure: (error, failure) {
         emit(
           LoginState.error(
-            errorMessage: failure ?? 'درخواست شما با خطا مواجه شد، لطفا با شماره 096550 تماس بگیرید',
+            errorMessage: failure ?? error.toString(),
           ),
         );
         },

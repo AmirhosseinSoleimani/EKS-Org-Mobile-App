@@ -83,7 +83,7 @@ class ChassisRequestHistoryCubit extends Cubit<ChassisRequestHistoryState> {
         _safeEmit(
           ChassisRequestHistoryState.error(
             message: BottomSheetMessageModel(
-              message: msg ?? 'خطای غیر منتظره',
+              message: msg ?? error.toString(),
               title: '',
             ),
           ),

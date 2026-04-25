@@ -104,7 +104,7 @@ class RequestStatusHistoryCubit
         emitLoaded();
       },
       failure: (error, message) {
-        emitError(BottomSheetMessageModel(title: '',message:message ?? 'خطای نامشخص در دریافت تاریخچه'));
+        emitError(BottomSheetMessageModel(title: '',message:message ?? error.toString()));
       },
       connectionError: () {
         emitConnectionError();

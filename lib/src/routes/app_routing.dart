@@ -5,6 +5,7 @@ import 'package:eks_sana_plus_org/src/features/dashboard/presentation/dashboard_
 import 'package:eks_sana_plus_org/src/features/indicator_report/presentation/indicator_report_page/indicator_report_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cartable_cycle_page/cartable_cycle_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/chassis_request_history_page/chassis_request_history_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/control_info_page/control_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_history/evaluation_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/home_service_request_list_page/home_service_request_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/non_cooperation_page/non_cooperation_page.dart';
@@ -170,6 +171,14 @@ class Routes {
           name: ChassisRequestHistoryPage.name,
           pageBuilder: (context, state) => getPage(
             child: const ChassisRequestHistoryPage(),
+            state: state,
+          ),
+        ),
+        GoRoute(
+          path: ControlInfoPage.path,
+          name: ControlInfoPage.name,
+          pageBuilder: (context, state) => getPage(
+            child: const ControlInfoPage(),
             state: state,
           ),
         ),

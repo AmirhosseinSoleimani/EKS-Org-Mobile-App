@@ -38,7 +38,6 @@ class CartableCycleCubit extends Cubit<CartableCycleState> {
   BaseRequestEntity? selectedRequest;
   final List<CartableCycleItemEntity> items = [];
 
-  int? requestId;
   int _page = 1;
   final int _pageSize = 3;
 
@@ -124,7 +123,7 @@ class CartableCycleCubit extends Cubit<CartableCycleState> {
         _safeEmit(
           CartableCycleState.error(
             message: BottomSheetMessageModel(
-              message: msg ?? 'خطای غیر منتظره',
+              message: msg ?? error.toString(),
               title: '',
             ),
           ),

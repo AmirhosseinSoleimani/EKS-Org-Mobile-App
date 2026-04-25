@@ -102,7 +102,7 @@ class NonCooperationCubit extends Cubit<NonCooperationState> {
         _safeEmit(
           NonCooperationState.error(
             message: BottomSheetMessageModel(
-              message: msg ?? 'خطای غیر منتظره',
+              message: msg ?? error.toString(),
               title: '',
             ),
           ),

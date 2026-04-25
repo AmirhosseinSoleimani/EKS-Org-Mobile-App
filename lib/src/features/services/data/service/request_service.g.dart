@@ -473,7 +473,7 @@ class _RequestService implements RequestService {
     )
             .compose(
               _dio.options,
-              '/api/RequestFollowUp/ServiceRequestsFollowUpByUser',
+              '/api/RequestFollowUpOrg/ServiceRequestsFollowUpByUser',
               queryParameters: queryParameters,
               data: _data,
             )

@@ -81,7 +81,7 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
         _safeEmit(
           ReliefRequestListState.error(
             message: BottomSheetMessageModel(
-              message: msg ?? 'خطای غیر منتظره',
+              message: msg ?? error.toString(),
               title: '',
             ),
           ),

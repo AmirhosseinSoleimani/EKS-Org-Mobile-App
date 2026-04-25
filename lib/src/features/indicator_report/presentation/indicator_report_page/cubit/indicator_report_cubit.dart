@@ -56,7 +56,7 @@ class IndicatorReportCubit extends Cubit<IndicatorReportState> {
         _safeEmit(
           IndicatorReportState.error(
             message: BottomSheetMessageModel(
-              message: msg ?? 'خطای غیر منتظره',
+              message: msg ?? error.toString(),
               title: '',
             ),
           ),

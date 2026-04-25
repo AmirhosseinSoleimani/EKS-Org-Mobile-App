@@ -104,6 +104,8 @@ import '../features/services/presentation/cartable_cycle_page/cubit/cartable_cyc
     as _i1029;
 import '../features/services/presentation/chassis_request_history_page/cubit/chassis_request_history_cubit.dart'
     as _i891;
+import '../features/services/presentation/control_info_page/cubit/control_info_cubit.dart'
+    as _i66;
 import '../features/services/presentation/evaluation_history/cubit/evaluation_history_cubit.dart'
     as _i154;
 import '../features/services/presentation/home_service_request_list_page/cubit/home_service_request_list_cubit.dart'
@@ -482,6 +484,13 @@ _i174.GetIt $initGetIt(
   gh.factory<_i1048.ReliefRequestListCubit>(() => _i1048.ReliefRequestListCubit(
         gh<_i192.GetReliefRequestListUseCase>(),
         gh<_i369.SetSelectedRequestItemUseCase>(),
+      ));
+  gh.factory<_i66.ControlInfoCubit>(() => _i66.ControlInfoCubit(
+        gh<_i543.GetRequestControlInfoUseCase>(),
+        gh<_i376.FetchSelectedRequestItemUseCase>(),
+        gh<_i672.GetReliefRequestByIdUseCase>(),
+        gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+        gh<_i786.GetEmdadgarInfoUseCase>(),
       ));
   gh.factory<_i165.NonCooperationCubit>(() => _i165.NonCooperationCubit(
         gh<_i707.GetNonCooperationListUseCase>(),

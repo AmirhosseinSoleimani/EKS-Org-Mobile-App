@@ -120,7 +120,7 @@ class EvaluationHistoryCubit extends Cubit<EvaluationHistoryState> {
         _safeEmit(
           EvaluationHistoryState.error(
             message: BottomSheetMessageModel(
-              message: msg ?? 'خطای غیر منتظره',
+              message: msg ?? error.toString(),
               title: '',
             ),
           ),

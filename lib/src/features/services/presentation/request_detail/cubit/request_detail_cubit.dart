@@ -74,7 +74,7 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
             _safeEmit(
               RequestDetailState.error(
                 message: BottomSheetMessageModel(
-                  message: msg ?? 'خطای غیر منتظره',
+                  message: msg ?? error.toString(),
                   title: '',
                 ),
               ),
@@ -94,7 +94,7 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
             _safeEmit(
               RequestDetailState.error(
                 message: BottomSheetMessageModel(
-                  message: msg ?? 'خطای غیر منتظره',
+                  message: msg ?? error.toString(),
                   title: '',
                 ),
               ),
@@ -117,7 +117,7 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
           _safeEmit(
             RequestDetailState.error(
               message: BottomSheetMessageModel(
-                message: msg ?? 'خطای غیر منتظره',
+                message: msg ?? error.toString(),
                 title: '',
               ),
             ),

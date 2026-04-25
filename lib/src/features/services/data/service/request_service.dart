@@ -62,7 +62,7 @@ abstract class RequestService {
   Future<BaseListResponse<ChassisRequestHistoryModel>> getChassisRequestHistoryList(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/RequestFollowUp/ServiceRequestsFollowUpByUser')
+  @POST('/api/RequestFollowUpOrg/ServiceRequestsFollowUpByUser')
   Future<BaseSingleResponse<ControlInfoModel>> getControlInfo(
       @Body() Map<String, dynamic> query);
 }
