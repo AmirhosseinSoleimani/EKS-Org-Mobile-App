@@ -39,10 +39,10 @@ class NonCooperationCubit extends Cubit<NonCooperationState> {
   Future<void> init() async {
     emit(const NonCooperationState.loading());
 
-    final BaseRequestEntity? cachedRequest =
+    selectedRequest =
         await _fetchSelectedRequestItemUseCase();
 
-    if (cachedRequest == null) {
+    if (selectedRequest == null) {
       _safeEmit(
         const NonCooperationState.error(
           message: BottomSheetMessageModel(

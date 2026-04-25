@@ -44,10 +44,10 @@ class EvaluationHistoryCubit extends Cubit<EvaluationHistoryState> {
   Future<void> init() async {
     emit(const EvaluationHistoryState.loading());
 
-    final BaseRequestEntity? cachedRequest =
+    selectedRequest =
         await _fetchSelectedRequestItemUseCase();
 
-    if (cachedRequest == null) {
+    if (selectedRequest == null) {
       _safeEmit(
         const EvaluationHistoryState.error(
           message: BottomSheetMessageModel(

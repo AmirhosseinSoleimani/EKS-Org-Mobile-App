@@ -47,10 +47,9 @@ class CartableCycleCubit extends Cubit<CartableCycleState> {
   Future<void> init() async {
     emit(const CartableCycleState.loading());
 
-    final BaseRequestEntity? cachedRequest =
-        await _fetchSelectedRequestItemUseCase();
+   selectedRequest = await _fetchSelectedRequestItemUseCase();
 
-    if (cachedRequest == null) {
+    if (selectedRequest == null) {
       _safeEmit(
         const CartableCycleState.error(
           message: BottomSheetMessageModel(
