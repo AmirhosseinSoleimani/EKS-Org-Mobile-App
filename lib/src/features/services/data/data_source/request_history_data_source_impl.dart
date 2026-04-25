@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/services/data/models/cartable_cycle_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/chassis_request_history_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/control_info_models/control_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/evaluation_history_item_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
@@ -69,4 +70,9 @@ class RequestDataSourceImpl extends RequestDataSource {
   @override
   Future<BaseListResponse<ChassisRequestHistoryModel>> getChassisRequestHistoryList(ChassisParamModel param)  async =>
       await _service.getChassisRequestHistoryList(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<ControlInfoModel>> getControlInfo(
+          ServiceRequestParamModel param) async =>
+      await _service.getControlInfo(param.toJson());
 }

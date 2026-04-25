@@ -92,6 +92,8 @@ import '../features/services/domain/usecases/get_relief_request_by_id_use_case.d
     as _i672;
 import '../features/services/domain/usecases/get_relief_request_list_use_case.dart'
     as _i192;
+import '../features/services/domain/usecases/get_request_control_info_use_case.dart'
+    as _i543;
 import '../features/services/domain/usecases/get_request_followup_history_use_case.dart'
     as _i67;
 import '../features/services/domain/usecases/get_request_status_history_use_case.dart'
@@ -461,6 +463,8 @@ _i174.GetIt $initGetIt(
       _i67.GetRequestFollowupHistoryUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i955.GetRequestStatusHistoryUseCase>(() =>
       _i955.GetRequestStatusHistoryUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i543.GetRequestControlInfoUseCase>(
+      () => _i543.GetRequestControlInfoUseCase(gh<_i603.RequestRepository>()));
   gh.factory<_i891.ChassisRequestHistoryCubit>(
       () => _i891.ChassisRequestHistoryCubit(
             gh<_i581.GetChassisRequestHistoryListUseCase>(),

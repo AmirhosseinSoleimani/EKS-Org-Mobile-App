@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/services/data/models/cartable_cycle_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/chassis_request_history_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/control_info_models/control_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/non_cooperation_list_model.dart';
@@ -42,4 +43,7 @@ abstract class RequestDataSource {
 
   Future<BaseListResponse<ChassisRequestHistoryModel>>
       getChassisRequestHistoryList(ChassisParamModel param);
+
+  Future<BaseSingleResponse<ControlInfoModel>>
+      getControlInfo(ServiceRequestParamModel param);
 }
