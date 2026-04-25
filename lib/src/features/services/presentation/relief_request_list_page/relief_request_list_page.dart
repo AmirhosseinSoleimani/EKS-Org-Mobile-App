@@ -88,7 +88,7 @@ class _SelectedServicesView extends StatelessWidget {
                               text: '${cubit.requestList.length} درخواست',
                             ),
                             RequestListViewer(items: cubit.requestList,
-                            onSelected: cubit.cacheSelectedRequest,),
+                            onSelected: cubit.cacheSelectedRequest),
                           ],
                         ),
                       ),
