@@ -3,7 +3,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/request_det
 import 'package:flutter/material.dart';
 
 class RequestFollowupHistorySection extends StatelessWidget {
-  final List<FollowupEntity> items;
+  final List<FollowupItemEntity> items;
 
   const RequestFollowupHistorySection({
     super.key,

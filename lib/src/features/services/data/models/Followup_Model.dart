@@ -2,6 +2,20 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/followup
 
 class FollowupModel extends FollowupEntity {
   const FollowupModel({
+    super.followUpList,
+  });
+
+  factory FollowupModel.fromJson(Map<String, dynamic> json) {
+    return FollowupModel(
+      followUpList: json['records'] == null
+          ? []
+          : (json['records'] as List).map((e) => FollowupItemModel.fromJson(e)).toList()
+    );
+  }
+}
+
+class FollowupItemModel extends FollowupItemEntity {
+  const FollowupItemModel({
     super.id,
     super.followUpDateTime,
     super.actionType,
@@ -28,8 +42,8 @@ class FollowupModel extends FollowupEntity {
     super.description,
   });
 
-  factory FollowupModel.fromJson(Map<String, dynamic> json) {
-    return FollowupModel(
+  factory FollowupItemModel.fromJson(Map<String, dynamic> json) {
+    return FollowupItemModel(
       id: json["id"],
       followUpDateTime: json["followUpDateTime"],
       actionType: json["actionType"],

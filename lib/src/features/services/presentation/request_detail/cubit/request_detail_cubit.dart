@@ -1,16 +1,18 @@
-import 'package:bloc/bloc.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/followup_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_operation_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/service_request_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/fetch_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_emdadgar_info_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_home_service_request_by_id_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_relief_request_by_id_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_request_followup_history_use_case.dart';
+import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
@@ -33,9 +35,10 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
   final GetEmdadgarInfoUseCase _getEmdadgarInfoUseCase;
 
   BaseRequestEntity? selectedRequest;
-  List<FollowupEntity> followups = [];
+  List<FollowupItemEntity> followups = [];
   EmdadgarInfoEntity? emdadgarInfo;
-
+  int _page = 1;
+  final int _pageSize = 3;
 
 
   Future<void> init() async {
@@ -107,11 +110,18 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
 
       await _fetchEmdadgarInfo();
 
-      final followupResult = await _getRequestFollowupHistoryUseCase(requestId);
+      final followupResult = await _getRequestFollowupHistoryUseCase(
+          RequestOperationParamEntity(
+            serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
+            requestId: selectedRequest?.id,
+            page: _page,
+            pageSize: _pageSize,
+          )
+      );
 
       followupResult.whenOrNull(
         success: (data, failures, resultCode) {
-          followups = data;
+          followups = data.followUpList ?? [];
         },
         failure: (error, msg) {
           _safeEmit(

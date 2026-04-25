@@ -1,4 +1,4 @@
-import 'package:bloc/bloc.dart';
+import 'package:eks_sana_plus_org/src/common/constants/fetch_result_type.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/non_cooperation_item_entity.dart';
@@ -7,7 +7,9 @@ import 'package:eks_sana_plus_org/src/features/services/domain/usecases/fetch_se
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_home_service_request_by_id_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_non_cooperation_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_relief_request_by_id_use_case.dart';
+import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
@@ -28,8 +30,15 @@ class NonCooperationCubit extends Cubit<NonCooperationState> {
     this._getHomeServiceRequestByIdUseCase,
   ) : super(const NonCooperationState.idle());
   
-  BaseRequestEntity? selectedRequest;
+  BaseRequestEntity? selectedBaseRequest;
   final List<NonCooperationItemEntity> items = [];
+
+  String? _errorMessage;
+
+  String _fallbackError([String? msg]) =>
+      msg?.trim().isNotEmpty == true
+          ? msg!
+          : 'درخواست شما با خطا مواجه شد، لطفا با پشتیبانی تماس بگیرید';
 
   int _page = 1;
   final int _pageSize = 3;
@@ -39,55 +48,101 @@ class NonCooperationCubit extends Cubit<NonCooperationState> {
   Future<void> init() async {
     emit(const NonCooperationState.loading());
 
-    final BaseRequestEntity? cachedRequest =
-        await _fetchSelectedRequestItemUseCase();
+    final result = await _initializeData();
 
-    if (cachedRequest == null) {
-      _safeEmit(
-        const NonCooperationState.error(
-          message: BottomSheetMessageModel(
-            title: 'خطا',
-            message: 'در دریافت اطلاعات درخواست مشکلی رخ داد.',
-          ),
-        ),
-      );
-      return;
+    switch (result) {
+      case FetchResultType.success:
+        _safeEmit(const NonCooperationState.loaded());
+        break;
+
+      case FetchResultType.failure:
+        _emitError();
+        break;
+
+      case FetchResultType.connectionError:
+        _safeEmit(const NonCooperationState.connectionError());
+        break;
+
+      case FetchResultType.expireToken:
+        _emitError('نشست شما منقضی شده است. لطفا دوباره وارد شوید');
+        break;
     }
-
-    await _refreshRequestData();
-
-    await _loadNonCooperationList();
   }
 
-  Future<void> _refreshRequestData() async {
-    final id = selectedRequest?.id ?? 0;
-    final result = selectedRequest!.isHomeService
+  Future<FetchResultType> _initializeData() async {
+
+    final selectedResult = await _fetchSelectedServiceRequest();
+    if (selectedResult != FetchResultType.success) {
+      return selectedResult;
+    }
+
+    final requestResult = await _fetchServiceRequestData();
+    if (requestResult != FetchResultType.success) {
+      return requestResult;
+    }
+    final listResult = await _loadNonCooperationList();
+    if (listResult != FetchResultType.success) {
+      return listResult;
+    }
+
+    return FetchResultType.success;
+  }
+
+  Future<FetchResultType> _fetchSelectedServiceRequest() async{
+    try{
+      selectedBaseRequest = await _fetchSelectedRequestItemUseCase.call();
+      return FetchResultType.success;
+    } catch (_) {
+      _errorMessage = _fallbackError();
+      return FetchResultType.failure;
+    }
+  }
+
+  Future<FetchResultType> _fetchServiceRequestData() async {
+    final id   = selectedBaseRequest?.id ?? 0;
+    final result =
+    (selectedBaseRequest?.serviceType == ServiceType.homeService)
         ? await _getHomeServiceRequestByIdUseCase(id)
         : await _getReliefRequestByIdUseCase(id);
 
-    result.whenOrNull(
+    FetchResultType fetchResult = FetchResultType.failure;
+
+    result.when(
       success: (data, _, __) {
-        selectedRequest = data;
+        selectedBaseRequest = data;
+        fetchResult = FetchResultType.success;
+      },
+      failure: (_, msg) {
+        _errorMessage  = _fallbackError(msg);
+        fetchResult = FetchResultType.failure;
+      },
+      connectionError: () {
+        fetchResult = FetchResultType.connectionError;
+      },
+      expireToken: () {
+        fetchResult = FetchResultType.expireToken;
       },
     );
+    return fetchResult;
   }
 
-  Future<void> _loadNonCooperationList() async {
+
+  Future<FetchResultType> _loadNonCooperationList() async {
     _page = 1;
     _hasMore = true;
     items.clear();
 
     final result = await _getNonCooperationListUseCase(
       RequestOperationParamEntity(
-        serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
-        serviceRequestTrackCode: selectedRequest?.trackCode ?? 0,
+        serviceType: selectedBaseRequest?.serviceType ?? ServiceType.reliefService,
+        serviceRequestTrackCode: selectedBaseRequest?.trackCode ?? 0,
         page: _page,
         pageSize: _pageSize,
       ),
     );
-
-    result.whenOrNull(
-      success: (data, failures, resultCode) {
+    FetchResultType fetchResult = FetchResultType.failure;
+    result.when(
+      success: (data, _, __) {
         if (data != null) {
           items.addAll(data.records);
 
@@ -95,22 +150,20 @@ class NonCooperationCubit extends Cubit<NonCooperationState> {
             _hasMore = false;
           }
         }
-
-        _safeEmit(const NonCooperationState.loaded());
+        fetchResult = FetchResultType.success;
       },
-      failure: (error, msg) {
-        _safeEmit(
-          NonCooperationState.error(
-            message: BottomSheetMessageModel(
-              message: msg ?? 'خطای غیر منتظره',
-              title: '',
-            ),
-          ),
-        );
+      failure: (_, msg) {
+        _errorMessage = _fallbackError(msg);
+        fetchResult = FetchResultType.failure;
       },
-      connectionError: () =>
-          _safeEmit(const NonCooperationState.connectionError()),
+      connectionError: () {
+        fetchResult = FetchResultType.connectionError;
+      },
+      expireToken: () {
+        fetchResult = FetchResultType.expireToken;
+      },
     );
+    return fetchResult;
   }
 
   Future<void> loadMore() async {
@@ -123,7 +176,7 @@ class NonCooperationCubit extends Cubit<NonCooperationState> {
     final result = await _getNonCooperationListUseCase(
       RequestOperationParamEntity(
         serviceType: ServiceType.homeService,
-        serviceRequestTrackCode: selectedRequest?.trackCode ?? 0,
+        serviceRequestTrackCode: selectedBaseRequest?.trackCode ?? 0,
         page: _page,
         pageSize: _pageSize,
       ),
@@ -157,6 +210,18 @@ class NonCooperationCubit extends Cubit<NonCooperationState> {
   }
 
   bool get hasMore => _hasMore;
+
+
+  void _emitError([String? message]) {
+    _safeEmit(
+      NonCooperationState.error(
+        message: BottomSheetMessageModel(
+          title: 'خطا',
+          message: message ?? _errorMessage ?? _fallbackError(),
+        ),
+      ),
+    );
+  }
 
   void _safeEmit(NonCooperationState state) {
     if (!isClosed) emit(state);

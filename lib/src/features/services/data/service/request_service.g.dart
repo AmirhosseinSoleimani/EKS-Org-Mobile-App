@@ -32,7 +32,7 @@ class _RequestService implements RequestService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/AidServiceRequest/GetByFilterJson',
+            '/api/AidServiceRequestOrg/GetAidServiceRequestList',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -42,6 +42,39 @@ class _RequestService implements RequestService {
     late BaseListResponse<ReliefRequestModel> _value;
     try {
       _value = BaseListResponse<ReliefRequestModel>.fromJson(
+        _result.data!,
+        (json) => ReliefRequestModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseSingleResponse<ReliefRequestModel>> getReliefRequestById(
+    Map<String, dynamic> query,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.addAll(query);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<BaseSingleResponse<ReliefRequestModel>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/api/AidServiceRequestOrg/GetAidServiceRequestById',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseSingleResponse<ReliefRequestModel> _value;
+    try {
+      _value = BaseSingleResponse<ReliefRequestModel>.fromJson(
         _result.data!,
         (json) => ReliefRequestModel.fromJson(json as Map<String, dynamic>),
       );
@@ -65,7 +98,7 @@ class _RequestService implements RequestService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/HomeServiceRequest/GetByFilterJson',
+            '/api/HomeServiceRequestOrg/GetHomeServiceRequestList',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -78,6 +111,289 @@ class _RequestService implements RequestService {
         _result.data!,
         (json) =>
             HomeServiceRequestModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseSingleResponse<HomeServiceRequestModel>> getHomeServiceRequestById(
+    Map<String, dynamic> query,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.addAll(query);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options =
+        _setStreamType<BaseSingleResponse<HomeServiceRequestModel>>(
+          Options(method: 'POST', headers: _headers, extra: _extra)
+              .compose(
+                _dio.options,
+                '/api/HomeServiceRequestOrg/GetHomeServiceRequest',
+                queryParameters: queryParameters,
+                data: _data,
+              )
+              .copyWith(
+                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+              ),
+        );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseSingleResponse<HomeServiceRequestModel> _value;
+    try {
+      _value = BaseSingleResponse<HomeServiceRequestModel>.fromJson(
+        _result.data!,
+        (json) =>
+            HomeServiceRequestModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseSingleResponse<NonCooperationListModel>> getNonCooperationList(
+    Map<String, dynamic> query,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(query);
+    final _options =
+        _setStreamType<BaseSingleResponse<NonCooperationListModel>>(
+          Options(method: 'POST', headers: _headers, extra: _extra)
+              .compose(
+                _dio.options,
+                '/api/LackOfCooperationOrg/getLackOfCooperationList',
+                queryParameters: queryParameters,
+                data: _data,
+              )
+              .copyWith(
+                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+              ),
+        );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseSingleResponse<NonCooperationListModel> _value;
+    try {
+      _value = BaseSingleResponse<NonCooperationListModel>.fromJson(
+        _result.data!,
+        (json) =>
+            NonCooperationListModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseListResponse<CartableCycleItemModel>> getCartableCycleList(
+    Map<String, dynamic> query,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(query);
+    final _options = _setStreamType<BaseListResponse<CartableCycleItemModel>>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/api/CartableOrg/GetServiceRequestMessageFlow',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseListResponse<CartableCycleItemModel> _value;
+    try {
+      _value = BaseListResponse<CartableCycleItemModel>.fromJson(
+        _result.data!,
+        (json) => CartableCycleItemModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseListResponse<EvaluationHistoryItemModel>> getEvaluationHistory(
+    Map<String, dynamic> query,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(query);
+    final _options =
+        _setStreamType<BaseListResponse<EvaluationHistoryItemModel>>(
+          Options(method: 'POST', headers: _headers, extra: _extra)
+              .compose(
+                _dio.options,
+                '/api/AidServiceEvaluationOrg/GetEvaluationsByServiceRequestId',
+                queryParameters: queryParameters,
+                data: _data,
+              )
+              .copyWith(
+                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+              ),
+        );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseListResponse<EvaluationHistoryItemModel> _value;
+    try {
+      _value = BaseListResponse<EvaluationHistoryItemModel>.fromJson(
+        _result.data!,
+        (json) =>
+            EvaluationHistoryItemModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseSingleResponse<RequestStatusHistoryListModel>>
+  getRequestStatusHistory(Map<String, dynamic> query) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(query);
+    final _options =
+        _setStreamType<BaseSingleResponse<RequestStatusHistoryListModel>>(
+          Options(method: 'POST', headers: _headers, extra: _extra)
+              .compose(
+                _dio.options,
+                '/api/ServiceRequestHistoryOrg/GetByFilterJson',
+                queryParameters: queryParameters,
+                data: _data,
+              )
+              .copyWith(
+                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+              ),
+        );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseSingleResponse<RequestStatusHistoryListModel> _value;
+    try {
+      _value = BaseSingleResponse<RequestStatusHistoryListModel>.fromJson(
+        _result.data!,
+        (json) => RequestStatusHistoryListModel.fromJson(
+          json as Map<String, dynamic>,
+        ),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseSingleResponse<EmdadgarInfoModel>> getEmdadgarInfo(
+    Map<String, dynamic> query,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(query);
+    final _options = _setStreamType<BaseSingleResponse<EmdadgarInfoModel>>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/api/EmdadgarOrg/GetEmdadgarByServiceRequestId',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseSingleResponse<EmdadgarInfoModel> _value;
+    try {
+      _value = BaseSingleResponse<EmdadgarInfoModel>.fromJson(
+        _result.data!,
+        (json) => EmdadgarInfoModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseSingleResponse<FollowupModel>> getRequestFollowUp(
+    Map<String, dynamic> query,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(query);
+    final _options = _setStreamType<BaseSingleResponse<FollowupModel>>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/api/RequestFollowUpOrg/GetByFilterJson',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseSingleResponse<FollowupModel> _value;
+    try {
+      _value = BaseSingleResponse<FollowupModel>.fromJson(
+        _result.data!,
+        (json) => FollowupModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseListResponse<ChassisRequestHistoryModel>>
+  getChassisRequestHistoryList(Map<String, dynamic> query) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(query);
+    final _options =
+        _setStreamType<BaseListResponse<ChassisRequestHistoryModel>>(
+          Options(method: 'POST', headers: _headers, extra: _extra)
+              .compose(
+                _dio.options,
+                '/api/CustomerViewAllOrg/GetServiceRequests',
+                queryParameters: queryParameters,
+                data: _data,
+              )
+              .copyWith(
+                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+              ),
+        );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseListResponse<ChassisRequestHistoryModel> _value;
+    try {
+      _value = BaseListResponse<ChassisRequestHistoryModel>.fromJson(
+        _result.data!,
+        (json) =>
+            ChassisRequestHistoryModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);

@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/features/services/data/models/Followup_Model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/cartable_cycle_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/chassis_request_history_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_info_model.dart';
@@ -35,10 +36,9 @@ abstract class RequestDataSource {
   Future<BaseSingleResponse<RequestStatusHistoryListModel>>
       getRequestStatusHistory(RequestOperationParamModel param);
 
-  Future<BaseSingleResponse<EmdadgarInfoModel>> getEmdadgarInfo(
-      ServiceRequestParamModel param);
+  Future<BaseSingleResponse<EmdadgarInfoModel>> getEmdadgarInfo(ServiceRequestParamModel param);
 
-  Future<BaseSingleResponse<EmdadgarInfoModel>> getRequestFollowUp();
+  Future<BaseSingleResponse<FollowupModel>> getRequestFollowUp(RequestOperationParamModel param);
 
   Future<BaseListResponse<ChassisRequestHistoryModel>>
       getChassisRequestHistoryList(ChassisParamModel param);

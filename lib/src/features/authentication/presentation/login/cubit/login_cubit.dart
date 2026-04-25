@@ -45,7 +45,9 @@ class LoginCubit extends Cubit<LoginState> {
      );
     final result = await loginUseCase.call(loginParam);
       result.whenOrNull(
-        success: (_, __, ___) => emit(const LoginState.success()),
+        success: (data, _, _) {
+          emit(const LoginState.success());
+        },
         failure: (error, failure) {
         emit(
           LoginState.error(

@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart' hide Headers;
+import 'package:eks_sana_plus_org/src/features/services/data/models/Followup_Model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/cartable_cycle_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/chassis_request_history_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_info_model.dart';
@@ -29,9 +30,10 @@ abstract class RequestService {
   @POST('/api/HomeServiceRequestOrg/GetHomeServiceRequestList')
   Future<BaseListResponse<HomeServiceRequestModel>> getHomeServiceRequestList(@Body() Map<String, dynamic> body);
 
-  @POST('/api/HomeServiceRequestOrg/GetServiceRequest')
+  @POST('/api/HomeServiceRequestOrg/GetHomeServiceRequest')
   Future<BaseSingleResponse<HomeServiceRequestModel>> getHomeServiceRequestById(
       @Queries() Map<String, dynamic> query);
+
 
   @POST('/api/LackOfCooperationOrg/getLackOfCooperationList')
   Future<BaseSingleResponse<NonCooperationListModel>> getNonCooperationList(
@@ -54,7 +56,7 @@ abstract class RequestService {
       @Body() Map<String, dynamic> query);
 
   @POST('/api/RequestFollowUpOrg/GetByFilterJson')
-  Future<BaseSingleResponse<EmdadgarInfoModel>> getRequestFollowUp(
+  Future<BaseSingleResponse<FollowupModel>> getRequestFollowUp(
       @Body() Map<String, dynamic> query);
 
   @POST('/api/CustomerViewAllOrg/GetServiceRequests')

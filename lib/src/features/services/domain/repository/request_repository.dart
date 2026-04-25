@@ -22,8 +22,7 @@ abstract class RequestRepository {
   Future<ApiResult<List<HomeServiceRequestEntity>>> getHomeServiceRequestList(
       RequestFilterParamEntity param);
 
-  Future<ApiResult<HomeServiceRequestEntity?>> getHomeServiceRequestById(
-      int id);
+  Future<ApiResult<HomeServiceRequestEntity?>> getHomeServiceRequestById(int id);
 
   Future<ApiResult<NonCooperationListEntity?>> getNonCooperationList(
       RequestOperationParamEntity param);
@@ -40,8 +39,7 @@ abstract class RequestRepository {
   Future<ApiResult<EmdadgarInfoEntity?>> getEmdadgarInfo(
       ServiceRequestParamEntity param);
 
-  Future<ApiResult<List<FollowupEntity>>> getRequestFollowupHistory(
-       );
+  Future<ApiResult<FollowupEntity>> getRequestFollowupHistory(RequestOperationParamEntity param);
 
   Future<ApiResult<List<ChassisRequestHistoryEntity>>>
       getChassisRequestHistoryList(ChassisParamEntity param);

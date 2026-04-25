@@ -111,7 +111,7 @@ class _LoadedView extends StatelessWidget {
               isExpanded: false,
               header: buildRequestStatusSection(cubit),
               child: RequestDetailSection(
-                selectedRequest: cubit.selectedRequest,
+                selectedRequest: cubit.selectedBaseRequest,
                 showCustomerInfo: true,
               ),
             ),
@@ -145,13 +145,13 @@ class _LoadedView extends StatelessWidget {
 
   RequestStatusSection buildRequestStatusSection(EvaluationHistoryCubit cubit) {
     return RequestStatusSection(
-      trackCode: cubit.selectedRequest?.trackCode.toString() ?? '-',
+      trackCode: cubit.selectedBaseRequest?.trackCode.toString() ?? '-',
       requestDateJalali:
-          cubit.selectedRequest?.requestDateJalali.toString() ?? '-',
-      requestTime: cubit.selectedRequest?.requestTime.toString() ?? '-',
-      requestStatusTitle: cubit.selectedRequest?.requestStatusTitle,
-      isGuaranty: cubit.selectedRequest?.isGuaranty ?? false,
-      isSubscription: cubit.selectedRequest?.isSubscription ?? false,
+          cubit.selectedBaseRequest?.requestDateJalali.toString() ?? '-',
+      requestTime: cubit.selectedBaseRequest?.requestTime.toString() ?? '-',
+      requestStatusTitle: cubit.selectedBaseRequest?.requestStatusTitle,
+      isGuaranty: cubit.selectedBaseRequest?.isGuaranty ?? false,
+      isSubscription: cubit.selectedBaseRequest?.isSubscription ?? false,
     );
   }
 }

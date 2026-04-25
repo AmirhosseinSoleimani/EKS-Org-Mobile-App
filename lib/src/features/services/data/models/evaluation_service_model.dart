@@ -1,0 +1,55 @@
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/evaluation_service_entity.dart';
+
+class EvaluationServiceModel extends EvaluationServiceEntity {
+  EvaluationServiceModel({
+    super.serviceId,
+    super.serviceTitle,
+    super.serviceCode,
+    super.isCustomerSelected,
+    super.isImageMandatory,
+    super.serviceCategoryId,
+    super.serviceCategoryTitle,
+    super.serviceCategoryCode,
+    super.serviceType,
+    super.serviceTypeTitle,
+    super.workOrderCode,
+    super.defectInfoId,
+    super.defectInfoTitle,
+    super.evaluationId,
+    super.subscriptionId,
+    super.hasSubscription,
+    super.productId,
+    super.productTitle,
+    super.product,
+    super.hasGaranty,
+    super.garantyStartDate,
+    super.isDeleted,
+  });
+
+  factory EvaluationServiceModel.fromJson(Map<String, dynamic> json) {
+    return EvaluationServiceModel(
+      serviceId: json['serviceId'],
+      serviceTitle: json['serviceTitle'],
+      serviceCode: json['serviceCode'],
+      isCustomerSelected: json['isCustomerSelected'],
+      isImageMandatory: json['isImageMandatory'] ?? false,
+      serviceCategoryId: json['serviceCategoryId'],
+      serviceCategoryTitle: json['serviceCategoryTitle'],
+      serviceCategoryCode: json['serviceCategoryCode'],
+      serviceType: json['serviceType'],
+      serviceTypeTitle: json['serviceTypeTitle'],
+      workOrderCode: json['workOrderCode'],
+      defectInfoId: json['defectInfoId'],
+      defectInfoTitle: json['defectInfoTitle'],
+      evaluationId: json['evaluationId'],
+      subscriptionId: json['subscriptionId'],
+      hasSubscription: json['hasSubscription'] ?? false,
+      productId: json['productId'],
+      productTitle: json['productTitle'],
+      product: json['product'],
+      hasGaranty: json['hasGaranty'] ?? false,
+      garantyStartDate: json['garantyStartDate'],
+      isDeleted: json['isDeleted'] ?? false,
+    );
+  }
+}
