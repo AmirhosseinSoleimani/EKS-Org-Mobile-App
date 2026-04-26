@@ -1,6 +1,7 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/presentation/cubit/dashboard_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/presentation/widgets/chart/horizon_bar_chart.dart';
+import 'package:eks_sana_plus_org/src/features/dashboard/presentation/widgets/chart/pie_chart_widget.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/presentation/widgets/filters_box.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/main_app_bar.dart';
@@ -113,24 +114,48 @@ class _DashboardView extends StatelessWidget {
                               Space.h8,
                               ChartContainerWrapper(
                                 title: "درخواست ثبت شده به تفکیک وضعیت",
-                                totalCount:
-                                    cubit.dashboardData?.followUpTabletCount ??
-                                        0,
+                                totalCount: cubit.calculateTotalCount(
+                                  cubit.dashboardData?.generalStatus,
+                                ),
                                 chart: HorizonBarChart(
                                     items: cubit.dashboardData?.generalStatus ??
                                         []),
                               ),
                               Space.h16,
                               ChartContainerWrapper(
-                                title: "عملیات انجام شده بر اساس نوع عملیات",
-                                totalCount:
-                                    cubit.dashboardData?.followUpTabletCount ??
-                                        0,
-                                chart: HorizonBarChart(
+                                title: 'درخواست باز به تفکیک وضعیت',
+                                totalCount: cubit.calculateTotalCount(
+                                  cubit.dashboardData
+                                      ?.closedOrCanceledByCategory,
+                                ),
+                                chart: PieChartWidget(
                                     items: cubit.dashboardData
                                             ?.closedOrCanceledByCategory ??
                                         []),
-                              )
+                              ),
+                              Space.h16,
+                              ChartContainerWrapper(
+                                title: "عملیات انجام شده بر اساس نوع عملیات",
+                                totalCount: cubit.calculateTotalCount(
+                                  cubit.dashboardData?.closedOrCanceledByStatus,
+                                ),
+                                chart: HorizonBarChart(
+                                    items: cubit.dashboardData
+                                            ?.closedOrCanceledByStatus ??
+                                        []),
+                              ),
+                              Space.h16,
+                              ChartContainerWrapper(
+                                title: 'عملیات انجام شده بر اساس سرویس',
+                                totalCount: cubit.calculateTotalCount(
+                                  cubit.dashboardData
+                                      ?.closedOrCanceledByCategory,
+                                ),
+                                chart: PieChartWidget(
+                                    items: cubit.dashboardData
+                                            ?.closedOrCanceledByCategory ??
+                                        []),
+                              ),
                             ],
                           )),
                       orElse: () => const SizedBox.shrink(),
