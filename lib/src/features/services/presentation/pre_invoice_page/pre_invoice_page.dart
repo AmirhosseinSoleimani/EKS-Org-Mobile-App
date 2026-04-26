@@ -1,20 +1,19 @@
 import 'dart:ui';
 
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/control_info_page/cubit/control_info_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/pre_invoice_page/cubit/pre_invoice_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/agent_info_detail_section.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_status_section.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../../shared/resources/value_manager.dart';
+import 'widgets/invoice_viewer_widget.dart';
 
 class PreInvoicePage extends StatelessWidget {
   static const path = "/pre-invoice-page";
@@ -25,7 +24,7 @@ class PreInvoicePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<ControlInfoCubit>()..init(),
+      create: (_) => getIt<PreInvoiceCubit>()..init(),
       child: const _View(),
     );
   }
@@ -36,9 +35,9 @@ class _View extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<ControlInfoCubit>();
+    final cubit = context.read<PreInvoiceCubit>();
 
-    return BlocListener<ControlInfoCubit, ControlInfoState>(
+    return BlocListener<PreInvoiceCubit, PreInvoiceState>(
       listener: (context, state) {
         state.whenOrNull(
           error: (message) {
@@ -62,7 +61,7 @@ class _View extends StatelessWidget {
         );
       },
       child: const Scaffold(
-        appBar: SimpleAppBar(title: "اطلاعات کنترلی"),
+        appBar: SimpleAppBar(title: "پیش فاکتور"),
         body: _Body(),
       ),
     );
@@ -74,7 +73,7 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<ControlInfoCubit, ControlInfoState>(
+    return BlocBuilder<PreInvoiceCubit, PreInvoiceState>(
       builder: (context, state) {
         return state.maybeWhen(
           idle: () => const SizedBox.shrink(),
@@ -94,7 +93,7 @@ class _LoadedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<ControlInfoCubit>();
+    final cubit = context.read<PreInvoiceCubit>();
 
     return ScrollConfiguration(
       behavior: ScrollConfiguration.of(context).copyWith(
@@ -107,31 +106,36 @@ class _LoadedView extends StatelessWidget {
         padding: const EdgeInsets.all(AppSize.s16),
         child: Column(
           children: [
-            ExpandableSection(
-              isExpanded: false,
-              header: buildRequestStatusSection(cubit),
-              child: RequestDetailSection(
-                selectedRequest: cubit.selectedRequest,
-                showCustomerInfo: true,
-              ),
+            buildRequestStatusRow(cubit),
+            Space.h16,
+            InvoiceViewerWidget(
+              type:
+                  cubit.selectedRequest?.serviceType ?? ServiceType.homeService,
             ),
-            Space.h8,
-
           ],
         ),
       ),
     );
   }
 
-  RequestStatusSection buildRequestStatusSection(ControlInfoCubit cubit) {
-    return RequestStatusSection(
-      trackCode: cubit.selectedRequest?.trackCode.toString() ?? '-',
-      requestDateJalali:
-          cubit.selectedRequest?.requestDateJalali.toString() ?? '-',
-      requestTime: cubit.selectedRequest?.requestTime.toString() ?? '-',
-      requestStatusTitle: cubit.selectedRequest?.requestStatusTitle,
-      isGuaranty: cubit.selectedRequest?.isGuaranty ?? false,
-      isSubscription: cubit.selectedRequest?.isSubscription ?? false,
+  Row buildRequestStatusRow(PreInvoiceCubit cubit) {
+    return Row(
+      children: [
+        StatusLabel(
+          text: cubit.selectedRequest?.requestStatusTitle ?? '-',
+          color: Colors.purple,
+        ),
+        Space.w8,
+        StatusLabel(
+          text: cubit.isGuaranty ? "گارانتی دارد" : "گارانتی ندارد",
+          color: cubit.isGuaranty ? Colors.greenAccent : Colors.red,
+        ),
+        Space.w8,
+        StatusLabel(
+          text: cubit.isSubscription ? "مشترک" : "غیر مشترک",
+          color: cubit.isSubscription ? Colors.greenAccent : Colors.red,
+        ),
+      ],
     );
   }
 }

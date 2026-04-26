@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/chassis_req
 import 'package:eks_sana_plus_org/src/features/services/presentation/control_info_page/control_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_history/evaluation_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/non_cooperation_page/non_cooperation_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/pre_invoice_page/pre_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_status_history_page/request_status_history_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -75,6 +76,10 @@ enum OperationItem {
   requestControlInfo(
     label: 'اطلاعات کنترلی',
     route: ControlInfoPage.path,
+  ),
+  requestPreInvoice(
+    label: 'مشاهده پیش فاکتور',
+    route: PreInvoicePage.path,
   ),
   evaluationHistory(
     label: 'تاریخچه ارزیابی',

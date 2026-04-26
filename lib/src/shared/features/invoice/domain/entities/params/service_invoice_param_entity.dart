@@ -3,12 +3,12 @@ import 'package:eks_sana_plus_org/src/shared/features/invoice/data/models/params
 class ServiceInvoiceParamEntity {
   final int? serviceType;
   final int? serviceRequestId;
-  final int? invoiceStatus;
+  final int invoiceStatus;
 
   const ServiceInvoiceParamEntity({
     this.serviceRequestId,
     this.serviceType,
-    this.invoiceStatus,
+    this.invoiceStatus = 0,
   });
 
   ServiceInvoiceParamModel toModel() {

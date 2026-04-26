@@ -9,6 +9,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/control_inf
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_history/evaluation_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/home_service_request_list_page/home_service_request_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/non_cooperation_page/non_cooperation_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/pre_invoice_page/pre_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/relief_request_list_page/relief_request_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/request_detail_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_status_history_page/request_status_history_page.dart';
@@ -37,7 +38,7 @@ class Routes {
 
     return GoRouter(
       navigatorKey: parentNavigatorKey,
-      initialLocation: LoginPage.path,
+      initialLocation: PreInvoicePage.path,
       refreshListenable: startupGuard,
       observers: [
         routeObserver
@@ -179,6 +180,14 @@ class Routes {
           name: ControlInfoPage.name,
           pageBuilder: (context, state) => getPage(
             child: const ControlInfoPage(),
+            state: state,
+          ),
+        ),
+        GoRoute(
+          path: PreInvoicePage.path,
+          name: PreInvoicePage.name,
+          pageBuilder: (context, state) => getPage(
+            child: const PreInvoicePage(),
             state: state,
           ),
         ),
