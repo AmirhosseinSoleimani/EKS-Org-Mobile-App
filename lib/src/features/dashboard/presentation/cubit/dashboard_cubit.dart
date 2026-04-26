@@ -33,7 +33,166 @@ class DashboardCubit extends Cubit<DashboardState> {
 
   DateTime? get selectedToDate => selectedToDateNotifier.value;
 
+
   void loadDashboardData() async {
+    _safeEmit(const DashboardState.loading());
+
+    /// FAKE DATA FOR UI TEST
+    dashboardData = DashboardEntity(
+      totalCallLogCount: 24,
+      totalServiceRequests: 57,
+      totalUrgentRequests: 3,
+      followUpTabletCount: 12,
+      followUpTabletPercent: 21.0,
+
+      generalStatus: const [
+        ChartDataEntity(
+          title: 'درخواستهای باز',
+          code: '-100',
+          count: 8,
+          percent: 14.0,
+          color: '#FEB019',
+        ),
+        ChartDataEntity(
+          title: 'عملیات انجام شده',
+          code: '9',
+          count: 40,
+          percent: 70.0,
+          color: '#00E396',
+        ),
+        ChartDataEntity(
+          title: 'لغو شده',
+          code: '10',
+          count: 9,
+          percent: 16.0,
+          color: '#FF4560',
+        ),
+      ],
+
+      openRequestsStatus: const [
+        ChartDataEntity(
+          title: 'در انتظار امدادگر',
+          code: 'Pending',
+          count: 3,
+          percent: 37.5,
+          color: '#775DD0',
+        ),
+        ChartDataEntity(
+          title: 'در حال انجام',
+          code: 'Processing',
+          count: 5,
+          percent: 62.5,
+          color: '#008FFB',
+        ),
+      ],
+
+      closedOrCanceledByCategory: const [
+        ChartDataEntity(
+          title: 'بازدید',
+          code: '',
+          count: 9,
+          percent: 19.57,
+          color: '#00E396',
+        ),
+        ChartDataEntity(
+          title: 'حمل',
+          code: '',
+          count: 9,
+          percent: 19.57,
+          color: '#FEB019',
+        ),
+        ChartDataEntity(
+          title: 'کنسل مجاز',
+          code: '',
+          count: 14,
+          percent: 30.43,
+          color: '#FF4560',
+        ),
+        ChartDataEntity(
+          title: 'رفع عیب در محل',
+          code: '',
+          count: 11,
+          percent: 23.91,
+          color: '#008FFB',
+        ),
+        ChartDataEntity(
+          title: 'نامشخص',
+          code: '',
+          count: 3,
+          percent: 6.52,
+          color: '#775DD0',
+        ),
+      ],
+
+      closedOrCanceledByStatus: const [
+        ChartDataEntity(
+          title: 'امدادرسانی انجام شده',
+          code: '0',
+          count: 29,
+          percent: 63.04,
+          color: '#00E396',
+        ),
+        ChartDataEntity(
+          title: 'کنسل پس از اعزام',
+          code: '22',
+          count: 17,
+          percent: 36.96,
+          color: '#FF4560',
+        ),
+      ],
+
+      canceledByAssignStatus: const [
+        ChartDataEntity(
+          title: 'لغو قبل از اعزام',
+          code: '1',
+          count: 4,
+          percent: 40,
+          color: '#FEB019',
+        ),
+        ChartDataEntity(
+          title: 'لغو توسط امدادگر',
+          code: '2',
+          count: 6,
+          percent: 60,
+          color: '#FF4560',
+        ),
+      ],
+    );
+
+    _safeEmit(const DashboardState.loaded());
+
+    /// REAL API CALL (temporarily disabled)
+    /*
+  final param = DashboardParamEntity(
+    serviceType: selectedServiceType,
+    fromDateTime: DateTime(2026,04,22),
+    toDateTime: DateTime(2026,04,22),
+  );
+
+  final result = await _getDashboardDataUseCase(param);
+
+  result.whenOrNull(
+    success: (data, failures, resultCode) async {
+      dashboardData = data;
+      _safeEmit(const DashboardState.loaded());
+    },
+    failure: (error, msg) {
+      _safeEmit(
+        DashboardState.error(
+          message: BottomSheetMessageModel(
+            message: msg ?? 'خطای غیر منتظره',
+            title: '',
+          ),
+        ),
+      );
+    },
+    connectionError: () => _safeEmit(const DashboardState.connectionError()),
+  );
+  */
+  }
+
+
+/*  void loadDashboardData() async {
     _safeEmit(const DashboardState.loading());
 
     final param = DashboardParamEntity(
@@ -61,7 +220,7 @@ class DashboardCubit extends Cubit<DashboardState> {
       },
       connectionError: () => _safeEmit(const DashboardState.connectionError()),
     );
-  }
+  }*/
 
   void setServiceType(ServiceType type) {
     selectedServiceTypeNotifier.value = type;

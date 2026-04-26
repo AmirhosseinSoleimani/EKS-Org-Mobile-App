@@ -36,7 +36,7 @@ class Routes {
 
     return GoRouter(
       navigatorKey: parentNavigatorKey,
-      initialLocation: LoginPage.path,
+      initialLocation: DashboardPage.path,
       refreshListenable: startupGuard,
       observers: [
         routeObserver

@@ -1,6 +1,6 @@
-import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/presentation/cubit/dashboard_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/dashboard/presentation/widgets/chart/horizon_bar_chart.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/presentation/widgets/filters_box.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/main_app_bar.dart';
@@ -10,6 +10,8 @@ import 'package:eks_sana_plus_org/src/shared/widgets/stat_row_card/stat_row_card
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'widgets/chart/chart_container_wrapper.dart';
 
 class DashboardPage extends StatelessWidget {
   static const path = "/dashboard";
@@ -108,10 +110,29 @@ class _DashboardView extends StatelessWidget {
                               value: '${cubit.dashboardData?.followUpTabletPercent.toStringAsFixed(1)}%',
                               serviceType: cubit.selectedServiceType,
                             ),
-                          ],
-                        )
-
-                      ),
+                              Space.h8,
+                              ChartContainerWrapper(
+                                title: "درخواست ثبت شده به تفکیک وضعیت",
+                                totalCount:
+                                    cubit.dashboardData?.followUpTabletCount ??
+                                        0,
+                                chart: HorizonBarChart(
+                                    items: cubit.dashboardData?.generalStatus ??
+                                        []),
+                              ),
+                              Space.h16,
+                              ChartContainerWrapper(
+                                title: "عملیات انجام شده بر اساس نوع عملیات",
+                                totalCount:
+                                    cubit.dashboardData?.followUpTabletCount ??
+                                        0,
+                                chart: HorizonBarChart(
+                                    items: cubit.dashboardData
+                                            ?.closedOrCanceledByCategory ??
+                                        []),
+                              )
+                            ],
+                          )),
                       orElse: () => const SizedBox.shrink(),
                     );
                   },
