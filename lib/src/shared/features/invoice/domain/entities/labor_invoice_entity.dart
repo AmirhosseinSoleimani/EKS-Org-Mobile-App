@@ -22,53 +22,61 @@ class LaborInvoiceEntity {
 
 class LaborReceptionEntity {
   const LaborReceptionEntity({
+    this.id,
     this.invoiceId,
-    this.receptionId,
+    this.laborGroupId,
+    this.laborGroupDesc,
+    this.laborId,
     this.laborCode,
     this.laborDescription,
+    this.standardTime,
+    this.nahveMohasebeId,
     this.nahveMohasebeCode,
     this.nahveMohasebeDescription,
-    this.standardTime,
     this.price,
+    this.basePrice,
+    this.discountPrice,
     this.laborTotalPriceRial,
-    this.franchise,
-    this.serviceCode,
-    this.afterSaleServiceDescription,
+    this.overLapCode,
     this.isCausing,
     this.isActive,
   });
 
+  final int? id;
   final int? invoiceId;
-  final int? receptionId;
+  final int? laborGroupId;
+  final String? laborGroupDesc;
+  final int? laborId;
   final String? laborCode;
   final String? laborDescription;
+  final double? standardTime;
+  final int? nahveMohasebeId;
   final String? nahveMohasebeCode;
   final String? nahveMohasebeDescription;
-  final double? standardTime;
   final int? price;
+  final int? basePrice;
+  final int? discountPrice;
   final int? laborTotalPriceRial;
-  final double? franchise;
-  final String? serviceCode;
-  final String? afterSaleServiceDescription;
+  final String? overLapCode;
   final bool? isCausing;
   final bool? isActive;
 
   LaborReceptionModel toModel() {
     return LaborReceptionModel(
+      id: id,
       invoiceId: invoiceId,
-      receptionId: receptionId,
+      laborGroupId: laborGroupId,
+      laborGroupDesc: laborGroupDesc,
+      laborId: laborId,
       laborCode: laborCode,
       laborDescription: laborDescription,
+      standardTime: standardTime,
+      nahveMohasebeId: nahveMohasebeId,
       nahveMohasebeCode: nahveMohasebeCode,
       nahveMohasebeDescription: nahveMohasebeDescription,
-      standardTime: standardTime,
       price: price,
-      laborTotalPriceRial: laborTotalPriceRial,
-      franchise: franchise,
-      serviceCode: serviceCode,
-      afterSaleServiceDescription: afterSaleServiceDescription,
-      isCausing: isCausing,
-      isActive: isActive,
+      basePrice: basePrice,
+      discountPrice: discountPrice,
     );
   }
 }

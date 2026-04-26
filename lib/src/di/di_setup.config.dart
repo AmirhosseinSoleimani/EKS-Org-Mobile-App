@@ -112,6 +112,8 @@ import '../features/services/presentation/home_service_request_list_page/cubit/h
     as _i1013;
 import '../features/services/presentation/non_cooperation_page/cubit/non_cooperation_cubit.dart'
     as _i165;
+import '../features/services/presentation/pre_invoice_page/cubit/pre_invoice_cubit.dart'
+    as _i809;
 import '../features/services/presentation/relief_request_list_page/cubit/relief_request_list_cubit.dart'
     as _i1048;
 import '../features/services/presentation/request_detail/cubit/request_detail_cubit.dart'
@@ -138,14 +140,8 @@ import '../shared/features/invoice/data/repository/invoice_repository_impl.dart'
     as _i161;
 import '../shared/features/invoice/domain/repository/invoice_repository.dart'
     as _i829;
-import '../shared/features/invoice/domain/use_case/confirm_home_service_invoice_use_case.dart'
-    as _i242;
-import '../shared/features/invoice/domain/use_case/fetch_invoice_use_case.dart'
-    as _i981;
-import '../shared/features/invoice/domain/use_case/fetch_pre_invoice_on_the_fly_use_case.dart'
-    as _i349;
-import '../shared/features/invoice/domain/use_case/fetch_pre_invoice_use_case.dart'
-    as _i949;
+import '../shared/features/invoice/domain/use_case/get_pre_invoice_use_case.dart'
+    as _i116;
 import '../shared/features/map/data/data_source/location_permission_data_source.dart'
     as _i221;
 import '../shared/features/map/data/data_source/location_permission_data_source_impl.dart'
@@ -364,14 +360,8 @@ _i174.GetIt $initGetIt(
       () => _i161.InvoiceRepositoryImpl(gh<_i935.InvoiceDataSource>()));
   gh.lazySingleton<_i375.FetchIndicatorReportUseCase>(() =>
       _i375.FetchIndicatorReportUseCase(gh<_i227.IndicatorReportRepository>()));
-  gh.lazySingleton<_i242.ConfirmHomeServiceInvoiceUseCase>(() =>
-      _i242.ConfirmHomeServiceInvoiceUseCase(gh<_i829.InvoiceRepository>()));
-  gh.lazySingleton<_i981.FetchInvoiceUseCase>(
-      () => _i981.FetchInvoiceUseCase(gh<_i829.InvoiceRepository>()));
-  gh.lazySingleton<_i349.FetchPreInvoiceOnTheFlyUseCase>(() =>
-      _i349.FetchPreInvoiceOnTheFlyUseCase(gh<_i829.InvoiceRepository>()));
-  gh.lazySingleton<_i949.FetchPreInvoiceUseCase>(
-      () => _i949.FetchPreInvoiceUseCase(gh<_i829.InvoiceRepository>()));
+  gh.lazySingleton<_i116.GetPreInvoiceUseCase>(
+      () => _i116.GetPreInvoiceUseCase(gh<_i829.InvoiceRepository>()));
   gh.lazySingleton<_i74.UserRepository>(
       () => _i880.UserRepositoryImpl(gh<_i1039.UserDataSource>()));
   gh.lazySingleton<_i139.LoginUseCase>(
@@ -491,6 +481,12 @@ _i174.GetIt $initGetIt(
         gh<_i672.GetReliefRequestByIdUseCase>(),
         gh<_i63.GetHomeServiceRequestByIdUseCase>(),
         gh<_i786.GetEmdadgarInfoUseCase>(),
+      ));
+  gh.factory<_i809.PreInvoiceCubit>(() => _i809.PreInvoiceCubit(
+        gh<_i116.GetPreInvoiceUseCase>(),
+        gh<_i376.FetchSelectedRequestItemUseCase>(),
+        gh<_i672.GetReliefRequestByIdUseCase>(),
+        gh<_i63.GetHomeServiceRequestByIdUseCase>(),
       ));
   gh.factory<_i165.NonCooperationCubit>(() => _i165.NonCooperationCubit(
         gh<_i707.GetNonCooperationListUseCase>(),
