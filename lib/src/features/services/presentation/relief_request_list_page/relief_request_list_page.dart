@@ -1,11 +1,10 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/relief_request_list_page/widgets/filters_box.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_list_viewer.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/main_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,6 +42,9 @@ class _SelectedServicesView extends StatelessWidget {
               onPositive: cubit.fetchRequestList,
             );
           },
+          loadingMoreError: (items, totalCount, message) {
+            SnakeBarWidget.showError(context: context, message: message);
+          },
           connectionError: () {
             BottomSheetMessage.showCustom(
               context: context,
@@ -65,34 +67,55 @@ class _SelectedServicesView extends StatelessWidget {
               PointerDeviceKind.mouse,
             },
           ),
-            child: Column(
-              children: [
+          child: Column(
+            children: [
               Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: FiltersBox(cubit: cubit)),
+                padding: const EdgeInsets.all(16),
+                child: FiltersBox(cubit: cubit),
+              ),
               Expanded(
                 child:
                     BlocBuilder<ReliefRequestListCubit, ReliefRequestListState>(
+                  buildWhen: (previous, current) {
+                    return current.maybeWhen(
+                      loadingMoreError: (items, totalCount, message) => false,
+                      connectionError: () => false,
+                      error: (message) => false,
+                      orElse: () => true,
+                    );
+                  },
                   builder: (context, state) {
                     return state.maybeWhen(
-                        idle: () => const SizedBox.shrink(),
-                        loading: () => const Center(
+                      idle: () => const SizedBox.shrink(),
+                      loading: () => const Center(
                         child: CircularProgressIndicator(),
                       ),
-                      loaded: () => SingleChildScrollView(
-                        padding: const EdgeInsets.all(AppSize.s16),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            BodyMediumText(
-                              text: '${cubit.requestList.length} درخواست',
-                            ),
-                            RequestListViewer(items: cubit.requestList,
-                            onSelected: cubit.cacheSelectedRequest),
-                          ],
-                        ),
+                      loaded: (items, totalCount, hasMore) => RequestListViewer(
+                        items: items,
+                        onSelected: cubit.cacheSelectedRequest,
+                        onLoadMore: cubit.loadMore,
+                        hasMore: hasMore,
+                        totalCount: totalCount,
                       ),
-                      orElse: () => const SizedBox.shrink(),
+                      loadingMore: (items, totalCount) => RequestListViewer(
+                        items: items,
+                        onSelected: cubit.cacheSelectedRequest,
+                        onLoadMore: cubit.loadMore,
+                        hasMore: true,
+                        totalCount: totalCount,
+                      ),
+                      orElse: () {
+                        if (cubit.items.isNotEmpty) {
+                          return RequestListViewer(
+                            items: cubit.items,
+                            onSelected: cubit.cacheSelectedRequest,
+                            onLoadMore: cubit.loadMore,
+                            hasMore: false,
+                            totalCount: cubit.requestCount,
+                          );
+                        }
+                        return const SizedBox.shrink();
+                      },
                     );
                   },
                 ),

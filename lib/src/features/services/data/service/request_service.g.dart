@@ -22,7 +22,7 @@ class _RequestService implements RequestService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<BaseListResponse<ReliefRequestModel>> getReliefRequestList(
+  Future<BaseSingleResponse<ReliefRequestListModel>> getReliefRequestList(
       Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -30,7 +30,7 @@ class _RequestService implements RequestService {
     final _data = <String, dynamic>{};
     _data.addAll(body);
     final _options =
-        _setStreamType<BaseListResponse<ReliefRequestModel>>(Options(
+        _setStreamType<BaseSingleResponse<ReliefRequestListModel>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -47,11 +47,11 @@ class _RequestService implements RequestService {
               baseUrl,
             )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseListResponse<ReliefRequestModel> _value;
+    late BaseSingleResponse<ReliefRequestListModel> _value;
     try {
-      _value = BaseListResponse<ReliefRequestModel>.fromJson(
+      _value = BaseSingleResponse<ReliefRequestListModel>.fromJson(
         _result.data!,
-        (json) => ReliefRequestModel.fromJson(json as Map<String, dynamic>),
+        (json) => ReliefRequestListModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
@@ -100,15 +100,15 @@ class _RequestService implements RequestService {
   }
 
   @override
-  Future<BaseListResponse<HomeServiceRequestModel>> getHomeServiceRequestList(
-      Map<String, dynamic> body) async {
+  Future<BaseSingleResponse<HomeServiceRequestListModel>>
+      getHomeServiceRequestList(Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body);
     final _options =
-        _setStreamType<BaseListResponse<HomeServiceRequestModel>>(Options(
+        _setStreamType<BaseSingleResponse<HomeServiceRequestListModel>>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -125,12 +125,12 @@ class _RequestService implements RequestService {
               baseUrl,
             )));
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseListResponse<HomeServiceRequestModel> _value;
+    late BaseSingleResponse<HomeServiceRequestListModel> _value;
     try {
-      _value = BaseListResponse<HomeServiceRequestModel>.fromJson(
+      _value = BaseSingleResponse<HomeServiceRequestListModel>.fromJson(
         _result.data!,
         (json) =>
-            HomeServiceRequestModel.fromJson(json as Map<String, dynamic>),
+            HomeServiceRequestListModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
@@ -149,7 +149,7 @@ class _RequestService implements RequestService {
     const Map<String, dynamic>? _data = null;
     final _options =
         _setStreamType<BaseSingleResponse<HomeServiceRequestModel>>(Options(
-      method: 'POST',
+      method: 'GET',
       headers: _headers,
       extra: _extra,
     )

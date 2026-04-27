@@ -7,13 +7,13 @@ import 'package:injectable/injectable.dart';
 
 @lazySingleton
 class GetReliefRequestListUseCase extends BaseUseCase<
-    ApiResult<List<ReliefRequestEntity>>, RequestFilterParamEntity> {
+    ApiResult<ReliefRequestListEntity>, RequestFilterParamEntity> {
   final RequestRepository _repository;
 
   GetReliefRequestListUseCase(this._repository);
 
   @override
-  Future<ApiResult<List<ReliefRequestEntity>>> call(arg) async {
+  Future<ApiResult<ReliefRequestListEntity>> call(arg) async {
     return await _repository.getReliefRequestList(arg);
   }
 }

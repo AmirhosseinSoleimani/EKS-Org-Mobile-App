@@ -15,11 +15,11 @@ import '../models/evaluation_history_item_model.dart';
 
 
 abstract class RequestDataSource {
-  Future<BaseListResponse<ReliefRequestModel>> getReliefRequestList(RequestFilterParamModel param);
+  Future<BaseSingleResponse<ReliefRequestListModel>> getReliefRequestList(RequestFilterParamModel param);
 
   Future<BaseSingleResponse<ReliefRequestModel>> getReliefRequestById(int id);
 
-  Future<BaseListResponse<HomeServiceRequestModel>> getHomeServiceRequestList(RequestFilterParamModel param);
+  Future<BaseSingleResponse<HomeServiceRequestListModel>> getHomeServiceRequestList(RequestFilterParamModel param);
 
   Future<BaseSingleResponse<HomeServiceRequestModel>> getHomeServiceRequestById(int id);
 

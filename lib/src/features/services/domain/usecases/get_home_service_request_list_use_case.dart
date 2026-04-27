@@ -7,13 +7,13 @@ import 'package:injectable/injectable.dart';
 
 @lazySingleton
 class GetHomeServiceRequestListUseCase extends BaseUseCase<
-    ApiResult<List<HomeServiceRequestEntity>>, RequestFilterParamEntity> {
+    ApiResult<HomeServiceRequestListEntity>, RequestFilterParamEntity> {
   final RequestRepository _repository;
 
   GetHomeServiceRequestListUseCase(this._repository);
 
   @override
-  Future<ApiResult<List<HomeServiceRequestEntity>>> call(arg) async {
+  Future<ApiResult<HomeServiceRequestListEntity>> call(arg) async {
     return await _repository.getHomeServiceRequestList(arg);
   }
 }
