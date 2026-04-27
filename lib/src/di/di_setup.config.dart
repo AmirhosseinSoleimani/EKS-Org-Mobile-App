@@ -45,21 +45,6 @@ import '../features/bottom_navigation_bar/domain/use_case/urgent_request_usecase
     as _i565;
 import '../features/bottom_navigation_bar/presentation/cubit/bottom_navigation_bar_cubit.dart'
     as _i336;
-import '../features/dashboard/data/data_sources/dashboard_report_data_source.dart'
-    as _i659;
-import '../features/dashboard/data/data_sources/indicator_report_data_source_impl.dart'
-    as _i720;
-import '../features/dashboard/data/repositories/dashboard_report_repository_impl.dart'
-    as _i971;
-import '../features/dashboard/data/service/dashboard_report_service.dart'
-    as _i585;
-import '../features/dashboard/domain/repositories/dashboard_report_repository.dart'
-    as _i135;
-import '../features/dashboard/domain/use_cases/get_dashboard_data_use_case.dart'
-    as _i208;
-import '../features/dashboard/domain/use_cases/get_server_date_time_use_case.dart'
-    as _i228;
-import '../features/dashboard/presentation/cubit/dashboard_cubit.dart' as _i932;
 import '../features/indicator_report/data/data_sources/indicator_report_data_source.dart'
     as _i691;
 import '../features/indicator_report/data/data_sources/indicator_report_data_source_impl.dart'
@@ -107,6 +92,8 @@ import '../features/services/domain/usecases/get_relief_request_by_id_use_case.d
     as _i672;
 import '../features/services/domain/usecases/get_relief_request_list_use_case.dart'
     as _i192;
+import '../features/services/domain/usecases/get_request_control_info_use_case.dart'
+    as _i543;
 import '../features/services/domain/usecases/get_request_followup_history_use_case.dart'
     as _i67;
 import '../features/services/domain/usecases/get_request_status_history_use_case.dart'
@@ -117,12 +104,16 @@ import '../features/services/presentation/cartable_cycle_page/cubit/cartable_cyc
     as _i1029;
 import '../features/services/presentation/chassis_request_history_page/cubit/chassis_request_history_cubit.dart'
     as _i891;
+import '../features/services/presentation/control_info_page/cubit/control_info_cubit.dart'
+    as _i66;
 import '../features/services/presentation/evaluation_history/cubit/evaluation_history_cubit.dart'
     as _i154;
 import '../features/services/presentation/home_service_request_list_page/cubit/home_service_request_list_cubit.dart'
     as _i1013;
 import '../features/services/presentation/non_cooperation_page/cubit/non_cooperation_cubit.dart'
     as _i165;
+import '../features/services/presentation/pre_invoice_page/cubit/pre_invoice_cubit.dart'
+    as _i809;
 import '../features/services/presentation/relief_request_list_page/cubit/relief_request_list_cubit.dart'
     as _i1048;
 import '../features/services/presentation/request_detail/cubit/request_detail_cubit.dart'
@@ -149,14 +140,8 @@ import '../shared/features/invoice/data/repository/invoice_repository_impl.dart'
     as _i161;
 import '../shared/features/invoice/domain/repository/invoice_repository.dart'
     as _i829;
-import '../shared/features/invoice/domain/use_case/confirm_home_service_invoice_use_case.dart'
-    as _i242;
-import '../shared/features/invoice/domain/use_case/fetch_invoice_use_case.dart'
-    as _i981;
-import '../shared/features/invoice/domain/use_case/fetch_pre_invoice_on_the_fly_use_case.dart'
-    as _i349;
-import '../shared/features/invoice/domain/use_case/fetch_pre_invoice_use_case.dart'
-    as _i949;
+import '../shared/features/invoice/domain/use_case/get_pre_invoice_use_case.dart'
+    as _i116;
 import '../shared/features/map/data/data_source/location_permission_data_source.dart'
     as _i221;
 import '../shared/features/map/data/data_source/location_permission_data_source_impl.dart'
@@ -322,8 +307,6 @@ _i174.GetIt $initGetIt(
       _i16.ObserveNetworkRepositoryImpl(gh<_i333.ObserveNetworkDataSource>()));
   gh.lazySingleton<_i626.AuthService>(() => _i626.AuthService(gh<_i361.Dio>()));
   gh.lazySingleton<_i438.MainService>(() => _i438.MainService(gh<_i361.Dio>()));
-  gh.lazySingleton<_i585.DashboardReportService>(
-      () => _i585.DashboardReportService(gh<_i361.Dio>()));
   gh.lazySingleton<_i140.IndicatorReportService>(
       () => _i140.IndicatorReportService(gh<_i361.Dio>()));
   gh.lazySingleton<_i483.RequestService>(
@@ -371,26 +354,16 @@ _i174.GetIt $initGetIt(
       ));
   gh.lazySingleton<_i854.MainRepository>(
       () => _i320.MainRepositoryImpl(gh<_i475.MainRemoteDataSource>()));
-  gh.lazySingleton<_i659.DashboardDataSource>(
-      () => _i720.DashboardDataSourceImpl(gh<_i585.DashboardReportService>()));
   gh.lazySingleton<_i935.InvoiceDataSource>(
       () => _i981.InvoiceDataSourceImpl(gh<_i634.InvoiceService>()));
   gh.lazySingleton<_i829.InvoiceRepository>(
       () => _i161.InvoiceRepositoryImpl(gh<_i935.InvoiceDataSource>()));
   gh.lazySingleton<_i375.FetchIndicatorReportUseCase>(() =>
       _i375.FetchIndicatorReportUseCase(gh<_i227.IndicatorReportRepository>()));
-  gh.lazySingleton<_i242.ConfirmHomeServiceInvoiceUseCase>(() =>
-      _i242.ConfirmHomeServiceInvoiceUseCase(gh<_i829.InvoiceRepository>()));
-  gh.lazySingleton<_i981.FetchInvoiceUseCase>(
-      () => _i981.FetchInvoiceUseCase(gh<_i829.InvoiceRepository>()));
-  gh.lazySingleton<_i349.FetchPreInvoiceOnTheFlyUseCase>(() =>
-      _i349.FetchPreInvoiceOnTheFlyUseCase(gh<_i829.InvoiceRepository>()));
-  gh.lazySingleton<_i949.FetchPreInvoiceUseCase>(
-      () => _i949.FetchPreInvoiceUseCase(gh<_i829.InvoiceRepository>()));
+  gh.lazySingleton<_i116.GetPreInvoiceUseCase>(
+      () => _i116.GetPreInvoiceUseCase(gh<_i829.InvoiceRepository>()));
   gh.lazySingleton<_i74.UserRepository>(
       () => _i880.UserRepositoryImpl(gh<_i1039.UserDataSource>()));
-  gh.lazySingleton<_i135.DashboardReportRepository>(() =>
-      _i971.DashboardReportRepositoryImpl(gh<_i659.DashboardDataSource>()));
   gh.lazySingleton<_i139.LoginUseCase>(
       () => _i139.LoginUseCase(gh<_i716.AuthRepository>()));
   gh.lazySingleton<_i565.UrgentRequestUseCase>(
@@ -451,10 +424,6 @@ _i174.GetIt $initGetIt(
             gh<_i74.UserRepository>(),
             gh<_i422.FetchCarSelectedUseCase>(),
           ));
-  gh.lazySingleton<_i208.GetDashboardDataUseCase>(() =>
-      _i208.GetDashboardDataUseCase(gh<_i135.DashboardReportRepository>()));
-  gh.lazySingleton<_i228.GetServerDateTimeUseCase>(() =>
-      _i228.GetServerDateTimeUseCase(gh<_i135.DashboardReportRepository>()));
   gh.factory<_i84.MapCubit>(() => _i84.MapCubit(
         gh<_i406.FetchAddressInfoUseCase>(),
         gh<_i283.EnsureLocationReadingUseCase>(),
@@ -482,14 +451,19 @@ _i174.GetIt $initGetIt(
       () => _i672.GetReliefRequestByIdUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i192.GetReliefRequestListUseCase>(
       () => _i192.GetReliefRequestListUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i543.GetRequestControlInfoUseCase>(
+      () => _i543.GetRequestControlInfoUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i67.GetRequestFollowupHistoryUseCase>(() =>
       _i67.GetRequestFollowupHistoryUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i955.GetRequestStatusHistoryUseCase>(() =>
       _i955.GetRequestStatusHistoryUseCase(gh<_i603.RequestRepository>()));
-  gh.factory<_i932.DashboardCubit>(() => _i932.DashboardCubit(
-        gh<_i208.GetDashboardDataUseCase>(),
-        gh<_i228.GetServerDateTimeUseCase>(),
-      ));
+  gh.factory<_i891.ChassisRequestHistoryCubit>(
+      () => _i891.ChassisRequestHistoryCubit(
+            gh<_i581.GetChassisRequestHistoryListUseCase>(),
+            gh<_i376.FetchSelectedRequestItemUseCase>(),
+            gh<_i672.GetReliefRequestByIdUseCase>(),
+            gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+          ));
   gh.factory<_i154.EvaluationHistoryCubit>(() => _i154.EvaluationHistoryCubit(
         gh<_i467.GetEvaluationHistoryListUseCase>(),
         gh<_i376.FetchSelectedRequestItemUseCase>(),
@@ -500,6 +474,19 @@ _i174.GetIt $initGetIt(
   gh.factory<_i1048.ReliefRequestListCubit>(() => _i1048.ReliefRequestListCubit(
         gh<_i192.GetReliefRequestListUseCase>(),
         gh<_i369.SetSelectedRequestItemUseCase>(),
+      ));
+  gh.factory<_i66.ControlInfoCubit>(() => _i66.ControlInfoCubit(
+        gh<_i543.GetRequestControlInfoUseCase>(),
+        gh<_i376.FetchSelectedRequestItemUseCase>(),
+        gh<_i672.GetReliefRequestByIdUseCase>(),
+        gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+        gh<_i786.GetEmdadgarInfoUseCase>(),
+      ));
+  gh.factory<_i809.PreInvoiceCubit>(() => _i809.PreInvoiceCubit(
+        gh<_i116.GetPreInvoiceUseCase>(),
+        gh<_i376.FetchSelectedRequestItemUseCase>(),
+        gh<_i672.GetReliefRequestByIdUseCase>(),
+        gh<_i63.GetHomeServiceRequestByIdUseCase>(),
       ));
   gh.factory<_i165.NonCooperationCubit>(() => _i165.NonCooperationCubit(
         gh<_i707.GetNonCooperationListUseCase>(),
@@ -533,11 +520,6 @@ _i174.GetIt $initGetIt(
       () => _i1013.HomeServiceRequestListCubit(
             gh<_i809.GetHomeServiceRequestListUseCase>(),
             gh<_i369.SetSelectedRequestItemUseCase>(),
-          ));
-  gh.factory<_i891.ChassisRequestHistoryCubit>(
-      () => _i891.ChassisRequestHistoryCubit(
-            gh<_i581.GetChassisRequestHistoryListUseCase>(),
-            gh<_i376.FetchSelectedRequestItemUseCase>(),
           ));
   return getIt;
 }
