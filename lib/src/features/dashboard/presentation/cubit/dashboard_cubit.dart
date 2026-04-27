@@ -37,6 +37,11 @@ class DashboardCubit extends Cubit<DashboardState> {
   Future<void> loadDashboardData() async {
     _safeEmit(const DashboardState.loading());
 
+    await _loadDashboard();
+  }
+
+  void init() async{
+    _safeEmit(const DashboardState.loading());
     await _loadServerDateOrFallback();
     await _loadDashboard();
   }

@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/material.dart';
@@ -27,6 +28,7 @@ class ChartContainerWrapper extends StatelessWidget {
         children: [
           // Header row
           Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
               BodyMediumText(text:
@@ -47,7 +49,7 @@ class ChartContainerWrapper extends StatelessWidget {
           ),
 
           const SizedBox(height: 16),
-          chart,
+          (totalCount == 0) ? const Center(child: EmptyListWidget()) : chart,
         ],
       ),
     );
