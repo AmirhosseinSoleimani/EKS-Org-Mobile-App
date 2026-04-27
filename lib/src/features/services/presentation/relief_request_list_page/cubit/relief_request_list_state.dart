@@ -7,14 +7,11 @@ class ReliefRequestListState with _$ReliefRequestListState {
   const factory ReliefRequestListState.loading() = _Loading;
 
   const factory ReliefRequestListState.loaded({
-    required List<BaseRequestEntity> items,
-    required int totalCount,
-    required bool hasMore,
+
   }) = _Loaded;
 
   const factory ReliefRequestListState.loadingMore({
-    required List<BaseRequestEntity> items,
-    required int totalCount,
+
   }) = _LoadingMore;
 
   const factory ReliefRequestListState.error({
@@ -22,8 +19,7 @@ class ReliefRequestListState with _$ReliefRequestListState {
   }) = _Error;
 
   const factory ReliefRequestListState.loadingMoreError({
-    required List<BaseRequestEntity> items,
-    required int totalCount,
+
     required String message,
   }) = _LoadingMoreError;
 
