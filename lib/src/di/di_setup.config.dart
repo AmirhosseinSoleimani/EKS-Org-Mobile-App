@@ -123,6 +123,8 @@ import '../features/services/presentation/home_service_request_list_page/cubit/h
     as _i1013;
 import '../features/services/presentation/non_cooperation_page/cubit/non_cooperation_cubit.dart'
     as _i165;
+import '../features/services/presentation/relief_request_list_page/cubit/relief_request_list_cubit.dart'
+    as _i1048;
 import '../features/services/presentation/request_detail/cubit/request_detail_cubit.dart'
     as _i802;
 import '../features/services/presentation/request_status_history_page/cubit/request_status_history_cubit.dart'
@@ -494,6 +496,10 @@ _i174.GetIt $initGetIt(
         gh<_i672.GetReliefRequestByIdUseCase>(),
         gh<_i63.GetHomeServiceRequestByIdUseCase>(),
         gh<_i786.GetEmdadgarInfoUseCase>(),
+      ));
+  gh.factory<_i1048.ReliefRequestListCubit>(() => _i1048.ReliefRequestListCubit(
+        gh<_i192.GetReliefRequestListUseCase>(),
+        gh<_i369.SetSelectedRequestItemUseCase>(),
       ));
   gh.factory<_i165.NonCooperationCubit>(() => _i165.NonCooperationCubit(
         gh<_i707.GetNonCooperationListUseCase>(),

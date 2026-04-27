@@ -42,7 +42,7 @@ class _SelectedServicesView extends StatelessWidget {
               onPositive: cubit.fetchRequestList,
             );
           },
-          loadingMoreError: (items, totalCount, message) {
+          loadingMoreError: (message) {
             SnakeBarWidget.showError(context: context, message: message);
           },
           connectionError: () {
@@ -78,7 +78,7 @@ class _SelectedServicesView extends StatelessWidget {
                     BlocBuilder<ReliefRequestListCubit, ReliefRequestListState>(
                   buildWhen: (previous, current) {
                     return current.maybeWhen(
-                      loadingMoreError: (items, totalCount, message) => false,
+                      loadingMoreError: (message) => false,
                       connectionError: () => false,
                       error: (message) => false,
                       orElse: () => true,
@@ -90,14 +90,14 @@ class _SelectedServicesView extends StatelessWidget {
                       loading: () => const Center(
                         child: CircularProgressIndicator(),
                       ),
-                      loaded: (items, totalCount, hasMore) => RequestListViewer(
+                      loaded: () => RequestListViewer(
                         items: cubit.items,
                         onSelected: cubit.cacheSelectedRequest,
                         onLoadMore: cubit.loadMore,
                         hasMore: cubit.hasMore,
                         totalCount: cubit.requestCount,
                       ),
-                      loadingMore: (items, totalCount) => RequestListViewer(
+                      loadingMore: () => RequestListViewer(
                         items: cubit.items,
                         onSelected: cubit.cacheSelectedRequest,
                         onLoadMore: cubit.loadMore,
