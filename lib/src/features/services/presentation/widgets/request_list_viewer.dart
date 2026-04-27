@@ -3,6 +3,7 @@ import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 
@@ -58,7 +59,9 @@ class _RequestListViewerState extends State<RequestListViewer> {
   @override
   Widget build(BuildContext context) {
     final itemCount = widget.hasMore ? widget.items.length + 1 : widget.items.length;
-
+    if (itemCount < 1) {
+      return const EmptyListWidget();
+    }
     return ListView.separated(
       controller: _controller,
       padding: const EdgeInsets.all(16),

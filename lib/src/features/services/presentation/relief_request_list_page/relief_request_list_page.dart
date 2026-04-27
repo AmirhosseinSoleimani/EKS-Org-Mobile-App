@@ -91,18 +91,18 @@ class _SelectedServicesView extends StatelessWidget {
                         child: CircularProgressIndicator(),
                       ),
                       loaded: (items, totalCount, hasMore) => RequestListViewer(
-                        items: items,
+                        items: cubit.items,
                         onSelected: cubit.cacheSelectedRequest,
                         onLoadMore: cubit.loadMore,
-                        hasMore: hasMore,
-                        totalCount: totalCount,
+                        hasMore: cubit.hasMore,
+                        totalCount: cubit.requestCount,
                       ),
                       loadingMore: (items, totalCount) => RequestListViewer(
-                        items: items,
+                        items: cubit.items,
                         onSelected: cubit.cacheSelectedRequest,
                         onLoadMore: cubit.loadMore,
-                        hasMore: true,
-                        totalCount: totalCount,
+                        hasMore: cubit.hasMore,
+                        totalCount: cubit.requestCount,
                       ),
                       orElse: () {
                         if (cubit.items.isNotEmpty) {

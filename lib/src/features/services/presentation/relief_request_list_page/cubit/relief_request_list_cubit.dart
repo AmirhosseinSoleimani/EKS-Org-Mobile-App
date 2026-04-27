@@ -24,12 +24,12 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
   final GetReliefRequestListUseCase _getReliefRequestListUseCase;
   final SetSelectedRequestItemUseCase _setSelectedRequestItemUseCase;
 
-  List<BaseRequestEntity> _items = [];
+  final List<BaseRequestEntity> _items = [];
 
   List<BaseRequestEntity> get items => List.unmodifiable(_items);
 
   int _page = 1;
-  final int _pageSize = 20;
+  final int _pageSize = 4;
   int _totalCount = 0;
   bool _isLoadingMore = false;
 
@@ -66,7 +66,7 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
 
   Future<void> fetchRequestList() async {
     _page = 1;
-    _items = [];
+    _items.clear();
 
     _safeEmit(const ReliefRequestListState.loading());
 
@@ -76,12 +76,8 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
     result.whenOrNull(
       success: (data, _, __) {
         _totalCount = data.totalCount;
-        _items = List.from(data.items);
-        _safeEmit(ReliefRequestListState.loaded(
-          items: _items,
-          totalCount: _totalCount,
-          hasMore: hasMore,
-        ));
+        _items.addAll(data.items);
+        _safeEmit(ReliefRequestListState.loaded());
       },
       failure: (error, msg) {
         _safeEmit(
@@ -105,37 +101,26 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
     _isLoadingMore = true;
     _page++;
 
-    emit(ReliefRequestListState.loadingMore(
-      items: List.from(_items),
-      totalCount: _totalCount,
-    ));
+    emit(ReliefRequestListState.loadingMore());
 
     final param = _buildFilterParam();
     final result = await _getReliefRequestListUseCase(param);
     result.whenOrNull(
       success: (data, _, __) {
         _totalCount = data.totalCount;
-        _items = [..._items, ...data.items];
+        _items.addAll(data.items);
 
-        emit(ReliefRequestListState.loaded(
-          items: List.from(_items),
-          totalCount: _totalCount,
-          hasMore: _items.length < _totalCount,
-        ));
+        _safeEmit(ReliefRequestListState.loaded());
       },
       failure: (error, msg) {
         _page--;
-        emit(ReliefRequestListState.loadingMoreError(
-          items: List.from(_items),
-          totalCount: _totalCount,
+        _safeEmit(ReliefRequestListState.loadingMoreError(
           message: msg ?? error.toString(),
         ));
       },
       connectionError: () {
         _page--;
-        emit(ReliefRequestListState.loadingMoreError(
-          items: List.from(_items),
-          totalCount: _totalCount,
+        _safeEmit(ReliefRequestListState.loadingMoreError(
           message: 'اتصال اینترنت خود را بررسی کنید',
         ));
       },
