@@ -451,12 +451,12 @@ _i174.GetIt $initGetIt(
       () => _i672.GetReliefRequestByIdUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i192.GetReliefRequestListUseCase>(
       () => _i192.GetReliefRequestListUseCase(gh<_i603.RequestRepository>()));
+  gh.lazySingleton<_i543.GetRequestControlInfoUseCase>(
+      () => _i543.GetRequestControlInfoUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i67.GetRequestFollowupHistoryUseCase>(() =>
       _i67.GetRequestFollowupHistoryUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i955.GetRequestStatusHistoryUseCase>(() =>
       _i955.GetRequestStatusHistoryUseCase(gh<_i603.RequestRepository>()));
-  gh.lazySingleton<_i543.GetRequestControlInfoUseCase>(
-      () => _i543.GetRequestControlInfoUseCase(gh<_i603.RequestRepository>()));
   gh.factory<_i891.ChassisRequestHistoryCubit>(
       () => _i891.ChassisRequestHistoryCubit(
             gh<_i581.GetChassisRequestHistoryListUseCase>(),

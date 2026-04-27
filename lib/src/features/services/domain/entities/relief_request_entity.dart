@@ -1,7 +1,33 @@
-import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/relief_request_model.dart';
 
 import 'abstract/base_request_entity.dart';
+
+class ReliefRequestListEntity {
+  final List<ReliefRequestEntity> items;
+  final int totalCount;
+
+  const ReliefRequestListEntity({
+    required this.items,
+    required this.totalCount,
+  });
+
+  ReliefRequestListEntity copyWith({
+    List<ReliefRequestEntity>? items,
+    int? totalCount,
+  }) {
+    return ReliefRequestListEntity(
+      items: items ?? this.items,
+      totalCount: totalCount ?? this.totalCount,
+    );
+  }
+
+  ReliefRequestListModel toModel() {
+    return ReliefRequestListModel(
+      items: items,
+      totalCount: totalCount,
+    );
+  }
+}
 
 class ReliefRequestEntity extends BaseRequestEntity {
   final int? defectId;

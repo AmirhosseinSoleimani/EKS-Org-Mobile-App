@@ -12,19 +12,29 @@ import 'package:injectable/injectable.dart';
 
 import '../../../domain/entities/abstract/base_request_entity.dart';
 
+part 'relief_request_list_cubit.freezed.dart';
 part 'relief_request_list_state.dart';
-
-part 'request_list_cubit.freezed.dart';
 
 @injectable
 class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
-  ReliefRequestListCubit(this._getReliefRequestListUseCase, this._setSelectedRequestItemUseCase)
-      : super(const ReliefRequestListState.idle());
+  ReliefRequestListCubit(
+    this._getReliefRequestListUseCase,
+    this._setSelectedRequestItemUseCase,
+  ) : super(const ReliefRequestListState.idle());
 
   final GetReliefRequestListUseCase _getReliefRequestListUseCase;
   final SetSelectedRequestItemUseCase _setSelectedRequestItemUseCase;
 
-  final List<BaseRequestEntity> requestList = <BaseRequestEntity>[];
+  List<BaseRequestEntity> _items = [];
+
+  List<BaseRequestEntity> get items => List.unmodifiable(_items);
+
+  int _page = 1;
+  final int _pageSize = 20;
+  int _totalCount = 0;
+  bool _isLoadingMore = false;
+
+  bool get hasMore => _items.length < _totalCount;
 
   final ValueNotifier<RequestStatus?> _selectedStatusNotifier =
       ValueNotifier(null);
@@ -46,7 +56,7 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
   final cityController = TextEditingController();
   final provinceController = TextEditingController();
 
-  get requestCount => 200;
+  get requestCount => _totalCount;
 
   void setSelectedStatus(RequestStatus status) {
     _selectedStatusNotifier.value = status;
@@ -56,26 +66,24 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
     selectedTimePeriodNotifier.value = timePeriod;
   }
 
-  void fetchRequestList() async {
-    _safeEmit(const ReliefRequestListState.loading());
-    final RequestFilterParamEntity paramEntity = RequestFilterParamEntity(
-      chassisNumber: chassisNumberController.text,
-      serviceRequestId: requestNumberController.text,
-      callMobileNumber: phoneController.text,
-      cityName: cityController.text,
-      provinceName: provinceController.text,
-      requestStatus: selectedStatus ?? RequestStatus.openRequests,
-      rescuerName: rescuerNameController.text,
-      timePeriod: selectedTimePeriod
-    );
+  Future<void> fetchRequestList() async {
+    _page = 1;
+    _items = [];
 
-    final result = await _getReliefRequestListUseCase(paramEntity);
+    _safeEmit(const ReliefRequestListState.loading());
+
+    final param = _buildFilterParam();
+    final result = await _getReliefRequestListUseCase(param);
 
     result.whenOrNull(
-      success: (data, failures, resultCode) async {
-        requestList.clear();
-        requestList.addAll(data);
-        _safeEmit(const ReliefRequestListState.loaded());
+      success: (data, _, __) {
+        _totalCount = data.totalCount;
+        _items = List.from(data.items);
+        _safeEmit(ReliefRequestListState.loaded(
+          items: _items,
+          totalCount: _totalCount,
+          hasMore: hasMore,
+        ));
       },
       failure: (error, msg) {
         _safeEmit(
@@ -87,15 +95,74 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
           ),
         );
       },
-      connectionError: () =>
-          _safeEmit(const ReliefRequestListState.connectionError()),
+      connectionError: () {
+        _safeEmit(const ReliefRequestListState.connectionError());
+      },
     );
+  }
+
+  Future<void> loadMore() async {
+    if (!hasMore || _isLoadingMore) return;
+
+    _isLoadingMore = true;
+    _page++;
+
+    emit(ReliefRequestListState.loadingMore(
+      items: List.from(_items),
+      totalCount: _totalCount,
+    ));
+
+    final param = _buildFilterParam();
+    final result = await _getReliefRequestListUseCase(param);
+    result.whenOrNull(
+      success: (data, _, __) {
+        _totalCount = data.totalCount;
+        _items = [..._items, ...data.items];
+
+        emit(ReliefRequestListState.loaded(
+          items: List.from(_items),
+          totalCount: _totalCount,
+          hasMore: _items.length < _totalCount,
+        ));
+      },
+      failure: (error, msg) {
+        _page--;
+        emit(ReliefRequestListState.loadingMoreError(
+          items: List.from(_items),
+          totalCount: _totalCount,
+          message: msg ?? error.toString(),
+        ));
+      },
+      connectionError: () {
+        _page--;
+        emit(ReliefRequestListState.loadingMoreError(
+          items: List.from(_items),
+          totalCount: _totalCount,
+          message: 'اتصال اینترنت خود را بررسی کنید',
+        ));
+      },
+    );
+    _isLoadingMore = false;
   }
 
   void _safeEmit(ReliefRequestListState state) {
     if (!isClosed) emit(state);
   }
 
+  RequestFilterParamEntity _buildFilterParam() {
+    return RequestFilterParamEntity(
+      page: _page,
+      pageSize: _pageSize,
+      chassisNumber: chassisNumberController.text,
+      serviceRequestId: requestNumberController.text,
+      callMobileNumber: phoneController.text,
+      cityName: cityController.text,
+      provinceName: provinceController.text,
+      requestStatus: selectedStatus ?? RequestStatus.openRequests,
+      rescuerName: rescuerNameController.text,
+      timePeriod: selectedTimePeriod,
+    );
+  }
 
   Future<void> cacheSelectedRequest(BaseRequestEntity request) async {
     try {
@@ -114,6 +181,7 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
     cityController.dispose();
     provinceController.dispose();
     _selectedStatusNotifier.dispose();
+    selectedTimePeriodNotifier.dispose();
     return super.close();
   }
 }

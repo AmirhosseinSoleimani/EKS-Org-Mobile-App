@@ -75,7 +75,7 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
     
     final result = await _getHomeServiceRequestListUseCase(paramEntity);
 
-    result.whenOrNull(
+ /*   result.whenOrNull(
       success: (data, failures, resultCode) async {
         requestList.clear();
         requestList.addAll(data);
@@ -93,7 +93,7 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
       },
       connectionError: () =>
           _safeEmit(const HomeServiceRequestListState.connectionError()),
-    );
+    );*/
   }
 
   void _safeEmit(HomeServiceRequestListState state) {

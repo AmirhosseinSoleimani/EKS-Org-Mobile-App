@@ -23,12 +23,12 @@ class HomeServiceRequestListPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<HomeServiceRequestListCubit>()..fetchRequestList(),
-      child: const _SelectedServicesView(),
+      child: const SizedBox(),
     );
   }
 }
 
-class _SelectedServicesView extends StatelessWidget {
+/*class _SelectedServicesView extends StatelessWidget {
   const _SelectedServicesView();
 
   @override
@@ -102,4 +102,4 @@ class _SelectedServicesView extends StatelessWidget {
       ),
     );
   }
-}
+}*/

@@ -27,7 +27,7 @@ class RequestRepositoryImpl extends RequestRepository {
   );
 
   @override
-  Future<ApiResult<List<ReliefRequestEntity>>> getReliefRequestList(RequestFilterParamEntity param) async {
+  Future<ApiResult<ReliefRequestListEntity>> getReliefRequestList(RequestFilterParamEntity param) async {
     try {
       final result = await _dataSource.getReliefRequestList(param.toModel());
       return result.toApiResult();
@@ -47,7 +47,7 @@ class RequestRepositoryImpl extends RequestRepository {
   }
 
   @override
-  Future<ApiResult<List<HomeServiceRequestEntity>>> getHomeServiceRequestList(RequestFilterParamEntity param) async {
+  Future<ApiResult<HomeServiceRequestListEntity>> getHomeServiceRequestList(RequestFilterParamEntity param) async {
     try {
       final result = await _dataSource.getHomeServiceRequestList(param.toModel());
       return result.toApiResult();

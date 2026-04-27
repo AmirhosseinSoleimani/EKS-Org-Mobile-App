@@ -1,6 +1,27 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
 
+class HomeServiceRequestListModel extends HomeServiceRequestListEntity {
+  HomeServiceRequestListModel({
+    required super.items,
+    required super.totalCount,
+  });
+
+  factory HomeServiceRequestListModel.fromJson(Map<String, dynamic> json) {
+    return HomeServiceRequestListModel(
+      items: (json['records'] as List<dynamic>?)
+              ?.map(
+                (e) => HomeServiceRequestModel.fromJson(
+                  e as Map<String, dynamic>,
+                ),
+              )
+              .toList() ??
+          <HomeServiceRequestEntity>[],
+      totalCount: json['count'] ?? 0,
+    );
+  }
+}
+
 class HomeServiceRequestModel extends HomeServiceRequestEntity {
   const HomeServiceRequestModel({
     super.id,

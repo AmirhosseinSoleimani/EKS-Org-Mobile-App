@@ -23,7 +23,7 @@ class RequestDataSourceImpl extends RequestDataSource {
   RequestDataSourceImpl(this._service);
 
   @override
-  Future<BaseListResponse<ReliefRequestModel>> getReliefRequestList(RequestFilterParamModel param) async =>
+  Future<BaseSingleResponse<ReliefRequestListModel>> getReliefRequestList(RequestFilterParamModel param) async =>
       await _service.getReliefRequestList(param.toJson());
 
   @override
@@ -32,7 +32,7 @@ class RequestDataSourceImpl extends RequestDataSource {
       await _service.getReliefRequestById({"id": id});
 
   @override
-  Future<BaseListResponse<HomeServiceRequestModel>> getHomeServiceRequestList(RequestFilterParamModel param) async =>
+  Future<BaseSingleResponse<HomeServiceRequestListModel>> getHomeServiceRequestList(RequestFilterParamModel param) async =>
       await _service.getHomeServiceRequestList(param.toJson());
 
   @override
