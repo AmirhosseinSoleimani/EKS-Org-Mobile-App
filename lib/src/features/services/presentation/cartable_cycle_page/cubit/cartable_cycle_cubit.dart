@@ -166,11 +166,12 @@ class CartableCycleCubit extends Cubit<CartableCycleState> {
       },
       failure: (error, msg) {
         _page--;
-        _safeEmit(const CartableCycleState.loaded());
+        _safeEmit(CartableCycleState.loadMoreError(msg ?? error.toString()));
       },
       connectionError: () {
         _page--;
-        _safeEmit(const CartableCycleState.loaded());
+        _safeEmit(const CartableCycleState.loadMoreError(
+            'اتصال اینترنت را بررسی کرده و دوباره تلاش کنید.'));
       },
     );
   }

@@ -137,21 +137,22 @@ class NonCooperationCubit extends Cubit<NonCooperationState> {
           } else {
             items.addAll(data.records);
 
-            if (data.records.length < _pageSize) {
+            if ( data.count <= items.length) {
               _hasMore = false;
             }
           }
         }
 
-        _safeEmit(const NonCooperationState.loaded());
+        _safeEmit(const NonCooperationState.loadedMore());
       },
       failure: (error, msg) {
         _page--;
-        _safeEmit(const NonCooperationState.loaded());
+        _safeEmit(NonCooperationState.loadMoreError(msg ?? error.toString()));
       },
       connectionError: () {
         _page--;
-        _safeEmit(const NonCooperationState.loaded());
+        _safeEmit(const NonCooperationState.loadMoreError(
+            'اتصال اینترنت را بررسی کرده و دوباره تلاش کنید.'));
       },
     );
   }

@@ -9,13 +9,15 @@ import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_emda
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_home_service_request_by_id_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_relief_request_by_id_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_request_status_history_use_case.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/base/cubit/operation_base_cubit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
+
+import 'request_status_history_state.dart';
 
 @injectable
 class RequestStatusHistoryCubit
-    extends OperationBaseCubit<List<RequestStatusHistoryItemEntity>> {
+    extends Cubit<RequestStatusHistoryState> {
   final GetRequestStatusHistoryUseCase _getRequestStatusHistoryUseCase;
   final FetchSelectedRequestItemUseCase _fetchSelectedRequestItemUseCase;
   final GetReliefRequestByIdUseCase _getReliefRequestByIdUseCase;
@@ -23,14 +25,13 @@ class RequestStatusHistoryCubit
   final GetEmdadgarInfoUseCase _getEmdadgarInfoUseCase;
 
   RequestStatusHistoryCubit(
-    this._getRequestStatusHistoryUseCase,
-    this._fetchSelectedRequestItemUseCase,
-    this._getReliefRequestByIdUseCase,
-    this._getHomeServiceRequestByIdUseCase,
-    this._getEmdadgarInfoUseCase,
-  );
+      this._getRequestStatusHistoryUseCase,
+      this._fetchSelectedRequestItemUseCase,
+      this._getReliefRequestByIdUseCase,
+      this._getHomeServiceRequestByIdUseCase,
+      this._getEmdadgarInfoUseCase,
+      )  : super(const RequestStatusHistoryState.idle());
 
-  int? requestId;
   int _page = 1;
   final int _pageSize = 3;
   bool _hasMore = true;
@@ -39,14 +40,14 @@ class RequestStatusHistoryCubit
   EmdadgarInfoEntity? emdadgarInfo;
   List<RequestStatusHistoryItemEntity> items = [];
 
-  @override
   Future<void> init() async {
-    emitLoading();
+    _safeEmit(const RequestStatusHistoryState.loading());
 
     selectedRequest = await _fetchSelectedRequestItemUseCase();
 
     if (selectedRequest == null) {
-      emitError(const BottomSheetMessageModel(title: '',message: 'در دریافت اطلاعات اولیه مشکلی رخ داد.'));
+      _safeEmit(const RequestStatusHistoryState.error(message: BottomSheetMessageModel(title: '', message: 'در دریافت اطلاعات اولیه مشکلی رخ داد.')));
+
       return;
     }
 
@@ -101,21 +102,23 @@ class RequestStatusHistoryCubit
     result.whenOrNull(
       success: (data, failures, resultCode) {
         items = data.records;
-        emitLoaded();
+        print("uuuuuuuuuuuuuuuuuuuuuuuu");
+        print(data.count);
+        print("uuuuuuuuuuuuuuuuuuuuuuuu");
+        _safeEmit(const RequestStatusHistoryState.loaded());
       },
       failure: (error, message) {
-        emitError(BottomSheetMessageModel(title: '',message:message ?? error.toString()));
+        _safeEmit( RequestStatusHistoryState.error(message: BottomSheetMessageModel(title: '',message:message ?? error.toString())));
       },
       connectionError: () {
-        emitConnectionError();
+        _safeEmit(const RequestStatusHistoryState.connectionError());
       },
     );
   }
 
   Future<void> loadMore() async {
     if (!_hasMore) return;
-
-    emitLoadingMore();
+    _safeEmit(const RequestStatusHistoryState.loadingMore());
 
     _page++;
 
@@ -134,24 +137,27 @@ class RequestStatusHistoryCubit
           _hasMore = false;
         } else {
           items.addAll(data.records);
-
-          if (items.length < data.count) {
+          if ( data.count <= items.length) {
             _hasMore = false;
           }
         }
-
-        emitLoaded();
+        _safeEmit(const RequestStatusHistoryState.loadedMore());
       },
       failure: (error, msg) {
         _page--;
-        emitLoaded();
+        _safeEmit(RequestStatusHistoryState.loadMoreError(msg ?? error.toString()));
       },
       connectionError: () {
         _page--;
-        emitLoaded();
+        _safeEmit(const RequestStatusHistoryState.loadMoreError(
+            'اتصال اینترنت را بررسی کرده و دوباره تلاش کنید.'));
       },
     );
   }
 
   bool get hasMore => _hasMore;
+
+  void _safeEmit(RequestStatusHistoryState state) {
+    if (!isClosed) emit(state);
+  }
 }

@@ -14,6 +14,9 @@ class NonCooperationState with _$NonCooperationState {
 
   const factory NonCooperationState.loadingMore() = _LoadingMore;
 
+  const factory NonCooperationState.loadedMore() = _LoadedMore;
+
+  const factory NonCooperationState.loadMoreError(String message) = _LoadMoreError;
 
   const factory NonCooperationState.connectionError() = _ConnectionError;
 }

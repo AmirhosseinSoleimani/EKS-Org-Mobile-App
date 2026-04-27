@@ -14,6 +14,10 @@ class CartableCycleState with _$CartableCycleState {
 
   const factory CartableCycleState.loadingMore() = _LoadingMore;
 
+  const factory CartableCycleState.loadedMore() = _LoadedMore;
+
+  const factory CartableCycleState.loadMoreError(String message) = _LoadMoreError;
+
 
   const factory CartableCycleState.connectionError() = _ConnectionError;
 }

@@ -1,7 +1,7 @@
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/request_status_history_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/base/cubit/operation_base_state.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_row.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_status_history_page/cubit/request_status_history_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/request_status_history_page/cubit/request_status_history_state.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
@@ -50,46 +50,62 @@ class RequestStatusHistoryListView extends StatelessWidget {
                 child: EmptyListWidget(),
               ),
             ),
-          if (!isEmpty)
-          ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              final item = items[index];
-              return TimelineItemCard(
-                icon: icon,
-                children: [
-                  KeyValueRow(
-                    label: 'عنوان',
-                    value: item.title ?? '-',
-                  ),
-                  KeyValueRow(
-                    label: 'ثبت کننده',
-                    value: item.insertUserName ?? '-',
-                  ),
-                  KeyValueRow(
-                    label: 'تاریخ و ساعت ثبت',
-                    value:
-                        item.insertDateTime ?? '-',
-                  ),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const BodySmallText(text: 'توضیحات'),
-                      Space.h8,
-                      BodySmallText(
-                        text: item.description!,
-                        textAlign: TextAlign.start,
-                      ),
-                    ],
-                  )
-                ],
-              );
-            },
-          ),
-          BlocBuilder<RequestStatusHistoryCubit, OperationBaseState>(
-            builder: (context, state) {
+          if (!isEmpty) ...[
+            BlocBuilder<RequestStatusHistoryCubit, RequestStatusHistoryState>(
+              builder: (context, state) {
+                final cubit = context.read<RequestStatusHistoryCubit>();
+                final items = cubit.items;
+
+                if (items.isEmpty) {
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.62,
+                    child: const Center(
+                      child: EmptyListWidget(),
+                    ),
+                  );
+                }
+
+                return ListView.builder(
+                  key: const PageStorageKey('request_status_history_list'),
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final item = items[index];
+                    return TimelineItemCard(
+                      icon: icon,
+                      children: [
+                        KeyValueRow(
+                          label: 'عنوان',
+                          value: item.title ?? '-',
+                        ),
+                        KeyValueRow(
+                          label: 'ثبت کننده',
+                          value: item.insertUserName ?? '-',
+                        ),
+                        KeyValueRow(
+                          label: 'تاریخ و ساعت ثبت',
+                          value: item.insertDateTime ?? '-',
+                        ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            const BodySmallText(text: 'توضیحات'),
+                            Space.h8,
+                            BodySmallText(
+                              text: item.description!,
+                              textAlign: TextAlign.start,
+                            ),
+                          ],
+                        )
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
+            BlocBuilder<RequestStatusHistoryCubit, RequestStatusHistoryState>(
+              builder: (context, state) {
               final cubit = context.read<RequestStatusHistoryCubit>();
 
               if (!cubit.hasMore) {
@@ -108,7 +124,6 @@ class RequestStatusHistoryListView extends StatelessWidget {
                   ),
                 );
               }
-
               return Center(
                 child: TextButton(
                   onPressed: () => cubit.loadMore(),
@@ -127,6 +142,7 @@ class RequestStatusHistoryListView extends StatelessWidget {
               );
             },
           ),
+          ]
         ],
       ),
     );
