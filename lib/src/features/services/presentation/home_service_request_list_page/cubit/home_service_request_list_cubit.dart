@@ -15,7 +15,7 @@ import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
 import '../../../domain/entities/abstract/base_request_entity.dart';
 
-part 'request_list_cubit.freezed.dart';
+part 'home_service_request_list_cubit.freezed.dart';
 
 part 'home_service_request_list_state.dart';
 
@@ -50,7 +50,15 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
   final cityController = TextEditingController();
   final provinceController = TextEditingController();
 
-  get requestCount => 200;
+
+  int _page = 1;
+  final int _pageSize = 20;
+  int _totalCount = 0;
+  bool _isLoadingMore = false;
+
+  get requestCount => _totalCount;
+
+  bool get hasMore => requestList.length < _totalCount;
 
   void setSelectedStatus(RequestStatus status) {
     _selectedStatusNotifier.value = status;
@@ -61,24 +69,18 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
   }
 
   void fetchRequestList() async {
-    _safeEmit(const HomeServiceRequestListState.loading());
-    final RequestFilterParamEntity paramEntity = RequestFilterParamEntity(
-        chassisNumber: chassisNumberController.text,
-        serviceRequestId: requestNumberController.text,
-        callMobileNumber: phoneController.text,
-        cityName: cityController.text,
-        provinceName: provinceController.text,
-        requestStatus: selectedStatus ?? RequestStatus.openRequests,
-        rescuerName: rescuerNameController.text,
-        timePeriod: selectedTimePeriod
-    );
-    
-    final result = await _getHomeServiceRequestListUseCase(paramEntity);
+    _page = 1;
+    requestList.clear();
 
- /*   result.whenOrNull(
+    _safeEmit(const HomeServiceRequestListState.loading());
+    final params = _buildFilterParam();
+    final result = await _getHomeServiceRequestListUseCase(params);
+
+    result.whenOrNull(
       success: (data, failures, resultCode) async {
-        requestList.clear();
-        requestList.addAll(data);
+        _totalCount = data.totalCount;
+        requestList.addAll(data.items);
+
         _safeEmit(const HomeServiceRequestListState.loaded());
       },
       failure: (error, msg) {
@@ -93,7 +95,55 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
       },
       connectionError: () =>
           _safeEmit(const HomeServiceRequestListState.connectionError()),
-    );*/
+    );
+  }
+
+  Future<void> loadMore() async {
+    if (!hasMore || _isLoadingMore) return;
+
+    _isLoadingMore = true;
+    _page++;
+
+    emit(const HomeServiceRequestListState.loadingMore());
+
+    final param = _buildFilterParam();
+    final result = await _getHomeServiceRequestListUseCase(param);
+    result.whenOrNull(
+      success: (data, _, __) {
+        _totalCount = data.totalCount;
+        requestList.addAll(data.items);
+
+        _safeEmit(const HomeServiceRequestListState.loaded());
+      },
+      failure: (error, msg) {
+        _page--;
+        _safeEmit(HomeServiceRequestListState.loadingMoreError(
+          message: msg ?? error.toString(),
+        ));
+      },
+      connectionError: () {
+        _page--;
+        _safeEmit(const HomeServiceRequestListState.loadingMoreError(
+          message: 'اتصال اینترنت خود را بررسی کنید',
+        ));
+      },
+    );
+    _isLoadingMore = false;
+  }
+
+  RequestFilterParamEntity _buildFilterParam() {
+    return RequestFilterParamEntity(
+      page: _page,
+      pageSize: _pageSize,
+      chassisNumber: chassisNumberController.text,
+      serviceRequestId: requestNumberController.text,
+      callMobileNumber: phoneController.text,
+      cityName: cityController.text,
+      provinceName: provinceController.text,
+      requestStatus: selectedStatus ?? RequestStatus.openRequests,
+      rescuerName: rescuerNameController.text,
+      timePeriod: selectedTimePeriod,
+    );
   }
 
   void _safeEmit(HomeServiceRequestListState state) {

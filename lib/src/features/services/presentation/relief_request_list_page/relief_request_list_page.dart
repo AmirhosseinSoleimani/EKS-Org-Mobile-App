@@ -105,16 +105,13 @@ class _SelectedServicesView extends StatelessWidget {
                         totalCount: cubit.requestCount,
                       ),
                       orElse: () {
-                        if (cubit.items.isNotEmpty) {
-                          return RequestListViewer(
-                            items: cubit.items,
-                            onSelected: cubit.cacheSelectedRequest,
-                            onLoadMore: cubit.loadMore,
-                            hasMore: false,
-                            totalCount: cubit.requestCount,
-                          );
-                        }
-                        return const SizedBox.shrink();
+                        return  RequestListViewer(
+                          items: cubit.items,
+                          onSelected: cubit.cacheSelectedRequest,
+                          onLoadMore: cubit.loadMore,
+                          hasMore: false,
+                          totalCount: cubit.requestCount,
+                        );
                       },
                     );
                   },
