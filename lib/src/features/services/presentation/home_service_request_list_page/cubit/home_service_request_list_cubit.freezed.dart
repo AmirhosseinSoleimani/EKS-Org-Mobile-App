@@ -20,8 +20,10 @@ mixin _$HomeServiceRequestListState {
   TResult when<TResult extends Object?>({
     required TResult Function() idle,
     required TResult Function() loading,
+    required TResult Function() loadingMore,
     required TResult Function() loaded,
     required TResult Function(BottomSheetMessageModel message) error,
+    required TResult Function(String message) loadingMoreError,
     required TResult Function() connectionError,
   }) =>
       throw _privateConstructorUsedError;
@@ -29,8 +31,10 @@ mixin _$HomeServiceRequestListState {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? idle,
     TResult? Function()? loading,
+    TResult? Function()? loadingMore,
     TResult? Function()? loaded,
     TResult? Function(BottomSheetMessageModel message)? error,
+    TResult? Function(String message)? loadingMoreError,
     TResult? Function()? connectionError,
   }) =>
       throw _privateConstructorUsedError;
@@ -38,8 +42,10 @@ mixin _$HomeServiceRequestListState {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? idle,
     TResult Function()? loading,
+    TResult Function()? loadingMore,
     TResult Function()? loaded,
     TResult Function(BottomSheetMessageModel message)? error,
+    TResult Function(String message)? loadingMoreError,
     TResult Function()? connectionError,
     required TResult orElse(),
   }) =>
@@ -48,8 +54,10 @@ mixin _$HomeServiceRequestListState {
   TResult map<TResult extends Object?>({
     required TResult Function(_Idle value) idle,
     required TResult Function(_Loading value) loading,
+    required TResult Function(_LoadingMore value) loadingMore,
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
+    required TResult Function(_LoadingMoreError value) loadingMoreError,
     required TResult Function(_ConnectionError value) connectionError,
   }) =>
       throw _privateConstructorUsedError;
@@ -57,8 +65,10 @@ mixin _$HomeServiceRequestListState {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Idle value)? idle,
     TResult? Function(_Loading value)? loading,
+    TResult? Function(_LoadingMore value)? loadingMore,
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
+    TResult? Function(_LoadingMoreError value)? loadingMoreError,
     TResult? Function(_ConnectionError value)? connectionError,
   }) =>
       throw _privateConstructorUsedError;
@@ -66,8 +76,10 @@ mixin _$HomeServiceRequestListState {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Idle value)? idle,
     TResult Function(_Loading value)? loading,
+    TResult Function(_LoadingMore value)? loadingMore,
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
+    TResult Function(_LoadingMoreError value)? loadingMoreError,
     TResult Function(_ConnectionError value)? connectionError,
     required TResult orElse(),
   }) =>
@@ -75,16 +87,19 @@ mixin _$HomeServiceRequestListState {
 }
 
 /// @nodoc
-abstract class $RequestListStateCopyWith<$Res> {
-  factory $RequestListStateCopyWith(
-          HomeServiceRequestListState value, $Res Function(HomeServiceRequestListState) then) =
-      _$RequestListStateCopyWithImpl<$Res, HomeServiceRequestListState>;
+abstract class $HomeServiceRequestListStateCopyWith<$Res> {
+  factory $HomeServiceRequestListStateCopyWith(
+          HomeServiceRequestListState value,
+          $Res Function(HomeServiceRequestListState) then) =
+      _$HomeServiceRequestListStateCopyWithImpl<$Res,
+          HomeServiceRequestListState>;
 }
 
 /// @nodoc
-class _$RequestListStateCopyWithImpl<$Res, $Val extends HomeServiceRequestListState>
-    implements $RequestListStateCopyWith<$Res> {
-  _$RequestListStateCopyWithImpl(this._value, this._then);
+class _$HomeServiceRequestListStateCopyWithImpl<$Res,
+        $Val extends HomeServiceRequestListState>
+    implements $HomeServiceRequestListStateCopyWith<$Res> {
+  _$HomeServiceRequestListStateCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
@@ -101,7 +116,7 @@ abstract class _$$IdleImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$IdleImplCopyWithImpl<$Res>
-    extends _$RequestListStateCopyWithImpl<$Res, _$IdleImpl>
+    extends _$HomeServiceRequestListStateCopyWithImpl<$Res, _$IdleImpl>
     implements _$$IdleImplCopyWith<$Res> {
   __$$IdleImplCopyWithImpl(_$IdleImpl _value, $Res Function(_$IdleImpl) _then)
       : super(_value, _then);
@@ -114,7 +129,7 @@ class _$IdleImpl implements _Idle {
 
   @override
   String toString() {
-    return 'RequestListState.idle()';
+    return 'HomeServiceRequestListState.idle()';
   }
 
   @override
@@ -131,8 +146,10 @@ class _$IdleImpl implements _Idle {
   TResult when<TResult extends Object?>({
     required TResult Function() idle,
     required TResult Function() loading,
+    required TResult Function() loadingMore,
     required TResult Function() loaded,
     required TResult Function(BottomSheetMessageModel message) error,
+    required TResult Function(String message) loadingMoreError,
     required TResult Function() connectionError,
   }) {
     return idle();
@@ -143,8 +160,10 @@ class _$IdleImpl implements _Idle {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? idle,
     TResult? Function()? loading,
+    TResult? Function()? loadingMore,
     TResult? Function()? loaded,
     TResult? Function(BottomSheetMessageModel message)? error,
+    TResult? Function(String message)? loadingMoreError,
     TResult? Function()? connectionError,
   }) {
     return idle?.call();
@@ -155,8 +174,10 @@ class _$IdleImpl implements _Idle {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? idle,
     TResult Function()? loading,
+    TResult Function()? loadingMore,
     TResult Function()? loaded,
     TResult Function(BottomSheetMessageModel message)? error,
+    TResult Function(String message)? loadingMoreError,
     TResult Function()? connectionError,
     required TResult orElse(),
   }) {
@@ -171,8 +192,10 @@ class _$IdleImpl implements _Idle {
   TResult map<TResult extends Object?>({
     required TResult Function(_Idle value) idle,
     required TResult Function(_Loading value) loading,
+    required TResult Function(_LoadingMore value) loadingMore,
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
+    required TResult Function(_LoadingMoreError value) loadingMoreError,
     required TResult Function(_ConnectionError value) connectionError,
   }) {
     return idle(this);
@@ -183,8 +206,10 @@ class _$IdleImpl implements _Idle {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Idle value)? idle,
     TResult? Function(_Loading value)? loading,
+    TResult? Function(_LoadingMore value)? loadingMore,
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
+    TResult? Function(_LoadingMoreError value)? loadingMoreError,
     TResult? Function(_ConnectionError value)? connectionError,
   }) {
     return idle?.call(this);
@@ -195,8 +220,10 @@ class _$IdleImpl implements _Idle {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Idle value)? idle,
     TResult Function(_Loading value)? loading,
+    TResult Function(_LoadingMore value)? loadingMore,
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
+    TResult Function(_LoadingMoreError value)? loadingMoreError,
     TResult Function(_ConnectionError value)? connectionError,
     required TResult orElse(),
   }) {
@@ -220,7 +247,7 @@ abstract class _$$LoadingImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$LoadingImplCopyWithImpl<$Res>
-    extends _$RequestListStateCopyWithImpl<$Res, _$LoadingImpl>
+    extends _$HomeServiceRequestListStateCopyWithImpl<$Res, _$LoadingImpl>
     implements _$$LoadingImplCopyWith<$Res> {
   __$$LoadingImplCopyWithImpl(
       _$LoadingImpl _value, $Res Function(_$LoadingImpl) _then)
@@ -234,7 +261,7 @@ class _$LoadingImpl implements _Loading {
 
   @override
   String toString() {
-    return 'RequestListState.loading()';
+    return 'HomeServiceRequestListState.loading()';
   }
 
   @override
@@ -251,8 +278,10 @@ class _$LoadingImpl implements _Loading {
   TResult when<TResult extends Object?>({
     required TResult Function() idle,
     required TResult Function() loading,
+    required TResult Function() loadingMore,
     required TResult Function() loaded,
     required TResult Function(BottomSheetMessageModel message) error,
+    required TResult Function(String message) loadingMoreError,
     required TResult Function() connectionError,
   }) {
     return loading();
@@ -263,8 +292,10 @@ class _$LoadingImpl implements _Loading {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? idle,
     TResult? Function()? loading,
+    TResult? Function()? loadingMore,
     TResult? Function()? loaded,
     TResult? Function(BottomSheetMessageModel message)? error,
+    TResult? Function(String message)? loadingMoreError,
     TResult? Function()? connectionError,
   }) {
     return loading?.call();
@@ -275,8 +306,10 @@ class _$LoadingImpl implements _Loading {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? idle,
     TResult Function()? loading,
+    TResult Function()? loadingMore,
     TResult Function()? loaded,
     TResult Function(BottomSheetMessageModel message)? error,
+    TResult Function(String message)? loadingMoreError,
     TResult Function()? connectionError,
     required TResult orElse(),
   }) {
@@ -291,8 +324,10 @@ class _$LoadingImpl implements _Loading {
   TResult map<TResult extends Object?>({
     required TResult Function(_Idle value) idle,
     required TResult Function(_Loading value) loading,
+    required TResult Function(_LoadingMore value) loadingMore,
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
+    required TResult Function(_LoadingMoreError value) loadingMoreError,
     required TResult Function(_ConnectionError value) connectionError,
   }) {
     return loading(this);
@@ -303,8 +338,10 @@ class _$LoadingImpl implements _Loading {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Idle value)? idle,
     TResult? Function(_Loading value)? loading,
+    TResult? Function(_LoadingMore value)? loadingMore,
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
+    TResult? Function(_LoadingMoreError value)? loadingMoreError,
     TResult? Function(_ConnectionError value)? connectionError,
   }) {
     return loading?.call(this);
@@ -315,8 +352,10 @@ class _$LoadingImpl implements _Loading {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Idle value)? idle,
     TResult Function(_Loading value)? loading,
+    TResult Function(_LoadingMore value)? loadingMore,
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
+    TResult Function(_LoadingMoreError value)? loadingMoreError,
     TResult Function(_ConnectionError value)? connectionError,
     required TResult orElse(),
   }) {
@@ -332,6 +371,138 @@ abstract class _Loading implements HomeServiceRequestListState {
 }
 
 /// @nodoc
+abstract class _$$LoadingMoreImplCopyWith<$Res> {
+  factory _$$LoadingMoreImplCopyWith(
+          _$LoadingMoreImpl value, $Res Function(_$LoadingMoreImpl) then) =
+      __$$LoadingMoreImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$LoadingMoreImplCopyWithImpl<$Res>
+    extends _$HomeServiceRequestListStateCopyWithImpl<$Res, _$LoadingMoreImpl>
+    implements _$$LoadingMoreImplCopyWith<$Res> {
+  __$$LoadingMoreImplCopyWithImpl(
+      _$LoadingMoreImpl _value, $Res Function(_$LoadingMoreImpl) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$LoadingMoreImpl implements _LoadingMore {
+  const _$LoadingMoreImpl();
+
+  @override
+  String toString() {
+    return 'HomeServiceRequestListState.loadingMore()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$LoadingMoreImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() idle,
+    required TResult Function() loading,
+    required TResult Function() loadingMore,
+    required TResult Function() loaded,
+    required TResult Function(BottomSheetMessageModel message) error,
+    required TResult Function(String message) loadingMoreError,
+    required TResult Function() connectionError,
+  }) {
+    return loadingMore();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? idle,
+    TResult? Function()? loading,
+    TResult? Function()? loadingMore,
+    TResult? Function()? loaded,
+    TResult? Function(BottomSheetMessageModel message)? error,
+    TResult? Function(String message)? loadingMoreError,
+    TResult? Function()? connectionError,
+  }) {
+    return loadingMore?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? idle,
+    TResult Function()? loading,
+    TResult Function()? loadingMore,
+    TResult Function()? loaded,
+    TResult Function(BottomSheetMessageModel message)? error,
+    TResult Function(String message)? loadingMoreError,
+    TResult Function()? connectionError,
+    required TResult orElse(),
+  }) {
+    if (loadingMore != null) {
+      return loadingMore();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Idle value) idle,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_LoadingMore value) loadingMore,
+    required TResult Function(_Loaded value) loaded,
+    required TResult Function(_Error value) error,
+    required TResult Function(_LoadingMoreError value) loadingMoreError,
+    required TResult Function(_ConnectionError value) connectionError,
+  }) {
+    return loadingMore(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Idle value)? idle,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_LoadingMore value)? loadingMore,
+    TResult? Function(_Loaded value)? loaded,
+    TResult? Function(_Error value)? error,
+    TResult? Function(_LoadingMoreError value)? loadingMoreError,
+    TResult? Function(_ConnectionError value)? connectionError,
+  }) {
+    return loadingMore?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Idle value)? idle,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_LoadingMore value)? loadingMore,
+    TResult Function(_Loaded value)? loaded,
+    TResult Function(_Error value)? error,
+    TResult Function(_LoadingMoreError value)? loadingMoreError,
+    TResult Function(_ConnectionError value)? connectionError,
+    required TResult orElse(),
+  }) {
+    if (loadingMore != null) {
+      return loadingMore(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _LoadingMore implements HomeServiceRequestListState {
+  const factory _LoadingMore() = _$LoadingMoreImpl;
+}
+
+/// @nodoc
 abstract class _$$LoadedImplCopyWith<$Res> {
   factory _$$LoadedImplCopyWith(
           _$LoadedImpl value, $Res Function(_$LoadedImpl) then) =
@@ -340,7 +511,7 @@ abstract class _$$LoadedImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$LoadedImplCopyWithImpl<$Res>
-    extends _$RequestListStateCopyWithImpl<$Res, _$LoadedImpl>
+    extends _$HomeServiceRequestListStateCopyWithImpl<$Res, _$LoadedImpl>
     implements _$$LoadedImplCopyWith<$Res> {
   __$$LoadedImplCopyWithImpl(
       _$LoadedImpl _value, $Res Function(_$LoadedImpl) _then)
@@ -354,7 +525,7 @@ class _$LoadedImpl implements _Loaded {
 
   @override
   String toString() {
-    return 'RequestListState.loaded()';
+    return 'HomeServiceRequestListState.loaded()';
   }
 
   @override
@@ -371,8 +542,10 @@ class _$LoadedImpl implements _Loaded {
   TResult when<TResult extends Object?>({
     required TResult Function() idle,
     required TResult Function() loading,
+    required TResult Function() loadingMore,
     required TResult Function() loaded,
     required TResult Function(BottomSheetMessageModel message) error,
+    required TResult Function(String message) loadingMoreError,
     required TResult Function() connectionError,
   }) {
     return loaded();
@@ -383,8 +556,10 @@ class _$LoadedImpl implements _Loaded {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? idle,
     TResult? Function()? loading,
+    TResult? Function()? loadingMore,
     TResult? Function()? loaded,
     TResult? Function(BottomSheetMessageModel message)? error,
+    TResult? Function(String message)? loadingMoreError,
     TResult? Function()? connectionError,
   }) {
     return loaded?.call();
@@ -395,8 +570,10 @@ class _$LoadedImpl implements _Loaded {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? idle,
     TResult Function()? loading,
+    TResult Function()? loadingMore,
     TResult Function()? loaded,
     TResult Function(BottomSheetMessageModel message)? error,
+    TResult Function(String message)? loadingMoreError,
     TResult Function()? connectionError,
     required TResult orElse(),
   }) {
@@ -411,8 +588,10 @@ class _$LoadedImpl implements _Loaded {
   TResult map<TResult extends Object?>({
     required TResult Function(_Idle value) idle,
     required TResult Function(_Loading value) loading,
+    required TResult Function(_LoadingMore value) loadingMore,
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
+    required TResult Function(_LoadingMoreError value) loadingMoreError,
     required TResult Function(_ConnectionError value) connectionError,
   }) {
     return loaded(this);
@@ -423,8 +602,10 @@ class _$LoadedImpl implements _Loaded {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Idle value)? idle,
     TResult? Function(_Loading value)? loading,
+    TResult? Function(_LoadingMore value)? loadingMore,
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
+    TResult? Function(_LoadingMoreError value)? loadingMoreError,
     TResult? Function(_ConnectionError value)? connectionError,
   }) {
     return loaded?.call(this);
@@ -435,8 +616,10 @@ class _$LoadedImpl implements _Loaded {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Idle value)? idle,
     TResult Function(_Loading value)? loading,
+    TResult Function(_LoadingMore value)? loadingMore,
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
+    TResult Function(_LoadingMoreError value)? loadingMoreError,
     TResult Function(_ConnectionError value)? connectionError,
     required TResult orElse(),
   }) {
@@ -462,7 +645,7 @@ abstract class _$$ErrorImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$ErrorImplCopyWithImpl<$Res>
-    extends _$RequestListStateCopyWithImpl<$Res, _$ErrorImpl>
+    extends _$HomeServiceRequestListStateCopyWithImpl<$Res, _$ErrorImpl>
     implements _$$ErrorImplCopyWith<$Res> {
   __$$ErrorImplCopyWithImpl(
       _$ErrorImpl _value, $Res Function(_$ErrorImpl) _then)
@@ -492,7 +675,7 @@ class _$ErrorImpl implements _Error {
 
   @override
   String toString() {
-    return 'RequestListState.error(message: $message)';
+    return 'HomeServiceRequestListState.error(message: $message)';
   }
 
   @override
@@ -517,8 +700,10 @@ class _$ErrorImpl implements _Error {
   TResult when<TResult extends Object?>({
     required TResult Function() idle,
     required TResult Function() loading,
+    required TResult Function() loadingMore,
     required TResult Function() loaded,
     required TResult Function(BottomSheetMessageModel message) error,
+    required TResult Function(String message) loadingMoreError,
     required TResult Function() connectionError,
   }) {
     return error(message);
@@ -529,8 +714,10 @@ class _$ErrorImpl implements _Error {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? idle,
     TResult? Function()? loading,
+    TResult? Function()? loadingMore,
     TResult? Function()? loaded,
     TResult? Function(BottomSheetMessageModel message)? error,
+    TResult? Function(String message)? loadingMoreError,
     TResult? Function()? connectionError,
   }) {
     return error?.call(message);
@@ -541,8 +728,10 @@ class _$ErrorImpl implements _Error {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? idle,
     TResult Function()? loading,
+    TResult Function()? loadingMore,
     TResult Function()? loaded,
     TResult Function(BottomSheetMessageModel message)? error,
+    TResult Function(String message)? loadingMoreError,
     TResult Function()? connectionError,
     required TResult orElse(),
   }) {
@@ -557,8 +746,10 @@ class _$ErrorImpl implements _Error {
   TResult map<TResult extends Object?>({
     required TResult Function(_Idle value) idle,
     required TResult Function(_Loading value) loading,
+    required TResult Function(_LoadingMore value) loadingMore,
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
+    required TResult Function(_LoadingMoreError value) loadingMoreError,
     required TResult Function(_ConnectionError value) connectionError,
   }) {
     return error(this);
@@ -569,8 +760,10 @@ class _$ErrorImpl implements _Error {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Idle value)? idle,
     TResult? Function(_Loading value)? loading,
+    TResult? Function(_LoadingMore value)? loadingMore,
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
+    TResult? Function(_LoadingMoreError value)? loadingMoreError,
     TResult? Function(_ConnectionError value)? connectionError,
   }) {
     return error?.call(this);
@@ -581,8 +774,10 @@ class _$ErrorImpl implements _Error {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Idle value)? idle,
     TResult Function(_Loading value)? loading,
+    TResult Function(_LoadingMore value)? loadingMore,
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
+    TResult Function(_LoadingMoreError value)? loadingMoreError,
     TResult Function(_ConnectionError value)? connectionError,
     required TResult orElse(),
   }) {
@@ -604,6 +799,172 @@ abstract class _Error implements HomeServiceRequestListState {
 }
 
 /// @nodoc
+abstract class _$$LoadingMoreErrorImplCopyWith<$Res> {
+  factory _$$LoadingMoreErrorImplCopyWith(_$LoadingMoreErrorImpl value,
+          $Res Function(_$LoadingMoreErrorImpl) then) =
+      __$$LoadingMoreErrorImplCopyWithImpl<$Res>;
+  @useResult
+  $Res call({String message});
+}
+
+/// @nodoc
+class __$$LoadingMoreErrorImplCopyWithImpl<$Res>
+    extends _$HomeServiceRequestListStateCopyWithImpl<$Res,
+        _$LoadingMoreErrorImpl>
+    implements _$$LoadingMoreErrorImplCopyWith<$Res> {
+  __$$LoadingMoreErrorImplCopyWithImpl(_$LoadingMoreErrorImpl _value,
+      $Res Function(_$LoadingMoreErrorImpl) _then)
+      : super(_value, _then);
+
+  @pragma('vm:prefer-inline')
+  @override
+  $Res call({
+    Object? message = null,
+  }) {
+    return _then(_$LoadingMoreErrorImpl(
+      message: null == message
+          ? _value.message
+          : message // ignore: cast_nullable_to_non_nullable
+              as String,
+    ));
+  }
+}
+
+/// @nodoc
+
+class _$LoadingMoreErrorImpl implements _LoadingMoreError {
+  const _$LoadingMoreErrorImpl({required this.message});
+
+  @override
+  final String message;
+
+  @override
+  String toString() {
+    return 'HomeServiceRequestListState.loadingMoreError(message: $message)';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType &&
+            other is _$LoadingMoreErrorImpl &&
+            (identical(other.message, message) || other.message == message));
+  }
+
+  @override
+  int get hashCode => Object.hash(runtimeType, message);
+
+  @JsonKey(ignore: true)
+  @override
+  @pragma('vm:prefer-inline')
+  _$$LoadingMoreErrorImplCopyWith<_$LoadingMoreErrorImpl> get copyWith =>
+      __$$LoadingMoreErrorImplCopyWithImpl<_$LoadingMoreErrorImpl>(
+          this, _$identity);
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() idle,
+    required TResult Function() loading,
+    required TResult Function() loadingMore,
+    required TResult Function() loaded,
+    required TResult Function(BottomSheetMessageModel message) error,
+    required TResult Function(String message) loadingMoreError,
+    required TResult Function() connectionError,
+  }) {
+    return loadingMoreError(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? idle,
+    TResult? Function()? loading,
+    TResult? Function()? loadingMore,
+    TResult? Function()? loaded,
+    TResult? Function(BottomSheetMessageModel message)? error,
+    TResult? Function(String message)? loadingMoreError,
+    TResult? Function()? connectionError,
+  }) {
+    return loadingMoreError?.call(message);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? idle,
+    TResult Function()? loading,
+    TResult Function()? loadingMore,
+    TResult Function()? loaded,
+    TResult Function(BottomSheetMessageModel message)? error,
+    TResult Function(String message)? loadingMoreError,
+    TResult Function()? connectionError,
+    required TResult orElse(),
+  }) {
+    if (loadingMoreError != null) {
+      return loadingMoreError(message);
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Idle value) idle,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_LoadingMore value) loadingMore,
+    required TResult Function(_Loaded value) loaded,
+    required TResult Function(_Error value) error,
+    required TResult Function(_LoadingMoreError value) loadingMoreError,
+    required TResult Function(_ConnectionError value) connectionError,
+  }) {
+    return loadingMoreError(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Idle value)? idle,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_LoadingMore value)? loadingMore,
+    TResult? Function(_Loaded value)? loaded,
+    TResult? Function(_Error value)? error,
+    TResult? Function(_LoadingMoreError value)? loadingMoreError,
+    TResult? Function(_ConnectionError value)? connectionError,
+  }) {
+    return loadingMoreError?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Idle value)? idle,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_LoadingMore value)? loadingMore,
+    TResult Function(_Loaded value)? loaded,
+    TResult Function(_Error value)? error,
+    TResult Function(_LoadingMoreError value)? loadingMoreError,
+    TResult Function(_ConnectionError value)? connectionError,
+    required TResult orElse(),
+  }) {
+    if (loadingMoreError != null) {
+      return loadingMoreError(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _LoadingMoreError implements HomeServiceRequestListState {
+  const factory _LoadingMoreError({required final String message}) =
+      _$LoadingMoreErrorImpl;
+
+  String get message;
+  @JsonKey(ignore: true)
+  _$$LoadingMoreErrorImplCopyWith<_$LoadingMoreErrorImpl> get copyWith =>
+      throw _privateConstructorUsedError;
+}
+
+/// @nodoc
 abstract class _$$ConnectionErrorImplCopyWith<$Res> {
   factory _$$ConnectionErrorImplCopyWith(_$ConnectionErrorImpl value,
           $Res Function(_$ConnectionErrorImpl) then) =
@@ -612,8 +973,8 @@ abstract class _$$ConnectionErrorImplCopyWith<$Res> {
 
 /// @nodoc
 class __$$ConnectionErrorImplCopyWithImpl<$Res>
-    extends _$RequestListStateCopyWithImpl<$Res, _$ConnectionErrorImpl>
-    implements _$$ConnectionErrorImplCopyWith<$Res> {
+    extends _$HomeServiceRequestListStateCopyWithImpl<$Res,
+        _$ConnectionErrorImpl> implements _$$ConnectionErrorImplCopyWith<$Res> {
   __$$ConnectionErrorImplCopyWithImpl(
       _$ConnectionErrorImpl _value, $Res Function(_$ConnectionErrorImpl) _then)
       : super(_value, _then);
@@ -626,7 +987,7 @@ class _$ConnectionErrorImpl implements _ConnectionError {
 
   @override
   String toString() {
-    return 'RequestListState.connectionError()';
+    return 'HomeServiceRequestListState.connectionError()';
   }
 
   @override
@@ -643,8 +1004,10 @@ class _$ConnectionErrorImpl implements _ConnectionError {
   TResult when<TResult extends Object?>({
     required TResult Function() idle,
     required TResult Function() loading,
+    required TResult Function() loadingMore,
     required TResult Function() loaded,
     required TResult Function(BottomSheetMessageModel message) error,
+    required TResult Function(String message) loadingMoreError,
     required TResult Function() connectionError,
   }) {
     return connectionError();
@@ -655,8 +1018,10 @@ class _$ConnectionErrorImpl implements _ConnectionError {
   TResult? whenOrNull<TResult extends Object?>({
     TResult? Function()? idle,
     TResult? Function()? loading,
+    TResult? Function()? loadingMore,
     TResult? Function()? loaded,
     TResult? Function(BottomSheetMessageModel message)? error,
+    TResult? Function(String message)? loadingMoreError,
     TResult? Function()? connectionError,
   }) {
     return connectionError?.call();
@@ -667,8 +1032,10 @@ class _$ConnectionErrorImpl implements _ConnectionError {
   TResult maybeWhen<TResult extends Object?>({
     TResult Function()? idle,
     TResult Function()? loading,
+    TResult Function()? loadingMore,
     TResult Function()? loaded,
     TResult Function(BottomSheetMessageModel message)? error,
+    TResult Function(String message)? loadingMoreError,
     TResult Function()? connectionError,
     required TResult orElse(),
   }) {
@@ -683,8 +1050,10 @@ class _$ConnectionErrorImpl implements _ConnectionError {
   TResult map<TResult extends Object?>({
     required TResult Function(_Idle value) idle,
     required TResult Function(_Loading value) loading,
+    required TResult Function(_LoadingMore value) loadingMore,
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
+    required TResult Function(_LoadingMoreError value) loadingMoreError,
     required TResult Function(_ConnectionError value) connectionError,
   }) {
     return connectionError(this);
@@ -695,8 +1064,10 @@ class _$ConnectionErrorImpl implements _ConnectionError {
   TResult? mapOrNull<TResult extends Object?>({
     TResult? Function(_Idle value)? idle,
     TResult? Function(_Loading value)? loading,
+    TResult? Function(_LoadingMore value)? loadingMore,
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
+    TResult? Function(_LoadingMoreError value)? loadingMoreError,
     TResult? Function(_ConnectionError value)? connectionError,
   }) {
     return connectionError?.call(this);
@@ -707,8 +1078,10 @@ class _$ConnectionErrorImpl implements _ConnectionError {
   TResult maybeMap<TResult extends Object?>({
     TResult Function(_Idle value)? idle,
     TResult Function(_Loading value)? loading,
+    TResult Function(_LoadingMore value)? loadingMore,
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
+    TResult Function(_LoadingMoreError value)? loadingMoreError,
     TResult Function(_ConnectionError value)? connectionError,
     required TResult orElse(),
   }) {

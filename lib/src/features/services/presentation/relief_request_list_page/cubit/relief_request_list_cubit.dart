@@ -33,7 +33,7 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
   List<BaseRequestEntity> get items => List.unmodifiable(_items);
 
   int _page = 1;
-  final int _pageSize = 4;
+  final int _pageSize = 20;
   int _totalCount = 0;
   bool _isLoadingMore = false;
 
@@ -82,7 +82,7 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
       success: (data, _, __) {
         _totalCount = data.totalCount;
         _items.addAll(data.items);
-        _safeEmit(ReliefRequestListState.loaded());
+        _safeEmit(const ReliefRequestListState.loaded());
       },
       failure: (error, msg) {
         _safeEmit(
@@ -106,7 +106,7 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
     _isLoadingMore = true;
     _page++;
 
-    emit(ReliefRequestListState.loadingMore());
+    emit(const ReliefRequestListState.loadingMore());
 
     final param = _buildFilterParam();
     final result = await _getReliefRequestListUseCase(param);
@@ -115,7 +115,7 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
         _totalCount = data.totalCount;
         _items.addAll(data.items);
 
-        _safeEmit(ReliefRequestListState.loaded());
+        _safeEmit(const ReliefRequestListState.loaded());
       },
       failure: (error, msg) {
         _page--;
@@ -125,7 +125,7 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
       },
       connectionError: () {
         _page--;
-        _safeEmit(ReliefRequestListState.loadingMoreError(
+        _safeEmit(const ReliefRequestListState.loadingMoreError(
           message: 'اتصال اینترنت خود را بررسی کنید',
         ));
       },
