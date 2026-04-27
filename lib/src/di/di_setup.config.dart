@@ -57,6 +57,8 @@ import '../features/dashboard/domain/repositories/dashboard_report_repository.da
     as _i135;
 import '../features/dashboard/domain/use_cases/get_dashboard_data_use_case.dart'
     as _i208;
+import '../features/dashboard/domain/use_cases/get_server_date_time_use_case.dart'
+    as _i228;
 import '../features/dashboard/presentation/cubit/dashboard_cubit.dart' as _i932;
 import '../features/indicator_report/data/data_sources/indicator_report_data_source.dart'
     as _i691;
@@ -451,6 +453,8 @@ _i174.GetIt $initGetIt(
           ));
   gh.lazySingleton<_i208.GetDashboardDataUseCase>(() =>
       _i208.GetDashboardDataUseCase(gh<_i135.DashboardReportRepository>()));
+  gh.lazySingleton<_i228.GetServerDateTimeUseCase>(() =>
+      _i228.GetServerDateTimeUseCase(gh<_i135.DashboardReportRepository>()));
   gh.factory<_i84.MapCubit>(() => _i84.MapCubit(
         gh<_i406.FetchAddressInfoUseCase>(),
         gh<_i283.EnsureLocationReadingUseCase>(),
@@ -482,6 +486,10 @@ _i174.GetIt $initGetIt(
       _i67.GetRequestFollowupHistoryUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i955.GetRequestStatusHistoryUseCase>(() =>
       _i955.GetRequestStatusHistoryUseCase(gh<_i603.RequestRepository>()));
+  gh.factory<_i932.DashboardCubit>(() => _i932.DashboardCubit(
+        gh<_i208.GetDashboardDataUseCase>(),
+        gh<_i228.GetServerDateTimeUseCase>(),
+      ));
   gh.factory<_i154.EvaluationHistoryCubit>(() => _i154.EvaluationHistoryCubit(
         gh<_i467.GetEvaluationHistoryListUseCase>(),
         gh<_i376.FetchSelectedRequestItemUseCase>(),
@@ -499,8 +507,6 @@ _i174.GetIt $initGetIt(
         gh<_i672.GetReliefRequestByIdUseCase>(),
         gh<_i63.GetHomeServiceRequestByIdUseCase>(),
       ));
-  gh.factory<_i932.DashboardCubit>(
-      () => _i932.DashboardCubit(gh<_i208.GetDashboardDataUseCase>()));
   gh.factory<_i563.RequestStatusHistoryCubit>(
       () => _i563.RequestStatusHistoryCubit(
             gh<_i955.GetRequestStatusHistoryUseCase>(),

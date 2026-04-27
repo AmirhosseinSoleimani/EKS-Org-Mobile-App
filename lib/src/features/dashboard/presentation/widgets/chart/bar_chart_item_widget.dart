@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/material.dart';
 
 class BarChartItemWidget extends StatelessWidget {
@@ -19,7 +20,7 @@ class BarChartItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final value = percent.clamp(0, 100) / 100;
+    final value = (percent.clamp(0, 100) / 100);
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.end,
@@ -30,14 +31,16 @@ class BarChartItemWidget extends StatelessWidget {
         ),
         LayoutBuilder(
           builder: (context, constraints) {
-            final barWidth = constraints.maxWidth * value;
+            final maxWidth = constraints.maxWidth;
+            final usableWidth = maxWidth - (maxWidth * 0.1);
+            final barWidth = usableWidth * value;
 
             return Stack(
               children: [
                 Align(
                   alignment: Alignment.centerLeft,
                   child: Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
+                    padding: const EdgeInsets.symmetric(horizontal: 8),
                     width: barWidth,
                     height: barHeight,
                     decoration: BoxDecoration(
@@ -45,7 +48,7 @@ class BarChartItemWidget extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                     ),
                     alignment: Alignment.centerRight,
-                    child: BodyMediumText(
+                    child: BodySmallText(
                       text: "$count",
                       color: Colors.white,
                     ),

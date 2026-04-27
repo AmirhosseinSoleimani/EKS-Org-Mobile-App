@@ -4,20 +4,21 @@ import 'package:eks_sana_plus_org/src/features/dashboard/domain/entities/chart_d
 import 'package:eks_sana_plus_org/src/features/dashboard/domain/entities/dashboard_entity.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/domain/entities/dashboard_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/domain/use_cases/get_dashboard_data_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/dashboard/domain/use_cases/get_server_date_time_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 part 'dashboard_cubit.freezed.dart';
-
 part 'dashboard_state.dart';
 
 @injectable
 class DashboardCubit extends Cubit<DashboardState> {
-  DashboardCubit(this._getDashboardDataUseCase)
+  DashboardCubit(this._getDashboardDataUseCase, this._getServerDateTimeUseCase)
       : super(const DashboardState.idle());
   final GetDashboardDataUseCase _getDashboardDataUseCase;
+  final GetServerDateTimeUseCase _getServerDateTimeUseCase;
 
   DashboardEntity? dashboardData;
 
@@ -33,24 +34,56 @@ class DashboardCubit extends Cubit<DashboardState> {
 
   DateTime? get selectedToDate => selectedToDateNotifier.value;
 
-
-  void loadDashboardData() async {
+  Future<void> loadDashboardData() async {
     _safeEmit(const DashboardState.loading());
 
+    await _loadServerDateOrFallback();
+    await _loadDashboard();
+  }
+
+  Future<void> _loadServerDateOrFallback() async {
+    final now = DateTime.now();
+    DateTime dateValue = now;
+
+    final result = await _getServerDateTimeUseCase();
+
+    result.when(
+      success: (data, failures, code) {
+        dateValue = _safeParseDate(data?.date) ?? now;
+      },
+      failure: (_, __) => dateValue = now,
+      connectionError: () => dateValue = now,
+      expireToken: () => dateValue = now,
+    );
+
+    selectedFromDateNotifier.value = dateValue;
+    selectedToDateNotifier.value = dateValue;
+  }
+
+  DateTime? _safeParseDate(String? value) {
+    try {
+      if (value == null) return null;
+      return DateTime.parse(value);
+    } catch (_) {
+      return null;
+    }
+  }
+
+  Future<void> _loadDashboard() async {
     final param = DashboardParamEntity(
       serviceType: selectedServiceType,
-      fromDateTime: DateTime(2026,04,22),
-      toDateTime: DateTime(2026,04,22),
+      fromDateTime: selectedFromDate,
+      toDateTime: selectedToDate,
     );
 
     final result = await _getDashboardDataUseCase(param);
 
     result.whenOrNull(
-      success: (data, failures, resultCode) async {
+      success: (data, failures, code) {
         dashboardData = data;
         _safeEmit(const DashboardState.loaded());
       },
-      failure: (error, msg) {
+      failure: (_, msg) {
         _safeEmit(
           DashboardState.error(
             message: BottomSheetMessageModel(
@@ -60,7 +93,9 @@ class DashboardCubit extends Cubit<DashboardState> {
           ),
         );
       },
-      connectionError: () => _safeEmit(const DashboardState.connectionError()),
+      connectionError: () {
+        _safeEmit(const DashboardState.connectionError());
+      },
     );
   }
 
