@@ -1,7 +1,7 @@
 import 'dart:ui';
 
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/online_map/cubit/online_map_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/online_map_page/cubit/online_map_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_status_section.dart';
@@ -16,7 +16,7 @@ import 'widgets/online_map_section.dart';
 
 class OnlineMapPage extends StatelessWidget {
   static const path = "/online-map-page";
-  static const name = "online_map-page";
+  static const name = "online_map_page-page";
 
   const OnlineMapPage({super.key});
 

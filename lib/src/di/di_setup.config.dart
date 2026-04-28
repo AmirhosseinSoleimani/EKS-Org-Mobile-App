@@ -112,8 +112,8 @@ import '../features/services/presentation/home_service_request_list_page/cubit/h
     as _i1013;
 import '../features/services/presentation/non_cooperation_page/cubit/non_cooperation_cubit.dart'
     as _i165;
-import '../features/services/presentation/online_map/cubit/online_map_cubit.dart'
-    as _i290;
+import '../features/services/presentation/online_map_page/cubit/online_map_cubit.dart'
+    as _i709;
 import '../features/services/presentation/pre_invoice_page/cubit/pre_invoice_cubit.dart'
     as _i809;
 import '../features/services/presentation/relief_request_list_page/cubit/relief_request_list_cubit.dart'
@@ -160,6 +160,7 @@ import '../shared/features/map/data/repository_impl/map_share_data_repository_im
 import '../shared/features/map/data/service/location_permission_service.dart'
     as _i988;
 import '../shared/features/map/data/service/map_service.dart' as _i929;
+import '../shared/features/map/data/service/route_service.dart' as _i555;
 import '../shared/features/map/domain/repository/location_permission_repository.dart'
     as _i995;
 import '../shared/features/map/domain/repository/map_repository.dart' as _i92;
@@ -320,6 +321,8 @@ _i174.GetIt $initGetIt(
       () => _i634.InvoiceService(gh<_i361.Dio>()));
   gh.lazySingleton<_i929.MapService>(() => _i929.MapService(gh<_i361.Dio>()));
   gh.lazySingleton<_i313.UserService>(() => _i313.UserService(gh<_i361.Dio>()));
+  gh.lazySingleton<_i555.RouteService>(
+      () => _i555.RouteService(gh<_i361.Dio>()));
   gh.lazySingleton<_i475.MainRemoteDataSource>(
       () => _i203.MainRemoteDataSourceImpl(gh<_i438.MainService>()));
   gh.lazySingleton<_i471.GetCurrentNetworkStatusUseCase>(() =>
@@ -327,8 +330,6 @@ _i174.GetIt $initGetIt(
           gh<_i422.ObserveNetworkRepository>()));
   gh.lazySingleton<_i1061.ObserveNetworkUseCase>(
       () => _i1061.ObserveNetworkUseCase(gh<_i422.ObserveNetworkRepository>()));
-  gh.lazySingleton<_i971.MapDataSource>(
-      () => _i583.MapDataSourceImpl(gh<_i929.MapService>()));
   gh.lazySingleton<_i691.IndicatorReportDataSource>(() =>
       _i87.IndicatorReportDataSourceImpl(gh<_i140.IndicatorReportService>()));
   gh.lazySingleton<_i995.LocationPermissionRepository>(() =>
@@ -351,14 +352,16 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i705.GetCurrentLocationUseCase>(() =>
       _i705.GetCurrentLocationUseCase(
           gh<_i995.LocationPermissionRepository>()));
-  gh.lazySingleton<_i92.MapRepository>(
-      () => _i810.MapRepositoryImpl(gh<_i971.MapDataSource>()));
   gh.lazySingleton<_i716.AuthRepository>(() => _i781.AuthRepositoryImpl(
         gh<_i479.AuthRemoteDataSource>(),
         gh<_i308.SessionStorage>(),
       ));
   gh.lazySingleton<_i854.MainRepository>(
       () => _i320.MainRepositoryImpl(gh<_i475.MainRemoteDataSource>()));
+  gh.lazySingleton<_i971.MapDataSource>(() => _i583.MapDataSourceImpl(
+        gh<_i929.MapService>(),
+        gh<_i555.RouteService>(),
+      ));
   gh.lazySingleton<_i935.InvoiceDataSource>(
       () => _i981.InvoiceDataSourceImpl(gh<_i634.InvoiceService>()));
   gh.lazySingleton<_i829.InvoiceRepository>(
@@ -386,14 +389,6 @@ _i174.GetIt $initGetIt(
       ));
   gh.lazySingleton<_i603.RequestRepository>(
       () => _i794.RequestRepositoryImpl(gh<_i1016.RequestDataSource>()));
-  gh.lazySingleton<_i739.FetchAddressToLocationUseCase>(
-      () => _i739.FetchAddressToLocationUseCase(gh<_i92.MapRepository>()));
-  gh.lazySingleton<_i730.FetchLocationToAddressUseCase>(
-      () => _i730.FetchLocationToAddressUseCase(gh<_i92.MapRepository>()));
-  gh.lazySingleton<_i678.GetAreaBaseInfoUseCase>(
-      () => _i678.GetAreaBaseInfoUseCase(gh<_i92.MapRepository>()));
-  gh.lazySingleton<_i159.FetchAddressInfoUseCase>(
-      () => _i159.FetchAddressInfoUseCase(gh<_i92.MapRepository>()));
   gh.lazySingleton<_i216.FetchBaseUserInfoUseCase>(
       () => _i216.FetchBaseUserInfoUseCase(gh<_i74.UserRepository>()));
   gh.lazySingleton<_i422.FetchCarSelectedUseCase>(
@@ -428,20 +423,13 @@ _i174.GetIt $initGetIt(
         gh<_i139.LoginUseCase>(),
         gh<_i826.PhoneNumberValidatorUseCase>(),
       ));
+  gh.lazySingleton<_i92.MapRepository>(
+      () => _i810.MapRepositoryImpl(gh<_i971.MapDataSource>()));
   gh.lazySingleton<_i856.SetCarSelectedKilometerUseCase>(
       () => _i856.SetCarSelectedKilometerUseCase(
             gh<_i74.UserRepository>(),
             gh<_i422.FetchCarSelectedUseCase>(),
           ));
-  gh.factory<_i84.MapCubit>(() => _i84.MapCubit(
-        gh<_i406.FetchAddressInfoUseCase>(),
-        gh<_i283.EnsureLocationReadingUseCase>(),
-        gh<_i296.ApplyHighAccuracyUseCase>(),
-        gh<_i705.GetCurrentLocationUseCase>(),
-        gh<_i730.FetchLocationToAddressUseCase>(),
-        gh<_i453.SetAddressInfoUseCase>(),
-        gh<_i739.FetchAddressToLocationUseCase>(),
-      ));
   gh.lazySingleton<_i765.GetCartableCycleListUseCase>(
       () => _i765.GetCartableCycleListUseCase(gh<_i603.RequestRepository>()));
   gh.lazySingleton<_i581.GetChassisRequestHistoryListUseCase>(() =>
@@ -480,6 +468,14 @@ _i174.GetIt $initGetIt(
         gh<_i63.GetHomeServiceRequestByIdUseCase>(),
         gh<_i786.GetEmdadgarInfoUseCase>(),
       ));
+  gh.lazySingleton<_i739.FetchAddressToLocationUseCase>(
+      () => _i739.FetchAddressToLocationUseCase(gh<_i92.MapRepository>()));
+  gh.lazySingleton<_i730.FetchLocationToAddressUseCase>(
+      () => _i730.FetchLocationToAddressUseCase(gh<_i92.MapRepository>()));
+  gh.lazySingleton<_i678.GetRouteUseCase>(
+      () => _i678.GetRouteUseCase(gh<_i92.MapRepository>()));
+  gh.lazySingleton<_i159.GetAreaBaseInfoUseCase>(
+      () => _i159.GetAreaBaseInfoUseCase(gh<_i92.MapRepository>()));
   gh.factory<_i1048.ReliefRequestListCubit>(() => _i1048.ReliefRequestListCubit(
         gh<_i192.GetReliefRequestListUseCase>(),
         gh<_i369.SetSelectedRequestItemUseCase>(),
@@ -490,6 +486,13 @@ _i174.GetIt $initGetIt(
         gh<_i672.GetReliefRequestByIdUseCase>(),
         gh<_i63.GetHomeServiceRequestByIdUseCase>(),
         gh<_i786.GetEmdadgarInfoUseCase>(),
+      ));
+  gh.factory<_i709.OnlineMapCubit>(() => _i709.OnlineMapCubit(
+        gh<_i376.FetchSelectedRequestItemUseCase>(),
+        gh<_i672.GetReliefRequestByIdUseCase>(),
+        gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+        gh<_i786.GetEmdadgarInfoUseCase>(),
+        gh<_i678.GetRouteUseCase>(),
       ));
   gh.factory<_i809.PreInvoiceCubit>(() => _i809.PreInvoiceCubit(
         gh<_i116.GetPreInvoiceUseCase>(),
@@ -502,12 +505,6 @@ _i174.GetIt $initGetIt(
         gh<_i376.FetchSelectedRequestItemUseCase>(),
         gh<_i672.GetReliefRequestByIdUseCase>(),
         gh<_i63.GetHomeServiceRequestByIdUseCase>(),
-      ));
-  gh.factory<_i290.OnlineMapCubit>(() => _i290.OnlineMapCubit(
-        gh<_i376.FetchSelectedRequestItemUseCase>(),
-        gh<_i672.GetReliefRequestByIdUseCase>(),
-        gh<_i63.GetHomeServiceRequestByIdUseCase>(),
-        gh<_i786.GetEmdadgarInfoUseCase>(),
       ));
   gh.factory<_i563.RequestStatusHistoryCubit>(
       () => _i563.RequestStatusHistoryCubit(
@@ -536,6 +533,15 @@ _i174.GetIt $initGetIt(
             gh<_i809.GetHomeServiceRequestListUseCase>(),
             gh<_i369.SetSelectedRequestItemUseCase>(),
           ));
+  gh.factory<_i84.MapCubit>(() => _i84.MapCubit(
+        gh<_i406.FetchAddressInfoUseCase>(),
+        gh<_i283.EnsureLocationReadingUseCase>(),
+        gh<_i296.ApplyHighAccuracyUseCase>(),
+        gh<_i705.GetCurrentLocationUseCase>(),
+        gh<_i730.FetchLocationToAddressUseCase>(),
+        gh<_i453.SetAddressInfoUseCase>(),
+        gh<_i739.FetchAddressToLocationUseCase>(),
+      ));
   return getIt;
 }
 

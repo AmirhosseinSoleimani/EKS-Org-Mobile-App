@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart'
 import 'package:eks_sana_plus_org/src/shared/features/map/data/models/area_base_model.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/data/models/online_route_model.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/data/models/param/route_param_model.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/data/service/route_service.dart';
 import 'package:injectable/injectable.dart';
 
 import '../models/address_to_location_response_model.dart';
@@ -13,8 +14,9 @@ import 'map_data_source.dart';
 @LazySingleton(as: MapDataSource)
 class MapDataSourceImpl extends MapDataSource {
   final MapService _service;
+  final RouteService roteService;
 
-  MapDataSourceImpl(this._service);
+  MapDataSourceImpl(this._service, this.roteService);
 
   @override
   Future<LocationToAddressResponseModel?> fetchLocationToAddress(
@@ -34,11 +36,11 @@ class MapDataSourceImpl extends MapDataSource {
 
   @override
   Future<BaseSingleResponse<RouteDataModel>> getRoute(RouteParamModel param) async {
-    return await _service.getRoute(param.toJson());
+    return await roteService.getRoute(param.toJson());
   }
 
   @override
   Future<BaseSingleResponse<AreaBaseModel>> getAreaBaseData() async{
-    return await _service.getAreaBaseData({});
+    return await roteService.getAreaBaseData({});
   }
 }

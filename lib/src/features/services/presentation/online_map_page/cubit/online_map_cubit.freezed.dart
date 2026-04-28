@@ -22,6 +22,7 @@ mixin _$OnlineMapState {
     required TResult Function() loading,
     required TResult Function() loaded,
     required TResult Function(BottomSheetMessageModel message) error,
+    required TResult Function() refresh,
     required TResult Function() connectionError,
   }) =>
       throw _privateConstructorUsedError;
@@ -31,6 +32,7 @@ mixin _$OnlineMapState {
     TResult? Function()? loading,
     TResult? Function()? loaded,
     TResult? Function(BottomSheetMessageModel message)? error,
+    TResult? Function()? refresh,
     TResult? Function()? connectionError,
   }) =>
       throw _privateConstructorUsedError;
@@ -40,6 +42,7 @@ mixin _$OnlineMapState {
     TResult Function()? loading,
     TResult Function()? loaded,
     TResult Function(BottomSheetMessageModel message)? error,
+    TResult Function()? refresh,
     TResult Function()? connectionError,
     required TResult orElse(),
   }) =>
@@ -50,6 +53,7 @@ mixin _$OnlineMapState {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
+    required TResult Function(_Refresh value) refresh,
     required TResult Function(_ConnectionError value) connectionError,
   }) =>
       throw _privateConstructorUsedError;
@@ -59,6 +63,7 @@ mixin _$OnlineMapState {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
+    TResult? Function(_Refresh value)? refresh,
     TResult? Function(_ConnectionError value)? connectionError,
   }) =>
       throw _privateConstructorUsedError;
@@ -68,6 +73,7 @@ mixin _$OnlineMapState {
     TResult Function(_Loading value)? loading,
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
+    TResult Function(_Refresh value)? refresh,
     TResult Function(_ConnectionError value)? connectionError,
     required TResult orElse(),
   }) =>
@@ -133,6 +139,7 @@ class _$IdleImpl implements _Idle {
     required TResult Function() loading,
     required TResult Function() loaded,
     required TResult Function(BottomSheetMessageModel message) error,
+    required TResult Function() refresh,
     required TResult Function() connectionError,
   }) {
     return idle();
@@ -145,6 +152,7 @@ class _$IdleImpl implements _Idle {
     TResult? Function()? loading,
     TResult? Function()? loaded,
     TResult? Function(BottomSheetMessageModel message)? error,
+    TResult? Function()? refresh,
     TResult? Function()? connectionError,
   }) {
     return idle?.call();
@@ -157,6 +165,7 @@ class _$IdleImpl implements _Idle {
     TResult Function()? loading,
     TResult Function()? loaded,
     TResult Function(BottomSheetMessageModel message)? error,
+    TResult Function()? refresh,
     TResult Function()? connectionError,
     required TResult orElse(),
   }) {
@@ -173,6 +182,7 @@ class _$IdleImpl implements _Idle {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
+    required TResult Function(_Refresh value) refresh,
     required TResult Function(_ConnectionError value) connectionError,
   }) {
     return idle(this);
@@ -185,6 +195,7 @@ class _$IdleImpl implements _Idle {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
+    TResult? Function(_Refresh value)? refresh,
     TResult? Function(_ConnectionError value)? connectionError,
   }) {
     return idle?.call(this);
@@ -197,6 +208,7 @@ class _$IdleImpl implements _Idle {
     TResult Function(_Loading value)? loading,
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
+    TResult Function(_Refresh value)? refresh,
     TResult Function(_ConnectionError value)? connectionError,
     required TResult orElse(),
   }) {
@@ -253,6 +265,7 @@ class _$LoadingImpl implements _Loading {
     required TResult Function() loading,
     required TResult Function() loaded,
     required TResult Function(BottomSheetMessageModel message) error,
+    required TResult Function() refresh,
     required TResult Function() connectionError,
   }) {
     return loading();
@@ -265,6 +278,7 @@ class _$LoadingImpl implements _Loading {
     TResult? Function()? loading,
     TResult? Function()? loaded,
     TResult? Function(BottomSheetMessageModel message)? error,
+    TResult? Function()? refresh,
     TResult? Function()? connectionError,
   }) {
     return loading?.call();
@@ -277,6 +291,7 @@ class _$LoadingImpl implements _Loading {
     TResult Function()? loading,
     TResult Function()? loaded,
     TResult Function(BottomSheetMessageModel message)? error,
+    TResult Function()? refresh,
     TResult Function()? connectionError,
     required TResult orElse(),
   }) {
@@ -293,6 +308,7 @@ class _$LoadingImpl implements _Loading {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
+    required TResult Function(_Refresh value) refresh,
     required TResult Function(_ConnectionError value) connectionError,
   }) {
     return loading(this);
@@ -305,6 +321,7 @@ class _$LoadingImpl implements _Loading {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
+    TResult? Function(_Refresh value)? refresh,
     TResult? Function(_ConnectionError value)? connectionError,
   }) {
     return loading?.call(this);
@@ -317,6 +334,7 @@ class _$LoadingImpl implements _Loading {
     TResult Function(_Loading value)? loading,
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
+    TResult Function(_Refresh value)? refresh,
     TResult Function(_ConnectionError value)? connectionError,
     required TResult orElse(),
   }) {
@@ -373,6 +391,7 @@ class _$LoadedImpl implements _Loaded {
     required TResult Function() loading,
     required TResult Function() loaded,
     required TResult Function(BottomSheetMessageModel message) error,
+    required TResult Function() refresh,
     required TResult Function() connectionError,
   }) {
     return loaded();
@@ -385,6 +404,7 @@ class _$LoadedImpl implements _Loaded {
     TResult? Function()? loading,
     TResult? Function()? loaded,
     TResult? Function(BottomSheetMessageModel message)? error,
+    TResult? Function()? refresh,
     TResult? Function()? connectionError,
   }) {
     return loaded?.call();
@@ -397,6 +417,7 @@ class _$LoadedImpl implements _Loaded {
     TResult Function()? loading,
     TResult Function()? loaded,
     TResult Function(BottomSheetMessageModel message)? error,
+    TResult Function()? refresh,
     TResult Function()? connectionError,
     required TResult orElse(),
   }) {
@@ -413,6 +434,7 @@ class _$LoadedImpl implements _Loaded {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
+    required TResult Function(_Refresh value) refresh,
     required TResult Function(_ConnectionError value) connectionError,
   }) {
     return loaded(this);
@@ -425,6 +447,7 @@ class _$LoadedImpl implements _Loaded {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
+    TResult? Function(_Refresh value)? refresh,
     TResult? Function(_ConnectionError value)? connectionError,
   }) {
     return loaded?.call(this);
@@ -437,6 +460,7 @@ class _$LoadedImpl implements _Loaded {
     TResult Function(_Loading value)? loading,
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
+    TResult Function(_Refresh value)? refresh,
     TResult Function(_ConnectionError value)? connectionError,
     required TResult orElse(),
   }) {
@@ -519,6 +543,7 @@ class _$ErrorImpl implements _Error {
     required TResult Function() loading,
     required TResult Function() loaded,
     required TResult Function(BottomSheetMessageModel message) error,
+    required TResult Function() refresh,
     required TResult Function() connectionError,
   }) {
     return error(message);
@@ -531,6 +556,7 @@ class _$ErrorImpl implements _Error {
     TResult? Function()? loading,
     TResult? Function()? loaded,
     TResult? Function(BottomSheetMessageModel message)? error,
+    TResult? Function()? refresh,
     TResult? Function()? connectionError,
   }) {
     return error?.call(message);
@@ -543,6 +569,7 @@ class _$ErrorImpl implements _Error {
     TResult Function()? loading,
     TResult Function()? loaded,
     TResult Function(BottomSheetMessageModel message)? error,
+    TResult Function()? refresh,
     TResult Function()? connectionError,
     required TResult orElse(),
   }) {
@@ -559,6 +586,7 @@ class _$ErrorImpl implements _Error {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
+    required TResult Function(_Refresh value) refresh,
     required TResult Function(_ConnectionError value) connectionError,
   }) {
     return error(this);
@@ -571,6 +599,7 @@ class _$ErrorImpl implements _Error {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
+    TResult? Function(_Refresh value)? refresh,
     TResult? Function(_ConnectionError value)? connectionError,
   }) {
     return error?.call(this);
@@ -583,6 +612,7 @@ class _$ErrorImpl implements _Error {
     TResult Function(_Loading value)? loading,
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
+    TResult Function(_Refresh value)? refresh,
     TResult Function(_ConnectionError value)? connectionError,
     required TResult orElse(),
   }) {
@@ -601,6 +631,132 @@ abstract class _Error implements OnlineMapState {
   @JsonKey(ignore: true)
   _$$ErrorImplCopyWith<_$ErrorImpl> get copyWith =>
       throw _privateConstructorUsedError;
+}
+
+/// @nodoc
+abstract class _$$RefreshImplCopyWith<$Res> {
+  factory _$$RefreshImplCopyWith(
+          _$RefreshImpl value, $Res Function(_$RefreshImpl) then) =
+      __$$RefreshImplCopyWithImpl<$Res>;
+}
+
+/// @nodoc
+class __$$RefreshImplCopyWithImpl<$Res>
+    extends _$OnlineMapStateCopyWithImpl<$Res, _$RefreshImpl>
+    implements _$$RefreshImplCopyWith<$Res> {
+  __$$RefreshImplCopyWithImpl(
+      _$RefreshImpl _value, $Res Function(_$RefreshImpl) _then)
+      : super(_value, _then);
+}
+
+/// @nodoc
+
+class _$RefreshImpl implements _Refresh {
+  const _$RefreshImpl();
+
+  @override
+  String toString() {
+    return 'OnlineMapState.refresh()';
+  }
+
+  @override
+  bool operator ==(Object other) {
+    return identical(this, other) ||
+        (other.runtimeType == runtimeType && other is _$RefreshImpl);
+  }
+
+  @override
+  int get hashCode => runtimeType.hashCode;
+
+  @override
+  @optionalTypeArgs
+  TResult when<TResult extends Object?>({
+    required TResult Function() idle,
+    required TResult Function() loading,
+    required TResult Function() loaded,
+    required TResult Function(BottomSheetMessageModel message) error,
+    required TResult Function() refresh,
+    required TResult Function() connectionError,
+  }) {
+    return refresh();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? whenOrNull<TResult extends Object?>({
+    TResult? Function()? idle,
+    TResult? Function()? loading,
+    TResult? Function()? loaded,
+    TResult? Function(BottomSheetMessageModel message)? error,
+    TResult? Function()? refresh,
+    TResult? Function()? connectionError,
+  }) {
+    return refresh?.call();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeWhen<TResult extends Object?>({
+    TResult Function()? idle,
+    TResult Function()? loading,
+    TResult Function()? loaded,
+    TResult Function(BottomSheetMessageModel message)? error,
+    TResult Function()? refresh,
+    TResult Function()? connectionError,
+    required TResult orElse(),
+  }) {
+    if (refresh != null) {
+      return refresh();
+    }
+    return orElse();
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult map<TResult extends Object?>({
+    required TResult Function(_Idle value) idle,
+    required TResult Function(_Loading value) loading,
+    required TResult Function(_Loaded value) loaded,
+    required TResult Function(_Error value) error,
+    required TResult Function(_Refresh value) refresh,
+    required TResult Function(_ConnectionError value) connectionError,
+  }) {
+    return refresh(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult? mapOrNull<TResult extends Object?>({
+    TResult? Function(_Idle value)? idle,
+    TResult? Function(_Loading value)? loading,
+    TResult? Function(_Loaded value)? loaded,
+    TResult? Function(_Error value)? error,
+    TResult? Function(_Refresh value)? refresh,
+    TResult? Function(_ConnectionError value)? connectionError,
+  }) {
+    return refresh?.call(this);
+  }
+
+  @override
+  @optionalTypeArgs
+  TResult maybeMap<TResult extends Object?>({
+    TResult Function(_Idle value)? idle,
+    TResult Function(_Loading value)? loading,
+    TResult Function(_Loaded value)? loaded,
+    TResult Function(_Error value)? error,
+    TResult Function(_Refresh value)? refresh,
+    TResult Function(_ConnectionError value)? connectionError,
+    required TResult orElse(),
+  }) {
+    if (refresh != null) {
+      return refresh(this);
+    }
+    return orElse();
+  }
+}
+
+abstract class _Refresh implements OnlineMapState {
+  const factory _Refresh() = _$RefreshImpl;
 }
 
 /// @nodoc
@@ -645,6 +801,7 @@ class _$ConnectionErrorImpl implements _ConnectionError {
     required TResult Function() loading,
     required TResult Function() loaded,
     required TResult Function(BottomSheetMessageModel message) error,
+    required TResult Function() refresh,
     required TResult Function() connectionError,
   }) {
     return connectionError();
@@ -657,6 +814,7 @@ class _$ConnectionErrorImpl implements _ConnectionError {
     TResult? Function()? loading,
     TResult? Function()? loaded,
     TResult? Function(BottomSheetMessageModel message)? error,
+    TResult? Function()? refresh,
     TResult? Function()? connectionError,
   }) {
     return connectionError?.call();
@@ -669,6 +827,7 @@ class _$ConnectionErrorImpl implements _ConnectionError {
     TResult Function()? loading,
     TResult Function()? loaded,
     TResult Function(BottomSheetMessageModel message)? error,
+    TResult Function()? refresh,
     TResult Function()? connectionError,
     required TResult orElse(),
   }) {
@@ -685,6 +844,7 @@ class _$ConnectionErrorImpl implements _ConnectionError {
     required TResult Function(_Loading value) loading,
     required TResult Function(_Loaded value) loaded,
     required TResult Function(_Error value) error,
+    required TResult Function(_Refresh value) refresh,
     required TResult Function(_ConnectionError value) connectionError,
   }) {
     return connectionError(this);
@@ -697,6 +857,7 @@ class _$ConnectionErrorImpl implements _ConnectionError {
     TResult? Function(_Loading value)? loading,
     TResult? Function(_Loaded value)? loaded,
     TResult? Function(_Error value)? error,
+    TResult? Function(_Refresh value)? refresh,
     TResult? Function(_ConnectionError value)? connectionError,
   }) {
     return connectionError?.call(this);
@@ -709,6 +870,7 @@ class _$ConnectionErrorImpl implements _ConnectionError {
     TResult Function(_Loading value)? loading,
     TResult Function(_Loaded value)? loaded,
     TResult Function(_Error value)? error,
+    TResult Function(_Refresh value)? refresh,
     TResult Function(_ConnectionError value)? connectionError,
     required TResult orElse(),
   }) {

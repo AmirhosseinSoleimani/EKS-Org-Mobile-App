@@ -1,20 +1,23 @@
+import 'dart:async';
+
 import 'package:eks_sana_plus_org/src/common/constants/fetch_result_type.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_info_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_operation_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/service_request_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/fetch_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_emdadgar_info_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_home_service_request_by_id_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_relief_request_by_id_use_case.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/online_route_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/params/route_param_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/domain/usecase/get_route_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 part 'online_map_cubit.freezed.dart';
-
 part 'online_map_state.dart';
 
 @injectable
@@ -24,15 +27,20 @@ class OnlineMapCubit extends Cubit<OnlineMapState> {
     this._getReliefRequestByIdUseCase,
     this._getHomeServiceRequestByIdUseCase,
     this._getEmdadgarInfoUseCase,
+    this._getRouteUseCase,
   ) : super(const OnlineMapState.idle());
 
   final FetchSelectedRequestItemUseCase _fetchSelectedRequestItemUseCase;
   final GetReliefRequestByIdUseCase _getReliefRequestByIdUseCase;
   final GetHomeServiceRequestByIdUseCase _getHomeServiceRequestByIdUseCase;
   final GetEmdadgarInfoUseCase _getEmdadgarInfoUseCase;
+  final GetRouteUseCase _getRouteUseCase;
 
   EmdadgarInfoEntity? emdadgarInfo;
   BaseRequestEntity? selectedRequest;
+  RouteDataEntity? routeDataEntity;
+  bool isDetailsExpanded = false;
+  Timer? _pollingTimer;
 
   final List<dynamic> items = [];
   String? _errorMessage;
@@ -85,9 +93,9 @@ class OnlineMapCubit extends Cubit<OnlineMapState> {
       }
     }
 
-    final listResult = await _loadOnlineMapData();
-    if (listResult != FetchResultType.success) {
-      return listResult;
+    final mapDataResult = await _loadOnlineMapData();
+    if (mapDataResult != FetchResultType.success) {
+      return mapDataResult;
     }
 
     return FetchResultType.success;
@@ -148,6 +156,7 @@ class OnlineMapCubit extends Cubit<OnlineMapState> {
       success: (data, _, __) {
         emdadgarInfo = data;
         fetchResult = FetchResultType.success;
+       // _startPolling();
       },
       failure: (_, msg) {
         _errorMessage = _fallbackError(msg);
@@ -164,43 +173,58 @@ class OnlineMapCubit extends Cubit<OnlineMapState> {
   }
 
   Future<FetchResultType> _loadOnlineMapData() async {
-    return FetchResultType.success;
-
-    /*final result = await _getCartableCycleListUseCase(
-      _requestOperationParam,
+    final startParam = LocationParamEntity(
+      latitude: emdadgarInfo?.lastLocationLatitude ?? 0,
+      longitude: emdadgarInfo?.lastLocationLongitude ?? 0,
+    );
+    final destinationParam = LocationParamEntity(
+      latitude: selectedRequest?.latitude ?? 0,
+      longitude: selectedRequest?.longitude ?? 0,
     );
 
-   FetchResultType fetchResult = FetchResultType.failure;
+    final routeParam = RouteParamEntity(
+      start: startParam,
+      destination: destinationParam,
+      includeLegs: true,
+      includeStepsPoints: true,
+    );
+    final result = await _getRouteUseCase(routeParam);
+    FetchResultType fetchResult = FetchResultType.failure;
 
     result.when(
       success: (data, failures, resultCode) {
-        items.addAll(data);
+        routeDataEntity = data;
         fetchResult = FetchResultType.success;
       },
       failure: (_, msg) {
         _errorMessage = _fallbackError(msg);
-        fetchResult = FetchResultType.failure;
       },
       connectionError: () => fetchResult = FetchResultType.connectionError,
-      expireToken: () {
-        fetchResult = FetchResultType.expireToken;
-      },
+      expireToken: () => fetchResult = FetchResultType.expireToken,
     );
-    return fetchResult;*/
+    return fetchResult;
   }
 
-  RequestOperationParamEntity get _requestOperationParam {
-    return RequestOperationParamEntity(
-      serviceType:
-          selectedRequest?.serviceType ?? ServiceType.reliefService,
-      requestId: selectedRequest?.id ?? 0,
-    );
+  void _startPolling() {
+    _pollingTimer?.cancel();
+
+    _pollingTimer = Timer.periodic(const Duration(seconds: 10), (_) async {
+      final emdadgarResult = await _fetchEmdadgarInfo();
+
+      final mapDataResult = await _loadOnlineMapData();
+
+      if (emdadgarResult == FetchResultType.success &&
+          mapDataResult == FetchResultType.success) {
+        _safeEmit(const OnlineMapState.refresh());
+      }
+    });
   }
 
   void _clearData() {
     _errorMessage = null;
     emdadgarInfo = null;
     selectedRequest = null;
+    routeDataEntity = null;
     items.clear();
   }
 
@@ -218,4 +242,16 @@ class OnlineMapCubit extends Cubit<OnlineMapState> {
   void _safeEmit(OnlineMapState state) {
     if (!isClosed) emit(state);
   }
+
+  @override
+  Future<void> close() {
+    _pollingTimer?.cancel();
+    return super.close();
+  }
+
+  void toggleMapDetails() {
+    isDetailsExpanded = !isDetailsExpanded;
+    _safeEmit(const OnlineMapState.refresh());
+  }
+
 }

@@ -12,5 +12,7 @@ class OnlineMapState with _$OnlineMapState {
     required BottomSheetMessageModel message,
   }) = _Error;
 
+  const factory OnlineMapState.refresh() = _Refresh;
+
   const factory OnlineMapState.connectionError() = _ConnectionError;
 }

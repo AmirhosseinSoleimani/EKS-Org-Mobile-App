@@ -5,8 +5,8 @@ import 'package:eks_sana_plus_org/src/shared/usecase/use_case.dart';
 import 'package:injectable/injectable.dart';
 
 @lazySingleton
-class FetchAddressInfoUseCase extends BaseUseCaseNoArgs {
-  FetchAddressInfoUseCase(this._repository);
+class GetAreaBaseInfoUseCase extends BaseUseCaseNoArgs {
+  GetAreaBaseInfoUseCase(this._repository);
 
   final MapRepository _repository;
 
