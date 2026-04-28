@@ -112,6 +112,8 @@ import '../features/services/presentation/home_service_request_list_page/cubit/h
     as _i1013;
 import '../features/services/presentation/non_cooperation_page/cubit/non_cooperation_cubit.dart'
     as _i165;
+import '../features/services/presentation/online_map/cubit/online_map_cubit.dart'
+    as _i290;
 import '../features/services/presentation/pre_invoice_page/cubit/pre_invoice_cubit.dart'
     as _i809;
 import '../features/services/presentation/relief_request_list_page/cubit/relief_request_list_cubit.dart'
@@ -175,6 +177,7 @@ import '../shared/features/map/domain/usecase/fetch_location_to_address_use_case
     as _i730;
 import '../shared/features/map/domain/usecase/get_current_location_use_case.dart'
     as _i705;
+import '../shared/features/map/domain/usecase/get_route_use_case.dart' as _i678;
 import '../shared/features/map/domain/usecase/set_address_info_use_case.dart'
     as _i453;
 import '../shared/features/map/presentation/cubit/map_cubit.dart' as _i84;
@@ -385,6 +388,8 @@ _i174.GetIt $initGetIt(
       () => _i739.FetchAddressToLocationUseCase(gh<_i92.MapRepository>()));
   gh.lazySingleton<_i730.FetchLocationToAddressUseCase>(
       () => _i730.FetchLocationToAddressUseCase(gh<_i92.MapRepository>()));
+  gh.lazySingleton<_i678.GetRouteUseCase>(
+      () => _i678.GetRouteUseCase(gh<_i92.MapRepository>()));
   gh.lazySingleton<_i216.FetchBaseUserInfoUseCase>(
       () => _i216.FetchBaseUserInfoUseCase(gh<_i74.UserRepository>()));
   gh.lazySingleton<_i422.FetchCarSelectedUseCase>(
@@ -493,6 +498,12 @@ _i174.GetIt $initGetIt(
         gh<_i376.FetchSelectedRequestItemUseCase>(),
         gh<_i672.GetReliefRequestByIdUseCase>(),
         gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      ));
+  gh.factory<_i290.OnlineMapCubit>(() => _i290.OnlineMapCubit(
+        gh<_i376.FetchSelectedRequestItemUseCase>(),
+        gh<_i672.GetReliefRequestByIdUseCase>(),
+        gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+        gh<_i786.GetEmdadgarInfoUseCase>(),
       ));
   gh.factory<_i563.RequestStatusHistoryCubit>(
       () => _i563.RequestStatusHistoryCubit(

@@ -1,3 +1,6 @@
+import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/data/models/online_route_model.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/data/models/param/route_param_model.dart';
 import 'package:injectable/injectable.dart';
 
 import '../models/address_to_location_response_model.dart';
@@ -26,5 +29,10 @@ class MapDataSourceImpl extends MapDataSource {
     final result = await _service.fetchAddressToLocation(
         model?.text ?? '', '${model?.lon},${model?.lat}');
     return result;
+  }
+
+  @override
+  Future<BaseSingleResponse<RouteDataModel>> getRoute(RouteParamModel param) async {
+    return await _service.getRoute(param.toJson());
   }
 }
