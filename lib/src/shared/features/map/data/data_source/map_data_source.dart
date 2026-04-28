@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/data/models/area_base_model.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/data/models/online_route_model.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/data/models/param/route_param_model.dart';
 
@@ -14,4 +15,6 @@ abstract class MapDataSource {
       MapRequestModel? model);
 
   Future<BaseSingleResponse<RouteDataModel>> getRoute(RouteParamModel param);
+
+  Future<BaseSingleResponse<AreaBaseModel>> getAreaBaseData();
 }

@@ -6,9 +6,9 @@ import 'package:eks_sana_plus_org/src/shared/usecase/use_case.dart';
 import 'package:injectable/injectable.dart';
 
 @lazySingleton
-class GetRouteUseCase
+class GetAreaBaseInfoUseCase
     extends BaseUseCase<ApiResult<RouteDataEntity>, RouteParamEntity> {
-  GetRouteUseCase(this._repository);
+  GetAreaBaseInfoUseCase(this._repository);
 
   final MapRepository _repository;
 

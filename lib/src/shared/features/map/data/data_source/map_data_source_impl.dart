@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/data/models/area_base_model.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/data/models/online_route_model.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/data/models/param/route_param_model.dart';
 import 'package:injectable/injectable.dart';
@@ -34,5 +35,10 @@ class MapDataSourceImpl extends MapDataSource {
   @override
   Future<BaseSingleResponse<RouteDataModel>> getRoute(RouteParamModel param) async {
     return await _service.getRoute(param.toJson());
+  }
+
+  @override
+  Future<BaseSingleResponse<AreaBaseModel>> getAreaBaseData() async{
+    return await _service.getAreaBaseData({});
   }
 }

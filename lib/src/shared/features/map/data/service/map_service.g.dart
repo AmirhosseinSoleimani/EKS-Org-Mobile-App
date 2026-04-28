@@ -112,7 +112,7 @@ class _MapService implements MapService {
     )
         .compose(
           _dio.options,
-          '/api/RequestFollowUpOrg/ServiceRequestsFollowUpByUser',
+          '/api/MapOrg/Route',
           queryParameters: queryParameters,
           data: _data,
         )
@@ -127,6 +127,44 @@ class _MapService implements MapService {
       _value = BaseSingleResponse<RouteDataModel>.fromJson(
         _result.data!,
         (json) => RouteDataModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseSingleResponse<AreaBaseModel>> getAreaBaseData(
+      Map<String, dynamic> query) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.addAll(query);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<BaseSingleResponse<AreaBaseModel>>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+        .compose(
+          _dio.options,
+          '/api/AreaBaseInfoOrg/GetAreaBaseInfo',
+          queryParameters: queryParameters,
+          data: _data,
+        )
+        .copyWith(
+            baseUrl: _combineBaseUrls(
+          _dio.options.baseUrl,
+          baseUrl,
+        )));
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseSingleResponse<AreaBaseModel> _value;
+    try {
+      _value = BaseSingleResponse<AreaBaseModel>.fromJson(
+        _result.data!,
+        (json) => AreaBaseModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options);
