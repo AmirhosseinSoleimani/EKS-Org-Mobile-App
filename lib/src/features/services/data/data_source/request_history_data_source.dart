@@ -1,6 +1,7 @@
 import 'package:eks_sana_plus_org/src/features/services/data/models/Followup_Model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/cartable_cycle_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/chassis_request_history_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/control_info_models/control_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/non_cooperation_list_model.dart';
@@ -16,11 +17,11 @@ import '../models/evaluation_history_item_model.dart';
 
 
 abstract class RequestDataSource {
-  Future<BaseListResponse<ReliefRequestModel>> getReliefRequestList(RequestFilterParamModel param);
+  Future<BaseSingleResponse<ReliefRequestListModel>> getReliefRequestList(RequestFilterParamModel param);
 
   Future<BaseSingleResponse<ReliefRequestModel>> getReliefRequestById(int id);
 
-  Future<BaseListResponse<HomeServiceRequestModel>> getHomeServiceRequestList(RequestFilterParamModel param);
+  Future<BaseSingleResponse<HomeServiceRequestListModel>> getHomeServiceRequestList(RequestFilterParamModel param);
 
   Future<BaseSingleResponse<HomeServiceRequestModel>> getHomeServiceRequestById(int id);
 
@@ -42,4 +43,7 @@ abstract class RequestDataSource {
 
   Future<BaseListResponse<ChassisRequestHistoryModel>>
       getChassisRequestHistoryList(ChassisParamModel param);
+
+  Future<BaseSingleResponse<ControlInfoModel>>
+      getControlInfo(ServiceRequestParamModel param);
 }

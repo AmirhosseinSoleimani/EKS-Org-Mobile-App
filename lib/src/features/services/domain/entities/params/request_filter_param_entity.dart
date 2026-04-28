@@ -28,25 +28,25 @@ class RequestFilterParamEntity {
   });
 
   RequestFilterParamEntity copyWith({
-    String? requestNumber,
-    String? phone,
+    String? serviceRequestId,
+    String? callMobileNumber,
     String? chassisNumber,
     String? rescuerName,
-    String? city,
-    String? province,
-    RequestStatus? status,
+    String? cityName,
+    String? provinceName,
+    RequestStatus? requestStatus,
     TimePeriod? timePeriod,
     int? page,
     int? pageSize,
   }) {
     return RequestFilterParamEntity(
-      serviceRequestId: requestNumber ?? this.serviceRequestId,
-      callMobileNumber: phone ?? this.callMobileNumber,
+      serviceRequestId: serviceRequestId ?? this.serviceRequestId,
+      callMobileNumber: callMobileNumber ?? this.callMobileNumber,
       chassisNumber: chassisNumber ?? this.chassisNumber,
       rescuerName: rescuerName ?? this.rescuerName,
-      cityName: city ?? this.cityName,
-      provinceName: province ?? this.provinceName,
-      requestStatus: status ?? this.requestStatus,
+      cityName: cityName ?? this.cityName,
+      provinceName: provinceName ?? this.provinceName,
+      requestStatus: requestStatus ?? this.requestStatus,
       timePeriod: timePeriod ?? this.timePeriod,
       page: page ?? this.page,
       pageSize: pageSize ?? this.pageSize,
@@ -63,6 +63,8 @@ class RequestFilterParamEntity {
       provinceName: provinceName,
       requestStatus: requestStatus,
       timePeriod: timePeriod,
+      pageSize: pageSize,
+      page: page,
     );
   }
 }

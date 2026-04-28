@@ -50,51 +50,69 @@ class NonCooperationListView extends StatelessWidget {
                 child: EmptyListWidget(),
               ),
             ),
-          if (!isEmpty)
-            ListView.builder(
-            shrinkWrap: true,
-            physics: const NeverScrollableScrollPhysics(),
-            itemCount: items.length,
-            itemBuilder: (context, index) {
-              final item = items[index];
-              return TimelineItemCard(
-                icon: icon,
-                children: [
-                  KeyValueRow(
-                    label: "نام نمایندگی (کد نمایندگی)",
-                    value:
-                        "${item.agencyName ?? '-'} (${item.agencyCode ?? '-'})",
-                  ),
-                  KeyValueRow(
-                    label: "نام امدادرسان",
-                    value: item.aidPerName ?? "-",
-                  ),
-                  KeyValueRow(
-                    label: "ثبت کننده",
-                    value: item.authorFullname ?? "-",
-                  ),
-                  KeyValueRow(
-                    label: "تاریخ و ساعت ثبت",
-                    value:
-                        "${item.submitDateJalali ?? '-'} - ${item.submitTime ?? '-'}",
-                  ),
-                  KeyValueWidgetRow(
-                    label: "نوع عدم همکاری",
-                    value: StatusLabel(
-                      text: item.typeOfLackTitle ?? "-",
-                      color: Colors.grey,
-                      variant: StatusLabelVariant.outlined,
+          if (!isEmpty) ...[
+            BlocBuilder<NonCooperationCubit, NonCooperationState>(
+              builder: (context, state) {
+                final cubit = context.read<NonCooperationCubit>();
+                final items = cubit.items;
+
+                if (items.isEmpty) {
+                  return SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.62,
+                    child: const Center(
+                      child: EmptyListWidget(),
                     ),
-                  ),
-                  KeyValueRow(
-                    label: "توضیحات",
-                    value: item.description ?? "-",
-                  ),
-                ],
-              );
-            },
-          ),
-          BlocBuilder<NonCooperationCubit, NonCooperationState>(
+                  );
+                }
+
+                return ListView.builder(
+                  key: const PageStorageKey('non_cooperation_list'),
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final item = items[index];
+
+                    return TimelineItemCard(
+                      icon: icon,
+                      children: [
+                        KeyValueRow(
+                          label: "نام نمایندگی (کد نمایندگی)",
+                          value:
+                              "${item.agencyName ?? '-'} (${item.agencyCode ?? '-'})",
+                        ),
+                        KeyValueRow(
+                          label: "نام امدادرسان",
+                          value: item.aidPerName ?? "-",
+                        ),
+                        KeyValueRow(
+                          label: "ثبت کننده",
+                          value: item.authorFullname ?? "-",
+                        ),
+                        KeyValueRow(
+                          label: "تاریخ و ساعت ثبت",
+                          value:
+                              "${item.submitDateJalali ?? '-'} - ${item.submitTime ?? '-'}",
+                        ),
+                        KeyValueWidgetRow(
+                          label: "نوع عدم همکاری",
+                          value: StatusLabel(
+                            text: item.typeOfLackTitle ?? "-",
+                            color: Colors.grey,
+                            variant: StatusLabelVariant.outlined,
+                          ),
+                        ),
+                        KeyValueRow(
+                          label: "توضیحات",
+                          value: item.description ?? "-",
+                        ),
+                      ],
+                    );
+                  },
+                );
+              },
+            ),
+            BlocBuilder<NonCooperationCubit, NonCooperationState>(
             builder: (context, state) {
               final cubit = context.read<NonCooperationCubit>();
 
@@ -133,6 +151,7 @@ class NonCooperationListView extends StatelessWidget {
               );
             },
           ),
+          ]
         ],
       ),
     );

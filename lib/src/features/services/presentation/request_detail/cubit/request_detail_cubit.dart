@@ -1,3 +1,4 @@
+import 'package:bloc/bloc.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_info_entity.dart';
@@ -41,6 +42,7 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
   final int _pageSize = 3;
 
 
+
   Future<void> init() async {
     _safeEmit(const RequestDetailState.loading());
 
@@ -77,7 +79,7 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
             _safeEmit(
               RequestDetailState.error(
                 message: BottomSheetMessageModel(
-                  message: msg ?? 'خطای غیر منتظره',
+                  message: msg ?? error.toString(),
                   title: '',
                 ),
               ),
@@ -97,7 +99,7 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
             _safeEmit(
               RequestDetailState.error(
                 message: BottomSheetMessageModel(
-                  message: msg ?? 'خطای غیر منتظره',
+                  message: msg ?? error.toString(),
                   title: '',
                 ),
               ),
@@ -110,14 +112,14 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
 
       await _fetchEmdadgarInfo();
 
-      final followupResult = await _getRequestFollowupHistoryUseCase(
-          RequestOperationParamEntity(
-            serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
-            requestId: selectedRequest?.id,
-            page: _page,
-            pageSize: _pageSize,
-          )
+      final RequestOperationParamEntity param = RequestOperationParamEntity(
+        serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
+        requestId: requestId,
+        page: _page,
+        pageSize: _pageSize,
+
       );
+      final followupResult = await _getRequestFollowupHistoryUseCase(param);
 
       followupResult.whenOrNull(
         success: (data, failures, resultCode) {
@@ -127,7 +129,7 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
           _safeEmit(
             RequestDetailState.error(
               message: BottomSheetMessageModel(
-                message: msg ?? 'خطای غیر منتظره',
+                message: msg ?? error.toString(),
                 title: '',
               ),
             ),

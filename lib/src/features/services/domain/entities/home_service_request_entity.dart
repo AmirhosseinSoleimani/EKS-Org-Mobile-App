@@ -1,7 +1,34 @@
-import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
 
 import 'abstract/base_request_entity.dart';
+
+
+class HomeServiceRequestListEntity {
+  final List<HomeServiceRequestEntity> items;
+  final int totalCount;
+
+  const HomeServiceRequestListEntity({
+    required this.items,
+    required this.totalCount,
+  });
+
+  HomeServiceRequestListEntity copyWith({
+    List<HomeServiceRequestEntity>? items,
+    int? totalCount,
+  }) {
+    return HomeServiceRequestListEntity(
+      items: items ?? this.items,
+      totalCount: totalCount ?? this.totalCount,
+    );
+  }
+
+  HomeServiceRequestListModel toModel() {
+    return HomeServiceRequestListModel(
+      items: items,
+      totalCount: totalCount,
+    );
+  }
+}
 
 class HomeServiceRequestEntity extends BaseRequestEntity {
   final String? requestDay;

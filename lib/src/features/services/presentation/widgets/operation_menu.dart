@@ -1,8 +1,11 @@
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cartable_cycle_page/cartable_cycle_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/chassis_request_history_page/chassis_request_history_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/control_info_page/control_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_history/evaluation_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/non_cooperation_page/non_cooperation_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/online_map_page/online_map_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/pre_invoice_page/pre_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_status_history_page/request_status_history_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -71,9 +74,21 @@ enum OperationItem {
     label: 'تاریخچه درخواست شاسی',
     route: ChassisRequestHistoryPage.path,
   ),
+  requestControlInfo(
+    label: 'اطلاعات کنترلی',
+    route: ControlInfoPage.path,
+  ),
+  requestPreInvoice(
+    label: 'مشاهده پیش فاکتور',
+    route: PreInvoicePage.path,
+  ),
   evaluationHistory(
     label: 'تاریخچه ارزیابی',
     route: EvaluationHistoryPage.path,
+  ),
+  onlineMap(
+    label: 'نقشه آنلاین',
+    route: OnlineMapPage.path,
   );
 
   final String label;

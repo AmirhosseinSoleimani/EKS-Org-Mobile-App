@@ -34,8 +34,9 @@ class DetailsInvoiceItemEntity {
     this.aidItemType,
     this.aidItemTypeStr,
     this.customerPrice,
+    this.customerBasePrice,
     this.companyPrice,
-    this.description,
+    this.customerDiscountPrice,
   });
 
   final int? id;
@@ -43,8 +44,9 @@ class DetailsInvoiceItemEntity {
   final int? aidItemType;
   final String? aidItemTypeStr;
   final int? customerPrice;
+  final int? customerBasePrice;
+  final int? customerDiscountPrice;
   final int? companyPrice;
-  final String? description;
 
   DetailsInvoiceItemModel toModel() {
     return DetailsInvoiceItemModel(
@@ -53,8 +55,9 @@ class DetailsInvoiceItemEntity {
       aidItemType: aidItemType,
       aidItemTypeStr: aidItemTypeStr,
       customerPrice: customerPrice,
+      customerBasePrice: customerBasePrice,
+      customerDiscountPrice: customerDiscountPrice,
       companyPrice: companyPrice,
-      description: description,
     );
   }
 }

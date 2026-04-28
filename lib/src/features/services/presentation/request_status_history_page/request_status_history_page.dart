@@ -1,14 +1,15 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/request_status_history_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/base/operation_result_base_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_status_history_page/cubit/request_status_history_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/request_status_history_page/cubit/request_status_history_state.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/agent_info_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_status_section.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/gestures.dart';
@@ -25,35 +26,65 @@ class RequestStatusHistoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return OperationResultBasePage<RequestStatusHistoryCubit,
-        List<RequestStatusHistoryItemEntity>>(
-      title: "تاریخچه وضعیت درخواست",
-      createCubit: () => getIt<RequestStatusHistoryCubit>(),
-      loadedBuilder: (context) {
-        return const RequestStatusHistoryLoadedView();
-      },
+    return BlocProvider(
+      create: (_) => getIt<RequestStatusHistoryCubit>()..init(),
+      child: const _View(),
+    );
+  }
+}
+class _View extends StatelessWidget {
+  const _View();
 
-      // NEW ↓↓↓ adding error bottom sheets
-      onError: (context, message) {
-        BottomSheetMessage.showErrorWithAction(
-          context: context,
-          data: message,
-          onPositive: () {
-            context.read<RequestStatusHistoryCubit>().init();
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.read<RequestStatusHistoryCubit>();
+
+    return BlocListener<RequestStatusHistoryCubit, RequestStatusHistoryState>(
+      listener: (context, state) {
+        state.whenOrNull(
+          error: (message) {
+            BottomSheetMessage.showErrorWithAction(
+              context: context,
+              data: message,
+              onPositive: cubit.init,
+            );
           },
+          connectionError: () {
+            BottomSheetMessage.showCustom(
+              context: context,
+              content: NoInternetBottomSheet(
+                onRetry: cubit.init,
+              ),
+              actionWidget: const SizedBox.shrink(),
+              isDismissible: false,
+              enableDrag: false,
+            );
+          },
+          loadMoreError: (message) =>
+              SnakeBarWidget.showError(context: context, message: message),
         );
       },
-      onConnectionError: (context) {
-        BottomSheetMessage.showCustom(
-          context: context,
-          content: NoInternetBottomSheet(
-            onRetry: () {
-              context.read<RequestStatusHistoryCubit>().init();
-            },
+      child: const Scaffold(
+        appBar: SimpleAppBar(title:"تاریخچه وضعیت درخواست"),
+        body: _Body(),
+      ),
+    );
+  }
+}
+
+class _Body extends StatelessWidget {
+  const _Body();
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocBuilder<RequestStatusHistoryCubit, RequestStatusHistoryState>(
+      builder: (context, state) {
+        return state.maybeWhen(
+          idle: () => const SizedBox.shrink(),
+          loading: () => const Center(
+            child: CircularProgressIndicator(),
           ),
-          actionWidget: const SizedBox.shrink(),
-          isDismissible: false,
-          enableDrag: false,
+          orElse: () => const RequestStatusHistoryLoadedView(),
         );
       },
     );

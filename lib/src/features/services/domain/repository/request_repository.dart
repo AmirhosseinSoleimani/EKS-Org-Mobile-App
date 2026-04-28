@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/cartable_cycle_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/chassis_request_history_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/control_info_entities/control_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/evaluation_history_item_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/followup_entity.dart';
@@ -14,12 +15,12 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/request_
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 
 abstract class RequestRepository {
-  Future<ApiResult<List<ReliefRequestEntity>>> getReliefRequestList(
+  Future<ApiResult<ReliefRequestListEntity>> getReliefRequestList(
       RequestFilterParamEntity param);
 
   Future<ApiResult<ReliefRequestEntity?>> getReliefRequestById(int id);
 
-  Future<ApiResult<List<HomeServiceRequestEntity>>> getHomeServiceRequestList(
+  Future<ApiResult<HomeServiceRequestListEntity>> getHomeServiceRequestList(
       RequestFilterParamEntity param);
 
   Future<ApiResult<HomeServiceRequestEntity?>> getHomeServiceRequestById(int id);
@@ -43,4 +44,7 @@ abstract class RequestRepository {
 
   Future<ApiResult<List<ChassisRequestHistoryEntity>>>
       getChassisRequestHistoryList(ChassisParamEntity param);
+
+  Future<ApiResult<ControlInfoEntity>>
+  getControlInfo(ServiceRequestParamEntity param);
 }

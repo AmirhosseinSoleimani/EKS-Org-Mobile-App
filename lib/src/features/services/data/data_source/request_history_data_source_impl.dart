@@ -1,6 +1,7 @@
 import 'package:eks_sana_plus_org/src/features/services/data/models/Followup_Model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/cartable_cycle_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/chassis_request_history_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/control_info_models/control_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/evaluation_history_item_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
@@ -23,7 +24,7 @@ class RequestDataSourceImpl extends RequestDataSource {
   RequestDataSourceImpl(this._service);
 
   @override
-  Future<BaseListResponse<ReliefRequestModel>> getReliefRequestList(RequestFilterParamModel param) async =>
+  Future<BaseSingleResponse<ReliefRequestListModel>> getReliefRequestList(RequestFilterParamModel param) async =>
       await _service.getReliefRequestList(param.toJson());
 
   @override
@@ -32,7 +33,7 @@ class RequestDataSourceImpl extends RequestDataSource {
       await _service.getReliefRequestById({"id": id});
 
   @override
-  Future<BaseListResponse<HomeServiceRequestModel>> getHomeServiceRequestList(RequestFilterParamModel param) async =>
+  Future<BaseSingleResponse<HomeServiceRequestListModel>> getHomeServiceRequestList(RequestFilterParamModel param) async =>
       await _service.getHomeServiceRequestList(param.toJson());
 
   @override
@@ -63,12 +64,22 @@ class RequestDataSourceImpl extends RequestDataSource {
       ServiceRequestParamModel param) async =>
       await _service.getEmdadgarInfo(param.toJson());
 
-  @override
-  Future<BaseSingleResponse<FollowupModel>> getRequestFollowUp(RequestOperationParamModel param) async =>
-      await _service.getRequestFollowUp(param.toJson());
+
 
   @override
   Future<BaseListResponse<ChassisRequestHistoryModel>> getChassisRequestHistoryList(ChassisParamModel param)  async =>
       await _service.getChassisRequestHistoryList(param.toJson());
+
+
+  @override
+  Future<BaseSingleResponse<ControlInfoModel>> getControlInfo(
+          ServiceRequestParamModel param) async =>
+      await _service.getControlInfo(param.toJson());
+
+
+  @override
+  Future<BaseSingleResponse<FollowupModel>> getRequestFollowUp(RequestOperationParamModel param) async =>
+      await _service.getRequestFollowUp(param.toJson());
+
 
 }

@@ -1,5 +1,5 @@
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/expand_toggle_button.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/vertical_line_indicator.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 
 class TimelineItemCard extends StatelessWidget {
@@ -71,9 +71,9 @@ class _TimelineCardContainer extends StatelessWidget {
               ...children,
               if (expandedChildren.isNotEmpty) ...[
                 if (!isExpanded)
-                  _ExpandToggleButton(
+                  ExpandToggleButton(
                     label: "جزئیات بیشتر",
-                    icon: Icons.keyboard_arrow_down,
+                    icon: Icons.expand_more,
                     onTap: () => expanded.value = true,
                     color: colorScheme.secondary,
                   ),
@@ -92,9 +92,9 @@ class _TimelineCardContainer extends StatelessWidget {
                       : null,
                 ),
                 if (isExpanded)
-                  _ExpandToggleButton(
+                  ExpandToggleButton(
                     label: "جزئیات کمتر",
-                    icon: Icons.keyboard_arrow_up,
+                    icon: Icons.expand_less,
                     onTap: () => expanded.value = false,
                     color: colorScheme.secondary,
                   ),
@@ -107,34 +107,3 @@ class _TimelineCardContainer extends StatelessWidget {
   }
 }
 
-class _ExpandToggleButton extends StatelessWidget {
-  final String label;
-  final IconData icon;
-  final VoidCallback onTap;
-  final Color color;
-
-  const _ExpandToggleButton({
-    required this.label,
-    required this.icon,
-    required this.onTap,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: [
-            BodyMediumText(text: label, color: color),
-            const SizedBox(width: 2),
-            Icon(icon, size: 20, color: color),
-          ],
-        ),
-      ),
-    );
-  }
-}

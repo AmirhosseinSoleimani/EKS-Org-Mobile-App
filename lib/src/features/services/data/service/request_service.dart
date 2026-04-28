@@ -2,6 +2,7 @@ import 'package:dio/dio.dart' hide Headers;
 import 'package:eks_sana_plus_org/src/features/services/data/models/Followup_Model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/cartable_cycle_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/chassis_request_history_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/control_info_models/control_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/evaluation_history_item_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
@@ -21,16 +22,18 @@ abstract class RequestService {
   factory RequestService(Dio dio) = _RequestService;
 
   @POST('/api/AidServiceRequestOrg/GetAidServiceRequestList')
-  Future<BaseListResponse<ReliefRequestModel>> getReliefRequestList(@Body() Map<String, dynamic> body);
+  Future<BaseSingleResponse<ReliefRequestListModel>> getReliefRequestList(
+      @Body() Map<String, dynamic> body);
 
   @GET('/api/AidServiceRequestOrg/GetAidServiceRequestById')
   Future<BaseSingleResponse<ReliefRequestModel>> getReliefRequestById(
       @Queries() Map<String, dynamic> query);
 
   @POST('/api/HomeServiceRequestOrg/GetHomeServiceRequestList')
-  Future<BaseListResponse<HomeServiceRequestModel>> getHomeServiceRequestList(@Body() Map<String, dynamic> body);
+  Future<BaseSingleResponse<HomeServiceRequestListModel>>
+      getHomeServiceRequestList(@Body() Map<String, dynamic> body);
 
-  @POST('/api/HomeServiceRequestOrg/GetHomeServiceRequest')
+  @GET('/api/HomeServiceRequestOrg/GetHomeServiceRequest')
   Future<BaseSingleResponse<HomeServiceRequestModel>> getHomeServiceRequestById(
       @Queries() Map<String, dynamic> query);
 
@@ -61,5 +64,9 @@ abstract class RequestService {
 
   @POST('/api/CustomerViewAllOrg/GetServiceRequests')
   Future<BaseListResponse<ChassisRequestHistoryModel>> getChassisRequestHistoryList(
+      @Body() Map<String, dynamic> query);
+
+  @POST('/api/RequestFollowUpOrg/ServiceRequestsFollowUpByUser')
+  Future<BaseSingleResponse<ControlInfoModel>> getControlInfo(
       @Body() Map<String, dynamic> query);
 }

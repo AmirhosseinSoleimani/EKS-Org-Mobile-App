@@ -1,6 +1,27 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 
+class ReliefRequestListModel extends ReliefRequestListEntity {
+  ReliefRequestListModel({
+    required super.items,
+    required super.totalCount,
+  });
+
+  factory ReliefRequestListModel.fromJson(Map<String, dynamic> json) {
+    return ReliefRequestListModel(
+      items: (json['records'] as List<dynamic>?)
+              ?.map(
+                (e) => ReliefRequestModel.fromJson(
+                  e as Map<String, dynamic>,
+                ),
+              )
+              .toList() ??
+          <ReliefRequestEntity>[],
+      totalCount: json['count'] ?? 0,
+    );
+  }
+}
+
 class ReliefRequestModel extends ReliefRequestEntity {
   const ReliefRequestModel({
     super.id,

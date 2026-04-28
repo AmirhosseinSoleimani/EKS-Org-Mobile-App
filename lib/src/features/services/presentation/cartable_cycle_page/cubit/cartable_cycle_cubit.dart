@@ -1,3 +1,4 @@
+import 'package:bloc/bloc.dart';
 import 'package:eks_sana_plus_org/src/common/constants/fetch_result_type.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
@@ -228,7 +229,7 @@ class CartableCycleCubit extends Cubit<CartableCycleState> {
           _hasMore = data.length >= _pageSize;
         }
 
-        _safeEmit(const CartableCycleState.loaded());
+        _safeEmit(const CartableCycleState.loadedMore());
       },
       failure: (_, message) {
         _rollbackPage();

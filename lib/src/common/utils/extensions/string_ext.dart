@@ -65,9 +65,7 @@ extension PersianStringExtensions on String {
 extension PriceExtension on String {
   String splitPriceByComma() {
     RegExp reg = RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))');
-    mathFunc(Match match) => '${match[1]},';
-    var text = this;
-    return text.replaceAllMapped(reg, mathFunc);
+    return '\u200E${replaceAllMapped(reg, (Match m) => '${m[1]},')}';
   }
 
   String addPriceTag() {

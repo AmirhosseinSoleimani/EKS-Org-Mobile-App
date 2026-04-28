@@ -38,23 +38,23 @@ class LoginCubit extends Cubit<LoginState> {
   void privacyPolicyUrl() => launchUrl(Uri.parse(AppConstants.privacyPolicyUrl));
 
   Future<void> login() async {
-     emit(const LoginState.loading());
-     final loginParam = LoginRequestEntity(
-       userName: userNameController.text,
-     password: passwordController.text,
-     );
+    emit(const LoginState.loading());
+    final loginParam = LoginRequestEntity(
+      userName: userNameController.text,
+      password: passwordController.text,
+    );
     final result = await loginUseCase.call(loginParam);
-      result.whenOrNull(
-        success: (data, _, _) {
-          emit(const LoginState.success());
-        },
-        failure: (error, failure) {
+    result.whenOrNull(
+      success: (data, failures, resultCode) {
+        emit(const LoginState.success());
+      },
+      failure: (error, failure) {
         emit(
           LoginState.error(
             errorMessage: failure ?? 'درخواست شما با خطا مواجه شد، لطفا با شماره 096550 تماس بگیرید',
           ),
         );
-        },
+      },
       connectionError: () => emit(const LoginState.connectionError()),
     );
   }
