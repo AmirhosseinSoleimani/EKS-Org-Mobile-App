@@ -38,7 +38,7 @@ class Routes {
 
     return GoRouter(
       navigatorKey: parentNavigatorKey,
-      initialLocation: PreInvoicePage.path,
+      initialLocation: LoginPage.path,
       refreshListenable: startupGuard,
       observers: [
         routeObserver

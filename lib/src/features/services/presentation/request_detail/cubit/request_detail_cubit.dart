@@ -107,7 +107,11 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
 
       await _fetchEmdadgarInfo();
 
-      final followupResult = await _getRequestFollowupHistoryUseCase(requestId);
+      final ServiceRequestParamEntity param = ServiceRequestParamEntity(
+        serviceType: selectedRequest?.serviceType?.value,
+        serviceRequestId: requestId,
+      );
+      final followupResult = await _getRequestFollowupHistoryUseCase(param);
 
       followupResult.whenOrNull(
         success: (data, failures, resultCode) {

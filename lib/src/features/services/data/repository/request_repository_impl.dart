@@ -119,9 +119,9 @@ class RequestRepositoryImpl extends RequestRepository {
   }
 
   @override
-  Future<ApiResult<List<FollowupEntity>>> getRequestFollowupHistory() async {
+  Future<ApiResult<List<FollowupEntity>>> getRequestFollowupHistory(ServiceRequestParamEntity param) async {
     try {
-      final result = await _dataSource.getRequestFollowUp();
+      final result = await _dataSource.getRequestFollowUp(param.toModel());
       return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);

@@ -64,8 +64,8 @@ class RequestDataSourceImpl extends RequestDataSource {
       await _service.getEmdadgarInfo(param.toJson());
 
   @override
-  Future<BaseSingleResponse<EmdadgarInfoModel>> getRequestFollowUp() async =>
-      await _service.getRequestFollowUp({});
+  Future<BaseSingleResponse<EmdadgarInfoModel>> getRequestFollowUp(ServiceRequestParamModel param) async =>
+      await _service.getRequestFollowUp(param.toJson());
 
   @override
   Future<BaseListResponse<ChassisRequestHistoryModel>> getChassisRequestHistoryList(ChassisParamModel param)  async =>

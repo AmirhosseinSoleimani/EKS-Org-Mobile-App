@@ -42,7 +42,7 @@ abstract class RequestRepository {
       ServiceRequestParamEntity param);
 
   Future<ApiResult<List<FollowupEntity>>> getRequestFollowupHistory(
-       );
+      ServiceRequestParamEntity param);
 
   Future<ApiResult<List<ChassisRequestHistoryEntity>>>
       getChassisRequestHistoryList(ChassisParamEntity param);
