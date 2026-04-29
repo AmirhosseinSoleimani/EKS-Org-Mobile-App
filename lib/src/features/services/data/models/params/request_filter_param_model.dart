@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/common/constants/time_period.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_filter_param_entity.dart';
 
 class RequestFilterParamModel extends RequestFilterParamEntity {
@@ -25,6 +26,7 @@ class RequestFilterParamModel extends RequestFilterParamEntity {
       "EmdadgarTitle": rescuerName,
       "PageSize": pageSize,
       "Page": page,
+      "timeFrame": timePeriod?.value ?? TimePeriod.all.value
     };
   }
 }

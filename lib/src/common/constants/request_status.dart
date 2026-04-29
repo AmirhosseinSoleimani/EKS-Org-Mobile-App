@@ -6,9 +6,7 @@ enum RequestStatus implements DropdownItem {
   openRequests(-100, 'درخواست های باز'),
   waitingPreInvoiceApproval(-4, 'در انتظار تایید پیش‌فاکتور'),
   waitingAddress(-3, 'در انتظار ثبت آدرس'),
-  waitingInfoCompletion(-2, 'در انتظار تکمیل اطلاعات'),
   waitingForDetails(-1, 'در انتظار تکمیل اطلاعات'),
-  unknown(0, 'نامشخص'),
   waitingAssignment(1, 'در انتظار تخصیص'),
   canceled(2, 'لغو'),
   dispatched(3, 'اعزام شده'),
@@ -34,7 +32,7 @@ enum RequestStatus implements DropdownItem {
   static RequestStatus fromValue(int? value) {
     return RequestStatus.values.firstWhere(
       (e) => e.value == value,
-      orElse: () => RequestStatus.unknown,
+      orElse: () => RequestStatus.openRequests,
     );
   }
 
@@ -47,7 +45,6 @@ enum RequestStatus implements DropdownItem {
       case RequestStatus.inProgress:
       case RequestStatus.waitingPreInvoiceApproval:
       case RequestStatus.waitingAddress:
-      case RequestStatus.waitingInfoCompletion:
       case RequestStatus.reserved:
       case RequestStatus.waitingForDetails:
         return true;

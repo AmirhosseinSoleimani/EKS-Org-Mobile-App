@@ -49,7 +49,6 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
 
   final selectedTimePeriodNotifier = ValueNotifier<TimePeriod>(TimePeriod.all);
 
-
   TimePeriod get selectedTimePeriod => selectedTimePeriodNotifier.value;
 
   final requestNumberController = TextEditingController();

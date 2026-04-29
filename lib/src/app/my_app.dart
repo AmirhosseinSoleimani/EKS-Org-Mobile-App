@@ -43,9 +43,10 @@ class MyApp extends StatelessWidget {
       ],
       child: MaterialApp.router(
         localizationsDelegates: LocaleConfigs.localizationsDelegates,
-        locale: const Locale("fa", "IR"),
-        supportedLocales: const[
-          Locale.fromSubtags(languageCode: 'fa'),
+        locale: const Locale('fa', 'IR'),
+        supportedLocales: const [
+          Locale('fa', 'IR'),
+          Locale('en', 'US'),
         ],
         debugShowCheckedModeBanner: false,
         title: 'امداد خودرو',

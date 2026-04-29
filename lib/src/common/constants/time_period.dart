@@ -3,9 +3,9 @@ import 'package:flutter/material.dart';
 import '../../shared/widgets/filter_widgets/interfaces/dropdown_item.dart';
 
 enum TimePeriod implements DropdownItem {
-  all('all', 'همه'),
-  today('today', 'امروز'),
-  thisWeek('thisWeek', 'هفته اخیر');
+  all('1', 'همه'),
+  thisWeek('2', 'هفته اخیر'),
+  today('3', 'امروز');
 
   final String value;
 
