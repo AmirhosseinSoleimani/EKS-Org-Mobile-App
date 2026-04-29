@@ -6,6 +6,7 @@ class BodySmallText extends StatelessWidget {
   final Color? color;
   final FontWeight? fontWeight;
   final TextAlign textAlign;
+  final TextOverflow? textOverflow;
 
   const BodySmallText({
     super.key,
@@ -13,7 +14,8 @@ class BodySmallText extends StatelessWidget {
     this.fontSize,
     this.color,
     this.fontWeight,
-    this.textAlign = TextAlign.start
+    this.textAlign = TextAlign.start,
+    this.textOverflow
   });
 
   @override
@@ -23,7 +25,7 @@ class BodySmallText extends StatelessWidget {
       text,
       textDirection: TextDirection.rtl,
       textAlign: textAlign,
-      style: theme.textTheme.bodySmall?.copyWith(fontSize: fontSize , color: color, fontWeight: fontWeight),
+      style: theme.textTheme.bodySmall?.copyWith(fontSize: fontSize , color: color, fontWeight: fontWeight,overflow: textOverflow),
     );
   }
 }
