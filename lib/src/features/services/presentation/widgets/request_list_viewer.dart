@@ -4,7 +4,6 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 
 import 'request_card.dart';
@@ -69,15 +68,15 @@ class _RequestListViewerState extends State<RequestListViewer> {
       separatorBuilder: (_, __) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
         if (index == 0 && widget.totalCount > 0) {
-          return BodyMediumText(text: '${widget.totalCount} درخواست');
+          return const SizedBox();
         }
 
         final adjustedIndex = index - 1;
 
         if (adjustedIndex >= widget.items.length) {
-          return const Padding(
-            padding: EdgeInsets.symmetric(vertical: 16),
-            child: Center(child: CircularProgressIndicator()),
+          return  Padding(
+            padding: const EdgeInsets.symmetric(vertical: 16),
+            child: Center(child: CircularProgressIndicator(color: widget.items.first.serviceType?.serviceColor,)),
           );
         }
 

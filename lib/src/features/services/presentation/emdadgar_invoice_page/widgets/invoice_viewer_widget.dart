@@ -1,5 +1,5 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/pre_invoice_page/cubit/pre_invoice_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/emdadgar_invoice_page/cubit/emdadgar_invoice_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/pre_invoice_page/widgets/details_invoice_widget.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/pre_invoice_page/widgets/labor_invoice_widget.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/pre_invoice_page/widgets/sum_all_invoice_widget.dart';
@@ -13,14 +13,14 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'other_cost_invoice_widget.dart';
 import 'part_invoice_widget.dart';
 
-class InvoiceViewerWidget extends StatelessWidget {
-  const InvoiceViewerWidget({super.key, required this.type});
+class EmdadgarInvoiceViewerWidget extends StatelessWidget {
+  const EmdadgarInvoiceViewerWidget({super.key, required this.type});
 
   final ServiceType type;
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<PreInvoiceCubit>();
+    final cubit = context.read<EmdadgarInvoiceCubit>();
 
     return Column(
       mainAxisSize: MainAxisSize.min,
@@ -53,7 +53,8 @@ class InvoiceViewerWidget extends StatelessWidget {
     );
   }
 
-  void _showDetailsBottomSheet(BuildContext context, PreInvoiceCubit cubit) {
+  void _showDetailsBottomSheet(
+      BuildContext context, EmdadgarInvoiceCubit cubit) {
     BottomSheetMessage.showCustom(
       context: context,
       isDismissible: true,
@@ -71,7 +72,7 @@ class InvoiceViewerWidget extends StatelessWidget {
 class _InvoiceDetailsBottomSheetContent extends StatelessWidget {
   const _InvoiceDetailsBottomSheetContent({required this.cubit});
 
-  final PreInvoiceCubit cubit;
+  final EmdadgarInvoiceCubit cubit;
 
   @override
   Widget build(BuildContext context) {
@@ -95,7 +96,7 @@ class _InvoiceDetailsBottomSheetContent extends StatelessWidget {
             ),
           const SizedBox(height: 16),
           if (cubit
-              .invoiceEntity?.otherCosts?.otherCostReceptions?.isNotEmpty ??
+                  .invoiceEntity?.otherCosts?.otherCostReceptions?.isNotEmpty ??
               false)
             OtherCostInvoiceWidget.homeService(
               entity: cubit.invoiceEntity?.otherCosts,

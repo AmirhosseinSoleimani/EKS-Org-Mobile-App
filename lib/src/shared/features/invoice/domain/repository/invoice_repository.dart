@@ -6,4 +6,5 @@ import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/in
 
 abstract class InvoiceRepository {
   Future<ApiResult<InvoiceEntity?>> getPreInvoice(ServiceInvoiceParamEntity? entity);
+  Future<ApiResult<InvoiceEntity?>> getEmdadgardInvoice(ServiceInvoiceParamEntity? entity);
 }

@@ -5,40 +5,38 @@ import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_reli
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/invoice_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/params/service_invoice_param_entity.dart';
-import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/use_case/get_pre_invoice_use_case.dart';
+import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/use_case/get_emdadgar_invoice_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
-part 'pre_invoice_cubit.freezed.dart';
+part 'emdadgar_invoice_cubit.freezed.dart';
 
-part 'pre_invoice_state.dart';
+part 'emdadgar_invoice_state.dart';
 
 @injectable
-class PreInvoiceCubit extends Cubit<PreInvoiceState> {
-  final GetPreInvoiceUseCase _getPreInvoiceUseCase;
+class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
+  final GetEmdadgarInvoiceUseCase _getEmdadgarInvoiceUseCase;
   final FetchSelectedRequestItemUseCase _fetchSelectedRequestItemUseCase;
   final GetReliefRequestByIdUseCase _getReliefRequestByIdUseCase;
   final GetHomeServiceRequestByIdUseCase _getHomeServiceRequestByIdUseCase;
 
-  PreInvoiceCubit(
-    this._getPreInvoiceUseCase,
+  EmdadgarInvoiceCubit(
+    this._getEmdadgarInvoiceUseCase,
     this._fetchSelectedRequestItemUseCase,
     this._getReliefRequestByIdUseCase,
     this._getHomeServiceRequestByIdUseCase,
-  ) : super(const PreInvoiceState.idle());
+  ) : super(const EmdadgarInvoiceState.idle());
 
   BaseRequestEntity? selectedRequest;
   InvoiceEntity? invoiceEntity;
 
   Future<void> init() async {
-
     selectedRequest = await _fetchSelectedRequestItemUseCase();
-
     if (selectedRequest == null) {
       _safeEmit(
-        const PreInvoiceState.error(
+        const EmdadgarInvoiceState.error(
           message: BottomSheetMessageModel(
             title: 'خطا',
             message: 'در دریافت اطلاعات درخواست مشکلی رخ داد.',
@@ -47,12 +45,10 @@ class PreInvoiceCubit extends Cubit<PreInvoiceState> {
       );
       return;
     }
-
-    _safeEmit(const PreInvoiceState.loading());
+    _safeEmit(const EmdadgarInvoiceState.loading());
 
     await _refreshRequestData();
-    await _loadPreInvoiceInfo();
-
+    await _loadEmdadgarInvoiceInfo();
   }
 
   Future<void> _refreshRequestData() async {
@@ -68,21 +64,21 @@ class PreInvoiceCubit extends Cubit<PreInvoiceState> {
     );
   }
 
-  Future<void> _loadPreInvoiceInfo() async {
+  Future<void> _loadEmdadgarInvoiceInfo() async {
     final param = ServiceInvoiceParamEntity(
       serviceRequestId: selectedRequest!.id,
       serviceType: selectedRequest!.serviceType?.value ?? 1,
     );
-    final result = await _getPreInvoiceUseCase(param);
+    final result = await _getEmdadgarInvoiceUseCase(param);
 
     result.whenOrNull(
       success: (data, failures, resultCode) {
         invoiceEntity = data;
-        _safeEmit(const PreInvoiceState.loaded());
+        _safeEmit(const EmdadgarInvoiceState.loaded());
       },
       failure: (error, msg) {
         _safeEmit(
-          PreInvoiceState.error(
+          EmdadgarInvoiceState.error(
             message: BottomSheetMessageModel(
               message: msg ?? error.toString(),
               title: '',
@@ -90,11 +86,12 @@ class PreInvoiceCubit extends Cubit<PreInvoiceState> {
           ),
         );
       },
-      connectionError: () => _safeEmit(const PreInvoiceState.connectionError()),
+      connectionError: () =>
+          _safeEmit(const EmdadgarInvoiceState.connectionError()),
     );
   }
 
-  void _safeEmit(PreInvoiceState state) {
+  void _safeEmit(EmdadgarInvoiceState state) {
     if (!isClosed) emit(state);
   }
 
