@@ -18,4 +18,8 @@ class InvoiceDataSourceImpl extends InvoiceDataSource {
     return result;
   }
 
+  @override
+  Future<BaseSingleResponse<InvoiceModel?>> getEmdadgarInvoice(
+          ServiceInvoiceParamModel? model) async =>
+      await _service.getEmdadgarInvoice(model?.toJson() ?? {});
 }

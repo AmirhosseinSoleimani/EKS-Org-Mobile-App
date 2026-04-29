@@ -106,6 +106,8 @@ import '../features/services/presentation/chassis_request_history_page/cubit/cha
     as _i891;
 import '../features/services/presentation/control_info_page/cubit/control_info_cubit.dart'
     as _i66;
+import '../features/services/presentation/emdadgar_invoice_page/cubit/emdadgar_invoice_cubit.dart'
+    as _i362;
 import '../features/services/presentation/evaluation_history/cubit/evaluation_history_cubit.dart'
     as _i154;
 import '../features/services/presentation/home_service_request_list_page/cubit/home_service_request_list_cubit.dart'
@@ -142,6 +144,8 @@ import '../shared/features/invoice/data/repository/invoice_repository_impl.dart'
     as _i161;
 import '../shared/features/invoice/domain/repository/invoice_repository.dart'
     as _i829;
+import '../shared/features/invoice/domain/use_case/get_emdadgar_invoice_use_case.dart'
+    as _i204;
 import '../shared/features/invoice/domain/use_case/get_pre_invoice_use_case.dart'
     as _i116;
 import '../shared/features/map/data/data_source/location_permission_data_source.dart'
@@ -370,6 +374,8 @@ _i174.GetIt $initGetIt(
       _i375.FetchIndicatorReportUseCase(gh<_i227.IndicatorReportRepository>()));
   gh.lazySingleton<_i116.GetPreInvoiceUseCase>(
       () => _i116.GetPreInvoiceUseCase(gh<_i829.InvoiceRepository>()));
+  gh.lazySingleton<_i204.GetEmdadgarInvoiceUseCase>(
+      () => _i204.GetEmdadgarInvoiceUseCase(gh<_i829.InvoiceRepository>()));
   gh.lazySingleton<_i74.UserRepository>(
       () => _i880.UserRepositoryImpl(gh<_i1039.UserDataSource>()));
   gh.lazySingleton<_i139.LoginUseCase>(
@@ -486,6 +492,12 @@ _i174.GetIt $initGetIt(
         gh<_i672.GetReliefRequestByIdUseCase>(),
         gh<_i63.GetHomeServiceRequestByIdUseCase>(),
         gh<_i786.GetEmdadgarInfoUseCase>(),
+      ));
+  gh.factory<_i362.EmdadgarInvoiceCubit>(() => _i362.EmdadgarInvoiceCubit(
+        gh<_i204.GetEmdadgarInvoiceUseCase>(),
+        gh<_i376.FetchSelectedRequestItemUseCase>(),
+        gh<_i672.GetReliefRequestByIdUseCase>(),
+        gh<_i63.GetHomeServiceRequestByIdUseCase>(),
       ));
   gh.factory<_i709.OnlineMapCubit>(() => _i709.OnlineMapCubit(
         gh<_i376.FetchSelectedRequestItemUseCase>(),

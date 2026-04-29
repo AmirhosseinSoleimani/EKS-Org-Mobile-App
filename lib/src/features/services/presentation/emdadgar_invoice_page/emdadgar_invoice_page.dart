@@ -2,8 +2,10 @@ import 'dart:ui';
 
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/pre_invoice_page/cubit/pre_invoice_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/emdadgar_invoice_page/cubit/emdadgar_invoice_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/emdadgar_invoice_page/widgets/invoice_viewer_widget.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/status_label.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
@@ -11,19 +13,16 @@ import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../../shared/resources/value_manager.dart';
-import 'widgets/invoice_viewer_widget.dart';
+class EmdadgarInvoicePage extends StatelessWidget {
+  static const path = "/pre-agent-invoice-page";
+  static const name = "pre-agent-invoice-page";
 
-class PreInvoicePage extends StatelessWidget {
-  static const path = "/pre-invoice-page";
-  static const name = "pre-invoice-page";
-
-  const PreInvoicePage({super.key});
+  const EmdadgarInvoicePage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<PreInvoiceCubit>()..init(),
+      create: (_) => getIt<EmdadgarInvoiceCubit>()..init(),
       child: const _View(),
     );
   }
@@ -34,9 +33,9 @@ class _View extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<PreInvoiceCubit>();
+    final cubit = context.read<EmdadgarInvoiceCubit>();
 
-    return BlocListener<PreInvoiceCubit, PreInvoiceState>(
+    return BlocListener<EmdadgarInvoiceCubit, EmdadgarInvoiceState>(
       listener: (context, state) {
         state.whenOrNull(
           error: (message) {
@@ -60,7 +59,7 @@ class _View extends StatelessWidget {
         );
       },
       child: const Scaffold(
-        appBar: SimpleAppBar(title: "پیش فاکتور"),
+        appBar: SimpleAppBar(title: "صورت وضعیت نماینده"),
         body: _Body(),
       ),
     );
@@ -72,12 +71,14 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PreInvoiceCubit, PreInvoiceState>(
+    return BlocBuilder<EmdadgarInvoiceCubit, EmdadgarInvoiceState>(
       builder: (context, state) {
+        final cubit = context.read<EmdadgarInvoiceCubit>();
         return state.maybeWhen(
           idle: () => const SizedBox.shrink(),
-          loading: () => const Center(
-            child: CircularProgressIndicator(),
+          loading: () => Center(
+            child: CircularProgressIndicator(
+                color: cubit.selectedRequest?.serviceType?.serviceColor),
           ),
           orElse: () => const _LoadedView(),
         );
@@ -91,7 +92,7 @@ class _LoadedView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<PreInvoiceCubit>();
+    final cubit = context.read<EmdadgarInvoiceCubit>();
 
     return ScrollConfiguration(
       behavior: ScrollConfiguration.of(context).copyWith(
@@ -111,17 +112,17 @@ class _LoadedView extends StatelessWidget {
                   height: MediaQuery.of(context).size.height * 0.75,
                   child: const Center(child: EmptyListWidget()))
             else
-              InvoiceViewerWidget(
-              type:
-                  cubit.selectedRequest?.serviceType ?? ServiceType.homeService,
-            ),
+              EmdadgarInvoiceViewerWidget(
+                type: cubit.selectedRequest?.serviceType ??
+                    ServiceType.homeService,
+              ),
           ],
         ),
       ),
     );
   }
 
-  Row buildRequestStatusRow(PreInvoiceCubit cubit) {
+  Row buildRequestStatusRow(EmdadgarInvoiceCubit cubit) {
     return Row(
       children: [
         StatusLabel(
