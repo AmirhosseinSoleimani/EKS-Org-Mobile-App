@@ -38,8 +38,6 @@ class ControlInfoCubit extends Cubit<ControlInfoState> {
   ControlInfoEntity? controlInfoEntity;
 
   Future<void> init() async {
-    _safeEmit(const ControlInfoState.loading());
-
     selectedRequest = await _fetchSelectedRequestItemUseCase();
 
     if (selectedRequest == null) {
@@ -53,6 +51,7 @@ class ControlInfoCubit extends Cubit<ControlInfoState> {
       );
       return;
     }
+    _safeEmit(const ControlInfoState.loading());
 
     await _refreshRequestData();
 

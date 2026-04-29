@@ -117,10 +117,12 @@ class RequestStatusHistoryListView extends StatelessWidget {
               );
 
               if (loadingMore == true) {
-                return const Padding(
-                  padding: EdgeInsets.all(12),
+                return  Padding(
+                  padding: const EdgeInsets.all(12),
                   child: Center(
-                    child: CircularProgressIndicator(),
+                    child: CircularProgressIndicator(
+                      color:  cubit.selectedRequest?.serviceType?.serviceColor,
+                    ),
                   ),
                 );
               }

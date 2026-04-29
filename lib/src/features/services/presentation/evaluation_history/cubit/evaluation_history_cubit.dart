@@ -46,8 +46,6 @@ class EvaluationHistoryCubit extends Cubit<EvaluationHistoryState> {
           : 'درخواست شما با خطا مواجه شد، لطفا با پشتیبانی تماس بگیرید';
 
   Future<void> init() async {
-    _safeEmit(const EvaluationHistoryState.loading());
-
     final result = await _initializeData();
 
     switch (result) {
@@ -74,6 +72,9 @@ class EvaluationHistoryCubit extends Cubit<EvaluationHistoryState> {
     if (selectedResult != FetchResultType.success) {
       return selectedResult;
     }
+
+    _safeEmit(const EvaluationHistoryState.loading());
+
     final requestResult = await _fetchServiceRequestData();
     if (requestResult != FetchResultType.success) {
       return requestResult;

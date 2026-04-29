@@ -72,10 +72,12 @@ class _Body extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ChassisRequestHistoryCubit, ChassisRequestHistoryState>(
       builder: (context, state) {
+        final cubit = context.read<ChassisRequestHistoryCubit>();
         return state.maybeWhen(
           idle: () => const SizedBox.shrink(),
-          loading: () => const Center(
-            child: CircularProgressIndicator(),
+          loading: () => Center(
+            child: CircularProgressIndicator(
+                color: cubit.selectedRequest?.serviceType?.serviceColor),
           ),
           loaded: () => const _LoadedView(),
           orElse: () => const SizedBox.shrink(),

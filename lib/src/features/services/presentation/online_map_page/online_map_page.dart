@@ -72,12 +72,15 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cubit = context.read<OnlineMapCubit>();
     return BlocBuilder<OnlineMapCubit, OnlineMapState>(
       builder: (context, state) {
         return state.maybeWhen(
           idle: () => const SizedBox.shrink(),
-          loading: () => const Center(
-            child: CircularProgressIndicator(),
+          loading: () =>  Center(
+            child: CircularProgressIndicator(
+                color: cubit.selectedRequest?.serviceType?.serviceColor
+            ),
           ),
           orElse: () => const _LoadedView(),
         );
