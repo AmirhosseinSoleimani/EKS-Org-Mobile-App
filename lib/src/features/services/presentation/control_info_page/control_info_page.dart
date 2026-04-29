@@ -78,10 +78,13 @@ class _Body extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ControlInfoCubit, ControlInfoState>(
       builder: (context, state) {
+        final cubit = context.read<ControlInfoCubit>();
         return state.maybeWhen(
           idle: () => const SizedBox.shrink(),
-          loading: () => const Center(
-            child: CircularProgressIndicator(),
+          loading: () =>  Center(
+            child: CircularProgressIndicator(
+                color: cubit.selectedRequest?.serviceType?.serviceColor
+            ),
           ),
           loaded: () => const _LoadedView(),
           orElse: () => const SizedBox.shrink(),

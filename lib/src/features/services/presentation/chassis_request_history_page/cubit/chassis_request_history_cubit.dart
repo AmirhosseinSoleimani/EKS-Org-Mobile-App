@@ -35,8 +35,6 @@ class ChassisRequestHistoryCubit extends Cubit<ChassisRequestHistoryState> {
 
 
   Future<void> init() async {
-    emit(const ChassisRequestHistoryState.loading());
-
     selectedRequest  =
         await _fetchSelectedRequestItemUseCase();
     if (selectedRequest == null) {
@@ -50,6 +48,8 @@ class ChassisRequestHistoryCubit extends Cubit<ChassisRequestHistoryState> {
       );
       return;
     }
+    emit(const ChassisRequestHistoryState.loading());
+
     await _refreshRequestData();
 
     await _loadChassisNumberHistoryList();

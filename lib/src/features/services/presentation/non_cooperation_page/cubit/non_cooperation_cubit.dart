@@ -46,8 +46,6 @@ class NonCooperationCubit extends Cubit<NonCooperationState> {
   bool _hasMore = true;
 
   Future<void> init() async {
-    emit(const NonCooperationState.loading());
-
     final result = await _initializeData();
 
     switch (result) {
@@ -75,6 +73,7 @@ class NonCooperationCubit extends Cubit<NonCooperationState> {
     if (selectedResult != FetchResultType.success) {
       return selectedResult;
     }
+    emit(const NonCooperationState.loading());
 
     final requestResult = await _fetchServiceRequestData();
     if (requestResult != FetchResultType.success) {

@@ -70,14 +70,6 @@ class RequestDetailPage extends StatelessWidget {
                       builder: (context, state) {
                         return state.maybeWhen(
                             idle: () => const SizedBox.shrink(),
-                            /*loading: () => Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                 Center(
-                                      child: CircularProgressIndicator(color:cubit.selectedRequest?.serviceType?.serviceColor),
-                                    ),
-                              ],
-                            ),*/
                             loading: () =>
                                 SizedBox(
                                     height: MediaQuery
