@@ -39,12 +39,9 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
 
 
   Future<void> init() async {
-    _safeEmit(const RequestDetailState.loading());
-
     try {
-      final cachedRequest = await _fetchSelectedRequestItemUseCase();
-      bool  isRelief  = cachedRequest?.serviceType == ServiceType.reliefService;
-      if (cachedRequest == null) {
+      selectedRequest = await _fetchSelectedRequestItemUseCase();
+      if (selectedRequest == null) {
         _safeEmit(const RequestDetailState.error(
             message: BottomSheetMessageModel(
                 title: '',
@@ -52,7 +49,11 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
         return;
       }
 
-      final int? requestId = cachedRequest.id;
+      bool  isRelief  = selectedRequest?.serviceType == ServiceType.reliefService;
+
+      _safeEmit(const RequestDetailState.loading());
+
+      final int? requestId = selectedRequest?.id;
 
       if (requestId == null) {
         _safeEmit(const RequestDetailState.error(

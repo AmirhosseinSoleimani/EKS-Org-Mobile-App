@@ -60,6 +60,7 @@ class EmdadgarInvoiceViewerWidget extends StatelessWidget {
       isDismissible: true,
       enableDrag: true,
       actionWidget: InkwellButtonWidget(
+        backgroundColor: cubit.selectedRequest?.serviceType?.serviceColor,
         title: 'بستن',
         onTap: () => Navigator.pop(context),
       ),

@@ -31,13 +31,12 @@ class PreInvoiceCubit extends Cubit<PreInvoiceState> {
     this._getHomeServiceRequestByIdUseCase,
   ) : super(const PreInvoiceState.idle());
 
-  BaseRequestEntity? selectedRequest = HomeServiceRequestEntity(serviceType: ServiceType.homeService, id: 1000, requestStatus: 1);
+  BaseRequestEntity? selectedRequest;
   InvoiceEntity? invoiceEntity;
 
   Future<void> init() async {
-    _safeEmit(const PreInvoiceState.loading());
 
-    /*selectedRequest = await _fetchSelectedRequestItemUseCase();
+    selectedRequest = await _fetchSelectedRequestItemUseCase();
 
     if (selectedRequest == null) {
       _safeEmit(
@@ -51,215 +50,12 @@ class PreInvoiceCubit extends Cubit<PreInvoiceState> {
       return;
     }
 
+    _safeEmit(const PreInvoiceState.loading());
+
     await _refreshRequestData();
-    await _loadPreInvoiceInfo();*/
+    await _loadPreInvoiceInfo();
 
-    //await _refreshRequestData();
-    await Future.delayed(const Duration(milliseconds: 800));
-    _loadFakeInvoice();
   }
-
-  void _loadFakeInvoice() {
-    final fakeJson = {
-      "invoiceTitle": "اولیه مشتری",
-      "invoiceGuid": "a323d7cd-9dee-4f15-9028-acc30b09264c",
-      "sumAllInvoice": {
-        "title": "هزینه ها",
-        "detailEmdadInvoiceTotalCompany": 0,
-        "detailEmdadInvoiceTotalCustomer": 1050,
-        "customerPaymentPrice": 120000000,
-        "discountTotalPrice": 0,
-        "totalReusableCustomerPrice": 0,
-        "totalReusableCompanyPrice": 0,
-        "laborTotal": 11052369,
-        "laborCustomerTotal": 11052369,
-        "laborCompanyTotal": 0,
-        "partTotal": 17500000,
-        "partCustomerTotal": 17500000,
-        "partCompanyTotal": 0,
-        "valueAddedTax": 10,
-        "taxTotalCustomerText": "مالیات بر ارزش افزوده (10%)",
-        "taxTotalCustomer": 2945236,
-        "taxTotalCompany": 0,
-        "totalAllItems": 0,
-        "totalOtherCostCustomerPrice": 0,
-        "totalOtherCostCompanyPrice": 0,
-        "totalAllItemsCompany": 0,
-        "totalAllItemsCustomer": 32397605,
-        "isSubscription": true,
-        "isGuaranty": true,
-        "isCancelInvoice": false,
-        "isEvaluationChanged": false,
-        "emdadServiceCategoryTitle": "تعمیرات در محل",
-        "detailEmdadgarInvoiceBase": 0,
-        "detailEmdadInvoiceTotalCustomerTax": 0,
-        "emdadgarInvoiceBaseAndTaxCustomer": 0
-      },
-      "detailInvoice": {
-        "title": "جزئیات هزینه های امدادی",
-        "invoiceItems": [
-          {
-            "id": 0,
-            "invoiceId": 0,
-            "aidItemType": 1,
-            "aidItemTypeStr": "حق الزحمه ورودی",
-            "customerPrice": 900000,
-            "customerBasePrice": 900000,
-            "customerDiscountPrice": 0,
-            "companyPrice": 0
-          },
-          {
-            "id": 0,
-            "invoiceId": 0,
-            "aidItemType": 3,
-            "aidItemTypeStr": "هزینه مراجعه امدادگر 0 کیلومتر",
-            "customerPrice": 0,
-            "customerBasePrice": 0,
-            "customerDiscountPrice": 0,
-            "companyPrice": 0
-          }
-        ],
-        "companyTotal": 0,
-        "customerTotal": 900000,
-        "total": 0
-      },
-      "serviceInvoice": {
-        "title": "سرویس ها",
-        "serviceReception": [
-          {
-            "invoiceId": 1535064,
-            "serviceId": 1026,
-            "serviceTitle": "تعویض مجموعه کامل تسمه تایم",
-            "serviceCategoryId": 61,
-            "serviceCategoryTitle": "تعمیرات در محل",
-            "serviceCategoryCode": "HOME_SERVICE_UNURGENT_SERVICE",
-            "serviceCode": "2002",
-            "serviceType": 2,
-            "serviceTypeTitle": "خدمات در محل"
-          }
-        ]
-      },
-      "laborInvoice": {
-        "title": "اجرت ها",
-        "laborReception": [
-          {
-            "id": 1732532,
-            "invoiceId": 1535064,
-            "laborGroupId": 37,
-            "laborGroupDesc": "تعویض تسمه‌ تايمينگ",
-            "laborId": 213067,
-            "laborCode": "A3521H00",
-            "laborDescription": "پیاده و سوار کردن تسمه‌  تایمینگ‌ (A3521H00) ",
-            "standardTime": 1.95,
-            "nahveMohasebeId": 0,
-            "nahveMohasebeCode": "Customer",
-            "nahveMohasebeDescription": "مشتری",
-            "price": 11052369,
-            "basePrice": 11052369,
-            "discountPrice": 0,
-            "laborTotalPriceRial": 11052369,
-            "overLapCode": "11,284,310,345,444,517,528,529,541,542",
-            "isCausing": false,
-            "isActive": true
-          }
-        ],
-        "total": 11052369
-      },
-      "partInvoice": {
-        "title": "قطعات",
-        "partReception": [
-          {
-            "id": 446440,
-            "invoiceId": 1535064,
-            "partGroupId": 536,
-            "partGroupName": "کیت تسمه تایم",
-            "laborId": 213067,
-            "laborCode": "A3521H00",
-            "laborDescription": "پیاده و سوار کردن تسمه‌  تایمینگ‌ (A3521H00)",
-            "nahveMohasebeId": 0,
-            "nahveMohasebeCode": "Customer",
-            "nahveMohasebeDescription": "مشتری",
-            "afterSaleServiceDescription": "مشتری",
-            "commodityCode": "109260",
-            "replaceCount": 1,
-            "commodityDescription": "کیت تسمه تایم  - تجاری-109260 ",
-            "mark": "P0C",
-            "partPriceRial": 13000000,
-            "basePrice": 13000000,
-            "discountPrice": 0,
-            "description": "کیت تسمه تایم  - تجاری-109260",
-            "hasReusable": false,
-            "reusablePrice": 0,
-            "isCausing": false,
-            "isActive": true
-          },
-          {
-            "id": 446441,
-            "invoiceId": 1535064,
-            "partGroupId": 59,
-            "partGroupName": "بلبرینگ تسمه سفت کن",
-            "laborId": 213067,
-            "laborCode": "A3521H00",
-            "laborDescription": "پیاده و سوار کردن تسمه‌  تایمینگ‌ (A3521H00)",
-            "nahveMohasebeId": 0,
-            "nahveMohasebeCode": "Customer",
-            "nahveMohasebeDescription": "مشتری",
-            "afterSaleServiceDescription": "مشتری",
-            "commodityCode": "502243",
-            "replaceCount": 1,
-            "commodityDescription": " بلبرینگ تسمه سفت کن (جدید)-502243 ",
-            "mark": "P2J",
-            "partPriceRial": 4500000,
-            "basePrice": 4500000,
-            "discountPrice": 0,
-            "description": " بلبرینگ تسمه سفت کن (جدید)-502243",
-            "hasReusable": false,
-            "reusablePrice": 0,
-            "isCausing": false,
-            "isActive": true
-          }
-        ],
-        "total": 17500000
-      },
-      "otherCostInvoice": {
-        "title": "سایر هزینه ها",
-        "otherCostReception": [],
-        "customerTotalPrice": 0,
-        "companyTotalPrice": 0
-      },
-      "optionServiceInvoice": {
-        "title": "خدمات جانبی",
-        "optionServiceReception": []
-      },
-      "otherCosts": {
-        "title": "سایر هزینه ها",
-        "otherCostReception": [],
-        "customerTotalPrice": 0,
-        "companyTotalPrice": 0
-      },
-      "options": [],
-      "services": [
-        {
-          "invoiceId": 1535064,
-          "serviceId": 1026,
-          "serviceTitle": "تعویض مجموعه کامل تسمه تایم",
-          "serviceCategoryId": 61,
-          "serviceCategoryTitle": "تعمیرات در محل",
-          "serviceCategoryCode": "HOME_SERVICE_UNURGENT_SERVICE",
-          "serviceCode": "2002",
-          "serviceType": 2,
-          "serviceTypeTitle": "خدمات در محل"
-        }
-      ]
-    };
-
-    final model = InvoiceModel.fromJson(fakeJson);
-
-    invoiceEntity = model;
-
-   _safeEmit(const PreInvoiceState.loaded());
-  }
-
 
   Future<void> _refreshRequestData() async {
     final id = selectedRequest?.id ?? 0;

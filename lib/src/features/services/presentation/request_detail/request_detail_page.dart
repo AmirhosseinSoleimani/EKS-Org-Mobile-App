@@ -70,13 +70,29 @@ class RequestDetailPage extends StatelessWidget {
                       builder: (context, state) {
                         return state.maybeWhen(
                             idle: () => const SizedBox.shrink(),
-                            loading: () => const Center(
-                                  child: Padding(
-                                    padding: EdgeInsets.only(top: AppSize.s40),
-                                    child: CircularProgressIndicator(),
-                                  ),
+                            /*loading: () => Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                 Center(
+                                      child: CircularProgressIndicator(color:cubit.selectedRequest?.serviceType?.serviceColor),
+                                    ),
+                              ],
+                            ),*/
+                            loading: () =>
+                                SizedBox(
+                                    height: MediaQuery
+                                        .of(context)
+                                        .size
+                                        .height * 0.9,
+                                    child:
+                                    Center(
+                                      child: CircularProgressIndicator(
+                                          color: cubit.selectedRequest
+                                              ?.serviceType?.serviceColor),
+                                    ),
+
                                 ),
-                            loaded: () => Column(
+                            orElse: () => Column(
                                   children: [
                                     ExpandableSection(
                                       isExpanded: false,
@@ -158,7 +174,7 @@ class RequestDetailPage extends StatelessWidget {
                                     ),
                                   ],
                                 ),
-                            orElse: SizedBox.shrink);
+                            );
                       },
                     ),
                   ],
