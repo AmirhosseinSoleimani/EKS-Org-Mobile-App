@@ -123,15 +123,18 @@ class RequestCard extends StatelessWidget {
         final item = items[index];
         return Padding(
           padding: const EdgeInsets.all(4.0),
-          child: InkWell(
-            onTap: () {
-              onSelected(request);
-              context.push(item.route, extra: request.id);
-            },
-            child: CircleAvatar(
-              radius: 20,
-              backgroundColor: item.color,
-              child: Icon(item.icon, color: Colors.white, size: 20),
+          child: Tooltip(
+            message: items[index].label,
+            child: InkWell(
+              onTap: () {
+                onSelected(request);
+                context.push(item.route, extra: request.id);
+              },
+              child: CircleAvatar(
+                radius: 20,
+                backgroundColor: item.color,
+                child: Icon(item.icon, color: Colors.white, size: 20),
+              ),
             ),
           ),
         );

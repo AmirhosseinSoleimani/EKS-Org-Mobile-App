@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/Followup_Model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/cartable_cycle_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/chassis_request_history_model.dart';
@@ -52,7 +53,10 @@ class RequestDataSourceImpl extends RequestDataSource {
   @override
   Future<BaseListResponse<EvaluationHistoryItemModel>> getEvaluationHistory(
       ServiceRequestParamModel param) async =>
-      await _service.getEvaluationHistory(param.toJson());
+      param.serviceType == ServiceType.reliefService.value
+          ? await _service.getAidServiceEvaluationHistory(param.toJson())
+          : await _service.getHomeServiceServiceEvaluationHistory(
+          param.toJson());
 
   @override
   Future<BaseSingleResponse<RequestStatusHistoryListModel>>

@@ -87,10 +87,9 @@ class ChassisRequestHistoryCard extends StatelessWidget {
               const SizedBox(width: 12),
               RequestDetailsButton(
                 onPressed: () {
-                  print(
-                    'clicked on chassis request detail, id is: ${chassisRequest.id}',
-                  );
+                  onSelected(chassisRequest);
                 },
+
               ),
             ],
           ),

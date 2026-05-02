@@ -229,9 +229,8 @@ class _RequestService implements RequestService {
   }
 
   @override
-  Future<BaseListResponse<EvaluationHistoryItemModel>> getEvaluationHistory(
-    Map<String, dynamic> query,
-  ) async {
+  Future<BaseListResponse<EvaluationHistoryItemModel>>
+  getAidServiceEvaluationHistory(Map<String, dynamic> query) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -243,6 +242,42 @@ class _RequestService implements RequestService {
               .compose(
                 _dio.options,
                 '/api/AidServiceEvaluationOrg/GetEvaluationsByServiceRequestId',
+                queryParameters: queryParameters,
+                data: _data,
+              )
+              .copyWith(
+                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+              ),
+        );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseListResponse<EvaluationHistoryItemModel> _value;
+    try {
+      _value = BaseListResponse<EvaluationHistoryItemModel>.fromJson(
+        _result.data!,
+        (json) =>
+            EvaluationHistoryItemModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseListResponse<EvaluationHistoryItemModel>>
+  getHomeServiceServiceEvaluationHistory(Map<String, dynamic> query) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(query);
+    final _options =
+        _setStreamType<BaseListResponse<EvaluationHistoryItemModel>>(
+          Options(method: 'POST', headers: _headers, extra: _extra)
+              .compose(
+                _dio.options,
+                '/api/HomeServiceEvaluationOrg/GetEvaluationsByServiceRequestId',
                 queryParameters: queryParameters,
                 data: _data,
               )

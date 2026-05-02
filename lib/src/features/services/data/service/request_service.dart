@@ -47,7 +47,11 @@ abstract class RequestService {
       @Body() Map<String, dynamic> query);
 
   @POST('/api/AidServiceEvaluationOrg/GetEvaluationsByServiceRequestId')
-  Future<BaseListResponse<EvaluationHistoryItemModel>> getEvaluationHistory(
+  Future<BaseListResponse<EvaluationHistoryItemModel>> getAidServiceEvaluationHistory(
+      @Body() Map<String, dynamic> query);
+
+  @POST('/api/HomeServiceEvaluationOrg/GetEvaluationsByServiceRequestId')
+  Future<BaseListResponse<EvaluationHistoryItemModel>> getHomeServiceServiceEvaluationHistory(
       @Body() Map<String, dynamic> query);
 
   @POST('/api/ServiceRequestHistoryOrg/GetByFilterJson')

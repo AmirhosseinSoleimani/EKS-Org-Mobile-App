@@ -1,5 +1,7 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
+import 'package:eks_sana_plus_org/src/features/dashboard/presentation/widgets/filters_box.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_history/cubit/evaluation_history_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_history/widgets/filter_box.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/agent_info_detail_section.dart';
@@ -110,6 +112,7 @@ class _LoadedView extends StatelessWidget {
         padding: const EdgeInsets.all(AppSize.s16),
         child: Column(
           children: [
+            FilterBox(cubit: cubit),
             ExpandableSection(
               isExpanded: false,
               header: buildRequestStatusSection(cubit),

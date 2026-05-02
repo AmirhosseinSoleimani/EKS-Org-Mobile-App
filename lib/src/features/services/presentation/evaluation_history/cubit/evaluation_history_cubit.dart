@@ -9,8 +9,10 @@ import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_emda
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_evaluation_history_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_home_service_request_by_id_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_relief_request_by_id_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_history/widgets/enums/evaluation_is_accepted_filter.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
+import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -35,8 +37,12 @@ class EvaluationHistoryCubit extends Cubit<EvaluationHistoryState> {
     this._getEmdadgarInfoUseCase,
   ) : super(const EvaluationHistoryState.idle());
 
+  final selectedEvaluationIsisAcceptedNotifier = ValueNotifier<
+      EvaluationIsAcceptedFilter>(EvaluationIsAcceptedFilter.accepted);
+
   BaseRequestEntity? selectedBaseRequest;
   final List<EvaluationHistoryItemEntity> items = [];
+  final List<EvaluationHistoryItemEntity> _fullItems = [];
 
   EmdadgarInfoEntity? emdadgarInfo;
   String? _errorMessage;
@@ -50,6 +56,7 @@ class EvaluationHistoryCubit extends Cubit<EvaluationHistoryState> {
 
     switch (result) {
       case FetchResultType.success:
+        _applyFilter();
         _safeEmit(const EvaluationHistoryState.loaded());
         break;
 
@@ -110,7 +117,8 @@ class EvaluationHistoryCubit extends Cubit<EvaluationHistoryState> {
     FetchResultType fetchResult = FetchResultType.failure;
     result.when(
       success: (data, _, __) {
-        items.addAll(data);
+        _fullItems.clear();
+        _fullItems.addAll(data);
         fetchResult = FetchResultType.success;
       },
       failure: (_, msg) {
@@ -203,6 +211,32 @@ class EvaluationHistoryCubit extends Cubit<EvaluationHistoryState> {
       ),
     );
   }
+
+  void _applyFilter() {
+    final filter = selectedEvaluationIsisAcceptedNotifier.value;
+
+    items
+      ..clear()
+      ..addAll(
+        _fullItems.where((item) {
+          switch (filter) {
+            case EvaluationIsAcceptedFilter.accepted:
+              return item.isAccepted == true;
+            case EvaluationIsAcceptedFilter.all:
+              return true;
+          }
+        }),
+      );
+  }
+
+
+  void setSelectedEvaluationIsAccept(EvaluationIsAcceptedFilter isAcceptedFilter) {
+    selectedEvaluationIsisAcceptedNotifier.value = isAcceptedFilter;
+    _applyFilter();
+    _safeEmit(const EvaluationHistoryState.loaded());
+
+  }
+
 
   void _safeEmit(EvaluationHistoryState state) {
     if (!isClosed) emit(state);
