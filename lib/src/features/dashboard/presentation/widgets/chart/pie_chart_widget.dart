@@ -78,6 +78,7 @@ class PieChartWidget extends StatelessWidget {
   }
 
   Color _parseColor(String? hex) {
+    print(hex);
     const fallback = Color(0xFF9E9E9E);
 
     if (hex == null || hex.isEmpty) return fallback;

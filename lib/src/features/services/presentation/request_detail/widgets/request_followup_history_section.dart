@@ -56,7 +56,7 @@ class RequestFollowupHistorySection extends StatelessWidget {
               ),
               KeyValueRow(
                 label: "تاریخ و ساعت",
-                value: "$followupDate\n$followupTime",
+                value: "$followupDate - $followupTime",
               ),
               KeyValueRow(
                 label: "منبع",
@@ -68,7 +68,7 @@ class RequestFollowupHistorySection extends StatelessWidget {
               ),
               KeyValueRow(
                 label: "تاریخ و ساعت ثبت",
-                value: "$insertDate\n$insertTime",
+                value: "$insertDate - $insertTime",
               ),
               if ((item.description ?? "").trim().isNotEmpty)
                 KeyValueRow(

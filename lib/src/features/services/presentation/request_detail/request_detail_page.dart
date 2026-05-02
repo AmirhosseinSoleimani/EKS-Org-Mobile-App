@@ -131,7 +131,9 @@ class RequestDetailPage extends StatelessWidget {
                                        header: const BodyMediumText(
                                            text: "اطلاعات امداد رسان"),
                                        child: AgentInfoDetailSection(
-                                           agentInfo: cubit.emdadgarInfo!),
+                                           agentInfo: cubit.emdadgarInfo!,
+                                            selectedRequest: cubit.selectedRequest,
+                                       ),
                                      ),
                                    ],
                                     ExpandableSection(

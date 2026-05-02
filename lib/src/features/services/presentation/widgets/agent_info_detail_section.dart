@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_row.dart';
 import 'package:flutter/material.dart';
@@ -6,9 +7,11 @@ class AgentInfoDetailSection extends StatelessWidget {
   const AgentInfoDetailSection({
     super.key,
     required this.agentInfo,
+    this.selectedRequest,
   });
 
   final EmdadgarInfoEntity agentInfo;
+  final BaseRequestEntity? selectedRequest;
 
   @override
   Widget build(BuildContext context) {
@@ -39,7 +42,7 @@ class AgentInfoDetailSection extends StatelessWidget {
         ),
         KeyValueRow(
           label: "اعزام کننده",
-          value: agentInfo.agencyCodeLabel ?? "-",
+          value: selectedRequest?.dispatcher ?? "-",
         ),
         KeyValueRow(
           label: "نمایندگی (کد نمایندگی)",

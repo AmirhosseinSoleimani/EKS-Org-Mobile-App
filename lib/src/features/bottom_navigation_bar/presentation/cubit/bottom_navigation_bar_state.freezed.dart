@@ -207,7 +207,7 @@ return currentIndex(_that.currentIndex,_that.activeCount);case _:
 
 
 class _CurrentIndexState implements BottomNavigationBarState {
-  const _CurrentIndexState(this.currentIndex, {this.activeCount = 1});
+  const _CurrentIndexState(this.currentIndex, {this.activeCount = 0});
   
 
 @override final  int currentIndex;
