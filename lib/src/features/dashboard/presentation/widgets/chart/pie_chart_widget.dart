@@ -17,7 +17,6 @@ class PieChartWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        // --- Pie Chart ---
         SizedBox(
           height: chartRadius * 2,
           child: PieChart(
@@ -78,7 +77,7 @@ class PieChartWidget extends StatelessWidget {
   }
 
   Color _parseColor(String? hex) {
-    print(hex);
+
     const fallback = Color(0xFF9E9E9E);
 
     if (hex == null || hex.isEmpty) return fallback;

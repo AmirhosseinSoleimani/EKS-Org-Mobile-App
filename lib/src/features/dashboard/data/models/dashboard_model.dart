@@ -7,42 +7,42 @@ class DashboardModel extends DashboardEntity {
 
   const DashboardModel({
     required super.totalCallLogCount,
-    required super.totalServiceRequests,
-    required super.totalUrgentRequests,
-    required super.followUpTabletCount,
-    required super.followUpTabletPercent,
-    required super.generalStatus,
-    required super.openRequestsStatus,
-    required super.closedOrCanceledByCategory,
-    required super.closedOrCanceledByStatus,
-    required super.canceledByAssignStatus,
+    required super.totalRegisterServiceRequests,
+    required super.totalUrgentServiceRequest,
+    required super.serviceRequestEmdadgarFollowUpWithTabletCount,
+    required super.serviceRequestEmdadgarFollowUpWithTabletPercent,
+    required super.serviceRequestsGroupByGeneralStatus,
+    required super.openServiceRequestsGroupByRequestStatus,
+    required super.allowdCancelationOrClosedServiceRequestsGroupByGivenServiceCategory,
+    required super.allowdCancelationOrClosedServiceRequestsGroupByGeneralStatus,
+    required super.canceledServiceRequestsGroupByAssignStatus,
   });
 
   factory DashboardModel.fromJson(Map<String, dynamic> json) {
     return DashboardModel(
-      totalCallLogCount: json['totalCallLogCount'] ?? 0,
-      totalServiceRequests: json['totalServiceRequests'] ?? 0,
-      totalUrgentRequests: json['totalUrgentRequests'] ?? 0,
-      followUpTabletCount: json['serviceRequestEmdadgarFollowUpWithTabletCount'] ?? 0,
-      followUpTabletPercent: (json['serviceRequestEmdadgarFollowUpWithTabletPercent'] ?? 0).toDouble(),
+      totalCallLogCount: json['tootalCallLogCount'] ?? 0,
+      totalRegisterServiceRequests: json['totalRegisterServiceRequest'] ?? 0,
+      totalUrgentServiceRequest: json['totalUrgentServiceRequest'] ?? 0,
+      serviceRequestEmdadgarFollowUpWithTabletCount: json['serviceRequestEmdadgarFollowUpWithTabletCount'] ?? 0,
+      serviceRequestEmdadgarFollowUpWithTabletPercent: (json['serviceRequestEmdadgarFollowUpWithTabletPercent'] ?? 0).toDouble(),
 
-      generalStatus: (json['serviceRequestsGroupByGeneralStatus'] as List<dynamic>)
+      serviceRequestsGroupByGeneralStatus: (json['serviceRequestsGroupByGeneralStatus'] as List<dynamic>)
           .map((e) => ChartDataModel.fromJson(e))
           .toList(),
 
-      openRequestsStatus: (json['openServiceRequestsGroupByRequestStatus'] as List<dynamic>)
+      openServiceRequestsGroupByRequestStatus: (json['openServiceRequestsGroupByRequestStatus'] as List<dynamic>)
           .map((e) => ChartDataModel.fromJson(e))
           .toList(),
 
-      closedOrCanceledByCategory: (json['allowdCancelationOrClosedServiceRequestsGroupByGivenServiceCategory'] as List<dynamic>)
+      allowdCancelationOrClosedServiceRequestsGroupByGivenServiceCategory: (json['allowdCancelationOrClosedServiceRequestsGroupByGivenServiceCategory'] as List<dynamic>)
           .map((e) => ChartDataModel.fromJson(e))
           .toList(),
 
-      closedOrCanceledByStatus: (json['allowdCancelationOrClosedServiceRequestsGroupByGeneralStatus'] as List<dynamic>)
+      allowdCancelationOrClosedServiceRequestsGroupByGeneralStatus: (json['allowdCancelationOrClosedServiceRequestsGroupByGeneralStatus'] as List<dynamic>)
           .map((e) => ChartDataModel.fromJson(e))
           .toList(),
 
-      canceledByAssignStatus: (json['canceledServiceRequestsGroupByAssignStatus'] as List<dynamic>)
+      canceledServiceRequestsGroupByAssignStatus: (json['canceledServiceRequestsGroupByAssignStatus'] as List<dynamic>)
           .map((e) => ChartDataModel.fromJson(e))
           .toList(),
     );

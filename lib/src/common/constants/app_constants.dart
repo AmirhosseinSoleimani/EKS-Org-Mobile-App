@@ -28,7 +28,7 @@ class AppConstants {
   //static const String baseApiUrl = "http://172.16.4.97:11002";
 
   ///amir system test server
-  //static const String baseApiUrl = "http://172.16.170.65:11002";
+  static const String baseApiUrl = "http://172.16.170.65:11002";
 
   ///mohammad system test server
   // static const String baseApiUrl = "http://172.16.170.51:11002";
@@ -40,9 +40,6 @@ class AppConstants {
 
   ///owner(EKS) internal test server
   // static const String baseApiUrl = "http://192.168.0.68:5010";
-
-
-  static const String baseApiUrl = "http://172.16.170.65:11002";
 
 
   ///karimi

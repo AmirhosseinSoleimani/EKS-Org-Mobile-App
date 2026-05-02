@@ -4,75 +4,75 @@ import 'chart_data_entity.dart';
 
 class DashboardEntity {
   final int totalCallLogCount;
-  final int totalServiceRequests;
-  final int totalUrgentRequests;
-  final int followUpTabletCount;
-  final double followUpTabletPercent;
+  final int totalRegisterServiceRequests;
+  final int totalUrgentServiceRequest;
+  final int serviceRequestEmdadgarFollowUpWithTabletCount;
+  final double serviceRequestEmdadgarFollowUpWithTabletPercent;
 
-  final List<ChartDataEntity> generalStatus;
-  final List<ChartDataEntity> openRequestsStatus;
-  final List<ChartDataEntity> closedOrCanceledByCategory;
-  final List<ChartDataEntity> closedOrCanceledByStatus;
-  final List<ChartDataEntity> canceledByAssignStatus;
+  final List<ChartDataEntity> serviceRequestsGroupByGeneralStatus;
+  final List<ChartDataEntity> openServiceRequestsGroupByRequestStatus;
+  final List<ChartDataEntity> allowdCancelationOrClosedServiceRequestsGroupByGivenServiceCategory;
+  final List<ChartDataEntity> allowdCancelationOrClosedServiceRequestsGroupByGeneralStatus;
+  final List<ChartDataEntity> canceledServiceRequestsGroupByAssignStatus;
 
   const DashboardEntity({
     required this.totalCallLogCount,
-    required this.totalServiceRequests,
-    required this.totalUrgentRequests,
-    required this.followUpTabletCount,
-    required this.followUpTabletPercent,
-    required this.generalStatus,
-    required this.openRequestsStatus,
-    required this.closedOrCanceledByCategory,
-    required this.closedOrCanceledByStatus,
-    required this.canceledByAssignStatus,
+    required this.totalRegisterServiceRequests,
+    required this.totalUrgentServiceRequest,
+    required this.serviceRequestEmdadgarFollowUpWithTabletCount,
+    required this.serviceRequestEmdadgarFollowUpWithTabletPercent,
+    required this.serviceRequestsGroupByGeneralStatus,
+    required this.openServiceRequestsGroupByRequestStatus,
+    required this.allowdCancelationOrClosedServiceRequestsGroupByGivenServiceCategory,
+    required this.allowdCancelationOrClosedServiceRequestsGroupByGeneralStatus,
+    required this.canceledServiceRequestsGroupByAssignStatus,
   });
 
   DashboardEntity copyWith({
     int? totalCallLogCount,
-    int? totalServiceRequests,
-    int? totalUrgentRequests,
-    int? followUpTabletCount,
-    double? followUpTabletPercent,
-    List<ChartDataEntity>? generalStatus,
-    List<ChartDataEntity>? openRequestsStatus,
-    List<ChartDataEntity>? closedOrCanceledByCategory,
-    List<ChartDataEntity>? closedOrCanceledByStatus,
-    List<ChartDataEntity>? canceledByAssignStatus,
+    int? totalRegisterServiceRequests,
+    int? totalUrgentServiceRequest,
+    int? serviceRequestEmdadgarFollowUpWithTabletCount,
+    double? serviceRequestEmdadgarFollowUpWithTabletPercent,
+    List<ChartDataEntity>? serviceRequestsGroupByGeneralStatus,
+    List<ChartDataEntity>? openServiceRequestsGroupByRequestStatus,
+    List<ChartDataEntity>? allowdCancelationOrClosedServiceRequestsGroupByGivenServiceCategory,
+    List<ChartDataEntity>? allowdCancelationOrClosedServiceRequestsGroupByGeneralStatus,
+    List<ChartDataEntity>? canceledServiceRequestsGroupByAssignStatus,
   }) {
     return DashboardEntity(
       totalCallLogCount: totalCallLogCount ?? this.totalCallLogCount,
-      totalServiceRequests: totalServiceRequests ?? this.totalServiceRequests,
-      totalUrgentRequests: totalUrgentRequests ?? this.totalUrgentRequests,
-      followUpTabletCount: followUpTabletCount ?? this.followUpTabletCount,
-      followUpTabletPercent:
-          followUpTabletPercent ?? this.followUpTabletPercent,
-      generalStatus: generalStatus ?? this.generalStatus,
-      openRequestsStatus: openRequestsStatus ?? this.openRequestsStatus,
-      closedOrCanceledByCategory:
-          closedOrCanceledByCategory ?? this.closedOrCanceledByCategory,
-      closedOrCanceledByStatus:
-          closedOrCanceledByStatus ?? this.closedOrCanceledByStatus,
-      canceledByAssignStatus:
-          canceledByAssignStatus ?? this.canceledByAssignStatus,
+      totalRegisterServiceRequests: totalRegisterServiceRequests ?? this.totalRegisterServiceRequests,
+      totalUrgentServiceRequest: totalUrgentServiceRequest ?? this.totalUrgentServiceRequest,
+      serviceRequestEmdadgarFollowUpWithTabletCount: serviceRequestEmdadgarFollowUpWithTabletCount ?? this.serviceRequestEmdadgarFollowUpWithTabletCount,
+      serviceRequestEmdadgarFollowUpWithTabletPercent:
+          serviceRequestEmdadgarFollowUpWithTabletPercent ?? this.serviceRequestEmdadgarFollowUpWithTabletPercent,
+      serviceRequestsGroupByGeneralStatus: serviceRequestsGroupByGeneralStatus ?? this.serviceRequestsGroupByGeneralStatus,
+      openServiceRequestsGroupByRequestStatus: openServiceRequestsGroupByRequestStatus ?? this.openServiceRequestsGroupByRequestStatus,
+      allowdCancelationOrClosedServiceRequestsGroupByGivenServiceCategory:
+          allowdCancelationOrClosedServiceRequestsGroupByGivenServiceCategory ?? this.allowdCancelationOrClosedServiceRequestsGroupByGivenServiceCategory,
+      allowdCancelationOrClosedServiceRequestsGroupByGeneralStatus:
+          allowdCancelationOrClosedServiceRequestsGroupByGeneralStatus ?? this.allowdCancelationOrClosedServiceRequestsGroupByGeneralStatus,
+      canceledServiceRequestsGroupByAssignStatus:
+          canceledServiceRequestsGroupByAssignStatus ?? this.canceledServiceRequestsGroupByAssignStatus,
     );
   }
 
   DashboardModel toModel() {
     return DashboardModel(
       totalCallLogCount: totalCallLogCount,
-      totalServiceRequests: totalServiceRequests,
-      totalUrgentRequests: totalUrgentRequests,
-      followUpTabletCount: followUpTabletCount,
-      followUpTabletPercent: followUpTabletPercent,
-      generalStatus: generalStatus.map((e) => e.toModel()).toList(),
-      openRequestsStatus: openRequestsStatus.map((e) => e.toModel()).toList(),
-      closedOrCanceledByCategory:
-          closedOrCanceledByCategory.map((e) => e.toModel()).toList(),
-      closedOrCanceledByStatus:
-          closedOrCanceledByStatus.map((e) => e.toModel()).toList(),
-      canceledByAssignStatus:
-          canceledByAssignStatus.map((e) => e.toModel()).toList(),
+      totalRegisterServiceRequests: totalRegisterServiceRequests,
+      totalUrgentServiceRequest: totalUrgentServiceRequest,
+      serviceRequestEmdadgarFollowUpWithTabletCount: serviceRequestEmdadgarFollowUpWithTabletCount,
+      serviceRequestEmdadgarFollowUpWithTabletPercent: serviceRequestEmdadgarFollowUpWithTabletPercent,
+      serviceRequestsGroupByGeneralStatus: serviceRequestsGroupByGeneralStatus.map((e) => e.toModel()).toList(),
+      openServiceRequestsGroupByRequestStatus: openServiceRequestsGroupByRequestStatus.map((e) => e.toModel()).toList(),
+      allowdCancelationOrClosedServiceRequestsGroupByGivenServiceCategory:
+          allowdCancelationOrClosedServiceRequestsGroupByGivenServiceCategory.map((e) => e.toModel()).toList(),
+      allowdCancelationOrClosedServiceRequestsGroupByGeneralStatus:
+          allowdCancelationOrClosedServiceRequestsGroupByGeneralStatus.map((e) => e.toModel()).toList(),
+      canceledServiceRequestsGroupByAssignStatus:
+          canceledServiceRequestsGroupByAssignStatus.map((e) => e.toModel()).toList(),
     );
   }
 }

@@ -93,32 +93,32 @@ class _DashboardView extends StatelessWidget {
                             ),
                             StatRowCard(
                               title: 'تعداد کل درخواست‌ها',
-                              value: cubit.dashboardData?.totalServiceRequests.toString()?? '-',
+                              value: cubit.dashboardData?.totalRegisterServiceRequests.toString()?? '-',
                               serviceType: cubit.selectedServiceType,
                             ),
                             StatRowCard(
                               title: 'تعداد کل درخواست های اضظراری',
-                              value: cubit.dashboardData?.totalUrgentRequests.toString()?? '-',
+                              value: cubit.dashboardData?.totalUrgentServiceRequest.toString()?? '-',
                               serviceType: cubit.selectedServiceType,
                             ),
                             StatRowCard(
                               title: 'تعداد استفاده از اپلیکیشن',
-                              value: cubit.dashboardData?.followUpTabletCount.toString()?? '-',
+                              value: cubit.dashboardData?.serviceRequestEmdadgarFollowUpWithTabletCount.toString()?? '-',
                               serviceType: cubit.selectedServiceType,
                             ),
                             StatRowCard(
                               title: 'درصد پیگیری با اپلیکیشن',
-                              value: '${cubit.dashboardData?.followUpTabletPercent.toStringAsFixed(1)}%',
+                              value: '${cubit.dashboardData?.serviceRequestEmdadgarFollowUpWithTabletPercent.toStringAsFixed(1)}%',
                               serviceType: cubit.selectedServiceType,
                             ),
                               Space.h8,
                               ChartContainerWrapper(
                                 title: "درخواست ثبت شده به تفکیک وضعیت",
                                 totalCount: cubit.calculateTotalCount(
-                                  cubit.dashboardData?.generalStatus,
+                                  cubit.dashboardData?.serviceRequestsGroupByGeneralStatus,
                                 ),
                                 chart: HorizonBarChart(
-                                    items: cubit.dashboardData?.generalStatus ??
+                                    items: cubit.dashboardData?.serviceRequestsGroupByGeneralStatus ??
                                         []),
                               ),
                               Space.h16,
@@ -126,22 +126,22 @@ class _DashboardView extends StatelessWidget {
                                 title: 'درخواست باز به تفکیک وضعیت',
                                 totalCount: cubit.calculateTotalCount(
                                   cubit.dashboardData
-                                      ?.closedOrCanceledByCategory,
+                                      ?.openServiceRequestsGroupByRequestStatus,
                                 ),
                                 chart: PieChartWidget(
                                     items: cubit.dashboardData
-                                            ?.closedOrCanceledByCategory ??
+                                            ?.openServiceRequestsGroupByRequestStatus ??
                                         []),
                               ),
                               Space.h16,
                               ChartContainerWrapper(
                                 title: "عملیات انجام شده بر اساس نوع عملیات",
                                 totalCount: cubit.calculateTotalCount(
-                                  cubit.dashboardData?.closedOrCanceledByStatus,
+                                  cubit.dashboardData?.allowdCancelationOrClosedServiceRequestsGroupByGeneralStatus,
                                 ),
                                 chart: HorizonBarChart(
                                     items: cubit.dashboardData
-                                            ?.closedOrCanceledByStatus ??
+                                            ?.allowdCancelationOrClosedServiceRequestsGroupByGeneralStatus ??
                                         []),
                               ),
                               Space.h16,
@@ -149,11 +149,11 @@ class _DashboardView extends StatelessWidget {
                                 title: 'عملیات انجام شده بر اساس سرویس',
                                 totalCount: cubit.calculateTotalCount(
                                   cubit.dashboardData
-                                      ?.closedOrCanceledByCategory,
+                                      ?.allowdCancelationOrClosedServiceRequestsGroupByGivenServiceCategory,
                                 ),
                                 chart: PieChartWidget(
                                     items: cubit.dashboardData
-                                            ?.closedOrCanceledByCategory ??
+                                            ?.allowdCancelationOrClosedServiceRequestsGroupByGivenServiceCategory ??
                                         []),
                               ),
                             ],
