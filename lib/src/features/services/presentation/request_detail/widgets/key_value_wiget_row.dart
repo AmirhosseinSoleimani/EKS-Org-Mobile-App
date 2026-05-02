@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 
 class KeyValueWidgetRow extends StatelessWidget {
   final String label;
+  final Widget? leadingWidget;
   final Widget value;
 
   const KeyValueWidgetRow({
     super.key,
     required this.label,
     required this.value,
+    this.leadingWidget,
   });
 
   @override
@@ -22,7 +24,18 @@ class KeyValueWidgetRow extends StatelessWidget {
           // Label
           Expanded(
             flex: 1,
-            child: BodySmallText(text: label),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (leadingWidget != null) ...[
+                  leadingWidget!,
+                  const SizedBox(width: 4),
+                ],
+                Flexible(
+                  child: BodySmallText(text: label),
+                ),
+              ],
+            ),
           ),
 
           const SizedBox(width: 12),

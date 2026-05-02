@@ -114,7 +114,7 @@ class EvaluationListView extends StatelessWidget {
                     value: item.statusTitle ?? "-",
                   ),
                   KeyValueWidgetRow(
-                    label: "نوع عدم همکاری",
+                    label: "نوع فاکتور",
                     value: StatusLabel(
                       text:hasInvoice(item)
                           ? "دارای فاکتور"

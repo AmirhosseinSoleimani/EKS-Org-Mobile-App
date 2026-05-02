@@ -1,5 +1,4 @@
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/expand_toggle_button.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/vertical_line_indicator.dart';
 import 'package:flutter/material.dart';
 
 class TimelineItemCard extends StatelessWidget {
@@ -20,12 +19,11 @@ class TimelineItemCard extends StatelessWidget {
 
     return IntrinsicHeight(
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 8),
+        padding: const EdgeInsets.all(8),
         child: Row(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            VerticalLineIndicator(icon: icon),
-            const SizedBox(width: 8),
+            const SizedBox(width: 18),
             Expanded(
               child: _TimelineCardContainer(
                 expanded: expanded,
@@ -57,7 +55,6 @@ class _TimelineCardContainer extends StatelessWidget {
 
     return Container(
       padding: const EdgeInsets.all(12),
-      margin: const EdgeInsets.only(top: 24),
       decoration: BoxDecoration(
         border: Border.all(color: Colors.grey.shade300),
         borderRadius: BorderRadius.circular(4),

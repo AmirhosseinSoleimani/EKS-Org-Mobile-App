@@ -18,14 +18,14 @@ class VerticalLineIndicator extends StatelessWidget {
         Expanded(
           child: Container(
             width: 2,
-            color: color.withOpacity(0.2),
+            color: color.withAlpha(100),
           ),
         ),
         Container(
           width: 8,
           height: 8,
           decoration: BoxDecoration(
-            color: color.withOpacity(0.5),
+            color: color.withAlpha(150),
             shape: BoxShape.circle,
           ),
         ),

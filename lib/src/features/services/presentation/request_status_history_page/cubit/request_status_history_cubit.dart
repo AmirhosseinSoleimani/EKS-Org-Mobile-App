@@ -43,7 +43,6 @@ class RequestStatusHistoryCubit
   List<RequestStatusHistoryItemEntity> items = [];
 
   Future<void> init() async {
-    _safeEmit(const RequestStatusHistoryState.loading());
 
     selectedRequest = await _fetchSelectedRequestItemUseCase();
 
@@ -52,6 +51,8 @@ class RequestStatusHistoryCubit
 
       return;
     }
+
+    _safeEmit(const RequestStatusHistoryState.loading());
 
     await _refreshRequestData();
 

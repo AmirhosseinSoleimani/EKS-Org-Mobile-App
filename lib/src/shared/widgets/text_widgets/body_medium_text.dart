@@ -8,7 +8,7 @@ class BodyMediumText extends StatelessWidget {
   final TextAlign? textAlign;
   final int? maxLines;
   final TextDirection? textDirection;
-  final TextOverflow textOverflow;
+  final TextOverflow? textOverflow;
 
   const BodyMediumText({
     super.key,
@@ -18,7 +18,7 @@ class BodyMediumText extends StatelessWidget {
     this.textAlign,
     this.lineHeight,
     this.maxLines,
-    this.textOverflow = TextOverflow.ellipsis,
+    this.textOverflow ,
     this.textDirection = TextDirection.rtl,
   });
 

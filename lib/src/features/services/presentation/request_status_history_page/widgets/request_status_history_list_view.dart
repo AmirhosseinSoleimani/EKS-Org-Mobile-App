@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/request_
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_row.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_status_history_page/cubit/request_status_history_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_status_history_page/cubit/request_status_history_state.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/vertical_line_indicator.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
@@ -26,7 +27,7 @@ class RequestStatusHistoryListView extends StatelessWidget {
     final isEmpty = items.isEmpty;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(4),
@@ -41,7 +42,10 @@ class RequestStatusHistoryListView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const BodyMediumText(text: "تاریخچه وضعیت درخواست"),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: const BodyMediumText(text: "تاریخچه وضعیت درخواست"),
+          ),
           const SizedBox(height: 8),
           if (isEmpty)
             SizedBox(
@@ -65,42 +69,65 @@ class RequestStatusHistoryListView extends StatelessWidget {
                   );
                 }
 
-                return ListView.builder(
-                  key: const PageStorageKey('request_status_history_list'),
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    final item = items[index];
-                    return TimelineItemCard(
-                      icon: icon,
-                      children: [
-                        KeyValueRow(
-                          label: 'عنوان',
-                          value: item.title ?? '-',
-                        ),
-                        KeyValueRow(
-                          label: 'ثبت کننده',
-                          value: item.insertUserName ?? '-',
-                        ),
-                        KeyValueRow(
-                          label: 'تاریخ و ساعت ثبت',
-                          value: item.insertDateTime ?? '-',
-                        ),
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            const BodySmallText(text: 'توضیحات'),
-                            Space.h8,
-                            BodySmallText(
-                              text: item.description!,
-                              textAlign: TextAlign.start,
-                            ),
-                          ],
-                        )
-                      ],
-                    );
-                  },
+                return Stack(
+                  children: [
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: VerticalLineIndicator(icon: icon),
+                    ),
+
+                    Padding(
+                      padding: const EdgeInsets.only(top: 18),
+                      child: ListView.builder(
+                        key: const PageStorageKey(
+                            'request_status_history_list'),
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          final item = items[index];
+                          return TimelineItemCard(
+                            icon: icon,
+                            children: [
+                              KeyValueRow(
+                                label: item.title ?? '-',
+                                valueFontSize: 14,
+                                boldLabel: true,
+                                value: item.insertDateTime ?? '-',
+                              ),
+                              Space.h8,
+                              KeyValueRow(
+                                leadingWidget: Icon(
+                                    Icons.person_rounded, size: 18,
+                                    color: Theme
+                                        .of(context)
+                                        .colorScheme
+                                        .onSurface),
+                                label: '',
+                                value: item.insertUserName ?? '-',
+                                boldValue: true,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                              ),
+
+                              Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Space.h8,
+                                  BodySmallText(
+                                    text: item.description!,
+                                    textAlign: TextAlign.start,
+                                    fontSize: 12,
+                                  ),
+                                ],
+                              )
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 );
               },
             ),

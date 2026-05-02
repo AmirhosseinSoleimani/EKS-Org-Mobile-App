@@ -1,6 +1,6 @@
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/interfaces/dropdown_item.dart';
 import 'package:flutter/material.dart';
 
-import '../../../../../../shared/widgets/filter_widgets/interfaces/dropdown_item.dart' show DropdownItem;
 
 enum EvaluationIsAcceptedFilter implements DropdownItem {
   accepted('1', 'تایید شده‌ها'),
