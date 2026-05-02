@@ -1,14 +1,13 @@
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:flutter/material.dart';
 
 class ServiceIconWidget extends StatelessWidget {
-  final IconData icon;
+  final String imagePath;
   final Color iconColor;
   final Color backgroundColor;
 
   const ServiceIconWidget({
     super.key,
-    required this.icon,
+    required this.imagePath,
     required this.iconColor,
     required this.backgroundColor,
   });
@@ -16,15 +15,18 @@ class ServiceIconWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.all(AppPadding.p18),
+      width: 58,
+      height: 58,
+      padding: const EdgeInsets.all(12),
       decoration: BoxDecoration(
-        color: backgroundColor,
-        borderRadius: BorderRadius.circular(AppSize.s14),
+        color: backgroundColor.withAlpha(40),
+        borderRadius: BorderRadius.circular(12),
       ),
-      child: Icon(
-        icon,
-        color: iconColor,
-        size: AppSize.s24,
+      child: Image.asset(
+        imagePath,
+        width: 48,
+        height: 48,
+        fit: BoxFit.contain,
       ),
     );
   }
