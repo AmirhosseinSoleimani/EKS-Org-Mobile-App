@@ -55,7 +55,7 @@ extension OnlineMapStatePatterns on OnlineMapState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Idle value)?  idle,TResult Function( _Loading value)?  loading,TResult Function( _Loaded value)?  loaded,TResult Function( _LoadedWithoutMap value)?  loadedWithoutMap,TResult Function( _MapLoading value)?  mapLoading,TResult Function( _Error value)?  error,TResult Function( _Refresh value)?  refresh,TResult Function( _ConnectionError value)?  connectionError,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Idle value)?  idle,TResult Function( _Loading value)?  loading,TResult Function( _Loaded value)?  loaded,TResult Function( _LoadedWithoutMap value)?  loadedWithoutMap,TResult Function( _MapLoading value)?  mapLoading,TResult Function( _Error value)?  error,TResult Function( _Refresh value)?  refresh,TResult Function( _ConnectionError value)?  connectionError,TResult Function( _DetailsToggled value)?  detailsToggled,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
@@ -66,7 +66,8 @@ return loadedWithoutMap(_that);case _MapLoading() when mapLoading != null:
 return mapLoading(_that);case _Error() when error != null:
 return error(_that);case _Refresh() when refresh != null:
 return refresh(_that);case _ConnectionError() when connectionError != null:
-return connectionError(_that);case _:
+return connectionError(_that);case _DetailsToggled() when detailsToggled != null:
+return detailsToggled(_that);case _:
   return orElse();
 
 }
@@ -84,7 +85,7 @@ return connectionError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Idle value)  idle,required TResult Function( _Loading value)  loading,required TResult Function( _Loaded value)  loaded,required TResult Function( _LoadedWithoutMap value)  loadedWithoutMap,required TResult Function( _MapLoading value)  mapLoading,required TResult Function( _Error value)  error,required TResult Function( _Refresh value)  refresh,required TResult Function( _ConnectionError value)  connectionError,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Idle value)  idle,required TResult Function( _Loading value)  loading,required TResult Function( _Loaded value)  loaded,required TResult Function( _LoadedWithoutMap value)  loadedWithoutMap,required TResult Function( _MapLoading value)  mapLoading,required TResult Function( _Error value)  error,required TResult Function( _Refresh value)  refresh,required TResult Function( _ConnectionError value)  connectionError,required TResult Function( _DetailsToggled value)  detailsToggled,}){
 final _that = this;
 switch (_that) {
 case _Idle():
@@ -95,7 +96,8 @@ return loadedWithoutMap(_that);case _MapLoading():
 return mapLoading(_that);case _Error():
 return error(_that);case _Refresh():
 return refresh(_that);case _ConnectionError():
-return connectionError(_that);case _:
+return connectionError(_that);case _DetailsToggled():
+return detailsToggled(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -112,7 +114,7 @@ return connectionError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Idle value)?  idle,TResult? Function( _Loading value)?  loading,TResult? Function( _Loaded value)?  loaded,TResult? Function( _LoadedWithoutMap value)?  loadedWithoutMap,TResult? Function( _MapLoading value)?  mapLoading,TResult? Function( _Error value)?  error,TResult? Function( _Refresh value)?  refresh,TResult? Function( _ConnectionError value)?  connectionError,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Idle value)?  idle,TResult? Function( _Loading value)?  loading,TResult? Function( _Loaded value)?  loaded,TResult? Function( _LoadedWithoutMap value)?  loadedWithoutMap,TResult? Function( _MapLoading value)?  mapLoading,TResult? Function( _Error value)?  error,TResult? Function( _Refresh value)?  refresh,TResult? Function( _ConnectionError value)?  connectionError,TResult? Function( _DetailsToggled value)?  detailsToggled,}){
 final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
@@ -123,7 +125,8 @@ return loadedWithoutMap(_that);case _MapLoading() when mapLoading != null:
 return mapLoading(_that);case _Error() when error != null:
 return error(_that);case _Refresh() when refresh != null:
 return refresh(_that);case _ConnectionError() when connectionError != null:
-return connectionError(_that);case _:
+return connectionError(_that);case _DetailsToggled() when detailsToggled != null:
+return detailsToggled(_that);case _:
   return null;
 
 }
@@ -140,7 +143,7 @@ return connectionError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  loading,TResult Function()?  loaded,TResult Function()?  loadedWithoutMap,TResult Function()?  mapLoading,TResult Function( BottomSheetMessageModel message)?  error,TResult Function()?  refresh,TResult Function()?  connectionError,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  loading,TResult Function()?  loaded,TResult Function()?  loadedWithoutMap,TResult Function()?  mapLoading,TResult Function( BottomSheetMessageModel message)?  error,TResult Function()?  refresh,TResult Function()?  connectionError,TResult Function( bool isExpanded)?  detailsToggled,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle();case _Loading() when loading != null:
@@ -150,7 +153,8 @@ return loadedWithoutMap();case _MapLoading() when mapLoading != null:
 return mapLoading();case _Error() when error != null:
 return error(_that.message);case _Refresh() when refresh != null:
 return refresh();case _ConnectionError() when connectionError != null:
-return connectionError();case _:
+return connectionError();case _DetailsToggled() when detailsToggled != null:
+return detailsToggled(_that.isExpanded);case _:
   return orElse();
 
 }
@@ -168,7 +172,7 @@ return connectionError();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  loading,required TResult Function()  loaded,required TResult Function()  loadedWithoutMap,required TResult Function()  mapLoading,required TResult Function( BottomSheetMessageModel message)  error,required TResult Function()  refresh,required TResult Function()  connectionError,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  loading,required TResult Function()  loaded,required TResult Function()  loadedWithoutMap,required TResult Function()  mapLoading,required TResult Function( BottomSheetMessageModel message)  error,required TResult Function()  refresh,required TResult Function()  connectionError,required TResult Function( bool isExpanded)  detailsToggled,}) {final _that = this;
 switch (_that) {
 case _Idle():
 return idle();case _Loading():
@@ -178,7 +182,8 @@ return loadedWithoutMap();case _MapLoading():
 return mapLoading();case _Error():
 return error(_that.message);case _Refresh():
 return refresh();case _ConnectionError():
-return connectionError();case _:
+return connectionError();case _DetailsToggled():
+return detailsToggled(_that.isExpanded);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,7 +200,7 @@ return connectionError();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  loading,TResult? Function()?  loaded,TResult? Function()?  loadedWithoutMap,TResult? Function()?  mapLoading,TResult? Function( BottomSheetMessageModel message)?  error,TResult? Function()?  refresh,TResult? Function()?  connectionError,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  loading,TResult? Function()?  loaded,TResult? Function()?  loadedWithoutMap,TResult? Function()?  mapLoading,TResult? Function( BottomSheetMessageModel message)?  error,TResult? Function()?  refresh,TResult? Function()?  connectionError,TResult? Function( bool isExpanded)?  detailsToggled,}) {final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle();case _Loading() when loading != null:
@@ -205,7 +210,8 @@ return loadedWithoutMap();case _MapLoading() when mapLoading != null:
 return mapLoading();case _Error() when error != null:
 return error(_that.message);case _Refresh() when refresh != null:
 return refresh();case _ConnectionError() when connectionError != null:
-return connectionError();case _:
+return connectionError();case _DetailsToggled() when detailsToggled != null:
+return detailsToggled(_that.isExpanded);case _:
   return null;
 
 }
@@ -502,5 +508,71 @@ String toString() {
 
 
 
+
+/// @nodoc
+
+
+class _DetailsToggled implements OnlineMapState {
+  const _DetailsToggled({required this.isExpanded});
+  
+
+ final  bool isExpanded;
+
+/// Create a copy of OnlineMapState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$DetailsToggledCopyWith<_DetailsToggled> get copyWith => __$DetailsToggledCopyWithImpl<_DetailsToggled>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _DetailsToggled&&(identical(other.isExpanded, isExpanded) || other.isExpanded == isExpanded));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,isExpanded);
+
+@override
+String toString() {
+  return 'OnlineMapState.detailsToggled(isExpanded: $isExpanded)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$DetailsToggledCopyWith<$Res> implements $OnlineMapStateCopyWith<$Res> {
+  factory _$DetailsToggledCopyWith(_DetailsToggled value, $Res Function(_DetailsToggled) _then) = __$DetailsToggledCopyWithImpl;
+@useResult
+$Res call({
+ bool isExpanded
+});
+
+
+
+
+}
+/// @nodoc
+class __$DetailsToggledCopyWithImpl<$Res>
+    implements _$DetailsToggledCopyWith<$Res> {
+  __$DetailsToggledCopyWithImpl(this._self, this._then);
+
+  final _DetailsToggled _self;
+  final $Res Function(_DetailsToggled) _then;
+
+/// Create a copy of OnlineMapState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? isExpanded = null,}) {
+  return _then(_DetailsToggled(
+isExpanded: null == isExpanded ? _self.isExpanded : isExpanded // ignore: cast_nullable_to_non_nullable
+as bool,
+  ));
+}
+
+
+}
 
 // dart format on

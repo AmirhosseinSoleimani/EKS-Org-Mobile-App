@@ -275,6 +275,6 @@ class OnlineMapCubit extends Cubit<OnlineMapState> {
 
   void toggleMapDetails() {
     isDetailsExpanded = !isDetailsExpanded;
-    _safeEmit(const OnlineMapState.refresh());
+    _safeEmit(OnlineMapState.detailsToggled(isExpanded: isDetailsExpanded));
   }
 }

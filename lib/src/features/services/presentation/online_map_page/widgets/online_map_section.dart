@@ -23,16 +23,6 @@ class OnlineMapSection extends StatelessWidget {
         final emdadgar = cubit.emdadgarInfo;
         final isExpanded = cubit.isDetailsExpanded;
 
-        String durationText = "-";
-        String distanceText = "-";
-        if (routeData != null) {
-          final route = routeData.routes.isNotEmpty
-              ? routeData.routes.first
-              : null;
-          durationText = route?.duration.text ?? "-";
-          distanceText = route?.distance.text ?? "-";
-        }
-
         return Container(
           padding: const EdgeInsets.all(AppSize.s16),
           decoration: BoxDecoration(
@@ -85,22 +75,19 @@ class OnlineMapSection extends StatelessWidget {
               AnimatedContainer(
                 duration: const Duration(milliseconds: 400),
                 curve: Curves.easeInOut,
-                height: isExpanded ? 160 : 0,
+                height: isExpanded ? 80 : 0,
                 child: SingleChildScrollView(
                   physics: const NeverScrollableScrollPhysics(),
                   child: Column(
                     children: [
-                      Space.h8,
                       KeyValueRow(
                         label: "استان",
                         value: request?.provinceName ?? "-",
                       ),
-                      Space.h8,
                       KeyValueRow(
                         label: "شهر",
                         value: request?.cityName ?? "-",
                       ),
-                      Space.h8,
                       KeyValueRow(
                         label: "آدرس",
                         value: request?.aidAddress ?? "-",

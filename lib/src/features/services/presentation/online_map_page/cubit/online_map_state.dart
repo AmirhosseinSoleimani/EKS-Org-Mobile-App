@@ -19,4 +19,6 @@ class OnlineMapState with _$OnlineMapState {
   const factory OnlineMapState.refresh() = _Refresh;
 
   const factory OnlineMapState.connectionError() = _ConnectionError;
+
+  const factory OnlineMapState.detailsToggled({required bool isExpanded}) = _DetailsToggled;
 }
