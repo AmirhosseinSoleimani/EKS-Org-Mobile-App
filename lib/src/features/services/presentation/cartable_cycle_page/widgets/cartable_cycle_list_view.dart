@@ -3,6 +3,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/cartable_cy
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_row.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_wiget_row.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/status_label.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/vertical_line_indicator.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
@@ -27,7 +28,7 @@ class CartableCycleListView extends StatelessWidget {
     final isEmpty = items.isEmpty;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(4),
@@ -42,7 +43,10 @@ class CartableCycleListView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const BodySmallText(text: "لیست چرخه کارتابل"),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 8.0),
+            child: const BodySmallText(text: "لیست چرخه کارتابل"),
+          ),
           const SizedBox(height: 8),
           if (isEmpty)
             SizedBox(
@@ -67,62 +71,75 @@ class CartableCycleListView extends StatelessWidget {
                   );
                 }
 
-                return ListView.separated(
-                  key: const PageStorageKey('cartable_cycle_list'),
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: items.length,
-                  separatorBuilder: (_, __) => const SizedBox(height: 12),
-                  itemBuilder: (context, index) {
-                    final item = items[index];
+                return Stack(
+                  children: [
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: VerticalLineIndicator(icon: icon),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 18),
+                      child: ListView.separated(
+                        key: const PageStorageKey('cartable_cycle_list'),
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: items.length,
+                        separatorBuilder: (_, __) => const SizedBox(height: 12),
+                        itemBuilder: (context, index) {
+                          final item = items[index];
 
-                    return TimelineItemCard(
-                      icon: icon,
-                      expandedChildren: (item.description != null && item.description!.isNotEmpty)
-                          ? [
-                              Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  const BodySmallText(text: "توضیحات"),
-                                  const SizedBox(height: 8),
-                                  BodySmallText(
-                                    text: item.description!,
-                                    textAlign: TextAlign.start,
-                                  ),
-                                ],
-                              )
-                            ]
-                          : const [],
-                      children: [
-                        KeyValueRow(
-                          label: "شماره درخواست",
-                          value:
-                              item.serviceRequestTrackCode?.toString() ?? "-",
-                        ),
-                        KeyValueRow(
-                          label: "تاریخ ثبت پیغام",
-                          value:
-                              "${item.sendDateJalali ?? '-'} - ${item.sendTime ?? '-'}",
-                        ),
-                        KeyValueWidgetRow(
-                          label: "وضعیت درخواست",
-                          value: StatusLabel(
-                            text: item.statusTitle ?? "-",
-                            color: Colors.grey,
-                            variant: StatusLabelVariant.outlined,
-                          ),
-                        ),
-                        KeyValueWidgetRow(
-                          label: "مرحله",
-                          value: StatusLabel(
-                            text: item.stepTitle ?? "-",
-                            color: Colors.grey,
-                            variant: StatusLabelVariant.outlined,
-                          ),
-                        ),
-                      ],
-                    );
-                  },
+                          return TimelineItemCard(
+                            icon: icon,
+                            expandedChildren: (item.description != null && item.description!.isNotEmpty)
+                                ? [
+                                    Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        const BodySmallText(text: "توضیحات"),
+                                        const SizedBox(height: 8),
+                                        BodySmallText(
+                                          text: item.description!,
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ],
+                                    )
+                                  ]
+                                : const [],
+                            children: [
+                              KeyValueRow(
+                                label: "شماره درخواست",
+                                value:
+                                    item.serviceRequestTrackCode?.toString() ?? "-",
+                              ),
+                              KeyValueRow(
+                                label: "تاریخ ثبت پیغام",
+                                value:
+                                    "${item.sendDateJalali ?? '-'} - ${item.sendTime ?? '-'}",
+                              ),
+                              KeyValueWidgetRow(
+                                label: "وضعیت درخواست",
+                                value: StatusLabel(
+                                  text: item.statusTitle ?? "-",
+                                  color: Colors.grey,
+                                  variant: StatusLabelVariant.outlined,
+                                ),
+                              ),
+                              KeyValueWidgetRow(
+                                label: "مرحله",
+                                value: StatusLabel(
+                                  text: item.stepTitle ?? "-",
+                                  color: Colors.grey,
+                                  variant: StatusLabelVariant.outlined,
+                                ),
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 );
               },
             ),

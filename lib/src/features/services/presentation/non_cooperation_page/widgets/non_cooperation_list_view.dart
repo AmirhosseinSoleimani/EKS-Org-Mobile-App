@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/non_coop
 import 'package:eks_sana_plus_org/src/features/services/presentation/non_cooperation_page/cubit/non_cooperation_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_wiget_row.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/status_label.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/vertical_line_indicator.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
@@ -26,7 +27,7 @@ class NonCooperationListView extends StatelessWidget {
     final isEmpty = items.isEmpty;
 
     return Container(
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(4),
@@ -41,7 +42,9 @@ class NonCooperationListView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const BodyMediumText(text: "لیست درخواست های عدم همکاری"),
+          Padding(
+              padding: EdgeInsetsGeometry.symmetric(horizontal: 8.0),
+              child: const BodyMediumText(text: "لیست درخواست های عدم همکاری")),
           const SizedBox(height: 8),
           if (isEmpty)
             SizedBox(
@@ -65,50 +68,63 @@ class NonCooperationListView extends StatelessWidget {
                   );
                 }
 
-                return ListView.builder(
-                  key: const PageStorageKey('non_cooperation_list'),
-                  shrinkWrap: true,
-                  physics: const NeverScrollableScrollPhysics(),
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    final item = items[index];
+                return Stack(
+                  children: [
+                    Positioned(
+                      right: 0,
+                      top: 0,
+                      bottom: 0,
+                      child: VerticalLineIndicator(icon: icon),
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(top: 18.0),
+                      child: ListView.builder(
+                        key: const PageStorageKey('non_cooperation_list'),
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          final item = items[index];
 
-                    return TimelineItemCard(
-                      icon: icon,
-                      children: [
-                        KeyValueRow(
-                          label: "نام نمایندگی (کد نمایندگی)",
-                          value:
-                              "${item.agencyName ?? '-'} (${item.agencyCode ?? '-'})",
-                        ),
-                        KeyValueRow(
-                          label: "نام امدادرسان",
-                          value: item.aidPerName ?? "-",
-                        ),
-                        KeyValueRow(
-                          label: "ثبت کننده",
-                          value: item.authorFullname ?? "-",
-                        ),
-                        KeyValueRow(
-                          label: "تاریخ و ساعت ثبت",
-                          value:
-                              "${item.submitDateJalali ?? '-'} - ${item.submitTime ?? '-'}",
-                        ),
-                        KeyValueWidgetRow(
-                          label: "نوع عدم همکاری",
-                          value: StatusLabel(
-                            text: item.typeOfLackTitle ?? "-",
-                            color: Colors.grey,
-                            variant: StatusLabelVariant.outlined,
-                          ),
-                        ),
-                        KeyValueRow(
-                          label: "توضیحات",
-                          value: item.description ?? "-",
-                        ),
-                      ],
-                    );
-                  },
+                          return TimelineItemCard(
+                            icon: icon,
+                            children: [
+                              KeyValueRow(
+                                label: "نام نمایندگی (کد نمایندگی)",
+                                value:
+                                    "${item.agencyName ?? '-'} (${item.agencyCode ?? '-'})",
+                              ),
+                              KeyValueRow(
+                                label: "نام امدادرسان",
+                                value: item.aidPerName ?? "-",
+                              ),
+                              KeyValueRow(
+                                label: "ثبت کننده",
+                                value: item.authorFullname ?? "-",
+                              ),
+                              KeyValueRow(
+                                label: "تاریخ و ساعت ثبت",
+                                value:
+                                    "${item.submitDateJalali ?? '-'} - ${item.submitTime ?? '-'}",
+                              ),
+                              KeyValueWidgetRow(
+                                label: "نوع عدم همکاری",
+                                value: StatusLabel(
+                                  text: item.typeOfLackTitle ?? "-",
+                                  color: Colors.grey,
+                                  variant: StatusLabelVariant.outlined,
+                                ),
+                              ),
+                              KeyValueRow(
+                                label: "توضیحات",
+                                value: item.description ?? "-",
+                              ),
+                            ],
+                          );
+                        },
+                      ),
+                    ),
+                  ],
                 );
               },
             ),
