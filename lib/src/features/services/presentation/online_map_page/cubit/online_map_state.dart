@@ -8,6 +8,10 @@ class OnlineMapState with _$OnlineMapState {
 
   const factory OnlineMapState.loaded() = _Loaded;
 
+  const factory OnlineMapState.loadedWithoutMap() = _LoadedWithoutMap;
+
+  const factory OnlineMapState.mapLoading() = _MapLoading;
+
   const factory OnlineMapState.error({
     required BottomSheetMessageModel message,
   }) = _Error;

@@ -55,13 +55,15 @@ extension OnlineMapStatePatterns on OnlineMapState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Idle value)?  idle,TResult Function( _Loading value)?  loading,TResult Function( _Loaded value)?  loaded,TResult Function( _Error value)?  error,TResult Function( _Refresh value)?  refresh,TResult Function( _ConnectionError value)?  connectionError,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Idle value)?  idle,TResult Function( _Loading value)?  loading,TResult Function( _Loaded value)?  loaded,TResult Function( _LoadedWithoutMap value)?  loadedWithoutMap,TResult Function( _MapLoading value)?  mapLoading,TResult Function( _Error value)?  error,TResult Function( _Refresh value)?  refresh,TResult Function( _ConnectionError value)?  connectionError,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle(_that);case _Loading() when loading != null:
 return loading(_that);case _Loaded() when loaded != null:
-return loaded(_that);case _Error() when error != null:
+return loaded(_that);case _LoadedWithoutMap() when loadedWithoutMap != null:
+return loadedWithoutMap(_that);case _MapLoading() when mapLoading != null:
+return mapLoading(_that);case _Error() when error != null:
 return error(_that);case _Refresh() when refresh != null:
 return refresh(_that);case _ConnectionError() when connectionError != null:
 return connectionError(_that);case _:
@@ -82,13 +84,15 @@ return connectionError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Idle value)  idle,required TResult Function( _Loading value)  loading,required TResult Function( _Loaded value)  loaded,required TResult Function( _Error value)  error,required TResult Function( _Refresh value)  refresh,required TResult Function( _ConnectionError value)  connectionError,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Idle value)  idle,required TResult Function( _Loading value)  loading,required TResult Function( _Loaded value)  loaded,required TResult Function( _LoadedWithoutMap value)  loadedWithoutMap,required TResult Function( _MapLoading value)  mapLoading,required TResult Function( _Error value)  error,required TResult Function( _Refresh value)  refresh,required TResult Function( _ConnectionError value)  connectionError,}){
 final _that = this;
 switch (_that) {
 case _Idle():
 return idle(_that);case _Loading():
 return loading(_that);case _Loaded():
-return loaded(_that);case _Error():
+return loaded(_that);case _LoadedWithoutMap():
+return loadedWithoutMap(_that);case _MapLoading():
+return mapLoading(_that);case _Error():
 return error(_that);case _Refresh():
 return refresh(_that);case _ConnectionError():
 return connectionError(_that);case _:
@@ -108,13 +112,15 @@ return connectionError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Idle value)?  idle,TResult? Function( _Loading value)?  loading,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Error value)?  error,TResult? Function( _Refresh value)?  refresh,TResult? Function( _ConnectionError value)?  connectionError,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Idle value)?  idle,TResult? Function( _Loading value)?  loading,TResult? Function( _Loaded value)?  loaded,TResult? Function( _LoadedWithoutMap value)?  loadedWithoutMap,TResult? Function( _MapLoading value)?  mapLoading,TResult? Function( _Error value)?  error,TResult? Function( _Refresh value)?  refresh,TResult? Function( _ConnectionError value)?  connectionError,}){
 final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle(_that);case _Loading() when loading != null:
 return loading(_that);case _Loaded() when loaded != null:
-return loaded(_that);case _Error() when error != null:
+return loaded(_that);case _LoadedWithoutMap() when loadedWithoutMap != null:
+return loadedWithoutMap(_that);case _MapLoading() when mapLoading != null:
+return mapLoading(_that);case _Error() when error != null:
 return error(_that);case _Refresh() when refresh != null:
 return refresh(_that);case _ConnectionError() when connectionError != null:
 return connectionError(_that);case _:
@@ -134,12 +140,14 @@ return connectionError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  loading,TResult Function()?  loaded,TResult Function( BottomSheetMessageModel message)?  error,TResult Function()?  refresh,TResult Function()?  connectionError,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  loading,TResult Function()?  loaded,TResult Function()?  loadedWithoutMap,TResult Function()?  mapLoading,TResult Function( BottomSheetMessageModel message)?  error,TResult Function()?  refresh,TResult Function()?  connectionError,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded();case _Error() when error != null:
+return loaded();case _LoadedWithoutMap() when loadedWithoutMap != null:
+return loadedWithoutMap();case _MapLoading() when mapLoading != null:
+return mapLoading();case _Error() when error != null:
 return error(_that.message);case _Refresh() when refresh != null:
 return refresh();case _ConnectionError() when connectionError != null:
 return connectionError();case _:
@@ -160,12 +168,14 @@ return connectionError();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  loading,required TResult Function()  loaded,required TResult Function( BottomSheetMessageModel message)  error,required TResult Function()  refresh,required TResult Function()  connectionError,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  loading,required TResult Function()  loaded,required TResult Function()  loadedWithoutMap,required TResult Function()  mapLoading,required TResult Function( BottomSheetMessageModel message)  error,required TResult Function()  refresh,required TResult Function()  connectionError,}) {final _that = this;
 switch (_that) {
 case _Idle():
 return idle();case _Loading():
 return loading();case _Loaded():
-return loaded();case _Error():
+return loaded();case _LoadedWithoutMap():
+return loadedWithoutMap();case _MapLoading():
+return mapLoading();case _Error():
 return error(_that.message);case _Refresh():
 return refresh();case _ConnectionError():
 return connectionError();case _:
@@ -185,12 +195,14 @@ return connectionError();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  loading,TResult? Function()?  loaded,TResult? Function( BottomSheetMessageModel message)?  error,TResult? Function()?  refresh,TResult? Function()?  connectionError,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  loading,TResult? Function()?  loaded,TResult? Function()?  loadedWithoutMap,TResult? Function()?  mapLoading,TResult? Function( BottomSheetMessageModel message)?  error,TResult? Function()?  refresh,TResult? Function()?  connectionError,}) {final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
-return loaded();case _Error() when error != null:
+return loaded();case _LoadedWithoutMap() when loadedWithoutMap != null:
+return loadedWithoutMap();case _MapLoading() when mapLoading != null:
+return mapLoading();case _Error() when error != null:
 return error(_that.message);case _Refresh() when refresh != null:
 return refresh();case _ConnectionError() when connectionError != null:
 return connectionError();case _:
@@ -289,6 +301,70 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'OnlineMapState.loaded()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _LoadedWithoutMap implements OnlineMapState {
+  const _LoadedWithoutMap();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoadedWithoutMap);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'OnlineMapState.loadedWithoutMap()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _MapLoading implements OnlineMapState {
+  const _MapLoading();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _MapLoading);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'OnlineMapState.mapLoading()';
 }
 
 

@@ -16,7 +16,7 @@ import 'widgets/online_map_section.dart';
 
 class OnlineMapPage extends StatelessWidget {
   static const path = "/online-map-page";
-  static const name = "online_map_page-page";
+  static const name = "online-map-page";
 
   const OnlineMapPage({super.key});
 
@@ -77,12 +77,13 @@ class _Body extends StatelessWidget {
       builder: (context, state) {
         return state.maybeWhen(
           idle: () => const SizedBox.shrink(),
-          loading: () =>  Center(
+          loading: () => Center(
             child: CircularProgressIndicator(
-                color: cubit.selectedRequest?.serviceType?.serviceColor
+              color: cubit.selectedRequest?.serviceType?.serviceColor,
             ),
           ),
-          orElse: () => const _LoadedView(),
+          orElse: () => const _LoadedView(isMapLoading: true),
+
         );
       },
     );
@@ -90,7 +91,9 @@ class _Body extends StatelessWidget {
 }
 
 class _LoadedView extends StatelessWidget {
-  const _LoadedView();
+  final bool isMapLoading;
+
+  const _LoadedView({this.isMapLoading = false});
 
   @override
   Widget build(BuildContext context) {
@@ -116,7 +119,7 @@ class _LoadedView extends StatelessWidget {
               ),
             ),
             Space.h8,
-           const OnlineMapSection(),
+            OnlineMapSection(),
           ],
         ),
       ),
@@ -127,7 +130,7 @@ class _LoadedView extends StatelessWidget {
     return RequestStatusSection(
       trackCode: cubit.selectedRequest?.trackCode.toString() ?? '-',
       requestDateJalali:
-          cubit.selectedRequest?.requestDateJalali.toString() ?? '-',
+      cubit.selectedRequest?.requestDateJalali.toString() ?? '-',
       requestTime: cubit.selectedRequest?.requestTime.toString() ?? '-',
       requestStatusTitle: cubit.selectedRequest?.requestStatusTitle,
       isGuaranty: cubit.selectedRequest?.isGuaranty ?? false,
@@ -135,3 +138,5 @@ class _LoadedView extends StatelessWidget {
     );
   }
 }
+
+

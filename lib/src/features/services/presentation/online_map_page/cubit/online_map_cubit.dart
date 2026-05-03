@@ -24,12 +24,12 @@ part 'online_map_state.dart';
 @injectable
 class OnlineMapCubit extends Cubit<OnlineMapState> {
   OnlineMapCubit(
-    this._fetchSelectedRequestItemUseCase,
-    this._getReliefRequestByIdUseCase,
-    this._getHomeServiceRequestByIdUseCase,
-    this._getEmdadgarInfoUseCase,
-    this._getRouteUseCase,
-  ) : super(const OnlineMapState.idle());
+      this._fetchSelectedRequestItemUseCase,
+      this._getReliefRequestByIdUseCase,
+      this._getHomeServiceRequestByIdUseCase,
+      this._getEmdadgarInfoUseCase,
+      this._getRouteUseCase,
+      ) : super(const OnlineMapState.idle());
 
   final FetchSelectedRequestItemUseCase _fetchSelectedRequestItemUseCase;
   final GetReliefRequestByIdUseCase _getReliefRequestByIdUseCase;
@@ -51,11 +51,19 @@ class OnlineMapCubit extends Cubit<OnlineMapState> {
       : 'درخواست شما با خطا مواجه شد، لطفا با پشتیبانی تماس بگیرید';
 
   Future<void> init() async {
+    _safeEmit(const OnlineMapState.loading());
+
     final result = await _initializeData();
 
     switch (result) {
       case FetchResultType.success:
-        _safeEmit(const OnlineMapState.loaded());
+      // اگر نیاز به لود نقشه داریم
+        if (_shouldFetchEmdadgarInfo) {
+          _safeEmit(const OnlineMapState.loadedWithoutMap());
+          await _loadMapData();
+        } else {
+          _safeEmit(const OnlineMapState.loaded());
+        }
         break;
 
       case FetchResultType.failure:
@@ -80,8 +88,6 @@ class OnlineMapCubit extends Cubit<OnlineMapState> {
       return selectedResult;
     }
 
-    _safeEmit(const OnlineMapState.loading());
-
     final requestResult = await _fetchServiceRequestData();
     if (requestResult != FetchResultType.success) {
       return requestResult;
@@ -94,12 +100,28 @@ class OnlineMapCubit extends Cubit<OnlineMapState> {
       }
     }
 
-    final mapDataResult = await _loadOnlineMapData();
-    if (mapDataResult != FetchResultType.success) {
-      return mapDataResult;
-    }
-
     return FetchResultType.success;
+  }
+
+  Future<void> _loadMapData() async {
+    _safeEmit(const OnlineMapState.mapLoading());
+
+    final mapDataResult = await _loadOnlineMapData();
+
+    switch (mapDataResult) {
+      case FetchResultType.success:
+        _safeEmit(const OnlineMapState.loaded());
+        break;
+      case FetchResultType.failure:
+        _emitError();
+        break;
+      case FetchResultType.connectionError:
+        _safeEmit(const OnlineMapState.connectionError());
+        break;
+      case FetchResultType.expireToken:
+        _emitError('نشست شما منقضی شده است. لطفا دوباره وارد شوید');
+        break;
+    }
   }
 
   bool get _shouldFetchEmdadgarInfo {
@@ -157,7 +179,7 @@ class OnlineMapCubit extends Cubit<OnlineMapState> {
       success: (data, _, __) {
         emdadgarInfo = data;
         fetchResult = FetchResultType.success;
-       // _startPolling();
+        // _startPolling();
       },
       failure: (_, msg) {
         _errorMessage = _fallbackError(msg);
@@ -199,6 +221,7 @@ class OnlineMapCubit extends Cubit<OnlineMapState> {
       },
       failure: (_, msg) {
         _errorMessage = _fallbackError(msg);
+        fetchResult = FetchResultType.failure;
       },
       connectionError: () => fetchResult = FetchResultType.connectionError,
       expireToken: () => fetchResult = FetchResultType.expireToken,
@@ -254,5 +277,4 @@ class OnlineMapCubit extends Cubit<OnlineMapState> {
     isDetailsExpanded = !isDetailsExpanded;
     _safeEmit(const OnlineMapState.refresh());
   }
-
 }
