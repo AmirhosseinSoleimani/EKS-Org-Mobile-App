@@ -43,8 +43,8 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
   List<FollowupItemEntity> followups = [];
   List<RequestStatusHistoryItemEntity> requestStatusHistory = [];
   EmdadgarInfoEntity? emdadgarInfo;
-  int _page = 1;
-  final int _pageSize = 3;
+
+  final int _pageSize = 10;
 
 
 
@@ -121,7 +121,7 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
       final RequestOperationParamEntity param = RequestOperationParamEntity(
         serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
         requestId: requestId,
-        page: _page,
+
         pageSize: _pageSize,
 
       );
