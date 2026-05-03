@@ -135,7 +135,6 @@ class RequestStatusHistoryLoadedView extends StatelessWidget {
             ],
             const SizedBox(height: 12),
             RequestStatusHistoryListView(
-              items: cubit.items,
               icon: const Icon(
                 Icons.history,
                 color: Colors.grey,

@@ -96,8 +96,8 @@ class RequestStatusHistoryCubit
     final param = RequestOperationParamEntity(
       requestId: selectedRequest?.id ?? 0,
       serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
-      page: 1,
-      pageSize: 3,
+      page: _page,
+      pageSize: _pageSize,
     );
 
     final result = await _getRequestStatusHistoryUseCase(param);

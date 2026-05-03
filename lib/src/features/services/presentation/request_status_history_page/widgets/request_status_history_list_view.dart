@@ -1,4 +1,3 @@
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/request_status_history_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_row.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_status_history_page/cubit/request_status_history_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_status_history_page/cubit/request_status_history_state.dart';
@@ -13,19 +12,15 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../widgets/timeline_item_card.dart';
 
 class RequestStatusHistoryListView extends StatelessWidget {
-  final List<RequestStatusHistoryItemEntity> items;
   final Widget icon;
 
   const RequestStatusHistoryListView({
     super.key,
-    required this.items,
     required this.icon,
   });
 
   @override
   Widget build(BuildContext context) {
-    final isEmpty = items.isEmpty;
-
     return Container(
       padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 8),
       decoration: BoxDecoration(
@@ -46,15 +41,6 @@ class RequestStatusHistoryListView extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
             child: const BodyMediumText(text: "تاریخچه وضعیت درخواست"),
           ),
-          const SizedBox(height: 8),
-          if (isEmpty)
-            SizedBox(
-              height: MediaQuery.of(context).size.height * 0.62,
-              child: const Center(
-                child: EmptyListWidget(),
-              ),
-            ),
-          if (!isEmpty) ...[
             BlocBuilder<RequestStatusHistoryCubit, RequestStatusHistoryState>(
               builder: (context, state) {
                 final cubit = context.read<RequestStatusHistoryCubit>();
@@ -89,7 +75,6 @@ class RequestStatusHistoryListView extends StatelessWidget {
                         itemBuilder: (context, index) {
                           final item = items[index];
                           return TimelineItemCard(
-                            icon: icon,
                             children: [
                               KeyValueRow(
                                 label: item.title ?? '-',
@@ -171,7 +156,7 @@ class RequestStatusHistoryListView extends StatelessWidget {
               );
             },
           ),
-          ]
+
         ],
       ),
     );

@@ -71,7 +71,6 @@ class EvaluationListView extends StatelessWidget {
                     final item = items[index];
 
                     return TimelineItemCard(
-                      icon: icon,
                       expandedChildren: [
                         KeyValueRow(
                           label: "ایراد",

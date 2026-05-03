@@ -2,13 +2,13 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/exp
 import 'package:flutter/material.dart';
 
 class TimelineItemCard extends StatelessWidget {
-  final Widget icon;
+
   final List<Widget> children;
   final List<Widget> expandedChildren;
 
   const TimelineItemCard({
     super.key,
-    required this.icon,
+
     required this.children,
     this.expandedChildren = const [],
   });

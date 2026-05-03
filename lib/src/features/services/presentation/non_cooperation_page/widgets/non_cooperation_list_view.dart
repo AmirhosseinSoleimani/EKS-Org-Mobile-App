@@ -87,7 +87,6 @@ class NonCooperationListView extends StatelessWidget {
                           final item = items[index];
 
                           return TimelineItemCard(
-                            icon: icon,
                             children: [
                               KeyValueRow(
                                 label: "نام نمایندگی (کد نمایندگی)",

@@ -91,7 +91,6 @@ class CartableCycleListView extends StatelessWidget {
                           final item = items[index];
 
                           return TimelineItemCard(
-                            icon: icon,
                             expandedChildren: (item.description != null && item.description!.isNotEmpty)
                                 ? [
                                     Column(
