@@ -61,6 +61,18 @@ import '../features/dashboard/domain/use_cases/get_dashboard_data_use_case.dart'
 import '../features/dashboard/domain/use_cases/get_server_date_time_use_case.dart'
     as _i228;
 import '../features/dashboard/presentation/cubit/dashboard_cubit.dart' as _i932;
+import '../features/evaluation/data/remote/data_sources/evaluation_remote_data_source.dart'
+    as _i1023;
+import '../features/evaluation/data/remote/data_sources/evaluation_remote_data_source_impl.dart'
+    as _i832;
+import '../features/evaluation/data/remote/service/evaluation_service.dart'
+    as _i606;
+import '../features/evaluation/data/repositories/evaluation_repository_impl.dart'
+    as _i903;
+import '../features/evaluation/domain/repositories/evaluation_repository.dart'
+    as _i122;
+import '../features/evaluation/domain/usecase/get_defects_list_use_case.dart'
+    as _i163;
 import '../features/indicator_report/data/data_sources/indicator_report_data_source.dart'
     as _i691;
 import '../features/indicator_report/data/data_sources/indicator_report_data_source_impl.dart'
@@ -354,6 +366,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i585.DashboardReportService>(
     () => _i585.DashboardReportService(gh<_i361.Dio>()),
   );
+  gh.lazySingleton<_i606.EvaluationService>(
+    () => _i606.EvaluationService(gh<_i361.Dio>()),
+  );
   gh.lazySingleton<_i140.IndicatorReportService>(
     () => _i140.IndicatorReportService(gh<_i361.Dio>()),
   );
@@ -427,6 +442,11 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i1016.RequestDataSource>(
     () => _i576.RequestDataSourceImpl(gh<_i483.RequestService>()),
   );
+  gh.lazySingleton<_i1023.EvaluationRemoteDataSource>(
+    () => _i832.FinalizeInvoiceRemoteDataSourceImpl(
+      gh<_i606.EvaluationService>(),
+    ),
+  );
   gh.lazySingleton<_i479.AuthRemoteDataSource>(
     () => _i51.AuthRemoteDataSourceImpl(gh<_i626.AuthService>()),
   );
@@ -435,6 +455,10 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i1039.UserDataSource>(
     () => _i793.UserDataSourceImpl(gh<_i313.UserService>()),
+  );
+  gh.lazySingleton<_i122.EvaluationRepository>(
+    () =>
+        _i903.EvaluationRepositoryImpl(gh<_i1023.EvaluationRemoteDataSource>()),
   );
   gh.lazySingleton<_i603.RequestRepository>(
     () => _i794.RequestRepositoryImpl(gh<_i1016.RequestDataSource>()),
@@ -589,6 +613,9 @@ _i174.GetIt $initGetIt(
       gh<_i208.GetDashboardDataUseCase>(),
       gh<_i228.GetServerDateTimeUseCase>(),
     ),
+  );
+  gh.lazySingleton<_i163.GetDefectsListUseCase>(
+    () => _i163.GetDefectsListUseCase(gh<_i122.EvaluationRepository>()),
   );
   gh.factory<_i566.LoginCubit>(
     () => _i566.LoginCubit(
