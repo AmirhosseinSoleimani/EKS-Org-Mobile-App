@@ -71,6 +71,10 @@ import '../features/evaluation/data/repositories/evaluation_repository_impl.dart
     as _i903;
 import '../features/evaluation/domain/repositories/evaluation_repository.dart'
     as _i122;
+import '../features/evaluation/domain/usecase/get_aid_services_list_use_case.dart'
+    as _i270;
+import '../features/evaluation/domain/usecase/get_categories_list_use_case.dart'
+    as _i1016;
 import '../features/evaluation/domain/usecase/get_defects_list_use_case.dart'
     as _i163;
 import '../features/indicator_report/data/data_sources/indicator_report_data_source.dart'
@@ -128,6 +132,8 @@ import '../features/services/domain/usecases/get_request_status_history_use_case
     as _i955;
 import '../features/services/domain/usecases/set_selected_request_item_use_case.dart'
     as _i369;
+import '../features/services/domain/usecases/update_service_request_use_case.dart'
+    as _i180;
 import '../features/services/presentation/cartable_cycle_page/cubit/cartable_cycle_cubit.dart'
     as _i1029;
 import '../features/services/presentation/chassis_request_history_page/cubit/chassis_request_history_cubit.dart'
@@ -189,10 +195,10 @@ import '../shared/features/map/data/repository_impl/map_repository_impl.dart'
     as _i810;
 import '../shared/features/map/data/repository_impl/map_share_data_repository_impl.dart'
     as _i173;
+import '../shared/features/map/data/service/address_service.dart' as _i1036;
 import '../shared/features/map/data/service/location_permission_service.dart'
     as _i988;
 import '../shared/features/map/data/service/map_service.dart' as _i929;
-import '../shared/features/map/data/service/route_service.dart' as _i555;
 import '../shared/features/map/domain/repository/location_permission_repository.dart'
     as _i995;
 import '../shared/features/map/domain/repository/map_repository.dart' as _i92;
@@ -212,6 +218,10 @@ import '../shared/features/map/domain/usecase/get_area_base_info_use_case.dart'
     as _i159;
 import '../shared/features/map/domain/usecase/get_current_location_use_case.dart'
     as _i705;
+import '../shared/features/map/domain/usecase/get_location_data_use_case.dart'
+    as _i850;
+import '../shared/features/map/domain/usecase/get_province_with_city_list_use_case.dart'
+    as _i265;
 import '../shared/features/map/domain/usecase/get_route_use_case.dart' as _i678;
 import '../shared/features/map/domain/usecase/set_address_info_use_case.dart'
     as _i453;
@@ -378,20 +388,14 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i634.InvoiceService>(
     () => _i634.InvoiceService(gh<_i361.Dio>()),
   );
-  gh.lazySingleton<_i929.MapService>(() => _i929.MapService(gh<_i361.Dio>()));
-  gh.lazySingleton<_i555.RouteService>(
-    () => _i555.RouteService(gh<_i361.Dio>()),
+  gh.lazySingleton<_i1036.AddressService>(
+    () => _i1036.AddressService(gh<_i361.Dio>()),
   );
+  gh.lazySingleton<_i929.MapService>(() => _i929.MapService(gh<_i361.Dio>()));
   gh.lazySingleton<_i313.UserService>(() => _i313.UserService(gh<_i361.Dio>()));
   gh.lazySingleton<_i691.IndicatorReportDataSource>(
     () =>
         _i87.IndicatorReportDataSourceImpl(gh<_i140.IndicatorReportService>()),
-  );
-  gh.lazySingleton<_i971.MapDataSource>(
-    () => _i583.MapDataSourceImpl(
-      gh<_i929.MapService>(),
-      gh<_i555.RouteService>(),
-    ),
   );
   gh.lazySingleton<_i227.IndicatorReportRepository>(
     () => _i282.IndicatorReportRepositoryImpl(
@@ -425,6 +429,12 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i935.InvoiceDataSource>(
     () => _i981.InvoiceDataSourceImpl(gh<_i634.InvoiceService>()),
   );
+  gh.lazySingleton<_i971.MapDataSource>(
+    () => _i583.MapDataSourceImpl(
+      gh<_i929.MapService>(),
+      gh<_i1036.AddressService>(),
+    ),
+  );
   gh.lazySingleton<_i375.FetchIndicatorReportUseCase>(
     () => _i375.FetchIndicatorReportUseCase(
       gh<_i227.IndicatorReportRepository>(),
@@ -455,10 +465,6 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i1039.UserDataSource>(
     () => _i793.UserDataSourceImpl(gh<_i313.UserService>()),
-  );
-  gh.lazySingleton<_i122.EvaluationRepository>(
-    () =>
-        _i903.EvaluationRepositoryImpl(gh<_i1023.EvaluationRemoteDataSource>()),
   );
   gh.lazySingleton<_i603.RequestRepository>(
     () => _i794.RequestRepositoryImpl(gh<_i1016.RequestDataSource>()),
@@ -496,6 +502,12 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i159.GetAreaBaseInfoUseCase>(
     () => _i159.GetAreaBaseInfoUseCase(gh<_i92.MapRepository>()),
+  );
+  gh.lazySingleton<_i850.GetLocationDataUseCase>(
+    () => _i850.GetLocationDataUseCase(gh<_i92.MapRepository>()),
+  );
+  gh.lazySingleton<_i265.GetProvinceWithCityListUseCase>(
+    () => _i265.GetProvinceWithCityListUseCase(gh<_i92.MapRepository>()),
   );
   gh.lazySingleton<_i678.GetRouteUseCase>(
     () => _i678.GetRouteUseCase(gh<_i92.MapRepository>()),
@@ -548,6 +560,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i955.GetRequestStatusHistoryUseCase>(
     () => _i955.GetRequestStatusHistoryUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i180.UpdateServiceRequestUseCase>(
+    () => _i180.UpdateServiceRequestUseCase(gh<_i603.RequestRepository>()),
   );
   gh.factory<_i891.ChassisRequestHistoryCubit>(
     () => _i891.ChassisRequestHistoryCubit(
@@ -614,14 +629,15 @@ _i174.GetIt $initGetIt(
       gh<_i228.GetServerDateTimeUseCase>(),
     ),
   );
-  gh.lazySingleton<_i163.GetDefectsListUseCase>(
-    () => _i163.GetDefectsListUseCase(gh<_i122.EvaluationRepository>()),
-  );
   gh.factory<_i566.LoginCubit>(
     () => _i566.LoginCubit(
       gh<_i139.LoginUseCase>(),
       gh<_i826.PhoneNumberValidatorUseCase>(),
     ),
+  );
+  gh.lazySingleton<_i122.EvaluationRepository>(
+    () =>
+        _i903.EvaluationRepositoryImpl(gh<_i1023.EvaluationRemoteDataSource>()),
   );
   gh.lazySingleton<_i216.FetchBaseUserInfoUseCase>(
     () => _i216.FetchBaseUserInfoUseCase(gh<_i74.UserRepository>()),
@@ -734,6 +750,15 @@ _i174.GetIt $initGetIt(
       gh<_i672.GetReliefRequestByIdUseCase>(),
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
     ),
+  );
+  gh.lazySingleton<_i270.GetAidServicesListUseCase>(
+    () => _i270.GetAidServicesListUseCase(gh<_i122.EvaluationRepository>()),
+  );
+  gh.lazySingleton<_i1016.GetCategoriesListUseCase>(
+    () => _i1016.GetCategoriesListUseCase(gh<_i122.EvaluationRepository>()),
+  );
+  gh.lazySingleton<_i163.GetDefectsListUseCase>(
+    () => _i163.GetDefectsListUseCase(gh<_i122.EvaluationRepository>()),
   );
   return getIt;
 }

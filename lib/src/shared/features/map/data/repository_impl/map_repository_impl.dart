@@ -2,12 +2,15 @@ import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_
 import 'package:eks_sana_plus_org/src/shared/features/map/data/data_source/map_data_source.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/address_to_location_response_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/area_base_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/location_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/location_to_address_response_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/map_request_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/online_route_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/params/route_param_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/province_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/repository/map_repository.dart';
 import 'package:injectable/injectable.dart';
+import 'package:location_platform_interface/location_platform_interface.dart';
 
 import '../../../../../services/network/network_state/result/api_result.dart';
 
@@ -61,6 +64,26 @@ class MapRepositoryImpl extends MapRepository {
   Future<ApiResult<AreaBaseEntity>> getAreaBaseData() async {
     try {
       final result = await _dataSource.getAreaBaseData();
+      return result.toApiResult();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<List<ProvinceEntity>>> getProvinceList() async {
+    try {
+      final result = await _dataSource.getProvinceList();
+      return result.toApiResultList();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<LocationData>> getLocationData(LocationEntity param) async {
+    try {
+      final result = await _dataSource.getLocationData(param.toModel());
       return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);

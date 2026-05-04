@@ -10,8 +10,10 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/c
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_operation_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/service_request_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/update_service_request_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/request_status_history_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/update_service_response_entity.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 
 abstract class RequestRepository {
@@ -47,4 +49,6 @@ abstract class RequestRepository {
 
   Future<ApiResult<ControlInfoEntity>>
   getControlInfo(ServiceRequestParamEntity param);
+
+  Future<ApiResult<UpdateServiceResponseEntity>> updateServiceRequest(UpdateServiceRequestParamEntity param);
 }

@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/service_category_model.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/service_response_model.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
@@ -27,5 +28,10 @@ abstract class EvaluationService {
   @GET('/api/HomeServiceEvaluationOrg/GetServiceCategories')
   Future<BaseListResponse<ServiceCategoryModel>> getHomeServiceCategories(
     @Body() Map<String, dynamic> body,
+  );
+
+  @GET('/api/AidServiceEvaluation/GetServices')
+  Future<BaseSingleResponse<ServiceResponseModel>> getAidServices(
+    @Queries() Map<String, dynamic> body,
   );
 }

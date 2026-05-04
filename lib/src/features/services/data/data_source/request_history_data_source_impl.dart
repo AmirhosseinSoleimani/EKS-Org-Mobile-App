@@ -11,8 +11,10 @@ import 'package:eks_sana_plus_org/src/features/services/data/models/params/chass
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/request_filter_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/request_operation_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/service_request_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/update_service_request_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/relief_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/request_status_history_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/update_service_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/service/request_service.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 import 'package:injectable/injectable.dart';
@@ -84,6 +86,10 @@ class RequestDataSourceImpl extends RequestDataSource {
   @override
   Future<BaseSingleResponse<FollowupModel>> getRequestFollowUp(RequestOperationParamModel param) async =>
       await _service.getRequestFollowUp(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<UpdateServiceResponseModel>> updateServiceRequest(UpdateServiceRequestParamModel param) async =>
+      await _service.updateServiceRequest(param.toJson());
 
 
 }

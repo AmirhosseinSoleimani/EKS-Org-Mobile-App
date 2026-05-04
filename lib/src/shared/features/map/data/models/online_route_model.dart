@@ -1,5 +1,4 @@
-
-
+import 'package:eks_sana_plus_org/src/shared/features/map/data/models/location_model.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/online_route_entity.dart';
 
 class RouteDataModel extends RouteDataEntity {
@@ -112,20 +111,6 @@ class DistanceDurationModel extends DistanceDurationEntity {
     return DistanceDurationModel(
       text: json["text"],
       value: (json["value"] as num).toDouble(),
-    );
-  }
-}
-
-class LocationModel extends LocationEntity {
-  LocationModel({
-    required super.latitude,
-    required super.longitude,
-  });
-
-  factory LocationModel.fromJson(Map<String, dynamic> json) {
-    return LocationModel(
-      latitude: (json["latitude"] as num).toDouble(),
-      longitude: (json["longitude"] as num).toDouble(),
     );
   }
 }

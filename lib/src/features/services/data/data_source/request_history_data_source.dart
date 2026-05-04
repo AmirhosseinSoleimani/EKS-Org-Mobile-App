@@ -9,8 +9,10 @@ import 'package:eks_sana_plus_org/src/features/services/data/models/params/chass
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/request_filter_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/request_operation_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/service_request_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/update_service_request_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/relief_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/request_status_history_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/update_service_response_model.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 
 import '../models/evaluation_history_item_model.dart';
@@ -46,4 +48,7 @@ abstract class RequestDataSource {
 
   Future<BaseSingleResponse<ControlInfoModel>>
       getControlInfo(ServiceRequestParamModel param);
+
+  Future<BaseSingleResponse<UpdateServiceResponseModel>>
+  updateServiceRequest(UpdateServiceRequestParamModel param);
 }

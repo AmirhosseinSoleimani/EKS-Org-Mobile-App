@@ -9,6 +9,7 @@ import 'package:eks_sana_plus_org/src/features/services/data/models/home_service
 import 'package:eks_sana_plus_org/src/features/services/data/models/non_cooperation_list_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/relief_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/request_status_history_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/update_service_response_model.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
@@ -72,5 +73,9 @@ abstract class RequestService {
 
   @POST('/api/RequestFollowUpOrg/ServiceRequestsFollowUpByUser')
   Future<BaseSingleResponse<ControlInfoModel>> getControlInfo(
+      @Body() Map<String, dynamic> query);
+
+  @POST('/api/AidServiceRequest/EditServiceRequest')
+  Future<BaseSingleResponse<UpdateServiceResponseModel>> updateServiceRequest(
       @Body() Map<String, dynamic> query);
 }

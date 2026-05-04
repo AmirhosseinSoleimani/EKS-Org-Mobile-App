@@ -9,7 +9,7 @@ class PrettyDioLogger extends Interceptor {
   /// Print request header [Options.headers]
   final bool requestHeader;
 
-  /// Print request data [Options.data]
+  /// Print request data [Options.updatedRecordId]
   final bool requestBody;
 
   /// Print [Response.data]
