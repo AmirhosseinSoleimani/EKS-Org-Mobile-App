@@ -34,6 +34,7 @@ class MapCubit extends Cubit<MapState> {
   final SetAddressInfoUseCase _setAddressInfoUseCase;
   final FetchAddressToLocationUseCase _fetchAddressToLocationUseCase;
   final Connectivity _connectivity = Connectivity();
+  AddressInfoEntity? _initialLocation;
   MapCubit(
       this._fetchAddressInfoUseCase,
       this._ensureLocationReadingUseCase,
@@ -102,6 +103,10 @@ class MapCubit extends Cubit<MapState> {
 
   }
 
+  void setInitialLocation(AddressInfoEntity? address) {
+    _initialLocation = address;
+  }
+
   Future<void> init() async {
     _safeEmit(const MapState.idle());
     _retryAction = init;
@@ -109,17 +114,24 @@ class MapCubit extends Cubit<MapState> {
       return;
     }
     try {
-      final addressInfoEntity = await _fetchAddressInfoUseCase();
-      _location = lat_lng.LatLng(
-        addressInfoEntity?.latitude ?? AppConstants.defaultLatitude,
-        addressInfoEntity?.longitude ?? AppConstants.defaultLongitude,
-      );
-      await _centerMapSafely(_location, zoom: 17);
-      _mapMoveSub = mapController.mapEventStream.listen((event) {
-        if (event is MapEventMove && findCurrentLocationLoading.value) {
-          findCurrentLocationLoading.value = false;
-        }
-      });
+      if (_initialLocation != null) {
+        _location = lat_lng.LatLng(
+          _initialLocation!.latitude ?? AppConstants.defaultLatitude,
+          _initialLocation!.longitude ?? AppConstants.defaultLongitude,
+        );
+     }else{
+       final addressInfoEntity = await _fetchAddressInfoUseCase();
+       _location = lat_lng.LatLng(
+         addressInfoEntity?.latitude ?? AppConstants.defaultLatitude,
+         addressInfoEntity?.longitude ?? AppConstants.defaultLongitude,
+       );
+       await _centerMapSafely(_location, zoom: 17);
+       _mapMoveSub = mapController.mapEventStream.listen((event) {
+         if (event is MapEventMove && findCurrentLocationLoading.value) {
+           findCurrentLocationLoading.value = false;
+         }
+       });
+     }
     } catch (e) {
       emit(const MapState.error(
           messageModel:

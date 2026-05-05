@@ -11,7 +11,9 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/update_requ
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/agent_info_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_status_section.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/address_info_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/province_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/selectable_map_page.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/static_map_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
@@ -280,8 +282,6 @@ class _LoadedView extends StatelessWidget {
                 children: [
                   const BodyMediumText(text: "موقعیت و آدرس"),
                   Space.h32,
-
-                  // MAP
                   SizedBox(
                     height: 280,
                     child: Stack(
@@ -295,26 +295,28 @@ class _LoadedView extends StatelessWidget {
                           bottom: 12,
                           left: 12,
                           right: 12,
-                          child: Container(
-
-                            margin: const EdgeInsets.symmetric(
-                                horizontal: 94, vertical: 6),
-                            padding: const EdgeInsets.symmetric(vertical: 12),
-                            decoration: BoxDecoration(
-                              color: Colors.white,
-                              borderRadius: BorderRadius.circular(8),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.black.withAlpha(16),
-                                  spreadRadius: 2,
-                                  blurRadius: 4,
-                                  offset: const Offset(0, 2),
-                                ),
-                              ],
-                            ),
-                            alignment: Alignment.center,
-                            child: const BodyMediumText(
-                              text: "انتخاب روی نقشه",
+                          child: InkWell(
+                            onTap: () => _showSelectableMap(context),
+                            child: Container(
+                              margin: const EdgeInsets.symmetric(
+                                  horizontal: 94, vertical: 6),
+                              padding: const EdgeInsets.symmetric(vertical: 12),
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius: BorderRadius.circular(8),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withAlpha(16),
+                                    spreadRadius: 2,
+                                    blurRadius: 4,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              alignment: Alignment.center,
+                              child: const BodyMediumText(
+                                text: "انتخاب روی نقشه",
+                              ),
                             ),
                           ),
                         ),
@@ -323,8 +325,6 @@ class _LoadedView extends StatelessWidget {
                   ),
 
                   Space.h24,
-
-                  // message example
                   MapMessageBox(
                     message:
                         "این محدوده در طرح ترافیک قرار دارد و ممکن است محدودیت تردد داشته باشد.",
@@ -367,9 +367,7 @@ class _LoadedView extends StatelessWidget {
                     textInputAction: TextInputAction.done,
                     maxLines: 3,
                   ),
-
                   Space.h24,
-
                   TextFormFieldWidget(
                     labelText: "توضیحات",
                     controller: cubit.descriptionController,
@@ -378,7 +376,6 @@ class _LoadedView extends StatelessWidget {
                     textAlign: TextAlign.start,
                     textInputAction: TextInputAction.done,
                     maxLines: 3,
-                    //validator: (value) => cubit.phoneNumberValidate(value),
                   ),
                 ],
               ),
@@ -402,5 +399,29 @@ class _LoadedView extends StatelessWidget {
       isGuaranty: cubit.selectedRequest?.isGuaranty ?? false,
       isSubscription: cubit.selectedRequest?.isSubscription ?? false,
     );
+  }
+
+  Future<void> _showSelectableMap(BuildContext context) async {
+    final result = await showModalBottomSheet<AddressInfoEntity>(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) {
+        return SizedBox(
+          height: MediaQuery
+              .of(context)
+              .size
+              .height,
+          child: SelectableMapPage(
+            initialLocation: context
+                .read<UpdateRequestCubit>()
+                .selectedLocation,
+          ),
+        );
+      },
+    );
+
+    if (result != null && context.mounted) {
+      context.read<UpdateRequestCubit>().setSelectedLocation(result);
+    }
   }
 }

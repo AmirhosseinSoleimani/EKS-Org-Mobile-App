@@ -17,6 +17,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_emda
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_relief_request_by_id_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/update_service_request_use_case.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/address_info_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/location_data_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/location_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/province_entity.dart';
@@ -59,6 +60,7 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
   List<ProvinceEntity> provinceList = <ProvinceEntity>[];
   List<DefectEntity> defectList = <DefectEntity>[];
   ServiceResponseEntity? serviceResponseEntity;
+  AddressInfoEntity? addressInfoEntity;
 
   final selectedDefect = ValueNotifier<DefectEntity?>(null);
   final selectedProvince = ValueNotifier<ProvinceEntity?>(null);
@@ -68,6 +70,7 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
   final filteredServices = ValueNotifier<List<EmdadServiceEntity>>([]);
 
   final locationData = ValueNotifier<LocationDataEntity?>(null);
+  AddressInfoEntity? selectedLocation;
 
   final TextEditingController licensePlateController = TextEditingController();
   final TextEditingController clientPhoneNumberController = TextEditingController();
@@ -246,8 +249,7 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
     _safeEmit(const UpdateRequestState.loaded());
   }
 
-
-  /*Future<void> init() async {
+ /* Future<void> init() async {
     final result = await _initializeData();
 
     switch (result) {
@@ -344,6 +346,12 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
 
         descriptionController.text = selectedRequest?.description ?? '';
 
+        selectedLocation = AddressInfoEntity(
+          latitude: selectedRequest?.latitude,
+          longitude: selectedRequest?.longitude,
+          address: selectedRequest?.aidAddress,
+        );
+
         fetchResult = FetchResultType.success;
       },
       failure: (_, msg) {
@@ -418,8 +426,10 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
   }
 
   Future<FetchResultType> _fetchLocationData() async {
-    final param = LocationEntity(latitude: selectedRequest?.latitude ?? 0,
-        longitude: selectedRequest?.longitude ?? 0);
+    final param = LocationEntity(
+      latitude: selectedLocation?.latitude ?? 0,
+      longitude: selectedLocation?.longitude ?? 0,
+    );
 
     final result = await _getLocationDataUseCase(param);
 
@@ -519,8 +529,8 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
   Future<FetchResultType> updateServiceRequest() async {
     final param = UpdateServiceRequestParamEntity(
       id: selectedRequest?.id,
-      latitude: 0,
-      longitude: 0,
+      latitude: selectedLocation?.latitude,
+      longitude: selectedLocation?.longitude,
       aIDAddress: addressController.text,
       licensePlateNo: licensePlateController.text,
       callMobileNumber: selectedRequest?.callMobileNumber,
@@ -598,6 +608,12 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
   }
   void setSelectedProvince(ProvinceEntity province) {
     selectedProvince.value = province;
+  }
+
+  void setSelectedLocation(AddressInfoEntity location) {
+    selectedLocation = location;
+    addressController.text = location.address ?? '';
+    _fetchLocationData();
   }
 
 

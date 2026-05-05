@@ -13,7 +13,6 @@ import 'package:connectivity_plus/connectivity_plus.dart' as _i895;
 import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
-import 'package:location/location.dart' as _i645;
 import 'package:sliding_up_panel/sliding_up_panel.dart' as _i882;
 
 import '../app/cubit/app_cubit/app_cubit.dart' as _i757;
@@ -330,14 +329,14 @@ _i174.GetIt $initGetIt(
       gh<_i838.RequestRepositoryShareData>(),
     ),
   );
-  gh.lazySingleton<_i988.ILocationDeviceService>(
-    () => _i988.LocationDeviceService(gh<_i645.Location>()),
-  );
   gh.lazySingleton<_i406.FetchAddressInfoUseCase>(
     () => _i406.FetchAddressInfoUseCase(gh<_i837.MapShareDataRepository>()),
   );
   gh.lazySingleton<_i453.SetAddressInfoUseCase>(
     () => _i453.SetAddressInfoUseCase(gh<_i837.MapShareDataRepository>()),
+  );
+  gh.lazySingleton<_i988.ILocationDeviceService>(
+    () => _i988.LocationDeviceService(),
   );
   gh.lazySingleton<_i308.SessionStorage>(
     () => _i577.SessionStorageMobileImpl(),
