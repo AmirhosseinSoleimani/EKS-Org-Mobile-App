@@ -143,7 +143,7 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
             filled: true,
             labelText: (widget.mandatory ?? false) ? "${widget.labelText} *" : widget.labelText,
             labelStyle: widget.labelStyle ??
-                textTheme.labelMedium?.copyWith(
+                textTheme.labelLarge?.copyWith(
                 color: isFocus ? colorScheme.primary : colorScheme.onSurface,
                 ),
             floatingLabelBehavior: widget.floatingLabelBehavior,

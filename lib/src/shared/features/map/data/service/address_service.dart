@@ -24,11 +24,11 @@ abstract class AddressService {
       @Queries() Map<String, dynamic> query);
 
 
-  @POST('/api/City/GetCitiesWithProvince')
+  @POST('/api/CityOrg/GetCitiesWithProvince')
   Future<BaseListResponse<ProvinceModel>> getCitiesWithProvince(
       @Queries() Map<String, dynamic> query);
 
-  @POST('/api/Map/GetLocationData')
+  @POST('/api/MapOrg/GetLocationData')
   Future<BaseSingleResponse<LocationDataModel>> getLocationData(
       @Body() Map<String, dynamic> query);
 }

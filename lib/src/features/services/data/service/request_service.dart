@@ -75,7 +75,7 @@ abstract class RequestService {
   Future<BaseSingleResponse<ControlInfoModel>> getControlInfo(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/AidServiceRequest/EditServiceRequest')
+  @POST('/api/AidServiceRequestOrg/EditServiceRequest')
   Future<BaseSingleResponse<UpdateServiceResponseModel>> updateServiceRequest(
       @Body() Map<String, dynamic> query);
 }

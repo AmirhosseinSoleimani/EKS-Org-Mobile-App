@@ -17,6 +17,7 @@ enum RequestStatus implements DropdownItem {
   reserved(8, 'رزرو'),
   closed(9, 'بسته');
 
+  @override
   final int value;
 
   @override

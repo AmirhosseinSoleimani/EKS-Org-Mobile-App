@@ -10,21 +10,21 @@ class MapMessageBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     if (message.isEmpty) return const SizedBox();
-
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       padding: const EdgeInsets.all(AppSize.s12),
       decoration: BoxDecoration(
-        color: Colors.red.withAlpha(180),
+        color: colorScheme.error.withAlpha(20),
         borderRadius: BorderRadius.circular(8),
-        border: Border.all(color: Colors.red),
+        border: Border.all(color: colorScheme.error),
       ),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          const Text("•", style: TextStyle(color: Colors.red)),
+           Text("•", style: TextStyle(color: colorScheme.error)),
           const SizedBox(width: 6),
           Expanded(
-            child: BodySmallText(text: message, color: Colors.red),
+            child: BodySmallText(text: message, color: colorScheme.error),
           ),
         ],
       ),

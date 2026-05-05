@@ -1,6 +1,8 @@
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/defect_model.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/interfaces/dropdown_item.dart';
+import 'package:flutter/src/widgets/framework.dart';
 
-class DefectEntity {
+class DefectEntity implements DropdownItem {
   DefectEntity({
     this.id,
     this.title,
@@ -50,4 +52,13 @@ class DefectEntity {
       isActive: isActive,
     );
   }
+
+  @override
+  String get label => title ?? '';
+
+  @override
+  Widget? leading(BuildContext context) => null;
+
+  @override
+  get value => id ?? 0;
 }

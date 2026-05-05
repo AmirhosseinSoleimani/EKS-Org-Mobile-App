@@ -1,7 +1,8 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/services_param_model.dart';
 
 class ServicesParamEntity {
-  final int serviceType;
+  final ServiceType serviceType;
   final int defectId;
   final String nationalCode;
   final int kilometer;
@@ -18,7 +19,7 @@ class ServicesParamEntity {
   });
 
   ServicesParamEntity copyWith({
-    int? serviceType,
+    ServiceType? serviceType,
 
     int? defectId,
 

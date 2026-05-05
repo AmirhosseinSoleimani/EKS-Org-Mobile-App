@@ -31,7 +31,9 @@ class HomeServiceRequestModel extends HomeServiceRequestEntity {
     super.latitude,
     super.longitude,
     super.aidAddress,
+    super.cityId,
     super.cityName,
+    super.provinceId,
     super.provinceName,
     super.carName,
     super.carProductionYear,
@@ -54,7 +56,7 @@ class HomeServiceRequestModel extends HomeServiceRequestEntity {
     super.personTypeTitle,
     super.chassisNumber,
     super.kilometer,
-    super.nationalNumber,
+    super.nationalCode,
     super.dispatcher,
     super.emFullName,
     super.emMobileNumber1,
@@ -117,9 +119,10 @@ class HomeServiceRequestModel extends HomeServiceRequestEntity {
       longitude: (json['longitude'] as num?)?.toDouble() ?? 0.0,
 
       aidAddress: json['aidAddress'],
+      cityId: json['cityId'],
       cityName: json['cityName'],
+      provinceId: json['provinceId'],
       provinceName: json['provinceName'],
-
       carName: json['carName'],
       carProductionYear: json['carProductionYear'],
       licensePlate: json['licensePlate'],
@@ -150,7 +153,7 @@ class HomeServiceRequestModel extends HomeServiceRequestEntity {
 
       chassisNumber: json['chassisNumber'],
       kilometer: json['kilometer'],
-      nationalNumber: json['nationalNumber'],
+      nationalCode: json['nationalNumber'],
 
       dispatcher: json['dispatcher'],
 
@@ -162,8 +165,8 @@ class HomeServiceRequestModel extends HomeServiceRequestEntity {
       emVehicleSubTypeTitle:
           json['emdadgarKhodroType'] ?? json['emVehicleSubTypeTitle'],
       emVehicleSubType: json['emVehicleSubType'],
-      emRepresentationName: json['agencyName'] ?? json['emRepresentationName'],
-      emRepresentationCode: json['agencyCode'] ?? json['emRepresentationCode'],
+      emRepresentationName:  json['emRepresentationName'],
+      emRepresentationCode: json['emRepresentationCode'],
 
       isGuaranty: json['isGuaranty'] ?? json['isGaranty'],
       isSubscription: json['subscription'] ?? json['isSubscription'],

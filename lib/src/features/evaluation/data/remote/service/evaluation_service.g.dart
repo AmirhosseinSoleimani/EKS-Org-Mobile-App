@@ -133,7 +133,7 @@ class _EvaluationService implements EvaluationService {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/AidServiceEvaluation/GetServices',
+            '/api/AidServiceEvaluationOrg/GetServices',
             queryParameters: queryParameters,
             data: _data,
           )

@@ -20,7 +20,7 @@ class SubmitButtonWidget extends StatelessWidget {
           builder: (_, isValid, __) {
             final canSubmit = !isLoading && isValid;
             return InkwellButtonWidget(
-              onTap:()=> cubit.submit(),
+              onTap:()=> cubit.updateServiceRequest(),
               backgroundColor:  Theme.of(context).colorScheme.primary,
               showLoading: isLoading,
               title: 'ذخیره تغییرات',

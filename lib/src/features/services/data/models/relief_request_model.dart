@@ -31,7 +31,9 @@ class ReliefRequestModel extends ReliefRequestEntity {
     super.latitude,
     super.longitude,
     super.aidAddress,
+    super.cityId,
     super.cityName,
+    super.provinceId,
     super.provinceName,
     super.carName,
     super.carProductionYear,
@@ -48,7 +50,7 @@ class ReliefRequestModel extends ReliefRequestEntity {
     super.personTypeTitle,
     super.chassisNumber,
     super.kilometer,
-    super.nationalNumber,
+    super.nationalCode,
     super.emFullName,
     super.emMobileNumber1,
     super.emVehicleTypeTitle,
@@ -102,6 +104,11 @@ class ReliefRequestModel extends ReliefRequestEntity {
     super.vehicleUsageTitle,
     super.wageGroupType,
     super.weightGroupTitle,
+    super.agencyCode,
+    super.agencyName,
+    super.requestDateTime,
+    super.emdadServiceCategoryId,
+    super.emdadServiceId,
   });
   factory ReliefRequestModel.fromJson(Map<String, dynamic>? json) {
     if (json == null) return const ReliefRequestModel();
@@ -112,17 +119,15 @@ class ReliefRequestModel extends ReliefRequestEntity {
       trackCode: json['trackCode'],
       firstName: json['firstName'],
       lastName: json['lastName'],
-
       chassisNumber: json['chassisNumber'],
       kilometer: json['kilometer'],
-      nationalNumber: json['nationalNumber'],
-
+      nationalCode: json['nationalNumber'],
       latitude: (json['latitude'] as num?)?.toDouble(),
       longitude: (json['longitude'] as num?)?.toDouble(),
-
       aidAddress: json['aidAddress'],
-
+      cityId: json['cityId'],
       cityName: json['cityName'],
+      provinceId: json['provinceId'],
       provinceName: json['provinceName'],
 
       carName: json['carName'],
@@ -153,8 +158,8 @@ class ReliefRequestModel extends ReliefRequestEntity {
       emVehicleType: json['emVehicleType'],
       emVehicleSubTypeTitle: json['emdadgarKhodroType'] ?? json['emVehicleSubTypeTitle'],
       emVehicleSubType: json['emVehicleSubType'],
-      emRepresentationName: json['agencyName'] ?? json['emRepresentationName'],
-      emRepresentationCode: json['agencyCode'] ?? json['emRepresentationCode'],
+      emRepresentationName: json['emRepresentationName'],
+      emRepresentationCode:  json['emRepresentationCode'],
 
       agencyVehicleLabelCode: json['agencyVehicleLabelCode'],
 
@@ -211,6 +216,11 @@ class ReliefRequestModel extends ReliefRequestEntity {
       emdadgarAssignDurationTitle: json['emdadgarAssignDurationTitle'],
 
       assignTime: json['assignTime'],
+      agencyCode: json['agencyCode'],
+      agencyName: json['agencyName'],
+      requestDateTime: json['requestDateTime'],
+      emdadServiceCategoryId: json['emdadServiceCategoryId'],
+      emdadServiceId: json['emdadServiceId'],
 
       serviceType: ServiceType.reliefService,
     );

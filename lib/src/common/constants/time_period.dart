@@ -7,6 +7,7 @@ enum TimePeriod implements DropdownItem {
   thisWeek('2', 'هفته اخیر'),
   today('3', 'امروز');
 
+  @override
   final String value;
 
   @override

@@ -16,6 +16,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/relief_requ
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/request_detail_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_status_history_page/request_status_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/services_page/services_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/update_request_page/update_request_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -206,6 +207,14 @@ class Routes {
           name: EmdadgarInvoicePage.name,
           pageBuilder: (context, state) => getPage(
             child: const EmdadgarInvoicePage(),
+            state: state,
+          ),
+        ),
+        GoRoute(
+          path: UpdateRequestPage.path,
+          name: UpdateRequestPage.name,
+          pageBuilder: (context, state) => getPage(
+            child: const UpdateRequestPage(),
             state: state,
           ),
         ),

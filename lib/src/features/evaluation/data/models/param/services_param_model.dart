@@ -12,7 +12,7 @@ class ServicesParamModel extends ServicesParamEntity {
 
   Map<String, dynamic> toJson() {
     return {
-      'ServiceType': serviceType,
+      'ServiceType': serviceType.value,
       'defectId': defectId,
       'nationalCode': nationalCode,
       'kilometer': kilometer,

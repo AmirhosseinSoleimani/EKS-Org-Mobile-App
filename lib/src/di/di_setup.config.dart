@@ -158,6 +158,8 @@ import '../features/services/presentation/request_detail/cubit/request_detail_cu
     as _i802;
 import '../features/services/presentation/request_status_history_page/cubit/request_status_history_cubit.dart'
     as _i563;
+import '../features/services/presentation/update_request_page/cubit/update_request_cubit.dart'
+    as _i792;
 import '../routes/startup_guard.dart' as _i238;
 import '../services/local_service/session_local_storage_service/data/data_source/secure_session_storage_mobile_impl.dart'
     as _i577;
@@ -759,6 +761,18 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i163.GetDefectsListUseCase>(
     () => _i163.GetDefectsListUseCase(gh<_i122.EvaluationRepository>()),
+  );
+  gh.factory<_i792.UpdateRequestCubit>(
+    () => _i792.UpdateRequestCubit(
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
+      gh<_i265.GetProvinceWithCityListUseCase>(),
+      gh<_i850.GetLocationDataUseCase>(),
+      gh<_i163.GetDefectsListUseCase>(),
+      gh<_i270.GetAidServicesListUseCase>(),
+      gh<_i180.UpdateServiceRequestUseCase>(),
+    ),
   );
   return getIt;
 }

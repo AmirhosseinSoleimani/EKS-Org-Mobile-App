@@ -10,6 +10,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/online_map_
 import 'package:eks_sana_plus_org/src/features/services/presentation/pre_invoice_page/pre_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/request_detail_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_status_history_page/request_status_history_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/update_request_page/update_request_page.dart';
 import 'package:flutter/material.dart';
 
 
@@ -74,6 +75,13 @@ enum RequestCardOperation {
     icon: Icons.description,
     color: Color(0xFF3eb021),
     route: EmdadgarInvoicePage.path,
+  ),
+
+  updateRequest(
+  label: 'ویرایش درخواست',
+  icon: Icons.edit,
+  color: Color(0xFF369aff),
+  route: UpdateRequestPage.path,
   );
 
   final String label;
@@ -106,6 +114,12 @@ extension OperationItemVisibility on RequestCardOperation {
           return true;
         }
 
+        return false;
+
+      case RequestCardOperation.updateRequest:
+        if(type == ServiceType.reliefService){
+          return true;
+        }
         return false;
 
       default:

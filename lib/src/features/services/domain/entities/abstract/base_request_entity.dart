@@ -8,11 +8,13 @@ abstract class BaseRequestEntity {
   final String? lastName;
   final String? chassisNumber;
   final int? kilometer;
-  final String? nationalNumber;
+  final String? nationalCode;
   final double? latitude;
   final double? longitude;
   final String? aidAddress;
+  final int? cityId;
   final String? cityName;
+  final int? provinceId;
   final String? provinceName;
   final String? carName;
   final int? carProductionYear;
@@ -84,11 +86,13 @@ abstract class BaseRequestEntity {
     this.lastName,
     this.chassisNumber,
     this.kilometer,
-    this.nationalNumber,
+    this.nationalCode,
     this.latitude,
     this.longitude,
     this.aidAddress,
+    this.cityId,
     this.cityName,
+    this.provinceId,
     this.provinceName,
     this.carName,
     this.carProductionYear,

@@ -98,7 +98,7 @@ class _AddressService implements AddressService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/City/GetCitiesWithProvince',
+            '/api/CityOrg/GetCitiesWithProvince',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -131,7 +131,7 @@ class _AddressService implements AddressService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/Map/GetLocationData',
+            '/api/MapOrg/GetLocationData',
             queryParameters: queryParameters,
             data: _data,
           )

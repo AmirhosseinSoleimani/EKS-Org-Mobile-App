@@ -8,19 +8,14 @@ class FormSectionContainer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
     return Container(
       margin: const EdgeInsets.only(bottom: AppSize.s12),
-      padding: const EdgeInsets.all(AppSize.s16),
+      padding: const EdgeInsets.symmetric(horizontal: AppSize.s16,
+          vertical:  AppSize.s24),
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: colorScheme.onPrimary,
         borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(120),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
-          ),
-        ],
       ),
       child: child,
     );

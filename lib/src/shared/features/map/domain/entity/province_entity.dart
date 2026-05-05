@@ -1,6 +1,8 @@
 import 'package:eks_sana_plus_org/src/shared/features/map/data/models/province_model.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/interfaces/dropdown_item.dart';
+import 'package:flutter/src/widgets/framework.dart';
 
-class ProvinceEntity {
+class ProvinceEntity implements DropdownItem {
   final int? provinceId;
   final int? provinceCode;
   final int? cityId;
@@ -53,4 +55,13 @@ class ProvinceEntity {
     latitude: latitude,
     longitude: longitude,
   );
+
+  @override
+  String get label => title ?? '';
+
+  @override
+  Widget? leading(BuildContext context) => null;
+
+  @override
+  get value => provinceId;
 }

@@ -30,7 +30,7 @@ abstract class EvaluationService {
     @Body() Map<String, dynamic> body,
   );
 
-  @GET('/api/AidServiceEvaluation/GetServices')
+  @GET('/api/AidServiceEvaluationOrg/GetServices')
   Future<BaseSingleResponse<ServiceResponseModel>> getAidServices(
     @Queries() Map<String, dynamic> body,
   );

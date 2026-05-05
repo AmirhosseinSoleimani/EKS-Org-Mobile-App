@@ -24,7 +24,7 @@ class CustomerInfoDetailSection extends StatelessWidget {
         ),
         KeyValueRow(
           label: "کد ملی",
-          value: cubit.selectedRequest?.nationalNumber ?? "-",
+          value: cubit.selectedRequest?.nationalCode ?? "-",
         ),
         KeyValueRow(
           label: "شماره موبایل",

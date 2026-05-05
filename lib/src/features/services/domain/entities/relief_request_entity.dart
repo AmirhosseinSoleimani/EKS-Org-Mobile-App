@@ -36,7 +36,8 @@ class ReliefRequestEntity extends BaseRequestEntity {
   final bool? isUrgentRequest;
 
   final String? emdadServiceTitle;
-
+  final int? emdadServiceCategoryId;
+  final int? emdadServiceId;
   final String? hamlReasonTitle;
   final String? wheelQuestionTitle;
 
@@ -54,6 +55,8 @@ class ReliefRequestEntity extends BaseRequestEntity {
     super.latitude,
     super.longitude,
     super.aidAddress,
+    super.cityId,
+    super.provinceId,
     super.cityName,
     super.provinceName,
     super.carName,
@@ -71,7 +74,7 @@ class ReliefRequestEntity extends BaseRequestEntity {
     super.personTypeTitle,
     super.chassisNumber,
     super.kilometer,
-    super.nationalNumber,
+    super.nationalCode,
     super.emFullName,
     super.emMobileNumber1,
     super.emVehicleTypeTitle,
@@ -93,6 +96,8 @@ class ReliefRequestEntity extends BaseRequestEntity {
     this.emdadgarAssignDurationTitle,
     this.assignDate,
     this.assignTime,
+    this.emdadServiceCategoryId,
+    this.emdadServiceId,
     super.serviceType,
     super.agencyVehicleLabelCode,
     super.assignDateTimeJalali,
@@ -125,6 +130,9 @@ class ReliefRequestEntity extends BaseRequestEntity {
     super.vehicleUsageTitle,
     super.wageGroupType,
     super.weightGroupTitle,
+    super.agencyCode,
+    super.agencyName,
+    super.requestDateTime,
   });
 
   ReliefRequestModel toModel() {
@@ -164,7 +172,7 @@ class ReliefRequestEntity extends BaseRequestEntity {
       emFullName: emFullName,
       emRepresentationCode: emRepresentationCode,
       emVehicleTypeTitle: emVehicleTypeTitle,
-      nationalNumber: nationalNumber,
+      nationalCode: nationalCode,
       isSubscription: isSubscription,
       emVehicleSubTypeTitle: emVehicleSubTypeTitle,
       emMobileNumber1: emMobileNumber1,
@@ -176,6 +184,11 @@ class ReliefRequestEntity extends BaseRequestEntity {
       hamlReasonTitle: hamlReasonTitle,
       wheelQuestionTitle: wheelQuestionTitle,
       serviceType: serviceType,
+      agencyCode: agencyCode,
+      agencyName:agencyName,
+      requestDateTime:requestDateTime,
+      emdadServiceCategoryId: emdadServiceCategoryId,
+      emdadServiceId: emdadServiceId,
     );
   }
 }

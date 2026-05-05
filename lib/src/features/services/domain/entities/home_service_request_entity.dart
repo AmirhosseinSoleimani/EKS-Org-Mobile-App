@@ -71,7 +71,7 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
     super.personTypeTitle,
     super.chassisNumber,
     super.kilometer,
-    super.nationalNumber,
+    super.nationalCode,
     super.dispatcher,
     super.emFullName,
     super.emMobileNumber1,
@@ -127,6 +127,8 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
     super.vehicleUsageTitle,
     super.wageGroupType,
     super.weightGroupTitle,
+    super.cityId,
+    super.provinceId,
   });
 
   HomeServiceRequestModel toModel() {
@@ -161,7 +163,7 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
       personTypeTitle: personTypeTitle,
       chassisNumber: chassisNumber,
       kilometer: kilometer,
-      nationalNumber: nationalNumber,
+      nationalCode: nationalCode,
       dispatcher: dispatcher,
       emFullName: emFullName,
       emMobileNumber1: emMobileNumber1,
