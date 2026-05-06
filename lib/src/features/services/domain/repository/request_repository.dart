@@ -1,12 +1,16 @@
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/cancel_request_reason_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/cartable_cycle_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/chassis_request_history_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/control_info_entities/control_info_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/distance_kilometer_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/evaluation_history_item_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/followup_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/non_cooperation_list_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/cancel_reason_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/chassis_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/distance_kilometer_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_operation_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/service_request_param_entity.dart';
@@ -51,4 +55,10 @@ abstract class RequestRepository {
   getControlInfo(ServiceRequestParamEntity param);
 
   Future<ApiResult<UpdateServiceResponseEntity>> updateServiceRequest(UpdateServiceRequestParamEntity param);
+
+  Future<ApiResult<List<CancelRequestReasonEntity>>> getCancelReasons(
+      CancelReasonParamEntity param);
+
+  Future<ApiResult<DistanceKilometerEntity>> getDistanceKilometer(
+      DistanceKilometerParamEntity param);
 }

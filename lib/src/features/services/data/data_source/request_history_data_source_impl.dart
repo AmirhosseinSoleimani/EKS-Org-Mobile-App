@@ -1,13 +1,17 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/Followup_Model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/cancel_request_reason_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/cartable_cycle_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/chassis_request_history_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/control_info_models/control_info_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/distance_kilometer_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/evaluation_history_item_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/non_cooperation_list_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/cancel_reason_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/chassis_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/distance_kilometer_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/request_filter_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/request_operation_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/service_request_param_model.dart';
@@ -90,6 +94,18 @@ class RequestDataSourceImpl extends RequestDataSource {
   @override
   Future<BaseSingleResponse<UpdateServiceResponseModel>> updateServiceRequest(UpdateServiceRequestParamModel param) async =>
       await _service.updateServiceRequest(param.toJson());
+
+  @override
+  Future<BaseListResponse<CancelRequestReasonModel>> getCancelReasons(
+      CancelReasonParamModel param) async =>
+      await _service.getCancelReasons(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<DistanceKilometerModel>> getDistanceKilometer(
+      DistanceKilometerParamModel param) async =>
+      param.serviceType == ServiceType.reliefService
+          ? await _service.getAidDistanceKilometer(param.toJson())
+          : await _service.getHomeServiceDistanceKilometer(param.toJson());
 
 
 }

@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart' hide Headers;
 import 'package:eks_sana_plus_org/src/features/services/data/models/Followup_Model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/cancel_request_reason_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/cartable_cycle_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/chassis_request_history_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/control_info_models/control_info_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/distance_kilometer_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/evaluation_history_item_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
@@ -77,5 +79,18 @@ abstract class RequestService {
 
   @POST('/api/AidServiceRequestOrg/EditServiceRequest')
   Future<BaseSingleResponse<UpdateServiceResponseModel>> updateServiceRequest(
+      @Body() Map<String, dynamic> query);
+
+  @POST('/api/CancelReasonOrg/GetByFilterJson')
+  Future<BaseListResponse<CancelRequestReasonModel>> getCancelReasons(
+      @Body() Map<String, dynamic> query);
+
+  @POST('/api/AidServiceEvaluationOrg/GetDistance')
+  Future<BaseSingleResponse<DistanceKilometerModel>> getAidDistanceKilometer(
+      @Body() Map<String, dynamic> query);
+
+  @POST('/api/HomeServiceEvaluationOrg/GetDistance')
+  Future<BaseSingleResponse<
+      DistanceKilometerModel>> getHomeServiceDistanceKilometer(
       @Body() Map<String, dynamic> query);
 }

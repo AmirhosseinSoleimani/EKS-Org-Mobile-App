@@ -105,10 +105,14 @@ import '../features/services/domain/repository/request_repository_share_data.dar
     as _i838;
 import '../features/services/domain/usecases/fetch_selected_request_item_use_case.dart'
     as _i376;
+import '../features/services/domain/usecases/get_cancel_reason_request_use_case.dart'
+    as _i433;
 import '../features/services/domain/usecases/get_cartable_cycle_list_use_case.dart'
     as _i765;
 import '../features/services/domain/usecases/get_chassis_request_history_list_use_case.dart'
     as _i581;
+import '../features/services/domain/usecases/get_distance_kilometer_use_case.dart'
+    as _i985;
 import '../features/services/domain/usecases/get_emdadgar_info_use_case.dart'
     as _i786;
 import '../features/services/domain/usecases/get_evaluation_history_list_use_case.dart'
@@ -133,6 +137,8 @@ import '../features/services/domain/usecases/set_selected_request_item_use_case.
     as _i369;
 import '../features/services/domain/usecases/update_service_request_use_case.dart'
     as _i180;
+import '../features/services/presentation/cancel_request_page/cubit/cancel_request_cubit.dart'
+    as _i872;
 import '../features/services/presentation/cartable_cycle_page/cubit/cartable_cycle_cubit.dart'
     as _i1029;
 import '../features/services/presentation/chassis_request_history_page/cubit/chassis_request_history_cubit.dart'
@@ -524,6 +530,9 @@ _i174.GetIt $initGetIt(
       gh<_i739.FetchAddressToLocationUseCase>(),
     ),
   );
+  gh.lazySingleton<_i433.GetCancelReasonRequestUseCase>(
+    () => _i433.GetCancelReasonRequestUseCase(gh<_i603.RequestRepository>()),
+  );
   gh.lazySingleton<_i765.GetCartableCycleListUseCase>(
     () => _i765.GetCartableCycleListUseCase(gh<_i603.RequestRepository>()),
   );
@@ -531,6 +540,9 @@ _i174.GetIt $initGetIt(
     () => _i581.GetChassisRequestHistoryListUseCase(
       gh<_i603.RequestRepository>(),
     ),
+  );
+  gh.lazySingleton<_i985.GetDistanceKilometerUseCase>(
+    () => _i985.GetDistanceKilometerUseCase(gh<_i603.RequestRepository>()),
   );
   gh.lazySingleton<_i786.GetEmdadgarInfoUseCase>(
     () => _i786.GetEmdadgarInfoUseCase(gh<_i603.RequestRepository>()),
@@ -709,6 +721,15 @@ _i174.GetIt $initGetIt(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
       gh<_i672.GetReliefRequestByIdUseCase>(),
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+    ),
+  );
+  gh.factory<_i872.CancelRequestCubit>(
+    () => _i872.CancelRequestCubit(
+      gh<_i433.GetCancelReasonRequestUseCase>(),
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
     ),
   );
   gh.factory<_i709.OnlineMapCubit>(
