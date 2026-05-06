@@ -14,6 +14,9 @@ class CancelRequestState with _$CancelRequestState {
 
   const factory CancelRequestState.loadingMore() = _LoadingMore;
 
-
   const factory CancelRequestState.connectionError() = _ConnectionError;
+
+  const factory CancelRequestState.submitLoading() = _SubmitLoading;
+
+  const factory CancelRequestState.submitSuccess() = _SubmitSuccess;
 }

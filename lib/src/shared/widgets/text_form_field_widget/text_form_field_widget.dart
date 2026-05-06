@@ -132,7 +132,7 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
           keyboardType: widget.textInputType,
           textInputAction: widget.textInputAction,
           textCapitalization: widget.textCapitalization ?? TextCapitalization.none,
-          style: widget.textStyle ?? textTheme.labelMedium,
+          style: widget.textStyle ?? textTheme.bodyMedium,
           decoration: InputDecoration(
             counterText: '',
             errorStyle: textTheme.labelSmall?.copyWith(
@@ -143,12 +143,12 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
             filled: true,
             labelText: (widget.mandatory ?? false) ? "${widget.labelText} *" : widget.labelText,
             labelStyle: widget.labelStyle ??
-                textTheme.labelLarge?.copyWith(
+                textTheme.labelMedium?.copyWith(
                 color: isFocus ? colorScheme.primary : colorScheme.onSurface,
                 ),
             floatingLabelBehavior: widget.floatingLabelBehavior,
             hintText: widget.hintText,
-            hintStyle: widget.hintStyle ?? textTheme.labelMedium,
+            hintStyle: widget.hintStyle ?? textTheme.bodyMedium,
             prefixIcon: widget.prefixIcon,
             suffixIcon: widget.suffixIcon,
             enabledBorder: widget.border ?? OutlineInputBorder(

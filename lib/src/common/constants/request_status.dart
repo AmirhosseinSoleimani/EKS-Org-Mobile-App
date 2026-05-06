@@ -54,3 +54,10 @@ enum RequestStatus implements DropdownItem {
     }
   }
 }
+
+const Set<RequestStatus> notAssignedStatuses = {
+  RequestStatus.waitingPreInvoiceApproval,
+  RequestStatus.waitingAddress,
+  RequestStatus.waitingForDetails,
+  RequestStatus.waitingAssignment,
+};

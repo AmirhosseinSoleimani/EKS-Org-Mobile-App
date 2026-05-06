@@ -17,7 +17,7 @@ class FormSectionContainer extends StatelessWidget {
       decoration: BoxDecoration(
         color: colorScheme.onPrimary,
         borderRadius: BorderRadius.circular(12),
-        border: hasBorder ? Border.all(width: 1) : null,
+        border: hasBorder ? Border.all(width: 1, color: Colors.grey.shade300) : null,
       ),
       child: child,
     );

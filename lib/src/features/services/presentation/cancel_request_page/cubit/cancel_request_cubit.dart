@@ -7,6 +7,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/cancel_reason_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/distance_kilometer_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/service_request_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/fetch_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_cancel_reason_request_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_distance_kilometer_use_case.dart';
@@ -21,7 +22,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 part 'cancel_request_cubit.freezed.dart';
-
 part 'cancel_request_state.dart';
 
 @injectable
@@ -49,8 +49,9 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
   EmdadgarInfoEntity? emdadgarInfo;
   List<CancelRequestReasonEntity> cancelRequestType =
       <CancelRequestReasonEntity>[];
-  List<CancelRequestReasonEntity> cancelRequestReason =
-      <CancelRequestReasonEntity>[];
+
+  final cancelRequestReasonNotifier =
+  ValueNotifier<List<CancelRequestReasonEntity>>([]);
 
   final isDistanceKilometerEditable = ValueNotifier<bool>(true);
   final selectedCancelType = ValueNotifier<CancelRequestReasonEntity?>(null);
@@ -63,8 +64,9 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
   DateTime? get dispatchDateTime => dispatchDateTimeNotifier.value;
 
   final cancelDateTimeNotifier = ValueNotifier<DateTime?>(null);
-
   DateTime? get cancelDateTime => cancelDateTimeNotifier.value;
+
+  final ValueNotifier<bool> isGettingDistanceKilometer = ValueNotifier(false);
 
   final TextEditingController kilometerController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
@@ -75,12 +77,78 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
       ? msg!
       : 'درخواست شما با خطا مواجه شد، لطفا با پشتیبانی تماس بگیرید';
 
-  bool get canShowCancelReasonList {
-    final status = selectedRequest?.requestStatus ?? 0;
-    return status > RequestStatus.waitingAssignment.value;
+
+  ///fake init
+  Future<void> init() async {
+    // -----------------------------
+    // 1) Selected Request (فیک)
+    // -----------------------------
+    selectedRequest = ReliefRequestEntity(
+      id: 1234567,
+      requestStatus: RequestStatus.inProgress.value,
+      carName: "تیبا",
+      licensePlate: "21 الف 123",
+      provinceName: "تهران",
+      aidAddress: "خیابان آزادی، نبش بهبودی",
+      latitude: 35.7321,
+      longitude: 51.4129,
+    );
+
+    // -----------------------------
+    // 2) Emdadgar Info (فیک)
+    // -----------------------------
+    emdadgarInfo = EmdadgarInfoEntity(
+      id: 9988,
+      agencyName: "میلاد توسعه‌چی",
+      mobile: "09120000000",
+      nationalCode: "1234567890",
+    );
+
+    // -----------------------------
+    // 3) Cancel Reason List (فیک)
+    // -----------------------------
+    cancelRequestType = [
+      CancelRequestReasonEntity(id: 1, title: "عدم رضایت مشتری"),
+      CancelRequestReasonEntity(id: 2, title: "عدم نیاز به سرویس"),
+      CancelRequestReasonEntity(id: 3, title: "اشتباه در ثبت درخواست"),
+    ];
+
+    cancelRequestReasonNotifier.value = cancelRequestType;
+
+    // -----------------------------
+    // 4) انتخاب Reason و Type
+    // -----------------------------
+    selectedCancelType.value = cancelRequestType.first;
+    selectedCancelReason.value = cancelRequestType[1];
+
+    // -----------------------------
+    // 5) تاریخ‌های فیک
+    // -----------------------------
+    dispatchDateTimeNotifier.value =
+        DateTime.now().subtract(const Duration(hours: 2));
+
+    cancelDateTimeNotifier.value = DateTime.now();
+
+    // -----------------------------
+    // 6) TextFields مقدار دهی
+    // -----------------------------
+    kilometerController.text = "12";
+    descriptionController.text = "تست توضیحات لغو درخواست";
+
+    // -----------------------------
+    // 7) وضعیت تنظیمات دیگر
+    // -----------------------------
+    isDistanceKilometerEditable.value = true;
+
+    showAllServices.value = true;
+
+    // -----------------------------
+    // 8) در نهایت emit
+    // -----------------------------
+    _safeEmit(const CancelRequestState.loaded());
   }
 
-  Future<void> init() async {
+  /*Future<void> init() async {
     final result = await _initializeData();
 
     switch (result) {
@@ -100,7 +168,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
         _emitError('نشست شما منقضی شده است. لطفا دوباره وارد شوید');
         break;
     }
-  }
+  }*/
 
   Future<FetchResultType> _initializeData() async {
     final selectedResult = await _fetchSelectedServiceRequest();
@@ -240,20 +308,22 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
     );
   }
 
+  Future<void> setSelectedCancelReason(CancelRequestReasonEntity? value) async {
+    selectedCancelReason.value = value;
+  }
+
   Future<void> setSelectedCancelType(CancelRequestReasonEntity? value) async {
     selectedCancelType.value = value;
 
     selectedCancelReason.value = null;
-    //_safeEmit(const CancelRequestState.loadingCancelReason());
 
     final fetchResult = await _loadCancelReasonList(
       reasonId: value?.id,
-      list: cancelRequestReason,
+      list: cancelRequestReasonNotifier.value,
     );
 
     switch (fetchResult) {
       case FetchResultType.success:
-        //  _safeEmit(const CancelRequestState.loaded());
         break;
       case FetchResultType.failure:
         _emitError();
@@ -267,28 +337,40 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
     }
   }
 
-  Future<void> getDistanceKilometer() async {
-    final param = DistanceKilometerParamEntity(
-      serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
-      startDate: dispatchDateTime,
-      endDate: cancelDateTime,
-      imei: emdadgarInfo?.nImei,
-      needHaml: false,
-    );
 
-    final fetchResult = await _getDistanceKilometerUseCase(param);
-    fetchResult.whenOrNull(
-      success: (data, failures, resultCode) {
-        kilometerController.text = data.distanceKilometer.toString();
-        isDistanceKilometerEditable.value =
-            data.isDistanceKilometerEditable ?? true;
-      },
-      connectionError: () => emit(const CancelRequestState.connectionError()),
-      failure: (error, failures) => _emitError(failures ?? error.toString()),
-    );
+  Future<void> getDistanceKilometer() async {
+    if (isGettingDistanceKilometer.value) return;
+
+    isGettingDistanceKilometer.value = true;
+    try {
+      final param = DistanceKilometerParamEntity(
+        serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
+        startDate: dispatchDateTime,
+        endDate: cancelDateTime,
+        imei: emdadgarInfo?.nImei,
+        needHaml: false,
+      );
+
+      final result = await _getDistanceKilometerUseCase(param);
+
+      result.whenOrNull(
+        success: (data, _, __) {
+          if (data.distanceKilometer == null) return;
+          kilometerController.text = data.distanceKilometer.toString();
+          isDistanceKilometerEditable.value =
+              data.isDistanceKilometerEditable ?? true;
+        },
+        connectionError: () => emit(const CancelRequestState.connectionError()),
+        failure: (error, failures) => _emitError(failures ?? error.toString()),
+      );
+    } finally {
+      isGettingDistanceKilometer.value = false;
+    }
   }
 
-  void setDispatchDate(DateTime date) {
+
+  void setDispatchDate(DateTime? date) {
+    if (date == null) return;
     final current = dispatchDateTime ?? DateTime.now();
     dispatchDateTimeNotifier.value = DateTime(
       date.year,
@@ -310,7 +392,8 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
     );
   }
 
-  void setCancelDate(DateTime date) {
+  void setCancelDate(DateTime? date) {
+    if (date == null) return;
     final current = cancelDateTime ?? DateTime.now();
     cancelDateTimeNotifier.value = DateTime(
       date.year,
@@ -332,7 +415,24 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
     );
   }
 
+  bool get hasAssignedEmdadgar {
+    final request = selectedRequest;
+    if (request == null) return false;
+
+    return !notAssignedStatuses.contains(
+        RequestStatus.fromValue(request.requestStatus));
+  }
+
+  Future<void> submit() async {
+    _safeEmit(const CancelRequestState.submitLoading());
+
+    await Future.delayed(const Duration(seconds: 2));
+
+    _safeEmit(const CancelRequestState.submitSuccess());
+  }
+
   void _safeEmit(CancelRequestState state) {
     if (!isClosed) emit(state);
   }
+
 }

@@ -1,5 +1,7 @@
+import 'package:eks_sana_plus_org/src/common/constants/request_status.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/cancel_request_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cartable_cycle_page/cartable_cycle_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/chassis_request_history_page/chassis_request_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/control_info_page/control_info_page.dart';
@@ -82,6 +84,12 @@ enum RequestCardOperation {
   icon: Icons.edit,
   color: Color(0xFF369aff),
   route: UpdateRequestPage.path,
+  ),
+  cancelRequest(
+    label: 'لغو درخواست',
+    icon: Icons.close,
+    color: Color(0xFFbf0000),
+    route: CancelRequestPage.path,
   );
 
   final String label;
@@ -99,16 +107,16 @@ enum RequestCardOperation {
 
 extension OperationItemVisibility on RequestCardOperation {
   bool isVisible(BaseRequestEntity request) {
-    final status = request.requestStatus;
+    final status = RequestStatus.fromValue(request.requestStatus);
     final type = request.serviceType;
 
     switch (this) {
       case RequestCardOperation.emdadgarInvoice:
-        return status == 9;
+        return status == RequestStatus.closed;
 
       case RequestCardOperation.requestPreInvoice:
         if (type == ServiceType.reliefService) {
-          return status == 9;
+          return status == RequestStatus.closed;
         }
         if (type == ServiceType.homeService) {
           return true;
@@ -118,6 +126,11 @@ extension OperationItemVisibility on RequestCardOperation {
 
       case RequestCardOperation.updateRequest:
         if(type == ServiceType.reliefService){
+          return true;
+        }
+        return false;
+      case RequestCardOperation.cancelRequest:
+        if (status != RequestStatus.closed) {
           return true;
         }
         return false;

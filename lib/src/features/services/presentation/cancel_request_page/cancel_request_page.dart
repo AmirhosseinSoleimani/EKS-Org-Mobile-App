@@ -1,5 +1,8 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/cancel_request_reason_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/cubit/cancel_request_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/widgets/cancel_reason_dropdown.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/widgets/distance_kilometer_field.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/agent_info_detail_section.dart';
@@ -9,11 +12,15 @@ import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'widgets/cancel_submit_row_widget.dart';
+import 'widgets/date_time_picker_section.dart';
 
 class CancelRequestPage extends StatelessWidget {
   static const path = "/cancel-request-page";
@@ -82,8 +89,7 @@ class _Body extends StatelessWidget {
               color: cubit.selectedRequest?.serviceType?.serviceColor,
             ),
           ),
-          loaded: () => const _LoadedView(),
-          orElse: () => const SizedBox.shrink(),
+          orElse: () => const _LoadedView(),
         );
       },
     );
@@ -127,12 +133,81 @@ class _LoadedView extends StatelessWidget {
               ),
             ],
             Space.h8,
-            FormSectionContainer(hasBorder: true, child: Column(children: [
+            FormSectionContainer(
+              hasBorder: true,
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CancelReasonDropdown<CancelRequestReasonEntity>(
+                    label: "نوع لغو",
+                    defaultTitle: "انتخاب نوع کنسلی",
+                    selectedNotifier: cubit.selectedCancelType,
+                    items: cubit.cancelRequestType,
+                    itemTitleBuilder: (item) => item.title ?? "",
+                    onSelect: (item) => cubit.setSelectedCancelType(item),
+                  ),
+                  Space.h16,
+                  if (cubit.hasAssignedEmdadgar) ...[
+                    CancelReasonDropdown<CancelRequestReasonEntity>(
+                      label: "دلیل لغو",
+                      defaultTitle: "انتخاب دلیل کنسلی",
+                      selectedNotifier: cubit.selectedCancelReason,
+                      items: cubit.cancelRequestReasonNotifier.value,
+                      enabled: cubit.cancelRequestReasonNotifier.value
+                          .isNotEmpty,
+                      isLoading: cubit.cancelRequestReasonNotifier.value
+                          .isEmpty &&
+                          cubit.selectedCancelType.value != null,
+                      itemTitleBuilder: (item) => item.title ?? "",
+                      onSelect: (item) => cubit.setSelectedCancelReason(item),
+                    ),
+                    Space.h16,
 
-            ])),
+                    DateTimePickerSection(
+                      dateLabel: 'تاریخ اعزام',
+                      timeLabel: 'ساعت اعزام',
+                      dateNotifier: cubit.dispatchDateTimeNotifier,
+                      onDateChange: cubit.setDispatchDate,
+                      onTimeChange: cubit.setDispatchTime,
+                    ),
+                    Space.h24,
+                    DateTimePickerSection(
+                      dateLabel: 'تاریخ کنسلی',
+                      timeLabel: 'ساعت کنسلی',
+                      dateNotifier: cubit.cancelDateTimeNotifier,
+                      onDateChange: cubit.setCancelDate,
+                      onTimeChange: cubit.setCancelTime,
+                    ),
+                    Space.h24,
+                    DistanceKilometerField(
+                      controller: cubit.kilometerController,
+                      isEditableNotifier: cubit.isDistanceKilometerEditable,
+                      isLoadingNotifier: cubit.isGettingDistanceKilometer,
+                      onGetDistance: cubit.getDistanceKilometer,
+                    ),
+                    Space.h24,
+                  ],
+                  TextFormFieldWidget(
+                    labelText: "توضیحات",
+                    controller: cubit.descriptionController,
+                    autofocus: false,
+                    textInputType: TextInputType.text,
+                    textAlign: TextAlign.start,
+                    textInputAction: TextInputAction.done,
+                    maxLines: 3,
+                  ),
+                ],
+              ),
+            ),
+            Space.h16,
+            CancelSubmitRowWidget(
+              onSubmit: cubit.submit,
+              onCancel: () => Navigator.pop(context),
+            )
           ],
         ),
       ),
     );
   }
 }
+

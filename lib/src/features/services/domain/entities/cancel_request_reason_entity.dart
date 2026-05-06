@@ -1,6 +1,8 @@
 import 'package:eks_sana_plus_org/src/features/services/data/models/cancel_request_reason_model.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/interfaces/dropdown_item.dart';
+import 'package:flutter/src/widgets/framework.dart';
 
-class CancelRequestReasonEntity {
+class CancelRequestReasonEntity implements DropdownItem {
   final int? id;
   final String? title;
   final int? orderNo;
@@ -76,4 +78,13 @@ class CancelRequestReasonEntity {
       isDeleted: isDeleted ?? this.isDeleted,
     );
   }
+
+  @override
+  String get label => title ?? '';
+
+  @override
+  Widget? leading(BuildContext context) => null;
+
+  @override
+  get value => id;
 }

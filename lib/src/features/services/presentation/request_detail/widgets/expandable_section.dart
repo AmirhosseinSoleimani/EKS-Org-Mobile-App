@@ -44,7 +44,7 @@ class _ExpandableSectionState extends State<ExpandableSection> {
       decoration: BoxDecoration(
         color: colorScheme.onPrimary,
         borderRadius: BorderRadius.circular(12),
-        border: widget.hasBorder ? Border.all(width: 1) : null,
+        border: widget.hasBorder ? Border.all(width: 1, color: Colors.grey.shade300 ) : null,
       ),
       child: Column(
         children: [
