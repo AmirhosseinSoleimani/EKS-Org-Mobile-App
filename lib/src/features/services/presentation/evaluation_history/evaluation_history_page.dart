@@ -1,5 +1,4 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
-import 'package:eks_sana_plus_org/src/features/dashboard/presentation/widgets/filters_box.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_history/cubit/evaluation_history_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_history/widgets/filter_box.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
@@ -115,7 +114,7 @@ class _LoadedView extends StatelessWidget {
             FilterBox(cubit: cubit),
             ExpandableSection(
               isExpanded: false,
-              header: buildRequestStatusSection(cubit),
+              header: RequestStatusSection(request: cubit.selectedBaseRequest),
               child: RequestDetailSection(
                 selectedRequest: cubit.selectedBaseRequest,
                 showCustomerInfo: true,
@@ -146,18 +145,6 @@ class _LoadedView extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  RequestStatusSection buildRequestStatusSection(EvaluationHistoryCubit cubit) {
-    return RequestStatusSection(
-      trackCode: cubit.selectedBaseRequest?.trackCode.toString() ?? '-',
-      requestDateJalali:
-          cubit.selectedBaseRequest?.requestDateJalali.toString() ?? '-',
-      requestTime: cubit.selectedBaseRequest?.requestTime.toString() ?? '-',
-      requestStatusTitle: cubit.selectedBaseRequest?.requestStatusTitle,
-      isGuaranty: cubit.selectedBaseRequest?.isGuaranty ?? false,
-      isSubscription: cubit.selectedBaseRequest?.isSubscription ?? false,
     );
   }
 }

@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 
 class FormSectionContainer extends StatelessWidget {
   final Widget child;
+  final bool hasBorder;
 
-  const FormSectionContainer({super.key, required this.child});
+  const FormSectionContainer({super.key, required this.child, this.hasBorder = false});
 
   @override
   Widget build(BuildContext context) {
@@ -16,6 +17,7 @@ class FormSectionContainer extends StatelessWidget {
       decoration: BoxDecoration(
         color: colorScheme.onPrimary,
         borderRadius: BorderRadius.circular(12),
+        border: hasBorder ? Border.all(width: 1) : null,
       ),
       child: child,
     );

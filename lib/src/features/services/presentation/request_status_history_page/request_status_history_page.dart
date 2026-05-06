@@ -114,7 +114,7 @@ class RequestStatusHistoryLoadedView extends StatelessWidget {
           children: [
             ExpandableSection(
               isExpanded: false,
-              header: _buildRequestStatusSection(cubit.selectedRequest),
+              header: RequestStatusSection(request: cubit.selectedRequest),
               child: RequestDetailSection(
                 selectedRequest: cubit.selectedRequest,
                 showCustomerInfo: true,
@@ -144,17 +144,6 @@ class RequestStatusHistoryLoadedView extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  RequestStatusSection _buildRequestStatusSection(BaseRequestEntity? request) {
-    return RequestStatusSection(
-      trackCode: request?.trackCode?.toString() ?? "-",
-      requestDateJalali: request?.requestDateJalali ?? "-",
-      requestTime: request?.requestTime ?? "-",
-      requestStatusTitle: request?.requestStatusTitle,
-      isGuaranty: request?.isGuaranty ?? false,
-      isSubscription: request?.isSubscription ?? false,
     );
   }
 }

@@ -2,7 +2,6 @@ import 'dart:ui';
 
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/chassis_request_history_page/cubit/chassis_request_history_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_status_section.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
@@ -105,19 +104,6 @@ class _LoadedView extends StatelessWidget {
         padding: const EdgeInsets.all(AppSize.s16),
         child: ChassisRequestHistoryListViewer(items: cubit.items),
       ),
-    );
-  }
-
-  RequestStatusSection buildRequestStatusSection(
-      ChassisRequestHistoryCubit cubit) {
-    return RequestStatusSection(
-      trackCode: cubit.selectedRequest?.trackCode.toString() ?? '-',
-      requestDateJalali:
-          cubit.selectedRequest?.requestDateJalali.toString() ?? '-',
-      requestTime: cubit.selectedRequest?.requestTime.toString() ?? '-',
-      requestStatusTitle: cubit.selectedRequest?.requestStatusTitle,
-      isGuaranty: cubit.selectedRequest?.isGuaranty ?? false,
-      isSubscription: cubit.selectedRequest?.isSubscription ?? false,
     );
   }
 }

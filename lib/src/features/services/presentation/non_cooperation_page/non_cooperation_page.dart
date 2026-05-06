@@ -111,7 +111,7 @@ class _LoadedView extends StatelessWidget {
           children: [
             ExpandableSection(
               isExpanded: false,
-              header: _buildRequestStatusSection(cubit),
+              header: RequestStatusSection(request: cubit.selectedBaseRequest),
               child: RequestDetailSection(
                 selectedRequest: cubit.selectedBaseRequest,
                 showCustomerInfo: true,
@@ -129,18 +129,6 @@ class _LoadedView extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  RequestStatusSection _buildRequestStatusSection(NonCooperationCubit cubit) {
-    return RequestStatusSection(
-      trackCode: cubit.selectedBaseRequest?.trackCode.toString() ?? '-',
-      requestDateJalali:
-          cubit.selectedBaseRequest?.requestDateJalali.toString() ?? '-',
-      requestTime: cubit.selectedBaseRequest?.requestTime.toString() ?? '-',
-      requestStatusTitle: cubit.selectedBaseRequest?.requestStatusTitle,
-      isGuaranty: cubit.selectedBaseRequest?.isGuaranty ?? false,
-      isSubscription: cubit.selectedBaseRequest?.isSubscription ?? false,
     );
   }
 }

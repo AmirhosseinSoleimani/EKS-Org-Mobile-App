@@ -112,7 +112,7 @@ class _LoadedView extends StatelessWidget {
           children: [
             ExpandableSection(
               isExpanded: false,
-              header: _buildRequestStatusSection(cubit),
+              header: RequestStatusSection(request: cubit.selectedRequest),
               child: RequestDetailSection(
                 selectedRequest: cubit.selectedRequest,
                 showCustomerInfo: true,
@@ -123,18 +123,6 @@ class _LoadedView extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  RequestStatusSection _buildRequestStatusSection(OnlineMapCubit cubit) {
-    return RequestStatusSection(
-      trackCode: cubit.selectedRequest?.trackCode.toString() ?? '-',
-      requestDateJalali:
-      cubit.selectedRequest?.requestDateJalali.toString() ?? '-',
-      requestTime: cubit.selectedRequest?.requestTime.toString() ?? '-',
-      requestStatusTitle: cubit.selectedRequest?.requestStatusTitle,
-      isGuaranty: cubit.selectedRequest?.isGuaranty ?? false,
-      isSubscription: cubit.selectedRequest?.isSubscription ?? false,
     );
   }
 }

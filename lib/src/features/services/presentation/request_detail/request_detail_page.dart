@@ -90,29 +90,7 @@ class RequestDetailPage extends StatelessWidget {
                                   children: [
                                     ExpandableSection(
                                       isExpanded: false,
-                                      header: RequestStatusSection(
-                                        trackCode: cubit
-                                                .selectedRequest?.trackCode
-                                                .toString() ??
-                                            '',
-                                        requestDateJalali: cubit.selectedRequest
-                                                ?.requestDateJalali
-                                                .toString() ??
-                                            '',
-                                        requestTime: cubit
-                                                .selectedRequest?.requestTime
-                                                .toString() ??
-                                            '',
-                                        requestStatusTitle: cubit
-                                            .selectedRequest
-                                            ?.requestStatusTitle,
-                                        isGuaranty:
-                                            cubit.selectedRequest?.isGuaranty ??
-                                                false,
-                                        isSubscription: cubit.selectedRequest
-                                                ?.isSubscription ??
-                                            false,
-                                      ),
+                                      header: RequestStatusSection(request: cubit.selectedRequest),
                                       child: RequestDetailSection(selectedRequest: cubit.selectedRequest),
                                     ),
                                     ExpandableSection(

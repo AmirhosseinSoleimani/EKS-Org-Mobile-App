@@ -3,6 +3,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/cartable_cy
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/agent_info_detail_section.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_status_section.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
@@ -14,7 +15,6 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../widgets/request_status_section.dart';
 import 'widgets/cartable_cycle_list_view.dart';
 
 class CartableCyclePage extends StatelessWidget {
@@ -113,7 +113,7 @@ class _LoadedView extends StatelessWidget {
           children: [
             ExpandableSection(
               isExpanded: false,
-              header: _buildRequestStatusSection(cubit),
+              header: RequestStatusSection(request: cubit.selectedBaseRequest),
               child: RequestDetailSection(
                 selectedRequest: cubit.selectedBaseRequest,
                 showCustomerInfo: true,
@@ -144,19 +144,6 @@ class _LoadedView extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-
-  RequestStatusSection _buildRequestStatusSection(
-      CartableCycleCubit cubit) {
-    return RequestStatusSection(
-      trackCode: cubit.selectedBaseRequest?.trackCode.toString() ?? '-',
-      requestDateJalali:
-      cubit.selectedBaseRequest?.requestDateJalali.toString() ?? '-',
-      requestTime: cubit.selectedBaseRequest?.requestTime.toString() ?? '-',
-      requestStatusTitle: cubit.selectedBaseRequest?.requestStatusTitle,
-      isGuaranty: cubit.selectedBaseRequest?.isGuaranty ?? false,
-      isSubscription: cubit.selectedBaseRequest?.isSubscription ?? false,
     );
   }
 }

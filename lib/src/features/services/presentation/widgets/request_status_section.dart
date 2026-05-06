@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/material.dart';
@@ -5,25 +6,22 @@ import 'package:flutter/material.dart';
 import 'status_label.dart';
 
 class RequestStatusSection extends StatelessWidget {
-  final String trackCode;
-  final String requestDateJalali;
-  final String requestTime;
-  final String? requestStatusTitle;
-  final bool isGuaranty;
-  final bool isSubscription;
+  final BaseRequestEntity? request;
 
   const RequestStatusSection({
     super.key,
-    required this.trackCode,
-    required this.requestDateJalali,
-    required this.requestTime,
-    required this.requestStatusTitle,
-    required this.isGuaranty,
-    required this.isSubscription,
+    required this.request,
   });
 
   @override
   Widget build(BuildContext context) {
+    final trackCode = request?.trackCode.toString();
+
+    final requestDateJalali = request?.requestDateJalali.toString();
+    final requestTime = request?.requestTime.toString();
+    final requestStatusTitle = request?.requestStatusTitle;
+    final isGuaranty = request?.isGuaranty ?? false;
+    final isSubscription = request?.isSubscription ?? false;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [

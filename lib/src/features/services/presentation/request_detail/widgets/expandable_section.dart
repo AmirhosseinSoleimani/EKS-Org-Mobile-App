@@ -4,6 +4,7 @@ class ExpandableSection extends StatefulWidget {
   final Widget header;
   final Widget child;
   final bool isExpanded;
+  final bool hasBorder;
   final Widget? brief;
 
   const ExpandableSection({
@@ -11,6 +12,7 @@ class ExpandableSection extends StatefulWidget {
     required this.header,
     required this.child,
     this.isExpanded = false,
+    this.hasBorder = false,
     this.brief,
   });
 
@@ -42,6 +44,7 @@ class _ExpandableSectionState extends State<ExpandableSection> {
       decoration: BoxDecoration(
         color: colorScheme.onPrimary,
         borderRadius: BorderRadius.circular(12),
+        border: widget.hasBorder ? Border.all(width: 1) : null,
       ),
       child: Column(
         children: [
