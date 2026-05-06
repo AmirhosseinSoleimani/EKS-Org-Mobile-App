@@ -642,6 +642,16 @@ _i174.GetIt $initGetIt(
       gh<_i228.GetServerDateTimeUseCase>(),
     ),
   );
+  gh.factory<_i872.CancelRequestCubit>(
+    () => _i872.CancelRequestCubit(
+      gh<_i433.GetCancelReasonRequestUseCase>(),
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      gh<_i985.GetDistanceKilometerUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
+    ),
+  );
   gh.factory<_i566.LoginCubit>(
     () => _i566.LoginCubit(
       gh<_i139.LoginUseCase>(),
@@ -721,15 +731,6 @@ _i174.GetIt $initGetIt(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
       gh<_i672.GetReliefRequestByIdUseCase>(),
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
-    ),
-  );
-  gh.factory<_i872.CancelRequestCubit>(
-    () => _i872.CancelRequestCubit(
-      gh<_i433.GetCancelReasonRequestUseCase>(),
-      gh<_i376.FetchSelectedRequestItemUseCase>(),
-      gh<_i672.GetReliefRequestByIdUseCase>(),
-      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
-      gh<_i786.GetEmdadgarInfoUseCase>(),
     ),
   );
   gh.factory<_i709.OnlineMapCubit>(
