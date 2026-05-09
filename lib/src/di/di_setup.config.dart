@@ -76,6 +76,8 @@ import '../features/evaluation/domain/usecase/get_categories_list_use_case.dart'
     as _i1016;
 import '../features/evaluation/domain/usecase/get_defects_list_use_case.dart'
     as _i163;
+import '../features/evaluation/domain/usecase/post_evaluation_use_case.dart'
+    as _i296;
 import '../features/indicator_report/data/data_sources/indicator_report_data_source.dart'
     as _i691;
 import '../features/indicator_report/data/data_sources/indicator_report_data_source_impl.dart'
@@ -103,6 +105,8 @@ import '../features/services/domain/repository/request_repository.dart'
     as _i603;
 import '../features/services/domain/repository/request_repository_share_data.dart'
     as _i838;
+import '../features/services/domain/usecases/cancel_service_request_use_case.dart'
+    as _i320;
 import '../features/services/domain/usecases/fetch_selected_request_item_use_case.dart'
     as _i376;
 import '../features/services/domain/usecases/get_cancel_reason_request_use_case.dart'
@@ -113,6 +117,8 @@ import '../features/services/domain/usecases/get_chassis_request_history_list_us
     as _i581;
 import '../features/services/domain/usecases/get_distance_kilometer_use_case.dart'
     as _i985;
+import '../features/services/domain/usecases/get_emdadgar_followups_data_use_case.dart'
+    as _i734;
 import '../features/services/domain/usecases/get_emdadgar_info_use_case.dart'
     as _i786;
 import '../features/services/domain/usecases/get_evaluation_history_list_use_case.dart'
@@ -530,6 +536,9 @@ _i174.GetIt $initGetIt(
       gh<_i739.FetchAddressToLocationUseCase>(),
     ),
   );
+  gh.lazySingleton<_i320.GetReliefRequestByIdUseCase>(
+    () => _i320.GetReliefRequestByIdUseCase(gh<_i603.RequestRepository>()),
+  );
   gh.lazySingleton<_i433.GetCancelReasonRequestUseCase>(
     () => _i433.GetCancelReasonRequestUseCase(gh<_i603.RequestRepository>()),
   );
@@ -543,6 +552,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i985.GetDistanceKilometerUseCase>(
     () => _i985.GetDistanceKilometerUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i734.GetEmdadgarFollowupsDataUseCase>(
+    () => _i734.GetEmdadgarFollowupsDataUseCase(gh<_i603.RequestRepository>()),
   );
   gh.lazySingleton<_i786.GetEmdadgarInfoUseCase>(
     () => _i786.GetEmdadgarInfoUseCase(gh<_i603.RequestRepository>()),
@@ -782,6 +794,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i163.GetDefectsListUseCase>(
     () => _i163.GetDefectsListUseCase(gh<_i122.EvaluationRepository>()),
+  );
+  gh.lazySingleton<_i296.PostEvaluationUseCase>(
+    () => _i296.PostEvaluationUseCase(gh<_i122.EvaluationRepository>()),
   );
   gh.factory<_i792.UpdateRequestCubit>(
     () => _i792.UpdateRequestCubit(

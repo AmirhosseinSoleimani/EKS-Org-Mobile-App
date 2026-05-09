@@ -1,4 +1,6 @@
 import 'package:dio/dio.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/accept_evaluation_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/post_evaluation_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/service_category_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/service_response_model.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
@@ -27,11 +29,25 @@ abstract class EvaluationService {
 
   @GET('/api/HomeServiceEvaluationOrg/GetServiceCategories')
   Future<BaseListResponse<ServiceCategoryModel>> getHomeServiceCategories(
-    @Body() Map<String, dynamic> body,
+    @Queries() Map<String, dynamic> body,
   );
 
   @GET('/api/AidServiceEvaluationOrg/GetServices')
   Future<BaseSingleResponse<ServiceResponseModel>> getAidServices(
     @Queries() Map<String, dynamic> body,
   );
+
+  @POST('/api/AidServiceEvaluation/post')
+  Future<BaseSingleResponse<PostEvaluationResponseModel>>
+  aidServiceEvaluationPost(@Body() Map<String, dynamic> body);
+
+  @POST('/api/HomeServiceEvaluation/post')
+  Future<BaseSingleResponse<PostEvaluationResponseModel>>
+  homeServiceEvaluationPost(@Body() Map<String, dynamic> body);
+
+  @POST('/api/AidServiceEvaluationOrg/EvaluationAccept')
+  Future<BaseSingleResponse<AcceptEvaluationResponseModel?>> aidEvaluationAccept(@Body() Map<String, dynamic> body);
+
+  @POST('api/HomeServiceEvaluationOrg/EvaluationAccept')
+  Future<BaseSingleResponse<AcceptEvaluationResponseModel?>> homeServiceEvaluationAccept(@Body() Map<String, dynamic> body);
 }

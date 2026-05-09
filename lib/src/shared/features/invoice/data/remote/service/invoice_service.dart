@@ -19,5 +19,7 @@ abstract class InvoiceService {
   @POST('/api/InvoiceOrg/EmdadgarInvoice')
   Future<BaseSingleResponse<InvoiceModel?>> getEmdadgarInvoice(@Body() Map<String, dynamic> body);
 
+  @POST('/api/InvoiceOrg/CustomerPreInvoiceOnTheFly')
+  Future<BaseSingleResponse<InvoiceModel?>> customerPreInvoiceOnTheFly(@Body() Map<String, dynamic> body);
 
 }

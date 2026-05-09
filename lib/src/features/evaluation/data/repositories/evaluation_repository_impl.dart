@@ -1,7 +1,11 @@
 import 'package:eks_sana_plus_org/src/features/evaluation/data/remote/data_sources/evaluation_remote_data_source.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/accept_evaluation_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/defect_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/accept_evaluation_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/category_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/service_evaluation_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/services_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/post_evaluation_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/service_category_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/service_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/repositories/evaluation_repository.dart';
@@ -48,6 +52,28 @@ class EvaluationRepositoryImpl extends EvaluationRepository {
     try {
       final result = await _remoteDataSource
           .getAidServices(param.toModel());
+      return result.toApiResult();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<PostEvaluationResponseEntity>> postEvaluation(ServiceEvaluationParamEntity param) async {
+    try {
+      final result = await _remoteDataSource
+          .postEvaluation(param.toModel());
+      return result.toApiResult();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<AcceptEvaluationResponseEntity>> acceptEvaluation(AcceptEvaluationParamEntity param) async {
+    try {
+      final result = await _remoteDataSource
+          .acceptEvaluation(param.toModel());
       return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);

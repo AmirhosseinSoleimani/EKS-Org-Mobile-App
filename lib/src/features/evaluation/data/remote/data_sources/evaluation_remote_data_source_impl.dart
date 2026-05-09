@@ -1,6 +1,10 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/accept_evaluation_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/accept_evaluation_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/category_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/service_evaluation_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/services_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/post_evaluation_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/service_category_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/service_response_model.dart';
 import 'package:injectable/injectable.dart';
@@ -37,5 +41,21 @@ class FinalizeInvoiceRemoteDataSourceImpl extends EvaluationRemoteDataSource {
   @override
   Future<BaseSingleResponse<ServiceResponseModel>> getAidServices(ServicesParamModel param) async{
     return await _service.getAidServices(param.toJson());
+  }
+
+  @override
+  Future<BaseSingleResponse<PostEvaluationResponseModel>> postEvaluation(
+      ServiceEvaluationParamModel param) async {
+    return (param.serviceType == ServiceType.reliefService)
+        ? await _service.aidServiceEvaluationPost(param.toJson())
+        : await _service.homeServiceEvaluationPost(param.toJson());
+  }
+
+  @override
+  Future<BaseSingleResponse<AcceptEvaluationResponseModel?>> acceptEvaluation(
+      AcceptEvaluationParamModel param) async {
+    return (param.serviceType == ServiceType.reliefService)
+        ? await _service.aidEvaluationAccept(param.toJson())
+        : await _service.homeServiceEvaluationAccept(param.toJson());
   }
 }

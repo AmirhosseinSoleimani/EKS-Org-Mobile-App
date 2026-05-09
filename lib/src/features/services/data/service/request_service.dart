@@ -5,6 +5,7 @@ import 'package:eks_sana_plus_org/src/features/services/data/models/cartable_cyc
 import 'package:eks_sana_plus_org/src/features/services/data/models/chassis_request_history_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/control_info_models/control_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/distance_kilometer_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_followups_data_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/evaluation_history_item_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
@@ -89,8 +90,21 @@ abstract class RequestService {
   Future<BaseSingleResponse<DistanceKilometerModel>> getAidDistanceKilometer(
       @Body() Map<String, dynamic> query);
 
+  @POST('/api/AidServiceRequest/CancelRequestService')
+  Future<BaseSingleResponse<DistanceKilometerModel>> cancelAidRequestService(
+      @Body() Map<String, dynamic> query);
+
+  @POST('/api/HomeServiceRequest/CancelHomeServiceRequest')
+  Future<BaseSingleResponse<DistanceKilometerModel>> cancelHomeServiceRequest(
+      @Body() Map<String, dynamic> query);
+
   @POST('/api/HomeServiceEvaluationOrg/GetDistance')
   Future<BaseSingleResponse<
       DistanceKilometerModel>> getHomeServiceDistanceKilometer(
+      @Body() Map<String, dynamic> query);
+
+  @POST('/api/AidServiceEvaluation/GetEmdadgarFollowupsData')
+  Future<BaseSingleResponse<
+      EmdadgarFollowupsDataModel>> getAidEmdadgarFollowupsData(
       @Body() Map<String, dynamic> query);
 }

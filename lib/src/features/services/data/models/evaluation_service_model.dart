@@ -52,4 +52,25 @@ class EvaluationServiceModel extends EvaluationServiceEntity {
       isDeleted: json['isDeleted'] ?? false,
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      "evaluationLabors": [],
+      "serviceType": serviceType,
+      "serviceTypeId": serviceType,
+      "serviceTypeTitle": serviceTypeTitle,
+      "serviceId": serviceId,
+      "serviceCode": serviceCode,
+      "serviceTitle": serviceTitle,
+      "serviceCategoryId": serviceCategoryId,
+      "serviceCategoryCode": serviceCategoryCode,
+      "serviceCategoryTitle": serviceCategoryTitle,
+      "hasGaranty": hasGaranty,
+      "garantyStartDate": garantyStartDate,
+      "hasSubscription": hasSubscription,
+      "isSubscribedByNationalCode": (subscriptionId != null),
+      "productId": productId,
+      if (defectInfoId != null) "defectInfoId": defectInfoId,
+    };
+  }
 }

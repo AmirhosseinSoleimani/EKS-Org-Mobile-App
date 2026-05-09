@@ -93,9 +93,9 @@ class _EvaluationService implements EvaluationService {
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
+    queryParameters.addAll(body);
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(body);
+    const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<BaseListResponse<ServiceCategoryModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
@@ -145,6 +145,156 @@ class _EvaluationService implements EvaluationService {
       _value = BaseSingleResponse<ServiceResponseModel>.fromJson(
         _result.data!,
         (json) => ServiceResponseModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseSingleResponse<PostEvaluationResponseModel>>
+  aidServiceEvaluationPost(Map<String, dynamic> body) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
+    final _options =
+        _setStreamType<BaseSingleResponse<PostEvaluationResponseModel>>(
+          Options(method: 'POST', headers: _headers, extra: _extra)
+              .compose(
+                _dio.options,
+                '/api/AidServiceEvaluation/post',
+                queryParameters: queryParameters,
+                data: _data,
+              )
+              .copyWith(
+                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+              ),
+        );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseSingleResponse<PostEvaluationResponseModel> _value;
+    try {
+      _value = BaseSingleResponse<PostEvaluationResponseModel>.fromJson(
+        _result.data!,
+        (json) =>
+            PostEvaluationResponseModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseSingleResponse<PostEvaluationResponseModel>>
+  homeServiceEvaluationPost(Map<String, dynamic> body) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
+    final _options =
+        _setStreamType<BaseSingleResponse<PostEvaluationResponseModel>>(
+          Options(method: 'POST', headers: _headers, extra: _extra)
+              .compose(
+                _dio.options,
+                '/api/HomeServiceEvaluation/post',
+                queryParameters: queryParameters,
+                data: _data,
+              )
+              .copyWith(
+                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+              ),
+        );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseSingleResponse<PostEvaluationResponseModel> _value;
+    try {
+      _value = BaseSingleResponse<PostEvaluationResponseModel>.fromJson(
+        _result.data!,
+        (json) =>
+            PostEvaluationResponseModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseSingleResponse<AcceptEvaluationResponseModel?>>
+  aidEvaluationAccept(Map<String, dynamic> body) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
+    final _options =
+        _setStreamType<BaseSingleResponse<AcceptEvaluationResponseModel?>>(
+          Options(method: 'POST', headers: _headers, extra: _extra)
+              .compose(
+                _dio.options,
+                '/api/AidServiceEvaluationOrg/EvaluationAccept',
+                queryParameters: queryParameters,
+                data: _data,
+              )
+              .copyWith(
+                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+              ),
+        );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseSingleResponse<AcceptEvaluationResponseModel?> _value;
+    try {
+      _value = BaseSingleResponse<AcceptEvaluationResponseModel?>.fromJson(
+        _result.data!,
+        (json) => json == null
+            ? null
+            : AcceptEvaluationResponseModel.fromJson(
+                json as Map<String, dynamic>,
+              ),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseSingleResponse<AcceptEvaluationResponseModel?>>
+  homeServiceEvaluationAccept(Map<String, dynamic> body) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
+    final _options =
+        _setStreamType<BaseSingleResponse<AcceptEvaluationResponseModel?>>(
+          Options(method: 'POST', headers: _headers, extra: _extra)
+              .compose(
+                _dio.options,
+                'api/HomeServiceEvaluationOrg/EvaluationAccept',
+                queryParameters: queryParameters,
+                data: _data,
+              )
+              .copyWith(
+                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+              ),
+        );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseSingleResponse<AcceptEvaluationResponseModel?> _value;
+    try {
+      _value = BaseSingleResponse<AcceptEvaluationResponseModel?>.fromJson(
+        _result.data!,
+        (json) => json == null
+            ? null
+            : AcceptEvaluationResponseModel.fromJson(
+                json as Map<String, dynamic>,
+              ),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
