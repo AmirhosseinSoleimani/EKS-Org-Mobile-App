@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/accept_evaluation_param_model.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/data/models/invoice_model.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/data/models/params/service_invoice_param_model.dart';
@@ -13,13 +14,18 @@ class InvoiceDataSourceImpl extends InvoiceDataSource {
 
   @override
   Future<BaseSingleResponse<InvoiceModel?>> getPreInvoice(
-      ServiceInvoiceParamModel? model) async {
-    final result = await _service.getPreInvoice(model?.toJson() ?? {});
+      ServiceInvoiceParamModel? param) async {
+    final result = await _service.getPreInvoice(param?.toJson() ?? {});
     return result;
   }
 
   @override
   Future<BaseSingleResponse<InvoiceModel?>> getEmdadgarInvoice(
-          ServiceInvoiceParamModel? model) async =>
-      await _service.getEmdadgarInvoice(model?.toJson() ?? {});
+          ServiceInvoiceParamModel? param) async =>
+      await _service.getEmdadgarInvoice(param?.toJson() ?? {});
+
+  @override
+  Future<BaseSingleResponse<InvoiceModel?>> customerPreInvoiceOnTheFly(
+      AcceptEvaluationParamModel param) async =>
+      await _service.customerPreInvoiceOnTheFly(param.toJson());
 }

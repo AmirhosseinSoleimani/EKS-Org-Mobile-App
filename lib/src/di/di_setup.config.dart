@@ -70,12 +70,16 @@ import '../features/evaluation/data/repositories/evaluation_repository_impl.dart
     as _i903;
 import '../features/evaluation/domain/repositories/evaluation_repository.dart'
     as _i122;
+import '../features/evaluation/domain/usecase/accept_evaluation_use_case.dart'
+    as _i531;
 import '../features/evaluation/domain/usecase/get_aid_services_list_use_case.dart'
     as _i270;
 import '../features/evaluation/domain/usecase/get_categories_list_use_case.dart'
     as _i1016;
 import '../features/evaluation/domain/usecase/get_defects_list_use_case.dart'
     as _i163;
+import '../features/evaluation/domain/usecase/get_service_detail_evaluation_use_case.dart'
+    as _i16;
 import '../features/evaluation/domain/usecase/post_evaluation_use_case.dart'
     as _i296;
 import '../features/indicator_report/data/data_sources/indicator_report_data_source.dart'
@@ -191,6 +195,8 @@ import '../shared/features/invoice/data/repository/invoice_repository_impl.dart'
     as _i161;
 import '../shared/features/invoice/domain/repository/invoice_repository.dart'
     as _i829;
+import '../shared/features/invoice/domain/use_case/customer_pre_invoice_on_the_fly_use_case.dart'
+    as _i335;
 import '../shared/features/invoice/domain/use_case/get_emdadgar_invoice_use_case.dart'
     as _i204;
 import '../shared/features/invoice/domain/use_case/get_pre_invoice_use_case.dart'
@@ -536,8 +542,8 @@ _i174.GetIt $initGetIt(
       gh<_i739.FetchAddressToLocationUseCase>(),
     ),
   );
-  gh.lazySingleton<_i320.GetReliefRequestByIdUseCase>(
-    () => _i320.GetReliefRequestByIdUseCase(gh<_i603.RequestRepository>()),
+  gh.lazySingleton<_i320.CancelServiceRequestUseCase>(
+    () => _i320.CancelServiceRequestUseCase(gh<_i603.RequestRepository>()),
   );
   gh.lazySingleton<_i433.GetCancelReasonRequestUseCase>(
     () => _i433.GetCancelReasonRequestUseCase(gh<_i603.RequestRepository>()),
@@ -621,6 +627,10 @@ _i174.GetIt $initGetIt(
       gh<_i786.GetEmdadgarInfoUseCase>(),
     ),
   );
+  gh.lazySingleton<_i335.CustomerPreInvoiceOnTheFlyUseCase>(
+    () =>
+        _i335.CustomerPreInvoiceOnTheFlyUseCase(gh<_i829.InvoiceRepository>()),
+  );
   gh.lazySingleton<_i204.GetEmdadgarInvoiceUseCase>(
     () => _i204.GetEmdadgarInvoiceUseCase(gh<_i829.InvoiceRepository>()),
   );
@@ -652,16 +662,6 @@ _i174.GetIt $initGetIt(
     () => _i932.DashboardCubit(
       gh<_i208.GetDashboardDataUseCase>(),
       gh<_i228.GetServerDateTimeUseCase>(),
-    ),
-  );
-  gh.factory<_i872.CancelRequestCubit>(
-    () => _i872.CancelRequestCubit(
-      gh<_i433.GetCancelReasonRequestUseCase>(),
-      gh<_i376.FetchSelectedRequestItemUseCase>(),
-      gh<_i672.GetReliefRequestByIdUseCase>(),
-      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
-      gh<_i985.GetDistanceKilometerUseCase>(),
-      gh<_i786.GetEmdadgarInfoUseCase>(),
     ),
   );
   gh.factory<_i566.LoginCubit>(
@@ -786,6 +786,9 @@ _i174.GetIt $initGetIt(
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
     ),
   );
+  gh.lazySingleton<_i531.AcceptEvaluationUseCase>(
+    () => _i531.AcceptEvaluationUseCase(gh<_i122.EvaluationRepository>()),
+  );
   gh.lazySingleton<_i270.GetAidServicesListUseCase>(
     () => _i270.GetAidServicesListUseCase(gh<_i122.EvaluationRepository>()),
   );
@@ -795,8 +798,28 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i163.GetDefectsListUseCase>(
     () => _i163.GetDefectsListUseCase(gh<_i122.EvaluationRepository>()),
   );
+  gh.lazySingleton<_i16.GetServiceDetailEvaluationUseCase>(
+    () => _i16.GetServiceDetailEvaluationUseCase(
+      gh<_i122.EvaluationRepository>(),
+    ),
+  );
   gh.lazySingleton<_i296.PostEvaluationUseCase>(
     () => _i296.PostEvaluationUseCase(gh<_i122.EvaluationRepository>()),
+  );
+  gh.factory<_i872.CancelRequestCubit>(
+    () => _i872.CancelRequestCubit(
+      gh<_i433.GetCancelReasonRequestUseCase>(),
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      gh<_i985.GetDistanceKilometerUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
+      gh<_i16.GetServiceDetailEvaluationUseCase>(),
+      gh<_i296.PostEvaluationUseCase>(),
+      gh<_i320.CancelServiceRequestUseCase>(),
+      gh<_i335.CustomerPreInvoiceOnTheFlyUseCase>(),
+      gh<_i531.AcceptEvaluationUseCase>(),
+    ),
   );
   gh.factory<_i792.UpdateRequestCubit>(
     () => _i792.UpdateRequestCubit(

@@ -5,11 +5,11 @@ import 'package:eks_sana_plus_org/src/shared/usecase/use_case.dart';
 import 'package:injectable/injectable.dart';
 
 @lazySingleton
-class GetReliefRequestByIdUseCase
+class CancelServiceRequestUseCase
     extends BaseUseCase<ApiResult<void>, CancelRequestParamEntity> {
   final RequestRepository _repository;
 
-  GetReliefRequestByIdUseCase(this._repository);
+  CancelServiceRequestUseCase(this._repository);
 
   @override
   Future<ApiResult<void>> call(CancelRequestParamEntity arg) async {

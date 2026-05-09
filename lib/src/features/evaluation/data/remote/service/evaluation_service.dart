@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/accept_evaluation_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/emdadgar_service_detail_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/post_evaluation_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/service_category_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/service_response_model.dart';
@@ -37,17 +38,30 @@ abstract class EvaluationService {
     @Queries() Map<String, dynamic> body,
   );
 
-  @POST('/api/AidServiceEvaluation/post')
+  @POST('/api/AidServiceEvaluationOrg/post')
   Future<BaseSingleResponse<PostEvaluationResponseModel>>
   aidServiceEvaluationPost(@Body() Map<String, dynamic> body);
 
-  @POST('/api/HomeServiceEvaluation/post')
+  @POST('/api/HomeServiceEvaluationOrg/post')
   Future<BaseSingleResponse<PostEvaluationResponseModel>>
   homeServiceEvaluationPost(@Body() Map<String, dynamic> body);
 
   @POST('/api/AidServiceEvaluationOrg/EvaluationAccept')
   Future<BaseSingleResponse<AcceptEvaluationResponseModel?>> aidEvaluationAccept(@Body() Map<String, dynamic> body);
 
-  @POST('api/HomeServiceEvaluationOrg/EvaluationAccept')
+  @POST('/api/HomeServiceEvaluationOrg/EvaluationAccept')
   Future<BaseSingleResponse<AcceptEvaluationResponseModel?>> homeServiceEvaluationAccept(@Body() Map<String, dynamic> body);
+
+
+  @POST(
+      '/api/AidServiceEvaluationOrg/GetServiceDetailAndCheckSubscriptionForEmdagarEvaluation')
+  Future<BaseSingleResponse<
+      EmdadgarServiceDetailModel>> getAidServiceDetailAndCheckSubscriptionForEmdagarEvaluation(
+      @Body() Map<String, dynamic> body);
+
+  @POST(
+      '/api/HomeServiceEvaluationOrg/GetServiceDetailAndCheckSubscriptionForEmdagarEvaluation')
+  Future<BaseSingleResponse<
+      EmdadgarServiceDetailModel>> getHomeServiceDetailAndCheckSubscriptionForEmdagarEvaluation(
+      @Body() Map<String, dynamic> body);
 }

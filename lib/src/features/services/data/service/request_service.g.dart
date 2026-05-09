@@ -589,7 +589,7 @@ class _RequestService implements RequestService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/AidServiceRequest/CancelRequestService',
+            '/api/AidServiceRequestOrg/CancelRequestService',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -622,7 +622,7 @@ class _RequestService implements RequestService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/HomeServiceRequest/CancelHomeServiceRequest',
+            '/api/HomeServiceRequestOrg/CancelHomeServiceRequest',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -687,7 +687,7 @@ class _RequestService implements RequestService {
           Options(method: 'POST', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/AidServiceEvaluation/GetEmdadgarFollowupsData',
+                '/api/AidServiceEvaluationOrg/GetEmdadgarFollowupsData',
                 queryParameters: queryParameters,
                 data: _data,
               )

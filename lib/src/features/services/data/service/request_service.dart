@@ -90,11 +90,11 @@ abstract class RequestService {
   Future<BaseSingleResponse<DistanceKilometerModel>> getAidDistanceKilometer(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/AidServiceRequest/CancelRequestService')
+  @POST('/api/AidServiceRequestOrg/CancelRequestService')
   Future<BaseSingleResponse<DistanceKilometerModel>> cancelAidRequestService(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/HomeServiceRequest/CancelHomeServiceRequest')
+  @POST('/api/HomeServiceRequestOrg/CancelHomeServiceRequest')
   Future<BaseSingleResponse<DistanceKilometerModel>> cancelHomeServiceRequest(
       @Body() Map<String, dynamic> query);
 
@@ -103,7 +103,7 @@ abstract class RequestService {
       DistanceKilometerModel>> getHomeServiceDistanceKilometer(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/AidServiceEvaluation/GetEmdadgarFollowupsData')
+  @POST('/api/AidServiceEvaluationOrg/GetEmdadgarFollowupsData')
   Future<BaseSingleResponse<
       EmdadgarFollowupsDataModel>> getAidEmdadgarFollowupsData(
       @Body() Map<String, dynamic> query);

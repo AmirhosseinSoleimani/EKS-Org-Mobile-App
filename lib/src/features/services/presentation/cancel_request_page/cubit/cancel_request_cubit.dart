@@ -1,6 +1,9 @@
 import 'package:eks_sana_plus_org/src/common/constants/fetch_result_type.dart';
 import 'package:eks_sana_plus_org/src/common/constants/request_status.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/accept_evaluation_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/get_service_detail_evaluation_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/post_evaluation_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/cancel_request_reason_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_info_entity.dart';
@@ -8,6 +11,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/c
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/distance_kilometer_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/service_request_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/usecases/cancel_service_request_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/fetch_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_cancel_reason_request_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_distance_kilometer_use_case.dart';
@@ -15,6 +19,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_emda
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_home_service_request_by_id_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_relief_request_by_id_use_case.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/use_case/customer_pre_invoice_on_the_fly_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,6 +38,12 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
     this._getHomeServiceRequestByIdUseCase,
     this._getDistanceKilometerUseCase,
     this._getEmdadgarInfoUseCase,
+    this._getServiceDetailEvaluationUseCase,
+    this._postEvaluationUseCase,
+    this._cancelServiceRequestUseCase,
+    this._customerPreInvoiceOnTheFlyUseCase,
+    this._acceptEvaluationUseCase,
+
   ) : super(const CancelRequestState.idle());
 
   final formKey = GlobalKey<FormState>();
@@ -44,6 +55,11 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
   final GetHomeServiceRequestByIdUseCase _getHomeServiceRequestByIdUseCase;
   final GetEmdadgarInfoUseCase _getEmdadgarInfoUseCase;
   final GetDistanceKilometerUseCase _getDistanceKilometerUseCase;
+  final GetServiceDetailEvaluationUseCase _getServiceDetailEvaluationUseCase;
+  final PostEvaluationUseCase _postEvaluationUseCase;
+  final CancelServiceRequestUseCase _cancelServiceRequestUseCase;
+  final CustomerPreInvoiceOnTheFlyUseCase _customerPreInvoiceOnTheFlyUseCase;
+  final AcceptEvaluationUseCase _acceptEvaluationUseCase;
 
   BaseRequestEntity? selectedRequest;
   EmdadgarInfoEntity? emdadgarInfo;

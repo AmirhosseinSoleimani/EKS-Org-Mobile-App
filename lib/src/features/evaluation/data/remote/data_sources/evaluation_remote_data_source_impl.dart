@@ -1,7 +1,9 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/accept_evaluation_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/emdadgar_service_detail_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/accept_evaluation_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/category_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/service_detail_for_evaluation_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/service_evaluation_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/services_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/post_evaluation_response_model.dart';
@@ -57,5 +59,14 @@ class FinalizeInvoiceRemoteDataSourceImpl extends EvaluationRemoteDataSource {
     return (param.serviceType == ServiceType.reliefService)
         ? await _service.aidEvaluationAccept(param.toJson())
         : await _service.homeServiceEvaluationAccept(param.toJson());
+  }
+
+  @override
+  Future<BaseSingleResponse<
+      EmdadgarServiceDetailModel>> getServiceDetailAndCheckSubscriptionForEmdagar(
+      ServiceDetailForEvaluationParamModel param) async {
+    return (param.serviceType == ServiceType.reliefService)
+        ? await _service.getAidServiceDetailAndCheckSubscriptionForEmdagarEvaluation(param.toJson())
+        : await _service.getHomeServiceDetailAndCheckSubscriptionForEmdagarEvaluation(param.toJson());
   }
 }

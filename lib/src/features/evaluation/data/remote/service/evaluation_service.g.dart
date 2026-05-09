@@ -166,7 +166,7 @@ class _EvaluationService implements EvaluationService {
           Options(method: 'POST', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/AidServiceEvaluation/post',
+                '/api/AidServiceEvaluationOrg/post',
                 queryParameters: queryParameters,
                 data: _data,
               )
@@ -202,7 +202,7 @@ class _EvaluationService implements EvaluationService {
           Options(method: 'POST', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/HomeServiceEvaluation/post',
+                '/api/HomeServiceEvaluationOrg/post',
                 queryParameters: queryParameters,
                 data: _data,
               )
@@ -277,7 +277,7 @@ class _EvaluationService implements EvaluationService {
           Options(method: 'POST', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                'api/HomeServiceEvaluationOrg/EvaluationAccept',
+                '/api/HomeServiceEvaluationOrg/EvaluationAccept',
                 queryParameters: queryParameters,
                 data: _data,
               )
@@ -295,6 +295,76 @@ class _EvaluationService implements EvaluationService {
             : AcceptEvaluationResponseModel.fromJson(
                 json as Map<String, dynamic>,
               ),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseSingleResponse<EmdadgarServiceDetailModel>>
+  getAidServiceDetailAndCheckSubscriptionForEmdagarEvaluation(
+    Map<String, dynamic> body,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
+    final _options = _setStreamType<BaseSingleResponse<EmdadgarServiceDetailModel>>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/api/AidServiceEvaluationOrg/GetServiceDetailAndCheckSubscriptionForEmdagarEvaluation',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseSingleResponse<EmdadgarServiceDetailModel> _value;
+    try {
+      _value = BaseSingleResponse<EmdadgarServiceDetailModel>.fromJson(
+        _result.data!,
+        (json) =>
+            EmdadgarServiceDetailModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseSingleResponse<EmdadgarServiceDetailModel>>
+  getHomeServiceDetailAndCheckSubscriptionForEmdagarEvaluation(
+    Map<String, dynamic> body,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
+    final _options = _setStreamType<BaseSingleResponse<EmdadgarServiceDetailModel>>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/api/HomeServiceEvaluationOrg/GetServiceDetailAndCheckSubscriptionForEmdagarEvaluation',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseSingleResponse<EmdadgarServiceDetailModel> _value;
+    try {
+      _value = BaseSingleResponse<EmdadgarServiceDetailModel>.fromJson(
+        _result.data!,
+        (json) =>
+            EmdadgarServiceDetailModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
