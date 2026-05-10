@@ -1,8 +1,10 @@
 import 'package:dio/dio.dart' hide Headers;
 import 'package:eks_sana_plus_org/src/features/services/data/models/Followup_Model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/cancel_request_reason_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/car_covers_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/cartable_cycle_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/chassis_request_history_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/complete_urgent_request_data_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/control_info_models/control_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/distance_kilometer_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_followups_data_model.dart';
@@ -10,6 +12,7 @@ import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_inf
 import 'package:eks_sana_plus_org/src/features/services/data/models/evaluation_history_item_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/non_cooperation_list_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/reference_car_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/relief_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/request_status_history_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/update_service_response_model.dart';
@@ -107,4 +110,19 @@ abstract class RequestService {
   Future<BaseSingleResponse<
       EmdadgarFollowupsDataModel>> getAidEmdadgarFollowupsData(
       @Body() Map<String, dynamic> query);
+
+  @POST('/api/AidServiceRequestOrg/CompleteUrgentRequest')
+  Future<BaseSingleResponse<
+      CompleteUrgentRequestDataModel>> completeAidUrgentRequest(
+      @Body() Map<String, dynamic> query);
+
+  @POST('/api/CarInfo/GetReferenceCar')
+  Future<BaseSingleResponse<
+      ReferenceCarModel>> getReferenceCar(
+      @Body() Map<String, dynamic> query);
+
+  @GET('/api/BaseInfo/GetBasicData')
+  Future<BaseSingleResponse<
+      CarCoversDataModel>> getBasicData(
+      @Queries() Map<String, dynamic> query);
 }

@@ -21,7 +21,7 @@ class CancelReasonParamModel extends CancelReasonParamEntity {
     return {
       'reasonId': reasonId,
       'type': reasonType.value,
-
+      'serviceType': serviceType.value,
     };
   }
 }
