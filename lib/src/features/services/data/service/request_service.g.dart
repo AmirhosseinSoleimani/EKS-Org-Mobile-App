@@ -748,7 +748,7 @@ class _RequestService implements RequestService {
   }
 
   @override
-  Future<BaseSingleResponse<ReferenceCarModel>> getReferenceCar(
+  Future<BaseSingleResponse<ReferenceCarModel?>> getReferenceCar(
     Map<String, dynamic> query,
   ) async {
     final _extra = <String, dynamic>{};
@@ -756,22 +756,24 @@ class _RequestService implements RequestService {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(query);
-    final _options = _setStreamType<BaseSingleResponse<ReferenceCarModel>>(
+    final _options = _setStreamType<BaseSingleResponse<ReferenceCarModel?>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/CarInfo/GetReferenceCar',
+            '/api/CarInfoOrg/GetReferenceCar',
             queryParameters: queryParameters,
             data: _data,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseSingleResponse<ReferenceCarModel> _value;
+    late BaseSingleResponse<ReferenceCarModel?> _value;
     try {
-      _value = BaseSingleResponse<ReferenceCarModel>.fromJson(
+      _value = BaseSingleResponse<ReferenceCarModel?>.fromJson(
         _result.data!,
-        (json) => ReferenceCarModel.fromJson(json as Map<String, dynamic>),
+        (json) => json == null
+            ? null
+            : ReferenceCarModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
@@ -781,7 +783,42 @@ class _RequestService implements RequestService {
   }
 
   @override
-  Future<BaseSingleResponse<CarCoversDataModel>> getBasicData(
+  Future<BaseSingleResponse<CarCoversDataModel?>> getBasicData(
+    Map<String, dynamic> query,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.addAll(query);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options = _setStreamType<BaseSingleResponse<CarCoversDataModel?>>(
+      Options(method: 'GET', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/api/BaseInfoOrg/GetBasicData',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseSingleResponse<CarCoversDataModel?> _value;
+    try {
+      _value = BaseSingleResponse<CarCoversDataModel?>.fromJson(
+        _result.data!,
+        (json) => json == null
+            ? null
+            : CarCoversDataModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseSingleResponse<MinimalCustomerInfoModel?>> getMinimalCustomerInfo(
     Map<String, dynamic> query,
   ) async {
     final _extra = <String, dynamic>{};
@@ -789,22 +826,27 @@ class _RequestService implements RequestService {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(query);
-    final _options = _setStreamType<BaseSingleResponse<CarCoversDataModel>>(
-      Options(method: 'POST', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            '/api/BaseInfo/GetBasicData',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
+    final _options =
+        _setStreamType<BaseSingleResponse<MinimalCustomerInfoModel?>>(
+          Options(method: 'POST', headers: _headers, extra: _extra)
+              .compose(
+                _dio.options,
+                '/api/CustomerViewAllOrg/GetMinimalCustomerInfo',
+                queryParameters: queryParameters,
+                data: _data,
+              )
+              .copyWith(
+                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+              ),
+        );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseSingleResponse<CarCoversDataModel> _value;
+    late BaseSingleResponse<MinimalCustomerInfoModel?> _value;
     try {
-      _value = BaseSingleResponse<CarCoversDataModel>.fromJson(
+      _value = BaseSingleResponse<MinimalCustomerInfoModel?>.fromJson(
         _result.data!,
-        (json) => CarCoversDataModel.fromJson(json as Map<String, dynamic>),
+        (json) => json == null
+            ? null
+            : MinimalCustomerInfoModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);

@@ -38,6 +38,8 @@ class SvgManager {
   static const String homeServiceLocation = '${_basePath}home_service_location.svg';
   static const String location = '${_basePath}location.svg';
   static const String emptyList = '${_basePath}empty_list.svg';
+  static const String male = '${_basePath}male.svg';
+  static const String female = '${_basePath}female.svg';
 
 
   //not used yet

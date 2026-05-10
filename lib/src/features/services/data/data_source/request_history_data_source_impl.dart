@@ -11,6 +11,7 @@ import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_fol
 import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/evaluation_history_item_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/minimal_customer_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/non_cooperation_list_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/cancel_reason_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/cancel_request_param_model.dart';
@@ -19,6 +20,7 @@ import 'package:eks_sana_plus_org/src/features/services/data/models/params/compl
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/distance_kilometer_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/get_emdadgar_followups_data_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/get_reference_car_param_data.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/minimal_customer_info_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/request_filter_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/request_operation_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/service_request_param_model.dart';
@@ -131,10 +133,17 @@ class RequestDataSourceImpl extends RequestDataSource {
       await _service.completeAidUrgentRequest(param.toJson());
 
   @override
-  Future<BaseSingleResponse<CarCoversDataModel>> getBasicData() async =>
+  Future<BaseSingleResponse<CarCoversDataModel?>> getBasicData() async =>
       await _service.getBasicData({});
 
   @override
-  Future<BaseSingleResponse<ReferenceCarModel>> getReferenceCar(GetReferenceCarParamModel param) async =>
+  Future<BaseSingleResponse<ReferenceCarModel?>> getReferenceCar(
+      GetReferenceCarParamModel param) async =>
       await _service.getReferenceCar(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<MinimalCustomerInfoModel?>> getMinimalCustomerInfo(
+      MinimalCustomerInfoParamModel param) async =>
+      await _service.getMinimalCustomerInfo(param.toJson());
+
 }

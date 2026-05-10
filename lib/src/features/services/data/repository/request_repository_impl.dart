@@ -11,6 +11,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/evaluation_history_item_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/followup_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/minimal_customer_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/non_cooperation_list_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/cancel_reason_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/cancel_request_param_entity.dart';
@@ -19,6 +20,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/c
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/distance_kilometer_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/get_emdadgar_followups_data_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/get_reference_car_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/minimal_customer_info_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_operation_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/service_request_param_entity.dart';
@@ -241,6 +243,16 @@ class RequestRepositoryImpl extends RequestRepository {
       GetReferenceCarParamEntity param) async {
     try {
       final result = await _dataSource.getReferenceCar(param.toModel());
+      return result.toApiResult();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<MinimalCustomerInfoEntity>> getMinimalCustomerInfo(MinimalCustomerInfoParamEntity param) async {
+    try {
+      final result = await _dataSource.getMinimalCustomerInfo(param.toModel());
       return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);

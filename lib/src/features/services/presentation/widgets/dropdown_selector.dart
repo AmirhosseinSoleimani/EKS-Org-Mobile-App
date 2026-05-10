@@ -3,9 +3,9 @@ import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/interfaces/d
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/overlay_drop_down_menu.dart';
 import 'package:flutter/material.dart';
 
-class CancelReasonDropdown<T extends DropdownItem> extends StatelessWidget {
+class DropdownSelector<T extends DropdownItem> extends StatelessWidget {
   final String label;
-  final String defaultTitle;
+  final String placeholder;
   final ValueNotifier<T?> selectedNotifier;
   final List<T> items;
   final bool isLoading;
@@ -13,10 +13,10 @@ class CancelReasonDropdown<T extends DropdownItem> extends StatelessWidget {
   final void Function(T) onSelect;
   final String Function(T) itemTitleBuilder;
 
-  const CancelReasonDropdown({
+  const DropdownSelector({
     super.key,
     required this.label,
-    required this.defaultTitle,
+    required this.placeholder,
     required this.selectedNotifier,
     required this.items,
     required this.onSelect,
@@ -34,7 +34,7 @@ class CancelReasonDropdown<T extends DropdownItem> extends StatelessWidget {
             ? "در حال بارگذاری..."
             : selectedItem != null
             ? itemTitleBuilder(selectedItem)
-            : defaultTitle;
+            : placeholder;
 
         return SizedBox(
           height: 52,

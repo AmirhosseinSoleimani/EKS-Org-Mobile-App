@@ -137,7 +137,7 @@ return submitSuccess(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  loading,TResult Function()?  loaded,TResult Function( BottomSheetMessageModel message)?  error,TResult Function()?  connectionError,TResult Function()?  submitLoading,TResult Function()?  submitSuccess,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  loading,TResult Function()?  loaded,TResult Function( BottomSheetMessageModel message)?  error,TResult Function()?  connectionError,TResult Function()?  submitLoading,TResult Function( CompleteUrgentRequestDataEntity data)?  submitSuccess,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle();case _Loading() when loading != null:
@@ -146,7 +146,7 @@ return loaded();case _Error() when error != null:
 return error(_that.message);case _ConnectionError() when connectionError != null:
 return connectionError();case _SubmitLoading() when submitLoading != null:
 return submitLoading();case _SubmitSuccess() when submitSuccess != null:
-return submitSuccess();case _:
+return submitSuccess(_that.data);case _:
   return orElse();
 
 }
@@ -164,7 +164,7 @@ return submitSuccess();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  loading,required TResult Function()  loaded,required TResult Function( BottomSheetMessageModel message)  error,required TResult Function()  connectionError,required TResult Function()  submitLoading,required TResult Function()  submitSuccess,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  loading,required TResult Function()  loaded,required TResult Function( BottomSheetMessageModel message)  error,required TResult Function()  connectionError,required TResult Function()  submitLoading,required TResult Function( CompleteUrgentRequestDataEntity data)  submitSuccess,}) {final _that = this;
 switch (_that) {
 case _Idle():
 return idle();case _Loading():
@@ -173,7 +173,7 @@ return loaded();case _Error():
 return error(_that.message);case _ConnectionError():
 return connectionError();case _SubmitLoading():
 return submitLoading();case _SubmitSuccess():
-return submitSuccess();case _:
+return submitSuccess(_that.data);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -190,7 +190,7 @@ return submitSuccess();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  loading,TResult? Function()?  loaded,TResult? Function( BottomSheetMessageModel message)?  error,TResult? Function()?  connectionError,TResult? Function()?  submitLoading,TResult? Function()?  submitSuccess,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  loading,TResult? Function()?  loaded,TResult? Function( BottomSheetMessageModel message)?  error,TResult? Function()?  connectionError,TResult? Function()?  submitLoading,TResult? Function( CompleteUrgentRequestDataEntity data)?  submitSuccess,}) {final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle();case _Loading() when loading != null:
@@ -199,7 +199,7 @@ return loaded();case _Error() when error != null:
 return error(_that.message);case _ConnectionError() when connectionError != null:
 return connectionError();case _SubmitLoading() when submitLoading != null:
 return submitLoading();case _SubmitSuccess() when submitSuccess != null:
-return submitSuccess();case _:
+return submitSuccess(_that.data);case _:
   return null;
 
 }
@@ -437,32 +437,66 @@ String toString() {
 
 
 class _SubmitSuccess implements CompleteUrgentRequestState {
-  const _SubmitSuccess();
+  const _SubmitSuccess({required this.data});
   
 
+ final  CompleteUrgentRequestDataEntity data;
 
-
+/// Create a copy of CompleteUrgentRequestState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SubmitSuccessCopyWith<_SubmitSuccess> get copyWith => __$SubmitSuccessCopyWithImpl<_SubmitSuccess>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubmitSuccess);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubmitSuccess&&(identical(other.data, data) || other.data == data));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,data);
 
 @override
 String toString() {
-  return 'CompleteUrgentRequestState.submitSuccess()';
+  return 'CompleteUrgentRequestState.submitSuccess(data: $data)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class _$SubmitSuccessCopyWith<$Res> implements $CompleteUrgentRequestStateCopyWith<$Res> {
+  factory _$SubmitSuccessCopyWith(_SubmitSuccess value, $Res Function(_SubmitSuccess) _then) = __$SubmitSuccessCopyWithImpl;
+@useResult
+$Res call({
+ CompleteUrgentRequestDataEntity data
+});
 
 
+
+
+}
+/// @nodoc
+class __$SubmitSuccessCopyWithImpl<$Res>
+    implements _$SubmitSuccessCopyWith<$Res> {
+  __$SubmitSuccessCopyWithImpl(this._self, this._then);
+
+  final _SubmitSuccess _self;
+  final $Res Function(_SubmitSuccess) _then;
+
+/// Create a copy of CompleteUrgentRequestState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? data = null,}) {
+  return _then(_SubmitSuccess(
+data: null == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
+as CompleteUrgentRequestDataEntity,
+  ));
+}
+
+
+}
 
 // dart format on

@@ -1,8 +1,8 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/cancel_request_reason_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/cubit/cancel_request_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/widgets/cancel_reason_dropdown.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/widgets/distance_kilometer_field.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/widgets/dropdown_selector.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/widgets/action_text_field.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/widgets/invoice_bottom_sheet_content.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
@@ -22,7 +22,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'widgets/cancel_submit_row_widget.dart';
+import '../widgets/submit_cancel_buttons.dart';
 import 'widgets/date_time_picker_section.dart';
 
 class CancelRequestPage extends StatelessWidget {
@@ -82,13 +82,19 @@ class _View extends StatelessWidget {
             child: BlocBuilder<CancelRequestCubit, CancelRequestState>(
               builder: (context, state) {
                 final cubit = context.read<CancelRequestCubit>();
+                final isLoading = state.maybeWhen(
+                  submitLoading: () => true,
+                  orElse: () => false,
+                );
                 return state.maybeWhen(
                   idle: () => const SizedBox.shrink(),
                   loading: () => const SizedBox.shrink(),
                   orElse: () =>
-                      CancelSubmitRowWidget(
+                      SubmitCancelButtons(
                         onSubmit: cubit.submit,
                         onCancel: () => Navigator.pop(context),
+                        submitTitle: 'لغو درخواست',
+                        isLoading: isLoading,
                       ),
                 );
               },
@@ -173,9 +179,9 @@ class _LoadedView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  CancelReasonDropdown<CancelRequestReasonEntity>(
+                  DropdownSelector<CancelRequestReasonEntity>(
                     label: "نوع لغو",
-                    defaultTitle: "انتخاب نوع کنسلی",
+                    placeholder: "انتخاب نوع کنسلی",
                     selectedNotifier: cubit.selectedCancelType,
                     items: cubit.cancelRequestType,
                     itemTitleBuilder: (item) => item.title ?? "",
@@ -183,9 +189,9 @@ class _LoadedView extends StatelessWidget {
                   ),
                   Space.h16,
                   if (showSecondDropDown) ...[
-                    CancelReasonDropdown<CancelRequestReasonEntity>(
+                    DropdownSelector<CancelRequestReasonEntity>(
                       label: "دلیل لغو",
-                      defaultTitle: "انتخاب دلیل کنسلی",
+                      placeholder: "انتخاب دلیل کنسلی",
                       selectedNotifier: cubit.selectedCancelReason,
                       items: cubit.cancelRequestReasonNotifier.value,
                       enabled: cubit.cancelRequestReasonNotifier.value
@@ -215,11 +221,13 @@ class _LoadedView extends StatelessWidget {
                       onTimeChange: cubit.setCancelTime,
                     ),
                     Space.h24,
-                    DistanceKilometerField(
+                    ActionTextField(
                       controller: cubit.kilometerController,
-                      isEditableNotifier: cubit.isDistanceKilometerEditable,
-                      isLoadingNotifier: cubit.isGettingDistanceKilometer,
-                      onGetDistance: cubit.getDistanceKilometer,
+                      readOnlyListenable: cubit.isDistanceKilometerEditable,
+                      loadingListenable: cubit.isGettingDistanceKilometer,
+                      onActionTap: cubit.getDistanceKilometer,
+                      labelText: "کیلومتر طی شده",
+                      hintText: "مقدار کیلومتر",
                     ),
                     Space.h24,
                   ],
@@ -247,11 +255,21 @@ void _showInvoiceBottomSheet(BuildContext context, InvoiceEntity invoice) {
     context: context,
     isDismissible: true,
     enableDrag: true,
-    actionWidget: CancelSubmitRowWidget(
+    actionWidget: BlocBuilder<CancelRequestCubit, CancelRequestState>(
+      builder: (context, state) {
+        final isLoading = state.maybeWhen(
+          submitLoading: () => true,
+          orElse: () => false,
+        );
+        return SubmitCancelButtons(
       onSubmit: context
           .read<CancelRequestCubit>()
           .acceptEvaluation,
       onCancel: () => Navigator.pop(context),
+          submitTitle: 'تایید نهایی',
+          isLoading: isLoading,
+        );
+      },
     ),
     content: InvoiceBottomSheetContent(invoiceEntity: invoice),
 

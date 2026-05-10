@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/common/utils/extensions/color_code_parser.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/domain/entities/chart_data_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:fl_chart/fl_chart.dart';
@@ -26,7 +27,7 @@ class PieChartWidget extends StatelessWidget {
               sections: items.map((element) {
                 final pct = element.percent.clamp(0, 100);
                 return PieChartSectionData(
-                  color: _parseColor(element.color),
+                  color: ColorCodeParser.parse(element.color),
                   value: element.percent,
                   radius: chartRadius,
                   title: "${pct.toStringAsFixed(1)}%",
@@ -43,7 +44,6 @@ class PieChartWidget extends StatelessWidget {
 
         const SizedBox(height: 16),
 
-        // --- Legend ---
         Column(
           children: items.map((element) {
             return Padding(
@@ -58,7 +58,7 @@ class PieChartWidget extends StatelessWidget {
                         width: 14,
                         height: 14,
                         decoration: BoxDecoration(
-                          color: _parseColor(element.color),
+                          color: ColorCodeParser.parse(element.color),
                           borderRadius: BorderRadius.circular(25),
                         ),
                       ),
@@ -74,26 +74,5 @@ class PieChartWidget extends StatelessWidget {
         ),
       ],
     );
-  }
-
-  Color _parseColor(String? hex) {
-
-    const fallback = Color(0xFF9E9E9E);
-
-    if (hex == null || hex.isEmpty) return fallback;
-
-    try {
-      final cleaned = hex.replaceAll('#', '');
-
-      if (cleaned.length == 6) {
-        return Color(int.parse('0xFF$cleaned'));
-      } else if (cleaned.length == 8) {
-        return Color(int.parse('0x$cleaned'));
-      }
-
-      return fallback;
-    } catch (_) {
-      return fallback;
-    }
   }
 }

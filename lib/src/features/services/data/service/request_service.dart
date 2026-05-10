@@ -11,6 +11,7 @@ import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_fol
 import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/evaluation_history_item_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/minimal_customer_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/non_cooperation_list_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/reference_car_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/relief_request_model.dart';
@@ -116,13 +117,19 @@ abstract class RequestService {
       CompleteUrgentRequestDataModel>> completeAidUrgentRequest(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/CarInfo/GetReferenceCar')
+  @POST('/api/CarInfoOrg/GetReferenceCar')
   Future<BaseSingleResponse<
-      ReferenceCarModel>> getReferenceCar(
+      ReferenceCarModel?>> getReferenceCar(
       @Body() Map<String, dynamic> query);
 
-  @GET('/api/BaseInfo/GetBasicData')
+  @GET('/api/BaseInfoOrg/GetBasicData')
   Future<BaseSingleResponse<
-      CarCoversDataModel>> getBasicData(
+      CarCoversDataModel?>> getBasicData(
       @Queries() Map<String, dynamic> query);
+
+  @POST('/api/CustomerViewAllOrg/GetMinimalCustomerInfo')
+  Future<BaseSingleResponse<
+      MinimalCustomerInfoModel?>> getMinimalCustomerInfo(
+      @Body() Map<String, dynamic> query);
+
 }

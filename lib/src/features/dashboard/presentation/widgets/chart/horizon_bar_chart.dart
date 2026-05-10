@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/common/utils/extensions/color_code_parser.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/domain/entities/chart_data_entity.dart';
 import 'package:flutter/material.dart';
 
@@ -11,26 +12,6 @@ class HorizonBarChart extends StatelessWidget {
     required this.items,
   });
 
-  Color _parseColor(String? hex) {
-    const fallback = Color(0xFF9E9E9E);
-
-    if (hex == null || hex.isEmpty) return fallback;
-
-    try {
-      final cleaned = hex.replaceAll('#', '');
-
-      if (cleaned.length == 6) {
-        return Color(int.parse('0xFF$cleaned'));
-      } else if (cleaned.length == 8) {
-        return Color(int.parse('0x$cleaned'));
-      }
-
-      return fallback;
-    } catch (_) {
-      return fallback;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -40,7 +21,7 @@ class HorizonBarChart extends StatelessWidget {
           title: element.title,
           percent: element.percent,
           count: element.count,
-          color: _parseColor(element.color),
+          color: ColorCodeParser.parse(element.color),
         ),
       )
           .toList(),

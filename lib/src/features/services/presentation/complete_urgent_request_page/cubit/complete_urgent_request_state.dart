@@ -17,5 +17,7 @@ class CompleteUrgentRequestState with _$CompleteUrgentRequestState {
 
   const factory CompleteUrgentRequestState.submitLoading() = _SubmitLoading;
 
-  const factory CompleteUrgentRequestState.submitSuccess() = _SubmitSuccess;
+  const factory CompleteUrgentRequestState.submitSuccess({
+    required CompleteUrgentRequestDataEntity data,
+}) = _SubmitSuccess;
 }

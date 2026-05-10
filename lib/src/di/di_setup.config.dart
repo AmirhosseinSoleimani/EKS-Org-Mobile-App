@@ -111,8 +111,12 @@ import '../features/services/domain/repository/request_repository_share_data.dar
     as _i838;
 import '../features/services/domain/usecases/cancel_service_request_use_case.dart'
     as _i320;
+import '../features/services/domain/usecases/complete_aid_urgent_request_use_case.dart'
+    as _i364;
 import '../features/services/domain/usecases/fetch_selected_request_item_use_case.dart'
     as _i376;
+import '../features/services/domain/usecases/get_basic_data_use_case.dart'
+    as _i1061;
 import '../features/services/domain/usecases/get_cancel_reason_request_use_case.dart'
     as _i433;
 import '../features/services/domain/usecases/get_cartable_cycle_list_use_case.dart'
@@ -131,8 +135,12 @@ import '../features/services/domain/usecases/get_home_service_request_by_id_use_
     as _i63;
 import '../features/services/domain/usecases/get_home_service_request_list_use_case.dart'
     as _i809;
+import '../features/services/domain/usecases/get_minimal_customer_info_use_case.dart'
+    as _i812;
 import '../features/services/domain/usecases/get_non_cooperation_list_use_case.dart'
     as _i707;
+import '../features/services/domain/usecases/get_reference_car_use_case.dart'
+    as _i639;
 import '../features/services/domain/usecases/get_relief_request_by_id_use_case.dart'
     as _i672;
 import '../features/services/domain/usecases/get_relief_request_list_use_case.dart'
@@ -153,6 +161,8 @@ import '../features/services/presentation/cartable_cycle_page/cubit/cartable_cyc
     as _i1029;
 import '../features/services/presentation/chassis_request_history_page/cubit/chassis_request_history_cubit.dart'
     as _i891;
+import '../features/services/presentation/complete_urgent_request_page/cubit/complete_urgent_request_cubit.dart'
+    as _i1038;
 import '../features/services/presentation/control_info_page/cubit/control_info_cubit.dart'
     as _i66;
 import '../features/services/presentation/emdadgar_invoice_page/cubit/emdadgar_invoice_cubit.dart'
@@ -545,6 +555,12 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i320.CancelServiceRequestUseCase>(
     () => _i320.CancelServiceRequestUseCase(gh<_i603.RequestRepository>()),
   );
+  gh.lazySingleton<_i364.CompleteAidUrgentRequestUseCase>(
+    () => _i364.CompleteAidUrgentRequestUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i1061.GetBasicDataUseCase>(
+    () => _i1061.GetBasicDataUseCase(gh<_i603.RequestRepository>()),
+  );
   gh.lazySingleton<_i433.GetCancelReasonRequestUseCase>(
     () => _i433.GetCancelReasonRequestUseCase(gh<_i603.RequestRepository>()),
   );
@@ -574,8 +590,14 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i809.GetHomeServiceRequestListUseCase>(
     () => _i809.GetHomeServiceRequestListUseCase(gh<_i603.RequestRepository>()),
   );
+  gh.lazySingleton<_i812.GetMinimalCustomerInfoUseCase>(
+    () => _i812.GetMinimalCustomerInfoUseCase(gh<_i603.RequestRepository>()),
+  );
   gh.lazySingleton<_i707.GetNonCooperationListUseCase>(
     () => _i707.GetNonCooperationListUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i639.GetReferenceCarUseCase>(
+    () => _i639.GetReferenceCarUseCase(gh<_i603.RequestRepository>()),
   );
   gh.lazySingleton<_i672.GetReliefRequestByIdUseCase>(
     () => _i672.GetReliefRequestByIdUseCase(gh<_i603.RequestRepository>()),
@@ -735,6 +757,15 @@ _i174.GetIt $initGetIt(
     () => _i856.SetCarSelectedKilometerUseCase(
       gh<_i74.UserRepository>(),
       gh<_i422.FetchCarSelectedUseCase>(),
+    ),
+  );
+  gh.factory<_i1038.CompleteUrgentRequestCubit>(
+    () => _i1038.CompleteUrgentRequestCubit(
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i1061.GetBasicDataUseCase>(),
+      gh<_i639.GetReferenceCarUseCase>(),
+      gh<_i812.GetMinimalCustomerInfoUseCase>(),
+      gh<_i364.CompleteAidUrgentRequestUseCase>(),
     ),
   );
   gh.factory<_i809.PreInvoiceCubit>(
