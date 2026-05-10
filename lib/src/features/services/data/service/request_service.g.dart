@@ -522,7 +522,7 @@ class _RequestService implements RequestService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/CancelReasonOrg/GetByFilterJson',
+            '/api/CancelReasonOrg/getCancelReasonList',
             queryParameters: queryParameters,
             data: _data,
           )

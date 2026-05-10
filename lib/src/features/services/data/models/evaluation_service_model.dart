@@ -3,6 +3,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/evaluati
 class EvaluationServiceModel extends EvaluationServiceEntity {
   EvaluationServiceModel({
     super.serviceId,
+    super.serviceTypeId,
     super.serviceTitle,
     super.serviceCode,
     super.isCustomerSelected,
@@ -24,11 +25,13 @@ class EvaluationServiceModel extends EvaluationServiceEntity {
     super.hasGaranty,
     super.garantyStartDate,
     super.isDeleted,
+    super.isSubscribedByNationalCode,
   });
 
   factory EvaluationServiceModel.fromJson(Map<String, dynamic> json) {
     return EvaluationServiceModel(
       serviceId: json['serviceId'],
+      serviceTypeId: json['serviceTypeId'],
       serviceTitle: json['serviceTitle'],
       serviceCode: json['serviceCode'],
       isCustomerSelected: json['isCustomerSelected'],
@@ -50,6 +53,7 @@ class EvaluationServiceModel extends EvaluationServiceEntity {
       hasGaranty: json['hasGaranty'] ?? false,
       garantyStartDate: json['garantyStartDate'],
       isDeleted: json['isDeleted'] ?? false,
+      isSubscribedByNationalCode: json['isSubscribedByNationalCode'] ?? false,
     );
   }
 
@@ -57,7 +61,7 @@ class EvaluationServiceModel extends EvaluationServiceEntity {
     return {
       "evaluationLabors": [],
       "serviceType": serviceType,
-      "serviceTypeId": serviceType,
+      "serviceTypeId": serviceTypeId,
       "serviceTypeTitle": serviceTypeTitle,
       "serviceId": serviceId,
       "serviceCode": serviceCode,
@@ -68,7 +72,7 @@ class EvaluationServiceModel extends EvaluationServiceEntity {
       "hasGaranty": hasGaranty,
       "garantyStartDate": garantyStartDate,
       "hasSubscription": hasSubscription,
-      "isSubscribedByNationalCode": (subscriptionId != null),
+      "isSubscribedByNationalCode": isSubscribedByNationalCode,
       "productId": productId,
       if (defectInfoId != null) "defectInfoId": defectInfoId,
     };

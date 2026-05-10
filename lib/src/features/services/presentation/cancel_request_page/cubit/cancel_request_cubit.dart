@@ -1,24 +1,34 @@
 import 'package:eks_sana_plus_org/src/common/constants/fetch_result_type.dart';
+import 'package:eks_sana_plus_org/src/common/constants/reason_type.dart';
 import 'package:eks_sana_plus_org/src/common/constants/request_status.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/emdadgar_service_detail_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/accept_evaluation_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/service_detail_for_evaluation_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/service_evaluation_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/accept_evaluation_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/get_service_detail_evaluation_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/post_evaluation_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/cancel_request_reason_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_info_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/evaluation_service_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/cancel_reason_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/cancel_request_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/distance_kilometer_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/get_emdadgar_followups_data_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/service_request_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/cancel_service_request_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/fetch_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_cancel_reason_request_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_distance_kilometer_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_emdadgar_followups_data_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_emdadgar_info_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_home_service_request_by_id_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_relief_request_by_id_use_case.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/invoice_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/use_case/customer_pre_invoice_on_the_fly_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter/material.dart';
@@ -32,19 +42,20 @@ part 'cancel_request_state.dart';
 @injectable
 class CancelRequestCubit extends Cubit<CancelRequestState> {
   CancelRequestCubit(
-    this._getCancelReasonRequestUseCase,
-    this._fetchSelectedRequestItemUseCase,
-    this._getReliefRequestByIdUseCase,
-    this._getHomeServiceRequestByIdUseCase,
-    this._getDistanceKilometerUseCase,
-    this._getEmdadgarInfoUseCase,
-    this._getServiceDetailEvaluationUseCase,
-    this._postEvaluationUseCase,
-    this._cancelServiceRequestUseCase,
-    this._customerPreInvoiceOnTheFlyUseCase,
-    this._acceptEvaluationUseCase,
+      this._getCancelReasonRequestUseCase,
+      this._fetchSelectedRequestItemUseCase,
+      this._getReliefRequestByIdUseCase,
+      this._getHomeServiceRequestByIdUseCase,
+      this._getDistanceKilometerUseCase,
+      this._getEmdadgarInfoUseCase,
+      this._getServiceDetailEvaluationUseCase,
+      this._postEvaluationUseCase,
+      this._cancelServiceRequestUseCase,
+      this._customerPreInvoiceOnTheFlyUseCase,
+      this._acceptEvaluationUseCase,
+      this._getEmdadgarFollowupsDataUseCase,
 
-  ) : super(const CancelRequestState.idle());
+      ) : super(const CancelRequestState.idle());
 
   final formKey = GlobalKey<FormState>();
   final validationNotifier = ValueNotifier<bool>(false);
@@ -59,13 +70,20 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
   final PostEvaluationUseCase _postEvaluationUseCase;
   final CancelServiceRequestUseCase _cancelServiceRequestUseCase;
   final CustomerPreInvoiceOnTheFlyUseCase _customerPreInvoiceOnTheFlyUseCase;
+
   final AcceptEvaluationUseCase _acceptEvaluationUseCase;
+  final GetEmdadgarFollowupsDataUseCase _getEmdadgarFollowupsDataUseCase;
+
+
 
   BaseRequestEntity? selectedRequest;
   EmdadgarInfoEntity? emdadgarInfo;
   List<CancelRequestReasonEntity> cancelRequestType =
-      <CancelRequestReasonEntity>[];
+  <CancelRequestReasonEntity>[];
 
+
+  EmdadgarServiceDetailEntity? emdadgarServiceDetailEntity;
+  int? emdadgarEvaluationId;
   final cancelRequestReasonNotifier =
   ValueNotifier<List<CancelRequestReasonEntity>>([]);
 
@@ -83,6 +101,8 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
   DateTime? get cancelDateTime => cancelDateTimeNotifier.value;
 
   final ValueNotifier<bool> isGettingDistanceKilometer = ValueNotifier(false);
+  final ValueNotifier<bool> showDateTimeSection = ValueNotifier(false);
+  final ValueNotifier<bool> showSecondDropDown = ValueNotifier(false);
 
   final TextEditingController kilometerController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
@@ -95,7 +115,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
 
 
   ///fake init
-  Future<void> init() async {
+ /* Future<void> init() async {
     // -----------------------------
     // 1) Selected Request (فیک)
     // -----------------------------
@@ -124,8 +144,8 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
     // 3) Cancel Reason List (فیک)
     // -----------------------------
     cancelRequestType = [
-      CancelRequestReasonEntity(id: 1, title: "عدم رضایت مشتری"),
-      CancelRequestReasonEntity(id: 2, title: "عدم نیاز به سرویس"),
+      CancelRequestReasonEntity(id: 1, title: "عدم رضایت مشتری", ),
+      CancelRequestReasonEntity(id: 2, title: "عدم نیاز به سرویس", detailType: 1, canCreateInvoice: true),
       CancelRequestReasonEntity(id: 3, title: "اشتباه در ثبت درخواست"),
     ];
 
@@ -162,9 +182,9 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
     // 8) در نهایت emit
     // -----------------------------
     _safeEmit(const CancelRequestState.loaded());
-  }
+  }*/
 
-  /*Future<void> init() async {
+  Future<void> init() async {
     final result = await _initializeData();
 
     switch (result) {
@@ -184,7 +204,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
         _emitError('نشست شما منقضی شده است. لطفا دوباره وارد شوید');
         break;
     }
-  }*/
+  }
 
   Future<FetchResultType> _initializeData() async {
     final selectedResult = await _fetchSelectedServiceRequest();
@@ -288,7 +308,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
     int? reasonId,
     required List<CancelRequestReasonEntity> list,
   }) async {
-    final param = CancelReasonParamEntity(reasonId: reasonId);
+    CancelReasonParamEntity param = getReasonParam(reasonId);
     final result = await _getCancelReasonRequestUseCase(param);
 
     FetchResultType fetchResult = FetchResultType.failure;
@@ -313,6 +333,15 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
     return fetchResult;
   }
 
+  CancelReasonParamEntity getReasonParam(int? reasonId) {
+
+    final requestStatus = RequestStatus.fromValue(selectedRequest?.requestStatus);
+    final param = CancelReasonParamEntity(reasonId: reasonId,
+    serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
+    reasonType: requestStatus.isBeforeDispatch ? ReasonType.beforeDispatch: ReasonType.afterDispatch);
+    return param;
+  }
+
   void _emitError([String? message]) {
     _safeEmit(
       CancelRequestState.error(
@@ -332,25 +361,86 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
     selectedCancelType.value = value;
 
     selectedCancelReason.value = null;
+    showSecondDropDown.value = (selectedCancelType.value?.detailType != null);
 
-    final fetchResult = await _loadCancelReasonList(
-      reasonId: value?.id,
-      list: cancelRequestReasonNotifier.value,
+    if (showSecondDropDown.value) {
+      final fetchResult = await _loadCancelReasonList(
+        reasonId: value?.id,
+        list: cancelRequestReasonNotifier.value,
+      );
+
+      switch (fetchResult) {
+        case FetchResultType.success:
+          break;
+        case FetchResultType.failure:
+          _emitError();
+          break;
+        case FetchResultType.connectionError:
+          _safeEmit(const CancelRequestState.connectionError());
+          break;
+        case FetchResultType.expireToken:
+          _emitError('نشست شما منقضی شده است. لطفا دوباره وارد شوید');
+          break;
+      }
+    }
+
+    showDateTimeSection.value =
+    (selectedCancelType.value?.canCreateInvoice == true);
+
+    if (showDateTimeSection.value) {
+      await getEmdadgarFollowupsData();
+      await getEmdadgarServiceDetail();
+    }
+
+    _safeEmit(CancelRequestState.loaded(
+      showSecondDropDown: isSecondDropDownVisible,
+      showDateTimeSection: isDateTimeSectionVisible,
+    ));
+  }
+
+  Future<void> getEmdadgarFollowupsData() async {
+    final param = GetEmdadgarFollowupsDataParamEntity(
+      serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
+      serviceRequestId: selectedRequest?.id,
+      needHaml: false,
     );
 
-    switch (fetchResult) {
-      case FetchResultType.success:
-        break;
-      case FetchResultType.failure:
-        _emitError();
-        break;
-      case FetchResultType.connectionError:
-        _safeEmit(const CancelRequestState.connectionError());
-        break;
-      case FetchResultType.expireToken:
-        _emitError('نشست شما منقضی شده است. لطفا دوباره وارد شوید');
-        break;
+    final result = await _getEmdadgarFollowupsDataUseCase(param);
+
+    result.whenOrNull(
+      success: (data, _, __) {
+        dispatchDateTimeNotifier.value = data.startTimeDate;
+        cancelDateTimeNotifier.value = data.arrivedTimeDate ?? DateTime.now();
+        isDistanceKilometerEditable.value = data.isKilometerEditable ?? true;
+      },
+      connectionError: () => emit(const CancelRequestState.connectionError()),
+      failure: (error, failures) => _emitError(failures ?? error.toString()),
+    );
+  }
+
+  Future<void> getEmdadgarServiceDetail() async {
+    int? defectId;
+    if (selectedRequest is ReliefRequestEntity) {
+      defectId = (selectedRequest as ReliefRequestEntity).defectId;
     }
+    final param = ServiceDetailForEvaluationParamEntity(
+      serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
+      serviceRequestId: selectedRequest?.id,
+      aidServiceRequestId: selectedRequest?.id,
+      emdadgarServiceCategoryId: 41,
+      emdadgarDefectInfoId: defectId,
+      evaluationCustomerKilometer: selectedRequest?.kilometer,
+    );
+
+    final result = await _getServiceDetailEvaluationUseCase(param);
+
+    result.whenOrNull(
+      success: (data, _, __) {
+        emdadgarServiceDetailEntity = data;
+      },
+      connectionError: () => emit(const CancelRequestState.connectionError()),
+      failure: (error, failures) => _emitError(failures ?? error.toString()),
+    );
   }
 
 
@@ -431,20 +521,119 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
     );
   }
 
-  bool get hasAssignedEmdadgar {
-    final request = selectedRequest;
-    if (request == null) return false;
+  bool get isSecondDropDownVisible =>
+      showSecondDropDown.value;
 
-    return !notAssignedStatuses.contains(
-        RequestStatus.fromValue(request.requestStatus));
-  }
+  bool get isDateTimeSectionVisible =>
+      showDateTimeSection.value;
 
   Future<void> submit() async {
     _safeEmit(const CancelRequestState.submitLoading());
 
-    await Future.delayed(const Duration(seconds: 2));
+    if (selectedCancelType.value?.canCreateInvoice == false) {
+      await submitCancelRequest();
+    } else {
+      final param = ServiceEvaluationParamEntity(
+          serviceType: selectedRequest?.serviceType,
+          serviceRequestId: selectedRequest?.id,
+          cancelReasonId: selectedCancelType.value?.id,
+          cancelReasonDetailId: selectedCancelReason.value?.id,
+          assignDate: dispatchDateTime,
+          endWorkDate: cancelDateTime,
+          distanceToCustomer: double.parse(kilometerController.text),
+          customerKilometer: selectedRequest?.kilometer,
 
-    _safeEmit(const CancelRequestState.submitSuccess());
+          description: descriptionController.text,
+          servicesAndLaborsAndPartsEvaluationPayload: ServicesAndLaborsAndPartsEvaluationPayloadEntity(
+            evaluationServices: [
+              EvaluationServiceEntity(
+                serviceType: emdadgarServiceDetailEntity?.serviceType,
+                serviceId: emdadgarServiceDetailEntity?.serviceId,
+                serviceTypeTitle: emdadgarServiceDetailEntity?.serviceTypeTitle,
+                defectInfoId: emdadgarServiceDetailEntity?.defectInfoId,
+                hasGaranty: emdadgarServiceDetailEntity?.hasGaranty ?? false,
+                hasSubscription: emdadgarServiceDetailEntity?.hasSubscription ??
+                    false,
+                isSubscribedByNationalCode: emdadgarServiceDetailEntity
+                    ?.isSubscribedByNationalCode,
+                serviceCategoryCode: emdadgarServiceDetailEntity
+                    ?.serviceCategoryCode,
+                serviceCategoryId: emdadgarServiceDetailEntity
+                    ?.serviceCategoryId,
+                serviceCategoryTitle: emdadgarServiceDetailEntity
+                    ?.serviceCategoryTitle,
+                serviceCode: emdadgarServiceDetailEntity?.serviceCode,
+                serviceTitle: emdadgarServiceDetailEntity?.serviceTitle,
+                serviceTypeId: emdadgarServiceDetailEntity?.serviceTypeId,
+              ),
+            ],
+          )
+
+      );
+      final result = await _postEvaluationUseCase(param);
+      result.whenOrNull(
+        success: (data, failures, resultCode) async {
+          if (data.id != null) {
+            emdadgarEvaluationId = data.id;
+            final param = AcceptEvaluationParamEntity(
+              serviceType: selectedRequest?.serviceType ??
+                  ServiceType.reliefService,
+              emdadgarEvaluationId: data.id,
+            );
+            final customerPreInvoiceResult = await _customerPreInvoiceOnTheFlyUseCase(
+                param);
+            customerPreInvoiceResult.whenOrNull(
+              success: (data, failures, resultCode) {
+                if (data != null) {
+                  _safeEmit(CancelRequestState.showPreInvoice(invoice: data));
+                }
+              },
+              failure: (error, failures) =>
+                  _emitError(failures ?? error.toString()),
+              connectionError: () =>
+                  emit(const CancelRequestState.connectionError()),
+            );
+          }
+        },
+        failure: (error, failures) => _emitError(failures ?? error.toString()),
+        connectionError: () => emit(const CancelRequestState.connectionError()),
+      );
+    }
+  }
+
+  Future<void> submitCancelRequest() async {
+    final param = CancelRequestParamEntity(
+      serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
+      serviceRequestId: selectedRequest?.id,
+      cancelReason: selectedCancelType.value?.id,
+      cancelReasonDetailId: selectedCancelReason.value?.id,
+      cancelDesc: descriptionController.text,
+      needCopy: false,
+    );
+    final result = await _cancelServiceRequestUseCase(param);
+
+    result.whenOrNull(
+      success: (data, failures, resultCode) {
+        _safeEmit(CancelRequestState.submitSuccess());
+      },
+      failure: (error, failures) => _emitError(failures ?? error.toString()),
+      connectionError: () => emit(const CancelRequestState.connectionError()),
+    );
+  }
+
+  Future<void> acceptEvaluation () async {
+    _safeEmit(CancelRequestState.submitLoading());
+    final param = AcceptEvaluationParamEntity(serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
+        emdadgarEvaluationId: emdadgarEvaluationId);
+
+    final result = await _acceptEvaluationUseCase(param);
+    result.whenOrNull(
+      success: (data, failures, resultCode) {
+        _safeEmit(CancelRequestState.submitSuccess());
+      },
+      failure: (error, failures) => _emitError(failures ?? error.toString()),
+      connectionError: () => emit(const CancelRequestState.connectionError()),
+    );
   }
 
   void _safeEmit(CancelRequestState state) {

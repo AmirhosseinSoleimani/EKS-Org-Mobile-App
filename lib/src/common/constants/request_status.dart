@@ -53,6 +53,36 @@ enum RequestStatus implements DropdownItem {
         return false;
     }
   }
+
+  bool get isBeforeDispatch {
+    switch (this) {
+      case RequestStatus.waitingPreInvoiceApproval:
+      case RequestStatus.waitingAddress:
+      case RequestStatus.waitingForDetails:
+      case RequestStatus.waitingAssignment:
+      case RequestStatus.reserved:
+        return true;
+
+      default:
+        return false;
+    }
+  }
+
+  bool get isAfterDispatch {
+    switch (this) {
+      case RequestStatus.dispatched:
+      case RequestStatus.onTheWay:
+      case RequestStatus.arrived:
+      case RequestStatus.inProgress:
+      case RequestStatus.completed:
+      case RequestStatus.closed:
+        return true;
+
+      default:
+        return false;
+    }
+  }
+
 }
 
 const Set<RequestStatus> notAssignedStatuses = {

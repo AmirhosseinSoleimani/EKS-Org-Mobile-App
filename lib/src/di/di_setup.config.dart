@@ -806,6 +806,18 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i296.PostEvaluationUseCase>(
     () => _i296.PostEvaluationUseCase(gh<_i122.EvaluationRepository>()),
   );
+  gh.factory<_i792.UpdateRequestCubit>(
+    () => _i792.UpdateRequestCubit(
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
+      gh<_i265.GetProvinceWithCityListUseCase>(),
+      gh<_i850.GetLocationDataUseCase>(),
+      gh<_i163.GetDefectsListUseCase>(),
+      gh<_i270.GetAidServicesListUseCase>(),
+      gh<_i180.UpdateServiceRequestUseCase>(),
+    ),
+  );
   gh.factory<_i872.CancelRequestCubit>(
     () => _i872.CancelRequestCubit(
       gh<_i433.GetCancelReasonRequestUseCase>(),
@@ -819,18 +831,7 @@ _i174.GetIt $initGetIt(
       gh<_i320.CancelServiceRequestUseCase>(),
       gh<_i335.CustomerPreInvoiceOnTheFlyUseCase>(),
       gh<_i531.AcceptEvaluationUseCase>(),
-    ),
-  );
-  gh.factory<_i792.UpdateRequestCubit>(
-    () => _i792.UpdateRequestCubit(
-      gh<_i376.FetchSelectedRequestItemUseCase>(),
-      gh<_i672.GetReliefRequestByIdUseCase>(),
-      gh<_i786.GetEmdadgarInfoUseCase>(),
-      gh<_i265.GetProvinceWithCityListUseCase>(),
-      gh<_i850.GetLocationDataUseCase>(),
-      gh<_i163.GetDefectsListUseCase>(),
-      gh<_i270.GetAidServicesListUseCase>(),
-      gh<_i180.UpdateServiceRequestUseCase>(),
+      gh<_i734.GetEmdadgarFollowupsDataUseCase>(),
     ),
   );
   return getIt;

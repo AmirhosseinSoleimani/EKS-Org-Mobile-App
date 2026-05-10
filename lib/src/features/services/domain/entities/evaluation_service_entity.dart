@@ -3,6 +3,7 @@ import 'package:eks_sana_plus_org/src/features/services/data/models/evaluation_s
 class EvaluationServiceEntity {
   const EvaluationServiceEntity({
     this.serviceId,
+    this.serviceTypeId,
     this.serviceTitle,
     this.serviceCode,
     this.isCustomerSelected,
@@ -24,12 +25,15 @@ class EvaluationServiceEntity {
     this.hasGaranty = false,
     this.garantyStartDate,
     this.isDeleted = false,
+    this.isSubscribedByNationalCode,
   });
 
   final int? serviceId;
+  final int? serviceTypeId;
   final String? serviceTitle;
   final String? serviceCode;
   final bool? isCustomerSelected;
+  final bool? isSubscribedByNationalCode;
   final bool isImageMandatory;
   final int? serviceCategoryId;
   final String? serviceCategoryTitle;
@@ -51,6 +55,7 @@ class EvaluationServiceEntity {
 
   EvaluationServiceEntity copyWith({
     int? serviceId,
+    int? serviceTypeId,
     String? serviceTitle,
     String? serviceCode,
     bool? isCustomerSelected,
@@ -72,9 +77,13 @@ class EvaluationServiceEntity {
     bool? hasGaranty,
     String? garantyStartDate,
     bool? isDeleted,
+    bool? isSubscribedByNationalCode,
   }) {
     return EvaluationServiceEntity(
       serviceId: serviceId ?? this.serviceId,
+      serviceTypeId: serviceTypeId ?? this.serviceTypeId,
+      isSubscribedByNationalCode: isSubscribedByNationalCode ??
+          this.isSubscribedByNationalCode,
       serviceTitle: serviceTitle ?? this.serviceTitle,
       serviceCode: serviceCode ?? this.serviceCode,
       isCustomerSelected: isCustomerSelected ?? this.isCustomerSelected,
@@ -101,6 +110,7 @@ class EvaluationServiceEntity {
   EvaluationServiceModel toModel() {
     return EvaluationServiceModel(
       serviceId: serviceId,
+        serviceTypeId: serviceTypeId,
       serviceTitle: serviceTitle,
       serviceCode: serviceCode,
       isCustomerSelected: isCustomerSelected,
@@ -122,6 +132,7 @@ class EvaluationServiceEntity {
       hasGaranty: hasGaranty,
       garantyStartDate: garantyStartDate,
       isDeleted: isDeleted,
+      isSubscribedByNationalCode: isSubscribedByNationalCode
     );
   }
 }

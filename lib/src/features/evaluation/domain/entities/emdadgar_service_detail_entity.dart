@@ -2,6 +2,8 @@ import 'package:eks_sana_plus_org/src/features/evaluation/data/models/emdadgar_s
 
 class EmdadgarServiceDetailEntity {
   final int? serviceType;
+  final int? serviceTypeId;
+  final int? defectInfoId;
   final String? serviceTypeTitle;
 
   final int? serviceCategoryId;
@@ -21,7 +23,9 @@ class EmdadgarServiceDetailEntity {
   final bool? needImage;
 
   const EmdadgarServiceDetailEntity({
+    this.defectInfoId,
     this.serviceType,
+    this.serviceTypeId,
     this.serviceTypeTitle,
     this.serviceCategoryId,
     this.serviceCategoryCode,
@@ -39,6 +43,8 @@ class EmdadgarServiceDetailEntity {
 
   EmdadgarServiceDetailEntity copyWith({
     int? serviceType,
+    int? serviceTypeId,
+    int? defectInfoId,
     String? serviceTypeTitle,
     int? serviceCategoryId,
     String? serviceCategoryCode,
@@ -54,7 +60,9 @@ class EmdadgarServiceDetailEntity {
     bool? needImage,
   }) {
     return EmdadgarServiceDetailEntity(
+      defectInfoId: defectInfoId ?? this.defectInfoId,
       serviceType: serviceType ?? this.serviceType,
+      serviceTypeId: serviceTypeId ?? this.serviceTypeId,
       serviceTypeTitle: serviceTypeTitle ?? this.serviceTypeTitle,
       serviceCategoryId: serviceCategoryId ?? this.serviceCategoryId,
       serviceCategoryCode: serviceCategoryCode ?? this.serviceCategoryCode,

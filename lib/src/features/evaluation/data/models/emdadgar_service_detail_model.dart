@@ -3,6 +3,7 @@ import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/emdadg
 class EmdadgarServiceDetailModel extends EmdadgarServiceDetailEntity {
   const EmdadgarServiceDetailModel({
     super.serviceType,
+    super.serviceTypeId,
     super.serviceTypeTitle,
     super.serviceCategoryId,
     super.serviceCategoryCode,
@@ -16,12 +17,14 @@ class EmdadgarServiceDetailModel extends EmdadgarServiceDetailEntity {
     super.isSubscribedByNationalCode,
     super.isImageMadatory,
     super.needImage,
+    super.defectInfoId,
   });
 
   factory EmdadgarServiceDetailModel.fromEntity(
       EmdadgarServiceDetailEntity entity) {
     return EmdadgarServiceDetailModel(
       serviceType: entity.serviceType,
+      serviceTypeId: entity.serviceTypeId,
       serviceTypeTitle: entity.serviceTypeTitle,
       serviceCategoryId: entity.serviceCategoryId,
       serviceCategoryCode: entity.serviceCategoryCode,
@@ -42,6 +45,7 @@ class EmdadgarServiceDetailModel extends EmdadgarServiceDetailEntity {
       Map<String, dynamic> json) {
     return EmdadgarServiceDetailModel(
       serviceType: json["serviceType"],
+      serviceTypeId: json["serviceTypeId"],
       serviceTypeTitle: json["serviceTypeTitle"],
       serviceCategoryId: json["serviceCategoryId"],
       serviceCategoryCode: json["serviceCategoryCode"],
@@ -55,6 +59,7 @@ class EmdadgarServiceDetailModel extends EmdadgarServiceDetailEntity {
       isSubscribedByNationalCode: json["isSubscribedByNationalCode"],
       isImageMadatory: json["isImageMadatory"],
       needImage: json["needImage"],
+      defectInfoId: json["defectInfoId"],
     );
   }
 }

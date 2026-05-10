@@ -3,11 +3,13 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/cancel_r
 import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/cubit/cancel_request_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/widgets/cancel_reason_dropdown.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/widgets/distance_kilometer_field.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/widgets/invoice_bottom_sheet_content.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/agent_info_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_status_section.dart';
+import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/invoice_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
@@ -18,6 +20,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_tex
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'widgets/cancel_submit_row_widget.dart';
 import 'widgets/date_time_picker_section.dart';
@@ -47,6 +50,10 @@ class _View extends StatelessWidget {
     return BlocListener<CancelRequestCubit, CancelRequestState>(
       listener: (context, state) {
         state.whenOrNull(
+          showPreInvoice: (invoice) {
+            _showInvoiceBottomSheet(context, invoice);
+          },
+
           error: (message) {
             BottomSheetMessage.showErrorWithAction(
               context: context,
@@ -63,12 +70,30 @@ class _View extends StatelessWidget {
               enableDrag: false,
             );
           },
+          submitSuccess: () => context.pop(),
         );
       },
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
         appBar: SimpleAppBar(title: "لغو درخواست"),
         body: _Body(),
+        bottomNavigationBar: Padding(
+            padding: const EdgeInsets.all(16),
+            child: BlocBuilder<CancelRequestCubit, CancelRequestState>(
+              builder: (context, state) {
+                final cubit = context.read<CancelRequestCubit>();
+                return state.maybeWhen(
+                  idle: () => const SizedBox.shrink(),
+                  loading: () => const SizedBox.shrink(),
+                  orElse: () =>
+                      CancelSubmitRowWidget(
+                        onSubmit: cubit.submit,
+                        onCancel: () => Navigator.pop(context),
+                      ),
+                );
+              },
+            )
+        ),
       ),
     );
   }
@@ -79,6 +104,7 @@ class _Body extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
     return BlocBuilder<CancelRequestCubit, CancelRequestState>(
       builder: (context, state) {
         final cubit = context.read<CancelRequestCubit>();
@@ -89,7 +115,10 @@ class _Body extends StatelessWidget {
               color: cubit.selectedRequest?.serviceType?.serviceColor,
             ),
           ),
-          orElse: () => const _LoadedView(),
+          orElse: () =>
+              _LoadedView(
+                  showSecondDropDown: cubit.isSecondDropDownVisible,
+                  showDateTimeSection: cubit.isDateTimeSectionVisible),
         );
       },
     );
@@ -97,7 +126,13 @@ class _Body extends StatelessWidget {
 }
 
 class _LoadedView extends StatelessWidget {
-  const _LoadedView();
+  final bool showSecondDropDown;
+  final bool showDateTimeSection;
+
+  const _LoadedView({
+    required this.showSecondDropDown,
+    required this.showDateTimeSection,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -147,7 +182,7 @@ class _LoadedView extends StatelessWidget {
                     onSelect: (item) => cubit.setSelectedCancelType(item),
                   ),
                   Space.h16,
-                  if (cubit.hasAssignedEmdadgar) ...[
+                  if (showSecondDropDown) ...[
                     CancelReasonDropdown<CancelRequestReasonEntity>(
                       label: "دلیل لغو",
                       defaultTitle: "انتخاب دلیل کنسلی",
@@ -162,7 +197,8 @@ class _LoadedView extends StatelessWidget {
                       onSelect: (item) => cubit.setSelectedCancelReason(item),
                     ),
                     Space.h16,
-
+                  ],
+                  if (showDateTimeSection) ...[
                     DateTimePickerSection(
                       dateLabel: 'تاریخ اعزام',
                       timeLabel: 'ساعت اعزام',
@@ -199,15 +235,26 @@ class _LoadedView extends StatelessWidget {
                 ],
               ),
             ),
-            Space.h16,
-            CancelSubmitRowWidget(
-              onSubmit: cubit.submit,
-              onCancel: () => Navigator.pop(context),
-            )
           ],
         ),
       ),
     );
   }
+}
+
+void _showInvoiceBottomSheet(BuildContext context, InvoiceEntity invoice) {
+  BottomSheetMessage.showCustom(
+    context: context,
+    isDismissible: true,
+    enableDrag: true,
+    actionWidget: CancelSubmitRowWidget(
+      onSubmit: context
+          .read<CancelRequestCubit>()
+          .acceptEvaluation,
+      onCancel: () => Navigator.pop(context),
+    ),
+    content: InvoiceBottomSheetContent(invoiceEntity: invoice),
+
+  );
 }
 
