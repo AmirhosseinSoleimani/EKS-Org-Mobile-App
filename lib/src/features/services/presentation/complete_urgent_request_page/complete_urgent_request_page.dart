@@ -25,8 +25,8 @@ import 'package:go_router/go_router.dart';
 import 'widgets/gender_selector_widget.dart';
 
 class CompleteUrgentRequestPage extends StatelessWidget {
-  static const path = "/cancel-request-page";
-  static const name = "cancel-request-page";
+  static const path = "/complete-urgent-request-page";
+  static const name = "complete-urgent-request-page";
 
   const CompleteUrgentRequestPage({super.key});
 
@@ -171,6 +171,7 @@ class _LoadedView extends StatelessWidget {
                     controller: cubit.chassisNumberController,
                     onActionTap: cubit.getReferenceCar,
                     labelText: "شماره شاسی",
+                    loadingListenable: cubit.isGettingReferenceCar,
                     hintText: "",
                   ),
                   _formElementGap(),
@@ -226,8 +227,9 @@ class _LoadedView extends StatelessWidget {
                   Space.h32,
                   ActionTextField(
                     controller: cubit.nationalCodeController,
+                    loadingListenable: cubit.isGettingCustomerInfo,
                     onActionTap: cubit.getUserInfo,
-                    labelText: "شماره شاسی",
+                    labelText: "کد ملی",
                     hintText: "",
                   ),
 

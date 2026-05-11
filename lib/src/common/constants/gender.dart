@@ -9,4 +9,11 @@ enum Gender {
   final String icon;
 
   const Gender(this.value, this.label, this.icon);
+
+  static Gender fromValue(int? value) {
+    return Gender.values.firstWhere(
+          (e) => e.value == value,
+      orElse: () => Gender.male,
+    );
+  }
 }

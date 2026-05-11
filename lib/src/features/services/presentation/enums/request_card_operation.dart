@@ -1,9 +1,11 @@
 import 'package:eks_sana_plus_org/src/common/constants/request_status.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/cancel_request_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cartable_cycle_page/cartable_cycle_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/chassis_request_history_page/chassis_request_history_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/complete_urgent_request_page/complete_urgent_request_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/control_info_page/control_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/emdadgar_invoice_page/emdadgar_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_history/evaluation_history_page.dart';
@@ -90,6 +92,12 @@ enum RequestCardOperation {
     icon: Icons.close,
     color: Color(0xFFbf0000),
     route: CancelRequestPage.path,
+  ),
+  completeUrgentRequest(
+    label: 'تکلیم درخواست اضظراری',
+    icon: Icons.open_in_new,
+    color: Color(0xFFbf0000),
+    route: CompleteUrgentRequestPage.path,
   );
 
   final String label;
@@ -134,6 +142,8 @@ extension OperationItemVisibility on RequestCardOperation {
           return true;
         }
         return false;
+      case RequestCardOperation.completeUrgentRequest:
+       return request is ReliefRequestEntity && (request.isUrgentRequest ?? false);
 
       default:
         return true;
