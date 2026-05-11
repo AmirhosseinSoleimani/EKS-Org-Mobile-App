@@ -1,15 +1,15 @@
-import 'package:eks_sana_plus_org/src/features/dashboard/domain/entities/server_date_time_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/features/server_date_time/domain/entities/date_time_entity.dart';
 
-class ServerDateTimeModel extends ServerDateTimeEntity {
-  ServerDateTimeModel({
+class DateTimeModel extends DateTimeEntity {
+  DateTimeModel({
     required super.milliseconds,
     required super.date,
     required super.time,
     required super.dateTime,
   });
 
-  factory ServerDateTimeModel.fromJson(Map<String, dynamic> json) {
-    return ServerDateTimeModel(
+  factory DateTimeModel.fromJson(Map<String, dynamic> json) {
+    return DateTimeModel(
       milliseconds: json['milliseconds'],
       date: json['date'],
       time: json['time'],

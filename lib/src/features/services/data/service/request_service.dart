@@ -10,9 +10,11 @@ import 'package:eks_sana_plus_org/src/features/services/data/models/distance_kil
 import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_followups_data_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/evaluation_history_item_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/follow_up_status_type_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/minimal_customer_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/non_cooperation_list_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/post_follow_up_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/reference_car_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/relief_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/request_status_history_model.dart';
@@ -130,6 +132,16 @@ abstract class RequestService {
   @POST('/api/CustomerViewAllOrg/GetMinimalCustomerInfo')
   Future<BaseSingleResponse<
       MinimalCustomerInfoModel?>> getMinimalCustomerInfo(
+      @Body() Map<String, dynamic> query);
+
+  @POST('/api/RequestFollowUpOrg/GetFollowUpResultStatusTypes')
+  Future<BaseListResponse<
+      FollowUpStatusTypeModel>> getFollowUpStatusTypes(
+      @Body() Map<String, dynamic> query);
+
+  @POST('/api/RequestFollowUpOrg/Post')
+  Future<BaseSingleResponse<
+      PostFollowUpResponseModel>> createFollowUp(
       @Body() Map<String, dynamic> query);
 
 }

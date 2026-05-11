@@ -45,20 +45,17 @@ import '../features/bottom_navigation_bar/domain/use_case/urgent_request_usecase
     as _i565;
 import '../features/bottom_navigation_bar/presentation/cubit/bottom_navigation_bar_cubit.dart'
     as _i336;
-import '../features/dashboard/data/data_sources/dashboard_report_data_source.dart'
-    as _i659;
-import '../features/dashboard/data/data_sources/indicator_report_data_source_impl.dart'
-    as _i720;
-import '../features/dashboard/data/repositories/dashboard_report_repository_impl.dart'
-    as _i971;
-import '../features/dashboard/data/service/dashboard_report_service.dart'
-    as _i585;
-import '../features/dashboard/domain/repositories/dashboard_report_repository.dart'
-    as _i135;
+import '../features/dashboard/data/data_sources/dashboard_data_source.dart'
+    as _i320;
+import '../features/dashboard/data/data_sources/dashboard_data_source_impl.dart'
+    as _i822;
+import '../features/dashboard/data/repositories/dashboard_repository_impl.dart'
+    as _i650;
+import '../features/dashboard/data/service/dashboard_service.dart' as _i953;
+import '../features/dashboard/domain/repositories/dashboard_repository.dart'
+    as _i602;
 import '../features/dashboard/domain/use_cases/get_dashboard_data_use_case.dart'
     as _i208;
-import '../features/dashboard/domain/use_cases/get_server_date_time_use_case.dart'
-    as _i228;
 import '../features/dashboard/presentation/cubit/dashboard_cubit.dart' as _i932;
 import '../features/evaluation/data/remote/data_sources/evaluation_remote_data_source.dart'
     as _i1023;
@@ -269,6 +266,18 @@ import '../shared/features/observe_network/domain/use_case/get_current_network_u
     as _i471;
 import '../shared/features/observe_network/domain/use_case/observe_network_use_case.dart'
     as _i1061;
+import '../shared/features/server_date_time/data/data_sources/date_time_info_data_source.dart'
+    as _i670;
+import '../shared/features/server_date_time/data/data_sources/indicator_report_data_source_impl.dart'
+    as _i940;
+import '../shared/features/server_date_time/data/repositories/dashboard_report_repository_impl.dart'
+    as _i258;
+import '../shared/features/server_date_time/data/service/date_time_service.dart'
+    as _i99;
+import '../shared/features/server_date_time/domain/repositories/date_time_info_repository.dart'
+    as _i489;
+import '../shared/features/server_date_time/domain/use_cases/get_server_date_time_use_case.dart'
+    as _i100;
 import '../shared/features/user/data/data_source/user_data_source.dart'
     as _i1039;
 import '../shared/features/user/data/data_source/user_data_source_impl.dart'
@@ -402,8 +411,8 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i626.AuthService>(() => _i626.AuthService(gh<_i361.Dio>()));
   gh.lazySingleton<_i438.MainService>(() => _i438.MainService(gh<_i361.Dio>()));
-  gh.lazySingleton<_i585.DashboardReportService>(
-    () => _i585.DashboardReportService(gh<_i361.Dio>()),
+  gh.lazySingleton<_i953.DashboardService>(
+    () => _i953.DashboardService(gh<_i361.Dio>()),
   );
   gh.lazySingleton<_i606.EvaluationService>(
     () => _i606.EvaluationService(gh<_i361.Dio>()),
@@ -421,10 +430,16 @@ _i174.GetIt $initGetIt(
     () => _i1036.AddressService(gh<_i361.Dio>()),
   );
   gh.lazySingleton<_i929.MapService>(() => _i929.MapService(gh<_i361.Dio>()));
+  gh.lazySingleton<_i99.DateTimeService>(
+    () => _i99.DateTimeService(gh<_i361.Dio>()),
+  );
   gh.lazySingleton<_i313.UserService>(() => _i313.UserService(gh<_i361.Dio>()));
   gh.lazySingleton<_i691.IndicatorReportDataSource>(
     () =>
         _i87.IndicatorReportDataSourceImpl(gh<_i140.IndicatorReportService>()),
+  );
+  gh.lazySingleton<_i320.DashboardDataSource>(
+    () => _i822.DashboardDataSourceImpl(gh<_i953.DashboardService>()),
   );
   gh.lazySingleton<_i227.IndicatorReportRepository>(
     () => _i282.IndicatorReportRepositoryImpl(
@@ -437,8 +452,8 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i854.MainRepository>(
     () => _i320.MainRepositoryImpl(gh<_i475.MainRemoteDataSource>()),
   );
-  gh.lazySingleton<_i659.DashboardDataSource>(
-    () => _i720.DashboardDataSourceImpl(gh<_i585.DashboardReportService>()),
+  gh.lazySingleton<_i602.DashboardRepository>(
+    () => _i650.DashboardRepositoryImpl(gh<_i320.DashboardDataSource>()),
   );
   gh.lazySingleton<_i296.ApplyHighAccuracyUseCase>(
     () => _i296.ApplyHighAccuracyUseCase(
@@ -458,6 +473,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i935.InvoiceDataSource>(
     () => _i981.InvoiceDataSourceImpl(gh<_i634.InvoiceService>()),
   );
+  gh.lazySingleton<_i670.DateTimeInfoDataSource>(
+    () => _i940.DateTimeInfoDataSourceImpl(gh<_i99.DateTimeService>()),
+  );
   gh.lazySingleton<_i971.MapDataSource>(
     () => _i583.MapDataSourceImpl(
       gh<_i929.MapService>(),
@@ -474,9 +492,6 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i565.UrgentRequestUseCase>(
     () => _i565.UrgentRequestUseCase(gh<_i854.MainRepository>()),
-  );
-  gh.lazySingleton<_i135.DashboardReportRepository>(
-    () => _i971.DashboardReportRepositoryImpl(gh<_i659.DashboardDataSource>()),
   );
   gh.lazySingleton<_i1016.RequestDataSource>(
     () => _i576.RequestDataSourceImpl(gh<_i483.RequestService>()),
@@ -502,12 +517,6 @@ _i174.GetIt $initGetIt(
     () =>
         _i16.ObserveNetworkRepositoryImpl(gh<_i333.ObserveNetworkDataSource>()),
   );
-  gh.lazySingleton<_i208.GetDashboardDataUseCase>(
-    () => _i208.GetDashboardDataUseCase(gh<_i135.DashboardReportRepository>()),
-  );
-  gh.lazySingleton<_i228.GetServerDateTimeUseCase>(
-    () => _i228.GetServerDateTimeUseCase(gh<_i135.DashboardReportRepository>()),
-  );
   gh.lazySingleton<_i471.GetCurrentNetworkStatusUseCase>(
     () => _i471.GetCurrentNetworkStatusUseCase(
       gh<_i422.ObserveNetworkRepository>(),
@@ -518,6 +527,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i74.UserRepository>(
     () => _i880.UserRepositoryImpl(gh<_i1039.UserDataSource>()),
+  );
+  gh.lazySingleton<_i489.DateTimeInfoRepository>(
+    () => _i258.DateTimeRepositoryImpl(gh<_i670.DateTimeInfoDataSource>()),
   );
   gh.lazySingleton<_i499.FetchProfileUseCase>(
     () => _i499.FetchProfileUseCase(gh<_i74.UserRepository>()),
@@ -617,6 +629,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i180.UpdateServiceRequestUseCase>(
     () => _i180.UpdateServiceRequestUseCase(gh<_i603.RequestRepository>()),
   );
+  gh.lazySingleton<_i100.GetServerDateTimeUseCase>(
+    () => _i100.GetServerDateTimeUseCase(gh<_i489.DateTimeInfoRepository>()),
+  );
   gh.factory<_i891.ChassisRequestHistoryCubit>(
     () => _i891.ChassisRequestHistoryCubit(
       gh<_i581.GetChassisRequestHistoryListUseCase>(),
@@ -624,6 +639,9 @@ _i174.GetIt $initGetIt(
       gh<_i672.GetReliefRequestByIdUseCase>(),
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
     ),
+  );
+  gh.lazySingleton<_i208.GetDashboardDataUseCase>(
+    () => _i208.GetDashboardDataUseCase(gh<_i602.DashboardRepository>()),
   );
   gh.lazySingleton<_i138.LogoutUseCase>(
     () => _i138.LogoutUseCase(
@@ -680,12 +698,6 @@ _i174.GetIt $initGetIt(
       gh<_i786.GetEmdadgarInfoUseCase>(),
     ),
   );
-  gh.factory<_i932.DashboardCubit>(
-    () => _i932.DashboardCubit(
-      gh<_i208.GetDashboardDataUseCase>(),
-      gh<_i228.GetServerDateTimeUseCase>(),
-    ),
-  );
   gh.factory<_i566.LoginCubit>(
     () => _i566.LoginCubit(
       gh<_i139.LoginUseCase>(),
@@ -695,6 +707,12 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i122.EvaluationRepository>(
     () =>
         _i903.EvaluationRepositoryImpl(gh<_i1023.EvaluationRemoteDataSource>()),
+  );
+  gh.factory<_i932.DashboardCubit>(
+    () => _i932.DashboardCubit(
+      gh<_i208.GetDashboardDataUseCase>(),
+      gh<_i100.GetServerDateTimeUseCase>(),
+    ),
   );
   gh.lazySingleton<_i216.FetchBaseUserInfoUseCase>(
     () => _i216.FetchBaseUserInfoUseCase(gh<_i74.UserRepository>()),

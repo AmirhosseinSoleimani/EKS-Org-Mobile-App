@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'dashboard_report_service.dart';
+part of 'date_time_service.dart';
 
 // dart format off
 
@@ -10,8 +10,8 @@ part of 'dashboard_report_service.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers,unused_element,unnecessary_string_interpolations,unused_element_parameter,avoid_unused_constructor_parameters,unreachable_from_main
 
-class _DashboardReportService implements DashboardReportService {
-  _DashboardReportService(this._dio, {this.baseUrl, this.errorLogger});
+class _DateTimeService implements DateTimeService {
+  _DateTimeService(this._dio, {this.baseUrl, this.errorLogger});
 
   final Dio _dio;
 
@@ -20,7 +20,7 @@ class _DashboardReportService implements DashboardReportService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<BaseSingleResponse<DashboardModel?>> getDashboardData(
+  Future<BaseSingleResponse<DateTimeModel?>> getServerDateTime(
     Map<String, dynamic> body,
   ) async {
     final _extra = <String, dynamic>{};
@@ -28,42 +28,7 @@ class _DashboardReportService implements DashboardReportService {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body);
-    final _options = _setStreamType<BaseSingleResponse<DashboardModel?>>(
-      Options(method: 'POST', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            '/api/IndexReportOrg/IndexDashboard',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseSingleResponse<DashboardModel?> _value;
-    try {
-      _value = BaseSingleResponse<DashboardModel?>.fromJson(
-        _result.data!,
-        (json) => json == null
-            ? null
-            : DashboardModel.fromJson(json as Map<String, dynamic>),
-      );
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options, response: _result);
-      rethrow;
-    }
-    return _value;
-  }
-
-  @override
-  Future<BaseSingleResponse<ServerDateTimeModel?>> getServerDateTime(
-    Map<String, dynamic> body,
-  ) async {
-    final _extra = <String, dynamic>{};
-    final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(body);
-    final _options = _setStreamType<BaseSingleResponse<ServerDateTimeModel?>>(
+    final _options = _setStreamType<BaseSingleResponse<DateTimeModel?>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -74,13 +39,13 @@ class _DashboardReportService implements DashboardReportService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseSingleResponse<ServerDateTimeModel?> _value;
+    late BaseSingleResponse<DateTimeModel?> _value;
     try {
-      _value = BaseSingleResponse<ServerDateTimeModel?>.fromJson(
+      _value = BaseSingleResponse<DateTimeModel?>.fromJson(
         _result.data!,
         (json) => json == null
             ? null
-            : ServerDateTimeModel.fromJson(json as Map<String, dynamic>),
+            : DateTimeModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);

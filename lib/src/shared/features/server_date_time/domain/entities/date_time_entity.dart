@@ -1,25 +1,25 @@
-import '../../data/models/server_date_time_model.dart';
+import '../../data/models/date_time_model.dart';
 
-class ServerDateTimeEntity {
+class DateTimeEntity {
   final int milliseconds;
   final String date;
   final String time;
   final String dateTime;
 
-  ServerDateTimeEntity({
+  DateTimeEntity({
     required this.milliseconds,
     required this.date,
     required this.time,
     required this.dateTime,
   });
 
-  ServerDateTimeEntity copyWith({
+  DateTimeEntity copyWith({
     int? milliseconds,
     String? date,
     String? time,
     String? dateTime,
   }) {
-    return ServerDateTimeEntity(
+    return DateTimeEntity(
       milliseconds: milliseconds ?? this.milliseconds,
       date: date ?? this.date,
       time: time ?? this.time,
@@ -27,8 +27,8 @@ class ServerDateTimeEntity {
     );
   }
 
-  ServerDateTimeModel toModel() {
-    return ServerDateTimeModel(
+  DateTimeModel toModel() {
+    return DateTimeModel(
       milliseconds: milliseconds,
       date: date,
       time: time,

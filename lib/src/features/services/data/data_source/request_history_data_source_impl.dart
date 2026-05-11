@@ -10,6 +10,7 @@ import 'package:eks_sana_plus_org/src/features/services/data/models/distance_kil
 import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_followups_data_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/evaluation_history_item_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/follow_up_status_type_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/minimal_customer_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/non_cooperation_list_model.dart';
@@ -17,6 +18,7 @@ import 'package:eks_sana_plus_org/src/features/services/data/models/params/cance
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/cancel_request_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/chassis_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/complete_urgent_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/create_follow_up_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/distance_kilometer_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/get_emdadgar_followups_data_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/get_reference_car_param_data.dart';
@@ -25,6 +27,7 @@ import 'package:eks_sana_plus_org/src/features/services/data/models/params/reque
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/request_operation_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/service_request_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/update_service_request_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/post_follow_up_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/reference_car_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/relief_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/request_status_history_model.dart';
@@ -145,5 +148,15 @@ class RequestDataSourceImpl extends RequestDataSource {
   Future<BaseSingleResponse<MinimalCustomerInfoModel?>> getMinimalCustomerInfo(
       MinimalCustomerInfoParamModel param) async =>
       await _service.getMinimalCustomerInfo(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<PostFollowUpResponseModel>> createFollowUp(
+      CreateFollowUpParamModel param) async =>
+      await _service.createFollowUp(param.toJson());
+
+  @override
+  Future<BaseListResponse<
+      FollowUpStatusTypeModel>> getFollowUpStatusTypes() async =>
+      await _service.getFollowUpStatusTypes({});
 
 }

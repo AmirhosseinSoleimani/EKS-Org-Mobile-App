@@ -9,6 +9,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/distance
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_followups_data_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/evaluation_history_item_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/follow_up_status_type_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/followup_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/minimal_customer_info_entity.dart';
@@ -17,6 +18,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/c
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/cancel_request_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/chassis_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/complete_urgent_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/create_follow_up_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/distance_kilometer_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/get_emdadgar_followups_data_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/get_reference_car_param_entity.dart';
@@ -25,6 +27,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/r
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_operation_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/service_request_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/update_service_request_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/post_follow_up_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/reference_car_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/request_status_history_entity.dart';
@@ -253,6 +256,26 @@ class RequestRepositoryImpl extends RequestRepository {
   Future<ApiResult<MinimalCustomerInfoEntity>> getMinimalCustomerInfo(MinimalCustomerInfoParamEntity param) async {
     try {
       final result = await _dataSource.getMinimalCustomerInfo(param.toModel());
+      return result.toApiResult();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<PostFollowUpResponseEntity>> createFollowUp(CreateFollowUpParamEntity param) async{
+    try {
+      final result = await _dataSource.createFollowUp(param.toModel());
+      return result.toApiResult();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<List<FollowUpStatusTypeEntity>>> getFollowUpStatusTypes()async {
+    try {
+      final result = await _dataSource.getFollowUpStatusTypes();
       return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);

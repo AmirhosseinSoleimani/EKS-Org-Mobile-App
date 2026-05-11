@@ -855,6 +855,77 @@ class _RequestService implements RequestService {
     return _value;
   }
 
+  @override
+  Future<BaseListResponse<FollowUpStatusTypeModel>> getFollowUpStatusTypes(
+    Map<String, dynamic> query,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(query);
+    final _options = _setStreamType<BaseListResponse<FollowUpStatusTypeModel>>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/api/RequestFollowUpOrg/GetFollowUpResultStatusTypes',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseListResponse<FollowUpStatusTypeModel> _value;
+    try {
+      _value = BaseListResponse<FollowUpStatusTypeModel>.fromJson(
+        _result.data!,
+        (json) =>
+            FollowUpStatusTypeModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseSingleResponse<PostFollowUpResponseModel>> createFollowUp(
+    Map<String, dynamic> query,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(query);
+    final _options =
+        _setStreamType<BaseSingleResponse<PostFollowUpResponseModel>>(
+          Options(method: 'POST', headers: _headers, extra: _extra)
+              .compose(
+                _dio.options,
+                '/api/RequestFollowUp/Post',
+                queryParameters: queryParameters,
+                data: _data,
+              )
+              .copyWith(
+                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+              ),
+        );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseSingleResponse<PostFollowUpResponseModel> _value;
+    try {
+      _value = BaseSingleResponse<PostFollowUpResponseModel>.fromJson(
+        _result.data!,
+        (json) =>
+            PostFollowUpResponseModel.fromJson(json as Map<String, dynamic>),
+      );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||
