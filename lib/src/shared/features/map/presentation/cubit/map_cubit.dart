@@ -304,7 +304,7 @@ class MapCubit extends Cubit<MapState> {
           )
       );
       result.whenOrNull(
-        success: (data, _, __) {
+        success: (data, _, _) {
           addressToLocationResponseEntity = data ?? const AddressToLocationResponseEntity();
           _safeEmit(const MapState.searchSuccess());
         },

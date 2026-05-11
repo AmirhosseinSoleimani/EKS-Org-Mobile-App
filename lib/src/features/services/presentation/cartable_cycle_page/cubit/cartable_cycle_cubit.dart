@@ -132,7 +132,7 @@ class CartableCycleCubit extends Cubit<CartableCycleState> {
     FetchResultType fetchResult = FetchResultType.failure;
 
     result.when(
-      success: (data, _, __) {
+      success: (data, _, _) {
         selectedBaseRequest = data;
         fetchResult = FetchResultType.success;
       },
@@ -161,7 +161,7 @@ class CartableCycleCubit extends Cubit<CartableCycleState> {
     FetchResultType fetchResult = FetchResultType.failure;
 
     result.when(
-      success: (data, _, __) {
+      success: (data, _, _) {
         emdadgarInfo = data;
         fetchResult = FetchResultType.success;
       },
@@ -219,7 +219,7 @@ class CartableCycleCubit extends Cubit<CartableCycleState> {
     );
 
     result.whenOrNull(
-      success: (data, _, __) {
+      success: (data, _, _) {
         if (data.isEmpty) {
           _hasMore = false;
         } else {

@@ -73,23 +73,23 @@ class BaseSingleResponse<T> extends BaseResponse {
   T? data;
 
   BaseSingleResponse({
-    List<String>? failures,
-    int? resultCode,
+    super.failures,
+    super.resultCode,
     this.data,
-  }) : super(failures: failures, resultCode: resultCode);
+  });
 
   factory BaseSingleResponse.fromJson(
       Map<String, dynamic> json, Function(Map<String, dynamic>) create) {
-    List<String>? _failures;
+    List<String>? failures;
     if (json["failures"] != null) {
-      _failures = (json["failures"] as List).map((e) => e.toString()).toList();
+      failures = (json["failures"] as List).map((e) => e.toString()).toList();
     } else if (json["Failures"] != null) {
-      _failures = (json["Failures"] as List).map((e) => e.toString()).toList();
+      failures = (json["Failures"] as List).map((e) => e.toString()).toList();
     } else {
-      _failures = [];
+      failures = [];
     }
     return BaseSingleResponse<T>(
-        failures: _failures,
+        failures: failures,
         resultCode: json["resultCode"] ?? json["ResultCode"],
         data: json['data'] != null
             ? create(json['data'])

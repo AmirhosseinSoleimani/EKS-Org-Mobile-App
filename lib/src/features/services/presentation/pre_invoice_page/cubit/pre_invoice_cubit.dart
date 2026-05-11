@@ -62,7 +62,7 @@ class PreInvoiceCubit extends Cubit<PreInvoiceState> {
         : await _getReliefRequestByIdUseCase(id);
 
     result.whenOrNull(
-      success: (data, _, __) {
+      success: (data, _, _) {
         selectedRequest = data;
       },
     );
@@ -98,7 +98,7 @@ class PreInvoiceCubit extends Cubit<PreInvoiceState> {
     if (!isClosed) emit(state);
   }
 
-  get isSubscription => selectedRequest?.isSubscription ?? false;
+  bool get isSubscription => selectedRequest?.isSubscription ?? false;
 
-  get isGuaranty => selectedRequest?.isGuaranty ?? false;
+  bool get isGuaranty => selectedRequest?.isGuaranty ?? false;
 }

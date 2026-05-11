@@ -30,7 +30,7 @@ extension PersianStringExtensions on String {
 
       return x;
     } else {
-      if (this.isEmpty) {
+      if (isEmpty) {
         return this;
       }
       var x = this;

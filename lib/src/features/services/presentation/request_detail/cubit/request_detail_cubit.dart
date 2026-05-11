@@ -188,7 +188,7 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
     final result = await _getEmdadgarInfoUseCase(param);
 
     result.whenOrNull(
-      success: (data, _, __) {
+      success: (data, _, _) {
         emdadgarInfo = data;
       },
     );

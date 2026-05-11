@@ -11,7 +11,6 @@ import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/params/r
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/province_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/repository/map_repository.dart';
 import 'package:injectable/injectable.dart';
-import 'package:location_platform_interface/location_platform_interface.dart';
 
 import '../../../../../services/network/network_state/result/api_result.dart';
 

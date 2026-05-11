@@ -148,7 +148,7 @@ class OnlineMapCubit extends Cubit<OnlineMapState> {
     FetchResultType fetchResult = FetchResultType.failure;
 
     result.when(
-      success: (data, _, __) {
+      success: (data, _, _) {
         selectedRequest = data;
         fetchResult = FetchResultType.success;
       },
@@ -176,7 +176,7 @@ class OnlineMapCubit extends Cubit<OnlineMapState> {
     FetchResultType fetchResult = FetchResultType.failure;
 
     result.when(
-      success: (data, _, __) {
+      success: (data, _, _) {
         emdadgarInfo = data;
         fetchResult = FetchResultType.success;
         // _startPolling();

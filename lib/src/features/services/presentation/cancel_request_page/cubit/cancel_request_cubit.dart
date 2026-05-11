@@ -258,7 +258,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
     FetchResultType fetchResult = FetchResultType.failure;
 
     result.when(
-      success: (data, _, __) {
+      success: (data, _, _) {
         selectedRequest = data;
         fetchResult = FetchResultType.success;
       },
@@ -286,7 +286,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
     FetchResultType fetchResult = FetchResultType.failure;
 
     result.when(
-      success: (data, _, __) {
+      success: (data, _, _) {
         emdadgarInfo = data;
         fetchResult = FetchResultType.success;
       },
@@ -314,7 +314,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
     FetchResultType fetchResult = FetchResultType.failure;
 
     result.when(
-      success: (data, _, __) {
+      success: (data, _, _) {
         list.clear();
         list.addAll(data);
         fetchResult = FetchResultType.success;
@@ -408,7 +408,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
     final result = await _getEmdadgarFollowupsDataUseCase(param);
 
     result.whenOrNull(
-      success: (data, _, __) {
+      success: (data, _, _) {
         dispatchDateTimeNotifier.value = data.startTimeDate;
         cancelDateTimeNotifier.value = data.arrivedTimeDate ?? DateTime.now();
         isDistanceKilometerEditable.value = data.isKilometerEditable ?? true;
@@ -435,7 +435,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
     final result = await _getServiceDetailEvaluationUseCase(param);
 
     result.whenOrNull(
-      success: (data, _, __) {
+      success: (data, _, _) {
         emdadgarServiceDetailEntity = data;
       },
       connectionError: () => emit(const CancelRequestState.connectionError()),
@@ -460,7 +460,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
       final result = await _getDistanceKilometerUseCase(param);
 
       result.whenOrNull(
-        success: (data, _, __) {
+        success: (data, _, _) {
           if (data.distanceKilometer == null) return;
           kilometerController.text = data.distanceKilometer.toString();
           isDistanceKilometerEditable.value =

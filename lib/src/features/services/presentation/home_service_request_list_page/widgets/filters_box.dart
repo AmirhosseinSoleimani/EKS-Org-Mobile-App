@@ -63,7 +63,7 @@ class FiltersBox extends StatelessWidget {
             /// STATUS FILTER
             ValueListenableBuilder(
               valueListenable: cubit.selectedStatusNotifier,
-              builder: (_, status, __) {
+              builder: (_, status, _) {
                 return FilterButton(
                   title: status?.label ?? "وضعیت",
                   expand: true,
@@ -90,7 +90,7 @@ class FiltersBox extends StatelessWidget {
         /// TIME PERIOD
         ValueListenableBuilder(
           valueListenable: cubit.selectedTimePeriodNotifier,
-          builder: (_, period, __) {
+          builder: (_, period, _) {
             return FilterButton(
               title: period.label,
               expand: true,

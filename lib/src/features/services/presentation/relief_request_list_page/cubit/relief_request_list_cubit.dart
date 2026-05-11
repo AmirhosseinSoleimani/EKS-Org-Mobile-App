@@ -58,7 +58,7 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
   final cityController = TextEditingController();
   final provinceController = TextEditingController();
 
-  get requestCount => _totalCount;
+  int get requestCount => _totalCount;
 
   void setSelectedStatus(RequestStatus status) {
     _selectedStatusNotifier.value = status;
@@ -78,7 +78,7 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
     final result = await _getReliefRequestListUseCase(param);
 
     result.whenOrNull(
-      success: (data, _, __) {
+      success: (data, _, _) {
         _totalCount = data.totalCount;
         _items.addAll(data.items);
         _safeEmit(const ReliefRequestListState.loaded());
@@ -110,7 +110,7 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
     final param = _buildFilterParam();
     final result = await _getReliefRequestListUseCase(param);
     result.whenOrNull(
-      success: (data, _, __) {
+      success: (data, _, _) {
         _totalCount = data.totalCount;
         _items.addAll(data.items);
 

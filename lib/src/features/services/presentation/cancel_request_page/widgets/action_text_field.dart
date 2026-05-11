@@ -40,7 +40,7 @@ class ActionTextField extends StatelessWidget {
     if (readOnlyListenable != null) {
       return ValueListenableBuilder<bool>(
         valueListenable: readOnlyListenable!,
-        builder: (_, readOnlyValue, __) {
+        builder: (_, readOnlyValue, _) {
           return _buildTextField(readOnlyValue);
         },
       );
@@ -59,7 +59,7 @@ class ActionTextField extends StatelessWidget {
       suffixIcon: loadingListenable != null
           ? ValueListenableBuilder<bool>(
         valueListenable: loadingListenable!,
-        builder: (_, loading, __) {
+        builder: (_, loading, _) {
           return _buildAction(loading);
         },
       )

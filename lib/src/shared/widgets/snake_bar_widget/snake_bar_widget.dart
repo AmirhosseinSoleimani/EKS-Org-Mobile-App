@@ -10,7 +10,6 @@ class SnakeBarWidget {
     required Color? textColor,
     Duration duration = DurationConstant.d4000,
     int? maxLines,
-    IconData? leadingIcon,
     EdgeInsets? margin,
     SnackBarBehavior? snackBarBehavior
   }) {

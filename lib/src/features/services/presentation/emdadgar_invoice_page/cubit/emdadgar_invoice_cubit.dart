@@ -58,7 +58,7 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
         : await _getReliefRequestByIdUseCase(id);
 
     result.whenOrNull(
-      success: (data, _, __) {
+      success: (data, _, _) {
         selectedRequest = data;
       },
     );
@@ -95,7 +95,7 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
     if (!isClosed) emit(state);
   }
 
-  get isSubscription => selectedRequest?.isSubscription ?? false;
+  bool get isSubscription => selectedRequest?.isSubscription ?? false;
 
-  get isGuaranty => selectedRequest?.isGuaranty ?? false;
+  bool get isGuaranty => selectedRequest?.isGuaranty ?? false;
 }

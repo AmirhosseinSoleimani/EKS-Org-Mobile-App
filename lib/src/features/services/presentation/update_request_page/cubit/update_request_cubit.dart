@@ -378,7 +378,7 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
     FetchResultType fetchResult = FetchResultType.failure;
 
     result.when(
-      success: (data, _, __) {
+      success: (data, _, _) {
         emdadgarInfo = data;
         fetchResult = FetchResultType.success;
       },
@@ -402,7 +402,7 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
     FetchResultType fetchResult = FetchResultType.failure;
 
     result.when(
-      success: (data, _, __) {
+      success: (data, _, _) {
         provinceList = data;
         selectedProvince.value = provinceList
             .where((element) => element.provinceId == selectedRequest?.id)
@@ -436,7 +436,7 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
     FetchResultType fetchResult = FetchResultType.failure;
 
     result.when(
-      success: (data, _, __) {
+      success: (data, _, _) {
         locationData.value = data;
         fetchResult = FetchResultType.success;
       },
@@ -460,7 +460,7 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
     FetchResultType fetchResult = FetchResultType.failure;
 
     result.when(
-      success: (data, _, __) {
+      success: (data, _, _) {
         defectList = data;
         selectedDefect.value = defectList
             .where((element) => element.id == selectedRequest?.defectId)
@@ -497,7 +497,7 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
     FetchResultType fetchResult = FetchResultType.failure;
 
     result.when(
-      success: (data, _, __) {
+      success: (data, _, _) {
         serviceResponseEntity = data;
 
         selectedService.value = serviceResponseEntity?.emdadServices
@@ -547,7 +547,7 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
     FetchResultType fetchResult = FetchResultType.failure;
 
     result.when(
-      success: (data, _, __) {
+      success: (data, _, _) {
         fetchResult = FetchResultType.success;
       },
       failure: (_, msg) {

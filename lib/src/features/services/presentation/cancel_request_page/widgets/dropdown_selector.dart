@@ -29,7 +29,7 @@ class DropdownSelector<T extends DropdownItem> extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder<T?>(
       valueListenable: selectedNotifier,
-      builder: (_, selectedItem, __) {
+      builder: (_, selectedItem, _) {
         final title = isLoading
             ? "در حال بارگذاری..."
             : selectedItem != null

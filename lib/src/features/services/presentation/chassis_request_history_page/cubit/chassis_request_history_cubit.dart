@@ -62,7 +62,7 @@ class ChassisRequestHistoryCubit extends Cubit<ChassisRequestHistoryState> {
         : await _getReliefRequestByIdUseCase(id);
 
     result.whenOrNull(
-      success: (data, _, __) {
+      success: (data, _, _) {
         selectedRequest = data;
       },
     );

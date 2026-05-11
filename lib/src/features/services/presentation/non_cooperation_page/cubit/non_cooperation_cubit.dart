@@ -107,7 +107,7 @@ class NonCooperationCubit extends Cubit<NonCooperationState> {
     FetchResultType fetchResult = FetchResultType.failure;
 
     result.when(
-      success: (data, _, __) {
+      success: (data, _, _) {
         selectedBaseRequest = data;
         fetchResult = FetchResultType.success;
       },
@@ -141,7 +141,7 @@ class NonCooperationCubit extends Cubit<NonCooperationState> {
     );
     FetchResultType fetchResult = FetchResultType.failure;
     result.when(
-      success: (data, _, __) {
+      success: (data, _, _) {
         if (data != null) {
           items.addAll(data.records);
 

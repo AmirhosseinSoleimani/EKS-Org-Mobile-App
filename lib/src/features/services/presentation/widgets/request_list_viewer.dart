@@ -65,7 +65,7 @@ class _RequestListViewerState extends State<RequestListViewer> {
       controller: _controller,
       padding: const EdgeInsets.all(16),
       itemCount: itemCount + 1,
-      separatorBuilder: (_, __) => const SizedBox(height: 12),
+      separatorBuilder: (_, _) => const SizedBox(height: 12),
       itemBuilder: (context, index) {
         if (index == 0 && widget.totalCount > 0) {
           return const SizedBox();

@@ -71,7 +71,7 @@ class RequestStatusHistoryCubit
             : await _getReliefRequestByIdUseCase(id);
 
     result.whenOrNull(
-      success: (data, _, __) {
+      success: (data, _, _) {
         selectedRequest = data;
       },
     );
@@ -86,7 +86,7 @@ class RequestStatusHistoryCubit
     final result = await _getEmdadgarInfoUseCase(param);
 
     result.whenOrNull(
-      success: (data, _, __) {
+      success: (data, _, _) {
         emdadgarInfo = data;
       },
     );

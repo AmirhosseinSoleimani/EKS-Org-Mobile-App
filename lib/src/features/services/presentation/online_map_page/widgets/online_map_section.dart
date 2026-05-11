@@ -14,7 +14,7 @@ class OnlineMapSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<OnlineMapCubit, OnlineMapState>(
-      buildWhen: (_, __) => true,
+      buildWhen: (_, _) => true,
       builder: (context, state) {
         final cubit = context.read<OnlineMapCubit>();
 

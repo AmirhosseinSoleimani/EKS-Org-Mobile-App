@@ -1,10 +1,8 @@
 import 'package:eks_sana_plus_org/src/features/authentication/presentation/login/cubit/login_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/authentication/presentation/login/cubit/login_state.dart';
-import 'package:eks_sana_plus_org/src/features/dashboard/presentation/dashboard_page.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/inkwell_button_widget/inkwell_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 class SubmitButtonWidget extends StatelessWidget {
   final GlobalKey<FormState> formKey;
@@ -18,7 +16,7 @@ class SubmitButtonWidget extends StatelessWidget {
       builder: (context, isLoading) {
         return ValueListenableBuilder<bool>(
           valueListenable: cubit.validationNotifier,
-          builder: (_, isValid, __) {
+          builder: (_, isValid, _) {
             final canSubmit = !isLoading && isValid;
             return InkwellButtonWidget(
               onTap:()=> cubit.login() /*canSubmit ? () {

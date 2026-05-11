@@ -1,7 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:eks_sana_plus_org/src/features/authentication/data/models/login_response_model.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
-import 'package:eks_sana_plus_org/src/shared/features/user/data/models/user_model.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:injectable/injectable.dart';
 

@@ -3,16 +3,11 @@ import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/params/r
 
 class RouteParamModel extends RouteParamEntity {
   RouteParamModel({
-    required LocationParamModel start,
-    required LocationParamModel destination,
-    required bool includeLegs,
-    required bool includeStepsPoints,
-  }) : super(
-    start: start,
-    destination: destination,
-    includeLegs: includeLegs,
-    includeStepsPoints: includeStepsPoints,
-  );
+    required LocationParamModel super.start,
+    required LocationParamModel super.destination,
+    required super.includeLegs,
+    required super.includeStepsPoints,
+  });
 
   factory RouteParamModel.fromJson(Map<String, dynamic> json) {
     return RouteParamModel(

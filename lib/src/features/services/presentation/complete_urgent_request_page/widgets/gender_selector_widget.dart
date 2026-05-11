@@ -21,7 +21,7 @@ class GenderSelectorWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ValueListenableBuilder<Gender?>(
       valueListenable: selectedListenable,
-      builder: (_, selected, __) {
+      builder: (_, selected, _) {
         return Row(
           children: [
             Expanded(

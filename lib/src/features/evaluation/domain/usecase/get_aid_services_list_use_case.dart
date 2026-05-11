@@ -1,4 +1,3 @@
-import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/defect_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/services_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/service_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/repositories/evaluation_repository.dart';

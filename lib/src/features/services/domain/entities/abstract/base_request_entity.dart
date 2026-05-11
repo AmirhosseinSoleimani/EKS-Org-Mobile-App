@@ -76,7 +76,7 @@ abstract class BaseRequestEntity {
   final String? emRepresentationName;
   final String? emRepresentationCode;
 
-  get isHomeService => serviceType == ServiceType.homeService;
+  bool get isHomeService => serviceType == ServiceType.homeService;
 
   const BaseRequestEntity({
     this.serviceType,

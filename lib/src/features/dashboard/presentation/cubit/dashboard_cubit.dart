@@ -57,7 +57,7 @@ class DashboardCubit extends Cubit<DashboardState> {
       success: (data, failures, code) {
         dateValue = _safeParseDate(data?.date) ?? now;
       },
-      failure: (_, __) => dateValue = now,
+      failure: (_, _) => dateValue = now,
       connectionError: () => dateValue = now,
       expireToken: () => dateValue = now,
     );

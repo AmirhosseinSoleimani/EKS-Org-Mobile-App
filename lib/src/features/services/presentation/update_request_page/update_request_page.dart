@@ -162,7 +162,7 @@ class _LoadedView extends StatelessWidget {
                   Space.h32,
                   ValueListenableBuilder<DefectEntity?>(
                     valueListenable: cubit.selectedDefect,
-                    builder: (_, selectedDefect, __) {
+                    builder: (_, selectedDefect, _) {
                       return SizedBox(
                         height: 52,
                         child: FilterButton(
@@ -244,7 +244,7 @@ class _LoadedView extends StatelessWidget {
 
                       return ValueListenableBuilder<EmdadServiceEntity?>(
                         valueListenable: cubit.selectedService,
-                        builder: (context, selectedValue, __) {
+                        builder: (context, selectedValue, _) {
                           return Column(
                             children: [
                               for (var service in services) ...[
@@ -333,7 +333,7 @@ class _LoadedView extends StatelessWidget {
                   Space.h24,
                   ValueListenableBuilder<ProvinceEntity?>(
                     valueListenable: cubit.selectedProvince,
-                    builder: (_, selectedDefect, __) {
+                    builder: (_, selectedDefect, _) {
                       return SizedBox(
                         height: 52,
                         child: FilterButton(

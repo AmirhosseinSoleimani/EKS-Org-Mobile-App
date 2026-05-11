@@ -9,7 +9,6 @@ import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/map_requ
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/online_route_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/params/route_param_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/province_entity.dart';
-import 'package:location/location.dart';
 
 abstract class MapRepository {
   Future<ApiResult<AddressToLocationResponseEntity?>> fetchAddressToLocation(MapRequestEntity? entity);

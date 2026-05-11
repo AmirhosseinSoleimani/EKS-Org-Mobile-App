@@ -53,7 +53,7 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
   int _totalCount = 0;
   bool _isLoadingMore = false;
 
-  get requestCount => _totalCount;
+  int get requestCount => _totalCount;
 
   bool get hasMore => requestList.length < _totalCount;
 
@@ -106,7 +106,7 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
     final param = _buildFilterParam();
     final result = await _getHomeServiceRequestListUseCase(param);
     result.whenOrNull(
-      success: (data, _, __) {
+      success: (data, _, _) {
         _totalCount = data.totalCount;
         requestList.addAll(data.items);
 

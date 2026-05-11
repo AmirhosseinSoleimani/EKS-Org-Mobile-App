@@ -30,7 +30,7 @@ class DropDownMapItemsWidget extends StatelessWidget {
         valueListenable: selectedValueNotifier,
         builder: (context, selectedValue, child) {
           return DropdownButtonFormField<String>(
-            value: selectedValue,
+            initialValue: selectedValue,
             decoration: InputDecoration(
               labelText: (mandatory ?? false) ? "$labelText *" : labelText,
               hintText: 'یک گزینه را انتخاب کنید',

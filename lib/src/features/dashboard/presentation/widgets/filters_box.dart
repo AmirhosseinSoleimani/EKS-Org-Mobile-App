@@ -20,10 +20,10 @@ class FiltersBox extends StatelessWidget {
       filters: [
         ValueListenableBuilder(
           valueListenable: cubit.selectedFromDateNotifier,
-          builder: (_, fromDate, __) {
+          builder: (_, fromDate, _) {
             return ValueListenableBuilder(
               valueListenable: cubit.selectedToDateNotifier,
-              builder: (_, toDate, __) {
+              builder: (_, toDate, _) {
                 return FilterButton(
                   title: fromDate != null || toDate != null
                       ? "تاریخ انتخاب شده"
@@ -49,7 +49,7 @@ class FiltersBox extends StatelessWidget {
         ),
         ValueListenableBuilder(
           valueListenable: cubit.selectedServiceTypeNotifier,
-          builder: (_, serviceType, __) {
+          builder: (_, serviceType, _) {
             return FilterButton(
               title: serviceType.label,
               expand: true,

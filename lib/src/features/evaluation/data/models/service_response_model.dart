@@ -1,7 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/defect_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/emdad_service_model.dart';
-import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/defect_info_entity.dart';
-import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/emdad_service_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/service_response_entity.dart';
 
 class ServiceResponseModel extends ServiceResponseEntity {
@@ -12,9 +10,9 @@ class ServiceResponseModel extends ServiceResponseEntity {
     required super.name,
     required super.chassisNo,
 
-    required List<EmdadServiceEntity> super.emdadServices,
+    required super.emdadServices,
 
-    required DefectInfoEntity super.defectInfo,
+    required super.defectInfo,
   });
 
   factory ServiceResponseModel.fromJson(Map<String, dynamic> json) {

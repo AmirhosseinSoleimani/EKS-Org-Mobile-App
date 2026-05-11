@@ -44,6 +44,7 @@ class ReliefRequestEntity extends BaseRequestEntity {
   final String? emdadgarAssignDistanceTitle;
   final String? emdadgarAssignDurationTitle;
 
+  @override
   final String? assignDate;
   final String? assignTime;
 

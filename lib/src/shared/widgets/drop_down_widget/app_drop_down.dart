@@ -18,7 +18,7 @@ class AppDropdown<T> extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return DropdownButtonFormField<DropdownItem<T>>(
-      value: value,
+      initialValue: value,
       onChanged: onChanged,
       icon: const Icon(Icons.keyboard_arrow_down),
       decoration: InputDecoration(

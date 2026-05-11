@@ -37,9 +37,12 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
   final String? emdadServiceCategoryTitle;
   final String? emdadgarName;
 
+  @override
   final String? agencyName;
+  @override
   final String? agencyCode;
 
+  @override
   final String? requestDateTime;
   final String? requestDayTime;
   final bool? vip;

@@ -27,12 +27,12 @@ class InvoiceBottomSheetContent extends StatelessWidget {
             LaborInvoiceWidget.homeService(entity: invoiceEntity.laborInvoice),
           const SizedBox(height: 16),
           if (invoiceEntity.partInvoice?.partReception?.isNotEmpty ?? false)
-            PartInvoiceWidget.homeService(entity: invoiceEntity?.partInvoice),
+            PartInvoiceWidget.homeService(entity: invoiceEntity.partInvoice),
           const SizedBox(height: 16),
           if (invoiceEntity.otherCosts?.otherCostReceptions?.isNotEmpty ??
               false)
             OtherCostInvoiceWidget.homeService(
-              entity: invoiceEntity?.otherCosts,
+              entity: invoiceEntity.otherCosts,
             ),
         ],
       ),

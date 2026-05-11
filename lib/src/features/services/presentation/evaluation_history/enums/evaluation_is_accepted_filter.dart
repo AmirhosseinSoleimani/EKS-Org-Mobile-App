@@ -6,6 +6,7 @@ enum EvaluationIsAcceptedFilter implements DropdownItem {
   accepted('1', 'تایید شده‌ها'),
   all('2', 'همه');
 
+  @override
   final String value;
 
   @override

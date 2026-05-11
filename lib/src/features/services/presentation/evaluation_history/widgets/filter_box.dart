@@ -16,7 +16,7 @@ class FilterBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return  ValueListenableBuilder(
       valueListenable: cubit.selectedEvaluationIsisAcceptedNotifier,
-      builder: (_, period, __) {
+      builder: (_, period, _) {
         return FilterButton(
           title: period.label,
           expand: true,

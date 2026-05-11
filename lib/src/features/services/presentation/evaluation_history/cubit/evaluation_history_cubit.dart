@@ -116,7 +116,7 @@ class EvaluationHistoryCubit extends Cubit<EvaluationHistoryState> {
     );
     FetchResultType fetchResult = FetchResultType.failure;
     result.when(
-      success: (data, _, __) {
+      success: (data, _, _) {
         _fullItems.clear();
         _fullItems.addAll(data);
         fetchResult = FetchResultType.success;
@@ -154,7 +154,7 @@ class EvaluationHistoryCubit extends Cubit<EvaluationHistoryState> {
     FetchResultType fetchResult = FetchResultType.failure;
 
     result.when(
-      success: (data, _, __) {
+      success: (data, _, _) {
         selectedBaseRequest = data;
         fetchResult = FetchResultType.success;
       },
@@ -183,7 +183,7 @@ class EvaluationHistoryCubit extends Cubit<EvaluationHistoryState> {
     FetchResultType fetchResult = FetchResultType.failure;
 
     result.when(
-      success: (data, _, __) {
+      success: (data, _, _) {
         emdadgarInfo = data;
         fetchResult = FetchResultType.success;
       },

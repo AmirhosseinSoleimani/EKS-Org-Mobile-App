@@ -70,22 +70,14 @@ class LegModel extends LegEntity {
 
 class StepModel extends StepEntity {
   StepModel({
-    required List<List<double>> points,
-    required String travelMode,
-    required double traffic,
-    required DistanceDurationModel distance,
-    required DistanceDurationModel duration,
-    required LocationModel start,
-    required LocationModel destination,
-  }) : super(
-    points: points,
-    travelMode: travelMode,
-    traffic: traffic,
-    distance: distance,
-    duration: duration,
-    start: start,
-    destination: destination,
-  );
+    required super.points,
+    required super.travelMode,
+    required super.traffic,
+    required DistanceDurationModel super.distance,
+    required DistanceDurationModel super.duration,
+    required LocationModel super.start,
+    required LocationModel super.destination,
+  });
 
   factory StepModel.fromJson(Map<String, dynamic> json) {
     return StepModel(

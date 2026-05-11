@@ -38,7 +38,7 @@ class _DropDownListItemsWidgetState extends State<DropDownListItemsWidget> {
       height: AppSize.s60,
       child: DropdownButtonFormField<String>(
         dropdownColor: ColorLightManager.surfaceBright,
-        value: selectedValue ?? 'لطفا یک گزینه را انتخاب کنید',
+        initialValue: selectedValue ?? 'لطفا یک گزینه را انتخاب کنید',
         decoration: InputDecoration(
           labelText: (widget.mandatory ?? false)
               ? "${widget.labelText} *"

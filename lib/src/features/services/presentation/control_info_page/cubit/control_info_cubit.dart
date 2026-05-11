@@ -68,7 +68,7 @@ class ControlInfoCubit extends Cubit<ControlInfoState> {
         : await _getReliefRequestByIdUseCase(id);
 
     result.whenOrNull(
-      success: (data, _, __) {
+      success: (data, _, _) {
         selectedRequest = data;
       },
     );
@@ -83,7 +83,7 @@ class ControlInfoCubit extends Cubit<ControlInfoState> {
     final result = await _getEmdadgarInfoUseCase(param);
 
     result.whenOrNull(
-      success: (data, _, __) {
+      success: (data, _, _) {
         emdadgarInfo = data;
       },
     );

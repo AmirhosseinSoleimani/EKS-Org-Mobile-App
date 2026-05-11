@@ -1,6 +1,5 @@
 import 'package:dio/dio.dart' hide Headers;
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
-import 'package:eks_sana_plus_org/src/shared/features/invoice/data/models/confirm_invoice_response_model.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/data/models/invoice_model.dart';
 import 'package:retrofit/retrofit.dart';
 import 'package:injectable/injectable.dart';

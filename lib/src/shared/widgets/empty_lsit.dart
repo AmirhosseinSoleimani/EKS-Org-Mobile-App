@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 
 import 'svg_widget/svg_src.dart';
 import 'svg_widget/svg_widget.dart';
-import 'text_widgets/title_large_text.dart';
 
 class EmptyListWidget extends StatelessWidget {
   const EmptyListWidget({super.key});
