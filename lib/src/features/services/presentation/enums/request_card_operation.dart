@@ -9,6 +9,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/complete_ur
 import 'package:eks_sana_plus_org/src/features/services/presentation/control_info_page/control_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/emdadgar_invoice_page/emdadgar_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_history/evaluation_history_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/followup_register_page/follow_up_register_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/non_cooperation_page/non_cooperation_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/online_map_page/online_map_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/pre_invoice_page/pre_invoice_page.dart';
@@ -98,7 +99,13 @@ enum RequestCardOperation {
     icon: Icons.open_in_new,
     color: Color(0xFFbf0000),
     route: CompleteUrgentRequestPage.path,
-  );
+  ),
+  followUpRegister(
+    label: 'ثبت پیگیری',
+    icon: Icons.headset,
+    color: Color(0xFF864a1e),
+    route: FollowUpRegisterPage.path,
+  ),;
 
   final String label;
   final IconData icon;

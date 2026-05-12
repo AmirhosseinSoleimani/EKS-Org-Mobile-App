@@ -20,4 +20,8 @@ class FollowUpRegisterState with _$FollowUpRegisterState {
   const factory FollowUpRegisterState.submitSuccess({
     required PostFollowUpResponseEntity data,
   }) = _SubmitSuccess;
+
+  const factory FollowUpRegisterState.refreshingHistory() = _RefreshingHistory;
+
+  const factory FollowUpRegisterState.loadingMore() = _LoadingMore;
 }

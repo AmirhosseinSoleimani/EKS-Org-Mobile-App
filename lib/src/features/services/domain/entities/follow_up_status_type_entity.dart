@@ -31,6 +31,11 @@ class FollowUpStatusTypeEntity implements DropdownItem {
     this.serviceRequestResultStatusTitle,
   });
 
+  bool shouldUpdateTimeLabel() {
+    const validIds = {1, 4, 5, 14, 15};
+    return id != null && validIds.contains(id);
+  }
+
   FollowUpStatusTypeEntity copyWith({
     int? id,
     String? code,

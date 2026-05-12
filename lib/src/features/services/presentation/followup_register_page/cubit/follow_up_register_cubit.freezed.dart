@@ -55,7 +55,7 @@ extension FollowUpRegisterStatePatterns on FollowUpRegisterState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Idle value)?  idle,TResult Function( _Loading value)?  loading,TResult Function( _Loaded value)?  loaded,TResult Function( _Error value)?  error,TResult Function( _ConnectionError value)?  connectionError,TResult Function( _SubmitLoading value)?  submitLoading,TResult Function( _SubmitSuccess value)?  submitSuccess,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Idle value)?  idle,TResult Function( _Loading value)?  loading,TResult Function( _Loaded value)?  loaded,TResult Function( _Error value)?  error,TResult Function( _ConnectionError value)?  connectionError,TResult Function( _SubmitLoading value)?  submitLoading,TResult Function( _SubmitSuccess value)?  submitSuccess,TResult Function( _RefreshingHistory value)?  refreshingHistory,TResult Function( _LoadingMore value)?  loadingMore,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
@@ -65,7 +65,9 @@ return loaded(_that);case _Error() when error != null:
 return error(_that);case _ConnectionError() when connectionError != null:
 return connectionError(_that);case _SubmitLoading() when submitLoading != null:
 return submitLoading(_that);case _SubmitSuccess() when submitSuccess != null:
-return submitSuccess(_that);case _:
+return submitSuccess(_that);case _RefreshingHistory() when refreshingHistory != null:
+return refreshingHistory(_that);case _LoadingMore() when loadingMore != null:
+return loadingMore(_that);case _:
   return orElse();
 
 }
@@ -83,7 +85,7 @@ return submitSuccess(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Idle value)  idle,required TResult Function( _Loading value)  loading,required TResult Function( _Loaded value)  loaded,required TResult Function( _Error value)  error,required TResult Function( _ConnectionError value)  connectionError,required TResult Function( _SubmitLoading value)  submitLoading,required TResult Function( _SubmitSuccess value)  submitSuccess,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Idle value)  idle,required TResult Function( _Loading value)  loading,required TResult Function( _Loaded value)  loaded,required TResult Function( _Error value)  error,required TResult Function( _ConnectionError value)  connectionError,required TResult Function( _SubmitLoading value)  submitLoading,required TResult Function( _SubmitSuccess value)  submitSuccess,required TResult Function( _RefreshingHistory value)  refreshingHistory,required TResult Function( _LoadingMore value)  loadingMore,}){
 final _that = this;
 switch (_that) {
 case _Idle():
@@ -93,7 +95,9 @@ return loaded(_that);case _Error():
 return error(_that);case _ConnectionError():
 return connectionError(_that);case _SubmitLoading():
 return submitLoading(_that);case _SubmitSuccess():
-return submitSuccess(_that);case _:
+return submitSuccess(_that);case _RefreshingHistory():
+return refreshingHistory(_that);case _LoadingMore():
+return loadingMore(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -110,7 +114,7 @@ return submitSuccess(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Idle value)?  idle,TResult? Function( _Loading value)?  loading,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Error value)?  error,TResult? Function( _ConnectionError value)?  connectionError,TResult? Function( _SubmitLoading value)?  submitLoading,TResult? Function( _SubmitSuccess value)?  submitSuccess,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Idle value)?  idle,TResult? Function( _Loading value)?  loading,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Error value)?  error,TResult? Function( _ConnectionError value)?  connectionError,TResult? Function( _SubmitLoading value)?  submitLoading,TResult? Function( _SubmitSuccess value)?  submitSuccess,TResult? Function( _RefreshingHistory value)?  refreshingHistory,TResult? Function( _LoadingMore value)?  loadingMore,}){
 final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
@@ -120,7 +124,9 @@ return loaded(_that);case _Error() when error != null:
 return error(_that);case _ConnectionError() when connectionError != null:
 return connectionError(_that);case _SubmitLoading() when submitLoading != null:
 return submitLoading(_that);case _SubmitSuccess() when submitSuccess != null:
-return submitSuccess(_that);case _:
+return submitSuccess(_that);case _RefreshingHistory() when refreshingHistory != null:
+return refreshingHistory(_that);case _LoadingMore() when loadingMore != null:
+return loadingMore(_that);case _:
   return null;
 
 }
@@ -137,7 +143,7 @@ return submitSuccess(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  loading,TResult Function()?  loaded,TResult Function( BottomSheetMessageModel message)?  error,TResult Function()?  connectionError,TResult Function()?  submitLoading,TResult Function( PostFollowUpResponseEntity data)?  submitSuccess,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  loading,TResult Function()?  loaded,TResult Function( BottomSheetMessageModel message)?  error,TResult Function()?  connectionError,TResult Function()?  submitLoading,TResult Function( PostFollowUpResponseEntity data)?  submitSuccess,TResult Function()?  refreshingHistory,TResult Function()?  loadingMore,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle();case _Loading() when loading != null:
@@ -146,7 +152,9 @@ return loaded();case _Error() when error != null:
 return error(_that.message);case _ConnectionError() when connectionError != null:
 return connectionError();case _SubmitLoading() when submitLoading != null:
 return submitLoading();case _SubmitSuccess() when submitSuccess != null:
-return submitSuccess(_that.data);case _:
+return submitSuccess(_that.data);case _RefreshingHistory() when refreshingHistory != null:
+return refreshingHistory();case _LoadingMore() when loadingMore != null:
+return loadingMore();case _:
   return orElse();
 
 }
@@ -164,7 +172,7 @@ return submitSuccess(_that.data);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  loading,required TResult Function()  loaded,required TResult Function( BottomSheetMessageModel message)  error,required TResult Function()  connectionError,required TResult Function()  submitLoading,required TResult Function( PostFollowUpResponseEntity data)  submitSuccess,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  loading,required TResult Function()  loaded,required TResult Function( BottomSheetMessageModel message)  error,required TResult Function()  connectionError,required TResult Function()  submitLoading,required TResult Function( PostFollowUpResponseEntity data)  submitSuccess,required TResult Function()  refreshingHistory,required TResult Function()  loadingMore,}) {final _that = this;
 switch (_that) {
 case _Idle():
 return idle();case _Loading():
@@ -173,7 +181,9 @@ return loaded();case _Error():
 return error(_that.message);case _ConnectionError():
 return connectionError();case _SubmitLoading():
 return submitLoading();case _SubmitSuccess():
-return submitSuccess(_that.data);case _:
+return submitSuccess(_that.data);case _RefreshingHistory():
+return refreshingHistory();case _LoadingMore():
+return loadingMore();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -190,7 +200,7 @@ return submitSuccess(_that.data);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  loading,TResult? Function()?  loaded,TResult? Function( BottomSheetMessageModel message)?  error,TResult? Function()?  connectionError,TResult? Function()?  submitLoading,TResult? Function( PostFollowUpResponseEntity data)?  submitSuccess,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  loading,TResult? Function()?  loaded,TResult? Function( BottomSheetMessageModel message)?  error,TResult? Function()?  connectionError,TResult? Function()?  submitLoading,TResult? Function( PostFollowUpResponseEntity data)?  submitSuccess,TResult? Function()?  refreshingHistory,TResult? Function()?  loadingMore,}) {final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle();case _Loading() when loading != null:
@@ -199,7 +209,9 @@ return loaded();case _Error() when error != null:
 return error(_that.message);case _ConnectionError() when connectionError != null:
 return connectionError();case _SubmitLoading() when submitLoading != null:
 return submitLoading();case _SubmitSuccess() when submitSuccess != null:
-return submitSuccess(_that.data);case _:
+return submitSuccess(_that.data);case _RefreshingHistory() when refreshingHistory != null:
+return refreshingHistory();case _LoadingMore() when loadingMore != null:
+return loadingMore();case _:
   return null;
 
 }
@@ -498,5 +510,69 @@ as PostFollowUpResponseEntity,
 
 
 }
+
+/// @nodoc
+
+
+class _RefreshingHistory implements FollowUpRegisterState {
+  const _RefreshingHistory();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _RefreshingHistory);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'FollowUpRegisterState.refreshingHistory()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _LoadingMore implements FollowUpRegisterState {
+  const _LoadingMore();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoadingMore);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'FollowUpRegisterState.loadingMore()';
+}
+
+
+}
+
+
+
 
 // dart format on

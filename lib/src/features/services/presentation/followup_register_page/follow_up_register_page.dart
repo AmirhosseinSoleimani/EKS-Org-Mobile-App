@@ -3,10 +3,10 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/follow_up_status_type_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/widgets/dropdown_selector.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/followup_register_page/cubit/follow_up_register_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/followup_register_page/dispatch_time_diff_box.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/followup_register_page/widgets/dispatch_time_diff_box.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/followup_register_page/widgets/request_followup_history_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_followup_history_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/agent_info_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/date_time_picker_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
@@ -65,11 +65,11 @@ class _View extends StatelessWidget {
               enableDrag: false,
             );
           },
-          submitSuccess:  (data) async=>await cubit.refreshHistoryList(),
+          /* submitSuccess:  (data) async=>await cubit.refreshHistoryList(),*/
         );
       },
       child: Scaffold(
-        backgroundColor: Theme.of(context).colorScheme.onPrimary,
+
         appBar: SimpleAppBar(title: 'ثبت پیگیری'),
         body: _Body(),
         bottomNavigationBar: Padding(
@@ -186,16 +186,16 @@ class _LoadedView extends StatelessWidget {
                   ),
                   _formElementGap(),
                   DateTimePickerSection(
-                    dateLabel: 'تاریخ اعزام',
+                    dateLabel: 'تاریخ اعلام',
                     timeLabel: 'ساعت اعلام',
-                    dateNotifier: cubit.dispatchDateTimeNotifier,
-                    timeNotifier: cubit.announcementTimeNotifier,
-                    onDateChange: cubit.setDispatchDate,
+                    dateController: cubit.announcementDateController,
+                    timeController: cubit.announcementTimeController,
+                    onDateChange: cubit.setAnnouncementDate,
                     onTimeChange: cubit.setAnnouncementTime,
                   ),
                   _formElementGap(),
                   ValueListenableBuilder<Duration?>(
-                    valueListenable: cubit.dispatchDiffNotifier,
+                    valueListenable: cubit.announcementDiffNotifier,
                     builder: (_, diff, __) {
                       if (diff == null || diff.inMinutes == 0) return SizedBox.shrink();
                       return Column(
@@ -222,11 +222,9 @@ class _LoadedView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TitleLargeText(text: "تاریخچه پیگیری", fontSize: 16),
+                  const TitleLargeText(text: "تاریخچه پیگیری", fontSize: 16),
                   Space.h32,
-                  RequestFollowupHistorySection(
-                    items: cubit.followups,
-                  ),
+                  const RequestFollowupHistorySection(),
                   _formElementGap(),
                 ],
               ),

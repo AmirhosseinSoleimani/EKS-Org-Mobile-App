@@ -26,21 +26,19 @@ import 'package:injectable/injectable.dart';
 import 'package:intl/intl.dart';
 
 part 'follow_up_register_cubit.freezed.dart';
-
 part 'follow_up_register_state.dart';
 
 @injectable
 class FollowUpRegisterCubit extends Cubit<FollowUpRegisterState> {
-  FollowUpRegisterCubit(
-    this._fetchSelectedRequestItemUseCase,
-    this._getReliefRequestByIdUseCase,
-    this._getHomeServiceRequestByIdUseCase,
-    this._getEmdadgarInfoUseCase,
-    this._getRequestFollowupHistoryUseCase,
-    this._getFollowUpStatusTypeListUseCase,
-    this._createFollowUpUseCase,
-    this._getServerDateTimeUseCase,
-  ) : super(const FollowUpRegisterState.idle());
+  FollowUpRegisterCubit(this._fetchSelectedRequestItemUseCase,
+      this._getReliefRequestByIdUseCase,
+      this._getHomeServiceRequestByIdUseCase,
+      this._getEmdadgarInfoUseCase,
+      this._getRequestFollowupHistoryUseCase,
+      this._getFollowUpStatusTypeListUseCase,
+      this._createFollowUpUseCase,
+      this._getServerDateTimeUseCase,)
+      : super(const FollowUpRegisterState.idle());
 
   final FetchSelectedRequestItemUseCase _fetchSelectedRequestItemUseCase;
   final GetReliefRequestByIdUseCase _getReliefRequestByIdUseCase;
@@ -51,27 +49,42 @@ class FollowUpRegisterCubit extends Cubit<FollowUpRegisterState> {
   final CreateFollowUpUseCase _createFollowUpUseCase;
   final GetServerDateTimeUseCase _getServerDateTimeUseCase;
 
-  final int _pageSize = 2;
+  List<FollowupItemEntity> _historyList = [];
+
+  List<FollowupItemEntity> get historyList => _historyList;
+
+  int _displayedItemsCount = 2;
+
+  int get displayedItemsCount => _displayedItemsCount;
+
+  bool get hasMoreItems => _displayedItemsCount < _historyList.length;
+
+  List<FollowupItemEntity> get displayedHistory =>
+      _historyList.take(_displayedItemsCount).toList();
+
+
   String? _errorMessage;
   BaseRequestEntity? selectedRequest;
   EmdadgarInfoEntity? emdadgarInfo;
   final List<FollowupItemEntity> followups = [];
   final List<FollowUpStatusTypeEntity> _allFollowUpStatusTypeList = [];
 
-  final dispatchDiffNotifier = ValueNotifier<Duration?>(null);
+  final announcementDiffNotifier = ValueNotifier<Duration?>(null);
 
   final ValueNotifier<List<FollowUpStatusTypeEntity>> filteredStatusItems =
-      ValueNotifier([]);
+  ValueNotifier([]);
   final selectedSource = ValueNotifier<Source?>(null);
   final selectedFollowUpStatusType = ValueNotifier<FollowUpStatusTypeEntity?>(
     null,
   );
-  final dispatchDateTimeNotifier = ValueNotifier<DateTime?>(null);
-  final announcementTimeNotifier = ValueNotifier<DateTime?>(null);
+  DateTime? announcementDateTime;
+
+  final DateTime? announcementTime = null;
+  final announcementTimeController = TextEditingController();
+  final announcementDateController = TextEditingController();
 
   final descriptionController = TextEditingController();
 
-  DateTime? get dispatchDateTime => dispatchDateTimeNotifier.value;
 
   bool get _shouldFetchEmdadgarInfo {
     return (selectedRequest?.requestStatus ?? 0) > 1;
@@ -92,23 +105,15 @@ class FollowUpRegisterCubit extends Cubit<FollowUpRegisterState> {
 
   Future<void> setSelectedFollowupStatus(FollowUpStatusTypeEntity value) async {
     selectedFollowUpStatusType.value = value;
-
-    // todo: fix condition
-    if (true) {
+    if (value.shouldUpdateTimeLabel()) {
       final serverDateTimeInfo = await _getServerDateTimeUseCase();
-
       serverDateTimeInfo.whenOrNull(
         success: (data, failures, resultCode) {
-          final announcementTime = data?.serverTime;
-
-          if (announcementTime != null) {
-            announcementTimeNotifier.value = announcementTime;
-          }
+          final serverTime = data?.serverTime;
 
           final assignDate = selectedRequest?.assignDateTime;
-
-          if (assignDate == null || announcementTime == null) {
-            dispatchDiffNotifier.value = null;
+          if (assignDate == null || serverTime == null) {
+            announcementDiffNotifier.value = null;
             return;
           }
 
@@ -116,31 +121,37 @@ class FollowUpRegisterCubit extends Cubit<FollowUpRegisterState> {
             assignDate.year,
             assignDate.month,
             assignDate.day,
-            announcementTime.hour,
-            announcementTime.minute,
-            announcementTime.second,
+            serverTime.hour,
+            serverTime.minute,
+            serverTime.second,
           );
 
           final diff = announcementFull.difference(assignDate);
 
           if (diff.inMinutes == 0) {
-            dispatchDiffNotifier.value = null;
+            announcementDiffNotifier.value = null;
           } else {
-            dispatchDiffNotifier.value = diff;
+            announcementDiffNotifier.value = diff;
+            announcementTimeController.text =
+            "${serverTime.hour}:${serverTime.minute}";
+
           }
         },
         failure: (error, msg) => _emitError(_fallbackError(msg ?? error.toString())),
-           connectionError: () => _safeEmit(const FollowUpRegisterState.connectionError()),
+        connectionError: () =>
+            _safeEmit(const FollowUpRegisterState.connectionError()),
 
       );
+    } else {
+      announcementDiffNotifier.value = null;
     }
   }
 
 
-  void setDispatchDate(DateTime? date) {
+  void setAnnouncementDate(DateTime? date) {
     if (date == null) return;
-    final current = dispatchDateTime ?? DateTime.now();
-    dispatchDateTimeNotifier.value = DateTime(
+    final current = announcementDateTime ?? DateTime.now();
+    announcementDateTime = DateTime(
       date.year,
       date.month,
       date.day,
@@ -150,8 +161,8 @@ class FollowUpRegisterCubit extends Cubit<FollowUpRegisterState> {
   }
 
   void setAnnouncementTime(DateTime time) {
-    final current = dispatchDateTime ?? DateTime.now();
-    dispatchDateTimeNotifier.value = DateTime(
+    final current = announcementDateTime ?? DateTime.now();
+    announcementDateTime = DateTime(
       current.year,
       current.month,
       current.day,
@@ -236,6 +247,12 @@ class FollowUpRegisterCubit extends Cubit<FollowUpRegisterState> {
       success: (data, _, _) {
         selectedRequest = data;
         fetchResult = FetchResultType.success;
+        if (data != null) {
+          announcementDateController.text =
+              selectedRequest!.shamsiFormattedAssignDate;
+        }
+
+
       },
       failure: (_, msg) {
         _errorMessage = _fallbackError(msg);
@@ -273,11 +290,74 @@ class FollowUpRegisterCubit extends Cubit<FollowUpRegisterState> {
     return fetchResult;
   }
 
+
+  void loadMoreItems() {
+    if (!hasMoreItems) return;
+
+    emit(const FollowUpRegisterState.loadingMore());
+
+    _displayedItemsCount =
+        (_displayedItemsCount + 10).clamp(0, _historyList.length);
+
+    emit(const FollowUpRegisterState.loaded());
+  }
+
+
+  Future<void> createFollowUp() async {
+    final param = CreateFollowUpParamEntity(
+      serviceType: selectedRequest?.serviceType?.value,
+      serviceRequestId: selectedRequest?.id,
+      sourceType: selectedSource.value?.value,
+      resultStatusId: selectedFollowUpStatusType.value?.id,
+      description: descriptionController.text.trim(),
+      followUpDateTime: (announcementDateTime != null)
+          ? DateFormat('yyyy-MM-dd').format(announcementDateTime!)
+          : null,
+    );
+    final createFollowUpResult = await _createFollowUpUseCase(param);
+    createFollowUpResult.whenOrNull(
+      success: (data, failures, resultCode) async {
+        _safeEmit(FollowUpRegisterState.submitSuccess(data: data));
+        await _refreshHistoryAfterSubmit();
+      },
+      failure: (error, msg) =>
+          _emitError(_fallbackError(msg ?? error.toString())),
+      connectionError: () =>
+          _safeEmit(const FollowUpRegisterState.connectionError()),
+    );
+  }
+
+  Future<void> _refreshHistoryAfterSubmit() async {
+    final currentDisplayCount = _displayedItemsCount;
+
+    emit(const FollowUpRegisterState.refreshingHistory());
+    final param = RequestOperationParamEntity(
+      serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
+      requestId: selectedRequest?.id,
+      pageSize: 100,
+    );
+
+    final result = await _getRequestFollowupHistoryUseCase(param);
+    result.whenOrNull(
+      success: (data, _, _) {
+        /*followups.clear();
+        followups.addAll(data.followUpList ?? []);
+        _displayedItemsCount = 2;*/
+
+        _historyList = data.followUpList ?? [];
+        _displayedItemsCount =
+            currentDisplayCount.clamp(0, _historyList.length);
+        emit(const FollowUpRegisterState.loaded());
+      },
+
+    );
+  }
+
   Future<FetchResultType> _getFollowupHistory() async {
     final param = RequestOperationParamEntity(
       serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
       requestId: selectedRequest?.id,
-      pageSize: _pageSize,
+      pageSize: 100,
     );
 
     final result = await _getRequestFollowupHistoryUseCase(param);
@@ -286,8 +366,8 @@ class FollowUpRegisterCubit extends Cubit<FollowUpRegisterState> {
 
     result.whenOrNull(
       success: (data, _, _) {
-        followups.clear();
-        followups.addAll(data.followUpList ?? []);
+        _historyList = data.followUpList ?? [];
+        _displayedItemsCount = 2;
         fetchResult = FetchResultType.success;
       },
       failure: (error, msg) {
@@ -301,6 +381,7 @@ class FollowUpRegisterCubit extends Cubit<FollowUpRegisterState> {
 
     return fetchResult;
   }
+
 
   Future<FetchResultType> _getFollowupStatusTypeList() async {
     final result = await _getFollowUpStatusTypeListUseCase();
@@ -325,32 +406,6 @@ class FollowUpRegisterCubit extends Cubit<FollowUpRegisterState> {
     return fetchResult;
   }
 
-  Future<void> refreshHistoryList() async {
-    final followUpHistoryResult = await _getFollowupHistory();
-  }
-
-  Future<void> createFollowUp() async {
-    final param = CreateFollowUpParamEntity(
-      serviceType: selectedRequest?.serviceType?.value,
-      serviceRequestId: selectedRequest?.id,
-      sourceType: selectedSource.value?.value,
-      resultStatusId: selectedFollowUpStatusType.value?.id,
-      description: descriptionController.text.trim(),
-      followUpDateTime: (dispatchDateTime != null)
-          ? DateFormat('yyyy-MM-dd HH:mm').format(dispatchDateTime!)
-          : null,
-    );
-    final createFollowUpResult = await _createFollowUpUseCase(param);
-    createFollowUpResult.whenOrNull(
-      success: (data, failures, resultCode) {
-        _safeEmit(FollowUpRegisterState.submitSuccess(data: data));
-      },
-      failure: (error, msg) =>
-          _emitError(_fallbackError(msg ?? error.toString())),
-      connectionError: () =>
-          _safeEmit(const FollowUpRegisterState.connectionError()),
-    );
-  }
 
   void _safeEmit(FollowUpRegisterState state) {
     if (!isClosed) emit(state);
@@ -368,7 +423,9 @@ class FollowUpRegisterCubit extends Cubit<FollowUpRegisterState> {
   }
 
   String _fallbackError([String? msg]) {
-    if (msg?.trim().isNotEmpty == true) {
+    if (msg
+        ?.trim()
+        .isNotEmpty == true) {
       return msg!;
     }
     return 'درخواست شما با خطا مواجه شد، لطفا با پشتیبانی تماس بگیرید';

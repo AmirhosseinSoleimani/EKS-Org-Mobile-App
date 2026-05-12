@@ -205,7 +205,7 @@ class _LoadedView extends StatelessWidget {
                     Space.h16,
                   ],
                   if (showDateTimeSection) ...[
-                    DateTimePickerSection(
+                   /* DateTimePickerSection(
                       dateLabel: 'تاریخ اعزام',
                       timeLabel: 'ساعت اعزام',
                       dateNotifier: cubit.dispatchDateTimeNotifier,
@@ -219,7 +219,7 @@ class _LoadedView extends StatelessWidget {
                       dateNotifier: cubit.cancelDateTimeNotifier,
                       onDateChange: cubit.setCancelDate,
                       onTimeChange: cubit.setCancelTime,
-                    ),
+                    ),*/
                     Space.h24,
                     ActionTextField(
                       controller: cubit.kilometerController,

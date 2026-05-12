@@ -3,35 +3,31 @@ import 'package:flutter/material.dart';
 
 class TimePickerWidget extends StatelessWidget {
   final String label;
-  final ValueNotifier<DateTime?>? valueNotifier;
-  final ValueChanged<DateTime>? onTimeSelected;
-  final DateTime? initialTime;
+  final TextEditingController controller;
+  final ValueChanged<DateTime> onTimeSelected;
 
   const TimePickerWidget({
     super.key,
     required this.label,
-    this.valueNotifier,
-    this.onTimeSelected,
-    this.initialTime,
+    required this.controller,
+    required this.onTimeSelected,
   });
 
-  String _formatTime(DateTime? value) {
-    if (value == null) return "";
+  String _formatTime(DateTime value) {
     final h = value.hour.toString().padLeft(2, '0');
     final m = value.minute.toString().padLeft(2, '0');
     return "$h:$m";
   }
 
-  Future<void> _pickTime(BuildContext context, DateTime? current) async {
+  Future<void> _pickTime(BuildContext context) async {
     final picked = await showTimePicker(
       context: context,
-      initialTime: TimeOfDay.fromDateTime(current ?? DateTime.now()),
+      initialTime: _parseControllerTime() ?? TimeOfDay.now(),
     );
 
     if (picked == null) return;
 
     final now = DateTime.now();
-
     final newDateTime = DateTime(
       now.year,
       now.month,
@@ -40,38 +36,30 @@ class TimePickerWidget extends StatelessWidget {
       picked.minute,
     );
 
-    valueNotifier?.value = newDateTime;
-    onTimeSelected?.call(newDateTime);
+    controller.text = _formatTime(newDateTime);
+    onTimeSelected(newDateTime);
+  }
+
+  TimeOfDay? _parseControllerTime() {
+    if (controller.text.isEmpty) return null;
+    final parts = controller.text.split(':');
+    if (parts.length != 2) return null;
+    return TimeOfDay(
+      hour: int.parse(parts[0]),
+      minute: int.parse(parts[1]),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    if (valueNotifier == null) {
-      final time = initialTime;
-
-      return TextFormFieldWidget(
-        labelText: label,
-        hintText: "00:00",
-        controller: TextEditingController(text: _formatTime(time)),
-        readOnly: true,
-        onTap: () => _pickTime(context, time),
-      );
-    }
-
-    return ValueListenableBuilder<DateTime?>(
-      valueListenable: valueNotifier!,
-      builder: (context, value, _) {
-        final time = value ?? initialTime;
-
-        return TextFormFieldWidget(
-          labelText: label,
-          hintText: "00:00",
-          controller: TextEditingController(text: _formatTime(time)),
-          readOnly: true,
-          onTap: () => _pickTime(context, time),
-        );
-      },
+    return TextFormFieldWidget(
+      labelText: label,
+      hintText: "00:00",
+      controller: controller,
+      readOnly: true,
+      onTap: () => _pickTime(context),
     );
   }
 }
+
 

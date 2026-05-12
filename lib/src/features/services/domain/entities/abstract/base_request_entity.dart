@@ -1,4 +1,6 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
+import 'package:intl/intl.dart';
+import 'package:shamsi_date/shamsi_date.dart';
 
 abstract class BaseRequestEntity {
   final ServiceType? serviceType;
@@ -161,4 +163,22 @@ abstract class BaseRequestEntity {
     if (raw == null || raw.isEmpty) return null;
     return DateTime.tryParse(raw);
   }
+
+  Jalali? get assignDateJalali {
+    final dt = assignDateTime;
+    if (dt == null) return null;
+    return Jalali.fromDateTime(dt);
+  }
+
+  String get shamsiFormattedAssignDate {
+    final j = assignDateJalali;
+    if (j == null) return '-';
+
+    final y = j.year.toString();
+    final m = j.month.toString().padLeft(2, '0');
+    final d = j.day.toString().padLeft(2, '0');
+
+    return '$y/$m/$d';
+  }
+
 }
