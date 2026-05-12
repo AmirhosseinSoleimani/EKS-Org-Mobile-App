@@ -246,8 +246,10 @@ class FollowUpRegisterCubit extends Cubit<FollowUpRegisterState> {
     result.whenOrNull(
       success: (data, _, _) {
         selectedRequest = data;
+
         fetchResult = FetchResultType.success;
         if (data != null) {
+          setAnnouncementDate(selectedRequest?.assignDateTime);
           announcementDateController.text =
               selectedRequest!.shamsiFormattedAssignDate;
         }
@@ -311,7 +313,7 @@ class FollowUpRegisterCubit extends Cubit<FollowUpRegisterState> {
       resultStatusId: selectedFollowUpStatusType.value?.id,
       description: descriptionController.text.trim(),
       followUpDateTime: (announcementDateTime != null)
-          ? DateFormat('yyyy-MM-dd').format(announcementDateTime!)
+          ? DateFormat('yyyy-MM-dd HH:mm').format(announcementDateTime!)
           : null,
     );
     final createFollowUpResult = await _createFollowUpUseCase(param);

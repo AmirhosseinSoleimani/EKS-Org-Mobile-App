@@ -114,7 +114,6 @@ class BottomSheetWidget extends StatelessWidget {
 
               if (!hasContent) const SizedBox(height: 8),
 
-              // ===== Body (Scrollable) =====
               if (hasContent)
                 Flexible(
                   child: SingleChildScrollView(
@@ -188,7 +187,6 @@ class BottomSheetWidget extends StatelessWidget {
         onPressed: loading
             ? null
             : () {
-          if (isSheetPop ?? true) Navigator.pop(context);
           positiveFunc?.call();
         },
         child: loading

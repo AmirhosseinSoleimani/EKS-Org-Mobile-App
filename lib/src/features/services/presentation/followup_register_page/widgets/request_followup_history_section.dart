@@ -2,7 +2,9 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/followup_re
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_row.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_wiget_row.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/status_label.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -62,9 +64,9 @@ class RequestFollowupHistorySection extends StatelessWidget {
                             label: "تاریخ و ساعت ثبت",
                             value: "$insertDate - $insertTime",
                           ),
-                          if ((item.description ?? "").trim().isNotEmpty)
-                            KeyValueRow(
-                              label: "توضیحات",
+
+                          KeyValueRow(
+                            label: "توضیحات",
                               value: item.description ?? '',
                             ),
                         ],
@@ -74,13 +76,22 @@ class RequestFollowupHistorySection extends StatelessWidget {
 
                   // دکمه مشاهده بیشتر
                   if (cubit.hasMoreItems)
-                    Padding(
-                      padding: const EdgeInsets.all(16.0),
-                      child: state.maybeWhen(
-                        loadingMore: () => const CircularProgressIndicator(),
-                        orElse: () => OutlinedButton(
+                    state.maybeWhen(
+                      loadingMore: () => const CircularProgressIndicator(),
+                      orElse: () => Center(
+                        child: TextButton(
                           onPressed: () => cubit.loadMoreItems(),
-                          child: const Text('مشاهده بیشتر'),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              BodyMediumText(
+                                text: 'مشاهده بیشتر',
+                                color: Theme.of(context).colorScheme.primary,
+                              ),
+                              Space.w4,
+                              const Icon(Icons.expand_more),
+                            ],
+                          ),
                         ),
                       ),
                     ),

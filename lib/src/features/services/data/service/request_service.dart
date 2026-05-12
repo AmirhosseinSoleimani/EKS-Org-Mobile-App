@@ -140,8 +140,7 @@ abstract class RequestService {
       @Body() Map<String, dynamic> query);
 
   @POST('/api/RequestFollowUpOrg/Post')
-  Future<BaseSingleResponse<
-      PostFollowUpResponseModel>> createFollowUp(
+  Future<BaseSingleResponse<PostFollowUpResponseModel>> createFollowUp(
       @Body() Map<String, dynamic> query);
 
 }
