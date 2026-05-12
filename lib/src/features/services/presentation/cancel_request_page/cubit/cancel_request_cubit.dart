@@ -93,12 +93,15 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
 
   final showAllServices = ValueNotifier<bool>(false);
 
-  final dispatchDateTimeNotifier = ValueNotifier<DateTime?>(null);
+  DateTime? dispatchDateTime;
+  final  dispatchDateController = TextEditingController();
+  final  dispatchTimeController = TextEditingController();
 
-  DateTime? get dispatchDateTime => dispatchDateTimeNotifier.value;
 
-  final cancelDateTimeNotifier = ValueNotifier<DateTime?>(null);
-  DateTime? get cancelDateTime => cancelDateTimeNotifier.value;
+  final  cancelDateController = TextEditingController();
+  final  cancelTimeController = TextEditingController();
+
+  DateTime?  cancelDateTime;
 
   final ValueNotifier<bool> isGettingDistanceKilometer = ValueNotifier(false);
   final ValueNotifier<bool> showDateTimeSection = ValueNotifier(false);
@@ -409,8 +412,8 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
 
     result.whenOrNull(
       success: (data, _, _) {
-        dispatchDateTimeNotifier.value = data.startTimeDate;
-        cancelDateTimeNotifier.value = data.arrivedTimeDate ?? DateTime.now();
+        dispatchDateTime = data.startTimeDate;
+        cancelDateTime = data.arrivedTimeDate ?? DateTime.now();
         isDistanceKilometerEditable.value = data.isKilometerEditable ?? true;
       },
       connectionError: () => emit(const CancelRequestState.connectionError()),
@@ -478,7 +481,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
   void setDispatchDate(DateTime? date) {
     if (date == null) return;
     final current = dispatchDateTime ?? DateTime.now();
-    dispatchDateTimeNotifier.value = DateTime(
+    dispatchDateTime = DateTime(
       date.year,
       date.month,
       date.day,
@@ -489,7 +492,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
 
   void setDispatchTime(DateTime time) {
     final current = dispatchDateTime ?? DateTime.now();
-    dispatchDateTimeNotifier.value = DateTime(
+    dispatchDateTime = DateTime(
       current.year,
       current.month,
       current.day,
@@ -501,7 +504,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
   void setCancelDate(DateTime? date) {
     if (date == null) return;
     final current = cancelDateTime ?? DateTime.now();
-    cancelDateTimeNotifier.value = DateTime(
+    cancelDateTime = DateTime(
       date.year,
       date.month,
       date.day,
@@ -512,7 +515,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
 
   void setCancelTime(DateTime time) {
     final current = cancelDateTime ?? DateTime.now();
-    cancelDateTimeNotifier.value = DateTime(
+    cancelDateTime = DateTime(
       current.year,
       current.month,
       current.day,

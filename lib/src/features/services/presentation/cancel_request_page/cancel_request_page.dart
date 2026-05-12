@@ -1,8 +1,8 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/cancel_request_reason_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/cubit/cancel_request_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/widgets/dropdown_selector.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/widgets/action_text_field.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/widgets/dropdown_selector.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/widgets/invoice_bottom_sheet_content.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
@@ -22,8 +22,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../widgets/submit_cancel_buttons.dart';
 import '../widgets/date_time_picker_section.dart';
+import '../widgets/submit_cancel_buttons.dart';
 
 class CancelRequestPage extends StatelessWidget {
   static const path = "/cancel-request-page";
@@ -205,10 +205,11 @@ class _LoadedView extends StatelessWidget {
                     Space.h16,
                   ],
                   if (showDateTimeSection) ...[
-                   /* DateTimePickerSection(
+                    DateTimePickerSection(
                       dateLabel: 'تاریخ اعزام',
                       timeLabel: 'ساعت اعزام',
-                      dateNotifier: cubit.dispatchDateTimeNotifier,
+                      dateController: cubit.dispatchDateController,
+                      timeController: cubit.dispatchTimeController,
                       onDateChange: cubit.setDispatchDate,
                       onTimeChange: cubit.setDispatchTime,
                     ),
@@ -216,10 +217,11 @@ class _LoadedView extends StatelessWidget {
                     DateTimePickerSection(
                       dateLabel: 'تاریخ کنسلی',
                       timeLabel: 'ساعت کنسلی',
-                      dateNotifier: cubit.cancelDateTimeNotifier,
+                      dateController: cubit.cancelDateController,
+                      timeController: cubit.cancelTimeController,
                       onDateChange: cubit.setCancelDate,
                       onTimeChange: cubit.setCancelTime,
-                    ),*/
+                    ),
                     Space.h24,
                     ActionTextField(
                       controller: cubit.kilometerController,
