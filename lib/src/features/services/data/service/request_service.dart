@@ -6,12 +6,14 @@ import 'package:eks_sana_plus_org/src/features/services/data/models/cartable_cyc
 import 'package:eks_sana_plus_org/src/features/services/data/models/chassis_request_history_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/complete_urgent_request_data_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/control_info_models/control_info_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/day_schedule_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/distance_kilometer_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_followups_data_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/evaluation_history_item_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/follow_up_status_type_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/message_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/minimal_customer_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/non_cooperation_list_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/post_follow_up_response_model.dart';
@@ -142,5 +144,15 @@ abstract class RequestService {
   @POST('/api/RequestFollowUpOrg/Post')
   Future<BaseSingleResponse<PostFollowUpResponseModel>> createFollowUp(
       @Body() Map<String, dynamic> query);
+
+  @GET('api/HomeServiceRequest/GetTimeForHomeServiceRequestByServiceRequestID')
+  Future<BaseListResponse<DayScheduleModel>> getTimes(
+      @Queries() Map<String, dynamic> query);
+
+  @POST('/api/HomeServiceRequest/ChangeHomeServiceRequestTime')
+  Future<BaseSingleResponse<MessageModel>> changeTime(
+      @Body() Map<String, dynamic> body);
+
+
 
 }

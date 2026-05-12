@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/cartable
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/chassis_request_history_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/complete_urgent_request_data_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/control_info_entities/control_info_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/day_schedule_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/distance_kilometer_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_followups_data_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_info_entity.dart';
@@ -11,16 +12,19 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/evaluati
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/follow_up_status_type_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/followup_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/message_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/minimal_customer_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/non_cooperation_list_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/cancel_reason_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/cancel_request_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/change_time_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/chassis_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/complete_urgent_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/create_follow_up_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/distance_kilometer_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/get_emdadgar_followups_data_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/get_reference_car_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/get_times_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/minimal_customer_info_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_operation_param_entity.dart';
@@ -97,4 +101,9 @@ abstract class RequestRepository {
 
   Future<ApiResult<
       PostFollowUpResponseEntity>> createFollowUp(CreateFollowUpParamEntity param);
+
+  Future<ApiResult<List<DayScheduleEntity>>> getTimes(
+      GetTimesParamEntity param);
+
+  Future<ApiResult<MessageEntity>> changeTime(ChangeTimeParamEntity param);
 }

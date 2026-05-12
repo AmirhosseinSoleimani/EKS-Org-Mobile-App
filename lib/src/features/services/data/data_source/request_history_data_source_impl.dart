@@ -6,22 +6,26 @@ import 'package:eks_sana_plus_org/src/features/services/data/models/cartable_cyc
 import 'package:eks_sana_plus_org/src/features/services/data/models/chassis_request_history_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/complete_urgent_request_data_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/control_info_models/control_info_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/day_schedule_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/distance_kilometer_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_followups_data_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/evaluation_history_item_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/follow_up_status_type_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/message_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/minimal_customer_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/non_cooperation_list_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/cancel_reason_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/cancel_request_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/change_time_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/chassis_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/complete_urgent_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/create_follow_up_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/distance_kilometer_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/get_emdadgar_followups_data_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/get_reference_car_param_data.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/get_times_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/minimal_customer_info_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/request_filter_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/request_operation_param_model.dart';
@@ -158,5 +162,15 @@ class RequestDataSourceImpl extends RequestDataSource {
   Future<BaseListResponse<
       FollowUpStatusTypeModel>> getFollowUpStatusTypes() async =>
       await _service.getFollowUpStatusTypes({});
+
+  @override
+  Future<BaseSingleResponse<MessageModel>> changeTime(
+      ChangeTimeParamModel param) async =>
+      await _service.changeTime(param.toJson());
+
+  @override
+  Future<BaseListResponse<DayScheduleModel>> getTimes(
+      GetTimesParamModel param) async =>
+      await _service.getTimes(param.toJson());
 
 }
