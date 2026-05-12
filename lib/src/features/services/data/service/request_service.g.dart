@@ -903,7 +903,7 @@ class _RequestService implements RequestService {
           Options(method: 'POST', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/RequestFollowUp/Post',
+                '/api/RequestFollowUpOrg/Post',
                 queryParameters: queryParameters,
                 data: _data,
               )

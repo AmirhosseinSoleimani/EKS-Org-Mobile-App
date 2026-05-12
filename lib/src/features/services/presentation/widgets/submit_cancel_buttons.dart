@@ -27,39 +27,7 @@ class SubmitCancelButtons extends StatelessWidget {
             title: submitTitle,
             showLoading: isLoading,
             onTap: onSubmit,
-          )/*InkWell(
-            onTap: isLoading ? (){} : onSubmit,
-            borderRadius: BorderRadius.circular(8),
-            child: AnimatedContainer(
-              duration: const Duration(milliseconds: 200),
-              height: 48,
-              decoration: BoxDecoration(
-                color: isLoading
-                    ? Colors.grey.shade300
-                    : (onSubmit == null
-                          ? Colors.grey.shade400
-                          : Theme.of(context).colorScheme.primary),
-                borderRadius: BorderRadius.circular(8),
-              ),
-              alignment: Alignment.center,
-              child: isLoading
-                  ? const SizedBox(
-                      height: 22,
-                      width: 22,
-                      child: CircularProgressIndicator(
-                        strokeWidth: 2,
-                        valueColor: AlwaysStoppedAnimation(Colors.white),
-                      ),
-                    )
-                  : Text(
-                      submitTitle,
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-            ),
-          )*/
+          )
         ),
 
         const SizedBox(width: 12),

@@ -121,12 +121,8 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
       final RequestOperationParamEntity param = RequestOperationParamEntity(
         serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
         requestId: requestId,
-
         pageSize: _pageSize,
-
       );
-
-
       final followupResult = await _getRequestFollowupHistoryUseCase(param);
 
       followupResult.whenOrNull(

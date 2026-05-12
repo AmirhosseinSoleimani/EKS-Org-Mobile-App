@@ -154,4 +154,11 @@ abstract class BaseRequestEntity {
     this.emRepresentationName,
     this.emRepresentationCode,
   });
+
+
+  DateTime? get assignDateTime {
+    final raw = assignDate;
+    if (raw == null || raw.isEmpty) return null;
+    return DateTime.tryParse(raw);
+  }
 }

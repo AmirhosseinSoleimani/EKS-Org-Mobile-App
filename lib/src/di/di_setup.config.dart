@@ -110,6 +110,8 @@ import '../features/services/domain/usecases/cancel_service_request_use_case.dar
     as _i320;
 import '../features/services/domain/usecases/complete_aid_urgent_request_use_case.dart'
     as _i364;
+import '../features/services/domain/usecases/create_follow_up_use_case.dart'
+    as _i949;
 import '../features/services/domain/usecases/fetch_selected_request_item_use_case.dart'
     as _i376;
 import '../features/services/domain/usecases/get_basic_data_use_case.dart'
@@ -128,6 +130,8 @@ import '../features/services/domain/usecases/get_emdadgar_info_use_case.dart'
     as _i786;
 import '../features/services/domain/usecases/get_evaluation_history_list_use_case.dart'
     as _i467;
+import '../features/services/domain/usecases/get_follow_up_status_type_list_use_case.dart'
+    as _i474;
 import '../features/services/domain/usecases/get_home_service_request_by_id_use_case.dart'
     as _i63;
 import '../features/services/domain/usecases/get_home_service_request_list_use_case.dart'
@@ -166,6 +170,8 @@ import '../features/services/presentation/emdadgar_invoice_page/cubit/emdadgar_i
     as _i362;
 import '../features/services/presentation/evaluation_history/cubit/evaluation_history_cubit.dart'
     as _i154;
+import '../features/services/presentation/followup_register_page/cubit/follow_up_register_cubit.dart'
+    as _i264;
 import '../features/services/presentation/home_service_request_list_page/cubit/home_service_request_list_cubit.dart'
     as _i1013;
 import '../features/services/presentation/non_cooperation_page/cubit/non_cooperation_cubit.dart'
@@ -570,6 +576,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i364.CompleteAidUrgentRequestUseCase>(
     () => _i364.CompleteAidUrgentRequestUseCase(gh<_i603.RequestRepository>()),
   );
+  gh.lazySingleton<_i949.CreateFollowUpUseCase>(
+    () => _i949.CreateFollowUpUseCase(gh<_i603.RequestRepository>()),
+  );
   gh.lazySingleton<_i1061.GetBasicDataUseCase>(
     () => _i1061.GetBasicDataUseCase(gh<_i603.RequestRepository>()),
   );
@@ -595,6 +604,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i467.GetEvaluationHistoryListUseCase>(
     () => _i467.GetEvaluationHistoryListUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i474.GetFollowUpStatusTypeListUseCase>(
+    () => _i474.GetFollowUpStatusTypeListUseCase(gh<_i603.RequestRepository>()),
   );
   gh.lazySingleton<_i63.GetHomeServiceRequestByIdUseCase>(
     () => _i63.GetHomeServiceRequestByIdUseCase(gh<_i603.RequestRepository>()),
@@ -656,6 +668,18 @@ _i174.GetIt $initGetIt(
       gh<_i672.GetReliefRequestByIdUseCase>(),
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
       gh<_i786.GetEmdadgarInfoUseCase>(),
+    ),
+  );
+  gh.factory<_i264.FollowUpRegisterCubit>(
+    () => _i264.FollowUpRegisterCubit(
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
+      gh<_i67.GetRequestFollowupHistoryUseCase>(),
+      gh<_i474.GetFollowUpStatusTypeListUseCase>(),
+      gh<_i949.CreateFollowUpUseCase>(),
+      gh<_i100.GetServerDateTimeUseCase>(),
     ),
   );
   gh.factory<_i66.ControlInfoCubit>(

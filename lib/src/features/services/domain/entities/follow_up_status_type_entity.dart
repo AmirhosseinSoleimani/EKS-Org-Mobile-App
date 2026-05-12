@@ -1,6 +1,8 @@
 import 'package:eks_sana_plus_org/src/features/services/data/models/follow_up_status_type_model.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/interfaces/dropdown_item.dart';
+import 'package:flutter/material.dart';
 
-class FollowUpStatusTypeEntity {
+class FollowUpStatusTypeEntity implements DropdownItem {
   final int? id;
   final String? code;
   final String? title;
@@ -78,4 +80,13 @@ class FollowUpStatusTypeEntity {
       serviceRequestResultStatusTitle: serviceRequestResultStatusTitle,
     );
   }
+
+  @override
+  String get label => title ?? '';
+
+  @override
+  Widget? leading(BuildContext context) => null;
+
+  @override
+  get value => id;
 }
