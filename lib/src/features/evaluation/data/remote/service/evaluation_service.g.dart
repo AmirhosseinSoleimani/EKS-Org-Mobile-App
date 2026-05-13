@@ -32,7 +32,7 @@ class _EvaluationService implements EvaluationService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/DefectOrg/GetListOfDefects',
+            '/api/Defect/GetListOfDefects',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -67,7 +67,7 @@ class _EvaluationService implements EvaluationService {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/AidServiceEvaluationOrg/GetServiceCategories',
+            '/api/AidServiceEvaluation/GetServiceCategories',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -100,7 +100,7 @@ class _EvaluationService implements EvaluationService {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/HomeServiceEvaluationOrg/GetServiceCategories',
+            '/api/HomeServiceEvaluation/GetServiceCategories',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -133,7 +133,7 @@ class _EvaluationService implements EvaluationService {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/AidServiceEvaluationOrg/GetServices',
+            '/api/AidServiceEvaluation/GetServices',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -166,7 +166,7 @@ class _EvaluationService implements EvaluationService {
           Options(method: 'POST', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/AidServiceEvaluationOrg/post',
+                '/api/AidServiceEvaluation/post',
                 queryParameters: queryParameters,
                 data: _data,
               )
@@ -202,7 +202,7 @@ class _EvaluationService implements EvaluationService {
           Options(method: 'POST', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/HomeServiceEvaluationOrg/post',
+                '/api/HomeServiceEvaluation/post',
                 queryParameters: queryParameters,
                 data: _data,
               )
@@ -238,7 +238,7 @@ class _EvaluationService implements EvaluationService {
           Options(method: 'POST', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/AidServiceEvaluationOrg/EvaluationAccept',
+                '/api/AidServiceEvaluation/EvaluationAccept',
                 queryParameters: queryParameters,
                 data: _data,
               )
@@ -277,7 +277,7 @@ class _EvaluationService implements EvaluationService {
           Options(method: 'POST', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/HomeServiceEvaluationOrg/EvaluationAccept',
+                '/api/HomeServiceEvaluation/EvaluationAccept',
                 queryParameters: queryParameters,
                 data: _data,
               )
@@ -317,7 +317,7 @@ class _EvaluationService implements EvaluationService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/AidServiceEvaluationOrg/GetServiceDetailAndCheckSubscriptionForEmdagarEvaluation',
+            '/api/AidServiceEvaluation/GetServiceDetailAndCheckSubscriptionForEmdagarEvaluation',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -352,7 +352,7 @@ class _EvaluationService implements EvaluationService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/HomeServiceEvaluationOrg/GetServiceDetailAndCheckSubscriptionForEmdagarEvaluation',
+            '/api/HomeServiceEvaluation/GetServiceDetailAndCheckSubscriptionForEmdagarEvaluation',
             queryParameters: queryParameters,
             data: _data,
           )

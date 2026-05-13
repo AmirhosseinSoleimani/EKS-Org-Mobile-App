@@ -32,7 +32,7 @@ class _DashboardService implements DashboardService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/IndexReportOrg/IndexDashboard',
+            '/api/IndexReport/IndexDashboard',
             queryParameters: queryParameters,
             data: _data,
           )

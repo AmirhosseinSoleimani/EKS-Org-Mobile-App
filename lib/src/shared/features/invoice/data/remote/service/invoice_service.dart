@@ -12,13 +12,13 @@ abstract class InvoiceService {
   @factoryMethod
   factory InvoiceService(Dio dio) = _InvoiceService;
 
-  @POST('/api/InvoiceOrg/CustomerInvoice')
+  @POST('/api/Invoice/CustomerInvoice')
   Future<BaseSingleResponse<InvoiceModel?>> getPreInvoice(@Body() Map<String, dynamic> body);
 
-  @POST('/api/InvoiceOrg/EmdadgarInvoice')
+  @POST('/api/Invoice/EmdadgarInvoice')
   Future<BaseSingleResponse<InvoiceModel?>> getEmdadgarInvoice(@Body() Map<String, dynamic> body);
 
-  @POST('/api/InvoiceOrg/CustomerPreInvoiceOnTheFly')
+  @POST('/api/Invoice/CustomerPreInvoiceOnTheFly')
   Future<BaseSingleResponse<InvoiceModel?>> customerPreInvoiceOnTheFly(@Body() Map<String, dynamic> body);
 
 }

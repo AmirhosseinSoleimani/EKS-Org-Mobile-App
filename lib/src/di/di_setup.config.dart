@@ -108,7 +108,8 @@ import '../features/services/domain/repository/request_repository_share_data.dar
     as _i838;
 import '../features/services/domain/usecases/cancel_service_request_use_case.dart'
     as _i320;
-import '../features/services/domain/usecases/change_home_service_request_time_use_case.dart' as _i77;
+import '../features/services/domain/usecases/change_home_service_request_time_use_case.dart'
+    as _i509;
 import '../features/services/domain/usecases/complete_aid_urgent_request_use_case.dart'
     as _i364;
 import '../features/services/domain/usecases/create_follow_up_use_case.dart'
@@ -137,6 +138,8 @@ import '../features/services/domain/usecases/get_home_service_request_by_id_use_
     as _i63;
 import '../features/services/domain/usecases/get_home_service_request_list_use_case.dart'
     as _i809;
+import '../features/services/domain/usecases/get_home_service_times_use_case.dart'
+    as _i352;
 import '../features/services/domain/usecases/get_minimal_customer_info_use_case.dart'
     as _i812;
 import '../features/services/domain/usecases/get_non_cooperation_list_use_case.dart'
@@ -153,7 +156,6 @@ import '../features/services/domain/usecases/get_request_followup_history_use_ca
     as _i67;
 import '../features/services/domain/usecases/get_request_status_history_use_case.dart'
     as _i955;
-import '../features/services/domain/usecases/get_home_service_times_use_case.dart' as _i767;
 import '../features/services/domain/usecases/set_selected_request_item_use_case.dart'
     as _i369;
 import '../features/services/domain/usecases/update_service_request_use_case.dart'
@@ -521,11 +523,13 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i603.RequestRepository>(
     () => _i794.RequestRepositoryImpl(gh<_i1016.RequestDataSource>()),
   );
-  gh.lazySingleton<_i77.ChangeHomeServiceRequestTimeUseCase>(
-    () => _i77.ChangeHomeServiceRequestTimeUseCase(gh<_i603.RequestRepository>()),
+  gh.lazySingleton<_i509.ChangeHomeServiceRequestTimeUseCase>(
+    () => _i509.ChangeHomeServiceRequestTimeUseCase(
+      gh<_i603.RequestRepository>(),
+    ),
   );
-  gh.lazySingleton<_i767.GetHomeServiceTimesTimesUseCase>(
-    () => _i767.GetHomeServiceTimesTimesUseCase(gh<_i603.RequestRepository>()),
+  gh.lazySingleton<_i352.GetHomeServiceTimesTimesUseCase>(
+    () => _i352.GetHomeServiceTimesTimesUseCase(gh<_i603.RequestRepository>()),
   );
   gh.lazySingleton<_i422.ObserveNetworkRepository>(
     () =>

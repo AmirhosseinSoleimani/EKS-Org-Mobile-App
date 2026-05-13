@@ -32,7 +32,7 @@ class _AddressService implements AddressService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/MapOrg/Route',
+            '/api/Map/Route',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -65,7 +65,7 @@ class _AddressService implements AddressService {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/AreaBaseInfoOrg/GetAreaBaseInfo',
+            '/api/AreaBaseInfo/GetAreaBaseInfo',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -98,7 +98,7 @@ class _AddressService implements AddressService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/CityOrg/GetCitiesWithProvince',
+            '/api/City/GetCitiesWithProvince',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -131,7 +131,7 @@ class _AddressService implements AddressService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/MapOrg/GetLocationData',
+            '/api/Map/GetLocationData',
             queryParameters: queryParameters,
             data: _data,
           )

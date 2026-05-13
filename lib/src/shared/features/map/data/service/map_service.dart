@@ -22,11 +22,11 @@ abstract class MapService {
   @GET("/forward?key=${AppConstants.parsiMapApiToken}&search_text={id}&district={district}&only_in_district=true&subdivision=false&plate=false&request_id=false&search_precision=simple")
   Future<AddressToLocationResponseModel?> fetchAddressToLocation(@Path() String id, @Path() String district);
 
-  @POST('/api/MapOrg/Route')
+  @POST('/api/Map/Route')
   Future<BaseSingleResponse<RouteDataModel>> getRoute(
       @Body() Map<String, dynamic> query);
 
-  @GET('/api/AreaBaseInfoOrg/GetAreaBaseInfo')
+  @GET('/api/AreaBaseInfo/GetAreaBaseInfo')
   Future<BaseSingleResponse<AreaBaseModel>> getAreaBaseData(
       @Queries() Map<String, dynamic> query);
 }

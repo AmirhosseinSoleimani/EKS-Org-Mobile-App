@@ -32,7 +32,7 @@ class _InvoiceService implements InvoiceService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/InvoiceOrg/CustomerInvoice',
+            '/api/Invoice/CustomerInvoice',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -67,7 +67,7 @@ class _InvoiceService implements InvoiceService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/InvoiceOrg/EmdadgarInvoice',
+            '/api/Invoice/EmdadgarInvoice',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -102,7 +102,7 @@ class _InvoiceService implements InvoiceService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/InvoiceOrg/CustomerPreInvoiceOnTheFly',
+            '/api/Invoice/CustomerPreInvoiceOnTheFly',
             queryParameters: queryParameters,
             data: _data,
           )

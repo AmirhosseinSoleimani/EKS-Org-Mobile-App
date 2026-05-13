@@ -33,115 +33,115 @@ abstract class RequestService {
   @factoryMethod
   factory RequestService(Dio dio) = _RequestService;
 
-  @POST('/api/AidServiceRequestOrg/GetAidServiceRequestList')
+  @POST('/api/AidServiceRequest/GetAidServiceRequestList')
   Future<BaseSingleResponse<ReliefRequestListModel>> getReliefRequestList(
       @Body() Map<String, dynamic> body);
 
-  @GET('/api/AidServiceRequestOrg/GetAidServiceRequestById')
+  @GET('/api/AidServiceRequest/GetAidServiceRequestById')
   Future<BaseSingleResponse<ReliefRequestModel>> getReliefRequestById(
       @Queries() Map<String, dynamic> query);
 
-  @POST('/api/HomeServiceRequestOrg/GetHomeServiceRequestList')
+  @POST('/api/HomeServiceRequest/GetHomeServiceRequestList')
   Future<BaseSingleResponse<HomeServiceRequestListModel>>
       getHomeServiceRequestList(@Body() Map<String, dynamic> body);
 
-  @GET('/api/HomeServiceRequestOrg/GetHomeServiceRequest')
+  @GET('/api/HomeServiceRequest/GetHomeServiceRequest')
   Future<BaseSingleResponse<HomeServiceRequestModel>> getHomeServiceRequestById(
       @Queries() Map<String, dynamic> query);
 
 
-  @POST('/api/LackOfCooperationOrg/getLackOfCooperationList')
+  @POST('/api/LackOfCooperation/getLackOfCooperationList')
   Future<BaseSingleResponse<NonCooperationListModel>> getNonCooperationList(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/CartableOrg/GetServiceRequestMessageFlow')
+  @POST('/api/Cartable/GetServiceRequestMessageFlow')
   Future<BaseListResponse<CartableCycleItemModel>> getCartableCycleList(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/AidServiceEvaluationOrg/GetEvaluationsByServiceRequestId')
+  @POST('/api/AidServiceEvaluation/GetEvaluationsByServiceRequestId')
   Future<BaseListResponse<EvaluationHistoryItemModel>> getAidServiceEvaluationHistory(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/HomeServiceEvaluationOrg/GetEvaluationsByServiceRequestId')
+  @POST('/api/HomeServiceEvaluation/GetEvaluationsByServiceRequestId')
   Future<BaseListResponse<EvaluationHistoryItemModel>> getHomeServiceServiceEvaluationHistory(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/ServiceRequestHistoryOrg/GetByFilterJson')
+  @POST('/api/ServiceRequestHistory/GetByFilterJson')
   Future<BaseSingleResponse<RequestStatusHistoryListModel>> getRequestStatusHistory(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/EmdadgarOrg/GetEmdadgarByServiceRequestId')
+  @POST('/api/Emdadgar/GetEmdadgarByServiceRequestId')
   Future<BaseSingleResponse<EmdadgarInfoModel>> getEmdadgarInfo(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/RequestFollowUpOrg/GetByFilterJson')
+  @POST('/api/RequestFollowUp/GetByFilterJson')
   Future<BaseSingleResponse<FollowupModel>> getRequestFollowUp(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/CustomerViewAllOrg/GetServiceRequests')
+  @POST('/api/CustomerViewAll/GetServiceRequests')
   Future<BaseListResponse<ChassisRequestHistoryModel>> getChassisRequestHistoryList(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/RequestFollowUpOrg/ServiceRequestsFollowUpByUser')
+  @POST('/api/RequestFollowUp/ServiceRequestsFollowUpByUser')
   Future<BaseSingleResponse<ControlInfoModel>> getControlInfo(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/AidServiceRequestOrg/EditServiceRequest')
+  @POST('/api/AidServiceRequest/EditServiceRequest')
   Future<BaseSingleResponse<UpdateServiceResponseModel>> updateServiceRequest(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/CancelReasonOrg/getCancelReasonList')
+  @POST('/api/CancelReason/getCancelReasonList')
   Future<BaseListResponse<CancelRequestReasonModel>> getCancelReasons(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/AidServiceEvaluationOrg/GetDistance')
+  @POST('/api/AidServiceEvaluation/GetDistance')
   Future<BaseSingleResponse<DistanceKilometerModel>> getAidDistanceKilometer(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/AidServiceRequestOrg/CancelRequestService')
+  @POST('/api/AidServiceRequest/CancelRequestService')
   Future<BaseSingleResponse<DistanceKilometerModel>> cancelAidRequestService(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/HomeServiceRequestOrg/CancelHomeServiceRequest')
+  @POST('/api/HomeServiceRequest/CancelHomeServiceRequest')
   Future<BaseSingleResponse<DistanceKilometerModel>> cancelHomeServiceRequest(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/HomeServiceEvaluationOrg/GetDistance')
+  @POST('/api/HomeServiceEvaluation/GetDistance')
   Future<BaseSingleResponse<
       DistanceKilometerModel>> getHomeServiceDistanceKilometer(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/AidServiceEvaluationOrg/GetEmdadgarFollowupsData')
+  @POST('/api/AidServiceEvaluation/GetEmdadgarFollowupsData')
   Future<BaseSingleResponse<
       EmdadgarFollowupsDataModel>> getAidEmdadgarFollowupsData(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/AidServiceRequestOrg/CompleteUrgentRequest')
+  @POST('/api/AidServiceRequest/CompleteUrgentRequest')
   Future<BaseSingleResponse<
       CompleteUrgentRequestDataModel>> completeAidUrgentRequest(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/CarInfoOrg/GetReferenceCar')
+  @POST('/api/CarInfo/GetReferenceCar')
   Future<BaseSingleResponse<
       ReferenceCarModel?>> getReferenceCar(
       @Body() Map<String, dynamic> query);
 
-  @GET('/api/BaseInfoOrg/GetBasicData')
+  @GET('/api/BaseInfo/GetBasicData')
   Future<BaseSingleResponse<
       CarCoversDataModel?>> getBasicData(
       @Queries() Map<String, dynamic> query);
 
-  @POST('/api/CustomerViewAllOrg/GetMinimalCustomerInfo')
+  @POST('/api/CustomerViewAll/GetMinimalCustomerInfo')
   Future<BaseSingleResponse<
       MinimalCustomerInfoModel?>> getMinimalCustomerInfo(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/RequestFollowUpOrg/GetFollowUpResultStatusTypes')
+  @POST('/api/RequestFollowUp/GetFollowUpResultStatusTypes')
   Future<BaseListResponse<
       FollowUpStatusTypeModel>> getFollowUpStatusTypes(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/RequestFollowUpOrg/Post')
+  @POST('/api/RequestFollowUp/Post')
   Future<BaseSingleResponse<PostFollowUpResponseModel>> createFollowUp(
       @Body() Map<String, dynamic> query);
 

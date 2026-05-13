@@ -32,7 +32,7 @@ class _RequestService implements RequestService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/AidServiceRequestOrg/GetAidServiceRequestList',
+            '/api/AidServiceRequest/GetAidServiceRequestList',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -65,7 +65,7 @@ class _RequestService implements RequestService {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/AidServiceRequestOrg/GetAidServiceRequestById',
+            '/api/AidServiceRequest/GetAidServiceRequestById',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -98,7 +98,7 @@ class _RequestService implements RequestService {
           Options(method: 'POST', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/HomeServiceRequestOrg/GetHomeServiceRequestList',
+                '/api/HomeServiceRequest/GetHomeServiceRequestList',
                 queryParameters: queryParameters,
                 data: _data,
               )
@@ -135,7 +135,7 @@ class _RequestService implements RequestService {
           Options(method: 'GET', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/HomeServiceRequestOrg/GetHomeServiceRequest',
+                '/api/HomeServiceRequest/GetHomeServiceRequest',
                 queryParameters: queryParameters,
                 data: _data,
               )
@@ -172,7 +172,7 @@ class _RequestService implements RequestService {
           Options(method: 'POST', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/LackOfCooperationOrg/getLackOfCooperationList',
+                '/api/LackOfCooperation/getLackOfCooperationList',
                 queryParameters: queryParameters,
                 data: _data,
               )
@@ -208,7 +208,7 @@ class _RequestService implements RequestService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/CartableOrg/GetServiceRequestMessageFlow',
+            '/api/Cartable/GetServiceRequestMessageFlow',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -241,7 +241,7 @@ class _RequestService implements RequestService {
           Options(method: 'POST', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/AidServiceEvaluationOrg/GetEvaluationsByServiceRequestId',
+                '/api/AidServiceEvaluation/GetEvaluationsByServiceRequestId',
                 queryParameters: queryParameters,
                 data: _data,
               )
@@ -277,7 +277,7 @@ class _RequestService implements RequestService {
           Options(method: 'POST', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/HomeServiceEvaluationOrg/GetEvaluationsByServiceRequestId',
+                '/api/HomeServiceEvaluation/GetEvaluationsByServiceRequestId',
                 queryParameters: queryParameters,
                 data: _data,
               )
@@ -313,7 +313,7 @@ class _RequestService implements RequestService {
           Options(method: 'POST', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/ServiceRequestHistoryOrg/GetByFilterJson',
+                '/api/ServiceRequestHistory/GetByFilterJson',
                 queryParameters: queryParameters,
                 data: _data,
               )
@@ -350,7 +350,7 @@ class _RequestService implements RequestService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/EmdadgarOrg/GetEmdadgarByServiceRequestId',
+            '/api/Emdadgar/GetEmdadgarByServiceRequestId',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -383,7 +383,7 @@ class _RequestService implements RequestService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/RequestFollowUpOrg/GetByFilterJson',
+            '/api/RequestFollowUp/GetByFilterJson',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -416,7 +416,7 @@ class _RequestService implements RequestService {
           Options(method: 'POST', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/CustomerViewAllOrg/GetServiceRequests',
+                '/api/CustomerViewAll/GetServiceRequests',
                 queryParameters: queryParameters,
                 data: _data,
               )
@@ -452,7 +452,7 @@ class _RequestService implements RequestService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/RequestFollowUpOrg/ServiceRequestsFollowUpByUser',
+            '/api/RequestFollowUp/ServiceRequestsFollowUpByUser',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -486,7 +486,7 @@ class _RequestService implements RequestService {
           Options(method: 'POST', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/AidServiceRequestOrg/EditServiceRequest',
+                '/api/AidServiceRequest/EditServiceRequest',
                 queryParameters: queryParameters,
                 data: _data,
               )
@@ -522,7 +522,7 @@ class _RequestService implements RequestService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/CancelReasonOrg/getCancelReasonList',
+            '/api/CancelReason/getCancelReasonList',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -556,7 +556,7 @@ class _RequestService implements RequestService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/AidServiceEvaluationOrg/GetDistance',
+            '/api/AidServiceEvaluation/GetDistance',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -589,7 +589,7 @@ class _RequestService implements RequestService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/AidServiceRequestOrg/CancelRequestService',
+            '/api/AidServiceRequest/CancelRequestService',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -622,7 +622,7 @@ class _RequestService implements RequestService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/HomeServiceRequestOrg/CancelHomeServiceRequest',
+            '/api/HomeServiceRequest/CancelHomeServiceRequest',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -654,7 +654,7 @@ class _RequestService implements RequestService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/HomeServiceEvaluationOrg/GetDistance',
+            '/api/HomeServiceEvaluation/GetDistance',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -687,7 +687,7 @@ class _RequestService implements RequestService {
           Options(method: 'POST', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/AidServiceEvaluationOrg/GetEmdadgarFollowupsData',
+                '/api/AidServiceEvaluation/GetEmdadgarFollowupsData',
                 queryParameters: queryParameters,
                 data: _data,
               )
@@ -723,7 +723,7 @@ class _RequestService implements RequestService {
           Options(method: 'POST', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/AidServiceRequestOrg/CompleteUrgentRequest',
+                '/api/AidServiceRequest/CompleteUrgentRequest',
                 queryParameters: queryParameters,
                 data: _data,
               )
@@ -760,7 +760,7 @@ class _RequestService implements RequestService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/CarInfoOrg/GetReferenceCar',
+            '/api/CarInfo/GetReferenceCar',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -795,7 +795,7 @@ class _RequestService implements RequestService {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/BaseInfoOrg/GetBasicData',
+            '/api/BaseInfo/GetBasicData',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -831,7 +831,7 @@ class _RequestService implements RequestService {
           Options(method: 'POST', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/CustomerViewAllOrg/GetMinimalCustomerInfo',
+                '/api/CustomerViewAll/GetMinimalCustomerInfo',
                 queryParameters: queryParameters,
                 data: _data,
               )
@@ -868,7 +868,7 @@ class _RequestService implements RequestService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/RequestFollowUpOrg/GetFollowUpResultStatusTypes',
+            '/api/RequestFollowUp/GetFollowUpResultStatusTypes',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -903,7 +903,7 @@ class _RequestService implements RequestService {
           Options(method: 'POST', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/RequestFollowUpOrg/Post',
+                '/api/RequestFollowUp/Post',
                 queryParameters: queryParameters,
                 data: _data,
               )

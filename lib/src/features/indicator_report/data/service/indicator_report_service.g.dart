@@ -32,7 +32,7 @@ class _IndicatorReportService implements IndicatorReportService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/IndexReportOrg/IndexReport',
+            '/api/IndexReport/IndexReport',
             queryParameters: queryParameters,
             data: _data,
           )

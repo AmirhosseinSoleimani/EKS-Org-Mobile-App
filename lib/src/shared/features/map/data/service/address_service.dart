@@ -15,20 +15,20 @@ abstract class AddressService {
   @factoryMethod
   factory AddressService(Dio dio) = _AddressService;
 
-  @POST('/api/MapOrg/Route')
+  @POST('/api/Map/Route')
   Future<BaseSingleResponse<RouteDataModel>> getRoute(
       @Body() Map<String, dynamic> query);
 
-  @GET('/api/AreaBaseInfoOrg/GetAreaBaseInfo')
+  @GET('/api/AreaBaseInfo/GetAreaBaseInfo')
   Future<BaseSingleResponse<AreaBaseModel>> getAreaBaseData(
       @Queries() Map<String, dynamic> query);
 
 
-  @POST('/api/CityOrg/GetCitiesWithProvince')
+  @POST('/api/City/GetCitiesWithProvince')
   Future<BaseListResponse<ProvinceModel>> getCitiesWithProvince(
       @Queries() Map<String, dynamic> query);
 
-  @POST('/api/MapOrg/GetLocationData')
+  @POST('/api/Map/GetLocationData')
   Future<BaseSingleResponse<LocationDataModel>> getLocationData(
       @Body() Map<String, dynamic> query);
 }

@@ -97,7 +97,7 @@ class _MapService implements MapService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/MapOrg/Route',
+            '/api/Map/Route',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -130,7 +130,7 @@ class _MapService implements MapService {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/AreaBaseInfoOrg/GetAreaBaseInfo',
+            '/api/AreaBaseInfo/GetAreaBaseInfo',
             queryParameters: queryParameters,
             data: _data,
           )

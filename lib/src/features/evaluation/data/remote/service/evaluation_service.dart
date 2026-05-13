@@ -18,49 +18,49 @@ abstract class EvaluationService {
   @factoryMethod
   factory EvaluationService(Dio dio) = _EvaluationService;
 
-  @POST('/api/DefectOrg/GetListOfDefects')
+  @POST('/api/Defect/GetListOfDefects')
   Future<BaseListResponse<DefectModel?>> getDefectsList(
     @Body() Map<String, dynamic> body,
   );
 
-  @GET('/api/AidServiceEvaluationOrg/GetServiceCategories')
+  @GET('/api/AidServiceEvaluation/GetServiceCategories')
   Future<BaseListResponse<ServiceCategoryModel>> getAidServiceCategories(
     @Queries() Map<String, dynamic> query,
   );
 
-  @GET('/api/HomeServiceEvaluationOrg/GetServiceCategories')
+  @GET('/api/HomeServiceEvaluation/GetServiceCategories')
   Future<BaseListResponse<ServiceCategoryModel>> getHomeServiceCategories(
     @Queries() Map<String, dynamic> body,
   );
 
-  @GET('/api/AidServiceEvaluationOrg/GetServices')
+  @GET('/api/AidServiceEvaluation/GetServices')
   Future<BaseSingleResponse<ServiceResponseModel>> getAidServices(
     @Queries() Map<String, dynamic> body,
   );
 
-  @POST('/api/AidServiceEvaluationOrg/post')
+  @POST('/api/AidServiceEvaluation/post')
   Future<BaseSingleResponse<PostEvaluationResponseModel>>
   aidServiceEvaluationPost(@Body() Map<String, dynamic> body);
 
-  @POST('/api/HomeServiceEvaluationOrg/post')
+  @POST('/api/HomeServiceEvaluation/post')
   Future<BaseSingleResponse<PostEvaluationResponseModel>>
   homeServiceEvaluationPost(@Body() Map<String, dynamic> body);
 
-  @POST('/api/AidServiceEvaluationOrg/EvaluationAccept')
+  @POST('/api/AidServiceEvaluation/EvaluationAccept')
   Future<BaseSingleResponse<AcceptEvaluationResponseModel?>> aidEvaluationAccept(@Body() Map<String, dynamic> body);
 
-  @POST('/api/HomeServiceEvaluationOrg/EvaluationAccept')
+  @POST('/api/HomeServiceEvaluation/EvaluationAccept')
   Future<BaseSingleResponse<AcceptEvaluationResponseModel?>> homeServiceEvaluationAccept(@Body() Map<String, dynamic> body);
 
 
   @POST(
-      '/api/AidServiceEvaluationOrg/GetServiceDetailAndCheckSubscriptionForEmdagarEvaluation')
+      '/api/AidServiceEvaluation/GetServiceDetailAndCheckSubscriptionForEmdagarEvaluation')
   Future<BaseSingleResponse<
       EmdadgarServiceDetailModel>> getAidServiceDetailAndCheckSubscriptionForEmdagarEvaluation(
       @Body() Map<String, dynamic> body);
 
   @POST(
-      '/api/HomeServiceEvaluationOrg/GetServiceDetailAndCheckSubscriptionForEmdagarEvaluation')
+      '/api/HomeServiceEvaluation/GetServiceDetailAndCheckSubscriptionForEmdagarEvaluation')
   Future<BaseSingleResponse<
       EmdadgarServiceDetailModel>> getHomeServiceDetailAndCheckSubscriptionForEmdagarEvaluation(
       @Body() Map<String, dynamic> body);

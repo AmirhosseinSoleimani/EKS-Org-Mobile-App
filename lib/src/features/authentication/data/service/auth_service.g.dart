@@ -32,7 +32,7 @@ class _AuthService implements AuthService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/UserOrg/Login',
+            '/api/User/Login',
             queryParameters: queryParameters,
             data: _data,
           )
