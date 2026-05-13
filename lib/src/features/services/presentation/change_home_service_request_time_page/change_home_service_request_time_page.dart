@@ -15,7 +15,6 @@ import 'package:eks_sana_plus_org/src/shared/widgets/inkwell_button_widget/inkwe
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -68,10 +67,7 @@ class _View extends StatelessWidget {
             BottomSheetMessage.showNotice(
               isDismissible: false,
               context: context,
-              data: BottomSheetMessageModel(
-                title: '',
-                message: 'پیگیری ثبت گردید',
-              ),
+              data: data,
             );
           },
         );
