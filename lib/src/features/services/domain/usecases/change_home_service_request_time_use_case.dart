@@ -6,11 +6,11 @@ import 'package:eks_sana_plus_org/src/shared/usecase/use_case.dart';
 import 'package:injectable/injectable.dart';
 
 @lazySingleton
-class ChangeTimeUseCase
+class ChangeHomeServiceRequestTimeUseCase
     extends BaseUseCase<ApiResult<MessageEntity>, ChangeTimeParamEntity> {
   RequestRepository requestRepository;
 
-  ChangeTimeUseCase(this.requestRepository);
+  ChangeHomeServiceRequestTimeUseCase(this.requestRepository);
 
   @override
   Future<ApiResult<MessageEntity>> call(arg) async {

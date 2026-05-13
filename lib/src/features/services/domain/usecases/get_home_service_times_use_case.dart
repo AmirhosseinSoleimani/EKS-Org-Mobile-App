@@ -8,11 +8,11 @@ import 'package:eks_sana_plus_org/src/shared/usecase/use_case.dart';
 import 'package:injectable/injectable.dart';
 
 @lazySingleton
-class GetTimesUseCase extends BaseUseCase<
+class GetHomeServiceTimesTimesUseCase extends BaseUseCase<
     ApiResult<List<DayScheduleEntity>>, GetTimesParamEntity> {
   RequestRepository requestRepository;
 
-  GetTimesUseCase(this.requestRepository);
+  GetHomeServiceTimesTimesUseCase(this.requestRepository);
 
   @override
   Future<ApiResult<List<DayScheduleEntity>>> call(arg) async {

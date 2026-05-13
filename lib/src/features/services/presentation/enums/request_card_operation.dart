@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/cancel_request_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cartable_cycle_page/cartable_cycle_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/change_home_service_request_time_page/change_home_service_request_time_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/chassis_request_history_page/chassis_request_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/complete_urgent_request_page/complete_urgent_request_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/control_info_page/control_info_page.dart';
@@ -99,6 +100,12 @@ enum RequestCardOperation {
     icon: Icons.open_in_new,
     color: Color(0xFFbf0000),
     route: CompleteUrgentRequestPage.path,
+  ),
+  changeHomeServiceRequestTime(
+    label: 'ویرایش زمان درخواست',
+    icon: Icons.open_in_new,
+    color: Color(0xFFbf0000),
+    route: ChangeHomeServiceRequestTimePage.path,
   ),
   followUpRegister(
     label: 'ثبت پیگیری',

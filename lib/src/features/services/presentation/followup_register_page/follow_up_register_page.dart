@@ -1,7 +1,6 @@
 import 'package:eks_sana_plus_org/src/common/constants/source.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/follow_up_status_type_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/widgets/dropdown_selector.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/followup_register_page/cubit/follow_up_register_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/followup_register_page/widgets/dispatch_time_diff_box.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/followup_register_page/widgets/request_followup_history_section.dart';
@@ -9,6 +8,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/request_det
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/agent_info_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/date_time_picker_section.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/dropdown_selector.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_status_section.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
@@ -46,7 +46,6 @@ class _View extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<FollowUpRegisterCubit>();
-    final colorScheme = Theme.of(context).colorScheme;
     return BlocListener<FollowUpRegisterCubit, FollowUpRegisterState>(
       listener: (context, state) {
         state.whenOrNull(
@@ -95,7 +94,7 @@ class _View extends StatelessWidget {
                 idle: () => const SizedBox.shrink(),
                 loading: () => const SizedBox.shrink(),
                 orElse: () => InkwellButtonWidget(
-                  title: 'ثبت درخواست',
+                  title: 'ثبت پیگیری',
                   showLoading: isLoading,
                   onTap: cubit.createFollowUp,
                 ),

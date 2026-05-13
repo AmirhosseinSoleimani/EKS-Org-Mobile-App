@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/common/constants/request_status.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:intl/intl.dart';
 import 'package:shamsi_date/shamsi_date.dart';
@@ -179,6 +180,10 @@ abstract class BaseRequestEntity {
     final d = j.day.toString().padLeft(2, '0');
 
     return '$y/$m/$d';
+  }
+
+  bool get hasEmdadGar {
+    return (requestStatus ?? 0) > RequestStatus.waitingAssignment.value;
   }
 
 }

@@ -306,6 +306,7 @@ class FollowUpRegisterCubit extends Cubit<FollowUpRegisterState> {
 
 
   Future<void> createFollowUp() async {
+    _safeEmit(FollowUpRegisterState.submitLoading());
     final param = CreateFollowUpParamEntity(
       serviceType: selectedRequest?.serviceType?.value,
       serviceRequestId: selectedRequest?.id,
