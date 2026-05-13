@@ -1,34 +1,26 @@
+/*
+
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/change_home_service_request_time_page/cubit/change_home_service_request_time_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/change_home_service_request_time_page/widgets/service_time_selector_widget.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/agent_info_detail_section.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_status_section.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/change_home_service_request_address_page/cubit/change_home_service_request_address_cubit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/inkwell_button_widget/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ChangeHomeServiceRequestTimePage extends StatelessWidget {
-  static const path = "/change-home-service-request-time-page";
-  static const name = "change-home-service-request-time-page";
+class ChangeHomeServiceRequestAddressPage extends StatelessWidget {
+  static const path = "/change-home-service-request-address-page";
+  static const name = "change-home-service-request-address-page";
 
-  const ChangeHomeServiceRequestTimePage({super.key});
+  const ChangeHomeServiceRequestAddressPage({super.key});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) =>
-      getIt<ChangeHomeServiceRequestTimeCubit>()
+      getIt<ChangeHomeServiceRequestAddressCubit>()
         ..init(),
       child: const _View(),
     );
@@ -40,10 +32,10 @@ class _View extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<ChangeHomeServiceRequestTimeCubit>();
+    final cubit = context.read<ChangeHomeServiceRequestAddressCubit>();
     return BlocListener<
-        ChangeHomeServiceRequestTimeCubit,
-        ChangeHomeServiceRequestTimeState>(
+        ChangeHomeServiceRequestAddressCubit,
+        ChangeHomeServiceRequestAddressState>(
       listener: (context, state) {
         state.whenOrNull(
           error: (message) {
@@ -74,15 +66,15 @@ class _View extends StatelessWidget {
       },
       child: Scaffold(
 
-        appBar: SimpleAppBar(title: 'ویرایش زمان درخواست'),
+        appBar: SimpleAppBar(title: 'ویرایش ادرس درخواست'),
         body: _Body(),
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.all(16),
           child: BlocBuilder<
-              ChangeHomeServiceRequestTimeCubit,
-              ChangeHomeServiceRequestTimeState>(
+              ChangeHomeServiceRequestAddressCubit,
+              ChangeHomeServiceRequestAddressState>(
             builder: (context, state) {
-              final cubit = context.read<ChangeHomeServiceRequestTimeCubit>();
+              final cubit = context.read<ChangeHomeServiceRequestAddressCubit>();
               final isLoading = state.maybeWhen(
                 submitLoading: () => true,
                 orElse: () => false,
@@ -93,9 +85,9 @@ class _View extends StatelessWidget {
                 orElse: () =>
                     InkwellButtonWidget(
                       backgroundColor: ServiceType.homeService.serviceColor,
-                      title: 'ویرایش زمان',
+                      title: 'ویرایش آدرس',
                       showLoading: isLoading,
-                      onTap: cubit.changeRequestTime,
+                      onTap: cubit.changeRequestAddress,
                     ),
               );
             },
@@ -112,10 +104,10 @@ class _Body extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<
-        ChangeHomeServiceRequestTimeCubit,
-        ChangeHomeServiceRequestTimeState>(
+        ChangeHomeServiceRequestAddressCubit,
+        ChangeHomeServiceRequestAddressState>(
       builder: (context, state) {
-        final cubit = context.read<ChangeHomeServiceRequestTimeCubit>();
+        final cubit = context.read<ChangeHomeServiceRequestAddressCubit>();
         return state.maybeWhen(
           idle: () => const SizedBox.shrink(),
           loading: () =>
@@ -172,9 +164,7 @@ class _LoadedView extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
 
-                  ServiceTimeSelectorWidget(times: cubit.dayScheduleItems,),
-                  SizedBox(
-                    height: MediaQuery.of(context).size.height * 0.3,
+
                   ),
                 ],
               ),
@@ -186,4 +176,4 @@ class _LoadedView extends StatelessWidget {
     );
   }
 
-}
+}*/
