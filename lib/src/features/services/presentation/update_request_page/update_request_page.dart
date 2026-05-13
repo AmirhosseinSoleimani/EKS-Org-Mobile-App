@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/emdad_service_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
@@ -11,10 +12,8 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/update_requ
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/agent_info_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_status_section.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/address_info_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/province_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/bottom_sheet/selectable_map_bottom_sheet.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/selectable_map_page.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/static_map_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
@@ -287,6 +286,8 @@ class _LoadedView extends StatelessWidget {
                     child: Stack(
                       children: [
                         StaticMapWidget(
+                          serviceType: cubit.selectedRequest?.serviceType ??
+                              ServiceType.reliefService,
                           latitude: cubit.selectedRequest?.latitude ?? 0,
                           longitude: cubit.selectedRequest?.longitude ?? 0,
                         ),

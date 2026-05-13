@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/online_map_page/cubit/online_map_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_row.dart';
@@ -45,7 +46,9 @@ class OnlineMapSection extends StatelessWidget {
                     emdadgarLng: emdadgar?.lastLocationLongitude ?? 0,
                     destLat: request?.latitude ?? 0,
                     destLng: request?.longitude ?? 0,
-                  ) : StaticMapWidget(latitude: request?.latitude ?? 0,
+                  ) : StaticMapWidget(
+                      serviceType: request?.serviceType ?? ServiceType.reliefService,
+                      latitude: request?.latitude ?? 0,
                       longitude: request?.longitude ?? 0),
                 ),
               ),

@@ -184,6 +184,7 @@ class _LoadedView extends StatelessWidget {
                     child: Stack(
                       children: [
                         StaticMapWidget(
+                          serviceType: ServiceType.homeService,
                           latitude: cubit.selectedRequest?.latitude ?? 0,
                           longitude: cubit.selectedRequest?.longitude ?? 0,
                         ),
