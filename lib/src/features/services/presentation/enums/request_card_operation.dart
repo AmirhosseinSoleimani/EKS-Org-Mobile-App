@@ -103,8 +103,8 @@ enum RequestCardOperation {
   ),
   changeHomeServiceRequestTime(
     label: 'ویرایش زمان درخواست',
-    icon: Icons.open_in_new,
-    color: Color(0xFFbf0000),
+    icon: Icons.access_time_filled,
+    color: Color(0xFFff9b00),
     route: ChangeHomeServiceRequestTimePage.path,
   ),
   followUpRegister(

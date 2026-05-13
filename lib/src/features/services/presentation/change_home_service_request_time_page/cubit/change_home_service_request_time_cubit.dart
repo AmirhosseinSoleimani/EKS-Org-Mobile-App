@@ -1,4 +1,4 @@
-import 'package:bloc/bloc.dart';
+
 import 'package:eks_sana_plus_org/src/common/constants/fetch_result_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/day_schedule_entity.dart';
@@ -13,12 +13,14 @@ import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_home
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_home_service_times_use_case.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:injectable/injectable.dart';
 
 part 'change_home_service_request_time_cubit.freezed.dart';
-
 part 'change_home_service_request_time_state.dart';
 
+@injectable
 class ChangeHomeServiceRequestTimeCubit extends Cubit<ChangeHomeServiceRequestTimeState> {
   ChangeHomeServiceRequestTimeCubit(this._fetchSelectedRequestItemUseCase,
       this._getHomeServiceRequestByIdUseCase,
@@ -148,7 +150,7 @@ class ChangeHomeServiceRequestTimeCubit extends Cubit<ChangeHomeServiceRequestTi
   Future<FetchResultType> _getDayScheduleItemsResult() async {
     final param = GetTimesParamEntity(
         serviceRequestId: selectedRequest?.id ?? 0,
-        planningId: selectedRequest?.planningId
+        planningId: selectedRequest?.planningId ?? 0
     );
     final result = await _getHomeServiceTimesTimesUseCase(param);
 

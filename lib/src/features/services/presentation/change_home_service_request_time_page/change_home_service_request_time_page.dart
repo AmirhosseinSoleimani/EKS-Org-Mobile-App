@@ -43,9 +43,6 @@ class _View extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<ChangeHomeServiceRequestTimeCubit>();
-    final colorScheme = Theme
-        .of(context)
-        .colorScheme;
     return BlocListener<
         ChangeHomeServiceRequestTimeCubit,
         ChangeHomeServiceRequestTimeState>(
@@ -177,10 +174,11 @@ class _LoadedView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TitleLargeText(text: "پیگیری جدید", fontSize: 16),
-                  Space.h32,
+
                   ServiceTimeSelectorWidget(times: cubit.dayScheduleItems,),
-                  _formElementGap(),
+                  SizedBox(
+                    height: MediaQuery.of(context).size.height * 0.3,
+                  ),
                 ],
               ),
             ),
@@ -191,5 +189,4 @@ class _LoadedView extends StatelessWidget {
     );
   }
 
-  SizedBox _formElementGap() => Space.h16;
 }

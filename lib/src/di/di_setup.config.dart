@@ -164,6 +164,8 @@ import '../features/services/presentation/cancel_request_page/cubit/cancel_reque
     as _i872;
 import '../features/services/presentation/cartable_cycle_page/cubit/cartable_cycle_cubit.dart'
     as _i1029;
+import '../features/services/presentation/change_home_service_request_time_page/cubit/change_home_service_request_time_cubit.dart'
+    as _i815;
 import '../features/services/presentation/chassis_request_history_page/cubit/chassis_request_history_cubit.dart'
     as _i891;
 import '../features/services/presentation/complete_urgent_request_page/cubit/complete_urgent_request_cubit.dart'
@@ -701,6 +703,15 @@ _i174.GetIt $initGetIt(
       gh<_i672.GetReliefRequestByIdUseCase>(),
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
       gh<_i786.GetEmdadgarInfoUseCase>(),
+    ),
+  );
+  gh.factory<_i815.ChangeHomeServiceRequestTimeCubit>(
+    () => _i815.ChangeHomeServiceRequestTimeCubit(
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
+      gh<_i352.GetHomeServiceTimesTimesUseCase>(),
+      gh<_i509.ChangeHomeServiceRequestTimeUseCase>(),
     ),
   );
   gh.lazySingleton<_i335.CustomerPreInvoiceOnTheFlyUseCase>(

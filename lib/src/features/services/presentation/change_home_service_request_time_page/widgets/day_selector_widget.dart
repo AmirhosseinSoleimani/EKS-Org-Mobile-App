@@ -2,7 +2,6 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/day_sche
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/material.dart';
-
 class DaySelectorWidget extends StatelessWidget {
   final List<DayScheduleEntity?> days;
   final DayScheduleEntity? selectedDay;
@@ -17,70 +16,43 @@ class DaySelectorWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final screenWidth = MediaQuery.of(context).size.width;
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final itemWidth = constraints.maxWidth * 0.22;
+        final clampedWidth = itemWidth.clamp(72.0, 110.0);
+        return SizedBox(
+          height: clampedWidth * 1.25,
+          child: ListView.separated(
+            scrollDirection: Axis.horizontal,
+            itemCount: days.length,
+            separatorBuilder: (_, __) => const SizedBox(width: AppSize.s12),
+            itemBuilder: (context, index) {
+              final day = days[index];
 
-    return SizedBox(
-      height: screenWidth * 0.24,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: days.length,
-        separatorBuilder: (_, __) => const SizedBox(width: AppSize.s16),
-        itemBuilder: (context, index) {
-          final day = days[index];
+              if (day == null) {
+                return const SizedBox.shrink();
+              }
 
-          if (day == null) {
-            return const SizedBox.shrink();
-          }
+              final isSelected = day.id == selectedDay?.id;
 
-          final isSelected = day.id == selectedDay?.id;
-
-          return _DayItem(
-            day: day,
-            isSelected: isSelected,
-            onTap: () => onDaySelected(day),
-          );
-        },
-      ),
+              return SizedBox(
+                width: clampedWidth,
+                child: AspectRatio(
+                  aspectRatio: 0.72,
+                  child: _DayItem(
+                    day: day,
+                    isSelected: isSelected,
+                    onTap: () => onDaySelected(day),
+                  ),
+                ),
+              );
+            },
+          ),
+        );
+      },
     );
   }
 }
-/*
-class _DayListView extends StatelessWidget {
-  final List<DayScheduleEntity?> days;
-  final DayScheduleEntity? selectedDay;
-
-  const _DayListView({
-    required this.days,
-    required this.selectedDay,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final cubit = context.read<RequestDetailCubit>();
-    final screenWidth = MediaQuery.of(context).size.width;
-
-    return SizedBox(
-      height: screenWidth * 0.24,
-      child: ListView.separated(
-        scrollDirection: Axis.horizontal,
-        itemCount: days.length,
-        separatorBuilder: (_, __) => const SizedBox(width: AppSize.s16),
-        itemBuilder: (context, index) {
-          final day = days[index];
-          if (day == null) return const SizedBox.shrink();
-
-          final isSelected = day.id == selectedDay?.id;
-
-          return _DayItem(
-            day: day,
-            isSelected: isSelected,
-            onTap: () => cubit.selectDay(day),
-          );
-        },
-      ),
-    );
-  }
-}*/
 
 class _DayItem extends StatelessWidget {
   final DayScheduleEntity day;

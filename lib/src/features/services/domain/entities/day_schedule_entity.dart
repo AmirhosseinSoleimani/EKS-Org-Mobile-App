@@ -37,6 +37,44 @@ class DayScheduleEntity {
       times: times.map((e) => e.toModel()).toList(),
     );
   }
+
+  String get monthAndYearTitle {
+    if (date == null || date!.isEmpty) {
+      return '';
+    }
+
+    final parts = date!.split('/');
+
+    if (parts.length < 2) {
+      return '';
+    }
+
+    final year = parts[0];
+    final month = int.tryParse(parts[1]) ?? 0;
+
+    const monthNames = [
+      '',
+      'فروردین',
+      'اردیبهشت',
+      'خرداد',
+      'تیر',
+      'مرداد',
+      'شهریور',
+      'مهر',
+      'آبان',
+      'آذر',
+      'دی',
+      'بهمن',
+      'اسفند',
+    ];
+
+    final monthName =
+    month >= 1 && month <= 12
+        ? monthNames[month]
+        : '';
+
+    return '$monthName $year';
+  }
 }
 
 class TimeRangeEntity {

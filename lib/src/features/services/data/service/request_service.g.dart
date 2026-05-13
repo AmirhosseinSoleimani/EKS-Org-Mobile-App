@@ -939,7 +939,7 @@ class _RequestService implements RequestService {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            'api/HomeServiceRequest/GetTimeForHomeServiceRequestByServiceRequestID',
+            '/api/HomeServiceRequest/GetTimeForHomeServiceRequestByServiceRequestID',
             queryParameters: queryParameters,
             data: _data,
           )

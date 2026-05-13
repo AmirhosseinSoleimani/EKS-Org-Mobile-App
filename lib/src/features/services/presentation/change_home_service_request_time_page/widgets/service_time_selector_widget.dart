@@ -10,7 +10,10 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 class ServiceTimeSelectorWidget extends StatelessWidget {
   final List<DayScheduleEntity> times;
 
-  const ServiceTimeSelectorWidget({super.key, required this.times});
+  const ServiceTimeSelectorWidget({
+    super.key,
+    required this.times,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -19,18 +22,10 @@ class ServiceTimeSelectorWidget extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TitleLargeText(
-          text: 'انتخاب روز',
-          fontSize: AppSize.s16,
-          color: colorScheme.onTertiary,
-        ),
 
-        Space.h16,
-
-        /// DAY ROW
         BlocBuilder<
-          ChangeHomeServiceRequestTimeCubit,
-          ChangeHomeServiceRequestTimeState
+            ChangeHomeServiceRequestTimeCubit,
+            ChangeHomeServiceRequestTimeState
         >(
           buildWhen: (previous, current) {
             return current.maybeWhen(
@@ -40,10 +35,43 @@ class ServiceTimeSelectorWidget extends StatelessWidget {
             );
           },
           builder: (context, state) {
-            final cubit = context.read<ChangeHomeServiceRequestTimeCubit>();
+            final cubit =
+            context.read<ChangeHomeServiceRequestTimeCubit>();
+
+            final title =
+                cubit.selectedDay?.monthAndYearTitle ?? '';
+
+            return TitleLargeText(
+              text:
+              title.isEmpty
+                  ? 'انتخاب روز'
+                  : 'انتخاب روز - $title',
+              fontSize: AppSize.s16,
+              color: colorScheme.onTertiary,
+            );
+          },
+        ),
+        Space.h16,
+        BlocBuilder<
+            ChangeHomeServiceRequestTimeCubit,
+            ChangeHomeServiceRequestTimeState
+        >(
+          buildWhen: (previous, current) {
+            return current.maybeWhen(
+              daySelected: (_) => true,
+              loaded: () => true,
+              orElse: () => false,
+            );
+          },
+          builder: (context, state) {
+            final cubit =
+            context.read<ChangeHomeServiceRequestTimeCubit>();
 
             if (cubit.selectedDay == null) {
-              final firstDay = times.whereType<DayScheduleEntity>().firstOrNull;
+              final firstDay =
+                  times
+                      .whereType<DayScheduleEntity>()
+                      .firstOrNull;
 
               if (firstDay != null) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
@@ -51,7 +79,6 @@ class ServiceTimeSelectorWidget extends StatelessWidget {
                 });
               }
             }
-
             return DaySelectorWidget(
               days: times,
               selectedDay: cubit.selectedDay,
@@ -60,11 +87,18 @@ class ServiceTimeSelectorWidget extends StatelessWidget {
           },
         ),
 
-        Space.h16,
+        Space.h48,
 
+        TitleLargeText(
+          text: 'بازه های زمانی',
+          fontSize: AppSize.s16,
+          color: colorScheme.onTertiary,
+        ),
+
+        Space.h16,
         BlocBuilder<
-          ChangeHomeServiceRequestTimeCubit,
-          ChangeHomeServiceRequestTimeState
+            ChangeHomeServiceRequestTimeCubit,
+            ChangeHomeServiceRequestTimeState
         >(
           buildWhen: (previous, current) {
             return current.maybeWhen(
@@ -74,7 +108,8 @@ class ServiceTimeSelectorWidget extends StatelessWidget {
             );
           },
           builder: (context, state) {
-            final cubit = context.read<ChangeHomeServiceRequestTimeCubit>();
+            final cubit =
+            context.read<ChangeHomeServiceRequestTimeCubit>();
 
             return TimeSelectorWidget(
               times: cubit.selectedDay?.times ?? [],
@@ -87,3 +122,4 @@ class ServiceTimeSelectorWidget extends StatelessWidget {
     );
   }
 }
+

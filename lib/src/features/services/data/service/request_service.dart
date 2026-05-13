@@ -145,7 +145,7 @@ abstract class RequestService {
   Future<BaseSingleResponse<PostFollowUpResponseModel>> createFollowUp(
       @Body() Map<String, dynamic> query);
 
-  @GET('api/HomeServiceRequest/GetTimeForHomeServiceRequestByServiceRequestID')
+  @GET('/api/HomeServiceRequest/GetTimeForHomeServiceRequestByServiceRequestID')
   Future<BaseListResponse<DayScheduleModel>> getTimes(
       @Queries() Map<String, dynamic> query);
 
