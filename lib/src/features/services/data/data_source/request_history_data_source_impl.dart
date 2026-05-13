@@ -18,6 +18,7 @@ import 'package:eks_sana_plus_org/src/features/services/data/models/minimal_cust
 import 'package:eks_sana_plus_org/src/features/services/data/models/non_cooperation_list_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/cancel_reason_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/cancel_request_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/change_address_home_service_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/change_time_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/chassis_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/complete_urgent_param_model.dart';
@@ -172,5 +173,10 @@ class RequestDataSourceImpl extends RequestDataSource {
   Future<BaseListResponse<DayScheduleModel>> getTimes(
       GetTimesParamModel param) async =>
       await _service.getTimes(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<MessageModel>> changeAddressHomeServiceRequest(
+      ChangeAddressHomeServiceParamModel param) async =>
+      await _service.changeAddressHomeServiceRequest(param.toJson());
 
 }

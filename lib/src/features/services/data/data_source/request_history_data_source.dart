@@ -16,6 +16,7 @@ import 'package:eks_sana_plus_org/src/features/services/data/models/minimal_cust
 import 'package:eks_sana_plus_org/src/features/services/data/models/non_cooperation_list_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/cancel_reason_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/cancel_request_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/change_address_home_service_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/change_time_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/chassis_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/complete_urgent_param_model.dart';
@@ -105,8 +106,11 @@ abstract class RequestDataSource {
       PostFollowUpResponseModel>> createFollowUp(CreateFollowUpParamModel param);
 
   Future<BaseListResponse<DayScheduleModel>> getTimes(
-      GetTimesParamModel model);
+      GetTimesParamModel param);
 
   Future<BaseSingleResponse<MessageModel>> changeTime(
-      ChangeTimeParamModel model);
+      ChangeTimeParamModel param);
+
+  Future<BaseSingleResponse<MessageModel>> changeAddressHomeServiceRequest(
+      ChangeAddressHomeServiceParamModel param);
 }

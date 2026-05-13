@@ -17,6 +17,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/minimal_
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/non_cooperation_list_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/cancel_reason_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/cancel_request_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/change_address_home_service_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/change_time_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/chassis_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/complete_urgent_param_entity.dart';
@@ -106,4 +107,8 @@ abstract class RequestRepository {
       GetTimesParamEntity param);
 
   Future<ApiResult<MessageEntity>> changeTime(ChangeTimeParamEntity param);
+
+
+  Future<ApiResult<MessageEntity>> changeAddressHomeServiceRequest(
+      ChangeAddressHomeServiceParamEntity param);
 }

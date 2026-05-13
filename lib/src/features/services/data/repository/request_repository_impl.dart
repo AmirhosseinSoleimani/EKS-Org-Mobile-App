@@ -18,6 +18,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/minimal_
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/non_cooperation_list_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/cancel_reason_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/cancel_request_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/change_address_home_service_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/change_time_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/chassis_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/complete_urgent_param_entity.dart';
@@ -302,6 +303,18 @@ class RequestRepositoryImpl extends RequestRepository {
       GetTimesParamEntity param) async {
     try {
       final result = await _dataSource.getTimes(param.toModel());
+      return result.toApiResult();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<MessageEntity>> changeAddressHomeServiceRequest(
+      ChangeAddressHomeServiceParamEntity param) async {
+    try {
+      final result = await _dataSource.changeAddressHomeServiceRequest(
+          param.toModel());
       return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);

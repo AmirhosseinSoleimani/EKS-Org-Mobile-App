@@ -153,6 +153,10 @@ abstract class RequestService {
   Future<BaseSingleResponse<MessageModel>> changeTime(
       @Body() Map<String, dynamic> body);
 
+  @POST('/api/HomeServiceRequest/editAddressHomeServiceRequest')
+  Future<BaseSingleResponse<MessageModel>> changeAddressHomeServiceRequest(
+      @Body() Map<String, dynamic> body);
+
 
 
 }
