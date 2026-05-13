@@ -13,6 +13,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/for
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_status_section.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/address_info_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/province_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/bottom_sheet/selectable_map_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/selectable_map_page.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/static_map_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
@@ -92,7 +93,6 @@ class _Body extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<UpdateRequestCubit, UpdateRequestState>(
       builder: (context, state) {
-        final cubit = context.read<UpdateRequestCubit>();
         return state.maybeWhen(
           idle: () => const SizedBox.shrink(),
           loading: () => Center(
@@ -390,26 +390,15 @@ class _LoadedView extends StatelessWidget {
   }
 
   Future<void> _showSelectableMap(BuildContext context) async {
-    final result = await showModalBottomSheet<AddressInfoEntity>(
+    final cubit = context.read<UpdateRequestCubit>();
+
+    final result = await SelectableMapBottomSheet.show(
       context: context,
-      isScrollControlled: true,
-      builder: (_) {
-        return SizedBox(
-          height: MediaQuery
-              .of(context)
-              .size
-              .height,
-          child: SelectableMapPage(
-            initialLocation: context
-                .read<UpdateRequestCubit>()
-                .selectedLocation,
-          ),
-        );
-      },
+      initialLocation: cubit.selectedLocation,
     );
 
     if (result != null && context.mounted) {
-      context.read<UpdateRequestCubit>().setSelectedLocation(result);
+      cubit.setSelectedLocation(result);
     }
   }
 }

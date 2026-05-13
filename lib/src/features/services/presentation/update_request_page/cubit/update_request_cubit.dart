@@ -116,7 +116,7 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
       return requestResult;
     }
 
-    if (_shouldFetchEmdadgarInfo) {
+    if (selectedRequest?.hasEmdadGar ?? false) {
       final emdadgarResult = await _fetchEmdadgarInfo();
       if (emdadgarResult != FetchResultType.success) {
         return emdadgarResult;
@@ -144,10 +144,6 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
     }
 
     return FetchResultType.success;
-  }
-
-  bool get _shouldFetchEmdadgarInfo {
-    return (selectedRequest?.requestStatus ?? 0) > 1;
   }
 
   Future<FetchResultType> _fetchSelectedServiceRequest() async {

@@ -108,6 +108,8 @@ import '../features/services/domain/repository/request_repository_share_data.dar
     as _i838;
 import '../features/services/domain/usecases/cancel_service_request_use_case.dart'
     as _i320;
+import '../features/services/domain/usecases/change_home_service_request_address_use_case.dart'
+    as _i998;
 import '../features/services/domain/usecases/change_home_service_request_time_use_case.dart'
     as _i509;
 import '../features/services/domain/usecases/complete_aid_urgent_request_use_case.dart'
@@ -527,6 +529,11 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i603.RequestRepository>(
     () => _i794.RequestRepositoryImpl(gh<_i1016.RequestDataSource>()),
   );
+  gh.lazySingleton<_i998.ChangeHomeServiceRequestAddressUseCase>(
+    () => _i998.ChangeHomeServiceRequestAddressUseCase(
+      gh<_i603.RequestRepository>(),
+    ),
+  );
   gh.lazySingleton<_i509.ChangeHomeServiceRequestTimeUseCase>(
     () => _i509.ChangeHomeServiceRequestTimeUseCase(
       gh<_i603.RequestRepository>(),
@@ -814,13 +821,6 @@ _i174.GetIt $initGetIt(
       gh<_i786.GetEmdadgarInfoUseCase>(),
     ),
   );
-  gh.factory<_i806.ChangeHomeServiceRequestAddressCubit>(
-    () => _i806.ChangeHomeServiceRequestAddressCubit(
-      gh<_i376.FetchSelectedRequestItemUseCase>(),
-      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
-      gh<_i786.GetEmdadgarInfoUseCase>(),
-    ),
-  );
   gh.factory<_i1013.HomeServiceRequestListCubit>(
     () => _i1013.HomeServiceRequestListCubit(
       gh<_i809.GetHomeServiceRequestListUseCase>(),
@@ -840,6 +840,15 @@ _i174.GetIt $initGetIt(
       gh<_i639.GetReferenceCarUseCase>(),
       gh<_i812.GetMinimalCustomerInfoUseCase>(),
       gh<_i364.CompleteAidUrgentRequestUseCase>(),
+    ),
+  );
+  gh.factory<_i806.ChangeHomeServiceRequestAddressCubit>(
+    () => _i806.ChangeHomeServiceRequestAddressCubit(
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
+      gh<_i265.GetProvinceWithCityListUseCase>(),
+      gh<_i998.ChangeHomeServiceRequestAddressUseCase>(),
     ),
   );
   gh.factory<_i809.PreInvoiceCubit>(

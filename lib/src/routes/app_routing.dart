@@ -5,6 +5,7 @@ import 'package:eks_sana_plus_org/src/features/dashboard/presentation/dashboard_
 import 'package:eks_sana_plus_org/src/features/indicator_report/presentation/indicator_report_page/indicator_report_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/cancel_request_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cartable_cycle_page/cartable_cycle_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/change_home_service_request_address_page/change_home_service_request_address_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/change_home_service_request_time_page/change_home_service_request_time_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/chassis_request_history_page/chassis_request_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/complete_urgent_request_page/complete_urgent_request_page.dart';
@@ -251,6 +252,15 @@ class Routes {
           name: ChangeHomeServiceRequestTimePage.name,
           pageBuilder: (context, state) => getPage(
             child: const ChangeHomeServiceRequestTimePage(),
+            state: state,
+          ),
+        ),
+
+        GoRoute(
+          path: ChangeHomeServiceRequestAddressPage.path,
+          name: ChangeHomeServiceRequestAddressPage.name,
+          pageBuilder: (context, state) => getPage(
+            child: const ChangeHomeServiceRequestAddressPage(),
             state: state,
           ),
         ),

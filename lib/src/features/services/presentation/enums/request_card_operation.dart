@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/cancel_request_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cartable_cycle_page/cartable_cycle_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/change_home_service_request_address_page/change_home_service_request_address_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/change_home_service_request_time_page/change_home_service_request_time_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/chassis_request_history_page/chassis_request_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/complete_urgent_request_page/complete_urgent_request_page.dart';
@@ -107,12 +108,19 @@ enum RequestCardOperation {
     color: Color(0xFFff9b00),
     route: ChangeHomeServiceRequestTimePage.path,
   ),
+  changeHomeServiceRequestAddress(
+    label: 'ویرایش آدرس درخواست',
+    icon: Icons.location_on,
+    color: Color(0xFF1bc5bd),
+    route: ChangeHomeServiceRequestAddressPage.path,
+  ),
   followUpRegister(
     label: 'ثبت پیگیری',
     icon: Icons.headset,
     color: Color(0xFF864a1e),
     route: FollowUpRegisterPage.path,
-  ),;
+  ),
+  ;
 
   final String label;
   final IconData icon;
@@ -158,6 +166,16 @@ extension OperationItemVisibility on RequestCardOperation {
         return false;
       case RequestCardOperation.completeUrgentRequest:
        return request is ReliefRequestEntity && (request.isUrgentRequest ?? false);
+
+      case  RequestCardOperation.changeHomeServiceRequestAddress:
+      case  RequestCardOperation.changeHomeServiceRequestTime:
+      if (type == ServiceType.homeService) {
+        return true;
+      }
+      return false;
+
+
+
 
       default:
         return true;

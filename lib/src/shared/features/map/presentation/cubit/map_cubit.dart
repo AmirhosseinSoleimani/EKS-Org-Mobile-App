@@ -104,6 +104,7 @@ class MapCubit extends Cubit<MapState> {
   }
 
   void setInitialLocation(AddressInfoEntity? address) {
+
     _initialLocation = address;
   }
 
