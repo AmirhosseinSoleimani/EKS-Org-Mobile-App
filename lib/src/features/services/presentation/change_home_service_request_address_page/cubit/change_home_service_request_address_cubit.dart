@@ -1,6 +1,6 @@
 import 'package:eks_sana_plus_org/src/common/constants/fetch_result_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_info_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/change_address_home_service_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/service_request_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/change_home_service_request_address_use_case.dart';

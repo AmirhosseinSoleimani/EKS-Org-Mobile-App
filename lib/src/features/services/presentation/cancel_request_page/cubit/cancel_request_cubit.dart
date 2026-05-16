@@ -11,7 +11,7 @@ import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/get_ser
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/post_evaluation_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/cancel_request_reason_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_info_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/evaluation_service_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/cancel_reason_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/cancel_request_param_entity.dart';

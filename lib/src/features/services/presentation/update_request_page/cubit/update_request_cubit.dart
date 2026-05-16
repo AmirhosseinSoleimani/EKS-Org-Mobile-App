@@ -8,7 +8,7 @@ import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/service_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/get_aid_services_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/get_defects_list_use_case.dart';
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_info_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/service_request_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/update_service_request_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';

@@ -3,12 +3,15 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/cancel_r
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/car_covers_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/cartable_cycle_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/chassis_request_history_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/check_depot_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/complete_urgent_request_data_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/control_info_entities/control_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/day_schedule_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/distance_kilometer_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_followups_data_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_info_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_followups_data_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_info_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/service_assign_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/evaluation_history_item_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/follow_up_status_type_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/followup_entity.dart';
@@ -21,15 +24,18 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/c
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/change_address_home_service_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/change_time_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/chassis_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/check_depot_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/complete_urgent_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/create_follow_up_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/distance_kilometer_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/emdadgar_list_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/get_emdadgar_followups_data_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/get_reference_car_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/get_times_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/minimal_customer_info_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_operation_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/service_assign_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/service_request_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/update_service_request_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/post_follow_up_response_entity.dart';
@@ -314,6 +320,42 @@ class RequestRepositoryImpl extends RequestRepository {
       ChangeAddressHomeServiceParamEntity param) async {
     try {
       final result = await _dataSource.changeAddressHomeServiceRequest(
+          param.toModel());
+      return result.toApiResult();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<CheckDepotEntity>> getCheckDepot(
+      CheckDepotParamEntity param) async {
+    try {
+      final result = await _dataSource.getCheckDepot(
+          param.toModel());
+      return result.toApiResult();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<List<EmdadgarEntity>>> getEmdadgarList(
+      EmdadgarListParamEntity param) async {
+    try {
+      final result = await _dataSource.getEmdadgarList(
+          param.toModel());
+      return result.toApiResult();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<ServiceAssignResponseEntity>> serviceAssign(
+      ServiceAssignParamEntity param) async {
+    try {
+      final result = await _dataSource.serviceAssign(
           param.toModel());
       return result.toApiResult();
     } catch (e, s) {

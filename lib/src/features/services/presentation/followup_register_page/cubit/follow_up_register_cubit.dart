@@ -2,7 +2,7 @@ import 'package:eks_sana_plus_org/src/common/constants/fetch_result_type.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/common/constants/source.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_info_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/follow_up_status_type_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/followup_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/create_follow_up_param_entity.dart';

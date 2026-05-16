@@ -1,4 +1,4 @@
-import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_info_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar/emdadgar_info_model.dart';
 
 class EmdadgarInfoEntity {
   final int? id;

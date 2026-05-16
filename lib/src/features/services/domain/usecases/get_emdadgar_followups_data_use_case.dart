@@ -1,4 +1,4 @@
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_followups_data_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_followups_data_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/get_emdadgar_followups_data_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/repository/request_repository.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';

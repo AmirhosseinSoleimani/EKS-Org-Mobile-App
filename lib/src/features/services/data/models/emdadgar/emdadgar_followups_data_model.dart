@@ -1,4 +1,4 @@
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_followups_data_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_followups_data_entity.dart';
 
 class EmdadgarFollowupsDataModel
     extends EmdadgarFollowupsDataEntity {

@@ -1,4 +1,4 @@
-import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_followups_data_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar/emdadgar_followups_data_model.dart';
 
 class EmdadgarFollowupsDataEntity {
   final String? startTime;

@@ -4,12 +4,15 @@ import 'package:eks_sana_plus_org/src/features/services/data/models/cancel_reque
 import 'package:eks_sana_plus_org/src/features/services/data/models/car_covers_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/cartable_cycle_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/chassis_request_history_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/check_depot_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/complete_urgent_request_data_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/control_info_models/control_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/day_schedule_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/distance_kilometer_model.dart';
-import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_followups_data_model.dart';
-import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar_info_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar/emdadgar_followups_data_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar/emdadgar_info_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar/emdadgar_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar/service_assign_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/evaluation_history_item_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/follow_up_status_type_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
@@ -157,6 +160,20 @@ abstract class RequestService {
   Future<BaseSingleResponse<MessageModel>> changeAddressHomeServiceRequest(
       @Body() Map<String, dynamic> body);
 
+  @POST('/api/NewEmdadgar/GetEmdadgarList')
+  Future<BaseListResponse<EmdadgarModel>> getEmdadgarList(
+      @Body() Map<String, dynamic> body);
 
+  @POST('/api/Depot/GetCheckDepot')
+  Future<BaseSingleResponse<CheckDepotModel>> getCheckDepot(
+      @Body() Map<String, dynamic> body);
+
+  @POST('/api/AidServiceAssign/Post')
+  Future<BaseSingleResponse<ServiceAssignResponseModel>> aidServiceAssign(
+      @Body() Map<String, dynamic> body);
+
+  @POST('/api/HomeServiceAssign/Post')
+  Future<BaseSingleResponse<ServiceAssignResponseModel>> homeServiceAssign(
+      @Body() Map<String, dynamic> body);
 
 }

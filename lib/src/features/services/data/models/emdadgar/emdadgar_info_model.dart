@@ -1,4 +1,4 @@
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar_info_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_info_entity.dart';
 
 class EmdadgarInfoModel extends EmdadgarInfoEntity {
   const EmdadgarInfoModel({
