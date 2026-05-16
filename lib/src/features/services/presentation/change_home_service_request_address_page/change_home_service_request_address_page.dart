@@ -4,20 +4,14 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/change_home_service_request_address_page/cubit/change_home_service_request_address_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/address_location_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/agent_info_detail_section.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_status_section.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/province_entity.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/bottom_sheet/selectable_map_bottom_sheet.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/static_map_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/overlay_drop_down_menu.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/inkwell_button_widget/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/gestures.dart';
@@ -172,95 +166,16 @@ class _LoadedView extends StatelessWidget {
               ),
             ],
             Space.h8,
+            AddressLocationSection(
+              latitude: cubit.selectedRequest?.latitude ?? 0,
+              longitude: cubit.selectedRequest?.longitude ?? 0,
+              selectedProvince: cubit.selectedProvince,
+              provinceList: cubit.provinceList,
+              addressController: cubit.addressController,
 
-            FormSectionContainer(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const BodyMediumText(text: "موقعیت و آدرس"),
-                  Space.h32,
-                  SizedBox(
-                    height: 280,
-                    child: Stack(
-                      children: [
-                        StaticMapWidget(
-                          serviceType: ServiceType.homeService,
-                          latitude: cubit.selectedRequest?.latitude ?? 0,
-                          longitude: cubit.selectedRequest?.longitude ?? 0,
-                        ),
-
-                        Positioned(
-                          bottom: 12,
-                          left: 12,
-                          right: 12,
-                          child: InkWell(
-                            onTap: () => _showSelectableMap(context),
-                            child: Container(
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 94, vertical: 6),
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withAlpha(16),
-                                    spreadRadius: 2,
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              alignment: Alignment.center,
-                              child: const BodyMediumText(
-                                text: "انتخاب روی نقشه",
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-
-                  Space.h24,
-                  ValueListenableBuilder<ProvinceEntity?>(
-                    valueListenable: cubit.selectedProvince,
-                    builder: (_, selectedDefect, _) {
-                      return SizedBox(
-                        height: 52,
-                        child: FilterButton(
-                          title: selectedDefect?.title ?? "انتخاب شهر و استان",
-                          label: 'شهر و استان',
-                          hasFloatingLabel: true,
-                          expand: true,
-                          overlayBuilder: (context, position, width, dismiss) {
-                            return OverlayDropdownMenu<ProvinceEntity>(
-                              position: position,
-                              width: width,
-                              items: cubit.provinceList,
-                              onDismiss: dismiss,
-                              onSelect: (item) {
-                                cubit.setSelectedProvince(item);
-                                dismiss();
-                              },
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                  Space.h24,
-                  TextFormFieldWidget(
-                    labelText: "آدرس",
-                    controller: cubit.addressController,
-                    autofocus: false,
-                    textInputType: TextInputType.streetAddress,
-                    textAlign: TextAlign.start,
-                    textInputAction: TextInputAction.done,
-                    maxLines: 3,
-                  ),
-                ],
-              ),
+              onProvinceSelected: cubit.setSelectedProvince,
+              onLocationSelected: cubit.setSelectedLocation,
+              serviceType: ServiceType.homeService,
             ),
 
           ],
@@ -268,19 +183,4 @@ class _LoadedView extends StatelessWidget {
       ),
     );
   }
-
-
-  Future<void> _showSelectableMap(BuildContext context) async {
-    final cubit = context.read<ChangeHomeServiceRequestAddressCubit>();
-
-    final result = await SelectableMapBottomSheet.show(
-      context: context,
-      initialLocation: cubit.selectedLocation,
-    );
-
-    if (result != null && context.mounted) {
-      cubit.setSelectedLocation(result);
-    }
-  }
-
 }

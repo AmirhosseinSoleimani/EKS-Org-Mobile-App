@@ -9,6 +9,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/update_requ
 import 'package:eks_sana_plus_org/src/features/services/presentation/update_request_page/widgets/map_message_box.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/update_request_page/widgets/service_item_widget.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/update_request_page/widgets/submit_button.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/address_location_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/agent_info_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_status_section.dart';
@@ -275,112 +276,28 @@ class _LoadedView extends StatelessWidget {
                 ],
               ),
             ),
-            FormSectionContainer(
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const BodyMediumText(text: "موقعیت و آدرس"),
-                  Space.h32,
-                  SizedBox(
-                    height: 280,
-                    child: Stack(
-                      children: [
-                        StaticMapWidget(
-                          serviceType: cubit.selectedRequest?.serviceType ??
-                              ServiceType.reliefService,
-                          latitude: cubit.selectedRequest?.latitude ?? 0,
-                          longitude: cubit.selectedRequest?.longitude ?? 0,
-                        ),
+            AddressLocationSection(
+              latitude: cubit.selectedRequest?.latitude ?? 0,
+              longitude: cubit.selectedRequest?.longitude ?? 0,
+              serviceType:
+              cubit.selectedRequest?.serviceType ?? ServiceType.reliefService,
 
-                        Positioned(
-                          bottom: 12,
-                          left: 12,
-                          right: 12,
-                          child: InkWell(
-                            onTap: () => _showSelectableMap(context),
-                            child: Container(
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 94, vertical: 6),
-                              padding: const EdgeInsets.symmetric(vertical: 12),
-                              decoration: BoxDecoration(
-                                color: Colors.white,
-                                borderRadius: BorderRadius.circular(8),
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Colors.black.withAlpha(16),
-                                    spreadRadius: 2,
-                                    blurRadius: 4,
-                                    offset: const Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              alignment: Alignment.center,
-                              child: const BodyMediumText(
-                                text: "انتخاب روی نقشه",
-                              ),
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
+              selectedProvince: cubit.selectedProvince,
+              provinceList: cubit.provinceList,
 
-                  Space.h24,
-                  MapMessageBox(
-                    message:
-                        "این محدوده در طرح ترافیک قرار دارد و ممکن است محدودیت تردد داشته باشد.",
-                  ),
+              addressController: cubit.addressController,
 
-                  Space.h24,
-                  ValueListenableBuilder<ProvinceEntity?>(
-                    valueListenable: cubit.selectedProvince,
-                    builder: (_, selectedDefect, _) {
-                      return SizedBox(
-                        height: 52,
-                        child: FilterButton(
-                          title: selectedDefect?.title ?? "انتخاب شهر و استان",
-                          label: 'شهر و استان',
-                          hasFloatingLabel: true,
-                          expand: true,
-                          overlayBuilder: (context, position, width, dismiss) {
-                            return OverlayDropdownMenu<ProvinceEntity>(
-                              position: position,
-                              width: width,
-                              items: cubit.provinceList,
-                              onDismiss: dismiss,
-                              onSelect: (item) {
-                                cubit.setSelectedProvince(item);
-                                dismiss();
-                              },
-                            );
-                          },
-                        ),
-                      );
-                    },
-                  ),
-                  Space.h24,
-                  TextFormFieldWidget(
-                    labelText: "آدرس",
-                    controller: cubit.addressController,
-                    autofocus: false,
-                    textInputType: TextInputType.streetAddress,
-                    textAlign: TextAlign.start,
-                    textInputAction: TextInputAction.done,
-                    maxLines: 3,
-                  ),
-                  Space.h24,
-                  TextFormFieldWidget(
-                    labelText: "توضیحات",
-                    controller: cubit.descriptionController,
-                    autofocus: false,
-                    textInputType: TextInputType.text,
-                    textAlign: TextAlign.start,
-                    textInputAction: TextInputAction.done,
-                    maxLines: 3,
-                  ),
-                ],
-              ),
+              onProvinceSelected: cubit.setSelectedProvince,
+              onLocationSelected: cubit.setSelectedLocation,
+
+              extraWidgets: [
+                const MapMessageBox(
+                  message:
+                  "این محدوده در طرح ترافیک قرار دارد و ممکن است محدودیت تردد داشته باشد.",
+                ),
+              ],
             ),
+
             Space.h24,
             SubmitButtonWidget(formKey: cubit.formKey),
             Space.h16,

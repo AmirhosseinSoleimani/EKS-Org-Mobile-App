@@ -292,7 +292,7 @@ class ChangeHomeServiceRequestAddressCubit
 
   void setSelectedProvince(ProvinceEntity province) {
     selectedProvince.value = province;
-    selectedLocation = selectedLocation?.copyWith(
+    selectedLocation = (selectedLocation ?? const AddressInfoEntity()).copyWith(
       latitude: province.latitude,
       longitude: province.longitude,
     );
