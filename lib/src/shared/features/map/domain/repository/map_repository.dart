@@ -7,6 +7,7 @@ import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/location
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/location_to_address_response_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/map_request_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/online_route_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/params/area_base_info_param_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/params/route_param_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/province_entity.dart';
 
@@ -14,7 +15,7 @@ abstract class MapRepository {
   Future<ApiResult<AddressToLocationResponseEntity?>> fetchAddressToLocation(MapRequestEntity? entity);
   Future<ApiResult<LocationToAddressResponseEntity?>> fetchLocationToAddress(MapRequestEntity? entity);
   Future<ApiResult<RouteDataEntity>> getRoute(RouteParamEntity param);
-  Future<ApiResult<AreaBaseEntity>> getAreaBaseData();
+  Future<ApiResult<AreaBaseEntity>> getAreaBaseData(AreaBaseInfoParamEntity param);
 
   Future<ApiResult<List<ProvinceEntity>>> getProvinceList();
 

@@ -126,12 +126,16 @@ import '../features/services/domain/usecases/get_cartable_cycle_list_use_case.da
     as _i765;
 import '../features/services/domain/usecases/get_chassis_request_history_list_use_case.dart'
     as _i581;
+import '../features/services/domain/usecases/get_check_depot_use_case.dart'
+    as _i990;
 import '../features/services/domain/usecases/get_distance_kilometer_use_case.dart'
     as _i985;
 import '../features/services/domain/usecases/get_emdadgar_followups_data_use_case.dart'
     as _i734;
 import '../features/services/domain/usecases/get_emdadgar_info_use_case.dart'
     as _i786;
+import '../features/services/domain/usecases/get_emdadgar_list_use_case.dart'
+    as _i955;
 import '../features/services/domain/usecases/get_evaluation_history_list_use_case.dart'
     as _i467;
 import '../features/services/domain/usecases/get_follow_up_status_type_list_use_case.dart'
@@ -158,6 +162,8 @@ import '../features/services/domain/usecases/get_request_followup_history_use_ca
     as _i67;
 import '../features/services/domain/usecases/get_request_status_history_use_case.dart'
     as _i955;
+import '../features/services/domain/usecases/service_assign_use_case.dart'
+    as _i595;
 import '../features/services/domain/usecases/set_selected_request_item_use_case.dart'
     as _i369;
 import '../features/services/domain/usecases/update_service_request_use_case.dart'
@@ -616,6 +622,9 @@ _i174.GetIt $initGetIt(
       gh<_i603.RequestRepository>(),
     ),
   );
+  gh.lazySingleton<_i990.GetCheckDepotUseCase>(
+    () => _i990.GetCheckDepotUseCase(gh<_i603.RequestRepository>()),
+  );
   gh.lazySingleton<_i985.GetDistanceKilometerUseCase>(
     () => _i985.GetDistanceKilometerUseCase(gh<_i603.RequestRepository>()),
   );
@@ -624,6 +633,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i786.GetEmdadgarInfoUseCase>(
     () => _i786.GetEmdadgarInfoUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i955.GetEmdadgarListUseCase>(
+    () => _i955.GetEmdadgarListUseCase(gh<_i603.RequestRepository>()),
   );
   gh.lazySingleton<_i467.GetEvaluationHistoryListUseCase>(
     () => _i467.GetEvaluationHistoryListUseCase(gh<_i603.RequestRepository>()),
@@ -660,6 +672,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i955.GetRequestStatusHistoryUseCase>(
     () => _i955.GetRequestStatusHistoryUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i595.ServiceAssignUseCase>(
+    () => _i595.ServiceAssignUseCase(gh<_i603.RequestRepository>()),
   );
   gh.lazySingleton<_i180.UpdateServiceRequestUseCase>(
     () => _i180.UpdateServiceRequestUseCase(gh<_i603.RequestRepository>()),

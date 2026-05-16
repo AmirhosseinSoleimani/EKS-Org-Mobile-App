@@ -3,6 +3,7 @@ import 'package:eks_sana_plus_org/src/shared/features/map/data/models/area_base_
 import 'package:eks_sana_plus_org/src/shared/features/map/data/models/location_data_model.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/data/models/location_model.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/data/models/online_route_model.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/data/models/param/area_base_info_param_model.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/data/models/param/route_param_model.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/data/models/province_model.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/data/service/address_service.dart';
@@ -43,8 +44,8 @@ class MapDataSourceImpl extends MapDataSource {
   }
 
   @override
-  Future<BaseSingleResponse<AreaBaseModel>> getAreaBaseData() async{
-    return await addressService.getAreaBaseData({});
+  Future<BaseSingleResponse<AreaBaseModel>> getAreaBaseData(AreaBaseInfoParamModel param) async{
+    return await addressService.getAreaBaseData(param.toJson());
   }
 
   @override

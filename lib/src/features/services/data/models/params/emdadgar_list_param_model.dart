@@ -2,8 +2,8 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/e
 
 class EmdadgarListParamModel extends EmdadgarListParamEntity {
   EmdadgarListParamModel({
+    required super.serviceType,
     super.serviceRequestId,
-    super.serviceType,
     super.serviceId,
     super.aidPerName,
     super.aidPerCode,
@@ -17,7 +17,7 @@ class EmdadgarListParamModel extends EmdadgarListParamEntity {
   Map<String, dynamic> toJson() {
     return {
       "serviceRequestId": serviceRequestId,
-      "serviceType": serviceType,
+      "serviceType": serviceType.value,
       "serviceId": serviceId,
       "aidPerName": aidPerName,
       "aidPerCode": aidPerCode,

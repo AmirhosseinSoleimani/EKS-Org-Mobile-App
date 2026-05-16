@@ -2,13 +2,13 @@ import 'package:eks_sana_plus_org/src/shared/features/map/data/models/param/rout
 
 class RouteParamEntity {
   final LocationParamEntity start;
-  final LocationParamEntity destination;
+  final LocationParamEntity? destination;
   final bool includeLegs;
   final bool includeStepsPoints;
 
   RouteParamEntity({
+    this.destination,
     required this.start,
-    required this.destination,
     required this.includeLegs,
     required this.includeStepsPoints,
   });
@@ -30,7 +30,7 @@ class RouteParamEntity {
   RouteParamModel toModel() {
     return RouteParamModel(
       start: start.toModel(),
-      destination: destination.toModel(),
+      destination: destination?.toModel(),
       includeLegs: includeLegs,
       includeStepsPoints: includeStepsPoints,
     );

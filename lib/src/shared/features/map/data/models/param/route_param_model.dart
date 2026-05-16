@@ -3,8 +3,8 @@ import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/params/r
 
 class RouteParamModel extends RouteParamEntity {
   RouteParamModel({
-    required LocationParamModel super.start,
-    required LocationParamModel super.destination,
+    super.destination,
+    required  super.start,
     required super.includeLegs,
     required super.includeStepsPoints,
   });

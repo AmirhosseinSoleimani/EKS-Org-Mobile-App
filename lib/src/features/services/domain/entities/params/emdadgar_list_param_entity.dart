@@ -1,8 +1,9 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/emdadgar_list_param_model.dart';
 
 class EmdadgarListParamEntity {
   int? serviceRequestId;
-  String? serviceType;
+  ServiceType serviceType;
   int? serviceId;
   String? aidPerName;
   String? aidPerCode;
@@ -13,8 +14,8 @@ class EmdadgarListParamEntity {
   bool? requestProvinceEmdadgar;
 
   EmdadgarListParamEntity({
+   required this.serviceType,
     this.serviceRequestId,
-    this.serviceType,
     this.serviceId,
     this.aidPerName,
     this.aidPerCode,
@@ -27,7 +28,7 @@ class EmdadgarListParamEntity {
 
   EmdadgarListParamEntity copyWith({
     int? serviceRequestId,
-    String? serviceType,
+    ServiceType? serviceType,
     int? serviceId,
     String? aidPerName,
     String? aidPerCode,

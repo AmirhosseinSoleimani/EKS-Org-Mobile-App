@@ -7,6 +7,7 @@ import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/location
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/location_to_address_response_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/map_request_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/online_route_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/params/area_base_info_param_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/params/route_param_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/province_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/repository/map_repository.dart';
@@ -61,9 +62,9 @@ class MapRepositoryImpl extends MapRepository {
   }
 
   @override
-  Future<ApiResult<AreaBaseEntity>> getAreaBaseData() async {
+  Future<ApiResult<AreaBaseEntity>> getAreaBaseData(AreaBaseInfoParamEntity param) async {
     try {
-      final result = await _dataSource.getAreaBaseData();
+      final result = await _dataSource.getAreaBaseData(param.toModel());
       return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);
