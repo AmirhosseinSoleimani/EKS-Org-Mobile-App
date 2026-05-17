@@ -10,6 +10,9 @@ class PlanAidPersonModel extends PlanAidPersonEntity {
     super.firstName,
     super.lastName,
     super.fullName,
+    super.isEmdadService,
+    super.isHomeService,
+    super.nationalCode,
   });
 
   factory PlanAidPersonModel.fromJson(Map<String, dynamic> json) {
@@ -22,6 +25,9 @@ class PlanAidPersonModel extends PlanAidPersonEntity {
       firstName: json["firstName"],
       lastName: json["lastName"],
       fullName: json["fullName"],
+      nationalCode: json["nationalCode"],
+      isEmdadService: json["isEmdadService"],
+      isHomeService: json["isHomeService"],
     );
   }
 }

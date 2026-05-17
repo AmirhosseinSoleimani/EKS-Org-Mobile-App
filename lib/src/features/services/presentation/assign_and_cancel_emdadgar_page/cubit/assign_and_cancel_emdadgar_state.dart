@@ -18,7 +18,7 @@ class AssignAndCancelEmdadgarState with _$AssignAndCancelEmdadgarState {
   const factory AssignAndCancelEmdadgarState.submitLoading() = _SubmitLoading;
 
   const factory AssignAndCancelEmdadgarState.submitSuccess({
-    required ServiceAssignResponseEntity data,
+    required BottomSheetMessageModel message,
   }) = _SubmitSuccess;
 
 }

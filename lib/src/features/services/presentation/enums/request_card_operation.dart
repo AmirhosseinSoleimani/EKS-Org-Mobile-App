@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/common/constants/request_status.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/assign_and_cancel_emdadgar_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/cancel_request_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cartable_cycle_page/cartable_cycle_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/change_home_service_request_address_page/change_home_service_request_address_page.dart';
@@ -120,7 +121,12 @@ enum RequestCardOperation {
     color: Color(0xFF864a1e),
     route: FollowUpRegisterPage.path,
   ),
-  ;
+  assignAndCancelEmdadgar(
+    label: 'تخصیص',
+    icon: Icons.person_add_alt_rounded,
+    color: Color(0xFF3eb122),
+    route: AssignAndCancelEmdadgarPage.path,
+  );
 
   final String label;
   final IconData icon;

@@ -1,4 +1,4 @@
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_report_detail_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar/emdadgar_report_detail_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_report_entity.dart';
 
 class EmdadgarReportModel extends EmdadgarReportEntity {

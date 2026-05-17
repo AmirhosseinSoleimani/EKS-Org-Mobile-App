@@ -137,7 +137,7 @@ return submitSuccess(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  loading,TResult Function()?  loaded,TResult Function( BottomSheetMessageModel message)?  error,TResult Function()?  connectionError,TResult Function()?  submitLoading,TResult Function( ServiceAssignResponseEntity data)?  submitSuccess,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  loading,TResult Function()?  loaded,TResult Function( BottomSheetMessageModel message)?  error,TResult Function()?  connectionError,TResult Function()?  submitLoading,TResult Function( BottomSheetMessageModel message)?  submitSuccess,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle();case _Loading() when loading != null:
@@ -146,7 +146,7 @@ return loaded();case _Error() when error != null:
 return error(_that.message);case _ConnectionError() when connectionError != null:
 return connectionError();case _SubmitLoading() when submitLoading != null:
 return submitLoading();case _SubmitSuccess() when submitSuccess != null:
-return submitSuccess(_that.data);case _:
+return submitSuccess(_that.message);case _:
   return orElse();
 
 }
@@ -164,7 +164,7 @@ return submitSuccess(_that.data);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  loading,required TResult Function()  loaded,required TResult Function( BottomSheetMessageModel message)  error,required TResult Function()  connectionError,required TResult Function()  submitLoading,required TResult Function( ServiceAssignResponseEntity data)  submitSuccess,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  loading,required TResult Function()  loaded,required TResult Function( BottomSheetMessageModel message)  error,required TResult Function()  connectionError,required TResult Function()  submitLoading,required TResult Function( BottomSheetMessageModel message)  submitSuccess,}) {final _that = this;
 switch (_that) {
 case _Idle():
 return idle();case _Loading():
@@ -173,7 +173,7 @@ return loaded();case _Error():
 return error(_that.message);case _ConnectionError():
 return connectionError();case _SubmitLoading():
 return submitLoading();case _SubmitSuccess():
-return submitSuccess(_that.data);case _:
+return submitSuccess(_that.message);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -190,7 +190,7 @@ return submitSuccess(_that.data);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  loading,TResult? Function()?  loaded,TResult? Function( BottomSheetMessageModel message)?  error,TResult? Function()?  connectionError,TResult? Function()?  submitLoading,TResult? Function( ServiceAssignResponseEntity data)?  submitSuccess,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  loading,TResult? Function()?  loaded,TResult? Function( BottomSheetMessageModel message)?  error,TResult? Function()?  connectionError,TResult? Function()?  submitLoading,TResult? Function( BottomSheetMessageModel message)?  submitSuccess,}) {final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle();case _Loading() when loading != null:
@@ -199,7 +199,7 @@ return loaded();case _Error() when error != null:
 return error(_that.message);case _ConnectionError() when connectionError != null:
 return connectionError();case _SubmitLoading() when submitLoading != null:
 return submitLoading();case _SubmitSuccess() when submitSuccess != null:
-return submitSuccess(_that.data);case _:
+return submitSuccess(_that.message);case _:
   return null;
 
 }
@@ -437,10 +437,10 @@ String toString() {
 
 
 class _SubmitSuccess implements AssignAndCancelEmdadgarState {
-  const _SubmitSuccess({required this.data});
+  const _SubmitSuccess({required this.message});
   
 
- final  ServiceAssignResponseEntity data;
+ final  BottomSheetMessageModel message;
 
 /// Create a copy of AssignAndCancelEmdadgarState
 /// with the given fields replaced by the non-null parameter values.
@@ -452,16 +452,16 @@ _$SubmitSuccessCopyWith<_SubmitSuccess> get copyWith => __$SubmitSuccessCopyWith
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubmitSuccess&&const DeepCollectionEquality().equals(other.data, data));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubmitSuccess&&(identical(other.message, message) || other.message == message));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(data));
+int get hashCode => Object.hash(runtimeType,message);
 
 @override
 String toString() {
-  return 'AssignAndCancelEmdadgarState.submitSuccess(data: $data)';
+  return 'AssignAndCancelEmdadgarState.submitSuccess(message: $message)';
 }
 
 
@@ -472,7 +472,7 @@ abstract mixin class _$SubmitSuccessCopyWith<$Res> implements $AssignAndCancelEm
   factory _$SubmitSuccessCopyWith(_SubmitSuccess value, $Res Function(_SubmitSuccess) _then) = __$SubmitSuccessCopyWithImpl;
 @useResult
 $Res call({
- ServiceAssignResponseEntity data
+ BottomSheetMessageModel message
 });
 
 
@@ -489,10 +489,10 @@ class __$SubmitSuccessCopyWithImpl<$Res>
 
 /// Create a copy of AssignAndCancelEmdadgarState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? data = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
   return _then(_SubmitSuccess(
-data: freezed == data ? _self.data : data // ignore: cast_nullable_to_non_nullable
-as ServiceAssignResponseEntity,
+message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
+as BottomSheetMessageModel,
   ));
 }
 

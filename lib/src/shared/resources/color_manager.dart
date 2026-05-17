@@ -19,6 +19,7 @@ class ColorLightManager {
   static const error = Color(0xFFC30000);
   static const inversePrimary = Color(0xFFFFF2F2);
   static const onError = Color(0xFF00966D);
+  static const success = Color(0xFFd7fff3);
   static const surfaceBright = Color(0xFFF3FDFA);
 
   static const surface = Color(0xFFF5F5F5);

@@ -1,6 +1,7 @@
 import 'package:bloc/bloc.dart';
 import 'package:eks_sana_plus_org/src/common/constants/fetch_result_type.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar/emdadgar_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/service_assign_response_entity.dart';
@@ -24,10 +25,12 @@ import 'package:eks_sana_plus_org/src/shared/features/map/domain/usecase/get_rou
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
+import 'package:injectable/injectable.dart';
 
 part 'assign_and_cancel_emdadgar_cubit.freezed.dart';
 part 'assign_and_cancel_emdadgar_state.dart';
 
+@injectable
 class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
   AssignAndCancelEmdadgarCubit(this._getEmdadgarListUseCase,
       this._serviceAssignUseCase,
@@ -97,7 +100,7 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
 
     _safeEmit(const AssignAndCancelEmdadgarState.loading());
 
-    final requestResult = await _fetchServiceRequestData();
+  /*  final requestResult = await _fetchServiceRequestData();
     if (requestResult != FetchResultType.success) {
       return requestResult;
     }
@@ -107,16 +110,17 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
     if (routesResult != FetchResultType.success) {
       return routesResult;
     }
+    */
 
     final emdadgarListResult = await _getEmdadgarList();
     if (emdadgarListResult != FetchResultType.success) {
       return emdadgarListResult;
     }
 
-    final areaBaseInfoResult = await _getAreaBaseInfo();
+  /*  final areaBaseInfoResult = await _getAreaBaseInfo();
     if (areaBaseInfoResult != FetchResultType.success) {
       return areaBaseInfoResult;
-    }
+    }*/
 
     return FetchResultType.success;
   }
@@ -207,8 +211,80 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
     );
     return fetchResult;
   }
+///faker method
+  Future<FetchResultType> _getEmdadgarList() async {
+    // شبیه‌سازی تاخیر شبکه
+    await Future.delayed(const Duration(seconds: 1));
 
+    final List<Map<String, dynamic>> fakeJsonList = [
+      {
+        "id": 13395,
+        "agencyName": "ابراهيم فرجي",
+        "plakText": "63 ط 699 44",
+        "khodroTypeText": "زامیاد",
+        "distanceKmToOrigin": 4.82,
+        'statusTitle': 'در حال ماموریت',
+        "priority": 1,
+        "isActive": true,
+        "emdadgars": [
+          {
+            "aidPerName": "محمد زمانی",
+            "report": {
+              "daily": {"successCount": 5, "cancelCount": 1},
+              "weekly": {"successCount": 20, "cancelCount": 3}
+            }
+          }
+        ]
+      },
+      {
+        "id": 13639,
+        "agencyName": "خسرو محمدي نژاد روشنده",
+        "plakText": "45 ط 757 38",
+        "khodroTypeText": "سایپا 151",
+        "distanceKmToOrigin": 4.98,
+        'statusTitle': 'آماده خدمت',
+        "priority": 2,
+        "isActive": true,
+        "emdadgars": [
+          {
+            "aidPerName": "خسرو محمدی نژاد",
+            "report": {
+              "daily": {"successCount": 2, "cancelCount": 0},
+              "weekly": {"successCount": 12, "cancelCount": 1}
+            }
+          }
+        ]
+      },
+      {
+        "id": 14000,
+        "agencyName": "نمایندگی مرکزی میلاد",
+        "plakText": "22 ج 114 10",
+        "khodroTypeText": "نیسان یدک‌کش",
+        "distanceKmToOrigin": 2.5,
+        "priority": 3,
+        'statusTitle': 'در حال ماموریت',
+        "isActive": true,
+        "emdadgars": [
+          {
+            "aidPerName": "میلاد برنامه‌نویس",
+            "report": {
+              "daily": {"successCount": 10, "cancelCount": 0},
+              "weekly": {"successCount": 45, "cancelCount": 2}
+            }
+          }
+        ]
+      }
+    ];
 
+    final items = fakeJsonList.map((json) => EmdadgarModel.fromJson(json)).toList();
+
+    emdadgarList.clear();
+    emdadgarList.addAll(items);
+
+    return FetchResultType.success;
+  }
+
+/*
   Future<FetchResultType> _getEmdadgarList() async {
     final emdadServiceId = (selectedRequest is ReliefRequestEntity) ? (
         selectedRequest as ReliefRequestEntity
@@ -245,7 +321,7 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
       },
     );
     return fetchResult;
-  }
+  }*/
 
 
   void _safeEmit(AssignAndCancelEmdadgarState state) {

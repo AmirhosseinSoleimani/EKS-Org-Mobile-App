@@ -5,27 +5,56 @@ class EmdadgarBriefInfoEntity {
   String? agencyCode;
   int? aidPerCode;
   String? aidPerName;
+  int? siAidPerCode;
   bool? inVacation;
   bool? isActive;
+  bool? hasWithoutEmdadgarCode;
   EmdadgarReportEntity? report;
 
   EmdadgarBriefInfoEntity({
     this.agencyCode,
     this.aidPerCode,
     this.aidPerName,
+    this.siAidPerCode,
+    this.report,
     this.inVacation,
     this.isActive,
-    this.report,
+    this.hasWithoutEmdadgarCode,
   });
+
+  EmdadgarBriefInfoEntity copyWith({
+    String? agencyCode,
+    int? aidPerCode,
+    String? aidPerName,
+    int? siAidPerCode,
+    bool? inVacation,
+    bool? isActive,
+    bool? hasWithoutEmdadgarCode,
+    EmdadgarReportEntity? report,
+  }) {
+    return EmdadgarBriefInfoEntity(
+      agencyCode: agencyCode ?? this.agencyCode,
+      aidPerCode: aidPerCode ?? this.aidPerCode,
+      aidPerName: aidPerName ?? this.aidPerName,
+      siAidPerCode: siAidPerCode ?? this.siAidPerCode,
+      inVacation: inVacation ?? this.inVacation,
+      isActive: isActive ?? this.isActive,
+      hasWithoutEmdadgarCode:
+      hasWithoutEmdadgarCode ?? this.hasWithoutEmdadgarCode,
+      report: report ?? this.report,
+    );
+  }
 
   EmdadgarBriefInfoModel toModel() {
     return EmdadgarBriefInfoModel(
       agencyCode: agencyCode,
       aidPerCode: aidPerCode,
       aidPerName: aidPerName,
+      siAidPerCode: siAidPerCode,
+      report: report,
       inVacation: inVacation,
       isActive: isActive,
-      report: report,
+      hasWithoutEmdadgarCode: hasWithoutEmdadgarCode,
     );
   }
 }

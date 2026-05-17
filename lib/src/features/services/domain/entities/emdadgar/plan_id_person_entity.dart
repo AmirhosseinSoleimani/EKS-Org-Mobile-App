@@ -9,6 +9,9 @@ class PlanAidPersonEntity {
   String? firstName;
   String? lastName;
   String? fullName;
+  bool? isHomeService;
+  bool? isEmdadService;
+  String? nationalCode;
 
   PlanAidPersonEntity({
     this.planId,
@@ -19,6 +22,9 @@ class PlanAidPersonEntity {
     this.firstName,
     this.lastName,
     this.fullName,
+    this.isHomeService,
+    this.isEmdadService,
+    this.nationalCode,
   });
 
   PlanAidPersonModel toModel() {
@@ -31,6 +37,9 @@ class PlanAidPersonEntity {
       firstName: firstName,
       lastName: lastName,
       fullName: fullName,
+      nationalCode: nationalCode,
+      isEmdadService: isEmdadService,
+      isHomeService: isHomeService,
     );
   }
 }

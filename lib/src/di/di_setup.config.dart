@@ -168,6 +168,8 @@ import '../features/services/domain/usecases/set_selected_request_item_use_case.
     as _i369;
 import '../features/services/domain/usecases/update_service_request_use_case.dart'
     as _i180;
+import '../features/services/presentation/assign_and_cancel_emdadgar_page/cubit/assign_and_cancel_emdadgar_cubit.dart'
+    as _i860;
 import '../features/services/presentation/cancel_request_page/cubit/cancel_request_cubit.dart'
     as _i872;
 import '../features/services/presentation/cartable_cycle_page/cubit/cartable_cycle_cubit.dart'
@@ -759,6 +761,20 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i139.LoginUseCase>(
     () => _i139.LoginUseCase(gh<_i716.AuthRepository>()),
+  );
+  gh.factory<_i860.AssignAndCancelEmdadgarCubit>(
+    () => _i860.AssignAndCancelEmdadgarCubit(
+      gh<_i955.GetEmdadgarListUseCase>(),
+      gh<_i595.ServiceAssignUseCase>(),
+      gh<_i990.GetCheckDepotUseCase>(),
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      gh<_i678.GetRouteUseCase>(),
+      gh<_i159.GetAreaBaseInfoUseCase>(),
+      gh<_i433.GetCancelReasonRequestUseCase>(),
+      gh<_i707.GetNonCooperationListUseCase>(),
+    ),
   );
   gh.factory<_i563.RequestStatusHistoryCubit>(
     () => _i563.RequestStatusHistoryCubit(

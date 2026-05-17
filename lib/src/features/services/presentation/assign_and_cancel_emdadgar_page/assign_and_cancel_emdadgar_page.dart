@@ -1,0 +1,135 @@
+import 'dart:ui';
+
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
+import 'package:eks_sana_plus_org/src/di/di_setup.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/cubit/assign_and_cancel_emdadgar_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/available_emdadgar_list.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_status_section.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class AssignAndCancelEmdadgarPage extends StatelessWidget {
+  static const path = "/assign-and-cancel-emdadgar-page";
+  static const name = "assign-and-cancel-emdadgar-page";
+
+  const AssignAndCancelEmdadgarPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => getIt<AssignAndCancelEmdadgarCubit>()..init(),
+      child: const _View(),
+    );
+  }
+}
+
+class _View extends StatelessWidget {
+  const _View();
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.read<AssignAndCancelEmdadgarCubit>();
+    return BlocListener<
+      AssignAndCancelEmdadgarCubit,
+      AssignAndCancelEmdadgarState
+    >(
+      listener: (context, state) {
+        state.whenOrNull(
+          error: (message) {
+            BottomSheetMessage.showErrorWithAction(
+              context: context,
+              data: message,
+              onPositive: cubit.init,
+            );
+          },
+          connectionError: () {
+            BottomSheetMessage.showCustom(
+              context: context,
+              content: NoInternetBottomSheet(onRetry: cubit.init),
+              actionWidget: const SizedBox.shrink(),
+              isDismissible: false,
+              enableDrag: false,
+            );
+          },
+          submitSuccess: (message) {
+            BottomSheetMessage.showNotice(
+              isDismissible: false,
+              context: context,
+              data: message,
+              buttonColor: ServiceType.homeService.serviceColor,
+            );
+          },
+        );
+      },
+      child: Scaffold(
+        appBar: SimpleAppBar(title: 'اعزام امدادرسان'),
+        body:
+            BlocBuilder<
+              AssignAndCancelEmdadgarCubit,
+              AssignAndCancelEmdadgarState
+            >(
+              builder: (context, state) {
+                return state.maybeWhen(
+                  idle: () => const SizedBox.shrink(),
+                  loading: () => Center(
+                    child: CircularProgressIndicator(
+                      color: ServiceType.homeService.serviceColor,
+                    ),
+                  ),
+                  orElse: () => _LoadedView(),
+                );
+              },
+            ),
+      ),
+    );
+  }
+}
+
+class _LoadedView extends StatelessWidget {
+  const _LoadedView();
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.read<AssignAndCancelEmdadgarCubit>();
+
+    return ScrollConfiguration(
+      behavior: ScrollConfiguration.of(context).copyWith(
+        dragDevices: {PointerDeviceKind.touch, PointerDeviceKind.mouse},
+      ),
+      child: SingleChildScrollView(
+        padding: const EdgeInsets.all(AppSize.s16),
+        child: Column(
+          children: [
+            ExpandableSection(
+              isExpanded: false,
+              header: RequestStatusSection(request: cubit.selectedRequest),
+              child: RequestDetailSection(
+                selectedRequest: cubit.selectedRequest,
+                showCustomerInfo: true,
+              ),
+            ),
+            Space.h8,
+            FormSectionContainer(
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+
+                  AvailableEmdadgarList(
+                    emdadgarList: cubit.emdadgarList,
+                  ),
+                ],
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
