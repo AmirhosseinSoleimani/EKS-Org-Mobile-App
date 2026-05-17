@@ -9,6 +9,7 @@ class BodyMediumText extends StatelessWidget {
   final int? maxLines;
   final TextDirection? textDirection;
   final TextOverflow? textOverflow;
+  final FontWeight? fontWeight;
 
   const BodyMediumText({
     super.key,
@@ -19,6 +20,7 @@ class BodyMediumText extends StatelessWidget {
     this.lineHeight,
     this.maxLines,
     this.textOverflow ,
+    this.fontWeight,
     this.textDirection = TextDirection.rtl,
   });
 
@@ -32,8 +34,12 @@ class BodyMediumText extends StatelessWidget {
       maxLines: maxLines,
       style: Theme.of(context)
           .textTheme
-          .bodyMedium
-          ?.copyWith(fontSize: fontSize, color: color, height: lineHeight),
+          .bodyMedium?.copyWith(
+        fontSize: fontSize,
+        color: color,
+        height: lineHeight,
+        fontWeight: fontWeight,
+      ),
     );
   }
 }

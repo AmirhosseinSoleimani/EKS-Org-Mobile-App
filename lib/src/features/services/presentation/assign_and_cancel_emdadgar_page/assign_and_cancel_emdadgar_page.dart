@@ -15,6 +15,8 @@ import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import 'widgets/bottom_sheet/emdadgar_info_bottom_sheet.dart';
+
 class AssignAndCancelEmdadgarPage extends StatelessWidget {
   static const path = "/assign-and-cancel-emdadgar-page";
   static const name = "assign-and-cancel-emdadgar-page";
@@ -65,6 +67,9 @@ class _View extends StatelessWidget {
               data: message,
               buttonColor: ServiceType.homeService.serviceColor,
             );
+          },
+          checkDepotSuccess: () {
+            showEmdadgarInfoBottomSheet(context);
           },
         );
       },

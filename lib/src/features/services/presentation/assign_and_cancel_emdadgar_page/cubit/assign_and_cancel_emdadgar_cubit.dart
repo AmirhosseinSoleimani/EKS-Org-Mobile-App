@@ -1,12 +1,17 @@
 import 'package:bloc/bloc.dart';
 import 'package:eks_sana_plus_org/src/common/constants/fetch_result_type.dart';
+import 'package:eks_sana_plus_org/src/common/constants/reason_type.dart';
+import 'package:eks_sana_plus_org/src/common/constants/request_status.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar/emdadgar_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/cancel_request_reason_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/check_depot_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/service_assign_response_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/emdadgar_list_param_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/cancel_reason_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/check_depot_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/service_assign_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/fetch_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_cancel_reason_request_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_check_depot_use_case.dart';
@@ -29,6 +34,13 @@ import 'package:injectable/injectable.dart';
 
 part 'assign_and_cancel_emdadgar_cubit.freezed.dart';
 part 'assign_and_cancel_emdadgar_state.dart';
+
+enum ServiceAssignAction {
+  assignEmdadgar,
+  cancelMission,
+  nonCooperation,
+}
+
 
 @injectable
 class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
@@ -62,17 +74,26 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
   final List<EmdadgarEntity> emdadgarList = [];
   RouteDataEntity? routeData;
   AreaBaseEntity? _areaBaseEntity;
+  CheckDepotEntity? checkDepotEntity;
 
   final emdadgarNameController = TextEditingController();
   final aidPerCodeController = TextEditingController();
   final aidDistanceKmController = TextEditingController();
+  final descriptionController = TextEditingController();
 
   final ValueNotifier<bool> onlyReadyEmdadgar = ValueNotifier<bool>(false);
   final ValueNotifier<bool> requestCityEmdadgar = ValueNotifier<bool>(false);
   final ValueNotifier<bool> requestProvinceEmdadgar = ValueNotifier<bool>(
       false);
+  final ReasonListNotifier =
+  ValueNotifier<List<CancelRequestReasonEntity>>([]);
+
+  final selectedCancelReason = ValueNotifier<CancelRequestReasonEntity?>(null);
+
+  VoidCallback? _retryAction;
 
   Future<void> init() async {
+    _retryAction = init;
     final result = await _initializeData();
 
     switch (result) {
@@ -92,6 +113,32 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
         _emitError('نشست شما منقضی شده است. لطفا دوباره وارد شوید');
         break;
     }
+  }
+
+  Future<void> initNonCooperation() async {
+    _retryAction = initNonCooperation;
+    final requestStatus = RequestStatus.fromValue(
+        selectedRequest?.requestStatus);
+    final param = CancelReasonParamEntity(
+      serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
+      reasonType: requestStatus.isBeforeDispatch
+          ? ReasonType.beforeDispatch
+          : ReasonType.afterDispatch,);
+
+
+    final result = await _getCancelReasonRequestUseCase(param);
+
+    result.whenOrNull(
+      success: (data, _, _) {
+        ReasonListNotifier.value.clear();
+        ReasonListNotifier.value.addAll(data);
+        _safeEmit(AssignAndCancelEmdadgarState.loaded());
+      },
+      failure: (error, failures) => _emitError(failures ?? error.toString()),
+      connectionError: () =>
+          _safeEmit(const AssignAndCancelEmdadgarState.connectionError()),
+
+    );
   }
 
   Future<FetchResultType> _initializeData() async {
@@ -322,6 +369,91 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
     );
     return fetchResult;
   }*/
+  Future<void> setSelectedCancelReason(CancelRequestReasonEntity? value) async {
+    selectedCancelReason.value = value;
+  }
+
+  Future<void> setSelectedEmdadgar(EmdadgarEntity value) async {
+    selectedEmdadgar = value;
+  }
+
+
+  Future<void> executeServiceAssign(ServiceAssignAction action) async {
+    emit(const AssignAndCancelEmdadgarState.submitLoading());
+
+    final param = ServiceAssignParamEntity(
+      serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
+      rejectReason: (action == ServiceAssignAction.nonCooperation)
+          ? selectedCancelReason.value?.id
+          : null,
+      cancelReason: (action == ServiceAssignAction.cancelMission)
+          ? selectedCancelReason.value?.id
+          : null,
+
+      description: descriptionController.text,
+      isActive: selectedEmdadgar?.isActive,
+      planningId: selectedEmdadgar?.planningId,
+      serviceRequestId: selectedRequest?.id,
+      emdadgarID: selectedEmdadgar?.id,
+      distance: int.tryParse(
+          selectedEmdadgar?.distanceKmToOrigin.toString() ?? '0'),
+      emdadgarPriority: selectedEmdadgar?.priority,
+      /* distanceTitle:,
+      duration: ,
+      durationTitle: ,
+      type:*/
+
+    );
+    final result = await _serviceAssignUseCase.call(param);
+    result.whenOrNull(
+      success: (data, _, _) {
+        _safeEmit(
+          AssignAndCancelEmdadgarState.assignSuccess(response: data),
+        );
+      },
+      failure: (error, failures) => _emitError(failures ?? error.toString()),
+      connectionError: () =>
+          _safeEmit(const AssignAndCancelEmdadgarState.connectionError()),
+    );
+  }
+
+  ///fakeer method
+  Future<void> checkDepotAndOpen(EmdadgarEntity entity) async {
+    emit(AssignAndCancelEmdadgarState.checkDepotLoading(
+      emdadgarId: entity.id!,
+    ));
+    await Future.delayed(Duration(seconds: 2));
+
+    checkDepotEntity = CheckDepotEntity(allowMark500: true,launchDepotIsEnable: true);
+    _safeEmit(const AssignAndCancelEmdadgarState.checkDepotSuccess());
+  }
+
+ /* Future<void> checkDepotAndOpen(EmdadgarEntity entity) async {
+    emit(AssignAndCancelEmdadgarState.checkDepotLoading(
+      emdadgarId: entity.id!,
+    ));
+
+    final param = CheckDepotParamEntity(
+      serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
+      serviceRequestId: selectedRequest?.id,
+      planningId: selectedEmdadgar?.planningId,
+    );
+
+
+    final result = await _getCheckDepotUseCase.call(param);
+
+    result.whenOrNull(
+      success: (data, _, _) {
+        checkDepotEntity = data;
+        _safeEmit(const AssignAndCancelEmdadgarState.checkDepotSuccess());
+      },
+      failure: (error, failures) => _emitError(failures ?? error.toString()),
+      connectionError: () =>
+          _safeEmit(const AssignAndCancelEmdadgarState.connectionError()),
+    );
+  }*/
+
+
 
 
   void _safeEmit(AssignAndCancelEmdadgarState state) {
@@ -347,4 +479,6 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
     }
     return 'درخواست شما با خطا مواجه شد، لطفا با پشتیبانی تماس بگیرید';
   }
+
+  void retryLastAction() => _retryAction?.call();
 }

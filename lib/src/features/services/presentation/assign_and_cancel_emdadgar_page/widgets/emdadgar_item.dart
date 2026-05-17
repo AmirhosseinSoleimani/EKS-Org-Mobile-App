@@ -1,4 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/cubit/assign_and_cancel_emdadgar_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/non_cooperation_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/color_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
@@ -6,6 +8,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/inkwell_button_widget/inkwe
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class EmdadgarItem extends StatelessWidget {
   final EmdadgarEntity entity;
@@ -14,6 +17,7 @@ class EmdadgarItem extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cubit = context.read<AssignAndCancelEmdadgarCubit>();
     final colorScheme = Theme.of(context).colorScheme;
 
     final brief = entity.emdadgars?.isNotEmpty == true
@@ -75,7 +79,7 @@ class EmdadgarItem extends StatelessWidget {
 
           Row(
             children: [
-              Icon(Icons.location_on, color: colorScheme.outline),
+              Icon(Icons.location_on,size: 18, color: colorScheme.outline),
               Space.w8,
               BodyMediumText(
                 text:
@@ -88,7 +92,7 @@ class EmdadgarItem extends StatelessWidget {
 
           Row(
             children: [
-              const Icon(Icons.local_shipping, size: 18),
+               Icon(Icons.local_shipping, size: 18,color: colorScheme.outline),
               const SizedBox(width: 6),
               Expanded(child:   BodyMediumText(text: entity.khodroTypeText ?? "")),
             ],
@@ -109,21 +113,52 @@ class EmdadgarItem extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: InkwellButtonWidget(
-                  onTap: () {},
-                  title: "تخصیص",
-                  textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(color: Colors.white),
-                ),
+                child: BlocBuilder<
+                    AssignAndCancelEmdadgarCubit,
+                    AssignAndCancelEmdadgarState>(
+                  builder: (context, state) {
+                    final cubit = context.read<AssignAndCancelEmdadgarCubit>();
+
+                    final loadingId = state.maybeWhen(
+                      checkDepotLoading: (id) => id,
+                      orElse: () => null,
+                    );
+
+                    final isThisItemLoading = loadingId == entity.id;
+                    final isAnotherItemLoading = loadingId != null &&
+                        loadingId != entity.id;
+
+                    return InkwellButtonWidget(
+                      height: 40,
+                      showLoading: isThisItemLoading,
+                      backgroundColor: cubit.selectedRequest?.serviceType
+                          ?.serviceColor,
+                      onTap: isAnotherItemLoading
+                          ? (){}
+                          : () {
+                        cubit.setSelectedEmdadgar(entity);
+                        cubit.checkDepotAndOpen(entity);
+                      },
+                      title: "تخصیص",
+                      textStyle:  Theme.of(context).textTheme.titleLarge?.copyWith(color: Colors.white, fontSize: 15),
+                    );
+                  },
+                )
+                ,
               ),
               const SizedBox(width: 12),
               Expanded(
 
                 child: InkwellButtonWidget(
+                  height: 40,
                   backgroundColor: Colors.transparent,
                   borderColor: Color(0xFFf6c972),
-                  textStyle: Theme.of(context).textTheme.titleMedium?.copyWith(color: Color(0xFFae8129)),
+                  textStyle: Theme.of(context).textTheme.titleLarge?.copyWith(color: Color(0xFFae8129), fontSize: 15),
                   title: "عدم همکاری",
-                  onTap: () {},
+                  onTap: () {
+                    cubit.setSelectedEmdadgar(entity);
+                    showNonCooperationBottomSheet(context);
+                  },
                 ),
               ),
             ],

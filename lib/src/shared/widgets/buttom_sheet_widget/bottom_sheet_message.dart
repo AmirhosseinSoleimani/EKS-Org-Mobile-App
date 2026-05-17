@@ -19,6 +19,7 @@ class BottomSheetMessage {
     double? topRadius,
     Color? backgroundColor,
     VoidCallback? onDismiss,
+    double? maxHeight,
   }) {
     return _showSheet(
         context: context,
@@ -33,7 +34,7 @@ class BottomSheetMessage {
           actionWidget: actionWidget,
           backgroundColor: backgroundColor,
           borderRadius: topRadius,
-
+          maxHeight: maxHeight,
         )
     );
   }

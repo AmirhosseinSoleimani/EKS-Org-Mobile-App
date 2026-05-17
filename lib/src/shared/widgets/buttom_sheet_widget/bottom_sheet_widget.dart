@@ -17,6 +17,7 @@ class BottomSheetWidget extends StatelessWidget {
   final bool? isLoading;
   final bool? isSheetPop;
   final bool? dismissible;
+  final double? maxHeight;
 
   const BottomSheetWidget({
     super.key,
@@ -35,6 +36,7 @@ class BottomSheetWidget extends StatelessWidget {
     this.isLoading,
     this.isSheetPop,
     this.dismissible,
+    this.maxHeight
   });
 
   @override
@@ -42,7 +44,7 @@ class BottomSheetWidget extends StatelessWidget {
     final theme = Theme.of(context);
     final media = MediaQuery.of(context);
 
-    final maxHeight = media.size.height * 0.7;
+    final maxHeight = media.size.height * (this.maxHeight ??0.7);
 
     final hasTitle = title.trim().isNotEmpty;
     final hasMessage = message.trim().isNotEmpty;

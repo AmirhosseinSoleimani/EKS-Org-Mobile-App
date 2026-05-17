@@ -14,6 +14,11 @@ class StatusLabel extends StatelessWidget {
   final Color? backgroundColor;
   final StatusLabelVariant variant;
   final double fontSize;
+  final double? width;
+  final double borderRadius;
+  final TextAlign textAlign;
+  final EdgeInsets padding;
+  final FontWeight? fontWeight;
 
   const StatusLabel({
     super.key,
@@ -22,6 +27,11 @@ class StatusLabel extends StatelessWidget {
     this.backgroundColor,
     this.fontSize = 10,
     this.variant = StatusLabelVariant.filled,
+    this.width,
+    this.borderRadius = 50,
+    this.textAlign = TextAlign.center,
+    this.padding = const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+    this.fontWeight,
   });
 
   @override
@@ -30,17 +40,18 @@ class StatusLabel extends StatelessWidget {
     final Color resolvedTextColor = _resolveTextColor(resolvedBackgroundColor);
 
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+      width: width,
+      padding: padding,
       decoration: BoxDecoration(
         color: resolvedBackgroundColor,
         border: Border.all(color: color),
-        borderRadius: BorderRadius.circular(50),
+        borderRadius: BorderRadius.circular(borderRadius),
       ),
       child: BodySmallText(
         text: text,
         color: resolvedTextColor,
         fontSize: fontSize,
-        textAlign: TextAlign.center,
+        textAlign: textAlign,fontWeight: fontWeight,
       ),
     );
   }
