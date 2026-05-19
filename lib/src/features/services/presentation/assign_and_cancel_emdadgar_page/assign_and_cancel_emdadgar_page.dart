@@ -3,10 +3,12 @@ import 'dart:ui';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/cubit/assign_and_cancel_emdadgar_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/aid_person_map_widget.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/available_emdadgar_list.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/bottom_sheet/assign_confirm_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/bottom_sheet/cancel_mission_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/bottom_sheet/non_cooperation_bottom_sheet.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/search_and_filter_box.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
@@ -133,7 +135,22 @@ class _LoadedView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-
+                  SearchAndFilterBox(
+                    isLoading: false,
+                    onOpenFilter: () =>{}/* showFilterBottomSheet(context)*/,
+                    onRefresh: () => {}/*cubit.refreshListAndClearFilters()*/,
+                  ),
+                  Space.h16,
+                  AidPersonMapWidget(
+                    emdadgars: cubit.emdadgarList,
+                    customerLatitude: cubit.selectedRequest?.latitude ?? 0,
+                    customerLongitude: cubit.selectedRequest?.longitude ?? 0,
+                    onEmdadgarTap: (emdadgar) {
+                      cubit.setSelectedEmdadgar(emdadgar);
+                      cubit.getCheckDepotAndRoute(emdadgar);
+                    },
+                  ),
+                  Space.h16,
                   AvailableEmdadgarList(
                     emdadgarList: cubit.emdadgarList,
                   ),

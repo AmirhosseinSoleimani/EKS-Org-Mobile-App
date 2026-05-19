@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/material.dart';
 
 import 'emdadgar_item.dart';
@@ -18,8 +19,8 @@ class AvailableEmdadgarList extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const Text("امداد رسان های در دسترس"),
-        const SizedBox(height: 12),
+        const TitleLargeText(text: "امداد رسان های در دسترس", fontSize: 15,),
+        const SizedBox(height: 24),
         Column(
           children: emdadgarList
               .map((e) => Padding(

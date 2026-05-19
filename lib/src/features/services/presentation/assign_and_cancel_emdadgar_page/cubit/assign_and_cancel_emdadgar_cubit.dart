@@ -280,6 +280,8 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
         "khodroTypeText": "زامیاد",
         "distanceKmToOrigin": 4.82,
         'statusTitle': 'در حال ماموریت',
+        "lastLocationLatitude": 35.781445,
+        "lastLocationLongitude": 51.3825183,
         "priority": 1,
         "isActive": true,
         "emdadgars": [
@@ -299,6 +301,8 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
         "khodroTypeText": "سایپا 151",
         "distanceKmToOrigin": 4.98,
         'statusTitle': 'آماده خدمت',
+        "lastLocationLatitude": 35.73171,
+        "lastLocationLongitude": 51.5292633,
         "priority": 2,
         "isActive": true,
         "emdadgars": [
@@ -319,6 +323,8 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
         "distanceKmToOrigin": 2.5,
         "priority": 3,
         'statusTitle': 'در حال ماموریت',
+        "lastLocationLatitude": 35.7412466,
+        "lastLocationLongitude": 51.4168983,
         'status': 1,
         "isActive": true,
         "emdadgars": [

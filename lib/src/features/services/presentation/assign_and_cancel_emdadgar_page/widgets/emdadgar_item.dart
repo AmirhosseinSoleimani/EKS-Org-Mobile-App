@@ -125,7 +125,7 @@ class EmdadgarItem extends StatelessWidget {
   Widget _buildActions(BuildContext context,
       AssignAndCancelEmdadgarCubit cubit) {
     final requestStatus = RequestStatus.fromValue(
-        cubit.selectedRequest?.requestStatus);
+        cubit.selectedRequest?.requestStatus); 
 
     if (entity.status == EmdadgarStatus.ready.value ||
         requestStatus != RequestStatus.completed) {
