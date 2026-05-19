@@ -1,16 +1,18 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/cancel_request_reason_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/cubit/assign_and_cancel_emdadgar_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/enums/service_assign_action.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/bottom_sheet/bottom_sheet_header.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/dropdown_selector.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/colored_info_card.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/submit_cancel_buttons.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-Future<void> showAssignBottomSheet(BuildContext context) async {
+Future<void> showAssignConfirmBottomSheet(BuildContext context) async {
   final cubit = context.read<AssignAndCancelEmdadgarCubit>();
 
   await showModalBottomSheet(
@@ -19,7 +21,6 @@ Future<void> showAssignBottomSheet(BuildContext context) async {
     backgroundColor: Colors.white,
     shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
     builder: (context) {
-      final colorScheme = Theme.of(context).colorScheme;
       return BlocProvider.value(
         value: cubit,
         child: SizedBox(
@@ -27,16 +28,13 @@ Future<void> showAssignBottomSheet(BuildContext context) async {
           child: SafeArea(
             child: Column(
               children: [
-                BottomSheetHeader(title: 'اطلاعات امداد رسان'),
-                Divider(color: colorScheme.onInverseSurface),
-                Space.h24,
+                BottomSheetHeader(title: 'تایید تخصیص'),
                 Expanded(
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: AssignEmdadgarBottomSheetForm(
-                      reasons: cubit.ReasonListNotifier,
-                      selectedReason: cubit.selectedCancelReason,
-                      onReasonSelected: cubit.setSelectedCancelReason,
+                    child: ConfirmAssignBottomForm(
+                      emdadgarEntity: cubit.selectedEmdadgar!,
+                      requestEntity: cubit.selectedRequest,
                       descriptionController: cubit.descriptionController,
                     ),
                   ),
@@ -48,20 +46,19 @@ Future<void> showAssignBottomSheet(BuildContext context) async {
                 >(
                   builder: (context, state) {
                     final isLoading =
-                        state.whenOrNull(
-                          submitNonCooperationLoading: () => true,
-                        ) ??
-                        false;
+                        state.whenOrNull(submitLoading: () => true) ?? false;
 
                     return Padding(
                       padding: const EdgeInsets.all(16),
                       child: SubmitCancelButtons(
-                        submitButtonColor: cubit.selectedRequest?.serviceType?.serviceColor ?? ServiceType.reliefService.serviceColor,
-                        submitTitle: 'ثبت',
+                        submitTitle: 'تخصیص',
                         isLoading: isLoading,
+                        submitButtonColor:
+                            cubit.selectedRequest?.serviceType?.serviceColor ??
+                            ServiceType.reliefService.serviceColor,
                         onCancel: () => Navigator.pop(context),
                         onSubmit: () => cubit.executeServiceAssign(
-                          ServiceAssignAction.nonCooperation,
+                          ServiceAssignAction.assignEmdadgar,
                         ),
                       ),
                     );
@@ -76,17 +73,15 @@ Future<void> showAssignBottomSheet(BuildContext context) async {
   );
 }
 
-class AssignEmdadgarBottomSheetForm extends StatelessWidget {
-  final ValueNotifier<List<CancelRequestReasonEntity>> reasons;
-  final ValueNotifier<CancelRequestReasonEntity?> selectedReason;
-  final ValueChanged<CancelRequestReasonEntity?> onReasonSelected;
+class ConfirmAssignBottomForm extends StatelessWidget {
+  final BaseRequestEntity? requestEntity;
+  final EmdadgarEntity emdadgarEntity;
   final TextEditingController descriptionController;
 
-  const AssignEmdadgarBottomSheetForm({
+  const ConfirmAssignBottomForm({
     super.key,
-    required this.reasons,
-    required this.selectedReason,
-    required this.onReasonSelected,
+    required this.requestEntity,
+    required this.emdadgarEntity,
     required this.descriptionController,
   });
 
@@ -95,19 +90,46 @@ class AssignEmdadgarBottomSheetForm extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        DropdownSelector<CancelRequestReasonEntity>(
-          label: "دلیل عدم همکاری",
-          placeholder: "انتخاب دلیل عدم همکاری",
-          selectedNotifier: selectedReason,
-          items: reasons.value,
-          enabled: reasons.value.isNotEmpty,
-          isLoading: reasons.value.isEmpty,
-          itemTitleBuilder: (item) => item.title ?? "",
-          onSelect: onReasonSelected,
+        Space.h8,
+        ColoredInfoCard(
+          title: "درخواست ${requestEntity?.id ?? ''}",
+          backgroundColor: Color(0xFF59168b).withAlpha(25),
+          borderColor: Color(0xFF59168b),
+          titleColor: Color(0xFF59168b),
+          items: [
+            ColoredInfoCardItem.text(
+              value:
+                  "${requestEntity?.firstName ?? ''} ${requestEntity?.lastName ?? ''} - ${requestEntity?.carName ?? ''}",
+            ),
+            ColoredInfoCardItem.text(
+              value: (requestEntity is ReliefRequestEntity)
+                  ? (requestEntity as ReliefRequestEntity).emdadServiceTitle ??
+                        '-'
+                  : '-',
+            ),
+          ],
+        ),
+        Space.h8,
+        ColoredInfoCard(
+          title: 'امداد رسان انتخابی',
+          backgroundColor: Color(0xFF00966d).withAlpha(25),
+          borderColor: Color(0xFF00966d),
+          titleColor: Color(0xFF00966d),
+          items: [
+            ColoredInfoCardItem.text(value: emdadgarEntity.agencyName ?? ''),
+            ColoredInfoCardItem.text(
+              value:
+                  "${emdadgarEntity.khodroTypeText} / ${emdadgarEntity.navganTypeText}",
+            ),
+            ColoredInfoCardItem.text(
+              value:
+                  "فاصله: ${emdadgarEntity.distanceKmToOrigin} کیلومتر | زمان ${emdadgarEntity.runtimeType} دقیقه",
+            ),
+          ],
         ),
         Space.h16,
         TextFormFieldWidget(
-          labelText: "توضیحات",
+          labelText: "توضیحات تخصیص",
           controller: descriptionController,
           autofocus: false,
           textInputType: TextInputType.text,

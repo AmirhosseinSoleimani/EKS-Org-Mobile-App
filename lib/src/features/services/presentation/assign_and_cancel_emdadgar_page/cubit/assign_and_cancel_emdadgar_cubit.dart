@@ -10,8 +10,9 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/check_de
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/service_assign_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/cancel_reason_param_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/check_depot_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/emdadgar_list_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/service_assign_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/fetch_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_cancel_reason_request_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_check_depot_use_case.dart';
@@ -20,6 +21,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_home
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_non_cooperation_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_relief_request_by_id_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/service_assign_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/enums/service_assign_action.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/area_base_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/online_route_entity.dart';
@@ -34,12 +36,6 @@ import 'package:injectable/injectable.dart';
 
 part 'assign_and_cancel_emdadgar_cubit.freezed.dart';
 part 'assign_and_cancel_emdadgar_state.dart';
-
-enum ServiceAssignAction {
-  assignEmdadgar,
-  cancelMission,
-  nonCooperation,
-}
 
 
 @injectable
@@ -115,24 +111,37 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
     }
   }
 
-  Future<void> initNonCooperation() async {
-    _retryAction = initNonCooperation;
+  Future<void> getCancelReasons({
+    required ServiceAssignAction action
+  }) async {
+    _retryAction = () => getCancelReasons(action: action);
+
     final requestStatus = RequestStatus.fromValue(
         selectedRequest?.requestStatus);
+
     final param = CancelReasonParamEntity(
       serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
       reasonType: requestStatus.isBeforeDispatch
           ? ReasonType.beforeDispatch
           : ReasonType.afterDispatch,);
 
-
+    _safeEmit(
+        AssignAndCancelEmdadgarState.getReasonListLoading(action: action));
     final result = await _getCancelReasonRequestUseCase(param);
 
     result.whenOrNull(
       success: (data, _, _) {
         ReasonListNotifier.value.clear();
         ReasonListNotifier.value.addAll(data);
-        _safeEmit(AssignAndCancelEmdadgarState.loaded());
+
+        if (action == ServiceAssignAction.nonCooperation) {
+          _safeEmit(
+              AssignAndCancelEmdadgarState.showNonCooperationBottomSheet());
+        } else if (action == ServiceAssignAction.cancelMission) {
+          _safeEmit(
+              AssignAndCancelEmdadgarState.showCancelMissionBottomSheet());
+        }
+
       },
       failure: (error, failures) => _emitError(failures ?? error.toString()),
       connectionError: () =>
@@ -310,6 +319,7 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
         "distanceKmToOrigin": 2.5,
         "priority": 3,
         'statusTitle': 'در حال ماموریت',
+        'status': 1,
         "isActive": true,
         "emdadgars": [
           {
@@ -369,6 +379,7 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
     );
     return fetchResult;
   }*/
+
   Future<void> setSelectedCancelReason(CancelRequestReasonEntity? value) async {
     selectedCancelReason.value = value;
   }
@@ -417,18 +428,17 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
     );
   }
 
-  ///fakeer method
-  Future<void> checkDepotAndOpen(EmdadgarEntity entity) async {
+  Future<void> getCheckDepotAndRoute(EmdadgarEntity entity) async {
     emit(AssignAndCancelEmdadgarState.checkDepotLoading(
       emdadgarId: entity.id!,
     ));
     await Future.delayed(Duration(seconds: 2));
 
     checkDepotEntity = CheckDepotEntity(allowMark500: true,launchDepotIsEnable: true);
-    _safeEmit(const AssignAndCancelEmdadgarState.checkDepotSuccess());
+    _safeEmit(const AssignAndCancelEmdadgarState.showEmdadgarInfoBottomSheet());
   }
 
- /* Future<void> checkDepotAndOpen(EmdadgarEntity entity) async {
+  /* Future<void> getCheckDepotAndRoute(EmdadgarEntity entity) async {
     emit(AssignAndCancelEmdadgarState.checkDepotLoading(
       emdadgarId: entity.id!,
     ));
@@ -445,7 +455,7 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
     result.whenOrNull(
       success: (data, _, _) {
         checkDepotEntity = data;
-        _safeEmit(const AssignAndCancelEmdadgarState.checkDepotSuccess());
+        _safeEmit(const AssignAndCancelEmdadgarState.showEmdadgarInfoBottomSheet());
       },
       failure: (error, failures) => _emitError(failures ?? error.toString()),
       connectionError: () =>
@@ -481,4 +491,26 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
   }
 
   void retryLastAction() => _retryAction?.call();
+
+  void showAssignConfirmBottomSheet() {
+    clearDescriptionController();
+    _safeEmit(
+        const AssignAndCancelEmdadgarState.showAssignConfirmBottomSheet());
+  }
+
+  void clearDescriptionController() {
+    descriptionController.text = '';
+  }
+
+  @override
+  Future<void> close() {
+    descriptionController.dispose();
+    onlyReadyEmdadgar.dispose();
+    requestCityEmdadgar.dispose();
+    requestProvinceEmdadgar.dispose();
+    ReasonListNotifier.dispose();
+    selectedCancelReason.dispose();
+
+    return super.close();
+  }
 }

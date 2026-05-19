@@ -55,7 +55,7 @@ extension AssignAndCancelEmdadgarStatePatterns on AssignAndCancelEmdadgarState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Idle value)?  idle,TResult Function( _Loading value)?  loading,TResult Function( _Loaded value)?  loaded,TResult Function( _Error value)?  error,TResult Function( _ConnectionError value)?  connectionError,TResult Function( _SubmitLoading value)?  submitLoading,TResult Function( _SubmitSuccess value)?  submitSuccess,TResult Function( _InitNonCooperationLoading value)?  initNonCooperationLoading,TResult Function( _InitNonCooperationLoaded value)?  initNonCooperationLoaded,TResult Function( _InitNonCooperationError value)?  initNonCooperationError,TResult Function( _SubmitNonCooperationLoading value)?  submitNonCooperationLoading,TResult Function( _SubmitNonCooperationSuccess value)?  submitNonCooperationSuccess,TResult Function( _SubmitNonCooperationError value)?  submitNonCooperationError,TResult Function( _AssignSuccess value)?  assignSuccess,TResult Function( _CheckDepotLoading value)?  checkDepotLoading,TResult Function( _CheckDepotSuccess value)?  checkDepotSuccess,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Idle value)?  idle,TResult Function( _Loading value)?  loading,TResult Function( _Loaded value)?  loaded,TResult Function( _Error value)?  error,TResult Function( _ConnectionError value)?  connectionError,TResult Function( _SubmitLoading value)?  submitLoading,TResult Function( _SubmitSuccess value)?  submitSuccess,TResult Function( _GetReasonListLoading value)?  getReasonListLoading,TResult Function( _SubmitNonCooperationLoading value)?  submitNonCooperationLoading,TResult Function( _SubmitNonCooperationSuccess value)?  submitNonCooperationSuccess,TResult Function( _SubmitNonCooperationError value)?  submitNonCooperationError,TResult Function( _AssignSuccess value)?  assignSuccess,TResult Function( _CheckDepotLoading value)?  checkDepotLoading,TResult Function( _CheckDepotSuccess value)?  showEmdadgarInfoBottomSheet,TResult Function( _ShowAssignConfirmBottomSheet value)?  showAssignConfirmBottomSheet,TResult Function( _ShowNonCooperationBottomSheet value)?  showNonCooperationBottomSheet,TResult Function( _ShowCancelMissionBottomSheet value)?  showCancelMissionBottomSheet,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
@@ -65,16 +65,17 @@ return loaded(_that);case _Error() when error != null:
 return error(_that);case _ConnectionError() when connectionError != null:
 return connectionError(_that);case _SubmitLoading() when submitLoading != null:
 return submitLoading(_that);case _SubmitSuccess() when submitSuccess != null:
-return submitSuccess(_that);case _InitNonCooperationLoading() when initNonCooperationLoading != null:
-return initNonCooperationLoading(_that);case _InitNonCooperationLoaded() when initNonCooperationLoaded != null:
-return initNonCooperationLoaded(_that);case _InitNonCooperationError() when initNonCooperationError != null:
-return initNonCooperationError(_that);case _SubmitNonCooperationLoading() when submitNonCooperationLoading != null:
+return submitSuccess(_that);case _GetReasonListLoading() when getReasonListLoading != null:
+return getReasonListLoading(_that);case _SubmitNonCooperationLoading() when submitNonCooperationLoading != null:
 return submitNonCooperationLoading(_that);case _SubmitNonCooperationSuccess() when submitNonCooperationSuccess != null:
 return submitNonCooperationSuccess(_that);case _SubmitNonCooperationError() when submitNonCooperationError != null:
 return submitNonCooperationError(_that);case _AssignSuccess() when assignSuccess != null:
 return assignSuccess(_that);case _CheckDepotLoading() when checkDepotLoading != null:
-return checkDepotLoading(_that);case _CheckDepotSuccess() when checkDepotSuccess != null:
-return checkDepotSuccess(_that);case _:
+return checkDepotLoading(_that);case _CheckDepotSuccess() when showEmdadgarInfoBottomSheet != null:
+return showEmdadgarInfoBottomSheet(_that);case _ShowAssignConfirmBottomSheet() when showAssignConfirmBottomSheet != null:
+return showAssignConfirmBottomSheet(_that);case _ShowNonCooperationBottomSheet() when showNonCooperationBottomSheet != null:
+return showNonCooperationBottomSheet(_that);case _ShowCancelMissionBottomSheet() when showCancelMissionBottomSheet != null:
+return showCancelMissionBottomSheet(_that);case _:
   return orElse();
 
 }
@@ -92,7 +93,7 @@ return checkDepotSuccess(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Idle value)  idle,required TResult Function( _Loading value)  loading,required TResult Function( _Loaded value)  loaded,required TResult Function( _Error value)  error,required TResult Function( _ConnectionError value)  connectionError,required TResult Function( _SubmitLoading value)  submitLoading,required TResult Function( _SubmitSuccess value)  submitSuccess,required TResult Function( _InitNonCooperationLoading value)  initNonCooperationLoading,required TResult Function( _InitNonCooperationLoaded value)  initNonCooperationLoaded,required TResult Function( _InitNonCooperationError value)  initNonCooperationError,required TResult Function( _SubmitNonCooperationLoading value)  submitNonCooperationLoading,required TResult Function( _SubmitNonCooperationSuccess value)  submitNonCooperationSuccess,required TResult Function( _SubmitNonCooperationError value)  submitNonCooperationError,required TResult Function( _AssignSuccess value)  assignSuccess,required TResult Function( _CheckDepotLoading value)  checkDepotLoading,required TResult Function( _CheckDepotSuccess value)  checkDepotSuccess,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Idle value)  idle,required TResult Function( _Loading value)  loading,required TResult Function( _Loaded value)  loaded,required TResult Function( _Error value)  error,required TResult Function( _ConnectionError value)  connectionError,required TResult Function( _SubmitLoading value)  submitLoading,required TResult Function( _SubmitSuccess value)  submitSuccess,required TResult Function( _GetReasonListLoading value)  getReasonListLoading,required TResult Function( _SubmitNonCooperationLoading value)  submitNonCooperationLoading,required TResult Function( _SubmitNonCooperationSuccess value)  submitNonCooperationSuccess,required TResult Function( _SubmitNonCooperationError value)  submitNonCooperationError,required TResult Function( _AssignSuccess value)  assignSuccess,required TResult Function( _CheckDepotLoading value)  checkDepotLoading,required TResult Function( _CheckDepotSuccess value)  showEmdadgarInfoBottomSheet,required TResult Function( _ShowAssignConfirmBottomSheet value)  showAssignConfirmBottomSheet,required TResult Function( _ShowNonCooperationBottomSheet value)  showNonCooperationBottomSheet,required TResult Function( _ShowCancelMissionBottomSheet value)  showCancelMissionBottomSheet,}){
 final _that = this;
 switch (_that) {
 case _Idle():
@@ -102,16 +103,17 @@ return loaded(_that);case _Error():
 return error(_that);case _ConnectionError():
 return connectionError(_that);case _SubmitLoading():
 return submitLoading(_that);case _SubmitSuccess():
-return submitSuccess(_that);case _InitNonCooperationLoading():
-return initNonCooperationLoading(_that);case _InitNonCooperationLoaded():
-return initNonCooperationLoaded(_that);case _InitNonCooperationError():
-return initNonCooperationError(_that);case _SubmitNonCooperationLoading():
+return submitSuccess(_that);case _GetReasonListLoading():
+return getReasonListLoading(_that);case _SubmitNonCooperationLoading():
 return submitNonCooperationLoading(_that);case _SubmitNonCooperationSuccess():
 return submitNonCooperationSuccess(_that);case _SubmitNonCooperationError():
 return submitNonCooperationError(_that);case _AssignSuccess():
 return assignSuccess(_that);case _CheckDepotLoading():
 return checkDepotLoading(_that);case _CheckDepotSuccess():
-return checkDepotSuccess(_that);case _:
+return showEmdadgarInfoBottomSheet(_that);case _ShowAssignConfirmBottomSheet():
+return showAssignConfirmBottomSheet(_that);case _ShowNonCooperationBottomSheet():
+return showNonCooperationBottomSheet(_that);case _ShowCancelMissionBottomSheet():
+return showCancelMissionBottomSheet(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -128,7 +130,7 @@ return checkDepotSuccess(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Idle value)?  idle,TResult? Function( _Loading value)?  loading,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Error value)?  error,TResult? Function( _ConnectionError value)?  connectionError,TResult? Function( _SubmitLoading value)?  submitLoading,TResult? Function( _SubmitSuccess value)?  submitSuccess,TResult? Function( _InitNonCooperationLoading value)?  initNonCooperationLoading,TResult? Function( _InitNonCooperationLoaded value)?  initNonCooperationLoaded,TResult? Function( _InitNonCooperationError value)?  initNonCooperationError,TResult? Function( _SubmitNonCooperationLoading value)?  submitNonCooperationLoading,TResult? Function( _SubmitNonCooperationSuccess value)?  submitNonCooperationSuccess,TResult? Function( _SubmitNonCooperationError value)?  submitNonCooperationError,TResult? Function( _AssignSuccess value)?  assignSuccess,TResult? Function( _CheckDepotLoading value)?  checkDepotLoading,TResult? Function( _CheckDepotSuccess value)?  checkDepotSuccess,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Idle value)?  idle,TResult? Function( _Loading value)?  loading,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Error value)?  error,TResult? Function( _ConnectionError value)?  connectionError,TResult? Function( _SubmitLoading value)?  submitLoading,TResult? Function( _SubmitSuccess value)?  submitSuccess,TResult? Function( _GetReasonListLoading value)?  getReasonListLoading,TResult? Function( _SubmitNonCooperationLoading value)?  submitNonCooperationLoading,TResult? Function( _SubmitNonCooperationSuccess value)?  submitNonCooperationSuccess,TResult? Function( _SubmitNonCooperationError value)?  submitNonCooperationError,TResult? Function( _AssignSuccess value)?  assignSuccess,TResult? Function( _CheckDepotLoading value)?  checkDepotLoading,TResult? Function( _CheckDepotSuccess value)?  showEmdadgarInfoBottomSheet,TResult? Function( _ShowAssignConfirmBottomSheet value)?  showAssignConfirmBottomSheet,TResult? Function( _ShowNonCooperationBottomSheet value)?  showNonCooperationBottomSheet,TResult? Function( _ShowCancelMissionBottomSheet value)?  showCancelMissionBottomSheet,}){
 final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
@@ -138,16 +140,17 @@ return loaded(_that);case _Error() when error != null:
 return error(_that);case _ConnectionError() when connectionError != null:
 return connectionError(_that);case _SubmitLoading() when submitLoading != null:
 return submitLoading(_that);case _SubmitSuccess() when submitSuccess != null:
-return submitSuccess(_that);case _InitNonCooperationLoading() when initNonCooperationLoading != null:
-return initNonCooperationLoading(_that);case _InitNonCooperationLoaded() when initNonCooperationLoaded != null:
-return initNonCooperationLoaded(_that);case _InitNonCooperationError() when initNonCooperationError != null:
-return initNonCooperationError(_that);case _SubmitNonCooperationLoading() when submitNonCooperationLoading != null:
+return submitSuccess(_that);case _GetReasonListLoading() when getReasonListLoading != null:
+return getReasonListLoading(_that);case _SubmitNonCooperationLoading() when submitNonCooperationLoading != null:
 return submitNonCooperationLoading(_that);case _SubmitNonCooperationSuccess() when submitNonCooperationSuccess != null:
 return submitNonCooperationSuccess(_that);case _SubmitNonCooperationError() when submitNonCooperationError != null:
 return submitNonCooperationError(_that);case _AssignSuccess() when assignSuccess != null:
 return assignSuccess(_that);case _CheckDepotLoading() when checkDepotLoading != null:
-return checkDepotLoading(_that);case _CheckDepotSuccess() when checkDepotSuccess != null:
-return checkDepotSuccess(_that);case _:
+return checkDepotLoading(_that);case _CheckDepotSuccess() when showEmdadgarInfoBottomSheet != null:
+return showEmdadgarInfoBottomSheet(_that);case _ShowAssignConfirmBottomSheet() when showAssignConfirmBottomSheet != null:
+return showAssignConfirmBottomSheet(_that);case _ShowNonCooperationBottomSheet() when showNonCooperationBottomSheet != null:
+return showNonCooperationBottomSheet(_that);case _ShowCancelMissionBottomSheet() when showCancelMissionBottomSheet != null:
+return showCancelMissionBottomSheet(_that);case _:
   return null;
 
 }
@@ -164,7 +167,7 @@ return checkDepotSuccess(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  loading,TResult Function()?  loaded,TResult Function( BottomSheetMessageModel message)?  error,TResult Function()?  connectionError,TResult Function()?  submitLoading,TResult Function( BottomSheetMessageModel message)?  submitSuccess,TResult Function()?  initNonCooperationLoading,TResult Function()?  initNonCooperationLoaded,TResult Function( BottomSheetMessageModel message)?  initNonCooperationError,TResult Function()?  submitNonCooperationLoading,TResult Function( BottomSheetMessageModel message)?  submitNonCooperationSuccess,TResult Function( BottomSheetMessageModel message)?  submitNonCooperationError,TResult Function( ServiceAssignResponseEntity response)?  assignSuccess,TResult Function( int emdadgarId)?  checkDepotLoading,TResult Function()?  checkDepotSuccess,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  loading,TResult Function()?  loaded,TResult Function( BottomSheetMessageModel message)?  error,TResult Function()?  connectionError,TResult Function()?  submitLoading,TResult Function( BottomSheetMessageModel message)?  submitSuccess,TResult Function( ServiceAssignAction action)?  getReasonListLoading,TResult Function()?  submitNonCooperationLoading,TResult Function( BottomSheetMessageModel message)?  submitNonCooperationSuccess,TResult Function( BottomSheetMessageModel message)?  submitNonCooperationError,TResult Function( ServiceAssignResponseEntity response)?  assignSuccess,TResult Function( int emdadgarId)?  checkDepotLoading,TResult Function()?  showEmdadgarInfoBottomSheet,TResult Function()?  showAssignConfirmBottomSheet,TResult Function()?  showNonCooperationBottomSheet,TResult Function()?  showCancelMissionBottomSheet,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle();case _Loading() when loading != null:
@@ -173,16 +176,17 @@ return loaded();case _Error() when error != null:
 return error(_that.message);case _ConnectionError() when connectionError != null:
 return connectionError();case _SubmitLoading() when submitLoading != null:
 return submitLoading();case _SubmitSuccess() when submitSuccess != null:
-return submitSuccess(_that.message);case _InitNonCooperationLoading() when initNonCooperationLoading != null:
-return initNonCooperationLoading();case _InitNonCooperationLoaded() when initNonCooperationLoaded != null:
-return initNonCooperationLoaded();case _InitNonCooperationError() when initNonCooperationError != null:
-return initNonCooperationError(_that.message);case _SubmitNonCooperationLoading() when submitNonCooperationLoading != null:
+return submitSuccess(_that.message);case _GetReasonListLoading() when getReasonListLoading != null:
+return getReasonListLoading(_that.action);case _SubmitNonCooperationLoading() when submitNonCooperationLoading != null:
 return submitNonCooperationLoading();case _SubmitNonCooperationSuccess() when submitNonCooperationSuccess != null:
 return submitNonCooperationSuccess(_that.message);case _SubmitNonCooperationError() when submitNonCooperationError != null:
 return submitNonCooperationError(_that.message);case _AssignSuccess() when assignSuccess != null:
 return assignSuccess(_that.response);case _CheckDepotLoading() when checkDepotLoading != null:
-return checkDepotLoading(_that.emdadgarId);case _CheckDepotSuccess() when checkDepotSuccess != null:
-return checkDepotSuccess();case _:
+return checkDepotLoading(_that.emdadgarId);case _CheckDepotSuccess() when showEmdadgarInfoBottomSheet != null:
+return showEmdadgarInfoBottomSheet();case _ShowAssignConfirmBottomSheet() when showAssignConfirmBottomSheet != null:
+return showAssignConfirmBottomSheet();case _ShowNonCooperationBottomSheet() when showNonCooperationBottomSheet != null:
+return showNonCooperationBottomSheet();case _ShowCancelMissionBottomSheet() when showCancelMissionBottomSheet != null:
+return showCancelMissionBottomSheet();case _:
   return orElse();
 
 }
@@ -200,7 +204,7 @@ return checkDepotSuccess();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  loading,required TResult Function()  loaded,required TResult Function( BottomSheetMessageModel message)  error,required TResult Function()  connectionError,required TResult Function()  submitLoading,required TResult Function( BottomSheetMessageModel message)  submitSuccess,required TResult Function()  initNonCooperationLoading,required TResult Function()  initNonCooperationLoaded,required TResult Function( BottomSheetMessageModel message)  initNonCooperationError,required TResult Function()  submitNonCooperationLoading,required TResult Function( BottomSheetMessageModel message)  submitNonCooperationSuccess,required TResult Function( BottomSheetMessageModel message)  submitNonCooperationError,required TResult Function( ServiceAssignResponseEntity response)  assignSuccess,required TResult Function( int emdadgarId)  checkDepotLoading,required TResult Function()  checkDepotSuccess,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  loading,required TResult Function()  loaded,required TResult Function( BottomSheetMessageModel message)  error,required TResult Function()  connectionError,required TResult Function()  submitLoading,required TResult Function( BottomSheetMessageModel message)  submitSuccess,required TResult Function( ServiceAssignAction action)  getReasonListLoading,required TResult Function()  submitNonCooperationLoading,required TResult Function( BottomSheetMessageModel message)  submitNonCooperationSuccess,required TResult Function( BottomSheetMessageModel message)  submitNonCooperationError,required TResult Function( ServiceAssignResponseEntity response)  assignSuccess,required TResult Function( int emdadgarId)  checkDepotLoading,required TResult Function()  showEmdadgarInfoBottomSheet,required TResult Function()  showAssignConfirmBottomSheet,required TResult Function()  showNonCooperationBottomSheet,required TResult Function()  showCancelMissionBottomSheet,}) {final _that = this;
 switch (_that) {
 case _Idle():
 return idle();case _Loading():
@@ -209,16 +213,17 @@ return loaded();case _Error():
 return error(_that.message);case _ConnectionError():
 return connectionError();case _SubmitLoading():
 return submitLoading();case _SubmitSuccess():
-return submitSuccess(_that.message);case _InitNonCooperationLoading():
-return initNonCooperationLoading();case _InitNonCooperationLoaded():
-return initNonCooperationLoaded();case _InitNonCooperationError():
-return initNonCooperationError(_that.message);case _SubmitNonCooperationLoading():
+return submitSuccess(_that.message);case _GetReasonListLoading():
+return getReasonListLoading(_that.action);case _SubmitNonCooperationLoading():
 return submitNonCooperationLoading();case _SubmitNonCooperationSuccess():
 return submitNonCooperationSuccess(_that.message);case _SubmitNonCooperationError():
 return submitNonCooperationError(_that.message);case _AssignSuccess():
 return assignSuccess(_that.response);case _CheckDepotLoading():
 return checkDepotLoading(_that.emdadgarId);case _CheckDepotSuccess():
-return checkDepotSuccess();case _:
+return showEmdadgarInfoBottomSheet();case _ShowAssignConfirmBottomSheet():
+return showAssignConfirmBottomSheet();case _ShowNonCooperationBottomSheet():
+return showNonCooperationBottomSheet();case _ShowCancelMissionBottomSheet():
+return showCancelMissionBottomSheet();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -235,7 +240,7 @@ return checkDepotSuccess();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  loading,TResult? Function()?  loaded,TResult? Function( BottomSheetMessageModel message)?  error,TResult? Function()?  connectionError,TResult? Function()?  submitLoading,TResult? Function( BottomSheetMessageModel message)?  submitSuccess,TResult? Function()?  initNonCooperationLoading,TResult? Function()?  initNonCooperationLoaded,TResult? Function( BottomSheetMessageModel message)?  initNonCooperationError,TResult? Function()?  submitNonCooperationLoading,TResult? Function( BottomSheetMessageModel message)?  submitNonCooperationSuccess,TResult? Function( BottomSheetMessageModel message)?  submitNonCooperationError,TResult? Function( ServiceAssignResponseEntity response)?  assignSuccess,TResult? Function( int emdadgarId)?  checkDepotLoading,TResult? Function()?  checkDepotSuccess,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  loading,TResult? Function()?  loaded,TResult? Function( BottomSheetMessageModel message)?  error,TResult? Function()?  connectionError,TResult? Function()?  submitLoading,TResult? Function( BottomSheetMessageModel message)?  submitSuccess,TResult? Function( ServiceAssignAction action)?  getReasonListLoading,TResult? Function()?  submitNonCooperationLoading,TResult? Function( BottomSheetMessageModel message)?  submitNonCooperationSuccess,TResult? Function( BottomSheetMessageModel message)?  submitNonCooperationError,TResult? Function( ServiceAssignResponseEntity response)?  assignSuccess,TResult? Function( int emdadgarId)?  checkDepotLoading,TResult? Function()?  showEmdadgarInfoBottomSheet,TResult? Function()?  showAssignConfirmBottomSheet,TResult? Function()?  showNonCooperationBottomSheet,TResult? Function()?  showCancelMissionBottomSheet,}) {final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle();case _Loading() when loading != null:
@@ -244,16 +249,17 @@ return loaded();case _Error() when error != null:
 return error(_that.message);case _ConnectionError() when connectionError != null:
 return connectionError();case _SubmitLoading() when submitLoading != null:
 return submitLoading();case _SubmitSuccess() when submitSuccess != null:
-return submitSuccess(_that.message);case _InitNonCooperationLoading() when initNonCooperationLoading != null:
-return initNonCooperationLoading();case _InitNonCooperationLoaded() when initNonCooperationLoaded != null:
-return initNonCooperationLoaded();case _InitNonCooperationError() when initNonCooperationError != null:
-return initNonCooperationError(_that.message);case _SubmitNonCooperationLoading() when submitNonCooperationLoading != null:
+return submitSuccess(_that.message);case _GetReasonListLoading() when getReasonListLoading != null:
+return getReasonListLoading(_that.action);case _SubmitNonCooperationLoading() when submitNonCooperationLoading != null:
 return submitNonCooperationLoading();case _SubmitNonCooperationSuccess() when submitNonCooperationSuccess != null:
 return submitNonCooperationSuccess(_that.message);case _SubmitNonCooperationError() when submitNonCooperationError != null:
 return submitNonCooperationError(_that.message);case _AssignSuccess() when assignSuccess != null:
 return assignSuccess(_that.response);case _CheckDepotLoading() when checkDepotLoading != null:
-return checkDepotLoading(_that.emdadgarId);case _CheckDepotSuccess() when checkDepotSuccess != null:
-return checkDepotSuccess();case _:
+return checkDepotLoading(_that.emdadgarId);case _CheckDepotSuccess() when showEmdadgarInfoBottomSheet != null:
+return showEmdadgarInfoBottomSheet();case _ShowAssignConfirmBottomSheet() when showAssignConfirmBottomSheet != null:
+return showAssignConfirmBottomSheet();case _ShowNonCooperationBottomSheet() when showNonCooperationBottomSheet != null:
+return showNonCooperationBottomSheet();case _ShowCancelMissionBottomSheet() when showCancelMissionBottomSheet != null:
+return showCancelMissionBottomSheet();case _:
   return null;
 
 }
@@ -556,107 +562,43 @@ as BottomSheetMessageModel,
 /// @nodoc
 
 
-class _InitNonCooperationLoading implements AssignAndCancelEmdadgarState {
-  const _InitNonCooperationLoading();
+class _GetReasonListLoading implements AssignAndCancelEmdadgarState {
+  const _GetReasonListLoading({required this.action});
   
 
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _InitNonCooperationLoading);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'AssignAndCancelEmdadgarState.initNonCooperationLoading()';
-}
-
-
-}
-
-
-
-
-/// @nodoc
-
-
-class _InitNonCooperationLoaded implements AssignAndCancelEmdadgarState {
-  const _InitNonCooperationLoaded();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _InitNonCooperationLoaded);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'AssignAndCancelEmdadgarState.initNonCooperationLoaded()';
-}
-
-
-}
-
-
-
-
-/// @nodoc
-
-
-class _InitNonCooperationError implements AssignAndCancelEmdadgarState {
-  const _InitNonCooperationError({required this.message});
-  
-
- final  BottomSheetMessageModel message;
+ final  ServiceAssignAction action;
 
 /// Create a copy of AssignAndCancelEmdadgarState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
-_$InitNonCooperationErrorCopyWith<_InitNonCooperationError> get copyWith => __$InitNonCooperationErrorCopyWithImpl<_InitNonCooperationError>(this, _$identity);
+_$GetReasonListLoadingCopyWith<_GetReasonListLoading> get copyWith => __$GetReasonListLoadingCopyWithImpl<_GetReasonListLoading>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _InitNonCooperationError&&(identical(other.message, message) || other.message == message));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetReasonListLoading&&(identical(other.action, action) || other.action == action));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,message);
+int get hashCode => Object.hash(runtimeType,action);
 
 @override
 String toString() {
-  return 'AssignAndCancelEmdadgarState.initNonCooperationError(message: $message)';
+  return 'AssignAndCancelEmdadgarState.getReasonListLoading(action: $action)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$InitNonCooperationErrorCopyWith<$Res> implements $AssignAndCancelEmdadgarStateCopyWith<$Res> {
-  factory _$InitNonCooperationErrorCopyWith(_InitNonCooperationError value, $Res Function(_InitNonCooperationError) _then) = __$InitNonCooperationErrorCopyWithImpl;
+abstract mixin class _$GetReasonListLoadingCopyWith<$Res> implements $AssignAndCancelEmdadgarStateCopyWith<$Res> {
+  factory _$GetReasonListLoadingCopyWith(_GetReasonListLoading value, $Res Function(_GetReasonListLoading) _then) = __$GetReasonListLoadingCopyWithImpl;
 @useResult
 $Res call({
- BottomSheetMessageModel message
+ ServiceAssignAction action
 });
 
 
@@ -664,19 +606,19 @@ $Res call({
 
 }
 /// @nodoc
-class __$InitNonCooperationErrorCopyWithImpl<$Res>
-    implements _$InitNonCooperationErrorCopyWith<$Res> {
-  __$InitNonCooperationErrorCopyWithImpl(this._self, this._then);
+class __$GetReasonListLoadingCopyWithImpl<$Res>
+    implements _$GetReasonListLoadingCopyWith<$Res> {
+  __$GetReasonListLoadingCopyWithImpl(this._self, this._then);
 
-  final _InitNonCooperationError _self;
-  final $Res Function(_InitNonCooperationError) _then;
+  final _GetReasonListLoading _self;
+  final $Res Function(_GetReasonListLoading) _then;
 
 /// Create a copy of AssignAndCancelEmdadgarState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
-  return _then(_InitNonCooperationError(
-message: null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as BottomSheetMessageModel,
+@pragma('vm:prefer-inline') $Res call({Object? action = null,}) {
+  return _then(_GetReasonListLoading(
+action: null == action ? _self.action : action // ignore: cast_nullable_to_non_nullable
+as ServiceAssignAction,
   ));
 }
 
@@ -1002,7 +944,103 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString() {
-  return 'AssignAndCancelEmdadgarState.checkDepotSuccess()';
+  return 'AssignAndCancelEmdadgarState.showEmdadgarInfoBottomSheet()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _ShowAssignConfirmBottomSheet implements AssignAndCancelEmdadgarState {
+  const _ShowAssignConfirmBottomSheet();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShowAssignConfirmBottomSheet);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'AssignAndCancelEmdadgarState.showAssignConfirmBottomSheet()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _ShowNonCooperationBottomSheet implements AssignAndCancelEmdadgarState {
+  const _ShowNonCooperationBottomSheet();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShowNonCooperationBottomSheet);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'AssignAndCancelEmdadgarState.showNonCooperationBottomSheet()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _ShowCancelMissionBottomSheet implements AssignAndCancelEmdadgarState {
+  const _ShowCancelMissionBottomSheet();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _ShowCancelMissionBottomSheet);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'AssignAndCancelEmdadgarState.showCancelMissionBottomSheet()';
 }
 
 

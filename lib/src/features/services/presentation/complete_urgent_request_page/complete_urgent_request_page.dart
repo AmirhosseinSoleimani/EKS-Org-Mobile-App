@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/car_covers_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/widgets/action_text_field.dart';
@@ -109,6 +110,9 @@ class _View extends StatelessWidget {
                     idle: () => const SizedBox.shrink(),
                     loading: () => const SizedBox.shrink(),
                     orElse: () => SubmitCancelButtons(
+                      submitButtonColor:
+                          cubit.selectedRequest?.serviceType?.serviceColor ??
+                          ServiceType.reliefService.serviceColor,
                       onSubmit: cubit.submit,
                       onCancel: () => Navigator.pop(context),
                       submitTitle: 'ثبت درخواست',

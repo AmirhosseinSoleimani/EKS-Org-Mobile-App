@@ -21,13 +21,10 @@ class AssignAndCancelEmdadgarState with _$AssignAndCancelEmdadgarState {
     required BottomSheetMessageModel message,
   }) = _SubmitSuccess;
 
-  const factory AssignAndCancelEmdadgarState.initNonCooperationLoading() = _InitNonCooperationLoading;
+  const factory AssignAndCancelEmdadgarState.getReasonListLoading({
+    required ServiceAssignAction action
+  }) = _GetReasonListLoading;
 
-  const factory AssignAndCancelEmdadgarState.initNonCooperationLoaded() = _InitNonCooperationLoaded;
-
-  const factory AssignAndCancelEmdadgarState.initNonCooperationError({
-    required BottomSheetMessageModel message,
-  }) = _InitNonCooperationError;
 
   const factory AssignAndCancelEmdadgarState.submitNonCooperationLoading() = _SubmitNonCooperationLoading;
 
@@ -48,7 +45,16 @@ class AssignAndCancelEmdadgarState with _$AssignAndCancelEmdadgarState {
     required int emdadgarId,
   }) = _CheckDepotLoading;
 
-  const factory AssignAndCancelEmdadgarState.checkDepotSuccess() =
+  const factory AssignAndCancelEmdadgarState.showEmdadgarInfoBottomSheet() =
   _CheckDepotSuccess;
+
+  const factory AssignAndCancelEmdadgarState.showAssignConfirmBottomSheet() =
+  _ShowAssignConfirmBottomSheet;
+
+  const factory AssignAndCancelEmdadgarState.showNonCooperationBottomSheet() =
+  _ShowNonCooperationBottomSheet;
+
+  const factory AssignAndCancelEmdadgarState.showCancelMissionBottomSheet() =
+  _ShowCancelMissionBottomSheet;
 
 }

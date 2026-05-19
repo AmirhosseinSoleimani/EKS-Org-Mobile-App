@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 
 class SubmitCancelButtons extends StatelessWidget {
   final String submitTitle;
+  final Color submitButtonColor;
   final String cancelTitle;
   final bool isLoading;
   final VoidCallback? onSubmit;
@@ -11,6 +12,7 @@ class SubmitCancelButtons extends StatelessWidget {
   const SubmitCancelButtons({
     super.key,
     required this.submitTitle,
+    required this.submitButtonColor,
     this.isLoading = false,
     this.onSubmit,
     this.onCancel,
@@ -25,6 +27,7 @@ class SubmitCancelButtons extends StatelessWidget {
           flex: 60,
           child: InkwellButtonWidget(
             title: submitTitle,
+            backgroundColor: submitButtonColor,
             showLoading: isLoading,
             onTap: onSubmit,
           )

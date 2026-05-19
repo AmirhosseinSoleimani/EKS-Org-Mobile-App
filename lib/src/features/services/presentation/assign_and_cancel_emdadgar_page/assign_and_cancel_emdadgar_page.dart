@@ -4,6 +4,9 @@ import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/cubit/assign_and_cancel_emdadgar_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/available_emdadgar_list.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/bottom_sheet/assign_confirm_bottom_sheet.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/bottom_sheet/cancel_mission_bottom_sheet.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/bottom_sheet/non_cooperation_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
@@ -68,9 +71,14 @@ class _View extends StatelessWidget {
               buttonColor: ServiceType.homeService.serviceColor,
             );
           },
-          checkDepotSuccess: () {
-            showEmdadgarInfoBottomSheet(context);
-          },
+          showNonCooperationBottomSheet: () =>
+              showNonCooperationBottomSheet(context),
+          showCancelMissionBottomSheet: () =>
+              showCancelMissionBottomSheet(context),
+          showEmdadgarInfoBottomSheet: () =>
+              showEmdadgarInfoBottomSheet(context),
+          showAssignConfirmBottomSheet: () =>
+              showAssignConfirmBottomSheet(context),
         );
       },
       child: Scaffold(

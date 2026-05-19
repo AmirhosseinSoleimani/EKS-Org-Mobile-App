@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/cancel_request_reason_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/cubit/cancel_request_cubit.dart';
@@ -91,6 +92,11 @@ class _View extends StatelessWidget {
                   loading: () => const SizedBox.shrink(),
                   orElse: () =>
                       SubmitCancelButtons(
+                        submitButtonColor: cubit
+                            .selectedRequest
+                            ?.serviceType
+                            ?.serviceColor ??
+                            ServiceType.reliefService.serviceColor,
                         onSubmit: cubit.submit,
                         onCancel: () => Navigator.pop(context),
                         submitTitle: 'لغو درخواست',
@@ -264,6 +270,11 @@ void _showInvoiceBottomSheet(BuildContext context, InvoiceEntity invoice) {
           orElse: () => false,
         );
         return SubmitCancelButtons(
+          submitButtonColor: context
+              .read<CancelRequestCubit>()
+              .selectedRequest
+              ?.serviceType
+              ?.serviceColor ?? ServiceType.reliefService.serviceColor,
       onSubmit: context
           .read<CancelRequestCubit>()
           .acceptEvaluation,
