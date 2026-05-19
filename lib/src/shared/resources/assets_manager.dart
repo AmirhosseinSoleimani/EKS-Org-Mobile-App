@@ -10,26 +10,13 @@ class ImageManager {
   static const String emdadServece = '${_basePath}emdad_servece.png';
   static const String locationService = '${_basePath}location_service.png';
   static const String noInternet = '${_basePath}no_internet.png';
+  static const String onMissionEmpty = '${_basePath}on_mission_empty.png';
+  static const String availableEmpty = '${_basePath}available_empty.png';
+  static const String jarsaghilAvailable = '${_basePath}jarsaghil_available.png';
+  static const String jarsaghilOnMission = '${_basePath}jarsaghil_on_mission.png';
 
   //not used yet
-  static const String activeSubscription = '${_basePath}active_subscription.png';
-  static const String errorImage = '${_basePath}error_image.png';
-  static const String carPlaceHolder = '${_basePath}car_placeholder.png';
-  static const String couponContainer = '${_basePath}coupon_container.png';
-  static const String silverSubscription = '${_basePath}silver_subscription_icon.png';
-  static const String bronzeSubscription = '${_basePath}bronze_subscription_icon.png';
-  static const String goldenSubscription = '${_basePath}golden_subscription_icon.png';
-  static const String defaultSubscription = '${_basePath}default_subscription_icon.png';
-  static const String success = '${_basePath}success_process.png';
   static const String error = '${_basePath}error_process.png';
-  static const String aboutUsHeaderImage = '${_basePath}about_us_header_image.png';
-  static const String goldenSubscriptionBackground = '${_basePath}golden_subscription_background.png';
-  static const String silverSubscriptionBackground = '${_basePath}silver_subscription_background.png';
-  static const String bronzeSubscriptionBackground = '${_basePath}bronze_subscription_background.png';
-  static const String generalSubscriptionBackground = '${_basePath}general_subscription_background.png';
-  static const String mobileAppDev = '${_basePath}mobile_app_dev.png';
-  static const String chargesCar = '${_basePath}car_charge.png';
-  static const String cashPaymentWarningImage = '${_basePath}cash_payment_warning_image.png';
 }
 
 

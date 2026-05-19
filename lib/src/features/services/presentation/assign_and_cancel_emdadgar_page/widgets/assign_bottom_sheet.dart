@@ -34,7 +34,7 @@ Future<void> showAssignBottomSheet(BuildContext context) async {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: AssignEmdadgarBottomSheetForm(
-                      reasons: cubit.ReasonListNotifier,
+                      reasons: cubit.reasonListNotifier,
                       selectedReason: cubit.selectedCancelReason,
                       onReasonSelected: cubit.setSelectedCancelReason,
                       descriptionController: cubit.descriptionController,

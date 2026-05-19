@@ -32,7 +32,7 @@ class EmdadgarItem extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: colorScheme.surface.withAlpha(150),
+        color: colorScheme.surface.withAlpha(90),
         border: Border.all(color: isEmdadgarAssigned(requestStatus)
             ? colorScheme.onError
             : colorScheme.onInverseSurface),

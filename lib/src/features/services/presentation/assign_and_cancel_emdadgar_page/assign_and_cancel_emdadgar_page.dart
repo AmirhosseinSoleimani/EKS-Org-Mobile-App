@@ -7,6 +7,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/available_emdadgar_list.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/bottom_sheet/assign_confirm_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/bottom_sheet/cancel_mission_bottom_sheet.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/bottom_sheet/filter_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/bottom_sheet/non_cooperation_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/search_and_filter_box.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
@@ -137,7 +138,7 @@ class _LoadedView extends StatelessWidget {
                 children: [
                   SearchAndFilterBox(
                     isLoading: false,
-                    onOpenFilter: () =>{}/* showFilterBottomSheet(context)*/,
+                    onOpenFilter: () => showFilterBottomSheet(context),
                     onRefresh: () => {}/*cubit.refreshListAndClearFilters()*/,
                   ),
                   Space.h16,

@@ -40,6 +40,7 @@ class TextFormFieldWidget extends StatefulWidget {
     this.floatingLabelBehavior = FloatingLabelBehavior.auto,
     this.maxLength,
     this.textDirection,
+    this.borderColor,
     this.obscureText,
   });
 
@@ -64,6 +65,7 @@ class TextFormFieldWidget extends StatefulWidget {
   final TextAlign? textAlign;
   final TextDirection? textDirection;
   final Color? backgroundColor;
+  final Color? borderColor;
   final double? borderRadius;
   final Color? cursorColor;
   final TextStyle? labelStyle;
@@ -144,7 +146,7 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
             labelText: (widget.mandatory ?? false) ? "${widget.labelText} *" : widget.labelText,
             labelStyle: widget.labelStyle ??
                 textTheme.labelMedium?.copyWith(
-                color: isFocus ? colorScheme.primary : colorScheme.onSurface,
+                color: isFocus ?  colorScheme.primary : colorScheme.onSurface,
                 ),
             floatingLabelBehavior: widget.floatingLabelBehavior,
             hintText: widget.hintText,
@@ -162,7 +164,7 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
                     borderRadius: BorderRadius.circular(widget.borderRadius ?? AppSize.s8),
                     borderSide: BorderSide(
                         width: AppSize.s1,
-                        color: colorScheme.primary,
+                        color: (widget.borderColor ?? colorScheme.primary),
                     ),
             ),
             errorBorder: widget.errorBorder ?? OutlineInputBorder(

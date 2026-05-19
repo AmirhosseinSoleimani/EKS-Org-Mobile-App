@@ -32,7 +32,7 @@ Future<void> showNonCooperationBottomSheet(BuildContext context) async {
                   child: Padding(
                     padding: const EdgeInsets.symmetric(horizontal: 16),
                     child: NonCooperationBottomSheetForm(
-                      reasons: cubit.ReasonListNotifier,
+                      reasons: cubit.reasonListNotifier,
                       selectedReason: cubit.selectedCancelReason,
                       onReasonSelected: cubit.setSelectedCancelReason,
                       descriptionController: cubit.descriptionController,

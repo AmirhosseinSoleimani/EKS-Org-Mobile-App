@@ -4,8 +4,6 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/map_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_src.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -172,64 +170,6 @@ class _AidPersonMapWidgetState extends State<AidPersonMapWidget> {
                 );
               },
             ),
-
-            /*FlutterMap(
-              mapController: _mapController,
-              options: MapOptions(
-                initialCenter: _customerPoint,
-                initialZoom: widget.initialZoom,
-                interactionOptions: const InteractionOptions(
-                  flags:
-                      InteractiveFlag.drag |
-                      InteractiveFlag.pinchZoom |
-                      InteractiveFlag.doubleTapZoom |
-                      InteractiveFlag.flingAnimation |
-                      InteractiveFlag.scrollWheelZoom,
-                ),
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate: AppConstants.parsiMapUrlTemplate,
-                  tileProvider: NonCachingNetworkTileProvider(
-                    urlTemplate: AppConstants.parsiMapUrlTemplate,
-                  ),
-                ),
-                MarkerLayer(
-                  markers: [
-                    Marker(
-                      width: 42,
-                      height: 42,
-                      point: _customerPoint,
-                      child: const _MapPinMarker(
-                        iconPath: SvgManager.homeServiceLocation,
-                      ),
-                    ),
-                    ...widget.emdadgars
-                        .where(
-                          (e) =>
-                              e.lastLocationLatitude != null &&
-                              e.lastLocationLongitude != null,
-                        )
-                        .map(
-                          (emdadgar) => Marker(
-                            width: 46,
-                            height: 46,
-                            point: lat_lng.LatLng(
-                              emdadgar.lastLocationLatitude!,
-                              emdadgar.lastLocationLongitude!,
-                            ),
-                            child: GestureDetector(
-                              onTap: () => widget.onEmdadgarTap?.call(emdadgar),
-                              child: _MapPinMarker(
-                                iconPath: _getEmdadgarNavganIcon(emdadgar),
-                              ),
-                            ),
-                          ),
-                        ),
-                  ],
-                ),
-              ],
-            ),*/
             PositionedDirectional(
               top: 16,
               end: 16,
@@ -357,7 +297,7 @@ class _AidPersonMapWidgetState extends State<AidPersonMapWidget> {
   }
 
   String _getEmdadgarNavganIcon(EmdadgarEntity emdadgar) {
-    return SvgManager.location;
+    return ImageManager.onMissionEmpty;
   }
 }
 
@@ -397,20 +337,20 @@ class _MapPinMarker extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        Opacity(
-          opacity: isLoading ? 0.35 : 1,
-          child: SvgWidget(
-            src: SvgAsset(iconPath),
-            width: AppSize.s34,
-            height: AppSize.s34,
-          ),
+        Image.asset(
+          iconPath,
+          width: AppSize.s48,
+          height: AppSize.s48,
         ),
 
         if (isLoading)
-          const SizedBox(
-            width: AppSize.s22,
-            height: AppSize.s22,
-            child: CircularProgressIndicator(strokeWidth: 2.5),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 12.0),
+            child: const SizedBox(
+              width: AppSize.s18,
+              height: AppSize.s18,
+              child: CircularProgressIndicator(strokeWidth: 2),
+            ),
           ),
       ],
     );

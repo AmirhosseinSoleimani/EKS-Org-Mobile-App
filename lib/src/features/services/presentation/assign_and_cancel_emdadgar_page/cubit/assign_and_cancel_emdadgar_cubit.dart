@@ -10,9 +10,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/check_de
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/service_assign_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/cancel_reason_param_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/emdadgar_list_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/service_assign_param_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/fetch_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_cancel_reason_request_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_check_depot_use_case.dart';
@@ -76,12 +74,16 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
   final aidPerCodeController = TextEditingController();
   final aidDistanceKmController = TextEditingController();
   final descriptionController = TextEditingController();
+  final agencyNameController = TextEditingController();
+  final agencyCodeController = TextEditingController();
 
   final ValueNotifier<bool> onlyReadyEmdadgar = ValueNotifier<bool>(false);
   final ValueNotifier<bool> requestCityEmdadgar = ValueNotifier<bool>(false);
   final ValueNotifier<bool> requestProvinceEmdadgar = ValueNotifier<bool>(
       false);
-  final ReasonListNotifier =
+  final ValueNotifier<bool> limitedEmdadgar = ValueNotifier<bool>(false);
+
+  final reasonListNotifier =
   ValueNotifier<List<CancelRequestReasonEntity>>([]);
 
   final selectedCancelReason = ValueNotifier<CancelRequestReasonEntity?>(null);
@@ -131,8 +133,8 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
 
     result.whenOrNull(
       success: (data, _, _) {
-        ReasonListNotifier.value.clear();
-        ReasonListNotifier.value.addAll(data);
+        reasonListNotifier.value.clear();
+        reasonListNotifier.value.addAll(data);
 
         if (action == ServiceAssignAction.nonCooperation) {
           _safeEmit(
@@ -168,7 +170,7 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
     }
     */
 
-    final emdadgarListResult = await _getEmdadgarList();
+    final emdadgarListResult = await getEmdadgarList();
     if (emdadgarListResult != FetchResultType.success) {
       return emdadgarListResult;
     }
@@ -268,7 +270,7 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
     return fetchResult;
   }
 ///faker method
-  Future<FetchResultType> _getEmdadgarList() async {
+  Future<FetchResultType> getEmdadgarList() async {
     // شبیه‌سازی تاخیر شبکه
     await Future.delayed(const Duration(seconds: 1));
 
@@ -348,7 +350,7 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
   }
 
 /*
-  Future<FetchResultType> _getEmdadgarList() async {
+  Future<FetchResultType> getEmdadgarList() async {
     final emdadServiceId = (selectedRequest is ReliefRequestEntity) ? (
         selectedRequest as ReliefRequestEntity
     ).emdadServiceId : null;
@@ -505,17 +507,36 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
   }
 
   void clearDescriptionController() {
-    descriptionController.text = '';
+    descriptionController.clear();
   }
+
+  void clearFilterFields() {
+    emdadgarNameController.clear();
+    aidPerCodeController.clear();
+    aidDistanceKmController.clear();
+
+    agencyNameController.clear();
+    agencyCodeController.clear();
+
+    onlyReadyEmdadgar.value = false;
+    requestCityEmdadgar.value = false;
+    requestProvinceEmdadgar.value = false;
+    limitedEmdadgar.value = false;
+  }
+
 
   @override
   Future<void> close() {
-    descriptionController.dispose();
     onlyReadyEmdadgar.dispose();
     requestCityEmdadgar.dispose();
     requestProvinceEmdadgar.dispose();
-    ReasonListNotifier.dispose();
-    selectedCancelReason.dispose();
+    limitedEmdadgar.dispose();
+
+    emdadgarNameController.dispose();
+    aidPerCodeController.dispose();
+    aidDistanceKmController.dispose();
+    agencyNameController.dispose();
+    agencyCodeController.dispose();
 
     return super.close();
   }
