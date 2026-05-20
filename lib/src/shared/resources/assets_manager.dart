@@ -12,8 +12,6 @@ class ImageManager {
   static const String noInternet = '${_basePath}no_internet.png';
   static const String onMissionEmpty = '${_basePath}on_mission_empty.png';
   static const String availableEmpty = '${_basePath}available_empty.png';
-  static const String jarsaghilAvailable = '${_basePath}jarsaghil_available.png';
-  static const String jarsaghilOnMission = '${_basePath}jarsaghil_on_mission.png';
 
   //not used yet
   static const String error = '${_basePath}error_process.png';
@@ -27,28 +25,19 @@ class SvgManager {
   static const String emptyList = '${_basePath}empty_list.svg';
   static const String male = '${_basePath}male.svg';
   static const String female = '${_basePath}female.svg';
+  static const String jarsaghil = '${_basePath}jarsaghil.svg';
+  static const String charkhgir = '${_basePath}charkhgir.svg';
+  static const String motor = '${_basePath}motor.svg';
+  static const String savari = '${_basePath}savari.svg';
+  static const String khodroSavar = '${_basePath}khodro-savar.svg';
+  static const String peymankarKhodroSavar = '${_basePath}peymankar.svg';
+  static const String peymankarCharkhgir = '${_basePath}peymankar.svg';
+  static const String dakaldarKhodroSavar = '${_basePath}peymankar.svg';
+  static const String peymankarDakaldar = '${_basePath}peymankar.svg';
 
 
   //not used yet
-  static const String emptyWallet = '${_basePath}empty-wallet-add.svg';
-  static const String home =  '${_basePath}home.svg';
-  static const String homeFilled =  '${_basePath}home_filled.svg';
-  static const String listAlt =  '${_basePath}list_alt.svg';
-  static const String listAltFilled =  '${_basePath}list_alt_filled.svg';
   static const String electricBolt =  '${_basePath}electric_bolt.svg';
-  static const String person =  '${_basePath}person.svg';
-  static const String personFilled =  '${_basePath}person_filled.svg';
-  static const String workspacePremium =  '${_basePath}workspace_premium.svg';
-  static const String workspacePremiumCircle =  '${_basePath}workspace_premium_circle.svg';
-  static const String workspacePremiumFilled =  '${_basePath}workspace_premium_filled.svg';
-  static const String logo = '${_basePath}logo.svg';
-  static const String nameLogo = '${_basePath}name_logo.svg';
-  static const String headset = '${_basePath}headset_mic.svg';
-  static const String avatar = '${_basePath}avatar.svg';
-  static const String edit = '${_basePath}edit.svg';
-  static const String healthHistory = '${_basePath}health_history.svg';
-  static const String logout = '${_basePath}logout.svg';
-  static const String emergencyAssistanceRoundedSquare = '${_basePath}emergency_assistance_rounded_square.svg';
 
 }
 

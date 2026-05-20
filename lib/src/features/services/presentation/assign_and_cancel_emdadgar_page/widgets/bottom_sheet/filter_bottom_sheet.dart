@@ -32,9 +32,7 @@ Future<void> showFilterBottomSheet(BuildContext context) async {
             },
           ),
         ),
-
         const SizedBox(width: 16),
-
         Expanded(
           flex: 60,
           child: InkwellButtonWidget(

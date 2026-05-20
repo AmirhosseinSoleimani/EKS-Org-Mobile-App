@@ -127,7 +127,7 @@ class EmdadgarItem extends StatelessWidget {
     final requestStatus = RequestStatus.fromValue(
         cubit.selectedRequest?.requestStatus); 
 
-    if (entity.status == EmdadgarStatus.ready.value ||
+    if (entity.status == EmdadgarStatus.available.value ||
         requestStatus != RequestStatus.completed) {
       return AssignAndNonCooperationButtons(entity: entity);
     }

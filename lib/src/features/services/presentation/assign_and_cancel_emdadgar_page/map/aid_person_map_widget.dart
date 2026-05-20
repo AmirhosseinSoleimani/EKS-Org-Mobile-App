@@ -1,9 +1,12 @@
 import 'package:eks_sana_plus_org/src/common/constants/app_constants.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/cubit/assign_and_cancel_emdadgar_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/map/emdadgar_marker_style_resolver.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/map_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_src.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -26,7 +29,7 @@ class AidPersonMapWidget extends StatefulWidget {
     required this.customerLatitude,
     required this.customerLongitude,
     this.initialZoom = 12,
-    this.height = 420,
+    this.height = 520,
     this.onEmdadgarTap,
     this.onCurrentLocationTap,
     this.isFullScreen = false,
@@ -93,6 +96,11 @@ class _AidPersonMapWidgetState extends State<AidPersonMapWidget> {
                   orElse: () => false,
                 );
 
+                final EmdadgarMarkerStyleResolver markerStyleResolver =
+                const EmdadgarMarkerStyleResolver();
+
+                final customerMarkerStyle = markerStyleResolver
+                    .resolveCustomer();
                 return AbsorbPointer(
                   absorbing: isMapLoading,
                   child: FlutterMap(
@@ -123,7 +131,8 @@ class _AidPersonMapWidgetState extends State<AidPersonMapWidget> {
                             height: AppSize.s42,
                             point: _customerPoint,
                             child: _MapPinMarker(
-                              iconPath: ImageManager.customerMarker,
+                              iconPath: customerMarkerStyle.iconPath,
+                              color: customerMarkerStyle.color,
                             ),
                           ),
 
@@ -155,9 +164,12 @@ class _AidPersonMapWidgetState extends State<AidPersonMapWidget> {
                                       widget.onEmdadgarTap?.call(emdadgar);
                                     },
                                     child: _MapPinMarker(
-                                      iconPath: _getEmdadgarNavganIcon(
-                                        emdadgar,
-                                      ),
+                                      iconPath: markerStyleResolver
+                                          .resolve(emdadgar)
+                                          .iconPath,
+                                      color: markerStyleResolver
+                                          .resolve(emdadgar)
+                                          .color,
                                       isLoading: isThisMarkerLoading,
                                     ),
                                   ),
@@ -173,45 +185,52 @@ class _AidPersonMapWidgetState extends State<AidPersonMapWidget> {
             PositionedDirectional(
               top: 16,
               end: 16,
-              child: Column(
-                children: [
-                  _CircleMapButton(
-                    icon: Icons.add,
-                    onTap: () {
-                      final camera = _mapController.camera;
-                      _mapController.move(camera.center, camera.zoom + 1);
-                    },
-                  ),
-                  const SizedBox(height: 10),
-                  _CircleMapButton(
-                    icon: Icons.remove,
-                    onTap: () {
-                      final camera = _mapController.camera;
-                      _mapController.move(camera.center, camera.zoom - 1);
-                    },
-                  ),
-                  const SizedBox(height: 10),
-                  _CircleMapButton(
-                    icon: widget.isFullScreen
-                        ? Icons.fullscreen_exit
-                        : Icons.fullscreen,
-                    onTap: widget.isFullScreen
-                        ? context.pop
-                        : _openFullScreenMap,
-                  ),
-                  const SizedBox(height: 10),
-                  _CircleMapButton(
-                    icon: Icons.my_location,
-                    onTap:
-                        widget.onCurrentLocationTap ??
-                        () {
-                          _mapController.move(
-                            _customerPoint,
-                            widget.initialZoom,
-                          );
-                        },
-                  ),
-                ],
+              child: Container(
+                padding: EdgeInsets.all(8),
+                decoration: BoxDecoration(
+                    color: Color(0xffF2F2F2),
+                    borderRadius: BorderRadius.circular(12)
+
+                ),
+                child: Column(
+                  children: [
+                    _CircleMapButton(
+                      icon: Icons.add,
+                      onTap: () {
+                        final camera = _mapController.camera;
+                        _mapController.move(camera.center, camera.zoom + 1);
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    _CircleMapButton(
+                      icon: Icons.remove,
+                      onTap: () {
+                        final camera = _mapController.camera;
+                        _mapController.move(camera.center, camera.zoom - 1);
+                      },
+                    ),
+                    const SizedBox(height: 12),
+                    _CircleMapButton(
+                      icon: widget.isFullScreen
+                          ? Icons.fullscreen_exit
+                          : Icons.fullscreen,
+                      onTap: widget.isFullScreen
+                          ? context.pop : _openFullScreenMap,
+                    ),
+                    const SizedBox(height: 12),
+                    _CircleMapButton(
+                      icon: Icons.my_location,
+                      onTap:
+                      widget.onCurrentLocationTap ??
+                              () {
+                            _mapController.move(
+                              _customerPoint,
+                              widget.initialZoom,
+                            );
+                          },
+                    ),
+                  ],
+                ),
               ),
             ),
 
@@ -229,21 +248,24 @@ class _AidPersonMapWidgetState extends State<AidPersonMapWidget> {
                   borderRadius: BorderRadius.circular(18),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withOpacity(0.08),
+                      color: Colors.black.withAlpha(100),
                       blurRadius: 12,
                       offset: const Offset(0, 4),
                     ),
                   ],
                 ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    _LegendItem(color: _purple, title: 'مشتری'),
-                    _DividerText(),
-                    _LegendItem(color: _orange, title: 'درحال خدمت'),
-                    _DividerText(),
-                    _LegendItem(color: _green, title: 'درحال ماموریت'),
-                  ],
+                child: FittedBox(
+                  fit: BoxFit.scaleDown,
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      _LegendItem(color: _purple, title: 'مشتری'),
+                      _DividerText(),
+                      _LegendItem(color: _orange, title: 'درحال خدمت'),
+                      _DividerText(),
+                      _LegendItem(color: _green, title: 'درحال ماموریت'),
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -282,23 +304,6 @@ class _AidPersonMapWidgetState extends State<AidPersonMapWidget> {
     );
   }
 
-  Color _getEmdadgarStatusColor(EmdadgarEntity emdadgar) {
-    final statusTitle = emdadgar.statusTitle ?? emdadgar.statusName ?? '';
-
-    if (statusTitle.contains('خدمت')) {
-      return _orange;
-    }
-
-    if (statusTitle.contains('ماموریت') || statusTitle.contains('ماموريت')) {
-      return _green;
-    }
-
-    return _green;
-  }
-
-  String _getEmdadgarNavganIcon(EmdadgarEntity emdadgar) {
-    return ImageManager.onMissionEmpty;
-  }
 }
 
 class _CircleMapButton extends StatelessWidget {
@@ -317,8 +322,8 @@ class _CircleMapButton extends StatelessWidget {
         customBorder: const CircleBorder(),
         onTap: onTap,
         child: SizedBox(
-          width: 44,
-          height: 44,
+          width: AppSize.s40,
+          height: AppSize.s40,
           child: Icon(icon, color: Color(0xff6C35D4), size: 24),
         ),
       ),
@@ -329,16 +334,21 @@ class _CircleMapButton extends StatelessWidget {
 class _MapPinMarker extends StatelessWidget {
   final String iconPath;
   final bool isLoading;
+  final Color color;
 
-  const _MapPinMarker({required this.iconPath, this.isLoading = false});
+  const _MapPinMarker({
+    required this.iconPath,
+    this.isLoading = false,
+    required this.color,
+  });
 
   @override
   Widget build(BuildContext context) {
     return Stack(
       alignment: Alignment.center,
       children: [
-        Image.asset(
-          iconPath,
+        SvgWidget(
+          src: SvgAsset(iconPath),
           width: AppSize.s48,
           height: AppSize.s48,
         ),
@@ -369,15 +379,15 @@ class _LegendItem extends StatelessWidget {
       children: [
         Icon(Icons.location_on, color: color, size: 20),
         const SizedBox(width: 4),
-        Text(
-          title,
-          style: const TextStyle(fontSize: 12, fontWeight: FontWeight.w600),
+        BodyMediumText(text:
+        title,
+            fontSize: 12, fontWeight: FontWeight.w600
+
         ),
       ],
     );
   }
 }
-
 class _DividerText extends StatelessWidget {
   const _DividerText();
 
