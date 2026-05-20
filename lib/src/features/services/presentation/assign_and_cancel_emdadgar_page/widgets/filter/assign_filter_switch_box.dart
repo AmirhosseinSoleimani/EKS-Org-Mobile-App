@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/cubit/assign_and_cancel_emdadgar_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/bottom_sheet/filter_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:flutter/material.dart';
@@ -5,11 +6,13 @@ import 'package:flutter/material.dart';
 class AssignFilterSwitchBox extends StatelessWidget {
   final AssignFilterType selectedType;
   final ValueChanged<AssignFilterType> onChanged;
+  final AssignAndCancelEmdadgarCubit cubit;
 
   const AssignFilterSwitchBox({
     super.key,
     required this.selectedType,
     required this.onChanged,
+    required this.cubit,
   });
 
   @override
@@ -60,14 +63,21 @@ class AssignFilterSwitchBox extends StatelessWidget {
                     child: _AssignFilterSwitchItem(
                       title: 'نمایندگی ها سایپا یدک',
                       isSelected: selectedType == AssignFilterType.agency,
-                      onTap: () => onChanged(AssignFilterType.agency),
+                        onTap: () {
+                          cubit.clearFilterFields();
+                          onChanged(AssignFilterType.agency);
+                        }
+
                     ),
                   ),
                   Expanded(
                     child: _AssignFilterSwitchItem(
                       title: 'امدادرسان ها',
                       isSelected: selectedType == AssignFilterType.emdadgar,
-                      onTap: () => onChanged(AssignFilterType.emdadgar),
+                      onTap: () {
+                        cubit.clearFilterFields();
+                        onChanged(AssignFilterType.emdadgar);
+                      },
                     ),
                   ),
                 ],

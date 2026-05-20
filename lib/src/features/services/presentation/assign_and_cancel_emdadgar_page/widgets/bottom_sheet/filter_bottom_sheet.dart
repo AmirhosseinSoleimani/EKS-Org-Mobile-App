@@ -72,6 +72,7 @@ class _AssignFilterBottomSheetContentState
         TitleLargeText(text: 'جستجو و فیلتر', fontSize: 15),
         Space.h16,
         AssignFilterSwitchBox(
+          cubit: widget.cubit,
           selectedType: selectedType,
           onChanged: (value) {
             setState(() {

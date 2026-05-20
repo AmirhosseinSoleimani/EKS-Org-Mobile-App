@@ -9,7 +9,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/bottom_sheet/cancel_mission_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/bottom_sheet/filter_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/bottom_sheet/non_cooperation_bottom_sheet.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/search_and_filter_box.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/filter/search_and_filter_box.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
@@ -139,7 +139,7 @@ class _LoadedView extends StatelessWidget {
                   SearchAndFilterBox(
                     isLoading: false,
                     onOpenFilter: () => showFilterBottomSheet(context),
-                    onRefresh: () => {}/*cubit.refreshListAndClearFilters()*/,
+                    onRefresh: () => cubit.clearFilterFields(),
                   ),
                   Space.h16,
                   AidPersonMapWidget(
