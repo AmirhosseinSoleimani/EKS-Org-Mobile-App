@@ -3,74 +3,55 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/cancel_r
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/cubit/assign_and_cancel_emdadgar_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/enums/service_assign_action.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/bottom_sheet/bottom_sheet_header.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/bottom_sheet/service_action_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/dropdown_selector.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/submit_cancel_buttons.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 Future<void> showAssignBottomSheet(BuildContext context) async {
   final cubit = context.read<AssignAndCancelEmdadgarCubit>();
 
-  await showModalBottomSheet(
+  await showServiceActionBottomSheet(
     context: context,
-    isScrollControlled: true,
-    backgroundColor: Colors.white,
-    shape: const RoundedRectangleBorder(borderRadius: BorderRadius.zero),
-    builder: (context) {
-      final colorScheme = Theme.of(context).colorScheme;
-      return BlocProvider.value(
-        value: cubit,
-        child: SizedBox(
-          height: MediaQuery.of(context).size.height,
-          child: SafeArea(
-            child: Column(
-              children: [
-                BottomSheetHeader(title: 'اطلاعات امداد رسان'),
-                Divider(color: colorScheme.onInverseSurface),
-                Space.h24,
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    child: AssignEmdadgarBottomSheetForm(
-                      reasons: cubit.reasonListNotifier,
-                      selectedReason: cubit.selectedCancelReason,
-                      onReasonSelected: cubit.setSelectedCancelReason,
-                      descriptionController: cubit.descriptionController,
-                    ),
-                  ),
-                ),
+    title: 'اطلاعات امداد رسان',
+    showDivider: true,
+    topContentBuilder: (context) {
+      return Space.h24;
+    },
+    contentBuilder: (context) {
+      return AssignEmdadgarBottomSheetForm(
+        reasons: cubit.reasonListNotifier,
+        selectedReason: cubit.selectedCancelReason,
+        onReasonSelected: cubit.setSelectedCancelReason,
+        descriptionController: cubit.descriptionController,
+      );
+    },
+    actionsBuilder: (context) {
+      return BlocBuilder<
+          AssignAndCancelEmdadgarCubit,
+          AssignAndCancelEmdadgarState
+      >(
+        builder: (context, state) {
+          final isLoading =
+              state.whenOrNull(
+                submitNonCooperationLoading: () => true,
+              ) ??
+                  false;
 
-                BlocBuilder<
-                  AssignAndCancelEmdadgarCubit,
-                  AssignAndCancelEmdadgarState
-                >(
-                  builder: (context, state) {
-                    final isLoading =
-                        state.whenOrNull(
-                          submitNonCooperationLoading: () => true,
-                        ) ??
-                        false;
-
-                    return Padding(
-                      padding: const EdgeInsets.all(16),
-                      child: SubmitCancelButtons(
-                        submitButtonColor: cubit.selectedRequest?.serviceType?.serviceColor ?? ServiceType.reliefService.serviceColor,
-                        submitTitle: 'ثبت',
-                        isLoading: isLoading,
-                        onCancel: () => Navigator.pop(context),
-                        onSubmit: () => cubit.executeServiceAssign(
-                          ServiceAssignAction.nonCooperation,
-                        ),
-                      ),
-                    );
-                  },
-                ),
-              ],
+          return SubmitCancelButtons(
+            submitButtonColor:
+            cubit.selectedRequest?.serviceType?.serviceColor ??
+                ServiceType.reliefService.serviceColor,
+            submitTitle: 'ثبت',
+            isLoading: isLoading,
+            onCancel: () => Navigator.pop(context),
+            onSubmit: () => cubit.executeServiceAssign(
+              ServiceAssignAction.nonCooperation,
             ),
-          ),
-        ),
+          );
+        },
       );
     },
   );
