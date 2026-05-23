@@ -100,15 +100,18 @@ class BottomSheetWidget extends StatelessWidget {
                     if (hasTitle && hasMessage) const SizedBox(height: 10),
 
                     if (hasMessage)
-                      _CenteredText(
-                        text: message.trim(),
-                        style: (textStyle ??
-                            theme.textTheme.bodyMedium?.copyWith(
-                              fontSize: AppSize.s16,
-                              height: 1.35,
-                              color: theme.colorScheme.onSurfaceVariant,
-                            )) ??
-                            const TextStyle(),
+                      Padding(
+                        padding: const EdgeInsets.all(16.0),
+                        child: _CenteredText(
+                          text: message.trim(),
+                          style: (textStyle ??
+                              theme.textTheme.bodyMedium?.copyWith(
+                                fontSize: AppSize.s16,
+                                height: 1.35,
+                                color: theme.colorScheme.onSurfaceVariant,
+                              )) ??
+                              const TextStyle(),
+                        ),
                       ),
                   ],
                 ),

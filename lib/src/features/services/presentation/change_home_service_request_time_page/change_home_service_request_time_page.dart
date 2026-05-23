@@ -17,6 +17,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_tex
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class ChangeHomeServiceRequestTimePage extends StatelessWidget {
   static const path = "/change-home-service-request-time-page";
@@ -63,11 +64,15 @@ class _View extends StatelessWidget {
             );
           },
           submitSuccess: (data) {
-            BottomSheetMessage.showNotice(
+            BottomSheetMessage.showNoticeWithAction(
               isDismissible: false,
               context: context,
               data: data,
               buttonColor: ServiceType.homeService.serviceColor,
+              onPositive: () {
+                context.pop();
+                context.pop();
+              },
             );
           },
         );
