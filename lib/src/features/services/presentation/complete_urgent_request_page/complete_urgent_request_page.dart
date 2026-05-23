@@ -60,7 +60,7 @@ class _View extends StatelessWidget {
           connectionError: () {
             BottomSheetMessage.showCustom(
               context: context,
-              content: NoInternetBottomSheet(onRetry: cubit.init),
+              content: NoInternetBottomSheet(onRetry: cubit.retryLastAction),
               actionWidget: const SizedBox.shrink(),
               isDismissible: false,
               enableDrag: false,
@@ -71,9 +71,12 @@ class _View extends StatelessWidget {
               context: context,
               data: BottomSheetMessageModel(
                 title: '',
-                message: data.message ?? '',
+                message: data.message ?? 'درخواست با موفقیت ثبت شد',
               ),
-              onPositive: context.pop,
+              onPositive: (){
+                context.pop;
+                context.pop;
+              },
             );
           },
         );
@@ -84,6 +87,7 @@ class _View extends StatelessWidget {
           title: Row(
             children: [
               TitleMediumText(text: 'تکمیل درخواست اضطراری'),
+              Space.w8,
               StatusLabel(
                 color: colorScheme.error,
                 text: 'اضطراری',

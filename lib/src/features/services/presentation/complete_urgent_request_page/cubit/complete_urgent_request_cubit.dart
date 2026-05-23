@@ -58,6 +58,8 @@ class CompleteUrgentRequestCubit extends Cubit<CompleteUrgentRequestState> {
   final familyNameController = TextEditingController();
 
   String? _errorMessage;
+  VoidCallback? _retryAction;
+  void retryLastAction() => _retryAction?.call();
 
   Future<void> setSelectedCoverCar(CoverCarEntity value) async {
     selectedCoverCars.value = value;
@@ -68,6 +70,7 @@ class CompleteUrgentRequestCubit extends Cubit<CompleteUrgentRequestState> {
   }
 
   Future<void> init() async {
+    _retryAction = init;
     final result = await _initializeData();
 
     switch (result) {
@@ -157,6 +160,7 @@ class CompleteUrgentRequestCubit extends Cubit<CompleteUrgentRequestState> {
   }
 
   Future<void> getReferenceCar() async {
+    _retryAction = getReferenceCar;
     final chassis = chassisNumberController.text.trim();
     if (chassis.isEmpty) {
       _emitError('شماره شاسی را وارد کنید');
@@ -195,6 +199,7 @@ class CompleteUrgentRequestCubit extends Cubit<CompleteUrgentRequestState> {
   }
 
   Future<void> getUserInfo() async {
+    _retryAction = getUserInfo;
     final nationalCode = nationalCodeController.text.trim();
     if (nationalCode.isEmpty) {
       _emitError('کد ملی را وارد کنید');
@@ -223,6 +228,7 @@ class CompleteUrgentRequestCubit extends Cubit<CompleteUrgentRequestState> {
   }
 
   Future<void> submit() async {
+    _retryAction = submit;
     _safeEmit(const CompleteUrgentRequestState.submitLoading());
 
     final param = CompleteUrgentParamEntity(
