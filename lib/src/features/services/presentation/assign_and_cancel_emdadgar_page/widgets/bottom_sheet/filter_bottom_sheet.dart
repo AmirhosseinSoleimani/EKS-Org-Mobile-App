@@ -28,7 +28,7 @@ Future<void> showFilterBottomSheet(BuildContext context) async {
             backgroundColor: cubit.selectedRequest?.serviceType?.serviceColor,
             onTap: () {
               context.pop();
-              cubit.getEmdadgarList();
+              cubit.applyFilterOnEmdadgarList();
             },
           ),
         ),

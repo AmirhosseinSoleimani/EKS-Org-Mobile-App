@@ -20,7 +20,7 @@ abstract class MapDataSource {
 
   Future<BaseSingleResponse<RouteDataModel>> getRoute(RouteParamModel param);
 
-  Future<BaseSingleResponse<AreaBaseModel>> getAreaBaseData(AreaBaseInfoParamModel param);
+  Future<BaseListResponse<AreaBaseModel>> getAreaBaseData(AreaBaseInfoParamModel param);
 
   Future<BaseListResponse<ProvinceModel>> getProvinceList();
 

@@ -7,13 +7,13 @@ import 'package:injectable/injectable.dart';
 
 @lazySingleton
 class GetAreaBaseInfoUseCase
-    extends BaseUseCase<ApiResult<AreaBaseEntity>, AreaBaseInfoParamEntity> {
+    extends BaseUseCase<ApiResult<List<AreaBaseEntity>>, AreaBaseInfoParamEntity> {
   GetAreaBaseInfoUseCase(this._repository);
 
   final MapRepository _repository;
 
   @override
-  Future<ApiResult<AreaBaseEntity>> call(arg) async {
+  Future<ApiResult<List<AreaBaseEntity>>> call(arg) async {
     return _repository.getAreaBaseData(arg);
   }
 }

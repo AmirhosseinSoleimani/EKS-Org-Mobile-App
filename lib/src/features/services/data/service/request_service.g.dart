@@ -1038,7 +1038,7 @@ class _RequestService implements RequestService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/NewEmdadgar/GetEmdadgarList',
+            '/api/Emdadgar/GetEmdadgarList',
             queryParameters: queryParameters,
             data: _data,
           )

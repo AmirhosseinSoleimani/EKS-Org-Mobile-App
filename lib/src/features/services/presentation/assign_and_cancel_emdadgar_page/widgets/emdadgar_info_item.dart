@@ -1,6 +1,7 @@
 import 'package:eks_sana_plus_org/src/common/utils/car_plate_parser.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/car_plate.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/online_route_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/color_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
@@ -9,8 +10,10 @@ import 'package:flutter/material.dart';
 
 class EmdadgarInfoItem extends StatelessWidget {
   final EmdadgarEntity entity;
+  final RouteEntity? routeEntity;
 
-  const EmdadgarInfoItem({super.key, required this.entity});
+  const EmdadgarInfoItem({super.key, required this.entity,
+     this.routeEntity});
 
   @override
   Widget build(BuildContext context) {
@@ -25,6 +28,16 @@ class EmdadgarInfoItem extends StatelessWidget {
         : "";
 
     final plateText = CarPlateParser.parse(entity.plakText ?? "");
+
+    final distanceText = routeEntity?.distance.text;
+    final durationText = routeEntity?.duration.text;
+
+    final routeInfoParts = [
+      if (distanceText != null && distanceText.trim().isNotEmpty)
+        'فاصله: $distanceText کیلومتر',
+      if (durationText != null && durationText.trim().isNotEmpty)
+        'زمان: $durationText',
+    ];
 
     return Stack(
       children: [
@@ -100,10 +113,7 @@ class EmdadgarInfoItem extends StatelessWidget {
               Space.h8,
               BodyMediumText(text: "برنامه‌ریزی: ${entity.tarhNameText ?? ""}"),
               Space.h8,
-              BodyMediumText(
-                text:
-                    "فاصله: ${entity.distanceKmToOrigin?.toStringAsFixed(1) ?? ""} کیلومتر | زمان:",
-              ),
+              BodyMediumText( text: routeInfoParts.join(' | ')),
             ],
           ),
         ),

@@ -20,8 +20,8 @@ class RouteParamModel extends RouteParamEntity {
 
   Map<String, dynamic> toJson() {
     return {
-      "start": (start as LocationParamModel).toJson(),
-      "destination": (destination as LocationParamModel).toJson(),
+      "start": (start as LocationParamModel?)?.toJson(),
+      "destination": (destination as LocationParamModel?)?.toJson(),
       "includeLegs": includeLegs,
       "includeStepsPoints": includeStepsPoints,
     };
@@ -42,6 +42,10 @@ class LocationParamModel extends LocationParamEntity {
   }
 
   Map<String, dynamic> toJson() {
+    print("ASDasd");
+    print(latitude);
+    print(longitude);
+    print("ASDasd");
     return {
       "latitude": latitude,
       "longitude": longitude,

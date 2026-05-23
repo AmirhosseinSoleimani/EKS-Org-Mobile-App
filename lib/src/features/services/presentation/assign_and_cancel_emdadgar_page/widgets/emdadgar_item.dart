@@ -92,7 +92,6 @@ class EmdadgarItem extends StatelessWidget {
     );
   }
 
-  // ردیف‌های اطلاعاتی (لوکیشن و خودرو)
   Widget _buildInfoRows(ColorScheme colorScheme) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -125,16 +124,18 @@ class EmdadgarItem extends StatelessWidget {
   Widget _buildActions(BuildContext context,
       AssignAndCancelEmdadgarCubit cubit) {
     final requestStatus = RequestStatus.fromValue(
-        cubit.selectedRequest?.requestStatus); 
+        cubit.selectedRequest?.requestStatus);
+
+    final bool canCancel = isEmdadgarAssigned(requestStatus);
+    if (canCancel) {
+      return CancelMissionButton(entity: entity);
+    }
 
     if (entity.status == EmdadgarStatus.available.value ||
         requestStatus != RequestStatus.completed) {
       return AssignAndNonCooperationButtons(entity: entity);
     }
-    final bool canCancel = isEmdadgarAssigned(requestStatus);
-    if (canCancel) {
-      return CancelMissionButton(entity: entity);
-    }
+
 
     return const SizedBox.shrink();
   }

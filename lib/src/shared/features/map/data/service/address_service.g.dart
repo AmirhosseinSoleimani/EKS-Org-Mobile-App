@@ -53,7 +53,7 @@ class _AddressService implements AddressService {
   }
 
   @override
-  Future<BaseSingleResponse<AreaBaseModel>> getAreaBaseData(
+  Future<BaseListResponse<AreaBaseModel>> getAreaBaseData(
     Map<String, dynamic> query,
   ) async {
     final _extra = <String, dynamic>{};
@@ -61,7 +61,7 @@ class _AddressService implements AddressService {
     queryParameters.addAll(query);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<BaseSingleResponse<AreaBaseModel>>(
+    final _options = _setStreamType<BaseListResponse<AreaBaseModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -72,9 +72,9 @@ class _AddressService implements AddressService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseSingleResponse<AreaBaseModel> _value;
+    late BaseListResponse<AreaBaseModel> _value;
     try {
-      _value = BaseSingleResponse<AreaBaseModel>.fromJson(
+      _value = BaseListResponse<AreaBaseModel>.fromJson(
         _result.data!,
         (json) => AreaBaseModel.fromJson(json as Map<String, dynamic>),
       );

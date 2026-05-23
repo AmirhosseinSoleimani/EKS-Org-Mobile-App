@@ -22,7 +22,7 @@ class EmdadgarMarkerStyleResolver {
 
   MarkerStyle resolveCustomer() {
     return const MarkerStyle(
-      iconPath: ImageManager.customerMarker,
+      iconPath: SvgManager.customerMarker,
       color: Color(0xff6C35D4),
     );
   }

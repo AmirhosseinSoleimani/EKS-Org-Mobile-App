@@ -1,6 +1,6 @@
 import 'package:eks_sana_plus_org/src/common/constants/request_status.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
-import 'package:intl/intl.dart';
+
 import 'package:shamsi_date/shamsi_date.dart';
 
 abstract class BaseRequestEntity {

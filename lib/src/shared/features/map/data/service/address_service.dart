@@ -20,7 +20,7 @@ abstract class AddressService {
       @Body() Map<String, dynamic> query);
 
   @GET('/api/AreaBaseInfo/GetAreaBaseInfo')
-  Future<BaseSingleResponse<AreaBaseModel>> getAreaBaseData(
+  Future<BaseListResponse<AreaBaseModel>> getAreaBaseData(
       @Queries() Map<String, dynamic> query);
 
 

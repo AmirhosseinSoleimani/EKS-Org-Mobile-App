@@ -45,7 +45,7 @@ class AssignAndNonCooperationButtons extends StatelessWidget {
                     ? () {}
                     : () {
                         cubit.setSelectedEmdadgar(entity);
-                        cubit.getCheckDepotAndRoute(entity);
+                        cubit.getCheckDepotAndRoute();
                       },
                 title: "تخصیص",
                 textStyle: Theme.of(context).textTheme.titleLarge?.copyWith(

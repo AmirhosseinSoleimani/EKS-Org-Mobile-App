@@ -17,28 +17,14 @@ class AssignAndCancelEmdadgarState with _$AssignAndCancelEmdadgarState {
 
   const factory AssignAndCancelEmdadgarState.submitLoading() = _SubmitLoading;
 
-  const factory AssignAndCancelEmdadgarState.submitSuccess({
-    required BottomSheetMessageModel message,
-  }) = _SubmitSuccess;
 
   const factory AssignAndCancelEmdadgarState.getReasonListLoading({
     required ServiceAssignAction action
   }) = _GetReasonListLoading;
 
-
-  const factory AssignAndCancelEmdadgarState.submitNonCooperationLoading() = _SubmitNonCooperationLoading;
-
-  const factory AssignAndCancelEmdadgarState.submitNonCooperationSuccess({
-    required BottomSheetMessageModel message,
-  }) = _SubmitNonCooperationSuccess;
-
-
-  const factory AssignAndCancelEmdadgarState.submitNonCooperationError({
-    required BottomSheetMessageModel message,
-  }) = _SubmitNonCooperationError;
-
-  const factory AssignAndCancelEmdadgarState.assignSuccess({
+  const factory AssignAndCancelEmdadgarState.showOperationSuccessMessage({
     required ServiceAssignResponseEntity response,
+    required ServiceAssignAction operationAction,
   }) = _AssignSuccess;
 
   const factory AssignAndCancelEmdadgarState.checkDepotLoading({

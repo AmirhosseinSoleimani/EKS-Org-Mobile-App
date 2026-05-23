@@ -62,7 +62,7 @@ class MapRepositoryImpl extends MapRepository {
   }
 
   @override
-  Future<ApiResult<AreaBaseEntity>> getAreaBaseData(AreaBaseInfoParamEntity param) async {
+  Future<ApiResult<List<AreaBaseEntity>>> getAreaBaseData(AreaBaseInfoParamEntity param) async {
     try {
       final result = await _dataSource.getAreaBaseData(param.toModel());
       return result.toApiResult();

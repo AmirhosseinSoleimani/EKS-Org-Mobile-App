@@ -13,7 +13,7 @@ class AreaBaseModel extends AreaBaseEntity {
     required super.borderColorOnMap,
     required super.status,
     required super.isActive,
-    required List<ZoneInfoModel> super.zoneInfoList,
+    required super.zoneInfoList,
   });
 
   factory AreaBaseModel.fromJson(Map<String, dynamic> json) {

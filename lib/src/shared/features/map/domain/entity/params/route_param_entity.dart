@@ -1,7 +1,7 @@
 import 'package:eks_sana_plus_org/src/shared/features/map/data/models/param/route_param_model.dart';
 
 class RouteParamEntity {
-  final LocationParamEntity start;
+  final LocationParamEntity? start;
   final LocationParamEntity? destination;
   final bool includeLegs;
   final bool includeStepsPoints;
@@ -29,7 +29,7 @@ class RouteParamEntity {
 
   RouteParamModel toModel() {
     return RouteParamModel(
-      start: start.toModel(),
+      start: start?.toModel(),
       destination: destination?.toModel(),
       includeLegs: includeLegs,
       includeStepsPoints: includeStepsPoints,

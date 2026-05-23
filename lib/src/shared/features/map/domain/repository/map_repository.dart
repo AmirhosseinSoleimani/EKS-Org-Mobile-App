@@ -15,7 +15,7 @@ abstract class MapRepository {
   Future<ApiResult<AddressToLocationResponseEntity?>> fetchAddressToLocation(MapRequestEntity? entity);
   Future<ApiResult<LocationToAddressResponseEntity?>> fetchLocationToAddress(MapRequestEntity? entity);
   Future<ApiResult<RouteDataEntity>> getRoute(RouteParamEntity param);
-  Future<ApiResult<AreaBaseEntity>> getAreaBaseData(AreaBaseInfoParamEntity param);
+  Future<ApiResult<List<AreaBaseEntity>>>  getAreaBaseData(AreaBaseInfoParamEntity param);
 
   Future<ApiResult<List<ProvinceEntity>>> getProvinceList();
 

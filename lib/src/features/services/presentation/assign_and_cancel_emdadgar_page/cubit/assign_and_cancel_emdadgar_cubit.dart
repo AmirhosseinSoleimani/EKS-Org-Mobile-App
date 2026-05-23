@@ -1,16 +1,19 @@
 import 'package:bloc/bloc.dart';
+import 'package:eks_sana_plus_org/src/common/constants/area_business_usage_type.dart';
 import 'package:eks_sana_plus_org/src/common/constants/fetch_result_type.dart';
 import 'package:eks_sana_plus_org/src/common/constants/reason_type.dart';
 import 'package:eks_sana_plus_org/src/common/constants/request_status.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
-import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar/emdadgar_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/cancel_request_reason_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/check_depot_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/service_assign_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/cancel_reason_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/check_depot_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/emdadgar_list_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/service_assign_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/fetch_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_cancel_reason_request_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_check_depot_use_case.dart';
@@ -21,6 +24,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_reli
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/service_assign_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/enums/service_assign_action.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/data/models/online_route_model.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/area_base_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/online_route_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/params/area_base_info_param_entity.dart';
@@ -38,6 +42,138 @@ part 'assign_and_cancel_emdadgar_state.dart';
 
 @injectable
 class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
+
+
+  void setMockRouteData() {
+    final json = <String, dynamic>{
+      "routes": [
+        {
+          "legs": [
+            {
+              "steps": [
+                {
+                  "points": [
+                    [35.68813, 51.30939],
+                    [35.68854, 51.30800],
+                    [35.68926, 51.30559],
+                    [35.69019, 51.30229],
+                    [35.69161, 51.29750],
+                  ],
+                  "travelMode": "driving",
+                  "traffic": 2.0,
+                  "distance": {
+                    "text": "۱ کیلومتر",
+                    "value": 1000.0,
+                  },
+                  "duration": {
+                    "text": "۳ دقیقه",
+                    "value": 180.0,
+                  },
+                  "start": {
+                    "latitude": 35.68813,
+                    "longitude": 51.30939,
+                  },
+                  "destination": {
+                    "latitude": 35.69161,
+                    "longitude": 51.29750,
+                  },
+                },
+                {
+                  "points": [
+                    [35.69161, 51.29750],
+                    [35.69330, 51.29174],
+                    [35.69549, 51.28710],
+                    [35.69824, 51.28747],
+                  ],
+                  "travelMode": "driving",
+                  "traffic": 2.0,
+                  "distance": {
+                    "text": "۱ کیلومتر ۸۰۰ متر",
+                    "value": 1800.0,
+                  },
+                  "duration": {
+                    "text": "۴ دقیقه",
+                    "value": 240.0,
+                  },
+                  "start": {
+                    "latitude": 35.69161,
+                    "longitude": 51.29750,
+                  },
+                  "destination": {
+                    "latitude": 35.69824,
+                    "longitude": 51.28747,
+                  },
+                },
+                {
+                  "points": [
+                    [35.69824, 51.28747],
+                    [35.69976, 51.29581],
+                    [35.69906, 51.31613],
+                    [35.72064, 51.31736],
+                  ],
+                  "travelMode": "driving",
+                  "traffic": 3.0,
+                  "distance": {
+                    "text": "۷ کیلومتر ۹۰۰ متر",
+                    "value": 7900.0,
+                  },
+                  "duration": {
+                    "text": "۱۵ دقیقه",
+                    "value": 900.0,
+                  },
+                  "start": {
+                    "latitude": 35.69824,
+                    "longitude": 51.28747,
+                  },
+                  "destination": {
+                    "latitude": 35.72064,
+                    "longitude": 51.31736,
+                  },
+                },
+              ],
+              "distance": {
+                "text": "۱۰ کیلومتر ۷۰۰ متر",
+                "value": 10700.0,
+              },
+              "duration": {
+                "text": "۲۲ دقیقه",
+                "value": 1320.0,
+              },
+              "start": {
+                "latitude": 35.688129,
+                "longitude": 51.309386,
+              },
+              "destination": {
+                "latitude": 35.720644,
+                "longitude": 51.317357,
+              },
+            },
+          ],
+          "distance": {
+            "text": "۱۰ کیلومتر ۷۰۰ متر",
+            "value": 10700.0,
+          },
+          "duration": {
+            "text": "۲۲ دقیقه",
+            "value": 1320.0,
+          },
+          "start": {
+            "latitude": 35.688129,
+            "longitude": 51.309386,
+          },
+          "destination": {
+            "latitude": 35.720644,
+            "longitude": 51.317357,
+          },
+        },
+      ],
+    };
+
+    routeData = RouteDataModel.fromJson(json);
+
+  }
+
+
   AssignAndCancelEmdadgarCubit(this._getEmdadgarListUseCase,
       this._serviceAssignUseCase,
       this._getCheckDepotUseCase,
@@ -67,7 +203,7 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
   EmdadgarEntity? selectedEmdadgar;
   final List<EmdadgarEntity> emdadgarList = [];
   RouteDataEntity? routeData;
-  AreaBaseEntity? _areaBaseEntity;
+  final List<AreaBaseEntity> _areaBaseEntity = [];
   CheckDepotEntity? checkDepotEntity;
 
   final emdadgarNameController = TextEditingController();
@@ -118,14 +254,11 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
   }) async {
     _retryAction = () => getCancelReasons(action: action);
 
-    final requestStatus = RequestStatus.fromValue(
-        selectedRequest?.requestStatus);
-
     final param = CancelReasonParamEntity(
       serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
-      reasonType: requestStatus.isBeforeDispatch
-          ? ReasonType.beforeDispatch
-          : ReasonType.afterDispatch,);
+      reasonType: action == ServiceAssignAction.cancelMission
+          ? ReasonType.cancelEmdadgar
+          : ReasonType.nonCooperation,);
 
     _safeEmit(
         AssignAndCancelEmdadgarState.getReasonListLoading(action: action));
@@ -158,27 +291,37 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
 
     _safeEmit(const AssignAndCancelEmdadgarState.loading());
 
-  /*  final requestResult = await _fetchServiceRequestData();
+    final requestResult = await _fetchServiceRequestData();
     if (requestResult != FetchResultType.success) {
       return requestResult;
     }
-
-
-    final routesResult = await _getRoutes();
-    if (routesResult != FetchResultType.success) {
-      return routesResult;
-    }
-    */
 
     final emdadgarListResult = await getEmdadgarList();
     if (emdadgarListResult != FetchResultType.success) {
       return emdadgarListResult;
     }
+    print(selectedRequest?.hasEmdadGar);
+    if (selectedRequest?.hasEmdadGar ?? false) {
+      selectedEmdadgar =  emdadgarList.first;
+      final start = LocationParamEntity(
+          latitude: emdadgarList.first.lastLocationLatitude ?? 0,
+          longitude: emdadgarList.first.lastLocationLongitude ?? 0);
 
-  /*  final areaBaseInfoResult = await _getAreaBaseInfo();
+      final destination = LocationParamEntity(
+          latitude: selectedRequest?.latitude ?? 0,
+          longitude: selectedRequest?.longitude ?? 0);
+
+      final routeResult = await _getRoutes(
+          start: start, destination: destination);
+      if (routeResult != FetchResultType.success) {
+        return routeResult;
+      }
+    }
+
+    final areaBaseInfoResult = await _getAreaBaseInfo();
     if (areaBaseInfoResult != FetchResultType.success) {
       return areaBaseInfoResult;
-    }*/
+    }
 
     return FetchResultType.success;
   }
@@ -205,32 +348,6 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
     result.whenOrNull(
       success: (data, _, _) {
         selectedRequest = data;
-      },
-      failure: (_, msg) {
-        _errorMessage = _fallbackError(msg);
-        fetchResult = FetchResultType.failure;
-      },
-      connectionError: () {
-        fetchResult = FetchResultType.connectionError;
-      },
-    );
-    return fetchResult;
-  }
-
-
-  Future<FetchResultType> _getRoutes() async {
-    final param = RouteParamEntity(includeLegs: true, includeStepsPoints: true,
-        start: LocationParamEntity(
-          latitude: selectedEmdadgar?.lastLocationLatitude ?? 0,
-          longitude: selectedEmdadgar?.lastLocationLongitude ?? 0,));
-
-    final result = await _getRouteUseCase(param);
-
-    late FetchResultType fetchResult;
-
-    result.whenOrNull(
-      success: (data, _, _) {
-        routeData = data;
         fetchResult = FetchResultType.success;
       },
       failure: (_, msg) {
@@ -247,7 +364,13 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
   Future<FetchResultType> _getAreaBaseInfo() async {
     final param = AreaBaseInfoParamEntity(
         latitude: selectedRequest?.latitude,
-        longitude: selectedRequest?.longitude
+        longitude: selectedRequest?.longitude,
+        areaBusinessUsageTypes: [
+          selectedRequest?.serviceType?.value ??
+              ServiceType.reliefService.value,
+          AreaBusinessUsageType.spatialPlan.value,
+          AreaBusinessUsageType.discount.value,
+        ]
     );
 
     final result = await _getAreaBaseInfoUseCase(param);
@@ -256,7 +379,8 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
 
     result.whenOrNull(
       success: (data, _, _) {
-        _areaBaseEntity = data;
+        _areaBaseEntity.clear();
+        _areaBaseEntity.addAll(data);
         fetchResult = FetchResultType.success;
       },
       failure: (_, msg) {
@@ -269,87 +393,7 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
     );
     return fetchResult;
   }
-///faker method
-  Future<FetchResultType> getEmdadgarList() async {
-    // شبیه‌سازی تاخیر شبکه
-    await Future.delayed(const Duration(seconds: 1));
 
-    final List<Map<String, dynamic>> fakeJsonList = [
-      {
-        "id": 13395,
-        "agencyName": "ابراهيم فرجي",
-        "plakText": "63 ط 699 44",
-        "khodroTypeText": "زامیاد",
-        "distanceKmToOrigin": 4.82,
-        'statusTitle': 'در حال ماموریت',
-        "lastLocationLatitude": 35.781445,
-        "lastLocationLongitude": 51.3825183,
-        "priority": 1,
-        "isActive": true,
-        "emdadgars": [
-          {
-            "aidPerName": "محمد زمانی",
-            "report": {
-              "daily": {"successCount": 5, "cancelCount": 1},
-              "weekly": {"successCount": 20, "cancelCount": 3}
-            }
-          }
-        ]
-      },
-      {
-        "id": 13639,
-        "agencyName": "خسرو محمدي نژاد روشنده",
-        "plakText": "45 ط 757 38",
-        "khodroTypeText": "سایپا 151",
-        "distanceKmToOrigin": 4.98,
-        'statusTitle': 'آماده خدمت',
-        "lastLocationLatitude": 35.73171,
-        "lastLocationLongitude": 51.5292633,
-        "priority": 2,
-        "isActive": true,
-        "emdadgars": [
-          {
-            "aidPerName": "خسرو محمدی نژاد",
-            "report": {
-              "daily": {"successCount": 2, "cancelCount": 0},
-              "weekly": {"successCount": 12, "cancelCount": 1}
-            }
-          }
-        ]
-      },
-      {
-        "id": 14000,
-        "agencyName": "نمایندگی مرکزی میلاد",
-        "plakText": "22 ج 114 10",
-        "khodroTypeText": "نیسان یدک‌کش",
-        "distanceKmToOrigin": 2.5,
-        "priority": 3,
-        'statusTitle': 'در حال ماموریت',
-        "lastLocationLatitude": 35.7412466,
-        "lastLocationLongitude": 51.4168983,
-        'status': 1,
-        "isActive": true,
-        "emdadgars": [
-          {
-            "aidPerName": "میلاد برنامه‌نویس",
-            "report": {
-              "daily": {"successCount": 10, "cancelCount": 0},
-              "weekly": {"successCount": 45, "cancelCount": 2}
-            }
-          }
-        ]
-      }
-    ];
-
-    final items = fakeJsonList.map((json) => EmdadgarModel.fromJson(json)).toList();
-
-    emdadgarList.clear();
-    emdadgarList.addAll(items);
-
-    return FetchResultType.success;
-  }
-
-/*
   Future<FetchResultType> getEmdadgarList() async {
     final emdadServiceId = (selectedRequest is ReliefRequestEntity) ? (
         selectedRequest as ReliefRequestEntity
@@ -386,7 +430,16 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
       },
     );
     return fetchResult;
-  }*/
+  }
+
+  Future<void> applyFilterOnEmdadgarList() async {
+    _retryAction = applyFilterOnEmdadgarList;
+    _safeEmit(AssignAndCancelEmdadgarState.loading());
+    final emdadgarListResult = await getEmdadgarList();
+    _emitFetchResultState(emdadgarListResult,
+      successState: AssignAndCancelEmdadgarState.loaded(),
+    );
+  }
 
   Future<void> setSelectedCancelReason(CancelRequestReasonEntity? value) async {
     selectedCancelReason.value = value;
@@ -398,6 +451,7 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
 
 
   Future<void> executeServiceAssign(ServiceAssignAction action) async {
+    _retryAction = () => executeServiceAssign(action);
     emit(const AssignAndCancelEmdadgarState.submitLoading());
 
     final param = ServiceAssignParamEntity(
@@ -417,18 +471,16 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
       distance: int.tryParse(
           selectedEmdadgar?.distanceKmToOrigin.toString() ?? '0'),
       emdadgarPriority: selectedEmdadgar?.priority,
-      /* distanceTitle:,
-      duration: ,
-      durationTitle: ,
-      type:*/
+        duration: routeData?.routes.first.duration.value.toInt() ?? 0,
+        durationTitle: routeData?.routes.first.duration.text ?? '',
+        distanceTitle: routeData?.routes.first.distance.text ?? '',
+        type: action.value
 
     );
     final result = await _serviceAssignUseCase.call(param);
     result.whenOrNull(
       success: (data, _, _) {
-        _safeEmit(
-          AssignAndCancelEmdadgarState.assignSuccess(response: data),
-        );
+        refreshAfterOperationSuccess(data, action);
       },
       failure: (error, failures) => _emitError(failures ?? error.toString()),
       connectionError: () =>
@@ -436,43 +488,143 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
     );
   }
 
-  Future<void> getCheckDepotAndRoute(EmdadgarEntity entity) async {
-    emit(AssignAndCancelEmdadgarState.checkDepotLoading(
-      emdadgarId: entity.id!,
-    ));
-    await Future.delayed(Duration(seconds: 2));
+  Future<void> refreshAfterOperationSuccess(
+      ServiceAssignResponseEntity response, ServiceAssignAction action) async {
+    final result = await _initializeData();
 
-    checkDepotEntity = CheckDepotEntity(allowMark500: true,launchDepotIsEnable: true);
-    _safeEmit(const AssignAndCancelEmdadgarState.showEmdadgarInfoBottomSheet());
+    switch (result) {
+      case FetchResultType.success:
+        _safeEmit(const AssignAndCancelEmdadgarState.loaded());
+        _safeEmit(
+          AssignAndCancelEmdadgarState.showOperationSuccessMessage(
+              response: response, operationAction: action),
+        );
+        break;
+
+      case FetchResultType.failure:
+        _emitError();
+        break;
+
+      case FetchResultType.connectionError:
+        _safeEmit(const AssignAndCancelEmdadgarState.connectionError());
+        break;
+
+      case FetchResultType.expireToken:
+        _emitError('نشست شما منقضی شده است. لطفا دوباره وارد شوید');
+        break;
+    }
   }
 
-  /* Future<void> getCheckDepotAndRoute(EmdadgarEntity entity) async {
-    emit(AssignAndCancelEmdadgarState.checkDepotLoading(
-      emdadgarId: entity.id!,
-    ));
+  Future<void> getCheckDepotAndRoute() async {
+    _safeEmit(AssignAndCancelEmdadgarState.checkDepotLoading(
+        emdadgarId: selectedEmdadgar?.id ?? 0));
 
+    final start = LocationParamEntity(
+        latitude: selectedEmdadgar?.lastLocationLatitude ?? 0,
+        longitude: selectedEmdadgar?.lastLocationLongitude ?? 0);
+
+    final routeResult = await _getRoutes(start: start);
+    if (routeResult != FetchResultType.success) {
+      _emitFetchResultState(routeResult);
+      return;
+    }
+
+    final checkDepotResult = await _getCheckDepot();
+    if (checkDepotResult != FetchResultType.success) {
+      _emitFetchResultState(checkDepotResult);
+      return;
+    }
+
+    _safeEmit(
+      const AssignAndCancelEmdadgarState.showEmdadgarInfoBottomSheet(),
+    );
+  }
+
+  void _emitFetchResultState(FetchResultType result,
+      {AssignAndCancelEmdadgarState? successState}) {
+    switch (result) {
+      case FetchResultType.success:
+        if (successState != null) {
+          _safeEmit(successState);
+        }
+        break;
+
+      case FetchResultType.failure:
+        _emitError();
+        break;
+
+      case FetchResultType.connectionError:
+        _safeEmit(const AssignAndCancelEmdadgarState.connectionError());
+        break;
+
+      case FetchResultType.expireToken:
+        _emitError('نشست شما منقضی شده است. لطفا دوباره وارد شوید');
+        break;
+    }
+  }
+
+  Future<FetchResultType> _getCheckDepot() async {
     final param = CheckDepotParamEntity(
       serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
       serviceRequestId: selectedRequest?.id,
       planningId: selectedEmdadgar?.planningId,
     );
 
-
     final result = await _getCheckDepotUseCase.call(param);
+
+    late FetchResultType fetchResult;
 
     result.whenOrNull(
       success: (data, _, _) {
         checkDepotEntity = data;
-        _safeEmit(const AssignAndCancelEmdadgarState.showEmdadgarInfoBottomSheet());
+        fetchResult = FetchResultType.success;
       },
-      failure: (error, failures) => _emitError(failures ?? error.toString()),
-      connectionError: () =>
-          _safeEmit(const AssignAndCancelEmdadgarState.connectionError()),
+      failure: (_, msg) {
+        _errorMessage = _fallbackError(msg);
+        fetchResult = FetchResultType.failure;
+      },
+      connectionError: () {
+        fetchResult = FetchResultType.connectionError;
+      },
     );
-  }*/
 
+    return fetchResult;
+  }
 
+  Future<FetchResultType> _getRoutes({
+    required LocationParamEntity start,
+    LocationParamEntity? destination,
+  }) async {
+    /*final param = RouteParamEntity(
+      includeLegs: true,
+      includeStepsPoints: true,
+      start: start,
+      destination: destination,
+    );
 
+    final result = await _getRouteUseCase(param);
+
+    late FetchResultType fetchResult;
+
+    result.whenOrNull(
+      success: (data, _, _) {
+        routeData = data;
+        fetchResult = FetchResultType.success;
+      },
+      failure: (_, msg) {
+        _errorMessage = _fallbackError(msg);
+        fetchResult = FetchResultType.failure;
+      },
+      connectionError: () {
+        fetchResult = FetchResultType.connectionError;
+      },
+    );
+
+    return fetchResult;*/
+
+    setMockRouteData();
+    return  FetchResultType.success;
+  }
 
   void _safeEmit(AssignAndCancelEmdadgarState state) {
     if (!isClosed) emit(state);

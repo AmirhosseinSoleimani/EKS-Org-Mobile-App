@@ -1,6 +1,8 @@
 enum ReasonType {
   beforeDispatch(1, 'قبل از اعزام'),
-  afterDispatch(2, 'بعد از اعزام');
+  afterDispatch(2, 'بعد از اعزام'),
+  nonCooperation(3, 'عدم همکاری'),
+  cancelEmdadgar(4, 'لغو ماموریت');
 
   const ReasonType(this.value, this.label);
 

@@ -44,7 +44,7 @@ class MapDataSourceImpl extends MapDataSource {
   }
 
   @override
-  Future<BaseSingleResponse<AreaBaseModel>> getAreaBaseData(AreaBaseInfoParamModel param) async{
+  Future<BaseListResponse<AreaBaseModel>> getAreaBaseData(AreaBaseInfoParamModel param) async{
     return await addressService.getAreaBaseData(param.toJson());
   }
 

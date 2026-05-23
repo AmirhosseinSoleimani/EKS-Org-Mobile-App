@@ -21,39 +21,42 @@ class SubmitCancelButtons extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          flex: 60,
-          child: InkwellButtonWidget(
-            title: submitTitle,
-            backgroundColor: submitButtonColor,
-            showLoading: isLoading,
-            onTap: onSubmit,
-          )
-        ),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 16),
+      child: Row(
+        children: [
+          Expanded(
+            flex: 60,
+            child: InkwellButtonWidget(
+              title: submitTitle,
+              backgroundColor: submitButtonColor,
+              showLoading: isLoading,
+              onTap: onSubmit,
+            )
+          ),
 
-        const SizedBox(width: 12),
+          const SizedBox(width: 12),
 
-        Expanded(
-          flex: 40,
-          child: TextButton(
-            onPressed: isLoading ? null : onCancel,
-            style: TextButton.styleFrom(
-              foregroundColor: Colors.grey.shade600,
-              backgroundColor: Colors.transparent,
-              padding: const EdgeInsets.symmetric(vertical: 14),
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(8),
+          Expanded(
+            flex: 40,
+            child: TextButton(
+              onPressed: isLoading ? null : onCancel,
+              style: TextButton.styleFrom(
+                foregroundColor: Colors.grey.shade600,
+                backgroundColor: Colors.transparent,
+                padding: const EdgeInsets.symmetric(vertical: 14),
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(8),
+                ),
+              ),
+              child: Text(
+                cancelTitle,
+                style: const TextStyle(fontWeight: FontWeight.w600),
               ),
             ),
-            child: Text(
-              cancelTitle,
-              style: const TextStyle(fontWeight: FontWeight.w600),
-            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 }

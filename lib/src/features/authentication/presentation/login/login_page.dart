@@ -91,7 +91,7 @@ class _LoginFormCardState extends State<_LoginFormCard> {
               ),
               actionWidget: const SizedBox.shrink(),
               isDismissible: false,
-              enableDrag: false,
+              enableDrag: true,
             );
           },
         );
