@@ -11,20 +11,17 @@ class SubmitButtonWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<UpdateRequestCubit>();
-    return BlocSelector<UpdateRequestCubit, UpdateRequestState, bool>(
-      selector: (state) => state.maybeWhen(loading: () => true, orElse: () => false),
-      builder: (context, isLoading) {
-        return ValueListenableBuilder<bool>(
-          valueListenable: cubit.validationNotifier,
-          builder: (_, isValid, _) {
-            final canSubmit = !isLoading && isValid;
-            return InkwellButtonWidget(
-              onTap:()=> cubit.updateServiceRequest(),
-              backgroundColor:  Theme.of(context).colorScheme.primary,
-              showLoading: isLoading,
-              title: 'ذخیره تغییرات',
-            );
-          },
+    return ValueListenableBuilder<bool>(
+      valueListenable: cubit.validationNotifier,
+      builder: (_, isValid, _) {
+        return InkwellButtonWidget(
+          onTap: () => cubit.updateServiceRequest(),
+          backgroundColor: Theme
+              .of(context)
+              .colorScheme
+              .primary,
+          showLoading: cubit.validationNotifier.value,
+          title: 'ذخیره تغییرات',
         );
       },
     );

@@ -1,4 +1,5 @@
 
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/shared/extensions/string_extensions.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/address_info_entity.dart';
@@ -27,19 +28,20 @@ class SelectableMapPage extends StatelessWidget {
   static const name = 'home-service-interactive-map-name';
 
   final AddressInfoEntity? initialLocation;
+  final ServiceType serviceType;
 
-  const SelectableMapPage({super.key, this.initialLocation});
+  const SelectableMapPage({super.key, this.initialLocation,required this.serviceType});
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<MapCubit>()..setInitialLocation(initialLocation)..init(),
-      child: const Scaffold(
-        appBar: SimpleAppBar(
+      child:  Scaffold(
+        appBar: const SimpleAppBar(
           title: 'انتخاب آدرس',
         ),
         body: MapEffectsListenerWidget(
-          child: _MapView(),
+          child: _MapView(serviceType: serviceType),
         ),
       ),
     );
@@ -47,7 +49,8 @@ class SelectableMapPage extends StatelessWidget {
 }
 
 class _MapView extends StatefulWidget {
-  const _MapView();
+  final ServiceType serviceType;
+  const _MapView({required this.serviceType});
 
   @override
   State<_MapView> createState() => _MapViewState();
@@ -61,8 +64,7 @@ class _MapViewState extends State<_MapView> with AutomaticKeepAliveClientMixin{
   @override
   Widget build(BuildContext context) {
     super.build(context);
-    final scheme = Theme.of(context).colorScheme;
-    final primaryColor = scheme.secondary;
+    final primaryColor = widget.serviceType.serviceColor;
     return BlocConsumer<MapCubit, MapState>(
       listenWhen: (prev, curr) => curr.maybeWhen(
         permissionError: (_) => true,
@@ -98,7 +100,7 @@ class _MapViewState extends State<_MapView> with AutomaticKeepAliveClientMixin{
         return state.maybeWhen(
           orElse: () => Stack(
             children: [
-              const _MapCanvas(),
+               _MapCanvas(serviceType: widget.serviceType),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppPadding.p16, vertical: AppPadding.p36),
                 child: Align(
@@ -213,7 +215,8 @@ class _LocationActionButton extends StatelessWidget {
 }
 
 class _MapCanvas extends StatelessWidget {
-  const _MapCanvas();
+  final ServiceType serviceType;
+  const _MapCanvas({required this.serviceType});
   @override
   Widget build(BuildContext context) {
     return RepaintBoundary(
@@ -246,7 +249,7 @@ class _MapCanvas extends StatelessWidget {
                     child: MapSearchField(),
                   ),
                 ),
-                const _CenterMarker(),
+                 _CenterMarker(serviceType: serviceType),
               ],
             ),
           ),
@@ -257,17 +260,18 @@ class _MapCanvas extends StatelessWidget {
 }
 
 class _CenterMarker extends StatelessWidget {
-  const _CenterMarker();
+  final ServiceType serviceType;
+  const _CenterMarker({required this.serviceType});
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
+    return  Padding(
       padding: EdgeInsets.only(bottom: 30),
       child: Align(
         alignment: Alignment.center,
         child: IgnorePointer(
           child: SvgWidget(
-            src: SvgAsset(SvgManager.homeServiceLocation),
+            src: SvgAsset(serviceType == ServiceType.homeService ? SvgManager.homeServiceLocation: SvgManager.location),
             width: AppSize.s60,
             height: AppSize.s60,
           ),

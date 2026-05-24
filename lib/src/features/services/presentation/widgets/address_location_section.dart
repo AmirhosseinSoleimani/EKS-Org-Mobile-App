@@ -45,10 +45,11 @@ class AddressLocationSection extends StatelessWidget {
       latitude: selectedProvince.value?.latitude,
       longitude: selectedProvince.value?.longitude,
     );
-    ;
+
     final result = await SelectableMapBottomSheet.show(
       context: context,
       initialLocation: initialLocation,
+      serviceType: serviceType,
     );
 
     if (result != null && context.mounted) {
@@ -85,7 +86,7 @@ class AddressLocationSection extends StatelessWidget {
                         horizontal: 94,
                         vertical: 6,
                       ),
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 6),
                       decoration: BoxDecoration(
                         color: Colors.white,
                         borderRadius: BorderRadius.circular(8),
@@ -99,7 +100,7 @@ class AddressLocationSection extends StatelessWidget {
                         ],
                       ),
                       alignment: Alignment.center,
-                      child: const BodyMediumText(text: "انتخاب روی نقشه"),
+                      child: FittedBox(child: const BodyMediumText(text: "انتخاب روی نقشه")),
                     ),
                   ),
                 ),

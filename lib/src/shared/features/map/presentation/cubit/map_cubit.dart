@@ -125,13 +125,14 @@ class MapCubit extends Cubit<MapState> {
          addressInfoEntity?.latitude ?? AppConstants.defaultLatitude,
          addressInfoEntity?.longitude ?? AppConstants.defaultLongitude,
        );
-       await _centerMapSafely(_location, zoom: 17);
-       _mapMoveSub = mapController.mapEventStream.listen((event) {
-         if (event is MapEventMove && findCurrentLocationLoading.value) {
-           findCurrentLocationLoading.value = false;
-         }
-       });
+
      }
+      await _centerMapSafely(_location, zoom: 17);
+      _mapMoveSub = mapController.mapEventStream.listen((event) {
+        if (event is MapEventMove && findCurrentLocationLoading.value) {
+          findCurrentLocationLoading.value = false;
+        }
+      });
     } catch (e) {
       emit(const MapState.error(
           messageModel:

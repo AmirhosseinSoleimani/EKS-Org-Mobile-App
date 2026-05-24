@@ -12,11 +12,6 @@ class UpdateRequestState with _$UpdateRequestState {
     required BottomSheetMessageModel message,
   }) = _Error;
 
-  const factory UpdateRequestState.loadingMore() = _LoadingMore;
-
-  const factory UpdateRequestState.loadedMore() = _LoadedMore;
-
-  const factory UpdateRequestState.loadMoreError(String message) = _LoadMoreError;
-
   const factory UpdateRequestState.connectionError() = _ConnectionError;
+  const factory UpdateRequestState.submitSuccess() = _SubmitSuccess;
 }

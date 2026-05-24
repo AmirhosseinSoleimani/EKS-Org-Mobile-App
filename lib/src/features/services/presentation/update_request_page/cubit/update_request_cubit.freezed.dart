@@ -55,18 +55,16 @@ extension UpdateRequestStatePatterns on UpdateRequestState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Idle value)?  idle,TResult Function( _Loading value)?  loading,TResult Function( _Loaded value)?  loaded,TResult Function( _Error value)?  error,TResult Function( _LoadingMore value)?  loadingMore,TResult Function( _LoadedMore value)?  loadedMore,TResult Function( _LoadMoreError value)?  loadMoreError,TResult Function( _ConnectionError value)?  connectionError,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Idle value)?  idle,TResult Function( _Loading value)?  loading,TResult Function( _Loaded value)?  loaded,TResult Function( _Error value)?  error,TResult Function( _ConnectionError value)?  connectionError,TResult Function( _SubmitSuccess value)?  submitSuccess,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle(_that);case _Loading() when loading != null:
 return loading(_that);case _Loaded() when loaded != null:
 return loaded(_that);case _Error() when error != null:
-return error(_that);case _LoadingMore() when loadingMore != null:
-return loadingMore(_that);case _LoadedMore() when loadedMore != null:
-return loadedMore(_that);case _LoadMoreError() when loadMoreError != null:
-return loadMoreError(_that);case _ConnectionError() when connectionError != null:
-return connectionError(_that);case _:
+return error(_that);case _ConnectionError() when connectionError != null:
+return connectionError(_that);case _SubmitSuccess() when submitSuccess != null:
+return submitSuccess(_that);case _:
   return orElse();
 
 }
@@ -84,18 +82,16 @@ return connectionError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Idle value)  idle,required TResult Function( _Loading value)  loading,required TResult Function( _Loaded value)  loaded,required TResult Function( _Error value)  error,required TResult Function( _LoadingMore value)  loadingMore,required TResult Function( _LoadedMore value)  loadedMore,required TResult Function( _LoadMoreError value)  loadMoreError,required TResult Function( _ConnectionError value)  connectionError,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Idle value)  idle,required TResult Function( _Loading value)  loading,required TResult Function( _Loaded value)  loaded,required TResult Function( _Error value)  error,required TResult Function( _ConnectionError value)  connectionError,required TResult Function( _SubmitSuccess value)  submitSuccess,}){
 final _that = this;
 switch (_that) {
 case _Idle():
 return idle(_that);case _Loading():
 return loading(_that);case _Loaded():
 return loaded(_that);case _Error():
-return error(_that);case _LoadingMore():
-return loadingMore(_that);case _LoadedMore():
-return loadedMore(_that);case _LoadMoreError():
-return loadMoreError(_that);case _ConnectionError():
-return connectionError(_that);case _:
+return error(_that);case _ConnectionError():
+return connectionError(_that);case _SubmitSuccess():
+return submitSuccess(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -112,18 +108,16 @@ return connectionError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Idle value)?  idle,TResult? Function( _Loading value)?  loading,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Error value)?  error,TResult? Function( _LoadingMore value)?  loadingMore,TResult? Function( _LoadedMore value)?  loadedMore,TResult? Function( _LoadMoreError value)?  loadMoreError,TResult? Function( _ConnectionError value)?  connectionError,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Idle value)?  idle,TResult? Function( _Loading value)?  loading,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Error value)?  error,TResult? Function( _ConnectionError value)?  connectionError,TResult? Function( _SubmitSuccess value)?  submitSuccess,}){
 final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle(_that);case _Loading() when loading != null:
 return loading(_that);case _Loaded() when loaded != null:
 return loaded(_that);case _Error() when error != null:
-return error(_that);case _LoadingMore() when loadingMore != null:
-return loadingMore(_that);case _LoadedMore() when loadedMore != null:
-return loadedMore(_that);case _LoadMoreError() when loadMoreError != null:
-return loadMoreError(_that);case _ConnectionError() when connectionError != null:
-return connectionError(_that);case _:
+return error(_that);case _ConnectionError() when connectionError != null:
+return connectionError(_that);case _SubmitSuccess() when submitSuccess != null:
+return submitSuccess(_that);case _:
   return null;
 
 }
@@ -140,17 +134,15 @@ return connectionError(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  loading,TResult Function()?  loaded,TResult Function( BottomSheetMessageModel message)?  error,TResult Function()?  loadingMore,TResult Function()?  loadedMore,TResult Function( String message)?  loadMoreError,TResult Function()?  connectionError,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  loading,TResult Function()?  loaded,TResult Function( BottomSheetMessageModel message)?  error,TResult Function()?  connectionError,TResult Function()?  submitSuccess,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
 return loaded();case _Error() when error != null:
-return error(_that.message);case _LoadingMore() when loadingMore != null:
-return loadingMore();case _LoadedMore() when loadedMore != null:
-return loadedMore();case _LoadMoreError() when loadMoreError != null:
-return loadMoreError(_that.message);case _ConnectionError() when connectionError != null:
-return connectionError();case _:
+return error(_that.message);case _ConnectionError() when connectionError != null:
+return connectionError();case _SubmitSuccess() when submitSuccess != null:
+return submitSuccess();case _:
   return orElse();
 
 }
@@ -168,17 +160,15 @@ return connectionError();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  loading,required TResult Function()  loaded,required TResult Function( BottomSheetMessageModel message)  error,required TResult Function()  loadingMore,required TResult Function()  loadedMore,required TResult Function( String message)  loadMoreError,required TResult Function()  connectionError,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  loading,required TResult Function()  loaded,required TResult Function( BottomSheetMessageModel message)  error,required TResult Function()  connectionError,required TResult Function()  submitSuccess,}) {final _that = this;
 switch (_that) {
 case _Idle():
 return idle();case _Loading():
 return loading();case _Loaded():
 return loaded();case _Error():
-return error(_that.message);case _LoadingMore():
-return loadingMore();case _LoadedMore():
-return loadedMore();case _LoadMoreError():
-return loadMoreError(_that.message);case _ConnectionError():
-return connectionError();case _:
+return error(_that.message);case _ConnectionError():
+return connectionError();case _SubmitSuccess():
+return submitSuccess();case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -195,17 +185,15 @@ return connectionError();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  loading,TResult? Function()?  loaded,TResult? Function( BottomSheetMessageModel message)?  error,TResult? Function()?  loadingMore,TResult? Function()?  loadedMore,TResult? Function( String message)?  loadMoreError,TResult? Function()?  connectionError,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  loading,TResult? Function()?  loaded,TResult? Function( BottomSheetMessageModel message)?  error,TResult? Function()?  connectionError,TResult? Function()?  submitSuccess,}) {final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle();case _Loading() when loading != null:
 return loading();case _Loaded() when loaded != null:
 return loaded();case _Error() when error != null:
-return error(_that.message);case _LoadingMore() when loadingMore != null:
-return loadingMore();case _LoadedMore() when loadedMore != null:
-return loadedMore();case _LoadMoreError() when loadMoreError != null:
-return loadMoreError(_that.message);case _ConnectionError() when connectionError != null:
-return connectionError();case _:
+return error(_that.message);case _ConnectionError() when connectionError != null:
+return connectionError();case _SubmitSuccess() when submitSuccess != null:
+return submitSuccess();case _:
   return null;
 
 }
@@ -378,136 +366,6 @@ as BottomSheetMessageModel,
 /// @nodoc
 
 
-class _LoadingMore implements UpdateRequestState {
-  const _LoadingMore();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoadingMore);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'UpdateRequestState.loadingMore()';
-}
-
-
-}
-
-
-
-
-/// @nodoc
-
-
-class _LoadedMore implements UpdateRequestState {
-  const _LoadedMore();
-  
-
-
-
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoadedMore);
-}
-
-
-@override
-int get hashCode => runtimeType.hashCode;
-
-@override
-String toString() {
-  return 'UpdateRequestState.loadedMore()';
-}
-
-
-}
-
-
-
-
-/// @nodoc
-
-
-class _LoadMoreError implements UpdateRequestState {
-  const _LoadMoreError(this.message);
-  
-
- final  String message;
-
-/// Create a copy of UpdateRequestState
-/// with the given fields replaced by the non-null parameter values.
-@JsonKey(includeFromJson: false, includeToJson: false)
-@pragma('vm:prefer-inline')
-_$LoadMoreErrorCopyWith<_LoadMoreError> get copyWith => __$LoadMoreErrorCopyWithImpl<_LoadMoreError>(this, _$identity);
-
-
-
-@override
-bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _LoadMoreError&&(identical(other.message, message) || other.message == message));
-}
-
-
-@override
-int get hashCode => Object.hash(runtimeType,message);
-
-@override
-String toString() {
-  return 'UpdateRequestState.loadMoreError(message: $message)';
-}
-
-
-}
-
-/// @nodoc
-abstract mixin class _$LoadMoreErrorCopyWith<$Res> implements $UpdateRequestStateCopyWith<$Res> {
-  factory _$LoadMoreErrorCopyWith(_LoadMoreError value, $Res Function(_LoadMoreError) _then) = __$LoadMoreErrorCopyWithImpl;
-@useResult
-$Res call({
- String message
-});
-
-
-
-
-}
-/// @nodoc
-class __$LoadMoreErrorCopyWithImpl<$Res>
-    implements _$LoadMoreErrorCopyWith<$Res> {
-  __$LoadMoreErrorCopyWithImpl(this._self, this._then);
-
-  final _LoadMoreError _self;
-  final $Res Function(_LoadMoreError) _then;
-
-/// Create a copy of UpdateRequestState
-/// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
-  return _then(_LoadMoreError(
-null == message ? _self.message : message // ignore: cast_nullable_to_non_nullable
-as String,
-  ));
-}
-
-
-}
-
-/// @nodoc
-
-
 class _ConnectionError implements UpdateRequestState {
   const _ConnectionError();
   
@@ -529,6 +387,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'UpdateRequestState.connectionError()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _SubmitSuccess implements UpdateRequestState {
+  const _SubmitSuccess();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubmitSuccess);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'UpdateRequestState.submitSuccess()';
 }
 
 

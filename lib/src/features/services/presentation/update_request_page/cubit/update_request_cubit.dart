@@ -79,9 +79,11 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
 
 
   String? _errorMessage;
+  VoidCallback? _retryAction;
 
 
  Future<void> init() async {
+   _retryAction = init;
     final result = await _initializeData();
 
     switch (result) {
@@ -354,7 +356,9 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
     return fetchResult;
   }
 
-  Future<FetchResultType> updateServiceRequest() async {
+  Future<void> updateServiceRequest() async {
+    _retryAction = updateServiceRequest;
+   validationNotifier.value = true;
     final param = UpdateServiceRequestParamEntity(
       id: selectedRequest?.id,
       latitude: selectedLocation.value?.latitude,
@@ -372,24 +376,21 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
 
     final result = await _updateServiceRequestUseCase(param);
 
-    FetchResultType fetchResult = FetchResultType.failure;
-
     result.when(
       success: (data, _, _) {
-        fetchResult = FetchResultType.success;
+        _safeEmit(UpdateRequestState.submitSuccess());
       },
       failure: (_, msg) {
-        _errorMessage = _fallbackError(msg);
-        fetchResult = FetchResultType.failure;
+        _emitError(_fallbackError(msg));
       },
-      connectionError: () {
-        fetchResult = FetchResultType.connectionError;
-      },
+      connectionError: () => emit(const UpdateRequestState.connectionError()),
       expireToken: () {
-        fetchResult = FetchResultType.expireToken;
+        _emitError('نشست شما منقضی شده است. لطفا دوباره وارد شوید');
       },
     );
-    return fetchResult;
+
+   validationNotifier.value = false;
+
   }
 
   String _fallbackError([String? msg]) =>
@@ -448,4 +449,7 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
   void _safeEmit(UpdateRequestState state) {
     if (!isClosed) emit(state);
   }
+
+
+  void retryLastAction() => _retryAction?.call();
 }

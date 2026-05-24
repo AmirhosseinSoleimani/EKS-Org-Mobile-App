@@ -17,17 +17,18 @@ import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/address_
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/car_license_plate_widget/car_license_plate_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/overlay_drop_down_menu.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../evaluation/domain/entities/defect_entity.dart';
 
@@ -60,20 +61,32 @@ class _View extends StatelessWidget {
             BottomSheetMessage.showErrorWithAction(
               context: context,
               data: message,
-              onPositive: cubit.init,
+              onPositive: cubit.retryLastAction,
             );
           },
           connectionError: () {
             BottomSheetMessage.showCustom(
               context: context,
-              content: NoInternetBottomSheet(onRetry: cubit.init),
+              content: NoInternetBottomSheet(onRetry: cubit.retryLastAction),
               actionWidget: const SizedBox.shrink(),
               isDismissible: false,
               enableDrag: false,
             );
           },
-          loadMoreError: (message) =>
-              SnakeBarWidget.showError(context: context, message: message),
+          submitSuccess: () {
+            BottomSheetMessage.showNoticeWithAction(
+              isDismissible: false,
+              context: context,
+              data: BottomSheetMessageModel(
+                  title: '', message: 'درخواست با موفقیت به روز رسانی شد'),
+              buttonColor: cubit.selectedRequest?.serviceType?.serviceColor ??
+                  ServiceType.reliefService.serviceColor,
+              onPositive: () {
+                context.pop();
+                context.pop();
+              },
+            );
+          },
         );
       },
       child: const Scaffold(
