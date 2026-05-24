@@ -16,7 +16,7 @@ class ServicesParamModel extends ServicesParamEntity {
       'defectId': defectId,
       'nationalCode': nationalCode,
       'kilometer': kilometer,
-      'carInfoGuid': carInfoGuid,
+
       'carModelId': carModelId,
     };
   }

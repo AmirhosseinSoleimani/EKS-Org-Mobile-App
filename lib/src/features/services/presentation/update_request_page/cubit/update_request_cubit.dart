@@ -70,7 +70,7 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
   final filteredServices = ValueNotifier<List<EmdadServiceEntity>>([]);
 
   final locationData = ValueNotifier<LocationDataEntity?>(null);
-  AddressInfoEntity? selectedLocation;
+  final selectedLocation = ValueNotifier<AddressInfoEntity?>(null);
 
   final TextEditingController licensePlateController = TextEditingController();
   final TextEditingController clientPhoneNumberController = TextEditingController();
@@ -174,7 +174,7 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
 
         descriptionController.text = selectedRequest?.description ?? '';
 
-        selectedLocation = AddressInfoEntity(
+        selectedLocation.value = AddressInfoEntity(
           latitude: selectedRequest?.latitude,
           longitude: selectedRequest?.longitude,
           address: selectedRequest?.aidAddress,
@@ -255,8 +255,8 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
 
   Future<FetchResultType> _fetchLocationData() async {
     final param = LocationEntity(
-      latitude: selectedLocation?.latitude ?? 0,
-      longitude: selectedLocation?.longitude ?? 0,
+      latitude: selectedLocation.value?.latitude ?? 0,
+      longitude: selectedLocation.value?.longitude ?? 0,
     );
 
     final result = await _getLocationDataUseCase(param);
@@ -357,8 +357,8 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
   Future<FetchResultType> updateServiceRequest() async {
     final param = UpdateServiceRequestParamEntity(
       id: selectedRequest?.id,
-      latitude: selectedLocation?.latitude,
-      longitude: selectedLocation?.longitude,
+      latitude: selectedLocation.value?.latitude,
+      longitude: selectedLocation.value?.longitude,
       aIDAddress: addressController.text,
       licensePlateNo: licensePlateController.text,
       callMobileNumber: selectedRequest?.callMobileNumber,
@@ -439,7 +439,7 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
   }
 
   void setSelectedLocation(AddressInfoEntity location) {
-    selectedLocation = location;
+    selectedLocation.value = location;
     addressController.text = location.address ?? '';
     _fetchLocationData();
   }

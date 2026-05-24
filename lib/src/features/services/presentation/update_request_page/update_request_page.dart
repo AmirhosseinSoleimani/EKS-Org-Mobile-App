@@ -13,9 +13,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/add
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/agent_info_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_status_section.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/province_entity.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/bottom_sheet/selectable_map_bottom_sheet.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/static_map_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/address_info_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
@@ -276,26 +274,40 @@ class _LoadedView extends StatelessWidget {
                 ],
               ),
             ),
-            AddressLocationSection(
-              latitude: cubit.selectedRequest?.latitude ?? 0,
-              longitude: cubit.selectedRequest?.longitude ?? 0,
-              serviceType:
-              cubit.selectedRequest?.serviceType ?? ServiceType.reliefService,
+            ValueListenableBuilder<AddressInfoEntity?>(
+                valueListenable: cubit.selectedLocation,
+                builder: (context, selectedLocation, child) {
+                  final latitude =
+                      selectedLocation?.latitude ??
+                          cubit.selectedRequest?.latitude ?? 0;
 
-              selectedProvince: cubit.selectedProvince,
-              provinceList: cubit.provinceList,
+                  final longitude =
+                      selectedLocation?.longitude ??
+                          cubit.selectedRequest?.longitude ?? 0;
+                  return AddressLocationSection(
+                    key: ValueKey('$latitude-$longitude'),
+                    latitude: latitude,
+                    longitude: longitude,
+                    serviceType:
+                    cubit.selectedRequest?.serviceType ??
+                        ServiceType.reliefService,
 
-              addressController: cubit.addressController,
+                    selectedProvince: cubit.selectedProvince,
+                    provinceList: cubit.provinceList,
 
-              onProvinceSelected: cubit.setSelectedProvince,
-              onLocationSelected: cubit.setSelectedLocation,
+                    addressController: cubit.addressController,
 
-              extraWidgets: [
-                const MapMessageBox(
-                  message:
-                  "این محدوده در طرح ترافیک قرار دارد و ممکن است محدودیت تردد داشته باشد.",
-                ),
-              ],
+                    onProvinceSelected: cubit.setSelectedProvince,
+                    onLocationSelected: cubit.setSelectedLocation,
+
+                    extraWidgets: [
+                      const MapMessageBox(
+                        message:
+                        "این محدوده در طرح ترافیک قرار دارد و ممکن است محدودیت تردد داشته باشد.",
+                      ),
+                    ],
+                  );
+                }
             ),
 
             Space.h24,
@@ -305,18 +317,5 @@ class _LoadedView extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  Future<void> _showSelectableMap(BuildContext context) async {
-    final cubit = context.read<UpdateRequestCubit>();
-
-    final result = await SelectableMapBottomSheet.show(
-      context: context,
-      initialLocation: cubit.selectedLocation,
-    );
-
-    if (result != null && context.mounted) {
-      cubit.setSelectedLocation(result);
-    }
   }
 }
