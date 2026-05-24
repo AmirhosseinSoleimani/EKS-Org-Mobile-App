@@ -43,4 +43,10 @@ class AssignAndCancelEmdadgarState with _$AssignAndCancelEmdadgarState {
   const factory AssignAndCancelEmdadgarState.showCancelMissionBottomSheet() =
   _ShowCancelMissionBottomSheet;
 
+  const factory AssignAndCancelEmdadgarState.closeBottomSheetAndRefresh({
+    required ServiceAssignResponseEntity response,
+    required ServiceAssignAction operationAction,
+  }) =
+  _CloseBottomSheetBeforeRefresh;
+
 }

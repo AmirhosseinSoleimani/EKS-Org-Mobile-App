@@ -55,7 +55,7 @@ extension AssignAndCancelEmdadgarStatePatterns on AssignAndCancelEmdadgarState {
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Idle value)?  idle,TResult Function( _Loading value)?  loading,TResult Function( _Loaded value)?  loaded,TResult Function( _Error value)?  error,TResult Function( _ConnectionError value)?  connectionError,TResult Function( _SubmitLoading value)?  submitLoading,TResult Function( _GetReasonListLoading value)?  getReasonListLoading,TResult Function( _AssignSuccess value)?  showOperationSuccessMessage,TResult Function( _CheckDepotLoading value)?  checkDepotLoading,TResult Function( _CheckDepotSuccess value)?  showEmdadgarInfoBottomSheet,TResult Function( _ShowAssignConfirmBottomSheet value)?  showAssignConfirmBottomSheet,TResult Function( _ShowNonCooperationBottomSheet value)?  showNonCooperationBottomSheet,TResult Function( _ShowCancelMissionBottomSheet value)?  showCancelMissionBottomSheet,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Idle value)?  idle,TResult Function( _Loading value)?  loading,TResult Function( _Loaded value)?  loaded,TResult Function( _Error value)?  error,TResult Function( _ConnectionError value)?  connectionError,TResult Function( _SubmitLoading value)?  submitLoading,TResult Function( _GetReasonListLoading value)?  getReasonListLoading,TResult Function( _AssignSuccess value)?  showOperationSuccessMessage,TResult Function( _CheckDepotLoading value)?  checkDepotLoading,TResult Function( _CheckDepotSuccess value)?  showEmdadgarInfoBottomSheet,TResult Function( _ShowAssignConfirmBottomSheet value)?  showAssignConfirmBottomSheet,TResult Function( _ShowNonCooperationBottomSheet value)?  showNonCooperationBottomSheet,TResult Function( _ShowCancelMissionBottomSheet value)?  showCancelMissionBottomSheet,TResult Function( _CloseBottomSheetBeforeRefresh value)?  closeBottomSheetAndRefresh,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
@@ -71,7 +71,8 @@ return checkDepotLoading(_that);case _CheckDepotSuccess() when showEmdadgarInfoB
 return showEmdadgarInfoBottomSheet(_that);case _ShowAssignConfirmBottomSheet() when showAssignConfirmBottomSheet != null:
 return showAssignConfirmBottomSheet(_that);case _ShowNonCooperationBottomSheet() when showNonCooperationBottomSheet != null:
 return showNonCooperationBottomSheet(_that);case _ShowCancelMissionBottomSheet() when showCancelMissionBottomSheet != null:
-return showCancelMissionBottomSheet(_that);case _:
+return showCancelMissionBottomSheet(_that);case _CloseBottomSheetBeforeRefresh() when closeBottomSheetAndRefresh != null:
+return closeBottomSheetAndRefresh(_that);case _:
   return orElse();
 
 }
@@ -89,7 +90,7 @@ return showCancelMissionBottomSheet(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Idle value)  idle,required TResult Function( _Loading value)  loading,required TResult Function( _Loaded value)  loaded,required TResult Function( _Error value)  error,required TResult Function( _ConnectionError value)  connectionError,required TResult Function( _SubmitLoading value)  submitLoading,required TResult Function( _GetReasonListLoading value)  getReasonListLoading,required TResult Function( _AssignSuccess value)  showOperationSuccessMessage,required TResult Function( _CheckDepotLoading value)  checkDepotLoading,required TResult Function( _CheckDepotSuccess value)  showEmdadgarInfoBottomSheet,required TResult Function( _ShowAssignConfirmBottomSheet value)  showAssignConfirmBottomSheet,required TResult Function( _ShowNonCooperationBottomSheet value)  showNonCooperationBottomSheet,required TResult Function( _ShowCancelMissionBottomSheet value)  showCancelMissionBottomSheet,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Idle value)  idle,required TResult Function( _Loading value)  loading,required TResult Function( _Loaded value)  loaded,required TResult Function( _Error value)  error,required TResult Function( _ConnectionError value)  connectionError,required TResult Function( _SubmitLoading value)  submitLoading,required TResult Function( _GetReasonListLoading value)  getReasonListLoading,required TResult Function( _AssignSuccess value)  showOperationSuccessMessage,required TResult Function( _CheckDepotLoading value)  checkDepotLoading,required TResult Function( _CheckDepotSuccess value)  showEmdadgarInfoBottomSheet,required TResult Function( _ShowAssignConfirmBottomSheet value)  showAssignConfirmBottomSheet,required TResult Function( _ShowNonCooperationBottomSheet value)  showNonCooperationBottomSheet,required TResult Function( _ShowCancelMissionBottomSheet value)  showCancelMissionBottomSheet,required TResult Function( _CloseBottomSheetBeforeRefresh value)  closeBottomSheetAndRefresh,}){
 final _that = this;
 switch (_that) {
 case _Idle():
@@ -105,7 +106,8 @@ return checkDepotLoading(_that);case _CheckDepotSuccess():
 return showEmdadgarInfoBottomSheet(_that);case _ShowAssignConfirmBottomSheet():
 return showAssignConfirmBottomSheet(_that);case _ShowNonCooperationBottomSheet():
 return showNonCooperationBottomSheet(_that);case _ShowCancelMissionBottomSheet():
-return showCancelMissionBottomSheet(_that);case _:
+return showCancelMissionBottomSheet(_that);case _CloseBottomSheetBeforeRefresh():
+return closeBottomSheetAndRefresh(_that);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -122,7 +124,7 @@ return showCancelMissionBottomSheet(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Idle value)?  idle,TResult? Function( _Loading value)?  loading,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Error value)?  error,TResult? Function( _ConnectionError value)?  connectionError,TResult? Function( _SubmitLoading value)?  submitLoading,TResult? Function( _GetReasonListLoading value)?  getReasonListLoading,TResult? Function( _AssignSuccess value)?  showOperationSuccessMessage,TResult? Function( _CheckDepotLoading value)?  checkDepotLoading,TResult? Function( _CheckDepotSuccess value)?  showEmdadgarInfoBottomSheet,TResult? Function( _ShowAssignConfirmBottomSheet value)?  showAssignConfirmBottomSheet,TResult? Function( _ShowNonCooperationBottomSheet value)?  showNonCooperationBottomSheet,TResult? Function( _ShowCancelMissionBottomSheet value)?  showCancelMissionBottomSheet,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Idle value)?  idle,TResult? Function( _Loading value)?  loading,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Error value)?  error,TResult? Function( _ConnectionError value)?  connectionError,TResult? Function( _SubmitLoading value)?  submitLoading,TResult? Function( _GetReasonListLoading value)?  getReasonListLoading,TResult? Function( _AssignSuccess value)?  showOperationSuccessMessage,TResult? Function( _CheckDepotLoading value)?  checkDepotLoading,TResult? Function( _CheckDepotSuccess value)?  showEmdadgarInfoBottomSheet,TResult? Function( _ShowAssignConfirmBottomSheet value)?  showAssignConfirmBottomSheet,TResult? Function( _ShowNonCooperationBottomSheet value)?  showNonCooperationBottomSheet,TResult? Function( _ShowCancelMissionBottomSheet value)?  showCancelMissionBottomSheet,TResult? Function( _CloseBottomSheetBeforeRefresh value)?  closeBottomSheetAndRefresh,}){
 final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
@@ -138,7 +140,8 @@ return checkDepotLoading(_that);case _CheckDepotSuccess() when showEmdadgarInfoB
 return showEmdadgarInfoBottomSheet(_that);case _ShowAssignConfirmBottomSheet() when showAssignConfirmBottomSheet != null:
 return showAssignConfirmBottomSheet(_that);case _ShowNonCooperationBottomSheet() when showNonCooperationBottomSheet != null:
 return showNonCooperationBottomSheet(_that);case _ShowCancelMissionBottomSheet() when showCancelMissionBottomSheet != null:
-return showCancelMissionBottomSheet(_that);case _:
+return showCancelMissionBottomSheet(_that);case _CloseBottomSheetBeforeRefresh() when closeBottomSheetAndRefresh != null:
+return closeBottomSheetAndRefresh(_that);case _:
   return null;
 
 }
@@ -155,7 +158,7 @@ return showCancelMissionBottomSheet(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  loading,TResult Function()?  loaded,TResult Function( BottomSheetMessageModel message)?  error,TResult Function()?  connectionError,TResult Function()?  submitLoading,TResult Function( ServiceAssignAction action)?  getReasonListLoading,TResult Function( ServiceAssignResponseEntity response,  ServiceAssignAction operationAction)?  showOperationSuccessMessage,TResult Function( int emdadgarId)?  checkDepotLoading,TResult Function()?  showEmdadgarInfoBottomSheet,TResult Function()?  showAssignConfirmBottomSheet,TResult Function()?  showNonCooperationBottomSheet,TResult Function()?  showCancelMissionBottomSheet,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  loading,TResult Function()?  loaded,TResult Function( BottomSheetMessageModel message)?  error,TResult Function()?  connectionError,TResult Function()?  submitLoading,TResult Function( ServiceAssignAction action)?  getReasonListLoading,TResult Function( ServiceAssignResponseEntity response,  ServiceAssignAction operationAction)?  showOperationSuccessMessage,TResult Function( int emdadgarId)?  checkDepotLoading,TResult Function()?  showEmdadgarInfoBottomSheet,TResult Function()?  showAssignConfirmBottomSheet,TResult Function()?  showNonCooperationBottomSheet,TResult Function()?  showCancelMissionBottomSheet,TResult Function( ServiceAssignResponseEntity response,  ServiceAssignAction operationAction)?  closeBottomSheetAndRefresh,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle();case _Loading() when loading != null:
@@ -170,7 +173,8 @@ return checkDepotLoading(_that.emdadgarId);case _CheckDepotSuccess() when showEm
 return showEmdadgarInfoBottomSheet();case _ShowAssignConfirmBottomSheet() when showAssignConfirmBottomSheet != null:
 return showAssignConfirmBottomSheet();case _ShowNonCooperationBottomSheet() when showNonCooperationBottomSheet != null:
 return showNonCooperationBottomSheet();case _ShowCancelMissionBottomSheet() when showCancelMissionBottomSheet != null:
-return showCancelMissionBottomSheet();case _:
+return showCancelMissionBottomSheet();case _CloseBottomSheetBeforeRefresh() when closeBottomSheetAndRefresh != null:
+return closeBottomSheetAndRefresh(_that.response,_that.operationAction);case _:
   return orElse();
 
 }
@@ -188,7 +192,7 @@ return showCancelMissionBottomSheet();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  loading,required TResult Function()  loaded,required TResult Function( BottomSheetMessageModel message)  error,required TResult Function()  connectionError,required TResult Function()  submitLoading,required TResult Function( ServiceAssignAction action)  getReasonListLoading,required TResult Function( ServiceAssignResponseEntity response,  ServiceAssignAction operationAction)  showOperationSuccessMessage,required TResult Function( int emdadgarId)  checkDepotLoading,required TResult Function()  showEmdadgarInfoBottomSheet,required TResult Function()  showAssignConfirmBottomSheet,required TResult Function()  showNonCooperationBottomSheet,required TResult Function()  showCancelMissionBottomSheet,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  loading,required TResult Function()  loaded,required TResult Function( BottomSheetMessageModel message)  error,required TResult Function()  connectionError,required TResult Function()  submitLoading,required TResult Function( ServiceAssignAction action)  getReasonListLoading,required TResult Function( ServiceAssignResponseEntity response,  ServiceAssignAction operationAction)  showOperationSuccessMessage,required TResult Function( int emdadgarId)  checkDepotLoading,required TResult Function()  showEmdadgarInfoBottomSheet,required TResult Function()  showAssignConfirmBottomSheet,required TResult Function()  showNonCooperationBottomSheet,required TResult Function()  showCancelMissionBottomSheet,required TResult Function( ServiceAssignResponseEntity response,  ServiceAssignAction operationAction)  closeBottomSheetAndRefresh,}) {final _that = this;
 switch (_that) {
 case _Idle():
 return idle();case _Loading():
@@ -203,7 +207,8 @@ return checkDepotLoading(_that.emdadgarId);case _CheckDepotSuccess():
 return showEmdadgarInfoBottomSheet();case _ShowAssignConfirmBottomSheet():
 return showAssignConfirmBottomSheet();case _ShowNonCooperationBottomSheet():
 return showNonCooperationBottomSheet();case _ShowCancelMissionBottomSheet():
-return showCancelMissionBottomSheet();case _:
+return showCancelMissionBottomSheet();case _CloseBottomSheetBeforeRefresh():
+return closeBottomSheetAndRefresh(_that.response,_that.operationAction);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -220,7 +225,7 @@ return showCancelMissionBottomSheet();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  loading,TResult? Function()?  loaded,TResult? Function( BottomSheetMessageModel message)?  error,TResult? Function()?  connectionError,TResult? Function()?  submitLoading,TResult? Function( ServiceAssignAction action)?  getReasonListLoading,TResult? Function( ServiceAssignResponseEntity response,  ServiceAssignAction operationAction)?  showOperationSuccessMessage,TResult? Function( int emdadgarId)?  checkDepotLoading,TResult? Function()?  showEmdadgarInfoBottomSheet,TResult? Function()?  showAssignConfirmBottomSheet,TResult? Function()?  showNonCooperationBottomSheet,TResult? Function()?  showCancelMissionBottomSheet,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  loading,TResult? Function()?  loaded,TResult? Function( BottomSheetMessageModel message)?  error,TResult? Function()?  connectionError,TResult? Function()?  submitLoading,TResult? Function( ServiceAssignAction action)?  getReasonListLoading,TResult? Function( ServiceAssignResponseEntity response,  ServiceAssignAction operationAction)?  showOperationSuccessMessage,TResult? Function( int emdadgarId)?  checkDepotLoading,TResult? Function()?  showEmdadgarInfoBottomSheet,TResult? Function()?  showAssignConfirmBottomSheet,TResult? Function()?  showNonCooperationBottomSheet,TResult? Function()?  showCancelMissionBottomSheet,TResult? Function( ServiceAssignResponseEntity response,  ServiceAssignAction operationAction)?  closeBottomSheetAndRefresh,}) {final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle();case _Loading() when loading != null:
@@ -235,7 +240,8 @@ return checkDepotLoading(_that.emdadgarId);case _CheckDepotSuccess() when showEm
 return showEmdadgarInfoBottomSheet();case _ShowAssignConfirmBottomSheet() when showAssignConfirmBottomSheet != null:
 return showAssignConfirmBottomSheet();case _ShowNonCooperationBottomSheet() when showNonCooperationBottomSheet != null:
 return showNonCooperationBottomSheet();case _ShowCancelMissionBottomSheet() when showCancelMissionBottomSheet != null:
-return showCancelMissionBottomSheet();case _:
+return showCancelMissionBottomSheet();case _CloseBottomSheetBeforeRefresh() when closeBottomSheetAndRefresh != null:
+return closeBottomSheetAndRefresh(_that.response,_that.operationAction);case _:
   return null;
 
 }
@@ -796,5 +802,73 @@ String toString() {
 
 
 
+
+/// @nodoc
+
+
+class _CloseBottomSheetBeforeRefresh implements AssignAndCancelEmdadgarState {
+  const _CloseBottomSheetBeforeRefresh({required this.response, required this.operationAction});
+  
+
+ final  ServiceAssignResponseEntity response;
+ final  ServiceAssignAction operationAction;
+
+/// Create a copy of AssignAndCancelEmdadgarState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CloseBottomSheetBeforeRefreshCopyWith<_CloseBottomSheetBeforeRefresh> get copyWith => __$CloseBottomSheetBeforeRefreshCopyWithImpl<_CloseBottomSheetBeforeRefresh>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CloseBottomSheetBeforeRefresh&&(identical(other.response, response) || other.response == response)&&(identical(other.operationAction, operationAction) || other.operationAction == operationAction));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,response,operationAction);
+
+@override
+String toString() {
+  return 'AssignAndCancelEmdadgarState.closeBottomSheetAndRefresh(response: $response, operationAction: $operationAction)';
+}
+
+
+}
+
+/// @nodoc
+abstract mixin class _$CloseBottomSheetBeforeRefreshCopyWith<$Res> implements $AssignAndCancelEmdadgarStateCopyWith<$Res> {
+  factory _$CloseBottomSheetBeforeRefreshCopyWith(_CloseBottomSheetBeforeRefresh value, $Res Function(_CloseBottomSheetBeforeRefresh) _then) = __$CloseBottomSheetBeforeRefreshCopyWithImpl;
+@useResult
+$Res call({
+ ServiceAssignResponseEntity response, ServiceAssignAction operationAction
+});
+
+
+
+
+}
+/// @nodoc
+class __$CloseBottomSheetBeforeRefreshCopyWithImpl<$Res>
+    implements _$CloseBottomSheetBeforeRefreshCopyWith<$Res> {
+  __$CloseBottomSheetBeforeRefreshCopyWithImpl(this._self, this._then);
+
+  final _CloseBottomSheetBeforeRefresh _self;
+  final $Res Function(_CloseBottomSheetBeforeRefresh) _then;
+
+/// Create a copy of AssignAndCancelEmdadgarState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? response = null,Object? operationAction = null,}) {
+  return _then(_CloseBottomSheetBeforeRefresh(
+response: null == response ? _self.response : response // ignore: cast_nullable_to_non_nullable
+as ServiceAssignResponseEntity,operationAction: null == operationAction ? _self.operationAction : operationAction // ignore: cast_nullable_to_non_nullable
+as ServiceAssignAction,
+  ));
+}
+
+
+}
 
 // dart format on

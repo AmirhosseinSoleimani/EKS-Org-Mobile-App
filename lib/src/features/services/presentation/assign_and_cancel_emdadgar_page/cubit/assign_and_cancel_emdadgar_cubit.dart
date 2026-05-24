@@ -2,7 +2,6 @@ import 'package:bloc/bloc.dart';
 import 'package:eks_sana_plus_org/src/common/constants/area_business_usage_type.dart';
 import 'package:eks_sana_plus_org/src/common/constants/fetch_result_type.dart';
 import 'package:eks_sana_plus_org/src/common/constants/reason_type.dart';
-import 'package:eks_sana_plus_org/src/common/constants/request_status.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/cancel_request_reason_entity.dart';
@@ -225,6 +224,16 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
   final selectedCancelReason = ValueNotifier<CancelRequestReasonEntity?>(null);
 
   VoidCallback? _retryAction;
+
+  bool isBottomSheetOpen = false;
+
+  void markBottomSheetOpen() {
+    isBottomSheetOpen = true;
+  }
+
+  void markBottomSheetClosed() {
+    isBottomSheetOpen = false;
+  }
 
   Future<void> init() async {
     _retryAction = init;
@@ -467,7 +476,7 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
       isActive: selectedEmdadgar?.isActive,
       planningId: selectedEmdadgar?.planningId,
       serviceRequestId: selectedRequest?.id,
-      emdadgarID: selectedEmdadgar?.id,
+      emdadgarID: selectedEmdadgar?.emdadgars?.first.aidPerCode,
       distance: int.tryParse(
           selectedEmdadgar?.distanceKmToOrigin.toString() ?? '0'),
       emdadgarPriority: selectedEmdadgar?.priority,
@@ -480,7 +489,8 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
     final result = await _serviceAssignUseCase.call(param);
     result.whenOrNull(
       success: (data, _, _) {
-        refreshAfterOperationSuccess(data, action);
+        _safeEmit(AssignAndCancelEmdadgarState.closeBottomSheetAndRefresh(
+            operationAction: action, response: data));
       },
       failure: (error, failures) => _emitError(failures ?? error.toString()),
       connectionError: () =>
@@ -652,7 +662,7 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
 
   void retryLastAction() => _retryAction?.call();
 
-  void showAssignConfirmBottomSheet() {
+  Future<void> showAssignConfirmBottomSheet() async {
     clearDescriptionController();
     _safeEmit(
         const AssignAndCancelEmdadgarState.showAssignConfirmBottomSheet());

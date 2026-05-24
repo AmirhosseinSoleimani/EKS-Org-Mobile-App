@@ -72,14 +72,46 @@ class _View extends StatelessWidget {
             );
           },
 
-          showNonCooperationBottomSheet: () =>
-              showNonCooperationBottomSheet(context),
-          showCancelMissionBottomSheet: () =>
-              showCancelMissionBottomSheet(context),
-          showEmdadgarInfoBottomSheet: () =>
-              showEmdadgarInfoBottomSheet(context),
-          showAssignConfirmBottomSheet: () =>
-              showAssignConfirmBottomSheet(context),
+          showNonCooperationBottomSheet: () {
+            cubit.markBottomSheetOpen();
+
+            showNonCooperationBottomSheet(context).whenComplete(() {
+              cubit.markBottomSheetClosed();
+            });
+          },
+
+          showCancelMissionBottomSheet: () {
+            cubit.markBottomSheetOpen();
+
+            showCancelMissionBottomSheet(context).whenComplete(() {
+              cubit.markBottomSheetClosed();
+            });
+          },
+
+          showEmdadgarInfoBottomSheet: () {
+            cubit.markBottomSheetOpen();
+
+            showEmdadgarInfoBottomSheet(context).whenComplete(() {
+              cubit.markBottomSheetClosed();
+            });
+          },
+          showAssignConfirmBottomSheet: () {
+            cubit.markBottomSheetOpen();
+
+            showAssignConfirmBottomSheet(context).whenComplete(() {
+              cubit.markBottomSheetClosed();
+            });
+          },
+
+          closeBottomSheetAndRefresh: (response, action) async {
+            if (cubit.isBottomSheetOpen) {
+              Navigator.of(context).pop();
+              cubit.markBottomSheetClosed();
+            }
+
+            await cubit.refreshAfterOperationSuccess(response, action);
+          },
+
         );
       },
       child: Scaffold(
