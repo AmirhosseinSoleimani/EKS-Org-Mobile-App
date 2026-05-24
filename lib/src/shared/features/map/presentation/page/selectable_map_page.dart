@@ -75,7 +75,7 @@ class _MapViewState extends State<_MapView> with AutomaticKeepAliveClientMixin{
       ),
       listener: (context, state) {
         state.whenOrNull(
-          locationToAddressSuccess: () => _openAnimatedBottomSheet(context),
+          locationToAddressSuccess: () => _openAnimatedBottomSheet(context, widget.serviceType),
           error: (messageModel) => BottomSheetMessage.showError(
               context: context, data: messageModel),
           permissionError: (messageModel) => SnakeBarWidget.showError(
@@ -114,7 +114,7 @@ class _MapViewState extends State<_MapView> with AutomaticKeepAliveClientMixin{
       },
     );
   }
-  void _openAnimatedBottomSheet(BuildContext context) {
+  void _openAnimatedBottomSheet(BuildContext context, ServiceType serviceType) {
     final cubit = context.read<MapCubit>();
     showModalBottomSheet(
       context: context,
@@ -176,7 +176,7 @@ class _MapViewState extends State<_MapView> with AutomaticKeepAliveClientMixin{
                               ),
                             );
                           },
-                          backgroundColor: Theme.of(context).colorScheme.secondary,
+                          backgroundColor: serviceType.serviceColor,
                           title: 'تایید آدرس',
                         ),
                       ],
