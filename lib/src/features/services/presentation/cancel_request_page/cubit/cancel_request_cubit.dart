@@ -87,7 +87,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
   final cancelRequestReasonNotifier =
   ValueNotifier<List<CancelRequestReasonEntity>>([]);
 
-  final isDistanceKilometerEditable = ValueNotifier<bool>(true);
+  final kilometerReadOnlyListenable = ValueNotifier<bool>(true);
   final selectedCancelType = ValueNotifier<CancelRequestReasonEntity?>(null);
   final selectedCancelReason = ValueNotifier<CancelRequestReasonEntity?>(null);
 
@@ -112,11 +112,14 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
 
   String? _errorMessage;
 
+  VoidCallback? _retryAction;
+
   String _fallbackError([String? msg]) => msg?.trim().isNotEmpty == true
       ? msg!
       : 'درخواست شما با خطا مواجه شد، لطفا با پشتیبانی تماس بگیرید';
 
   Future<void> init() async {
+    _retryAction = init;
     final result = await _initializeData();
 
     switch (result) {
@@ -331,6 +334,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
   }
 
   Future<void> getEmdadgarFollowupsData() async {
+
     final param = GetEmdadgarFollowupsDataParamEntity(
       serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
       serviceRequestId: selectedRequest?.id,
@@ -343,7 +347,8 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
       success: (data, _, _) {
         dispatchDateTime = data.startTimeDate;
         cancelDateTime = data.arrivedTimeDate ?? DateTime.now();
-        isDistanceKilometerEditable.value = data.isKilometerEditable ?? true;
+        kilometerReadOnlyListenable.value =
+            data.isKilometerEditable == false;
       },
       connectionError: () => emit(const CancelRequestState.connectionError()),
       failure: (error, failures) => _emitError(failures ?? error.toString()),
@@ -395,8 +400,8 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
         success: (data, _, _) {
           if (data.distanceKilometer == null) return;
           kilometerController.text = data.distanceKilometer.toString();
-          isDistanceKilometerEditable.value =
-              data.isDistanceKilometerEditable ?? true;
+          kilometerReadOnlyListenable.value =
+              data.isDistanceKilometerEditable == false;
         },
         connectionError: () => emit(const CancelRequestState.connectionError()),
         failure: (error, failures) => _emitError(failures ?? error.toString()),
@@ -460,6 +465,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
       showDateTimeSection.value;
 
   Future<void> submit() async {
+    _retryAction = submit;
     _safeEmit(const CancelRequestState.submitLoading());
 
     if (selectedCancelType.value?.canCreateInvoice == false) {
@@ -472,7 +478,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
           cancelReasonDetailId: selectedCancelReason.value?.id,
           assignDate: dispatchDateTime,
           endWorkDate: cancelDateTime,
-          distanceToCustomer: double.parse(kilometerController.text),
+          distanceToCustomer: double.tryParse(kilometerController.text),
           customerKilometer: selectedRequest?.kilometer,
 
           description: descriptionController.text,
@@ -571,5 +577,8 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
   void _safeEmit(CancelRequestState state) {
     if (!isClosed) emit(state);
   }
+
+
+  void retryLastAction() => _retryAction?.call();
 
 }
