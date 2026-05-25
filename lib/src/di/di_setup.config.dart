@@ -186,6 +186,8 @@ import '../features/services/presentation/control_info_page/cubit/control_info_c
     as _i66;
 import '../features/services/presentation/emdadgar_invoice_page/cubit/emdadgar_invoice_cubit.dart'
     as _i362;
+import '../features/services/presentation/evaluation_aid_service_request_page/cubit/evaluation_aid_service_request_cubit.dart'
+    as _i319;
 import '../features/services/presentation/evaluation_history/cubit/evaluation_history_cubit.dart'
     as _i154;
 import '../features/services/presentation/followup_register_page/cubit/follow_up_register_cubit.dart'
@@ -361,6 +363,9 @@ _i174.GetIt $initGetIt(
   gh.factory<_i757.AppCubit>(() => _i757.AppCubit());
   gh.factory<_i336.BottomNavigationBarCubit>(
     () => _i336.BottomNavigationBarCubit(),
+  );
+  gh.factory<_i319.EvaluationAidServiceRequestCubit>(
+    () => _i319.EvaluationAidServiceRequestCubit(),
   );
   gh.factory<_i190.ThemeCubit>(() => _i190.ThemeCubit());
   gh.singleton<_i882.PanelController>(

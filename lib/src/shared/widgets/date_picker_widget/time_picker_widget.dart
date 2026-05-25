@@ -5,12 +5,14 @@ class TimePickerWidget extends StatelessWidget {
   final String label;
   final TextEditingController controller;
   final ValueChanged<DateTime> onTimeSelected;
+  final Widget? suffixIcon;
 
   const TimePickerWidget({
     super.key,
     required this.label,
     required this.controller,
     required this.onTimeSelected,
+    required this.suffixIcon,
   });
 
   String _formatTime(DateTime value) {
@@ -58,6 +60,7 @@ class TimePickerWidget extends StatelessWidget {
       controller: controller,
       readOnly: true,
       onTap: () => _pickTime(context),
+      suffixIcon: suffixIcon,
     );
   }
 }

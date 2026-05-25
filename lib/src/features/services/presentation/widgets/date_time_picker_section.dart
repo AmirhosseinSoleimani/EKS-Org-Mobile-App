@@ -29,6 +29,7 @@ class DateTimePickerSection extends StatelessWidget {
       children: [
         Expanded(
           child: DatePickerWidget(
+            suffixIcon: Icon(Icons.expand_more_rounded),
             controller: dateController,
             labelText: dateLabel,
             hintText: 'انتخاب تاریخ',
@@ -38,6 +39,7 @@ class DateTimePickerSection extends StatelessWidget {
         Space.w16,
         Expanded(
           child: TimePickerWidget(
+            suffixIcon: Icon(Icons.expand_more_rounded),
             label: timeLabel,
             controller: timeController,
             onTimeSelected: onTimeChange,
