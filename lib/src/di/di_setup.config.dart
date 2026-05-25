@@ -75,6 +75,16 @@ import '../features/evaluation/domain/usecase/get_categories_list_use_case.dart'
     as _i1016;
 import '../features/evaluation/domain/usecase/get_defects_list_use_case.dart'
     as _i163;
+import '../features/evaluation/domain/usecase/get_home_service_package_list_use_case.dart'
+    as _i392;
+import '../features/evaluation/domain/usecase/get_labor_list_use_case.dart'
+    as _i915;
+import '../features/evaluation/domain/usecase/get_part_list_use_case.dart'
+    as _i361;
+import '../features/evaluation/domain/usecase/get_part_mark_list_use_case.dart'
+    as _i655;
+import '../features/evaluation/domain/usecase/get_part_price_list_use_case.dart'
+    as _i923;
 import '../features/evaluation/domain/usecase/get_service_detail_evaluation_use_case.dart'
     as _i16;
 import '../features/evaluation/domain/usecase/post_evaluation_use_case.dart'
@@ -190,6 +200,8 @@ import '../features/services/presentation/evaluation_aid_service_request_page/cu
     as _i319;
 import '../features/services/presentation/evaluation_history/cubit/evaluation_history_cubit.dart'
     as _i154;
+import '../features/services/presentation/evaluation_home_service_request_page/cubit/evaluation_home_service_request_cubit.dart'
+    as _i866;
 import '../features/services/presentation/followup_register_page/cubit/follow_up_register_cubit.dart'
     as _i264;
 import '../features/services/presentation/home_service_request_list_page/cubit/home_service_request_list_cubit.dart'
@@ -364,8 +376,8 @@ _i174.GetIt $initGetIt(
   gh.factory<_i336.BottomNavigationBarCubit>(
     () => _i336.BottomNavigationBarCubit(),
   );
-  gh.factory<_i319.EvaluationAidServiceRequestCubit>(
-    () => _i319.EvaluationAidServiceRequestCubit(),
+  gh.factory<_i866.EvaluationHomeServiceRequestCubit>(
+    () => _i866.EvaluationHomeServiceRequestCubit(),
   );
   gh.factory<_i190.ThemeCubit>(() => _i190.ThemeCubit());
   gh.singleton<_i882.PanelController>(
@@ -948,6 +960,23 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i163.GetDefectsListUseCase>(
     () => _i163.GetDefectsListUseCase(gh<_i122.EvaluationRepository>()),
   );
+  gh.lazySingleton<_i392.GetHomeServicePackageListUseCase>(
+    () => _i392.GetHomeServicePackageListUseCase(
+      gh<_i122.EvaluationRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i915.GetLaborListUseCase>(
+    () => _i915.GetLaborListUseCase(gh<_i122.EvaluationRepository>()),
+  );
+  gh.lazySingleton<_i361.GetPartListUseCase>(
+    () => _i361.GetPartListUseCase(gh<_i122.EvaluationRepository>()),
+  );
+  gh.lazySingleton<_i655.GetPartMarkListUseCase>(
+    () => _i655.GetPartMarkListUseCase(gh<_i122.EvaluationRepository>()),
+  );
+  gh.lazySingleton<_i923.GetPartPriceListUseCase>(
+    () => _i923.GetPartPriceListUseCase(gh<_i122.EvaluationRepository>()),
+  );
   gh.lazySingleton<_i16.GetServiceDetailEvaluationUseCase>(
     () => _i16.GetServiceDetailEvaluationUseCase(
       gh<_i122.EvaluationRepository>(),
@@ -982,6 +1011,17 @@ _i174.GetIt $initGetIt(
       gh<_i335.CustomerPreInvoiceOnTheFlyUseCase>(),
       gh<_i531.AcceptEvaluationUseCase>(),
       gh<_i734.GetEmdadgarFollowupsDataUseCase>(),
+    ),
+  );
+  gh.factory<_i319.EvaluationAidServiceRequestCubit>(
+    () => _i319.EvaluationAidServiceRequestCubit(
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
+      gh<_i1016.GetCategoriesListUseCase>(),
+      gh<_i361.GetPartListUseCase>(),
+      gh<_i923.GetPartPriceListUseCase>(),
     ),
   );
   return getIt;

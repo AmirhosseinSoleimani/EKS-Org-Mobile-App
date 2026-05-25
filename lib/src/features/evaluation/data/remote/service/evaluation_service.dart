@@ -1,9 +1,15 @@
 import 'package:dio/dio.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/accept_evaluation_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/emdadgar_service_detail_model.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/labor_model.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/part_mark_model.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/part_model.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/part_price_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/post_evaluation_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/service_category_model.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/service_package_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/service_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/part_mark_entity.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
@@ -22,6 +28,34 @@ abstract class EvaluationService {
   Future<BaseListResponse<DefectModel?>> getDefectsList(
     @Body() Map<String, dynamic> body,
   );
+
+  @POST('/api/AidServiceEvaluation/GetLabors')
+  Future<BaseListResponse<LaborModel>> getAidServiceLaborList(
+      @Body() Map<String, dynamic> body);
+
+  @POST('/api/Defect/GetListOfDefects')
+  Future<BaseListResponse<LaborModel>> getHomeServiceLaborList(
+      @Body() Map<String, dynamic> body);
+
+  @GET('/api/Defect/GetListOfDefects')
+  Future<BaseListResponse<ServicePackageModel>> getHomeServicePackage(
+      @Queries() Map<String, dynamic> body);
+
+  @POST('/api/AidServiceEvaluation/GetPartPrice')
+  Future<BaseListResponse<PartPriceModel>> getPartPrice(
+      @Body() Map<String, dynamic> body);
+
+  @POST('/api/AidServiceEvaluation/GetPartMarks')
+  Future<BaseListResponse<PartMarkModel>> getPartMarks(
+      @Body() Map<String, dynamic> body);
+
+  @POST('/api/AidServiceEvaluation/GetParts')
+  Future<BaseListResponse<PartModel>> getAidServicePartList(
+      @Body() Map<String, dynamic> body);
+
+  @POST('/api/HomeServiceEvaluation/GetParts')
+  Future<BaseListResponse<PartModel>> getHomeServicePartList(
+      @Body() Map<String, dynamic> body);
 
   @GET('/api/AidServiceEvaluation/GetServiceCategories')
   Future<BaseListResponse<ServiceCategoryModel>> getAidServiceCategories(

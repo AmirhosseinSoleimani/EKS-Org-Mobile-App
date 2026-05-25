@@ -1,6 +1,9 @@
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/service_category_model.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/interfaces/dropdown_item.dart';
+import 'package:flutter/cupertino.dart';
 
-class ServiceCategoryEntity {
+class ServiceCategoryEntity implements DropdownItem {
+  final int? id;
   final int? actionsToLog;
   final String? code;
   final int? serviceTypeId;
@@ -11,7 +14,6 @@ class ServiceCategoryEntity {
   final bool? isVisible;
   final LogDataEntity? logData;
   final int? objectState;
-  final int? id;
   final String? idString;
   final String? keyType;
 
@@ -79,6 +81,17 @@ class ServiceCategoryEntity {
       idString: idString,
       keyType: keyType,
     );
+  }
+
+  @override
+  String get label => title ?? '';
+
+  @override
+  get value => id;
+
+  @override
+  Widget? leading(BuildContext context) {
+    return SizedBox();
   }
 }
 

@@ -1,6 +1,6 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/cubit/assign_and_cancel_emdadgar_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/filter/filter_check_box_row.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/labeled_check_box_row.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:flutter/material.dart';
 
@@ -27,25 +27,25 @@ class EmdadgarFilterOptionsBox extends StatelessWidget {
       ),
       child: Column(
         children: [
-          FilterCheckboxRow(
+          LabeledCheckboxRow(
             title: 'امداد رسان های مستقر در استان درخواست',
             notifier: cubit.requestProvinceEmdadgar,
-            serviceType: serviceType,
+            activeColor: serviceType.serviceColor,
           ),
-          FilterCheckboxRow(
+          LabeledCheckboxRow(
             title: 'امداد رسان های مستقر در شهر درخواست',
             notifier: cubit.requestCityEmdadgar,
-            serviceType: serviceType,
+            activeColor: serviceType.serviceColor,
           ),
-          FilterCheckboxRow(
+          LabeledCheckboxRow(
             title: 'امداد رسان های آزاد',
             notifier: cubit.onlyReadyEmdadgar,
-            serviceType: serviceType,
+            activeColor: serviceType.serviceColor,
           ),
-          FilterCheckboxRow(
+          LabeledCheckboxRow(
             title: 'امداد رسان های دارای محدودیت',
             notifier: cubit.limitedEmdadgar,
-            serviceType: serviceType,
+            activeColor: serviceType.serviceColor,
           ),
         ],
       ),
