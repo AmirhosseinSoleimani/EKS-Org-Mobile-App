@@ -1,9 +1,11 @@
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/date_time_picker_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/formatter/thousands_separator_input_formatter.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class TimeDistanceFormSection extends StatelessWidget {
   final TextEditingController assignDateController;
@@ -47,8 +49,8 @@ class TimeDistanceFormSection extends StatelessWidget {
     required this.kilometerController,
     required this.customerDistanceController,
     this.title = 'زمان و مسافت',
-    this.assignDateLabel = 'تاریخ اعلام',
-    this.assignTimeLabel = 'ساعت اعلام',
+    this.assignDateLabel = 'تاریخ اعزام',
+    this.assignTimeLabel = 'ساعت اعزام',
     this.arriveDateLabel = 'تاریخ حضور',
     this.arriveTimeLabel = 'ساعت حضور',
     this.kilometerLabel = 'کیلومتر خودرو',
@@ -75,6 +77,9 @@ class TimeDistanceFormSection extends StatelessWidget {
             labelText: kilometerLabel,
             hintText: kilometerHintText,
             textInputType: kilometerKeyboardType,
+            textInputFormatter: const [
+              ThousandsSeparatorInputFormatter(),
+            ],
           ),
           _formElementGap(),
           TextFormFieldWidget(
@@ -82,6 +87,9 @@ class TimeDistanceFormSection extends StatelessWidget {
             labelText: customerDistanceLabel,
             hintText: customerDistanceHintText,
             textInputType: customerDistanceKeyboardType,
+            textInputFormatter: const [
+              ThousandsSeparatorInputFormatter(),
+            ],
           ),
           _formElementGap(),
           DateTimePickerSection(

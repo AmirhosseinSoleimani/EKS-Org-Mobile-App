@@ -1,8 +1,10 @@
 import 'package:bloc/bloc.dart';
 import 'package:eks_sana_plus_org/src/common/constants/fetch_result_type.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/category_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/service_category_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/get_categories_list_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/get_defects_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/get_part_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/get_part_price_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
@@ -21,7 +23,6 @@ import 'package:injectable/injectable.dart';
 import '../../../../evaluation/domain/entities/defect_entity.dart';
 
 part 'evaluation_aid_service_request_cubit.freezed.dart';
-
 part 'evaluation_aid_service_request_state.dart';
 
 @injectable
@@ -34,6 +35,7 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     this._getCategoriesListUseCase,
     this._getPartListUseCase,
     this._getPartPriceListUseCase,
+      this._getDefectsListUseCase,
   ) : super(const EvaluationAidServiceRequestState.idle());
 
   final FetchSelectedRequestItemUseCase _fetchSelectedRequestItemUseCase;
@@ -43,6 +45,7 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
   final GetCategoriesListUseCase _getCategoriesListUseCase;
   final GetPartListUseCase _getPartListUseCase;
   final GetPartPriceListUseCase _getPartPriceListUseCase;
+  final GetDefectsListUseCase _getDefectsListUseCase;
 
   String? _errorMessage;
   BaseRequestEntity? selectedRequest;
@@ -65,10 +68,11 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
   List<DefectEntity> defectList = <DefectEntity>[];
   final selectedDefect = ValueNotifier<DefectEntity?>(null);
 
-  List<ServiceCategoryEntity> serviceCategoryList = <ServiceCategoryEntity>[];
+  final serviceCategoryList = ValueNotifier<List<ServiceCategoryEntity>>([]);
   final selectedServiceCategory = ValueNotifier<ServiceCategoryEntity?>(null);
 
   final ValueNotifier<bool> isFreewayTollPaid = ValueNotifier<bool>(false);
+  final ValueNotifier<bool> categoriesLoading = ValueNotifier<bool>(false);
 
   VoidCallback? _retryAction;
 
@@ -106,8 +110,16 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
       return requestResult;
     }
 
-    if ((selectedRequest?.requestStatus ?? 0) > 1) {
-      await _fetchEmdadgarInfo();
+    if (selectedRequest?.hasEmdadGar ?? false) {
+      final emdadgarResult = await _fetchEmdadgarInfo();
+      if (emdadgarResult != FetchResultType.success) {
+        return emdadgarResult;
+      }
+    }
+
+    final defectListResult = await _getDefectList();
+    if (defectListResult != FetchResultType.success) {
+      return defectListResult;
     }
 
     return FetchResultType.success;
@@ -123,19 +135,56 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     }
   }
 
-  Future<void> _fetchEmdadgarInfo() async {
+  Future<FetchResultType> _fetchEmdadgarInfo() async {
     final param = ServiceRequestParamEntity(
-      serviceRequestId: selectedRequest!.id,
-      serviceType: selectedRequest!.serviceType?.value ?? 1,
+      serviceRequestId: selectedRequest?.id ?? 0,
+      serviceType: selectedRequest?.serviceType?.value ?? 1,
     );
-
     final result = await _getEmdadgarInfoUseCase(param);
 
-    result.whenOrNull(
+    FetchResultType fetchResult = FetchResultType.failure;
+
+    result.when(
       success: (data, _, _) {
         emdadgarInfo = data;
+        fetchResult = FetchResultType.success;
+      },
+      failure: (_, msg) {
+        _errorMessage = _fallbackError(msg);
+        fetchResult = FetchResultType.failure;
+      },
+      connectionError: () {
+        fetchResult = FetchResultType.connectionError;
+      },
+      expireToken: () {
+        fetchResult = FetchResultType.expireToken;
       },
     );
+    return fetchResult;
+  }
+
+  Future<FetchResultType> _getDefectList() async {
+    final result = await _getDefectsListUseCase(selectedRequest?.id);
+    late FetchResultType fetchResult;
+
+    result.when(
+      success: (data, _, _) {
+        defectList.clear();
+        defectList.addAll(data);
+        fetchResult = FetchResultType.success;
+      },
+      failure: (_, msg) {
+        _errorMessage = _fallbackError(msg);
+        fetchResult = FetchResultType.failure;
+      },
+      connectionError: () {
+        fetchResult = FetchResultType.connectionError;
+      },
+      expireToken: () {
+        fetchResult = FetchResultType.expireToken;
+      },
+    );
+    return fetchResult;
   }
 
   Future<FetchResultType> _fetchServiceRequestData() async {
@@ -223,8 +272,28 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     );
   }
 
-  void setSelectedDefect(DefectEntity defect) {
+  void selectDefect(DefectEntity defect) {
     selectedDefect.value = defect;
+    getCategoriesByDefect();
+  }
+
+  Future<void> getCategoriesByDefect() async {
+    _retryAction = getCategoriesByDefect;
+    categoriesLoading.value = true;
+
+    final param = CategoryParamEntity(serviceType: ServiceType.reliefService,
+        planningId: selectedRequest?.planningId ?? 0);
+    final result = await _getCategoriesListUseCase(param);
+    result.whenOrNull(
+      success: (data, _, _) {
+        serviceCategoryList.value = data;
+        selectedServiceCategory.value = null;
+      },
+      connectionError: () =>
+          _safeEmit(const EvaluationAidServiceRequestState.connectionError()),
+      failure: (error, failures) => _emitError(failures ?? error.toString()),
+    );
+    categoriesLoading.value = false;
   }
 
   void setSelectedServiceCategory(ServiceCategoryEntity category) {

@@ -1022,6 +1022,7 @@ _i174.GetIt $initGetIt(
       gh<_i1016.GetCategoriesListUseCase>(),
       gh<_i361.GetPartListUseCase>(),
       gh<_i923.GetPartPriceListUseCase>(),
+      gh<_i163.GetDefectsListUseCase>(),
     ),
   );
   return getIt;

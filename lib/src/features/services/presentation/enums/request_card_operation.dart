@@ -11,6 +11,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/chassis_req
 import 'package:eks_sana_plus_org/src/features/services/presentation/complete_urgent_request_page/complete_urgent_request_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/control_info_page/control_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/emdadgar_invoice_page/emdadgar_invoice_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/evaluation_aid_service_request_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_history/evaluation_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/followup_register_page/follow_up_register_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/non_cooperation_page/non_cooperation_page.dart';
@@ -121,6 +122,12 @@ enum RequestCardOperation {
     color: Color(0xFF864a1e),
     route: FollowUpRegisterPage.path,
   ),
+  factorRegister(
+    label: 'ثبت فاکتور',
+    icon: Icons.insert_drive_file_rounded,
+    color: Color(0xFF3699FF),
+    route: EvaluationAidServiceRequestPage.path,
+  ),
   assignAndCancelEmdadgar(
     label: 'تخصیص',
     icon: Icons.person_add_alt_rounded,
@@ -180,6 +187,11 @@ extension OperationItemVisibility on RequestCardOperation {
       }
       return false;
 
+      case RequestCardOperation.factorRegister:
+        if(type == ServiceType.reliefService){
+          return true;
+        }
+        return false;
 
 
 

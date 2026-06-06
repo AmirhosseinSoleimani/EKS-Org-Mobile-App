@@ -7,6 +7,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/agent_info_detail_section.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/dropdown_selector.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/labeled_check_box_row.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_status_section.dart';
@@ -14,10 +15,9 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/tim
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/overlay_drop_down_menu.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/inkwell_button_widget/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/focus_node/always_disabled_focus_node.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
@@ -64,8 +64,8 @@ class _View extends StatelessWidget {
               context: context,
               content: NoInternetBottomSheet(onRetry: cubit.init),
               actionWidget: const SizedBox.shrink(),
-              isDismissible: false,
-              enableDrag: false,
+              isDismissible: true,
+              enableDrag: true,
             );
           },
 
@@ -92,6 +92,32 @@ class _View extends StatelessWidget {
                 );
               },
             ),
+        bottomNavigationBar: Padding(
+            padding: const EdgeInsets.all(16),
+            child: BlocBuilder<
+                EvaluationAidServiceRequestCubit,
+                EvaluationAidServiceRequestState>(
+              builder: (context, state) {
+                final cubit = context.read<EvaluationAidServiceRequestCubit>();
+                final isLoading = state.maybeWhen(
+                  submitLoading: () => true,
+                  orElse: () => false,
+                );
+                return state.maybeWhen(
+                    idle: () => const SizedBox.shrink(),
+                    loading: () => const SizedBox.shrink(),
+                    orElse: () =>
+                        InkwellButtonWidget(
+                          title: 'ثبت فاکتور',
+                          backgroundColor: ServiceType.reliefService
+                              .serviceColor,
+                          showLoading: isLoading,
+                          onTap: cubit.submit,
+                        )
+                );
+              },
+            )
+        ),
       ),
     );
   }
@@ -167,54 +193,6 @@ class _LoadedView extends StatelessWidget {
                  });
                },),
                 Space.h16,
-                ValueListenableBuilder<ServiceCategoryEntity?>(
-                  valueListenable: cubit.selectedServiceCategory,
-                  builder: (_, selectedDefect, _) {
-                    return SizedBox(
-                      height: 52,
-                      child: FilterButton(
-                        title: selectedDefect?.title ?? "انتخاب نوع امداد",
-                        label: 'نوع امداد',
-                        hasFloatingLabel: true,
-                        expand: true,
-                        overlayBuilder: (context, position, width, dismiss) {
-                          return OverlayDropdownMenu<ServiceCategoryEntity>(
-                            position: position,
-                            width: width,
-                            items: cubit.serviceCategoryList,
-                            onDismiss: dismiss,
-                            onSelect: (item) {
-                              cubit.setSelectedServiceCategory(item);
-                              dismiss();
-                            },
-                          );
-                        },
-                      ),
-                    );
-                  },
-                ),
-                Space.h16,
-                TextFormFieldWidget(
-                  controller: cubit.serviceController,
-                  labelText: 'سرویس',
-                  textInputType: TextInputType.text,
-                ),
-                Space.h16,
-                TextFormFieldWidget(
-                  labelText: 'توضیحات',
-                  controller: cubit.descriptionController,
-                  autofocus: false,
-                  textInputType: TextInputType.text,
-                  textAlign: TextAlign.start,
-                  textInputAction: TextInputAction.done,
-                  maxLines: 3,
-                ),
-                Space.h16,
-                LabeledCheckboxRow(
-                  title: 'عوارض آزاد راهی پرداخت شد',
-                  notifier: cubit.isFreewayTollPaid,
-                  activeColor: ServiceType.reliefService.serviceColor,
-                ),
 
               ],)),
           ],
@@ -223,92 +201,85 @@ class _LoadedView extends StatelessWidget {
     );
   }
 
-  FormSectionContainer buildServiceDetailSection(EvaluationAidServiceRequestCubit cubit) {
-    return FormSectionContainer(child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              TitleLargeText(
-                text: 'جزئیات سرویس',
-                fontSize: 16,
-                textAlign: TextAlign.start,),
-              Space.h32,
-              ValueListenableBuilder<DefectEntity?>(
-                valueListenable: cubit.selectedDefect,
-                builder: (_, selectedDefect, _) {
-                  return SizedBox(
-                    height: 52,
-                    child: FilterButton(
-                      title: selectedDefect?.title ?? "انتخاب ایراد خودرو",
-                      label: 'ایراد خودرو',
-                      hasFloatingLabel: true,
-                      expand: true,
-                      overlayBuilder: (context, position, width, dismiss) {
-                        return OverlayDropdownMenu<DefectEntity>(
-                          position: position,
-                          width: width,
-                          items: cubit.defectList,
-                          onDismiss: dismiss,
-                          onSelect: (item) {
-                            cubit.setSelectedDefect(item);
-                            dismiss();
-                          },
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
-              Space.h16,
-              ValueListenableBuilder<ServiceCategoryEntity?>(
-                valueListenable: cubit.selectedServiceCategory,
-                builder: (_, selectedDefect, _) {
-                  return SizedBox(
-                    height: 52,
-                    child: FilterButton(
-                      title: selectedDefect?.title ?? "انتخاب نوع امداد",
-                      label: 'نوع امداد',
-                      hasFloatingLabel: true,
-                      expand: true,
-                      overlayBuilder: (context, position, width, dismiss) {
-                        return OverlayDropdownMenu<ServiceCategoryEntity>(
-                          position: position,
-                          width: width,
-                          items: cubit.serviceCategoryList,
-                          onDismiss: dismiss,
-                          onSelect: (item) {
-                            cubit.setSelectedServiceCategory(item);
-                            dismiss();
-                          },
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
-              Space.h16,
-              TextFormFieldWidget(
-                controller: cubit.serviceController,
-                labelText: 'سرویس',
-                textInputType: TextInputType.text,
-              ),
-              Space.h16,
-              TextFormFieldWidget(
-                labelText: 'توضیحات',
-                controller: cubit.descriptionController,
-                autofocus: false,
-                textInputType: TextInputType.text,
-                textAlign: TextAlign.start,
-                textInputAction: TextInputAction.done,
-                maxLines: 3,
-              ),
-              Space.h16,
-              LabeledCheckboxRow(
-                title: 'عوارض آزاد راهی پرداخت شد',
-                notifier: cubit.isFreewayTollPaid,
-                activeColor: ServiceType.reliefService.serviceColor,
-              ),
+  FormSectionContainer buildServiceDetailSection(
+      EvaluationAidServiceRequestCubit cubit,) {
+    return FormSectionContainer(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          const TitleLargeText(
+            text: 'جزئیات سرویس',
+            fontSize: 16,
+            textAlign: TextAlign.start,
+          ),
 
-            ],));
+          Space.h32,
+
+          DropdownSelector<DefectEntity>(
+            label: 'ایراد خودرو',
+            placeholder: 'انتخاب ایراد خودرو',
+            selectedNotifier: cubit.selectedDefect,
+            items: cubit.defectList,
+            itemTitleBuilder: (item) => item.title ?? '',
+            onSelect: (item) => cubit.selectDefect(item),
+          ),
+
+          Space.h16,
+
+          ValueListenableBuilder<List<ServiceCategoryEntity>>(
+            valueListenable: cubit.serviceCategoryList,
+            builder: (_, serviceCategories, __) {
+              final isLoading = cubit.categoriesLoading.value;
+              return DropdownSelector<ServiceCategoryEntity>(
+                label: 'نوع امداد',
+                placeholder: isLoading
+                    ? 'در حال بارگذاری...'
+                    : 'انتخاب نوع امداد',
+                selectedNotifier: cubit.selectedServiceCategory,
+                items: serviceCategories,
+                enabled: serviceCategories.isNotEmpty,
+                isLoading: isLoading,
+                itemTitleBuilder: (item) => item.title ?? '',
+                onSelect: (item) => cubit.setSelectedServiceCategory(item),
+              );
+            },
+          ),
+
+          Space.h16,
+
+          TextFormFieldWidget(
+            controller: cubit.serviceController,
+            labelText: 'سرویس',
+            textInputType: TextInputType.none,
+            focusNode: AlwaysDisabledFocusNode(),
+            readOnly: true,
+            borderColor: Colors.grey.shade400,
+            backgroundColor: Colors.grey.shade100,
+
+          ),
+
+          Space.h16,
+
+          TextFormFieldWidget(
+            labelText: 'توضیحات',
+            controller: cubit.descriptionController,
+            autofocus: false,
+            textInputType: TextInputType.text,
+            textAlign: TextAlign.start,
+            textInputAction: TextInputAction.done,
+            maxLines: 3,
+          ),
+
+          Space.h16,
+
+          LabeledCheckboxRow(
+            title: 'عوارض آزاد راهی پرداخت شد',
+            notifier: cubit.isFreewayTollPaid,
+            activeColor: ServiceType.reliefService.serviceColor,
+          ),
+        ],
+      ),
+    );
   }
 
   SizedBox _formElementGap() => Space.h8;
