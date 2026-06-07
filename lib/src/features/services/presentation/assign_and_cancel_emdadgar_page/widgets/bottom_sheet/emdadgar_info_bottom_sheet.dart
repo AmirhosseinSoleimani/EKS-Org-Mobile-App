@@ -18,6 +18,7 @@ Future<void> showEmdadgarInfoBottomSheet(BuildContext context) async {
 
   await showServiceActionBottomSheet(
     context: context,
+    cubit: cubit,
     title: 'اطلاعات امداد رسان',
     contentBuilder: (context) {
       return EmdadgarInfoBottomForm(

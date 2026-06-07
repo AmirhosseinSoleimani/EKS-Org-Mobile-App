@@ -12,10 +12,11 @@ import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 Future<void> showAssignConfirmBottomSheet(BuildContext context) async {
-  final cubit = context.read<AssignAndCancelEmdadgarCubit>();
+  final  cubit = context.read<AssignAndCancelEmdadgarCubit>();
 
   await showServiceActionBottomSheet(
     context: context,
+    cubit: cubit,
     title: 'تایید تخصیص',
     contentBuilder: (context) {
       return ConfirmAssignBottomForm(

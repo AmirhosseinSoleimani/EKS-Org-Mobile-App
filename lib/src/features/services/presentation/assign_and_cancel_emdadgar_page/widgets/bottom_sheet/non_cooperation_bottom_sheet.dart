@@ -14,6 +14,7 @@ Future<void> showNonCooperationBottomSheet(BuildContext context) async {
   final cubit = context.read<AssignAndCancelEmdadgarCubit>();
   await showServiceActionBottomSheet(
     context: context,
+    cubit: cubit,
     title: 'عدم همکاری',
     contentBuilder: (context) {
       return NonCooperationBottomSheetForm(

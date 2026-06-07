@@ -3,6 +3,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/cubit/evaluation_aid_service_request_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/bottom_sheet/service_action_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/submit_cancel_buttons.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 Future<void> showAddPartAndLaborBottomSheet(BuildContext context) async {
@@ -10,6 +11,7 @@ Future<void> showAddPartAndLaborBottomSheet(BuildContext context) async {
 
   await showServiceActionBottomSheet(
     context: context,
+    cubit: cubit,
     title: 'ثبت اجرت/قطعه',
     contentBuilder: (context) {
       return AddPartAndLaborForm(
@@ -57,8 +59,8 @@ class AddPartAndLaborForm extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-       /* Space.h8,
-        ColoredInfoCard(
+        Space.h8,
+        /* ColoredInfoCard(
           title: "درخواست ${requestEntity?.id ?? ''}",
           backgroundColor: Color(0xFF59168b).withAlpha(25),
           borderColor: Color(0xFF59168b),

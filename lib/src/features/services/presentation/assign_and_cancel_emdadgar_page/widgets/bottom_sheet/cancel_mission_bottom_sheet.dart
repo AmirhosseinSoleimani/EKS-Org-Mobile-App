@@ -14,6 +14,7 @@ Future<void> showCancelMissionBottomSheet(BuildContext context) async {
 
   await showServiceActionBottomSheet(
     context: context,
+    cubit: cubit,
     title: 'لغو ماموریت',
     contentBuilder: (context) {
       return CancelMissionBottomSheetForm(cubit: cubit);
