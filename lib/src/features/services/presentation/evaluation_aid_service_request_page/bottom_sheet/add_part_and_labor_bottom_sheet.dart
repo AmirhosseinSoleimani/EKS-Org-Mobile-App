@@ -1,13 +1,8 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/cubit/evaluation_aid_service_request_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/bottom_sheet/service_action_bottom_sheet.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/colored_info_card.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/submit_cancel_buttons.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 Future<void> showAddPartAndLaborBottomSheet(BuildContext context) async {
@@ -19,7 +14,7 @@ Future<void> showAddPartAndLaborBottomSheet(BuildContext context) async {
     contentBuilder: (context) {
       return AddPartAndLaborForm(
         requestEntity: cubit.selectedRequest,
-        descriptionController: cubit.descriptionController,
+        descriptionController: cubit.form.descriptionController,
       );
     },
     actionsBuilder: (context) {

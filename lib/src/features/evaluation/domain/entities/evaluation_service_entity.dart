@@ -1,4 +1,5 @@
-import 'package:eks_sana_plus_org/src/features/services/data/models/evaluation_service_model.dart';
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/evaluation_service_model.dart';
 
 class EvaluationServiceEntity {
   const EvaluationServiceEntity({
@@ -26,6 +27,7 @@ class EvaluationServiceEntity {
     this.garantyStartDate,
     this.isDeleted = false,
     this.isSubscribedByNationalCode,
+    this.evaluationLabors,
   });
 
   final int? serviceId;
@@ -38,7 +40,7 @@ class EvaluationServiceEntity {
   final int? serviceCategoryId;
   final String? serviceCategoryTitle;
   final String? serviceCategoryCode;
-  final int? serviceType;
+  final ServiceType? serviceType;
   final String? serviceTypeTitle;
   final String? workOrderCode;
   final int? defectInfoId;
@@ -52,6 +54,7 @@ class EvaluationServiceEntity {
   final bool hasGaranty;
   final String? garantyStartDate;
   final bool isDeleted;
+  final List<dynamic>? evaluationLabors;
 
   EvaluationServiceEntity copyWith({
     int? serviceId,
@@ -63,7 +66,7 @@ class EvaluationServiceEntity {
     int? serviceCategoryId,
     String? serviceCategoryTitle,
     String? serviceCategoryCode,
-    int? serviceType,
+    ServiceType? serviceType,
     String? serviceTypeTitle,
     String? workOrderCode,
     int? defectInfoId,
@@ -78,6 +81,7 @@ class EvaluationServiceEntity {
     String? garantyStartDate,
     bool? isDeleted,
     bool? isSubscribedByNationalCode,
+    List<dynamic>? evaluationLabors
   }) {
     return EvaluationServiceEntity(
       serviceId: serviceId ?? this.serviceId,
@@ -104,6 +108,7 @@ class EvaluationServiceEntity {
       product: product ?? this.product,
       hasGaranty: hasGaranty ?? this.hasGaranty,
       garantyStartDate: garantyStartDate ?? this.garantyStartDate,
+      evaluationLabors: evaluationLabors ?? this.evaluationLabors,
     );
   }
 
@@ -132,7 +137,8 @@ class EvaluationServiceEntity {
       hasGaranty: hasGaranty,
       garantyStartDate: garantyStartDate,
       isDeleted: isDeleted,
-      isSubscribedByNationalCode: isSubscribedByNationalCode
+      isSubscribedByNationalCode: isSubscribedByNationalCode,
+      evaluationLabors: evaluationLabors,
     );
   }
 }

@@ -1,9 +1,11 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/emdadgar_service_detail_model.dart';
 
 class EmdadgarServiceDetailEntity {
-  final int? serviceType;
+  final ServiceType? serviceType;
   final int? serviceTypeId;
   final int? defectInfoId;
+  final String? defectInfoTitle;
   final String? serviceTypeTitle;
 
   final int? serviceCategoryId;
@@ -21,6 +23,8 @@ class EmdadgarServiceDetailEntity {
   final bool? isSubscribedByNationalCode;
   final bool? isImageMadatory;
   final bool? needImage;
+  final String? limitationDescription;
+  final String? defectInfoProblemOrEzharCode;
 
   const EmdadgarServiceDetailEntity({
     this.defectInfoId,
@@ -39,16 +43,20 @@ class EmdadgarServiceDetailEntity {
     this.isSubscribedByNationalCode,
     this.isImageMadatory,
     this.needImage,
+    this.defectInfoProblemOrEzharCode,
+    this.defectInfoTitle,
+    this.limitationDescription,
   });
 
   EmdadgarServiceDetailEntity copyWith({
-    int? serviceType,
+    ServiceType? serviceType,
     int? serviceTypeId,
     int? defectInfoId,
     String? serviceTypeTitle,
     int? serviceCategoryId,
     String? serviceCategoryCode,
     String? serviceCategoryTitle,
+    String? defectInfoProblemOrEzharCode,
     int? serviceId,
     String? serviceCode,
     String? serviceTitle,
@@ -58,6 +66,8 @@ class EmdadgarServiceDetailEntity {
     bool? isSubscribedByNationalCode,
     bool? isImageMadatory,
     bool? needImage,
+    String? defectInfoTitle,
+    String? limitationDescription,
   }) {
     return EmdadgarServiceDetailEntity(
       defectInfoId: defectInfoId ?? this.defectInfoId,
@@ -78,6 +88,9 @@ class EmdadgarServiceDetailEntity {
       isSubscribedByNationalCode ?? this.isSubscribedByNationalCode,
       isImageMadatory: isImageMadatory ?? this.isImageMadatory,
       needImage: needImage ?? this.needImage,
+      defectInfoTitle: defectInfoTitle ?? this.defectInfoTitle,
+      defectInfoProblemOrEzharCode: defectInfoProblemOrEzharCode ?? this.defectInfoProblemOrEzharCode,
+      limitationDescription: limitationDescription ?? this.limitationDescription
     );
   }
 

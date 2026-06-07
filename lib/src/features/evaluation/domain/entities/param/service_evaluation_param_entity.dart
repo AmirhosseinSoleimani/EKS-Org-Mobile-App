@@ -1,6 +1,6 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/service_evaluation_param_model.dart';
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/evaluation_service_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/services_and_labors_and_parts_evaluation_payload_entity.dart';
 
 class ServiceEvaluationParamEntity {
   final DateTime? assignDate;
@@ -68,12 +68,4 @@ class ServiceEvaluationParamEntity {
 
   ServiceEvaluationParamModel toModel() =>
       ServiceEvaluationParamModel.fromEntity(this);
-}
-
-class ServicesAndLaborsAndPartsEvaluationPayloadEntity {
-  final List<EvaluationServiceEntity>? evaluationServices;
-
-  const ServicesAndLaborsAndPartsEvaluationPayloadEntity({
-    this.evaluationServices,
-  });
 }

@@ -24,6 +24,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_te
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class EvaluationAidServiceRequestPage extends StatelessWidget {
   static const path = "/evaluation-aid-service-request-page";
@@ -56,7 +57,10 @@ class _View extends StatelessWidget {
             BottomSheetMessage.showErrorWithAction(
               context: context,
               data: message,
-              onPositive: cubit.init,
+              onPositive:(){
+                context.pop();
+                cubit.retryLastAction();
+              },
             );
           },
           connectionError: () {
@@ -158,16 +162,16 @@ class _LoadedView extends StatelessWidget {
               ),
             ],
             TimeDistanceFormSection(
-              assignDateController: cubit.assignDateController,
-              assignTimeController: cubit.assignTimeController,
-              arriveDateController: cubit.arriveDateController,
-              arriveTimeController: cubit.arriveTimeController,
-              kilometerController: cubit.kilometerController,
-              customerDistanceController: cubit.customerDistanceController,
-              onAssignDateChange: cubit.setAssignDate,
-              onAssignTimeChange: cubit.setAssignTime,
-              onArriveDateChange: cubit.setArriveDate,
-              onArriveTimeChange: cubit.setArriveTime,
+              assignDateController: cubit.form.assignDateController,
+              assignTimeController: cubit.form.assignTimeController,
+              arriveDateController: cubit.form.arriveDateController,
+              arriveTimeController: cubit.form.arriveTimeController,
+              kilometerController: cubit.form.kilometerController,
+              customerDistanceController: cubit.form.customerDistanceController,
+              onAssignDateChange: cubit.form.setAssignDate,
+              onAssignTimeChange: cubit.form.setAssignTime,
+              onArriveDateChange: cubit.form.setArriveDate,
+              onArriveTimeChange: cubit.form.setArriveTime,
             ),
             _formElementGap(),
             buildServiceDetailSection(cubit),
@@ -187,7 +191,6 @@ class _LoadedView extends StatelessWidget {
                backgroundColor: Colors.transparent,
                onTap: () {
                  cubit.markBottomSheetOpen();
-
                  showAddPartAndLaborBottomSheet(context).whenComplete(() {
                    cubit.markBottomSheetClosed();
                  });
@@ -226,29 +229,20 @@ class _LoadedView extends StatelessWidget {
 
           Space.h16,
 
-          ValueListenableBuilder<List<ServiceCategoryEntity>>(
-            valueListenable: cubit.serviceCategoryList,
-            builder: (_, serviceCategories, __) {
-              final isLoading = cubit.categoriesLoading.value;
-              return DropdownSelector<ServiceCategoryEntity>(
-                label: 'نوع امداد',
-                placeholder: isLoading
-                    ? 'در حال بارگذاری...'
-                    : 'انتخاب نوع امداد',
-                selectedNotifier: cubit.selectedServiceCategory,
-                items: serviceCategories,
-                enabled: serviceCategories.isNotEmpty,
-                isLoading: isLoading,
-                itemTitleBuilder: (item) => item.title ?? '',
-                onSelect: (item) => cubit.setSelectedServiceCategory(item),
-              );
-            },
+          DropdownSelector<ServiceCategoryEntity>(
+            label: 'نوع امداد',
+            placeholder: 'انتخاب نوع امداد',
+            selectedNotifier: cubit.selectedServiceCategory,
+            items: cubit.serviceCategoryList,
+            enabled: cubit.serviceCategoryList.isNotEmpty,
+            itemTitleBuilder: (item) => item.title ?? '',
+            onSelect: (item) => cubit.setSelectedServiceCategory(item),
           ),
 
           Space.h16,
 
           TextFormFieldWidget(
-            controller: cubit.serviceController,
+            controller: cubit.form.serviceController,
             labelText: 'سرویس',
             textInputType: TextInputType.none,
             focusNode: AlwaysDisabledFocusNode(),
@@ -257,24 +251,20 @@ class _LoadedView extends StatelessWidget {
             backgroundColor: Colors.grey.shade100,
 
           ),
-
           Space.h16,
-
           TextFormFieldWidget(
             labelText: 'توضیحات',
-            controller: cubit.descriptionController,
+            controller: cubit.form.descriptionController,
             autofocus: false,
             textInputType: TextInputType.text,
             textAlign: TextAlign.start,
             textInputAction: TextInputAction.done,
             maxLines: 3,
           ),
-
           Space.h16,
-
           LabeledCheckboxRow(
             title: 'عوارض آزاد راهی پرداخت شد',
-            notifier: cubit.isFreewayTollPaid,
+            notifier: cubit.form.isFreewayTollPaid,
             activeColor: ServiceType.reliefService.serviceColor,
           ),
         ],

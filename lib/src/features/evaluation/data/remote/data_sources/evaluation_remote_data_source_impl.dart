@@ -2,10 +2,12 @@ import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/accept_evaluation_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/emdadgar_service_detail_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/labor_model.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/last_evaluation_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/accept_evaluation_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/category_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/home_service_package_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/labor_list_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/last_evaluation_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/part_list_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/part_marks_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/part_price_param_model.dart';
@@ -110,5 +112,9 @@ class FinalizeInvoiceRemoteDataSourceImpl extends EvaluationRemoteDataSource {
   Future<BaseListResponse<PartPriceModel>> getPartPrice(
       PartPriceParamModel param) async
   => await _service.getPartPrice(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<ResponseLastEvaluationModel>> getLastEvaluation(LastEvaluationParamModel param)
+  async => await _service.getLastEvaluation(param.toJson());
 
 }

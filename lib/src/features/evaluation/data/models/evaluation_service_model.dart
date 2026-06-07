@@ -1,4 +1,5 @@
-import 'package:eks_sana_plus_org/src/features/services/domain/entities/evaluation_service_entity.dart';
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/evaluation_service_entity.dart';
 
 class EvaluationServiceModel extends EvaluationServiceEntity {
   EvaluationServiceModel({
@@ -26,6 +27,7 @@ class EvaluationServiceModel extends EvaluationServiceEntity {
     super.garantyStartDate,
     super.isDeleted,
     super.isSubscribedByNationalCode,
+    super.evaluationLabors,
   });
 
   factory EvaluationServiceModel.fromJson(Map<String, dynamic> json) {
@@ -39,7 +41,7 @@ class EvaluationServiceModel extends EvaluationServiceEntity {
       serviceCategoryId: json['serviceCategoryId'],
       serviceCategoryTitle: json['serviceCategoryTitle'],
       serviceCategoryCode: json['serviceCategoryCode'],
-      serviceType: json['serviceType'],
+      serviceType: ServiceType.fromValue(json['serviceType']),
       serviceTypeTitle: json['serviceTypeTitle'],
       workOrderCode: json['workOrderCode'],
       defectInfoId: json['defectInfoId'],
@@ -54,12 +56,13 @@ class EvaluationServiceModel extends EvaluationServiceEntity {
       garantyStartDate: json['garantyStartDate'],
       isDeleted: json['isDeleted'] ?? false,
       isSubscribedByNationalCode: json['isSubscribedByNationalCode'] ?? false,
+      evaluationLabors: json['evaluationLabors'],
     );
   }
 
   Map<String, dynamic> toJson() {
     return {
-      "evaluationLabors": [],
+      "evaluationLabors": evaluationLabors,
       "serviceType": serviceType,
       "serviceTypeId": serviceTypeId,
       "serviceTypeTitle": serviceTypeTitle,

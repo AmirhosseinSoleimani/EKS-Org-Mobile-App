@@ -79,6 +79,8 @@ import '../features/evaluation/domain/usecase/get_home_service_package_list_use_
     as _i392;
 import '../features/evaluation/domain/usecase/get_labor_list_use_case.dart'
     as _i915;
+import '../features/evaluation/domain/usecase/get_last_evaluation_use_case.dart'
+    as _i476;
 import '../features/evaluation/domain/usecase/get_part_list_use_case.dart'
     as _i361;
 import '../features/evaluation/domain/usecase/get_part_mark_list_use_case.dart'
@@ -968,6 +970,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i915.GetLaborListUseCase>(
     () => _i915.GetLaborListUseCase(gh<_i122.EvaluationRepository>()),
   );
+  gh.lazySingleton<_i476.GetLastEvaluationUseCase>(
+    () => _i476.GetLastEvaluationUseCase(gh<_i122.EvaluationRepository>()),
+  );
   gh.lazySingleton<_i361.GetPartListUseCase>(
     () => _i361.GetPartListUseCase(gh<_i122.EvaluationRepository>()),
   );
@@ -1017,12 +1022,13 @@ _i174.GetIt $initGetIt(
     () => _i319.EvaluationAidServiceRequestCubit(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
       gh<_i672.GetReliefRequestByIdUseCase>(),
-      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
       gh<_i786.GetEmdadgarInfoUseCase>(),
       gh<_i1016.GetCategoriesListUseCase>(),
       gh<_i361.GetPartListUseCase>(),
       gh<_i923.GetPartPriceListUseCase>(),
       gh<_i163.GetDefectsListUseCase>(),
+      gh<_i16.GetServiceDetailEvaluationUseCase>(),
+      gh<_i476.GetLastEvaluationUseCase>(),
     ),
   );
   return getIt;

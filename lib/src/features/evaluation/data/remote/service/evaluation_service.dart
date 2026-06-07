@@ -2,6 +2,7 @@ import 'package:dio/dio.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/accept_evaluation_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/emdadgar_service_detail_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/labor_model.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/last_evaluation_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/part_mark_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/part_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/part_price_model.dart';
@@ -93,9 +94,14 @@ abstract class EvaluationService {
       EmdadgarServiceDetailModel>> getAidServiceDetailAndCheckSubscriptionForEmdagarEvaluation(
       @Body() Map<String, dynamic> body);
 
-  @POST(
-      '/api/HomeServiceEvaluation/GetServiceDetailAndCheckSubscriptionForEmdagarEvaluation')
+  @POST('/api/HomeServiceEvaluation/GetServiceDetailAndCheckSubscriptionForEmdagarEvaluation')
   Future<BaseSingleResponse<
       EmdadgarServiceDetailModel>> getHomeServiceDetailAndCheckSubscriptionForEmdagarEvaluation(
       @Body() Map<String, dynamic> body);
+
+  @POST('/api/AidServiceEvaluation/GetLastEvaluation')
+  Future<BaseSingleResponse<
+      ResponseLastEvaluationModel>> getLastEvaluation(
+      @Body() Map<String, dynamic> body);
+
 }

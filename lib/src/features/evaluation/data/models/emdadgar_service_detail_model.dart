@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/emdadgar_service_detail_entity.dart';
 
 class EmdadgarServiceDetailModel extends EmdadgarServiceDetailEntity {
@@ -18,6 +19,9 @@ class EmdadgarServiceDetailModel extends EmdadgarServiceDetailEntity {
     super.isImageMadatory,
     super.needImage,
     super.defectInfoId,
+    super.defectInfoProblemOrEzharCode,
+    super.defectInfoTitle,
+    super.limitationDescription,
   });
 
   factory EmdadgarServiceDetailModel.fromEntity(
@@ -38,13 +42,17 @@ class EmdadgarServiceDetailModel extends EmdadgarServiceDetailEntity {
       isSubscribedByNationalCode: entity.isSubscribedByNationalCode,
       isImageMadatory: entity.isImageMadatory,
       needImage: entity.needImage,
+      limitationDescription: entity.limitationDescription,
+      defectInfoId: entity.defectInfoId,
+      defectInfoTitle: entity.defectInfoTitle,
+      defectInfoProblemOrEzharCode: entity.defectInfoProblemOrEzharCode,
     );
   }
 
   factory EmdadgarServiceDetailModel.fromJson(
       Map<String, dynamic> json) {
     return EmdadgarServiceDetailModel(
-      serviceType: json["serviceType"],
+      serviceType: ServiceType.fromValue(json["serviceType"]),
       serviceTypeId: json["serviceTypeId"],
       serviceTypeTitle: json["serviceTypeTitle"],
       serviceCategoryId: json["serviceCategoryId"],
@@ -60,6 +68,9 @@ class EmdadgarServiceDetailModel extends EmdadgarServiceDetailEntity {
       isImageMadatory: json["isImageMadatory"],
       needImage: json["needImage"],
       defectInfoId: json["defectInfoId"],
+      limitationDescription: json['limitationDescription'],
+      defectInfoProblemOrEzharCode: json['defectInfoProblemOrEzharCode'],
+      defectInfoTitle: json['defectInfoTitle'],
     );
   }
 }

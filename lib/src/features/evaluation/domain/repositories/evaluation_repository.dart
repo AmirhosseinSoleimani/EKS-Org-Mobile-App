@@ -2,10 +2,12 @@ import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/accept
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/defect_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/emdadgar_service_detail_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/labor_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/last_evaluation_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/accept_evaluation_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/category_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/home_service_package_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/labor_list_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/last_evaluation_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/part_list_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/part_marks_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/part_price_param_entity.dart';
@@ -54,4 +56,7 @@ abstract class EvaluationRepository {
   Future<ApiResult<
       EmdadgarServiceDetailEntity>> getServiceDetailAndCheckSubscriptionForEmdagar(
       ServiceDetailForEvaluationParamEntity param);
+
+  Future<ApiResult<ResponseLastEvaluationEntity>>  getLastEvaluation(
+      LastEvaluationParamEntity param);
 }
