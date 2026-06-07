@@ -49,7 +49,7 @@ abstract class EvaluationRemoteDataSource {
   Future<BaseSingleResponse<
       EmdadgarServiceDetailModel>> getServiceDetailAndCheckSubscriptionForEmdagar(ServiceDetailForEvaluationParamModel param);
 
-  Future<BaseListResponse<PartPriceModel>> getPartPrice(
+  Future<BaseSingleResponse<PartPriceModel>> getPartPrice(
       PartPriceParamModel param);
 
   Future<BaseListResponse<PartMarkModel>> getPartMarks(

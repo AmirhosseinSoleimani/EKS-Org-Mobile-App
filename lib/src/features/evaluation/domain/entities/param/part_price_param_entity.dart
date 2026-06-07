@@ -2,7 +2,7 @@ import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/part
 
 
 class PartPriceParamEntity {
-  final int? serial;
+  final String? serial;
   final String? mark;
 
   const PartPriceParamEntity({
@@ -18,7 +18,7 @@ class PartPriceParamEntity {
   }
 
   PartPriceParamEntity copyWith({
-    int? serial,
+    String? serial,
     String? mark,
   }) {
     return PartPriceParamEntity(

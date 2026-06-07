@@ -109,7 +109,7 @@ class FinalizeInvoiceRemoteDataSourceImpl extends EvaluationRemoteDataSource {
   => await _service.getPartMarks(param.toJson());
 
   @override
-  Future<BaseListResponse<PartPriceModel>> getPartPrice(
+  Future<BaseSingleResponse<PartPriceModel>> getPartPrice(
       PartPriceParamModel param) async
   => await _service.getPartPrice(param.toJson());
 

@@ -146,7 +146,7 @@ class EvaluationRepositoryImpl extends EvaluationRepository {
   }
 
   @override
-  Future<ApiResult<List<PartPriceEntity>>> getPartPrice(
+  Future<ApiResult<PartPriceEntity>> getPartPrice(
       PartPriceParamEntity param) async {
     try {
       final result = await _remoteDataSource.getPartPrice(param.toModel());

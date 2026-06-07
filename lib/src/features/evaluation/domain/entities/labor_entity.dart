@@ -1,7 +1,10 @@
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/interfaces/dropdown_item.dart';
+import 'package:flutter/material.dart';
+
 import '../../data/models/labor_model.dart';
 import 'allowable_cost_center_entity.dart';
 
-class LaborEntity {
+class LaborEntity implements DropdownItem<int?>{
   final int? id;
   final String? name;
   final String? companyPrice;
@@ -33,6 +36,12 @@ class LaborEntity {
     this.needImage,
     this.isImageMandatory,
   });
+
+  @override
+  String get label => name ?? '';
+
+  @override
+  int? get value => id;
 
   LaborModel toModel() {
     return LaborModel(
@@ -90,4 +99,7 @@ class LaborEntity {
       isImageMandatory: isImageMandatory ?? this.isImageMandatory,
     );
   }
+
+  @override
+  Widget? leading(BuildContext context) => null;
 }

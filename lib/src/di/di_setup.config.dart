@@ -979,8 +979,8 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i655.GetPartMarkListUseCase>(
     () => _i655.GetPartMarkListUseCase(gh<_i122.EvaluationRepository>()),
   );
-  gh.lazySingleton<_i923.GetPartPriceListUseCase>(
-    () => _i923.GetPartPriceListUseCase(gh<_i122.EvaluationRepository>()),
+  gh.lazySingleton<_i923.GetPartPriceUseCase>(
+    () => _i923.GetPartPriceUseCase(gh<_i122.EvaluationRepository>()),
   );
   gh.lazySingleton<_i16.GetServiceDetailEvaluationUseCase>(
     () => _i16.GetServiceDetailEvaluationUseCase(
@@ -989,6 +989,21 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i296.PostEvaluationUseCase>(
     () => _i296.PostEvaluationUseCase(gh<_i122.EvaluationRepository>()),
+  );
+  gh.factory<_i319.EvaluationAidServiceRequestCubit>(
+    () => _i319.EvaluationAidServiceRequestCubit(
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
+      gh<_i1016.GetCategoriesListUseCase>(),
+      gh<_i361.GetPartListUseCase>(),
+      gh<_i655.GetPartMarkListUseCase>(),
+      gh<_i923.GetPartPriceUseCase>(),
+      gh<_i163.GetDefectsListUseCase>(),
+      gh<_i16.GetServiceDetailEvaluationUseCase>(),
+      gh<_i476.GetLastEvaluationUseCase>(),
+      gh<_i915.GetLaborListUseCase>(),
+    ),
   );
   gh.factory<_i792.UpdateRequestCubit>(
     () => _i792.UpdateRequestCubit(
@@ -1016,19 +1031,6 @@ _i174.GetIt $initGetIt(
       gh<_i335.CustomerPreInvoiceOnTheFlyUseCase>(),
       gh<_i531.AcceptEvaluationUseCase>(),
       gh<_i734.GetEmdadgarFollowupsDataUseCase>(),
-    ),
-  );
-  gh.factory<_i319.EvaluationAidServiceRequestCubit>(
-    () => _i319.EvaluationAidServiceRequestCubit(
-      gh<_i376.FetchSelectedRequestItemUseCase>(),
-      gh<_i672.GetReliefRequestByIdUseCase>(),
-      gh<_i786.GetEmdadgarInfoUseCase>(),
-      gh<_i1016.GetCategoriesListUseCase>(),
-      gh<_i361.GetPartListUseCase>(),
-      gh<_i923.GetPartPriceListUseCase>(),
-      gh<_i163.GetDefectsListUseCase>(),
-      gh<_i16.GetServiceDetailEvaluationUseCase>(),
-      gh<_i476.GetLastEvaluationUseCase>(),
     ),
   );
   return getIt;

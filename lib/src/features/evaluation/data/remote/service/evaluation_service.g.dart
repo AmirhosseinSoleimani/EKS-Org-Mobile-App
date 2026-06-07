@@ -154,7 +154,7 @@ class _EvaluationService implements EvaluationService {
   }
 
   @override
-  Future<BaseListResponse<PartPriceModel>> getPartPrice(
+  Future<BaseSingleResponse<PartPriceModel>> getPartPrice(
     Map<String, dynamic> body,
   ) async {
     final _extra = <String, dynamic>{};
@@ -162,7 +162,7 @@ class _EvaluationService implements EvaluationService {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body);
-    final _options = _setStreamType<BaseListResponse<PartPriceModel>>(
+    final _options = _setStreamType<BaseSingleResponse<PartPriceModel>>(
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -173,9 +173,9 @@ class _EvaluationService implements EvaluationService {
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseListResponse<PartPriceModel> _value;
+    late BaseSingleResponse<PartPriceModel> _value;
     try {
-      _value = BaseListResponse<PartPriceModel>.fromJson(
+      _value = BaseSingleResponse<PartPriceModel>.fromJson(
         _result.data!,
         (json) => PartPriceModel.fromJson(json as Map<String, dynamic>),
       );

@@ -1,8 +1,8 @@
-
-
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/allowable_cost_center_model.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/interfaces/dropdown_item.dart';
+import 'package:flutter/material.dart';
 
-class AllowableCostCenterEntity {
+class AllowableCostCenterEntity implements DropdownItem<int?> {
   final int? id;
   final String? code;
   final String? name;
@@ -16,6 +16,12 @@ class AllowableCostCenterEntity {
     this.selected,
     this.nahveMohasebeType,
   });
+
+  @override
+  String get label => name ?? '';
+
+  @override
+  int? get value => id;
 
   AllowableCostCenterModel toModel() {
     return AllowableCostCenterModel(
@@ -42,4 +48,7 @@ class AllowableCostCenterEntity {
       nahveMohasebeType: nahveMohasebeType ?? this.nahveMohasebeType,
     );
   }
+
+  @override
+  Widget? leading(BuildContext context) => null;
 }

@@ -6,15 +6,15 @@ import 'package:eks_sana_plus_org/src/shared/usecase/use_case.dart';
 import 'package:injectable/injectable.dart';
 
 @lazySingleton
-class GetPartPriceListUseCase
+class GetPartPriceUseCase
     extends
-        BaseUseCase<ApiResult<List<PartPriceEntity>>, PartPriceParamEntity> {
+        BaseUseCase<ApiResult<PartPriceEntity>, PartPriceParamEntity> {
   EvaluationRepository evaluationRepository;
 
-  GetPartPriceListUseCase(this.evaluationRepository);
+  GetPartPriceUseCase(this.evaluationRepository);
 
   @override
-  Future<ApiResult<List<PartPriceEntity>>> call(
+  Future<ApiResult<PartPriceEntity>> call(
     PartPriceParamEntity arg,
   ) async {
     return await evaluationRepository.getPartPrice(arg);

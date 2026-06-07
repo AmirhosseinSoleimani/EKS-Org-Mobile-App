@@ -2,7 +2,7 @@ import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/part
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 
 class PartMarksParamEntity {
-  final int? serial;
+  final String? serial;
   final int? serviceRequestId;
   final int? defectId;
   final int? partGroupId;
@@ -27,7 +27,7 @@ class PartMarksParamEntity {
   }
 
   PartMarksParamEntity copyWith({
-    int? serial,
+    String? serial,
     int? serviceRequestId,
     int? defectId,
     int? partGroupId,

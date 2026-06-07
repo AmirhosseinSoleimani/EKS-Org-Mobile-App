@@ -34,7 +34,7 @@ abstract class EvaluationRepository {
 
   Future<ApiResult<List<PartEntity>>> getPartList(PartListParamEntity param);
 
-  Future<ApiResult<List<PartPriceEntity>>> getPartPrice(
+  Future<ApiResult<PartPriceEntity>> getPartPrice(
       PartPriceParamEntity param);
 
   Future<ApiResult<List<PartMarkEntity>>> getPartMarks(

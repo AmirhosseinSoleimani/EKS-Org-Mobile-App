@@ -1,7 +1,10 @@
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/interfaces/dropdown_item.dart';
+import 'package:flutter/material.dart';
+
 import '../../data/models/part_model.dart';
 import 'allowable_cost_center_entity.dart';
 
-class PartEntity {
+class PartEntity implements DropdownItem<String?>{
   final String? name;
   final String? serial;
   final List<AllowableCostCenterEntity>? allowableCostCenterList;
@@ -55,4 +58,14 @@ class PartEntity {
       partGroupName: partGroupName ?? this.partGroupName,
     );
   }
+
+  @override
+  String get label => name ?? '';
+
+  @override
+  String? get value => serial;
+
+  @override
+  Widget? leading(BuildContext context) => null;
+
 }

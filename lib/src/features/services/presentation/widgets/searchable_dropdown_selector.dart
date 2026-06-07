@@ -1,9 +1,8 @@
-import 'dart:async';
-
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/interfaces/dropdown_item.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 
-class DebouncedSearchDropdownField<T> extends StatefulWidget {
+class SearchableDropdownSelector<T extends DropdownItem> extends StatefulWidget {
   final String label;
   final String hintText;
   final TextEditingController controller;
@@ -11,166 +10,88 @@ class DebouncedSearchDropdownField<T> extends StatefulWidget {
   final List<T> items;
   final bool isLoading;
   final bool enabled;
-  final int minSearchLength;
-  final Duration debounceDuration;
-  final Future<void> Function(String query) onSearch;
+  final ValueNotifier<T?> selectedNotifier;
+  final String Function(T) itemTitleBuilder;
+  final void Function(String query) onSearchChanged;
   final void Function(T item) onSelect;
-  final String Function(T item) itemTitleBuilder;
 
-  const DebouncedSearchDropdownField({
+  const SearchableDropdownSelector({
     super.key,
     required this.label,
     required this.hintText,
     required this.controller,
     required this.items,
-    required this.onSearch,
-    required this.onSelect,
+    required this.selectedNotifier,
     required this.itemTitleBuilder,
+    required this.onSearchChanged,
+    required this.onSelect,
     this.focusNode,
     this.isLoading = false,
     this.enabled = true,
-    this.minSearchLength = 3,
-    this.debounceDuration = const Duration(seconds: 1),
   });
 
   @override
-  State<DebouncedSearchDropdownField<T>> createState() =>
-      _DebouncedSearchDropdownFieldState<T>();
+  State<SearchableDropdownSelector<T>> createState() =>
+      _SearchableDropdownSelectorState<T>();
 }
 
-class _DebouncedSearchDropdownFieldState<T>
-    extends State<DebouncedSearchDropdownField<T>> {
+class _SearchableDropdownSelectorState<T extends DropdownItem>
+    extends State<SearchableDropdownSelector<T>> {
   final LayerLink _layerLink = LayerLink();
-  final GlobalKey _fieldKey = GlobalKey();
-
-  Timer? _debounce;
   OverlayEntry? _overlayEntry;
 
   @override
-  void didUpdateWidget(covariant DebouncedSearchDropdownField<T> oldWidget) {
-    super.didUpdateWidget(oldWidget);
-
-    if (_overlayEntry != null) {
-      _overlayEntry!.markNeedsBuild();
-    }
-  }
-
-  @override
   void dispose() {
-    _debounce?.cancel();
     _removeOverlay();
     super.dispose();
   }
 
-  void _onChanged(String value) {
-    _debounce?.cancel();
+  void _onTextChanged(String value) {
+    widget.onSearchChanged(value);
 
-    final query = value.trim();
-
-    if (query.length < widget.minSearchLength) {
-      _removeOverlay();
-      return;
-    }
-
-    _debounce = Timer(widget.debounceDuration, () async {
-      await widget.onSearch(query);
-
-      if (!mounted) return;
-
+    if (value.trim().length >= 3) {
       _showOverlay();
-    });
+    } else {
+      _removeOverlay();
+    }
   }
 
   void _showOverlay() {
-    if (_overlayEntry != null) {
-      _overlayEntry!.markNeedsBuild();
-      return;
-    }
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
 
-    _overlayEntry = OverlayEntry(
-      builder: (_) {
-        final size = _getFieldSize();
+      _removeOverlay();
 
-        return Positioned.fill(
-          child: Stack(
-            children: [
-              GestureDetector(
-                behavior: HitTestBehavior.translucent,
-                onTap: _removeOverlay,
-              ),
-              CompositedTransformFollower(
-                link: _layerLink,
-                showWhenUnlinked: false,
-                offset: Offset(0, size.height + 4),
-                child: Material(
-                  color: Colors.transparent,
-                  child: _buildDropdown(size.width),
-                ),
-              ),
-            ],
-          ),
-        );
-      },
-    );
+      final overlay = Overlay.of(context);
+      final renderBox = context.findRenderObject() as RenderBox?;
+      if (renderBox == null) return;
 
-    Overlay.of(context).insert(_overlayEntry!);
-  }
+      final size = renderBox.size;
 
-  Widget _buildDropdown(double width) {
-    return Container(
-      width: width,
-      constraints: const BoxConstraints(
-        maxHeight: 260,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: const [
-          BoxShadow(
-            blurRadius: 12,
-            offset: Offset(0, 4),
-            color: Color(0x22000000),
-          ),
-        ],
-      ),
-      child: widget.isLoading
-          ? const _DropdownLoading()
-          : widget.items.isEmpty
-          ? const _DropdownEmpty()
-          : ListView.separated(
-        padding: EdgeInsets.zero,
-        shrinkWrap: true,
-        itemCount: widget.items.length,
-        separatorBuilder: (_, __) => const Divider(height: 1),
-        itemBuilder: (_, index) {
-          final item = widget.items[index];
-
-          return InkWell(
-            onTap: () {
-              widget.onSelect(item);
-              _removeOverlay();
-            },
-            child: Padding(
-              padding: const EdgeInsets.symmetric(
-                horizontal: 16,
-                vertical: 14,
-              ),
-              child: Text(
-                widget.itemTitleBuilder(item),
-                textAlign: TextAlign.start,
+      _overlayEntry = OverlayEntry(
+        builder: (_) {
+          return Positioned(
+            width: size.width,
+            child: CompositedTransformFollower(
+              link: _layerLink,
+              showWhenUnlinked: false,
+              offset: Offset(0, size.height + 4),
+              child: _SearchableDropdownOverlay<T>(
+                items: widget.items,
+                isLoading: widget.isLoading,
+                itemTitleBuilder: widget.itemTitleBuilder,
+                onSelect: (item) {
+                  widget.onSelect(item);
+                  _removeOverlay();
+                },
               ),
             ),
           );
         },
-      ),
-    );
-  }
+      );
 
-  Size _getFieldSize() {
-    final renderBox =
-    _fieldKey.currentContext?.findRenderObject() as RenderBox?;
-
-    return renderBox?.size ?? Size.zero;
+      overlay.insert(_overlayEntry!);
+    });
   }
 
   void _removeOverlay() {
@@ -179,18 +100,24 @@ class _DebouncedSearchDropdownFieldState<T>
   }
 
   @override
+  void didUpdateWidget(covariant SearchableDropdownSelector<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (_overlayEntry != null) {
+      _overlayEntry!.markNeedsBuild();
+    }
+  }
+
+  @override
   Widget build(BuildContext context) {
     return CompositedTransformTarget(
       link: _layerLink,
       child: TextFormFieldWidget(
-        newKey: _fieldKey,
         controller: widget.controller,
         focusNode: widget.focusNode,
         labelText: widget.label,
         hintText: widget.hintText,
         readOnly: !widget.enabled,
-        textInputType: TextInputType.text,
-        onChanged: _onChanged,
         suffixIcon: widget.isLoading
             ? const Padding(
           padding: EdgeInsets.all(12),
@@ -200,36 +127,74 @@ class _DebouncedSearchDropdownFieldState<T>
             child: CircularProgressIndicator(strokeWidth: 2),
           ),
         )
-            : null,
+            : const Icon(Icons.keyboard_arrow_down),
+        onChanged: _onTextChanged,
       ),
     );
   }
 }
 
-class _DropdownLoading extends StatelessWidget {
-  const _DropdownLoading();
+class _SearchableDropdownOverlay<T extends DropdownItem>
+    extends StatelessWidget {
+  final List<T> items;
+  final bool isLoading;
+  final String Function(T) itemTitleBuilder;
+  final void Function(T item) onSelect;
+
+  const _SearchableDropdownOverlay({
+    required this.items,
+    required this.isLoading,
+    required this.itemTitleBuilder,
+    required this.onSelect,
+  });
 
   @override
   Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.all(16),
-      child: Center(
-        child: CircularProgressIndicator(strokeWidth: 2),
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Material(
+      elevation: 4,
+      borderRadius: BorderRadius.circular(12),
+      color: colorScheme.surface,
+      child: ConstrainedBox(
+        constraints: const BoxConstraints(maxHeight: 260),
+        child: _buildContent(context),
       ),
     );
   }
-}
 
-class _DropdownEmpty extends StatelessWidget {
-  const _DropdownEmpty();
+  Widget _buildContent(BuildContext context) {
+    if (isLoading) {
+      return const Padding(
+        padding: EdgeInsets.all(16),
+        child: Center(child: CircularProgressIndicator()),
+      );
+    }
 
-  @override
-  Widget build(BuildContext context) {
-    return const Padding(
-      padding: EdgeInsets.all(16),
-      child: Center(
-        child: Text('هیچ موردی یافت نشد'),
-      ),
+    if (items.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.all(16),
+        child: Center(
+          child: Text('هیچ موردی یافت نشد'),
+        ),
+      );
+    }
+
+    return ListView.separated(
+      padding: EdgeInsets.zero,
+      shrinkWrap: true,
+      itemCount: items.length,
+      separatorBuilder: (_, __) => const Divider(height: 1),
+      itemBuilder: (_, index) {
+        final item = items[index];
+
+        return ListTile(
+          dense: true,
+          leading: item.leading(context),
+          title: Text(itemTitleBuilder(item)),
+          onTap: () => onSelect(item),
+        );
+      },
     );
   }
 }

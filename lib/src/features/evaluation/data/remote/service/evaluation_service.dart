@@ -43,7 +43,7 @@ abstract class EvaluationService {
       @Queries() Map<String, dynamic> body);
 
   @POST('/api/AidServiceEvaluation/GetPartPrice')
-  Future<BaseListResponse<PartPriceModel>> getPartPrice(
+  Future<BaseSingleResponse<PartPriceModel>> getPartPrice(
       @Body() Map<String, dynamic> body);
 
   @POST('/api/AidServiceEvaluation/GetPartMarks')

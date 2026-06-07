@@ -1,9 +1,18 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/allowable_cost_center_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/labor_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/part_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/part_mark_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/cubit/evaluation_aid_service_request_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/bottom_sheet/service_action_bottom_sheet.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/dropdown_selector.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/searchable_dropdown_selector.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/submit_cancel_buttons.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/inkwell_button_widget/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/formatter/thousands_separator_input_formatter.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 Future<void> showAddPartAndLaborBottomSheet(BuildContext context) async {
@@ -45,7 +54,6 @@ Future<void> showAddPartAndLaborBottomSheet(BuildContext context) async {
 
 class AddPartAndLaborForm extends StatelessWidget {
   final BaseRequestEntity? requestEntity;
-
   final TextEditingController descriptionController;
 
   const AddPartAndLaborForm({
@@ -56,57 +64,225 @@ class AddPartAndLaborForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Space.h8,
-        /* ColoredInfoCard(
-          title: "درخواست ${requestEntity?.id ?? ''}",
-          backgroundColor: Color(0xFF59168b).withAlpha(25),
-          borderColor: Color(0xFF59168b),
-          titleColor: Color(0xFF59168b),
-          items: [
-            ColoredInfoCardItem.text(
-              value:
-                  "${requestEntity?.firstName ?? ''} ${requestEntity?.lastName ?? ''} - ${requestEntity?.carName ?? ''}",
+    final cubit = context.read<EvaluationAidServiceRequestCubit>();
+
+    return BlocBuilder<EvaluationAidServiceRequestCubit,
+        EvaluationAidServiceRequestState>(
+      builder: (context, state) {
+        return Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            _buildLaborDetailsSection(
+              context: context,
+              cubit: cubit,
+              state: state,
             ),
-            ColoredInfoCardItem.text(
-              value: (requestEntity is ReliefRequestEntity)
-                  ? (requestEntity as ReliefRequestEntity).emdadServiceTitle ??
-                        '-'
-                  : '-',
-            ),
-          ],
-        ),
-        Space.h8,
-        ColoredInfoCard(
-          title: 'امداد رسان انتخابی',
-          backgroundColor: Color(0xFF00966d).withAlpha(25),
-          borderColor: Color(0xFF00966d),
-          titleColor: Color(0xFF00966d),
-          items: [
-            ColoredInfoCardItem.text(value: emdadgarEntity.agencyName ?? ''),
-            ColoredInfoCardItem.text(
-              value:
-                  "${emdadgarEntity.khodroTypeText} / ${emdadgarEntity.navganTypeText}",
-            ),
-            ColoredInfoCardItem.text(
-              value:
-                  "فاصله: ${emdadgarEntity.distanceKmToOrigin} کیلومتر | زمان ${emdadgarEntity.runtimeType} دقیقه",
+            const SizedBox(height: 16),
+            _buildPartSection(
+              context: context,
+              cubit: cubit,
+              state: state,
             ),
           ],
-        ),
-        Space.h16,
-        TextFormFieldWidget(
-          labelText: "توضیحات تخصیص",
-          controller: descriptionController,
-          autofocus: false,
-          textInputType: TextInputType.text,
-          textAlign: TextAlign.start,
-          textInputAction: TextInputAction.done,
-          maxLines: 3,
-        ),*/
+        );
+      },
+    );
+  }
+
+  Widget _buildLaborDetailsSection({
+    required BuildContext context,
+    required EvaluationAidServiceRequestCubit cubit,
+    required EvaluationAidServiceRequestState state,
+  }) {
+    return FormSectionContainer(
+      hasBorder: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionTitle('جزئیات اجرت'),
+          const SizedBox(height: 12),
+          _buildLaborSearchDropdown(cubit),
+          const SizedBox(height: 12),
+          _buildLaborCostCenterDropdown(cubit),
+          const SizedBox(height: 12),
+          _buildLaborPriceInput(cubit),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildPartSection({
+    required BuildContext context,
+    required EvaluationAidServiceRequestCubit cubit,
+    required EvaluationAidServiceRequestState state,
+  }) {
+    return FormSectionContainer(
+      hasBorder: true,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildSectionTitle('قطعه'),
+          const SizedBox(height: 12),
+          _buildPartSearchDropdown(cubit),
+          const SizedBox(height: 12),
+          _buildPartCostCenterDropdown(cubit),
+          const SizedBox(height: 12),
+          _buildPartMarkDropdown(cubit),
+          const SizedBox(height: 12),
+          _buildPartPriceAndCountRow(cubit, state),
+          const SizedBox(height: 16),
+          _buildAddAnotherPartButton(context, cubit),
+          if (cubit.hasSelectedParts) ...[
+            const SizedBox(height: 16),
+            const Divider(),
+            const SizedBox(height: 8),
+            _buildSelectedPartsPlaceholder(),
+          ],
+        ],
+      ),
+    );
+  }
+
+  Widget _buildSectionTitle(String title) {
+    return Text(
+      title,
+      style: const TextStyle(
+        fontSize: 14,
+        fontWeight: FontWeight.w700,
+      ),
+    );
+  }
+
+  Widget _buildLaborSearchDropdown(EvaluationAidServiceRequestCubit cubit) {
+    return SearchableDropdownSelector<LaborEntity>(
+      label: 'نام اجرت',
+      hintText: 'حداقل ۳ کاراکتر وارد کنید',
+      controller: cubit.laborSearchController,
+      selectedNotifier: cubit.selectedLabor,
+      items: cubit.laborList,
+      isLoading: cubit.isLaborLoading.value,
+      itemTitleBuilder: (item) => item.name ?? '',
+      onSearchChanged: cubit.onLaborSearchChanged,
+      onSelect: cubit.selectLabor,
+    );
+  }
+
+  Widget _buildLaborCostCenterDropdown(EvaluationAidServiceRequestCubit cubit) {
+    return DropdownSelector<AllowableCostCenterEntity>(
+      label: 'مرکز هزینه',
+      placeholder: 'انتخاب مرکز هزینه',
+      selectedNotifier: cubit.selectedLaborCostCenter,
+      items: cubit.laborCostCenterList,
+      enabled: cubit.laborCostCenterList.isNotEmpty,
+      itemTitleBuilder: (item) => item.name ?? '',
+      onSelect: cubit.selectLaborCostCenter,
+    );
+  }
+
+  Widget _buildLaborPriceInput(EvaluationAidServiceRequestCubit cubit) {
+    return TextFormFieldWidget(
+      controller: cubit.laborPriceController,
+      labelText: 'قیمت (ریال)',
+      hintText: 'قیمت',
+      readOnly: true,
+      textInputType: TextInputType.number,
+      textInputFormatter: const [
+        ThousandsSeparatorInputFormatter(),
       ],
+    );
+  }
+
+  Widget _buildPartSearchDropdown(EvaluationAidServiceRequestCubit cubit) {
+    return SearchableDropdownSelector<PartEntity>(
+      label: 'نام قطعه',
+      hintText: 'حداقل ۳ کاراکتر وارد کنید',
+      controller: cubit.partSearchController,
+      selectedNotifier: cubit.selectedPart,
+      items: cubit.partList,
+      isLoading: cubit.isPartLoading.value,
+      itemTitleBuilder: (item) => item.name ?? '',
+      onSearchChanged: cubit.onPartSearchChanged,
+      onSelect: cubit.selectPart,
+    );
+  }
+
+  Widget _buildPartCostCenterDropdown(EvaluationAidServiceRequestCubit cubit) {
+    return DropdownSelector<AllowableCostCenterEntity>(
+      label: 'مرکز هزینه',
+      placeholder: 'انتخاب مرکز هزینه',
+      selectedNotifier: cubit.selectedPartCostCenter,
+      items: cubit.partCostCenterList,
+      enabled: cubit.partCostCenterList.isNotEmpty,
+      itemTitleBuilder: (item) => item.name ?? '',
+      onSelect: cubit.selectPartCostCenter,
+    );
+  }
+
+  Widget _buildPartMarkDropdown(EvaluationAidServiceRequestCubit cubit) {
+    return DropdownSelector<PartMarkEntity>(
+      label: 'مارک ها',
+      placeholder: cubit.isPartMarkLoading.value
+          ? 'در حال بارگذاری...'
+          : 'انتخاب مارک',
+      selectedNotifier: cubit.selectedPartMark,
+      items: cubit.partMarkList,
+     // isLoading: cubit.isPartMarkLoading,
+      enabled: cubit.partMarkList.isNotEmpty && !cubit.isPartMarkLoading.value,
+      itemTitleBuilder: (item) => item.mark ?? '',
+      onSelect: cubit.selectPartMark,
+    );
+  }
+
+  Widget _buildPartPriceAndCountRow(EvaluationAidServiceRequestCubit cubit,
+      EvaluationAidServiceRequestState state,) {
+    return Row(
+      children: [
+        Expanded(
+          child: TextFormFieldWidget(
+            controller: cubit.partPriceController,
+            labelText: 'قیمت',
+            hintText: cubit.isPartPriceLoading.value
+                ? 'در حال دریافت قیمت...'
+                : 'قیمت',
+            readOnly: true,
+            textInputType: TextInputType.number,
+            textInputFormatter: const [
+              ThousandsSeparatorInputFormatter(),
+            ],
+          ),
+        ),
+        const SizedBox(width: 12),
+        Expanded(
+          child: TextFormFieldWidget(
+            controller: cubit.partCountController,
+            labelText: 'تعداد',
+            hintText: 'تعداد',
+            textInputType: TextInputType.number,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildAddAnotherPartButton(BuildContext context,
+      EvaluationAidServiceRequestCubit cubit,) {
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
+
+    return InkwellButtonWidget(
+      title: 'افزودن قطعه دیگر',
+      prefixIcon: Icon(Icons.add, color: colorScheme.primary),
+      titleColor: colorScheme.primary,
+      borderColor: colorScheme.primary,
+      backgroundColor: Colors.transparent,
+      onTap: cubit.addAnotherPart,
+    );
+  }
+
+  Widget _buildSelectedPartsPlaceholder() {
+    return const Text(
+      'لیست قطعات انتخاب‌شده بعداً اینجا پیاده‌سازی می‌شود.',
     );
   }
 }
