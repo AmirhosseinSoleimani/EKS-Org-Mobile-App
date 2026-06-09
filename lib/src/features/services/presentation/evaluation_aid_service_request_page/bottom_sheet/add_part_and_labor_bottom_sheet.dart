@@ -1,6 +1,7 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/allowable_cost_center_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/labor_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/evaluation_selected_part_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/part_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/part_mark_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
@@ -10,11 +11,14 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/dro
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/searchable_dropdown_selector.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/submit_cancel_buttons.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/inkwell_button_widget/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/formatter/thousands_separator_input_formatter.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'selected_part_list_item.dart';
 Future<void> showAddPartAndLaborBottomSheet(BuildContext context) async {
   final cubit = context.read<EvaluationAidServiceRequestCubit>();
 
@@ -116,6 +120,9 @@ class AddPartAndLaborForm extends StatelessWidget {
     required EvaluationAidServiceRequestCubit cubit,
     required EvaluationAidServiceRequestState state,
   }) {
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
     return FormSectionContainer(
       hasBorder: true,
       child: Column(
@@ -131,13 +138,25 @@ class AddPartAndLaborForm extends StatelessWidget {
           const SizedBox(height: 12),
           _buildPartPriceAndCountRow(cubit, state),
           const SizedBox(height: 16),
-          _buildAddAnotherPartButton(context, cubit),
-          if (cubit.hasSelectedParts) ...[
-            const SizedBox(height: 16),
-            const Divider(),
-            const SizedBox(height: 8),
-            _buildSelectedPartsPlaceholder(),
-          ],
+          _buildAddAnotherPartButton(context, cubit, colorScheme),
+          ValueListenableBuilder<List<EvaluationSelectedPartEntity>>(
+            valueListenable: cubit.selectedPartsNotifier,
+            builder: (context, selectedParts, _) {
+              if (selectedParts.isEmpty) {
+                return const SizedBox.shrink();
+              }
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  const SizedBox(height: 16),
+                  Divider(thickness: AppSize.s1,
+                    color: colorScheme.tertiary.withAlpha(100),),
+                  const SizedBox(height: 8),
+                  _buildSelectedPartsPlaceholder(context, cubit,),
+                ],
+              );
+            },
+          ),
         ],
       ),
     );
@@ -316,10 +335,8 @@ class AddPartAndLaborForm extends StatelessWidget {
   }
 
   Widget _buildAddAnotherPartButton(BuildContext context,
-      EvaluationAidServiceRequestCubit cubit,) {
-    final colorScheme = Theme
-        .of(context)
-        .colorScheme;
+      EvaluationAidServiceRequestCubit cubit, ColorScheme colorScheme) {
+
 
     return InkwellButtonWidget(
       title: 'افزودن قطعه دیگر',
@@ -331,9 +348,37 @@ class AddPartAndLaborForm extends StatelessWidget {
     );
   }
 
-  Widget _buildSelectedPartsPlaceholder() {
-    return const Text(
-      'لیست قطعات انتخاب‌شده بعداً اینجا پیاده‌سازی می‌شود.',
+  Widget _buildSelectedPartsPlaceholder(BuildContext context,
+      EvaluationAidServiceRequestCubit cubit,) {
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
+
+    return ValueListenableBuilder<List<EvaluationSelectedPartEntity>>(
+      valueListenable: cubit.selectedPartsNotifier,
+      builder: (context, items, _) {
+        if (items.isEmpty) {
+          return const SizedBox.shrink();
+        }
+
+        return Column(
+          children: List.generate(items.length, (index) {
+            final item = items[index];
+
+            return Padding(
+              padding: EdgeInsets.only(
+                bottom: index == items.length - 1 ? 0 : 8,
+              ),
+              child: SelectedPartListItem(
+                item: item,
+                colorScheme: colorScheme,
+                onDelete: () => cubit.removeSelectedPartAt(index),
+              ),
+            );
+          }),
+        );
+      },
     );
   }
 }
+

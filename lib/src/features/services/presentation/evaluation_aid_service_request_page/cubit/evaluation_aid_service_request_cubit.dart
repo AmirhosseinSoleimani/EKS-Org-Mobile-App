@@ -7,6 +7,7 @@ import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/emdadg
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/labor_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/last_evaluation_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/category_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/evaluation_selected_part_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/labor_list_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/last_evaluation_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/part_list_param_entity.dart';
@@ -119,9 +120,10 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
   ValueNotifier<List<AllowableCostCenterEntity>>([]);
   final partMarkListNotifier = ValueNotifier<List<PartMarkEntity>>([]);
 
-  final List<PartEntity> selectedParts = [];
+  final selectedPartsNotifier =
+  ValueNotifier<List<EvaluationSelectedPartEntity>>([]);
 
-  bool get hasSelectedParts => selectedParts.isNotEmpty;
+  bool get hasSelectedParts => selectedPartsNotifier.value.isNotEmpty;
 
   final isPartMarkLoading = ValueNotifier<bool>(false);
   final isPartPriceLoading = ValueNotifier<bool>(false);
@@ -363,13 +365,57 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     isPartPriceLoading.value = false;
   }
 
-  void addAnotherPart() {
-    final part = selectedPart.value;
-    if (part == null) return;
 
-    selectedParts.add(part);
+
+  void addAnotherPart() {
+    final selectedPartItem = _buildSelectedPartEntity();
+
+    if (selectedPartItem == null) {
+      return;
+    }
+    selectedPartsNotifier.value = [
+      ...selectedPartsNotifier.value,
+      selectedPartItem,
+    ];
 
     _clearCurrentPartInputs();
+  }
+
+  void removeSelectedPartAt(int index) {
+    final items = [...selectedPartsNotifier.value];
+
+    if (index < 0 || index >= items.length) return;
+
+    items.removeAt(index);
+    selectedPartsNotifier.value = items;
+  }
+
+  EvaluationSelectedPartEntity? _buildSelectedPartEntity() {
+    final part = selectedPart.value;
+    final mark = selectedPartMark.value;
+    final costCenter = selectedPartCostCenter.value;
+
+    if (part == null || mark == null || costCenter == null) {
+      return null;
+    }
+
+    return EvaluationSelectedPartEntity(
+      part: part,
+      mark: mark,
+      costCenter: costCenter,
+      count: _parseInt(partCountController.text, fallback: 1),
+      price: _parsePrice(partPriceController.text),
+    );
+  }
+
+  int _parseInt(String value, {int fallback = 0}) {
+    final normalized = value.replaceAll(',', '').trim();
+    return int.tryParse(normalized) ?? fallback;
+  }
+
+  num _parsePrice(String value) {
+    final normalized = value.replaceAll(',', '').trim();
+    return num.tryParse(normalized) ?? 0;
   }
 
   void _clearCurrentPartInputs() {
