@@ -19,7 +19,7 @@ class PartModel extends PartEntity {
       allowableCostCenterList: json['allowableCostCenterList'] == null
           ? null
           : (json['allowableCostCenterList'] as List)
-          .map((e) => AllowableCostCenterModel.fromJson(e))
+          .map((e) => AllowableCostCenterModel.fromJson(e).toEntity())
           .toList(),
       garantyDurationDayKilometer: json['garantyDurationDayKilometer'],
       garantyKilometerKilometer: json['garantyKilometerKilometer'],

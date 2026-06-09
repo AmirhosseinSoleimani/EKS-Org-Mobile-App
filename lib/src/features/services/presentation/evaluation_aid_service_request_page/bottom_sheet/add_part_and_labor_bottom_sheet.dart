@@ -178,14 +178,19 @@ class AddPartAndLaborForm extends StatelessWidget {
   }
 
   Widget _buildLaborCostCenterDropdown(EvaluationAidServiceRequestCubit cubit) {
-    return DropdownSelector<AllowableCostCenterEntity>(
-      label: 'مرکز هزینه',
-      placeholder: 'انتخاب مرکز هزینه',
-      selectedNotifier: cubit.selectedLaborCostCenter,
-      items: cubit.laborCostCenterList,
-      enabled: cubit.laborCostCenterList.isNotEmpty,
-      itemTitleBuilder: (item) => item.name ?? '',
-      onSelect: cubit.selectLaborCostCenter,
+    return ValueListenableBuilder<List<AllowableCostCenterEntity>>(
+      valueListenable: cubit.laborCostCenterListNotifier,
+      builder: (context, items, _) {
+        return DropdownSelector<AllowableCostCenterEntity>(
+          label: 'مرکز هزینه',
+          placeholder: 'انتخاب مرکز هزینه',
+          selectedNotifier: cubit.selectedLaborCostCenter,
+          items: items,
+          enabled: items.isNotEmpty,
+          itemTitleBuilder: (item) => item.name ?? '',
+          onSelect: cubit.selectLaborCostCenter,
+        );
+      },
     );
   }
 
@@ -202,62 +207,99 @@ class AddPartAndLaborForm extends StatelessWidget {
   }
 
   Widget _buildPartSearchDropdown(EvaluationAidServiceRequestCubit cubit) {
-    return SearchableDropdownSelector<PartEntity>(
-      label: 'نام قطعه',
-      hintText: 'حداقل ۳ کاراکتر وارد کنید',
-      controller: cubit.partSearchController,
-      selectedNotifier: cubit.selectedPart,
-      items: cubit.partList,
-      isLoading: cubit.isPartLoading.value,
-      itemTitleBuilder: (item) => item.name ?? '',
-      onSearchChanged: cubit.onPartSearchChanged,
-      onSelect: cubit.selectPart,
+    return ValueListenableBuilder<bool>(
+      valueListenable: cubit.isPartLoading,
+      builder: (context, isLoading, _) {
+        return ValueListenableBuilder<List<PartEntity>>(
+          valueListenable: cubit.partListNotifier,
+          builder: (context, items, _) {
+            return SearchableDropdownSelector<PartEntity>(
+              label: 'نام قطعه',
+              hintText: 'حداقل ۳ کاراکتر وارد کنید',
+              controller: cubit.partSearchController,
+              selectedNotifier: cubit.selectedPart,
+              items: items,
+              isLoading: isLoading,
+              itemTitleBuilder: (item) => item.name ?? '',
+              onSearchChanged: cubit.onPartSearchChanged,
+              onSelect: cubit.selectPart,
+            );
+          },
+        );
+      },
     );
   }
 
   Widget _buildPartCostCenterDropdown(EvaluationAidServiceRequestCubit cubit) {
-    return DropdownSelector<AllowableCostCenterEntity>(
-      label: 'مرکز هزینه',
-      placeholder: 'انتخاب مرکز هزینه',
-      selectedNotifier: cubit.selectedPartCostCenter,
-      items: cubit.partCostCenterList,
-      enabled: cubit.partCostCenterList.isNotEmpty,
-      itemTitleBuilder: (item) => item.name ?? '',
-      onSelect: cubit.selectPartCostCenter,
+    return ValueListenableBuilder<List<AllowableCostCenterEntity>>(
+      valueListenable: cubit.partCostCenterListNotifier,
+      builder: (context, items, _) {
+        return DropdownSelector<AllowableCostCenterEntity>(
+          label: 'مرکز هزینه',
+          placeholder: 'انتخاب مرکز هزینه',
+          selectedNotifier: cubit.selectedPartCostCenter,
+          items: items,
+          enabled: items.isNotEmpty,
+          itemTitleBuilder: (item) => item.name ?? '',
+          onSelect: cubit.selectPartCostCenter,
+        );
+      },
     );
   }
 
   Widget _buildPartMarkDropdown(EvaluationAidServiceRequestCubit cubit) {
-    return DropdownSelector<PartMarkEntity>(
-      label: 'مارک ها',
-      placeholder: cubit.isPartMarkLoading.value
-          ? 'در حال بارگذاری...'
-          : 'انتخاب مارک',
-      selectedNotifier: cubit.selectedPartMark,
-      items: cubit.partMarkList,
-     // isLoading: cubit.isPartMarkLoading,
-      enabled: cubit.partMarkList.isNotEmpty && !cubit.isPartMarkLoading.value,
-      itemTitleBuilder: (item) => item.mark ?? '',
-      onSelect: cubit.selectPartMark,
+    return ValueListenableBuilder<bool>(
+      valueListenable: cubit.isPartMarkLoading,
+      builder: (context, isLoading, _) {
+        return ValueListenableBuilder<List<PartMarkEntity>>(
+          valueListenable: cubit.partMarkListNotifier,
+          builder: (context, items, _) {
+            return DropdownSelector<PartMarkEntity>(
+              label: 'مارک ها',
+              placeholder: isLoading ? 'در حال بارگذاری...' : 'انتخاب مارک',
+              selectedNotifier: cubit.selectedPartMark,
+              items: items,
+              isLoading: isLoading,
+              enabled: items.isNotEmpty && !isLoading,
+              itemTitleBuilder: (item) => item.mark ?? '',
+              onSelect: cubit.selectPartMark,
+            );
+          },
+        );
+      },
     );
   }
 
-  Widget _buildPartPriceAndCountRow(EvaluationAidServiceRequestCubit cubit,
-      EvaluationAidServiceRequestState state,) {
+  Widget _buildPartPriceAndCountRow(
+      EvaluationAidServiceRequestCubit cubit,
+      EvaluationAidServiceRequestState state,
+      ) {
     return Row(
       children: [
         Expanded(
-          child: TextFormFieldWidget(
-            controller: cubit.partPriceController,
-            labelText: 'قیمت',
-            hintText: cubit.isPartPriceLoading.value
-                ? 'در حال دریافت قیمت...'
-                : 'قیمت',
-            readOnly: true,
-            textInputType: TextInputType.number,
-            textInputFormatter: const [
-              ThousandsSeparatorInputFormatter(),
-            ],
+          child: ValueListenableBuilder<bool>(
+            valueListenable: cubit.isPartPriceLoading,
+            builder: (context, isLoading, _) {
+              return TextFormFieldWidget(
+                controller: cubit.partPriceController,
+                labelText: 'قیمت',
+                hintText: 'قیمت',
+                textInputType: TextInputType.number,
+                textInputFormatter: const [
+                  ThousandsSeparatorInputFormatter(),
+                ],
+                suffixIcon: isLoading
+                    ? const Padding(
+                  padding: EdgeInsets.all(12),
+                  child: SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  ),
+                )
+                    : null,
+              );
+            },
           ),
         ),
         const SizedBox(width: 12),

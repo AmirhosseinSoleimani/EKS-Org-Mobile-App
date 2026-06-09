@@ -109,17 +109,20 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
   final laborListNotifier = ValueNotifier<List<LaborEntity>>([]);
   final isLaborLoading = ValueNotifier<bool>(false);
 
-  List<AllowableCostCenterEntity> laborCostCenterList = [];
 
-  List<PartEntity> partList = [];
-  List<AllowableCostCenterEntity> partCostCenterList = [];
-  List<PartMarkEntity> partMarkList = [];
+  final laborCostCenterListNotifier = ValueNotifier<List<AllowableCostCenterEntity>>([]);
+
+  final partListNotifier = ValueNotifier<List<PartEntity>>([]);
+  final isPartLoading = ValueNotifier<bool>(false);
+
+  final partCostCenterListNotifier =
+  ValueNotifier<List<AllowableCostCenterEntity>>([]);
+  final partMarkListNotifier = ValueNotifier<List<PartMarkEntity>>([]);
 
   final List<PartEntity> selectedParts = [];
 
   bool get hasSelectedParts => selectedParts.isNotEmpty;
 
-  final isPartLoading = ValueNotifier<bool>(false);
   final isPartMarkLoading = ValueNotifier<bool>(false);
   final isPartPriceLoading = ValueNotifier<bool>(false);
 
@@ -148,7 +151,7 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
         defectId: selectedRequest?.defectId ?? 0,
         serviceRequestId: selectedRequest?.id,
         hasSubscription: emdadgarServiceDetailEntity?.hasSubscription,
-        kilometer: lastEvaluationEntity?.lastEvaluation?.customerKilometer,
+        kilometer: int.tryParse(form.kilometerController.text.trim()),
         emdadServiceId: emdadgarServiceDetailEntity?.serviceId,
         hasGaranty: emdadgarServiceDetailEntity?.hasGaranty,
         searchText: query,
@@ -173,8 +176,11 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     selectedLabor.value = item;
     laborSearchController.text = item.label;
 
-    laborCostCenterList = item.allowableCostCenterList ?? [];
-    selectedLaborCostCenter.value = _findDefaultCostCenter(laborCostCenterList);
+    final costCenters = item.allowableCostCenterList ?? [];
+
+    laborCostCenterListNotifier.value = List<AllowableCostCenterEntity>.from(costCenters);
+
+    selectedLaborCostCenter.value = _findDefaultCostCenter(costCenters);
     _setLaborPriceByCostCenter();
   }
 
@@ -216,11 +222,12 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     final trimmedQuery = query.trim();
 
     if (trimmedQuery.length < 3) {
-      partList = [];
+      partListNotifier.value.clear();
       isPartLoading.value = false;
       return;
     }
 
+    isPartLoading.value = true;
     _partSearchDebounce = Timer(
       const Duration(seconds: 1),
           () => _searchParts(trimmedQuery),
@@ -246,8 +253,7 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     final result = await _getPartListUseCase(param);
     result.whenOrNull(
       success: (data, failures, resultCode) {
-        partList.clear();
-        partList.addAll(data);
+        partListNotifier.value = List<PartEntity>.from(data);
       },
       failure: (error, failures) {
         _errorMessage = _fallbackError(failures ?? error.toString());
@@ -264,10 +270,16 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     selectedPart.value = item;
     partSearchController.text = item.label;
 
-    partCostCenterList = item.allowableCostCenterList ?? [];
-    selectedPartCostCenter.value = _findDefaultCostCenter(partCostCenterList);
+    final costCenters = item.allowableCostCenterList ?? [];
 
-    partMarkList = [];
+    partCostCenterListNotifier.value = costCenters;
+    partCostCenterListNotifier.value =
+    List<AllowableCostCenterEntity>.from(costCenters);
+
+    selectedPartCostCenter.value = _findDefaultCostCenter(costCenters);
+
+    partMarkListNotifier.value = [];
+
     selectedPartMark.value = null;
     partPriceController.clear();
 
@@ -280,27 +292,36 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
 
   Future<void> _getPartMarks(PartEntity part) async {
     isPartMarkLoading.value = true;
+
     final param = PartMarksParamEntity(
       serviceType: ServiceType.reliefService,
       serviceRequestId: selectedRequest?.id,
       defectId: selectedRequest?.defectId ?? 0,
-      serial: selectedPart.value?.serial ?? '',
-      partGroupId: selectedPart.value?.partGroupId ?? 0,
+      serial: part.serial ?? '',
+      partGroupId: part.partGroupId ?? 0,
     );
+
     final result = await _getPartMarkListUseCase(param);
 
     result.whenOrNull(
       success: (data, failures, resultCode) {
-        partMarkList.clear();
-        partMarkList.addAll(data);
+        partMarkListNotifier.value = List<PartMarkEntity>.from(data);
       },
       failure: (error, failures) {
+        partMarkListNotifier.value = [];
+
         _errorMessage = _fallbackError(failures ?? error.toString());
         _emitError(_errorMessage);
       },
-      connectionError: () =>
-          _safeEmit(const EvaluationAidServiceRequestState.connectionError()),
+      connectionError: () {
+        partMarkListNotifier.value = [];
+
+        _safeEmit(
+          const EvaluationAidServiceRequestState.connectionError(),
+        );
+      },
     );
+
     isPartMarkLoading.value = false;
   }
 
@@ -360,9 +381,17 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     partPriceController.clear();
     partCountController.text = '1';
 
-    partList = [];
-    partCostCenterList = [];
-    partMarkList = [];
+    partListNotifier.value = [];
+
+    partCostCenterListNotifier.value = [];
+    partCostCenterListNotifier.value = [];
+
+    partMarkListNotifier.value.clear();
+    partMarkListNotifier.value = [];
+
+    isPartLoading.value = false;
+    isPartMarkLoading.value = false;
+    isPartPriceLoading.value = false;
   }
 
   AllowableCostCenterEntity? _findDefaultCostCenter(
