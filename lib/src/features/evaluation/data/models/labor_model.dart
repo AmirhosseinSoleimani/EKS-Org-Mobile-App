@@ -29,7 +29,7 @@ class LaborModel extends LaborEntity {
       allowableCostCenterList: json['allowableCostCenterList'] == null
           ? null
           : (json['allowableCostCenterList'] as List)
-          .map((e) => AllowableCostCenterModel.fromJson(e))
+          .map((e) => AllowableCostCenterModel.fromJson(e).toEntity())
           .toList(),
       garantyDurationDayLimitation: json['garantyDurationDayLimitation'],
       garantyKilometerLimitation: json['garantyKilometerLimitation'],

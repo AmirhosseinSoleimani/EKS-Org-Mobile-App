@@ -19,6 +19,16 @@ class AllowableCostCenterModel extends AllowableCostCenterEntity {
     );
   }
 
+  AllowableCostCenterEntity toEntity() {
+    return AllowableCostCenterEntity(
+      id: id,
+      code: code,
+      name: name,
+      selected: selected,
+      nahveMohasebeType: nahveMohasebeType,
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'id': id,

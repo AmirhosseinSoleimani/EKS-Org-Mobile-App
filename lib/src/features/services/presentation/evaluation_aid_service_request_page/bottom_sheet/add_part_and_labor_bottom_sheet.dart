@@ -154,16 +154,26 @@ class AddPartAndLaborForm extends StatelessWidget {
   }
 
   Widget _buildLaborSearchDropdown(EvaluationAidServiceRequestCubit cubit) {
-    return SearchableDropdownSelector<LaborEntity>(
-      label: 'نام اجرت',
-      hintText: 'حداقل ۳ کاراکتر وارد کنید',
-      controller: cubit.laborSearchController,
-      selectedNotifier: cubit.selectedLabor,
-      items: cubit.laborList,
-      isLoading: cubit.isLaborLoading.value,
-      itemTitleBuilder: (item) => item.name ?? '',
-      onSearchChanged: cubit.onLaborSearchChanged,
-      onSelect: cubit.selectLabor,
+    return ValueListenableBuilder<bool>(
+      valueListenable: cubit.isLaborLoading,
+      builder: (context, isLoading, _) {
+        return ValueListenableBuilder<List<LaborEntity>>(
+          valueListenable: cubit.laborListNotifier,
+          builder: (context, items, _) {
+            return SearchableDropdownSelector<LaborEntity>(
+              label: 'نام اجرت',
+              hintText: 'حداقل ۳ کاراکتر وارد کنید',
+              controller: cubit.laborSearchController,
+              selectedNotifier: cubit.selectedLabor,
+              items: items,
+              isLoading: isLoading,
+              itemTitleBuilder: (item) => item.name ?? '',
+              onSearchChanged: cubit.onLaborSearchChanged,
+              onSelect: cubit.selectLabor,
+            );
+          },
+        );
+      },
     );
   }
 
@@ -185,7 +195,6 @@ class AddPartAndLaborForm extends StatelessWidget {
       labelText: 'قیمت (ریال)',
       hintText: 'قیمت',
       readOnly: true,
-      textInputType: TextInputType.number,
       textInputFormatter: const [
         ThousandsSeparatorInputFormatter(),
       ],

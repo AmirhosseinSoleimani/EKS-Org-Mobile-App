@@ -106,7 +106,9 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
       null);
   final selectedPartMark = ValueNotifier<PartMarkEntity?>(null);
 
-  final List<LaborEntity> laborList = [];
+  final laborListNotifier = ValueNotifier<List<LaborEntity>>([]);
+  final isLaborLoading = ValueNotifier<bool>(false);
+
   List<AllowableCostCenterEntity> laborCostCenterList = [];
 
   List<PartEntity> partList = [];
@@ -117,7 +119,6 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
 
   bool get hasSelectedParts => selectedParts.isNotEmpty;
 
-  final isLaborLoading = ValueNotifier<bool>(false);
   final isPartLoading = ValueNotifier<bool>(false);
   final isPartMarkLoading = ValueNotifier<bool>(false);
   final isPartPriceLoading = ValueNotifier<bool>(false);
@@ -128,10 +129,11 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     final trimmedQuery = query.trim();
 
     if (trimmedQuery.length < 3) {
-      laborList.clear();
+      laborListNotifier.value.clear();
       isLaborLoading.value = false;
       return;
     }
+    isLaborLoading.value = true;
 
     _laborSearchDebounce = Timer(
       const Duration(seconds: 1),
@@ -155,8 +157,7 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     final result = await _getLaborListUseCase(param);
     result.whenOrNull(
       success: (data, failures, resultCode) {
-        laborList.clear();
-        laborList.addAll(data);
+        laborListNotifier.value = List<LaborEntity>.from(data);
       },
       failure: (error, failures) {
         _errorMessage = _fallbackError(failures ?? error.toString());
@@ -375,7 +376,16 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
   }
 
   String _formatPrice(String value) {
-    return value;
+    if (value.isEmpty) return '';
+
+    final digits = value.replaceAll(RegExp(r'[^0-9]'), '');
+
+    if (digits.isEmpty) return '';
+
+    return digits.replaceAllMapped(
+      RegExp(r'\B(?=(\d{3})+(?!\d))'),
+          (match) => ',',
+    );
   }
 
   void selectLaborCostCenter(AllowableCostCenterEntity item) {
