@@ -49,7 +49,7 @@ Future<void> showAddPartAndLaborBottomSheet(BuildContext context) async {
                 ServiceType.reliefService.serviceColor,
             onCancel: () => Navigator.pop(context),
             onSubmit: () {
-              final added = cubit.addLaborAndPartsFromSheet();
+              final added = cubit.saveLaborAndPartsFromSheet();
               if (added) {
                 Navigator.pop(context);
               }
@@ -59,7 +59,10 @@ Future<void> showAddPartAndLaborBottomSheet(BuildContext context) async {
       );
     },
   );
+
+
 }
+
 
 class AddPartAndLaborForm extends StatelessWidget {
   final BaseRequestEntity? requestEntity;

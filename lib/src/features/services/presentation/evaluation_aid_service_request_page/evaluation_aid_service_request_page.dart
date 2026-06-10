@@ -183,13 +183,37 @@ class _LoadedView extends StatelessWidget {
                     expandedLaborIdsListenable: cubit
                         .expandedLaborPartListIdsNotifier,
                     onAddLabor: () {
+                      cubit.prepareCreateLaborAndPartSheet();
+
                       cubit.markBottomSheetOpen();
                       showAddPartAndLaborBottomSheet(context).whenComplete(() {
                         cubit.markBottomSheetClosed();
                       });
                     },
-                    onAddPart: cubit.addPartToSelectedLabor,
-                    onEditLabor: cubit.editSelectedLabor,
+                    onAddPart: (labor) async {
+                      final canOpen = await cubit.addPartToSelectedLabor(labor);
+
+                      if (!context.mounted) return;
+
+                      if (canOpen) {
+                        cubit.markBottomSheetOpen();
+                        showAddPartAndLaborBottomSheet(context).whenComplete(() {
+                          cubit.markBottomSheetClosed();
+                        });
+                      }
+                    },
+                    onEditLabor: (labor) async {
+                      final canOpen = await cubit.editSelectedLabor(labor);
+
+                      if (!context.mounted) return;
+
+                      if (canOpen) {
+                        cubit.markBottomSheetOpen();
+                        showAddPartAndLaborBottomSheet(context).whenComplete(() {
+                          cubit.markBottomSheetClosed();
+                        });
+                      }
+                    },
                     onDeleteLabor: cubit.removeSelectedLabor,
                     onToggleShowMoreParts: cubit
                         .toggleSelectedLaborPartsVisibility,

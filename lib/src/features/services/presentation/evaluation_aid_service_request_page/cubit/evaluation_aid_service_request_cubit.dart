@@ -36,6 +36,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_r
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/fetch_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_emdadgar_info_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_relief_request_by_id_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/enums/add_part_and_labor_sheet_mode.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
@@ -85,6 +86,11 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
   EmdadgarInfoEntity? emdadgarInfo;
   ResponseLastEvaluationEntity? lastEvaluationEntity;
   EmdadgarServiceDetailEntity? emdadgarServiceDetailEntity;
+
+  AddPartAndLaborSheetMode addPartAndLaborSheetMode =
+      AddPartAndLaborSheetMode.create;
+
+  EvaluationSelectedLaborEntity? editingOriginalLabor;
 
   final form = EvaluationInitialFormController();
 
@@ -147,13 +153,20 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
   final isPartMarkLoading = ValueNotifier<bool>(false);
   final isPartPriceLoading = ValueNotifier<bool>(false);
 
+  void prepareCreateLaborAndPartSheet() {
+    addPartAndLaborSheetMode = AddPartAndLaborSheetMode.create;
+    editingOriginalLabor = null;
+
+    _clearAddPartAndLaborSheetInputs();
+  }
+
   void onLaborSearchChanged(String query) {
     _laborSearchDebounce?.cancel();
 
     final trimmedQuery = query.trim();
 
     if (trimmedQuery.length < 3) {
-      laborListNotifier.value.clear();
+      laborListNotifier.value = [];
       isLaborLoading.value = false;
       return;
     }
@@ -165,20 +178,76 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     );
   }
 
-  bool addLaborAndPartsFromSheet() {
+  bool saveLaborAndPartsFromSheet() {
     final selectedLaborItem = _buildSelectedLaborFromSheet();
 
     if (selectedLaborItem == null) return false;
 
-    selectedLaborsNotifier.value = [
-      ...selectedLaborsNotifier.value,
-      selectedLaborItem,
-    ];
+    switch (addPartAndLaborSheetMode) {
+      case AddPartAndLaborSheetMode.create:
+        _addSelectedLabor(selectedLaborItem);
+        break;
+
+      case AddPartAndLaborSheetMode.editLabor:
+      case AddPartAndLaborSheetMode.addPartToLabor:
+        final updated = _replaceEditingLabor(selectedLaborItem);
+
+        if (!updated) {
+          return false;
+        }
+
+        break;
+    }
 
     _clearAddPartAndLaborSheetInputs();
 
+    addPartAndLaborSheetMode = AddPartAndLaborSheetMode.create;
+    editingOriginalLabor = null;
+
     return true;
   }
+
+  void _addSelectedLabor(EvaluationSelectedLaborEntity labor) {
+    selectedLaborsNotifier.value = [
+      ...selectedLaborsNotifier.value,
+      labor,
+    ];
+  }
+
+  bool _replaceEditingLabor(EvaluationSelectedLaborEntity updatedLabor) {
+    final originalLabor = editingOriginalLabor;
+
+    if (originalLabor == null) {
+      _emitError('اجرت انتخاب‌شده برای بروزرسانی پیدا نشد');
+      return false;
+    }
+
+    var replaced = false;
+
+    final updatedItems = selectedLaborsNotifier.value.map((item) {
+      if (!replaced && _isSameLaborObject(item, originalLabor)) {
+        replaced = true;
+        return updatedLabor;
+      }
+
+      return item;
+    }).toList();
+
+    if (!replaced) {
+      _emitError('اجرت انتخاب‌شده برای بروزرسانی در لیست پیدا نشد');
+      return false;
+    }
+
+    selectedLaborsNotifier.value = updatedItems;
+    return true;
+  }
+
+  bool _isSameLaborObject(EvaluationSelectedLaborEntity first,
+      EvaluationSelectedLaborEntity second,) {
+    return identical(first, second) || first == second;
+  }
+
+
 
   void _clearAddPartAndLaborSheetInputs() {
     selectedLabor.value = null;
@@ -204,7 +273,7 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
       return null;
     }
 
-    final price = _parseInt(laborPriceController.text);
+    final price = _parsePrice(laborPriceController.text);
 
     return EvaluationSelectedLaborEntity(
       labor: labor,
@@ -219,29 +288,104 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
   Future<void> _searchLabors(String query) async {
     isLaborLoading.value = true;
 
-    final param = LaborListParamEntity(serviceType: ServiceType.reliefService,
-        defectId: selectedRequest?.defectId ?? 0,
-        serviceRequestId: selectedRequest?.id,
-        hasSubscription: emdadgarServiceDetailEntity?.hasSubscription,
-        kilometer: int.tryParse(form.kilometerController.text.trim()),
-        emdadServiceId: emdadgarServiceDetailEntity?.serviceId,
-        hasGaranty: emdadgarServiceDetailEntity?.hasGaranty,
-        searchText: query,
-        workOrderCode: emdadgarServiceDetailEntity?.defectInfoProblemOrEzharCode
+    final items = await _fetchLaborList(query);
+
+    laborListNotifier.value = items;
+    isLaborLoading.value = false;
+  }
+
+  void _fillLaborSheetFromSelectedLabor(EvaluationSelectedLaborEntity labor,) {
+    selectedLabor.value = labor.labor;
+    laborSearchController.text = labor.labor.label;
+
+    final costCenters = labor.labor.allowableCostCenterList ?? [];
+
+    laborCostCenterListNotifier.value =
+    List<AllowableCostCenterEntity>.from(costCenters);
+
+    selectedLaborCostCenter.value = _findMatchingCostCenter(
+      costCenters: costCenters,
+      previousCostCenter: labor.costCenter,
     );
+
+    laborPriceController.text = _formatPrice(
+      labor.price.toString(),
+    );
+  }
+
+  AllowableCostCenterEntity? _findMatchingCostCenter({
+    required List<AllowableCostCenterEntity> costCenters,
+    required AllowableCostCenterEntity previousCostCenter,
+  }) {
+    if (costCenters.isEmpty) return null;
+
+    final previousId = previousCostCenter.id;
+    final previousCode = previousCostCenter.code;
+
+    for (final item in costCenters) {
+      final sameId = previousId != null && item.id == previousId;
+      final sameCode = previousCode != null && item.code == previousCode;
+
+      if (sameId || sameCode) {
+        return item;
+      }
+    }
+
+    return _findDefaultCostCenter(costCenters);
+  }
+
+  LaborEntity? _findFreshLaborInList({
+    required List<LaborEntity> items,
+    required EvaluationSelectedLaborEntity source,
+  }) {
+    for (final item in items) {
+      if (source.laborId != null && item.id == source.laborId) {
+        return item;
+      }
+    }
+
+    for (final item in items) {
+      if (source.laborCode.isNotEmpty && item.code == source.laborCode) {
+        return item;
+      }
+    }
+
+    return null;
+  }
+
+  Future<List<LaborEntity>> _fetchLaborList(String query) async {
+    final param = LaborListParamEntity(
+      serviceType: ServiceType.reliefService,
+      defectId: selectedRequest?.defectId ?? 0,
+      serviceRequestId: selectedRequest?.id,
+      hasSubscription: emdadgarServiceDetailEntity?.hasSubscription,
+      kilometer: int.tryParse(form.kilometerController.text.trim()),
+      emdadServiceId: emdadgarServiceDetailEntity?.serviceId,
+      hasGaranty: emdadgarServiceDetailEntity?.hasGaranty,
+      searchText: query,
+      workOrderCode: emdadgarServiceDetailEntity?.defectInfoProblemOrEzharCode,
+    );
+
     final result = await _getLaborListUseCase(param);
+
+    List<LaborEntity> items = [];
+
     result.whenOrNull(
       success: (data, failures, resultCode) {
-        laborListNotifier.value = List<LaborEntity>.from(data);
+        items = List<LaborEntity>.from(data);
       },
       failure: (error, failures) {
         _errorMessage = _fallbackError(failures ?? error.toString());
         _emitError(_errorMessage);
       },
-      connectionError: () =>
-          _safeEmit(const EvaluationAidServiceRequestState.connectionError()),
+      connectionError: () {
+        _safeEmit(
+          const EvaluationAidServiceRequestState.connectionError(),
+        );
+      },
     );
-    isLaborLoading.value = false;
+
+    return items;
   }
 
   void selectLabor(LaborEntity item) {
@@ -294,7 +438,7 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     final trimmedQuery = query.trim();
 
     if (trimmedQuery.length < 3) {
-      partListNotifier.value.clear();
+      partListNotifier.value = [];
       isPartLoading.value = false;
       return;
     }
@@ -473,14 +617,9 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
       part: part,
       mark: mark,
       costCenter: costCenter,
-      count: _parseInt(partCountController.text, fallback: 1),
+      count: int.tryParse(partCountController.text) ?? 1,
       price: _parsePrice(partPriceController.text),
     );
-  }
-
-  int _parseInt(String value, {int fallback = 0}) {
-    final normalized = value.replaceAll(',', '').trim();
-    return int.tryParse(normalized) ?? fallback;
   }
 
   int _parsePrice(String value) {
@@ -510,32 +649,51 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     isPartPriceLoading.value = false;
   }
 
-  void removeSelectedLaborAt(int index) {
-    final items = [...selectedLaborsNotifier.value];
-
-    if (index < 0 || index >= items.length) return;
-
-    items.removeAt(index);
-    selectedLaborsNotifier.value = items;
-  }
-  void editSelectedLabor(EvaluationSelectedLaborEntity labor) {
-    // TODO: open bottom sheet in edit mode
-  }
-
-  void addPartToSelectedLabor(EvaluationSelectedLaborEntity labor) {
-    // TODO: open bottom sheet or part picker for this labor
-  }
   void removeSelectedLabor(EvaluationSelectedLaborEntity labor) {
     selectedLaborsNotifier.value = selectedLaborsNotifier.value
-        .where((item) => item != labor)
+        .where((item) => !_isSameLaborObject(item, labor))
         .toList();
 
     final laborId = labor.laborId;
+
     if (laborId != null) {
       final expandedIds = {...expandedLaborPartListIdsNotifier.value};
       expandedIds.remove(laborId);
       expandedLaborPartListIdsNotifier.value = expandedIds;
     }
+  }
+
+  Future<bool> editSelectedLabor(EvaluationSelectedLaborEntity labor,) async {
+    addPartAndLaborSheetMode = AddPartAndLaborSheetMode.editLabor;
+    editingOriginalLabor = labor;
+
+    _clearAddPartAndLaborSheetInputs();
+
+    _fillLaborSheetFromSelectedLabor(labor);
+
+    selectedPartsNotifier.value = List<EvaluationSelectedPartEntity>.from(
+      labor.evaluationParts,
+    );
+
+    return true;
+  }
+
+  Future<bool> addPartToSelectedLabor(
+      EvaluationSelectedLaborEntity labor,) async {
+    addPartAndLaborSheetMode = AddPartAndLaborSheetMode.addPartToLabor;
+    editingOriginalLabor = labor;
+
+    _clearAddPartAndLaborSheetInputs();
+
+    _fillLaborSheetFromSelectedLabor(labor);
+
+    selectedPartsNotifier.value = List<EvaluationSelectedPartEntity>.from(
+      labor.evaluationParts,
+    );
+
+    _clearCurrentPartInputs();
+
+    return true;
   }
 
   void removePartFromSelectedLabor({
@@ -792,8 +950,8 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
       emdadgarId: emdadgarInfo?.id,
       serviceCategoryId: selectedServiceCategory.value?.id ??
           emdadgarServiceDetailEntity?.serviceCategoryId,
-      customerKilometer: _parseInt(form.kilometerController.text),
-      distanceToCustomer: _parseInt(form.customerDistanceController.text),
+      customerKilometer: int.tryParse(form.kilometerController.text),
+      distanceToCustomer: int.tryParse(form.customerDistanceController.text),
       assignDate: JalaliDateHelper.formatServerDateTime(form.assignDateTime),
       arriveDate: JalaliDateHelper.formatServerDateTime(form.arriveDateTime),
       //todo create endDateTime
