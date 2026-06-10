@@ -1,9 +1,11 @@
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/post_evaluation_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/accept_evaluation_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/defect_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/emdadgar_service_detail_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/labor_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/last_evaluation_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/accept_evaluation_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/aid_service_evaluation_submit_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/category_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/home_service_package_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/labor_list_param_entity.dart';
@@ -59,4 +61,8 @@ abstract class EvaluationRepository {
 
   Future<ApiResult<ResponseLastEvaluationEntity>>  getLastEvaluation(
       LastEvaluationParamEntity param);
+
+  Future<
+      ApiResult<PostEvaluationResponseEntity>> submitEvaluationForAidService(
+      AidServiceEvaluationSubmitParamEntity param);
 }

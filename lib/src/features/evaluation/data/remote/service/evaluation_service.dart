@@ -10,7 +10,6 @@ import 'package:eks_sana_plus_org/src/features/evaluation/data/models/post_evalu
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/service_category_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/service_package_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/service_response_model.dart';
-import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/part_mark_entity.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:retrofit/retrofit.dart';
@@ -103,5 +102,4 @@ abstract class EvaluationService {
   Future<BaseSingleResponse<
       ResponseLastEvaluationModel>> getLastEvaluation(
       @Body() Map<String, dynamic> body);
-
 }

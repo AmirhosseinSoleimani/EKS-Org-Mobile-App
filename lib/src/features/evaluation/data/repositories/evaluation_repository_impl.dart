@@ -5,6 +5,7 @@ import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/emdadg
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/labor_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/last_evaluation_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/accept_evaluation_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/aid_service_evaluation_submit_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/category_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/home_service_package_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/labor_list_param_entity.dart';
@@ -162,6 +163,19 @@ class EvaluationRepositoryImpl extends EvaluationRepository {
     try {
       final result = await _remoteDataSource
           .getLastEvaluation(param.toModel());
+      return result.toApiResult();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<
+      ApiResult<PostEvaluationResponseEntity>> submitEvaluationForAidService(
+      AidServiceEvaluationSubmitParamEntity param) async {
+    try {
+      final result = await _remoteDataSource
+          .submitEvaluationForAidService(param.toModel());
       return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);

@@ -48,7 +48,12 @@ Future<void> showAddPartAndLaborBottomSheet(BuildContext context) async {
             cubit.selectedRequest?.serviceType?.serviceColor ??
                 ServiceType.reliefService.serviceColor,
             onCancel: () => Navigator.pop(context),
-            onSubmit: () => cubit.submit(),
+            onSubmit: () {
+              final added = cubit.addLaborAndPartsFromSheet();
+              if (added) {
+                Navigator.pop(context);
+              }
+            },
           );
         },
       );

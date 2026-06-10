@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/features/evaluation/data/models/emdadgar_s
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/labor_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/last_evaluation_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/accept_evaluation_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/aid_service_evaluation_submit_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/category_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/home_service_package_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/labor_list_param_model.dart';
@@ -116,5 +117,9 @@ class FinalizeInvoiceRemoteDataSourceImpl extends EvaluationRemoteDataSource {
   @override
   Future<BaseSingleResponse<ResponseLastEvaluationModel>> getLastEvaluation(LastEvaluationParamModel param)
   async => await _service.getLastEvaluation(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<PostEvaluationResponseModel>> submitEvaluationForAidService(AidServiceEvaluationSubmitParamModel param)
+  async => await _service.aidServiceEvaluationPost(param.toJson());
 
 }

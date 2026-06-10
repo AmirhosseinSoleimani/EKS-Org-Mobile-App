@@ -1,6 +1,8 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/evaluation_service_model.dart';
 
+import 'param/evaluation_selected_labor_entity.dart';
+
 class EvaluationServiceEntity {
   const EvaluationServiceEntity({
     this.serviceId,
@@ -28,6 +30,8 @@ class EvaluationServiceEntity {
     this.isDeleted = false,
     this.isSubscribedByNationalCode,
     this.evaluationLabors,
+    this.defectInfoProblemOrEzharCode,
+    this.limitationDescription,
   });
 
   final int? serviceId;
@@ -54,7 +58,9 @@ class EvaluationServiceEntity {
   final bool hasGaranty;
   final String? garantyStartDate;
   final bool isDeleted;
-  final List<dynamic>? evaluationLabors;
+  final String? defectInfoProblemOrEzharCode;
+  final String? limitationDescription;
+  final List<EvaluationSelectedLaborEntity>? evaluationLabors;
 
   EvaluationServiceEntity copyWith({
     int? serviceId,
@@ -76,12 +82,14 @@ class EvaluationServiceEntity {
     bool? hasSubscription,
     int? productId,
     String? productTitle,
+    String? defectInfoProblemOrEzharCode,
+    String? limitationDescription,
     dynamic product,
     bool? hasGaranty,
     String? garantyStartDate,
     bool? isDeleted,
     bool? isSubscribedByNationalCode,
-    List<dynamic>? evaluationLabors
+    List<EvaluationSelectedLaborEntity>? evaluationLabors
   }) {
     return EvaluationServiceEntity(
       serviceId: serviceId ?? this.serviceId,
@@ -109,6 +117,8 @@ class EvaluationServiceEntity {
       hasGaranty: hasGaranty ?? this.hasGaranty,
       garantyStartDate: garantyStartDate ?? this.garantyStartDate,
       evaluationLabors: evaluationLabors ?? this.evaluationLabors,
+      defectInfoProblemOrEzharCode: defectInfoProblemOrEzharCode?? this.defectInfoProblemOrEzharCode,
+      limitationDescription: limitationDescription?? this.limitationDescription,
     );
   }
 
@@ -138,7 +148,10 @@ class EvaluationServiceEntity {
       garantyStartDate: garantyStartDate,
       isDeleted: isDeleted,
       isSubscribedByNationalCode: isSubscribedByNationalCode,
-      evaluationLabors: evaluationLabors,
+      defectInfoProblemOrEzharCode: defectInfoProblemOrEzharCode,
+      limitationDescription: limitationDescription,
+      evaluationLabors: evaluationLabors?.map((item) => item).toList(),
+      /* evaluationLabors: evaluationLabors,*/
     );
   }
 }

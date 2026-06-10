@@ -1,5 +1,7 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/evaluation_selected_labor_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/evaluation_service_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/evaluation_selected_labor_entity.dart';
 
 class EvaluationServiceModel extends EvaluationServiceEntity {
   EvaluationServiceModel({
@@ -28,6 +30,8 @@ class EvaluationServiceModel extends EvaluationServiceEntity {
     super.isDeleted,
     super.isSubscribedByNationalCode,
     super.evaluationLabors,
+    super.defectInfoProblemOrEzharCode,
+    super.limitationDescription,
   });
 
   factory EvaluationServiceModel.fromJson(Map<String, dynamic> json) {
@@ -56,13 +60,33 @@ class EvaluationServiceModel extends EvaluationServiceEntity {
       garantyStartDate: json['garantyStartDate'],
       isDeleted: json['isDeleted'] ?? false,
       isSubscribedByNationalCode: json['isSubscribedByNationalCode'] ?? false,
-      evaluationLabors: json['evaluationLabors'],
+      evaluationLabors: _parseEvaluationLabors(json['evaluationLabors']),
+      limitationDescription: json['limitationDescription'],
+      defectInfoProblemOrEzharCode: json['defectInfoProblemOrEzharCode'],
     );
+  }
+
+  static List<EvaluationSelectedLaborEntity> _parseEvaluationLabors(
+      dynamic value,
+      ) {
+    if (value == null) return [];
+
+    if (value is! List) return [];
+
+    return value
+        .whereType<Map>()
+        .map((item) {
+      return EvaluationSelectedLaborModel.fromJson(
+        Map<String, dynamic>.from(item),
+      );
+    })
+        .toList();
   }
 
   Map<String, dynamic> toJson() {
     return {
-      "evaluationLabors": evaluationLabors,
+      'evaluationLabors':
+      evaluationLabors?.map((item) => item.toModel().toJson()).toList(),
       "serviceType": serviceType,
       "serviceTypeId": serviceTypeId,
       "serviceTypeTitle": serviceTypeTitle,
@@ -77,6 +101,8 @@ class EvaluationServiceModel extends EvaluationServiceEntity {
       "hasSubscription": hasSubscription,
       "isSubscribedByNationalCode": isSubscribedByNationalCode,
       "productId": productId,
+      "defectInfoProblemOrEzharCode": defectInfoProblemOrEzharCode,
+      "limitationDescription": limitationDescription,
       if (defectInfoId != null) "defectInfoId": defectInfoId,
     };
   }

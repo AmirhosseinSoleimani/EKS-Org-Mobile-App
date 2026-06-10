@@ -4,9 +4,12 @@ import 'package:eks_sana_plus_org/src/common/constants/fetch_result_type.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/allowable_cost_center_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/emdadgar_service_detail_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/evaluation_service_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/labor_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/last_evaluation_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/aid_service_evaluation_submit_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/category_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/evaluation_selected_labor_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/evaluation_selected_part_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/labor_list_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/last_evaluation_param_entity.dart';
@@ -14,6 +17,7 @@ import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/part_marks_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/part_price_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/service_detail_for_evaluation_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/services_and_labors_and_parts_evaluation_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/part_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/part_mark_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/service_category_entity.dart';
@@ -25,6 +29,7 @@ import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/get_par
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/get_part_mark_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/get_part_price_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/get_service_detail_evaluation_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/submit_evaluation_for_aid_service_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/service_request_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
@@ -32,6 +37,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/usecases/fetch_se
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_emdadgar_info_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_relief_request_by_id_use_case.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -56,8 +62,9 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
       this._getDefectsListUseCase,
       this._getServiceDetailEvaluationUseCase,
       this._getLastEvaluationUseCase,
-      this._getLaborListUseCase,)
-      : super(const EvaluationAidServiceRequestState.idle());
+    this._getLaborListUseCase,
+    this._submitEvaluationForAidServiceUseCase,
+  ) : super(const EvaluationAidServiceRequestState.idle());
 
   final FetchSelectedRequestItemUseCase _fetchSelectedRequestItemUseCase;
   final GetReliefRequestByIdUseCase _getReliefRequestByIdUseCase;
@@ -70,6 +77,8 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
   final GetDefectsListUseCase _getDefectsListUseCase;
   final GetServiceDetailEvaluationUseCase _getServiceDetailEvaluationUseCase;
   final GetLastEvaluationUseCase _getLastEvaluationUseCase;
+  final SubmitEvaluationForAidServiceUseCase
+  _submitEvaluationForAidServiceUseCase;
 
   String? _errorMessage;
   ReliefRequestEntity? selectedRequest;
@@ -79,6 +88,9 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
 
   final form = EvaluationInitialFormController();
 
+  final expandedLaborPartListIdsNotifier = ValueNotifier<Set<int>>({});
+
+  bool get hasSelectedLabors => selectedLaborsNotifier.value.isNotEmpty;
 
   List<DefectEntity> defectList = <DefectEntity>[];
   final selectedDefect = ValueNotifier<DefectEntity?>(null);
@@ -121,9 +133,16 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
   final partMarkListNotifier = ValueNotifier<List<PartMarkEntity>>([]);
 
   final selectedPartsNotifier =
-  ValueNotifier<List<EvaluationSelectedPartEntity>>([]);
+      ValueNotifier<List<EvaluationSelectedPartEntity>>([]);
 
   bool get hasSelectedParts => selectedPartsNotifier.value.isNotEmpty;
+
+  final selectedLaborsNotifier = ValueNotifier<
+      List<EvaluationSelectedLaborEntity>>([]);
+
+  List<EvaluationSelectedLaborEntity> get selectedLabors =>
+      selectedLaborsNotifier.value;
+
 
   final isPartMarkLoading = ValueNotifier<bool>(false);
   final isPartPriceLoading = ValueNotifier<bool>(false);
@@ -143,6 +162,57 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     _laborSearchDebounce = Timer(
       const Duration(seconds: 1),
           () => _searchLabors(trimmedQuery),
+    );
+  }
+
+  bool addLaborAndPartsFromSheet() {
+    final selectedLaborItem = _buildSelectedLaborFromSheet();
+
+    if (selectedLaborItem == null) return false;
+
+    selectedLaborsNotifier.value = [
+      ...selectedLaborsNotifier.value,
+      selectedLaborItem,
+    ];
+
+    _clearAddPartAndLaborSheetInputs();
+
+    return true;
+  }
+
+  void _clearAddPartAndLaborSheetInputs() {
+    selectedLabor.value = null;
+    selectedLaborCostCenter.value = null;
+
+    laborSearchController.clear();
+    laborPriceController.clear();
+
+    laborListNotifier.value = [];
+    laborCostCenterListNotifier.value = [];
+
+    _clearCurrentPartInputs();
+
+    selectedPartsNotifier.value = [];
+  }
+
+  EvaluationSelectedLaborEntity? _buildSelectedLaborFromSheet() {
+    final labor = selectedLabor.value;
+    final costCenter = selectedLaborCostCenter.value;
+
+    if (labor == null || costCenter == null) {
+      _emitError('لطفاً نام اجرت و مرکز هزینه اجرت را انتخاب کنید');
+      return null;
+    }
+
+    final price = _parseInt(laborPriceController.text);
+
+    return EvaluationSelectedLaborEntity(
+      labor: labor,
+      costCenter: costCenter,
+      price: price,
+      evaluationParts: List<EvaluationSelectedPartEntity>.from(
+        selectedPartsNotifier.value,
+      ),
     );
   }
 
@@ -413,9 +483,9 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     return int.tryParse(normalized) ?? fallback;
   }
 
-  num _parsePrice(String value) {
+  int _parsePrice(String value) {
     final normalized = value.replaceAll(',', '').trim();
-    return num.tryParse(normalized) ?? 0;
+    return int.tryParse(normalized) ?? 0;
   }
 
   void _clearCurrentPartInputs() {
@@ -438,6 +508,71 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     isPartLoading.value = false;
     isPartMarkLoading.value = false;
     isPartPriceLoading.value = false;
+  }
+
+  void removeSelectedLaborAt(int index) {
+    final items = [...selectedLaborsNotifier.value];
+
+    if (index < 0 || index >= items.length) return;
+
+    items.removeAt(index);
+    selectedLaborsNotifier.value = items;
+  }
+  void editSelectedLabor(EvaluationSelectedLaborEntity labor) {
+    // TODO: open bottom sheet in edit mode
+  }
+
+  void addPartToSelectedLabor(EvaluationSelectedLaborEntity labor) {
+    // TODO: open bottom sheet or part picker for this labor
+  }
+  void removeSelectedLabor(EvaluationSelectedLaborEntity labor) {
+    selectedLaborsNotifier.value = selectedLaborsNotifier.value
+        .where((item) => item != labor)
+        .toList();
+
+    final laborId = labor.laborId;
+    if (laborId != null) {
+      final expandedIds = {...expandedLaborPartListIdsNotifier.value};
+      expandedIds.remove(laborId);
+      expandedLaborPartListIdsNotifier.value = expandedIds;
+    }
+  }
+
+  void removePartFromSelectedLabor({
+    required int laborIndex,
+    required int partIndex,
+  }) {
+    final labors = [...selectedLaborsNotifier.value];
+
+    if (laborIndex < 0 || laborIndex >= labors.length) return;
+
+    final labor = labors[laborIndex];
+    final parts = [...labor.evaluationParts];
+
+    if (partIndex < 0 || partIndex >= parts.length) return;
+
+    parts.removeAt(partIndex);
+
+    labors[laborIndex] = labor.copyWith(
+      evaluationParts: parts,
+    );
+
+    selectedLaborsNotifier.value = labors;
+  }
+
+  void toggleSelectedLaborPartsVisibility(EvaluationSelectedLaborEntity labor) {
+    final laborId = labor.laborId;
+    if (laborId == null) return;
+
+    final current = {...expandedLaborPartListIdsNotifier.value};
+
+    if (current.contains(laborId)) {
+      current.remove(laborId);
+    } else {
+      current.add(laborId);
+    }
+
+    expandedLaborPartListIdsNotifier.value = current;
   }
 
   AllowableCostCenterEntity? _findDefaultCostCenter(
@@ -620,7 +755,92 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     return fetchResult;
   }
 
-  Future<void> submit () async {}
+
+  Future<void> submitEvaluationForAidService() async {
+    if (selectedLaborsNotifier.value.isEmpty) {
+      _emitError('حداقل یک اجرت باید انتخاب شود');
+      return;
+    }
+
+    _safeEmit(const EvaluationAidServiceRequestState.submitLoading());
+
+    final param = _buildEvaluationSubmitEntity();
+
+    final result = await _submitEvaluationForAidServiceUseCase(param);
+
+    result.whenOrNull(
+      success: (data, failures, resultCode) {
+        /*PostEvaluationResponseEntity*/
+        _safeEmit(const EvaluationAidServiceRequestState.submitSuccess());
+      },
+      failure: (error, failures) {
+        _errorMessage = _fallbackError(failures ?? error.toString());
+        _emitError(_errorMessage);
+      },
+      connectionError: () {
+        _safeEmit(
+          const EvaluationAidServiceRequestState.connectionError(),
+        );
+      },
+    );
+  }
+
+  AidServiceEvaluationSubmitParamEntity _buildEvaluationSubmitEntity() {
+    return AidServiceEvaluationSubmitParamEntity(
+      serviceRequestId: selectedRequest?.id,
+      serviceType: selectedRequest?.serviceType?.value,
+      emdadgarId: emdadgarInfo?.id,
+      serviceCategoryId: selectedServiceCategory.value?.id ??
+          emdadgarServiceDetailEntity?.serviceCategoryId,
+      customerKilometer: _parseInt(form.kilometerController.text),
+      distanceToCustomer: _parseInt(form.customerDistanceController.text),
+      assignDate: JalaliDateHelper.formatServerDateTime(form.assignDateTime),
+      arriveDate: JalaliDateHelper.formatServerDateTime(form.arriveDateTime),
+      //todo create endDateTime
+      //endWorkDate: JalaliDateHelper.formatServerIsoDateTime(form.endDateTime),
+      confirmValidation: false,
+      defectInfoId: selectedRequest?.defectId,
+      description: form.descriptionController.text.trim(),
+      servicesAndLaborsAndPartsEvaluationPayload:
+      ServicesAndLaborsAndPartsEvaluationEntity(
+        evaluationServices: [
+          _buildEvaluationServiceEntity(),
+        ],
+      ),
+    );
+  }
+
+  EvaluationServiceEntity _buildEvaluationServiceEntity() {
+    return EvaluationServiceEntity(
+      serviceTypeId: selectedRequest?.serviceType?.value,
+      serviceTypeTitle: selectedRequest?.serviceType?.label,
+      serviceType: selectedRequest?.serviceType,
+      serviceId: emdadgarServiceDetailEntity?.serviceId,
+      serviceTitle: emdadgarServiceDetailEntity?.serviceTitle,
+      serviceCode: emdadgarServiceDetailEntity?.serviceCode,
+      serviceCategoryId: selectedServiceCategory.value?.id ??
+          emdadgarServiceDetailEntity?.serviceCategoryId,
+      serviceCategoryTitle: selectedServiceCategory.value?.title ??
+          emdadgarServiceDetailEntity?.serviceCategoryTitle,
+      serviceCategoryCode: selectedServiceCategory.value?.code ??
+          emdadgarServiceDetailEntity?.serviceCategoryCode,
+      defectInfoId: selectedRequest?.defectId,
+      defectInfoTitle: emdadgarServiceDetailEntity?.defectInfoTitle,
+      defectInfoProblemOrEzharCode:
+      emdadgarServiceDetailEntity?.defectInfoProblemOrEzharCode,
+
+      hasGaranty: emdadgarServiceDetailEntity?.hasGaranty ?? false,
+      hasSubscription: emdadgarServiceDetailEntity?.hasSubscription ?? false,
+      isSubscribedByNationalCode:
+      emdadgarServiceDetailEntity?.isSubscribedByNationalCode ?? false,
+      limitationDescription:
+      emdadgarServiceDetailEntity?.limitationDescription ?? '',
+      subscriptionId: lastEvaluationEntity?.lastEvaluation
+          ?.servicesAndLaborsAndPartsEvaluationPayload?.evaluationServices
+          ?.first.subscriptionId,
+      evaluationLabors: selectedLaborsNotifier.value,
+    );
+  }
 
   bool isBottomSheetOpen = false;
 
@@ -779,21 +999,29 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
 
   @override
   Future<void> close() {
+    selectedLaborsNotifier.dispose();
+    selectedPartsNotifier.dispose();
+    laborListNotifier.dispose();
+    laborCostCenterListNotifier.dispose();
+    isLaborLoading.dispose();
+    partListNotifier.dispose();
+    partCostCenterListNotifier.dispose();
+    partMarkListNotifier.dispose();
     _laborSearchDebounce?.cancel();
     _partSearchDebounce?.cancel();
-
     laborSearchController.dispose();
     laborPriceController.dispose();
-
     partSearchController.dispose();
     partPriceController.dispose();
     partCountController.dispose();
-
     selectedLabor.dispose();
     selectedLaborCostCenter.dispose();
     selectedPart.dispose();
     selectedPartCostCenter.dispose();
     selectedPartMark.dispose();
+    isPartLoading.dispose();
+    isPartMarkLoading.dispose();
+    isPartPriceLoading.dispose();
 
     return super.close();
   }

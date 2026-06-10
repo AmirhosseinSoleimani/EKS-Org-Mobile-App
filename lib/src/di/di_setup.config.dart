@@ -91,6 +91,8 @@ import '../features/evaluation/domain/usecase/get_service_detail_evaluation_use_
     as _i16;
 import '../features/evaluation/domain/usecase/post_evaluation_use_case.dart'
     as _i296;
+import '../features/evaluation/domain/usecase/submit_evaluation_for_aid_service_use_case.dart'
+    as _i571;
 import '../features/indicator_report/data/data_sources/indicator_report_data_source.dart'
     as _i691;
 import '../features/indicator_report/data/data_sources/indicator_report_data_source_impl.dart'
@@ -990,6 +992,11 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i296.PostEvaluationUseCase>(
     () => _i296.PostEvaluationUseCase(gh<_i122.EvaluationRepository>()),
   );
+  gh.lazySingleton<_i571.SubmitEvaluationForAidServiceUseCase>(
+    () => _i571.SubmitEvaluationForAidServiceUseCase(
+      gh<_i122.EvaluationRepository>(),
+    ),
+  );
   gh.factory<_i319.EvaluationAidServiceRequestCubit>(
     () => _i319.EvaluationAidServiceRequestCubit(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
@@ -1003,6 +1010,7 @@ _i174.GetIt $initGetIt(
       gh<_i16.GetServiceDetailEvaluationUseCase>(),
       gh<_i476.GetLastEvaluationUseCase>(),
       gh<_i915.GetLaborListUseCase>(),
+      gh<_i571.SubmitEvaluationForAidServiceUseCase>(),
     ),
   );
   gh.factory<_i792.UpdateRequestCubit>(
