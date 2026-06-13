@@ -7,6 +7,7 @@ import 'package:eks_sana_plus_org/src/features/evaluation/data/models/part_mark_
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/part_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/part_price_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/post_evaluation_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/representation_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/service_category_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/service_package_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/service_response_model.dart';
@@ -102,4 +103,10 @@ abstract class EvaluationService {
   Future<BaseSingleResponse<
       ResponseLastEvaluationModel>> getLastEvaluation(
       @Body() Map<String, dynamic> body);
+
+  @POST('/api/AidServiceEvaluation/GetRepresentationList')
+  Future<BaseListResponse<RepresentationModel>> getRepresentationList(
+      @Body() Map<String, dynamic> body);
+
+
 }

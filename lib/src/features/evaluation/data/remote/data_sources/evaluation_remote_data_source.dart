@@ -12,6 +12,7 @@ import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/last
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/part_list_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/part_marks_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/part_price_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/representation_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/service_detail_for_evaluation_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/service_evaluation_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/services_param_model.dart';
@@ -19,9 +20,11 @@ import 'package:eks_sana_plus_org/src/features/evaluation/data/models/part_mark_
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/part_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/part_price_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/post_evaluation_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/data/models/representation_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/service_category_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/service_package_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/service_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/RepresentationParamEntity.dart';
 
 import '../../../../../services/network/model/base_response.dart';
 import '../../models/defect_model.dart';
@@ -61,4 +64,6 @@ abstract class EvaluationRemoteDataSource {
 
   Future<BaseSingleResponse<PostEvaluationResponseModel>> submitEvaluationForAidService(
       AidServiceEvaluationSubmitParamModel param);
+
+  Future<BaseListResponse<RepresentationModel>> getRepresentationList(RepresentationParamModel param);
 }

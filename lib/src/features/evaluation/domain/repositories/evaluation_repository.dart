@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/defect
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/emdadgar_service_detail_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/labor_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/last_evaluation_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/RepresentationParamEntity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/accept_evaluation_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/aid_service_evaluation_submit_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/category_param_entity.dart';
@@ -20,6 +21,7 @@ import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/part_e
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/part_mark_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/part_price_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/post_evaluation_response_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/representation_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/service_category_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/service_package_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/service_response_entity.dart';
@@ -65,4 +67,6 @@ abstract class EvaluationRepository {
   Future<
       ApiResult<PostEvaluationResponseEntity>> submitEvaluationForAidService(
       AidServiceEvaluationSubmitParamEntity param);
+
+  Future<ApiResult<List<RepresentationEntity>>> getRepresentationList(RepresentationParamEntity param);
 }

@@ -2,7 +2,7 @@ import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/last_e
 import 'package:flutter/material.dart';
 import 'package:shamsi_date/shamsi_date.dart';
 
-class EvaluationInitialFormController {
+class EvaluationMainFormController {
   final kilometerController = TextEditingController();
   final customerDistanceController = TextEditingController();
 

@@ -87,6 +87,8 @@ import '../features/evaluation/domain/usecase/get_part_mark_list_use_case.dart'
     as _i655;
 import '../features/evaluation/domain/usecase/get_part_price_list_use_case.dart'
     as _i923;
+import '../features/evaluation/domain/usecase/get_representation_list_use_case.dart'
+    as _i229;
 import '../features/evaluation/domain/usecase/get_service_detail_evaluation_use_case.dart'
     as _i16;
 import '../features/evaluation/domain/usecase/post_evaluation_use_case.dart'
@@ -984,6 +986,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i923.GetPartPriceUseCase>(
     () => _i923.GetPartPriceUseCase(gh<_i122.EvaluationRepository>()),
   );
+  gh.lazySingleton<_i229.GetRepresentationListUseCase>(
+    () => _i229.GetRepresentationListUseCase(gh<_i122.EvaluationRepository>()),
+  );
   gh.lazySingleton<_i16.GetServiceDetailEvaluationUseCase>(
     () => _i16.GetServiceDetailEvaluationUseCase(
       gh<_i122.EvaluationRepository>(),
@@ -995,22 +1000,6 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i571.SubmitEvaluationForAidServiceUseCase>(
     () => _i571.SubmitEvaluationForAidServiceUseCase(
       gh<_i122.EvaluationRepository>(),
-    ),
-  );
-  gh.factory<_i319.EvaluationAidServiceRequestCubit>(
-    () => _i319.EvaluationAidServiceRequestCubit(
-      gh<_i376.FetchSelectedRequestItemUseCase>(),
-      gh<_i672.GetReliefRequestByIdUseCase>(),
-      gh<_i786.GetEmdadgarInfoUseCase>(),
-      gh<_i1016.GetCategoriesListUseCase>(),
-      gh<_i361.GetPartListUseCase>(),
-      gh<_i655.GetPartMarkListUseCase>(),
-      gh<_i923.GetPartPriceUseCase>(),
-      gh<_i163.GetDefectsListUseCase>(),
-      gh<_i16.GetServiceDetailEvaluationUseCase>(),
-      gh<_i476.GetLastEvaluationUseCase>(),
-      gh<_i915.GetLaborListUseCase>(),
-      gh<_i571.SubmitEvaluationForAidServiceUseCase>(),
     ),
   );
   gh.factory<_i792.UpdateRequestCubit>(
@@ -1039,6 +1028,23 @@ _i174.GetIt $initGetIt(
       gh<_i335.CustomerPreInvoiceOnTheFlyUseCase>(),
       gh<_i531.AcceptEvaluationUseCase>(),
       gh<_i734.GetEmdadgarFollowupsDataUseCase>(),
+    ),
+  );
+  gh.factory<_i319.EvaluationAidServiceRequestCubit>(
+    () => _i319.EvaluationAidServiceRequestCubit(
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
+      gh<_i1016.GetCategoriesListUseCase>(),
+      gh<_i361.GetPartListUseCase>(),
+      gh<_i655.GetPartMarkListUseCase>(),
+      gh<_i923.GetPartPriceUseCase>(),
+      gh<_i163.GetDefectsListUseCase>(),
+      gh<_i16.GetServiceDetailEvaluationUseCase>(),
+      gh<_i476.GetLastEvaluationUseCase>(),
+      gh<_i915.GetLaborListUseCase>(),
+      gh<_i571.SubmitEvaluationForAidServiceUseCase>(),
+      gh<_i229.GetRepresentationListUseCase>(),
     ),
   );
   return getIt;

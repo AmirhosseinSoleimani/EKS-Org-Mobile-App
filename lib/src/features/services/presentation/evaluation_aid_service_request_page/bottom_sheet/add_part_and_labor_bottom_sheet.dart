@@ -29,7 +29,7 @@ Future<void> showAddPartAndLaborBottomSheet(BuildContext context) async {
     contentBuilder: (context) {
       return AddPartAndLaborForm(
         requestEntity: cubit.selectedRequest,
-        descriptionController: cubit.form.descriptionController,
+        descriptionController: cubit.mainForm.descriptionController,
       );
     },
     actionsBuilder: (context) {

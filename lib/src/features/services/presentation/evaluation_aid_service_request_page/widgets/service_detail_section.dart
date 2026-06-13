@@ -55,7 +55,7 @@ class ServiceDetailSection extends StatelessWidget {
           Space.h16,
 
           TextFormFieldWidget(
-            controller: cubit.form.serviceController,
+            controller: cubit.mainForm.serviceController,
             labelText: 'سرویس',
             textInputType: TextInputType.none,
             focusNode: AlwaysDisabledFocusNode(),
@@ -66,7 +66,7 @@ class ServiceDetailSection extends StatelessWidget {
           Space.h16,
           TextFormFieldWidget(
             labelText: 'توضیحات',
-            controller: cubit.form.descriptionController,
+            controller: cubit.mainForm.descriptionController,
             autofocus: false,
             textInputType: TextInputType.text,
             textAlign: TextAlign.start,
@@ -76,7 +76,7 @@ class ServiceDetailSection extends StatelessWidget {
           Space.h16,
           LabeledCheckboxRow(
             title: 'عوارض آزاد راهی پرداخت شد',
-            notifier: cubit.form.isFreewayTollPaid,
+            notifier: cubit.mainForm.isFreewayTollPaid,
             activeColor: ServiceType.reliefService.serviceColor,
           ),
         ],

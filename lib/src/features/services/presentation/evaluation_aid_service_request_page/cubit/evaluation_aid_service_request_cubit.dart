@@ -7,6 +7,7 @@ import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/emdadg
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/evaluation_service_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/labor_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/last_evaluation_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/RepresentationParamEntity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/aid_service_evaluation_submit_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/category_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/evaluation_selected_labor_entity.dart';
@@ -20,6 +21,7 @@ import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/services_and_labors_and_parts_evaluation_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/part_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/part_mark_entity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/representation_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/service_category_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/get_categories_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/get_defects_list_use_case.dart';
@@ -28,6 +30,7 @@ import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/get_las
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/get_part_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/get_part_mark_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/get_part_price_list_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/get_representation_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/get_service_detail_evaluation_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/usecase/submit_evaluation_for_aid_service_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_info_entity.dart';
@@ -36,6 +39,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_r
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/fetch_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_emdadgar_info_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_relief_request_by_id_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/cubit/evaluation_transport_Information_form_controller.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/enums/add_part_and_labor_sheet_mode.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
@@ -46,7 +50,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../evaluation/domain/entities/defect_entity.dart';
-import 'evaluation_initial_form_controller.dart';
+import 'evaluation_main_form_controller.dart';
 
 part 'evaluation_aid_service_request_cubit.freezed.dart';
 part 'evaluation_aid_service_request_state.dart';
@@ -63,8 +67,9 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
       this._getDefectsListUseCase,
       this._getServiceDetailEvaluationUseCase,
       this._getLastEvaluationUseCase,
-    this._getLaborListUseCase,
-    this._submitEvaluationForAidServiceUseCase,
+      this._getLaborListUseCase,
+      this._submitEvaluationForAidServiceUseCase,
+      this._getRepresentationListUseCase,
   ) : super(const EvaluationAidServiceRequestState.idle());
 
   final FetchSelectedRequestItemUseCase _fetchSelectedRequestItemUseCase;
@@ -80,6 +85,7 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
   final GetLastEvaluationUseCase _getLastEvaluationUseCase;
   final SubmitEvaluationForAidServiceUseCase
   _submitEvaluationForAidServiceUseCase;
+  final GetRepresentationListUseCase _getRepresentationListUseCase;
 
   String? _errorMessage;
   ReliefRequestEntity? selectedRequest;
@@ -92,7 +98,10 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
 
   EvaluationSelectedLaborEntity? editingOriginalLabor;
 
-  final form = EvaluationInitialFormController();
+  final mainForm = EvaluationMainFormController();
+
+  final transportForm =
+  EvaluationTransportInformationFormController<RepresentationEntity>();
 
   final expandedLaborPartListIdsNotifier = ValueNotifier<Set<int>>({});
 
@@ -334,24 +343,6 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     return _findDefaultCostCenter(costCenters);
   }
 
-  LaborEntity? _findFreshLaborInList({
-    required List<LaborEntity> items,
-    required EvaluationSelectedLaborEntity source,
-  }) {
-    for (final item in items) {
-      if (source.laborId != null && item.id == source.laborId) {
-        return item;
-      }
-    }
-
-    for (final item in items) {
-      if (source.laborCode.isNotEmpty && item.code == source.laborCode) {
-        return item;
-      }
-    }
-
-    return null;
-  }
 
   Future<List<LaborEntity>> _fetchLaborList(String query) async {
     final param = LaborListParamEntity(
@@ -359,7 +350,7 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
       defectId: selectedRequest?.defectId ?? 0,
       serviceRequestId: selectedRequest?.id,
       hasSubscription: emdadgarServiceDetailEntity?.hasSubscription,
-      kilometer: int.tryParse(form.kilometerController.text.trim()),
+      kilometer: int.tryParse(mainForm.kilometerController.text.trim()),
       emdadServiceId: emdadgarServiceDetailEntity?.serviceId,
       hasGaranty: emdadgarServiceDetailEntity?.hasGaranty,
       searchText: query,
@@ -761,6 +752,50 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     _setLaborPriceByCostCenter();
   }
 
+  Future<void> getRepresentationList() async {
+    transportForm.setRepresentationLoading(true);
+    final param =  RepresentationParamEntity();
+    final result = await _getRepresentationListUseCase(param);
+
+    result.whenOrNull(
+      success: (data, failures, resultCode) {
+        transportForm.setRepresentationList(data);
+
+        transportForm.syncSelectedRepresentationByValue(
+          lastEvaluationEntity?.lastEvaluation,
+        );
+      },
+      failure: (error, failures) {
+        transportForm.clearRepresentationList();
+
+        _errorMessage = _fallbackError(failures ?? error.toString());
+        _emitError(_errorMessage);
+      },
+      connectionError: () {
+        transportForm.clearRepresentationList();
+
+        _safeEmit(
+          const EvaluationAidServiceRequestState.connectionError(),
+        );
+      },
+    );
+
+    transportForm.setRepresentationLoading(false);
+  }
+
+  void fillTransportFormFromLastEvaluation() {
+    final lastEvaluation = lastEvaluationEntity?.lastEvaluation;
+
+    if (lastEvaluation == null) return;
+
+    transportForm.fillFromLastEvaluation(
+      acceptanceCode: lastEvaluation.acceptanceCode,
+      transportDistanceKm: lastEvaluation.distanceHamlCustomer,
+      endWorkDate: lastEvaluation.endWorkDate,
+      representationValue: lastEvaluation.id,
+    );
+  }
+
 
   Future<void> init() async {
     _retryAction = init;
@@ -950,15 +985,18 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
       emdadgarId: emdadgarInfo?.id,
       serviceCategoryId: selectedServiceCategory.value?.id ??
           emdadgarServiceDetailEntity?.serviceCategoryId,
-      customerKilometer: int.tryParse(form.kilometerController.text),
-      distanceToCustomer: int.tryParse(form.customerDistanceController.text),
-      assignDate: JalaliDateHelper.formatServerDateTime(form.assignDateTime),
-      arriveDate: JalaliDateHelper.formatServerDateTime(form.arriveDateTime),
+      customerKilometer: int.tryParse(mainForm.kilometerController.text),
+      distanceToCustomer: int.tryParse(
+          mainForm.customerDistanceController.text),
+      assignDate: JalaliDateHelper.formatServerDateTime(
+          mainForm.assignDateTime),
+      arriveDate: JalaliDateHelper.formatServerDateTime(
+          mainForm.arriveDateTime),
       //todo create endDateTime
       //endWorkDate: JalaliDateHelper.formatServerIsoDateTime(form.endDateTime),
       confirmValidation: false,
       defectInfoId: selectedRequest?.defectId,
-      description: form.descriptionController.text.trim(),
+      description: mainForm.descriptionController.text.trim(),
       servicesAndLaborsAndPartsEvaluationPayload:
       ServicesAndLaborsAndPartsEvaluationEntity(
         evaluationServices: [
@@ -1083,7 +1121,7 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     result.whenOrNull(
       success: (data, _, _) {
         lastEvaluationEntity = data;
-        form.fillFromLastEvaluation(data.lastEvaluation);
+        mainForm.fillFromLastEvaluation(data.lastEvaluation);
         fetchResult = FetchResultType.success;
       },
       connectionError: () {
@@ -1115,7 +1153,7 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     result.whenOrNull(
       success: (data, _, _) {
         emdadgarServiceDetailEntity = data;
-        form.setServiceTitle(data.serviceTitle);
+        mainForm.setServiceTitle(data.serviceTitle);
         fetchResult = FetchResultType.success;
       },
       connectionError: () {
@@ -1180,7 +1218,7 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     isPartLoading.dispose();
     isPartMarkLoading.dispose();
     isPartPriceLoading.dispose();
-
+    transportForm.dispose();
     return super.close();
   }
 }
