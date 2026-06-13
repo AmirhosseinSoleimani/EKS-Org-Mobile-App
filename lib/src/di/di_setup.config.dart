@@ -382,6 +382,9 @@ _i174.GetIt $initGetIt(
   gh.factory<_i336.BottomNavigationBarCubit>(
     () => _i336.BottomNavigationBarCubit(),
   );
+  gh.factory<_i319.EvaluationAidServiceRequestCubit>(
+    () => _i319.EvaluationAidServiceRequestCubit(),
+  );
   gh.factory<_i866.EvaluationHomeServiceRequestCubit>(
     () => _i866.EvaluationHomeServiceRequestCubit(),
   );
@@ -1028,23 +1031,6 @@ _i174.GetIt $initGetIt(
       gh<_i335.CustomerPreInvoiceOnTheFlyUseCase>(),
       gh<_i531.AcceptEvaluationUseCase>(),
       gh<_i734.GetEmdadgarFollowupsDataUseCase>(),
-    ),
-  );
-  gh.factory<_i319.EvaluationAidServiceRequestCubit>(
-    () => _i319.EvaluationAidServiceRequestCubit(
-      gh<_i376.FetchSelectedRequestItemUseCase>(),
-      gh<_i672.GetReliefRequestByIdUseCase>(),
-      gh<_i786.GetEmdadgarInfoUseCase>(),
-      gh<_i1016.GetCategoriesListUseCase>(),
-      gh<_i361.GetPartListUseCase>(),
-      gh<_i655.GetPartMarkListUseCase>(),
-      gh<_i923.GetPartPriceUseCase>(),
-      gh<_i163.GetDefectsListUseCase>(),
-      gh<_i16.GetServiceDetailEvaluationUseCase>(),
-      gh<_i476.GetLastEvaluationUseCase>(),
-      gh<_i915.GetLaborListUseCase>(),
-      gh<_i571.SubmitEvaluationForAidServiceUseCase>(),
-      gh<_i229.GetRepresentationListUseCase>(),
     ),
   );
   return getIt;

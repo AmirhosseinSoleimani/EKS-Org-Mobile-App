@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/cubit/evaluation_transport_Information_form_controller.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/date_time_picker_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/dropdown_selector.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
@@ -13,15 +14,11 @@ class TransportInformationSection<T extends DropdownItem>
   final EvaluationTransportInformationFormController<T> controller;
   final String Function(T item) representationTitleBuilder;
   final ValueChanged<T>? onSelectRepresentation;
-  final VoidCallback onEndWorkDateTap;
-  final VoidCallback onEndWorkTimeTap;
 
   const TransportInformationSection({
     super.key,
     required this.controller,
     required this.representationTitleBuilder,
-    required this.onEndWorkDateTap,
-    required this.onEndWorkTimeTap,
     this.onSelectRepresentation,
   });
 
@@ -100,32 +97,13 @@ class TransportInformationSection<T extends DropdownItem>
   }
 
   Widget _buildEndWorkDateTimeRow() {
-    return Row(
-      children: [
-        Expanded(
-          child: TextFormFieldWidget(
-            controller: controller.endWorkDateController,
-            labelText: 'تاریخ اتمام کار',
-            hintText: 'انتخاب تاریخ',
-            readOnly: true,
-            textInputType: TextInputType.none,
-            onTap: onEndWorkDateTap,
-            suffixIcon: const Icon(Icons.calendar_month_outlined),
-          ),
-        ),
-        Space.w12,
-        Expanded(
-          child: TextFormFieldWidget(
-            controller: controller.endWorkTimeController,
-            labelText: 'زمان اتمام کار',
-            hintText: 'انتخاب زمان',
-            readOnly: true,
-            textInputType: TextInputType.none,
-            onTap: onEndWorkTimeTap,
-            suffixIcon: const Icon(Icons.access_time),
-          ),
-        ),
-      ],
+    return DateTimePickerSection(
+      dateLabel: 'تاریخ اتمام کار',
+      timeLabel: 'زمان اتمام کار',
+      dateController: controller.endWorkDateController,
+      timeController: controller.endWorkTimeController,
+      onDateChange: controller.setEndWorkDate,
+      onTimeChange: controller.setEndWorkTime,
     );
   }
 }

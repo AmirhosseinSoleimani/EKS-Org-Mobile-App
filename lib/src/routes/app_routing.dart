@@ -48,7 +48,7 @@ class Routes {
 
     return GoRouter(
       navigatorKey: parentNavigatorKey,
-      initialLocation: LoginPage.path,
+      initialLocation: EvaluationAidServiceRequestPage.path,
       refreshListenable: startupGuard,
       observers: [
         routeObserver

@@ -49,10 +49,12 @@ class EvaluationTransportInformationFormController<T extends DropdownItem> {
       current.minute,
     );
 
-    endWorkDateController.text = _formatJalaliDate(endWorkDateTime!);
+    _syncEndWorkDateTimeControllers();
   }
 
-  void setEndWorkTime(DateTime time) {
+  void setEndWorkTime(DateTime? time) {
+    if (time == null) return;
+
     final current = endWorkDateTime ?? DateTime.now();
 
     endWorkDateTime = DateTime(
@@ -63,7 +65,7 @@ class EvaluationTransportInformationFormController<T extends DropdownItem> {
       time.minute,
     );
 
-    endWorkTimeController.text = _formatTime(endWorkDateTime!);
+    _syncEndWorkDateTimeControllers();
   }
 
   void fillFromLastEvaluation({
@@ -81,9 +83,23 @@ class EvaluationTransportInformationFormController<T extends DropdownItem> {
       transportDistanceKm,
     );
 
-    _setEndWorkDateTimeFromString(endWorkDate);
+    setEndWorkDateTimeFromServer(endWorkDate);
 
     syncSelectedRepresentationByValue(representationValue);
+  }
+
+  void setEndWorkDateTimeFromServer(String? dateTimeString) {
+    final dateTime = DateTime.tryParse(dateTimeString ?? '');
+
+    if (dateTime == null) {
+      endWorkDateTime = null;
+      endWorkDateController.clear();
+      endWorkTimeController.clear();
+      return;
+    }
+
+    endWorkDateTime = dateTime;
+    _syncEndWorkDateTimeControllers();
   }
 
   void syncSelectedRepresentationByValue(Object? value) {
@@ -110,21 +126,35 @@ class EvaluationTransportInformationFormController<T extends DropdownItem> {
     acceptanceCodeController.clear();
     transportDistanceController.clear();
 
-    endWorkDateController.clear();
-    endWorkTimeController.clear();
-    endWorkDateTime = null;
+    clearEndWorkDateTime();
 
     selectedRepresentation.value = null;
   }
 
-  void _setEndWorkDateTimeFromString(String? dateTimeString) {
-    final dateTime = DateTime.tryParse(dateTimeString ?? '');
-    if (dateTime == null) return;
+  void clearEndWorkDateTime() {
+    endWorkDateTime = null;
+    endWorkDateController.clear();
+    endWorkTimeController.clear();
+  }
 
-    endWorkDateTime = dateTime;
+  void _syncEndWorkDateTimeControllers() {
+    final value = endWorkDateTime;
 
-    endWorkDateController.text = _formatJalaliDate(dateTime);
-    endWorkTimeController.text = _formatTime(dateTime);
+    if (value == null) {
+      endWorkDateController.clear();
+      endWorkTimeController.clear();
+      return;
+    }
+
+    endWorkDateController.text = _formatJalaliDate(value);
+    endWorkTimeController.text = _formatTime(value);
+  }
+
+  String? get formattedEndWorkDateTimeForServer {
+    final value = endWorkDateTime;
+    if (value == null) return null;
+
+    return value.toIso8601String();
   }
 
   String _formatJalaliDate(DateTime dateTime) {

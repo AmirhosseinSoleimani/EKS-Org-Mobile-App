@@ -182,12 +182,6 @@ class _LoadedView extends StatelessWidget {
                     controller: cubit.transportForm,
                     representationTitleBuilder: (item) => item.label,
                     onSelectRepresentation: cubit.transportForm.setSelectedRepresentation,
-                    onEndWorkDateTap: () {
-                      // picker تاریخ
-                    },
-                    onEndWorkTimeTap: () {
-                      // picker زمان
-                    },
                   ),
                   laborAndPartSection: SelectedLaborAndPartSection(
                     selectedLaborsListenable: cubit.selectedLaborsNotifier,

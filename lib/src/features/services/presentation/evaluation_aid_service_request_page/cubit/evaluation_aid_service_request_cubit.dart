@@ -4,21 +4,14 @@ import 'package:eks_sana_plus_org/src/common/constants/fetch_result_type.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/allowable_cost_center_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/emdadgar_service_detail_entity.dart';
-import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/evaluation_service_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/labor_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/last_evaluation_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/RepresentationParamEntity.dart';
-import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/aid_service_evaluation_submit_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/category_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/evaluation_selected_labor_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/evaluation_selected_part_entity.dart';
-import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/labor_list_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/last_evaluation_param_entity.dart';
-import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/part_list_param_entity.dart';
-import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/part_marks_param_entity.dart';
-import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/part_price_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/service_detail_for_evaluation_param_entity.dart';
-import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/services_and_labors_and_parts_evaluation_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/part_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/part_mark_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/representation_entity.dart';
@@ -39,10 +32,12 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_r
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/fetch_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_emdadgar_info_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_relief_request_by_id_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/builders/aid_service_evaluation_submit_param_builder.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/controllers/evaluation_labor_part_context.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/controllers/evaluation_labor_part_controller.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/cubit/evaluation_transport_Information_form_controller.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/enums/add_part_and_labor_sheet_mode.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
-import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -56,6 +51,7 @@ part 'evaluation_aid_service_request_cubit.freezed.dart';
 part 'evaluation_aid_service_request_state.dart';
 
 @injectable
+
 class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequestState> {
   EvaluationAidServiceRequestCubit(this._fetchSelectedRequestItemUseCase,
       this._getReliefRequestByIdUseCase,
@@ -69,8 +65,29 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
       this._getLastEvaluationUseCase,
       this._getLaborListUseCase,
       this._submitEvaluationForAidServiceUseCase,
-      this._getRepresentationListUseCase,
-  ) : super(const EvaluationAidServiceRequestState.idle());
+      this._getRepresentationListUseCase,)
+      : super(const EvaluationAidServiceRequestState.idle()) {
+    laborPart = EvaluationLaborPartController(
+      getLaborListUseCase: _getLaborListUseCase,
+      getPartListUseCase: _getPartListUseCase,
+      getPartMarkListUseCase: _getPartMarkListUseCase,
+      getPartPriceUseCase: _getPartPriceUseCase,
+      readContext: () =>
+          EvaluationLaborPartContext(
+            selectedRequest: selectedRequest,
+            emdadgarServiceDetailEntity: emdadgarServiceDetailEntity,
+            lastEvaluationEntity: lastEvaluationEntity,
+            customerKilometerText: mainForm.kilometerController.text,
+          ),
+      onError: _emitError,
+      onConnectionError: () =>
+          _safeEmit(
+            const EvaluationAidServiceRequestState.connectionError(),
+          ),
+    );
+  }
+
+  late final EvaluationLaborPartController laborPart;
 
   final FetchSelectedRequestItemUseCase _fetchSelectedRequestItemUseCase;
   final GetReliefRequestByIdUseCase _getReliefRequestByIdUseCase;
@@ -93,19 +110,10 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
   ResponseLastEvaluationEntity? lastEvaluationEntity;
   EmdadgarServiceDetailEntity? emdadgarServiceDetailEntity;
 
-  AddPartAndLaborSheetMode addPartAndLaborSheetMode =
-      AddPartAndLaborSheetMode.create;
-
-  EvaluationSelectedLaborEntity? editingOriginalLabor;
-
   final mainForm = EvaluationMainFormController();
 
   final transportForm =
   EvaluationTransportInformationFormController<RepresentationEntity>();
-
-  final expandedLaborPartListIdsNotifier = ValueNotifier<Set<int>>({});
-
-  bool get hasSelectedLabors => selectedLaborsNotifier.value.isNotEmpty;
 
   List<DefectEntity> defectList = <DefectEntity>[];
   final selectedDefect = ValueNotifier<DefectEntity?>(null);
@@ -115,642 +123,126 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
 
   VoidCallback? _retryAction;
 
-  Timer? _laborSearchDebounce;
-  Timer? _partSearchDebounce;
+  AddPartAndLaborSheetMode get addPartAndLaborSheetMode => laborPart.mode;
 
-  final laborSearchController = TextEditingController();
-  final laborPriceController = TextEditingController();
+  EvaluationSelectedLaborEntity? get editingOriginalLabor =>
+      laborPart.editingOriginalLabor;
 
-  final partSearchController = TextEditingController();
-  final partPriceController = TextEditingController();
-  final partCountController = TextEditingController(text: '1');
+  ValueNotifier<Set<int>> get expandedLaborPartListIdsNotifier =>
+      laborPart.expandedLaborPartListIdsNotifier;
 
-  final selectedLabor = ValueNotifier<LaborEntity?>(null);
-  final selectedLaborCostCenter = ValueNotifier<AllowableCostCenterEntity?>(
-      null);
+  TextEditingController get laborSearchController =>
+      laborPart.laborSearchController;
 
-  final selectedPart = ValueNotifier<PartEntity?>(null);
-  final selectedPartCostCenter = ValueNotifier<AllowableCostCenterEntity?>(
-      null);
-  final selectedPartMark = ValueNotifier<PartMarkEntity?>(null);
+  TextEditingController get laborPriceController =>
+      laborPart.laborPriceController;
 
-  final laborListNotifier = ValueNotifier<List<LaborEntity>>([]);
-  final isLaborLoading = ValueNotifier<bool>(false);
+  TextEditingController get partSearchController =>
+      laborPart.partSearchController;
 
+  TextEditingController get partPriceController =>
+      laborPart.partPriceController;
 
-  final laborCostCenterListNotifier = ValueNotifier<List<AllowableCostCenterEntity>>([]);
+  TextEditingController get partCountController =>
+      laborPart.partCountController;
 
-  final partListNotifier = ValueNotifier<List<PartEntity>>([]);
-  final isPartLoading = ValueNotifier<bool>(false);
+  ValueNotifier<LaborEntity?> get selectedLabor => laborPart.selectedLabor;
 
-  final partCostCenterListNotifier =
-  ValueNotifier<List<AllowableCostCenterEntity>>([]);
-  final partMarkListNotifier = ValueNotifier<List<PartMarkEntity>>([]);
+  ValueNotifier<AllowableCostCenterEntity?> get selectedLaborCostCenter =>
+      laborPart.selectedLaborCostCenter;
 
-  final selectedPartsNotifier =
-      ValueNotifier<List<EvaluationSelectedPartEntity>>([]);
+  ValueNotifier<PartEntity?> get selectedPart => laborPart.selectedPart;
 
-  bool get hasSelectedParts => selectedPartsNotifier.value.isNotEmpty;
+  ValueNotifier<AllowableCostCenterEntity?> get selectedPartCostCenter =>
+      laborPart.selectedPartCostCenter;
 
-  final selectedLaborsNotifier = ValueNotifier<
-      List<EvaluationSelectedLaborEntity>>([]);
+  ValueNotifier<PartMarkEntity?> get selectedPartMark =>
+      laborPart.selectedPartMark;
+
+  ValueNotifier<List<LaborEntity>> get laborListNotifier =>
+      laborPart.laborListNotifier;
+
+  ValueNotifier<bool> get isLaborLoading => laborPart.isLaborLoading;
+
+  ValueNotifier<
+      List<AllowableCostCenterEntity>> get laborCostCenterListNotifier =>
+      laborPart.laborCostCenterListNotifier;
+
+  ValueNotifier<List<PartEntity>> get partListNotifier =>
+      laborPart.partListNotifier;
+
+  ValueNotifier<bool> get isPartLoading => laborPart.isPartLoading;
+
+  ValueNotifier<
+      List<AllowableCostCenterEntity>> get partCostCenterListNotifier =>
+      laborPart.partCostCenterListNotifier;
+
+  ValueNotifier<List<PartMarkEntity>> get partMarkListNotifier =>
+      laborPart.partMarkListNotifier;
+
+  ValueNotifier<List<EvaluationSelectedPartEntity>> get selectedPartsNotifier =>
+      laborPart.selectedPartsNotifier;
+
+  ValueNotifier<
+      List<EvaluationSelectedLaborEntity>> get selectedLaborsNotifier =>
+      laborPart.selectedLaborsNotifier;
+
+  ValueNotifier<bool> get isPartMarkLoading => laborPart.isPartMarkLoading;
+
+  ValueNotifier<bool> get isPartPriceLoading => laborPart.isPartPriceLoading;
+
+  bool get hasSelectedParts => laborPart.hasSelectedParts;
+
+  bool get hasSelectedLabors => laborPart.hasSelectedLabors;
 
   List<EvaluationSelectedLaborEntity> get selectedLabors =>
-      selectedLaborsNotifier.value;
+      laborPart.selectedLabors;
 
+  void prepareCreateLaborAndPartSheet() => laborPart.prepareCreateSheet();
 
-  final isPartMarkLoading = ValueNotifier<bool>(false);
-  final isPartPriceLoading = ValueNotifier<bool>(false);
+  void onLaborSearchChanged(String query) =>
+      laborPart.onLaborSearchChanged(query);
 
-  void prepareCreateLaborAndPartSheet() {
-    addPartAndLaborSheetMode = AddPartAndLaborSheetMode.create;
-    editingOriginalLabor = null;
+  bool saveLaborAndPartsFromSheet() => laborPart.saveLaborAndPartsFromSheet();
 
-    _clearAddPartAndLaborSheetInputs();
-  }
+  void selectLabor(LaborEntity item) => laborPart.selectLabor(item);
 
-  void onLaborSearchChanged(String query) {
-    _laborSearchDebounce?.cancel();
+  void selectLaborCostCenter(AllowableCostCenterEntity item) =>
+      laborPart.selectLaborCostCenter(item);
 
-    final trimmedQuery = query.trim();
+  void onPartSearchChanged(String query) =>
+      laborPart.onPartSearchChanged(query);
 
-    if (trimmedQuery.length < 3) {
-      laborListNotifier.value = [];
-      isLaborLoading.value = false;
-      return;
-    }
-    isLaborLoading.value = true;
+  Future<void> selectPart(PartEntity item) => laborPart.selectPart(item);
 
-    _laborSearchDebounce = Timer(
-      const Duration(seconds: 1),
-          () => _searchLabors(trimmedQuery),
-    );
-  }
+  void selectPartCostCenter(AllowableCostCenterEntity item) =>
+      laborPart.selectPartCostCenter(item);
 
-  bool saveLaborAndPartsFromSheet() {
-    final selectedLaborItem = _buildSelectedLaborFromSheet();
+  Future<void> selectPartMark(PartMarkEntity item) =>
+      laborPart.selectPartMark(item);
 
-    if (selectedLaborItem == null) return false;
+  bool addAnotherPart() => laborPart.addAnotherPart();
 
-    switch (addPartAndLaborSheetMode) {
-      case AddPartAndLaborSheetMode.create:
-        _addSelectedLabor(selectedLaborItem);
-        break;
+  void removeSelectedPartAt(int index) => laborPart.removeSelectedPartAt(index);
 
-      case AddPartAndLaborSheetMode.editLabor:
-      case AddPartAndLaborSheetMode.addPartToLabor:
-        final updated = _replaceEditingLabor(selectedLaborItem);
+  void removeSelectedLabor(EvaluationSelectedLaborEntity labor) =>
+      laborPart.removeSelectedLabor(labor);
 
-        if (!updated) {
-          return false;
-        }
+  Future<bool> editSelectedLabor(EvaluationSelectedLaborEntity labor) =>
+      laborPart.editSelectedLabor(labor);
 
-        break;
-    }
+  Future<bool> addPartToSelectedLabor(EvaluationSelectedLaborEntity labor) =>
+      laborPart.addPartToSelectedLabor(labor);
 
-    _clearAddPartAndLaborSheetInputs();
+  void removePartFromSelectedLabor(
+      {required int laborIndex, required int partIndex}) =>
+      laborPart.removePartFromSelectedLabor(
+          laborIndex: laborIndex, partIndex: partIndex);
 
-    addPartAndLaborSheetMode = AddPartAndLaborSheetMode.create;
-    editingOriginalLabor = null;
+  void toggleSelectedLaborPartsVisibility(
+      EvaluationSelectedLaborEntity labor) =>
+      laborPart.toggleSelectedLaborPartsVisibility(labor);
 
-    return true;
-  }
-
-  void _addSelectedLabor(EvaluationSelectedLaborEntity labor) {
-    selectedLaborsNotifier.value = [
-      ...selectedLaborsNotifier.value,
-      labor,
-    ];
-  }
-
-  bool _replaceEditingLabor(EvaluationSelectedLaborEntity updatedLabor) {
-    final originalLabor = editingOriginalLabor;
-
-    if (originalLabor == null) {
-      _emitError('اجرت انتخاب‌شده برای بروزرسانی پیدا نشد');
-      return false;
-    }
-
-    var replaced = false;
-
-    final updatedItems = selectedLaborsNotifier.value.map((item) {
-      if (!replaced && _isSameLaborObject(item, originalLabor)) {
-        replaced = true;
-        return updatedLabor;
-      }
-
-      return item;
-    }).toList();
-
-    if (!replaced) {
-      _emitError('اجرت انتخاب‌شده برای بروزرسانی در لیست پیدا نشد');
-      return false;
-    }
-
-    selectedLaborsNotifier.value = updatedItems;
-    return true;
-  }
-
-  bool _isSameLaborObject(EvaluationSelectedLaborEntity first,
-      EvaluationSelectedLaborEntity second,) {
-    return identical(first, second) || first == second;
-  }
-
-
-
-  void _clearAddPartAndLaborSheetInputs() {
-    selectedLabor.value = null;
-    selectedLaborCostCenter.value = null;
-
-    laborSearchController.clear();
-    laborPriceController.clear();
-
-    laborListNotifier.value = [];
-    laborCostCenterListNotifier.value = [];
-
-    _clearCurrentPartInputs();
-
-    selectedPartsNotifier.value = [];
-  }
-
-  EvaluationSelectedLaborEntity? _buildSelectedLaborFromSheet() {
-    final labor = selectedLabor.value;
-    final costCenter = selectedLaborCostCenter.value;
-
-    if (labor == null || costCenter == null) {
-      _emitError('لطفاً نام اجرت و مرکز هزینه اجرت را انتخاب کنید');
-      return null;
-    }
-
-    final price = _parsePrice(laborPriceController.text);
-
-    return EvaluationSelectedLaborEntity(
-      labor: labor,
-      costCenter: costCenter,
-      price: price,
-      evaluationParts: List<EvaluationSelectedPartEntity>.from(
-        selectedPartsNotifier.value,
-      ),
-    );
-  }
-
-  Future<void> _searchLabors(String query) async {
-    isLaborLoading.value = true;
-
-    final items = await _fetchLaborList(query);
-
-    laborListNotifier.value = items;
-    isLaborLoading.value = false;
-  }
-
-  void _fillLaborSheetFromSelectedLabor(EvaluationSelectedLaborEntity labor,) {
-    selectedLabor.value = labor.labor;
-    laborSearchController.text = labor.labor.label;
-
-    final costCenters = labor.labor.allowableCostCenterList ?? [];
-
-    laborCostCenterListNotifier.value =
-    List<AllowableCostCenterEntity>.from(costCenters);
-
-    selectedLaborCostCenter.value = _findMatchingCostCenter(
-      costCenters: costCenters,
-      previousCostCenter: labor.costCenter,
-    );
-
-    laborPriceController.text = _formatPrice(
-      labor.price.toString(),
-    );
-  }
-
-  AllowableCostCenterEntity? _findMatchingCostCenter({
-    required List<AllowableCostCenterEntity> costCenters,
-    required AllowableCostCenterEntity previousCostCenter,
-  }) {
-    if (costCenters.isEmpty) return null;
-
-    final previousId = previousCostCenter.id;
-    final previousCode = previousCostCenter.code;
-
-    for (final item in costCenters) {
-      final sameId = previousId != null && item.id == previousId;
-      final sameCode = previousCode != null && item.code == previousCode;
-
-      if (sameId || sameCode) {
-        return item;
-      }
-    }
-
-    return _findDefaultCostCenter(costCenters);
-  }
-
-
-  Future<List<LaborEntity>> _fetchLaborList(String query) async {
-    final param = LaborListParamEntity(
-      serviceType: ServiceType.reliefService,
-      defectId: selectedRequest?.defectId ?? 0,
-      serviceRequestId: selectedRequest?.id,
-      hasSubscription: emdadgarServiceDetailEntity?.hasSubscription,
-      kilometer: int.tryParse(mainForm.kilometerController.text.trim()),
-      emdadServiceId: emdadgarServiceDetailEntity?.serviceId,
-      hasGaranty: emdadgarServiceDetailEntity?.hasGaranty,
-      searchText: query,
-      workOrderCode: emdadgarServiceDetailEntity?.defectInfoProblemOrEzharCode,
-    );
-
-    final result = await _getLaborListUseCase(param);
-
-    List<LaborEntity> items = [];
-
-    result.whenOrNull(
-      success: (data, failures, resultCode) {
-        items = List<LaborEntity>.from(data);
-      },
-      failure: (error, failures) {
-        _errorMessage = _fallbackError(failures ?? error.toString());
-        _emitError(_errorMessage);
-      },
-      connectionError: () {
-        _safeEmit(
-          const EvaluationAidServiceRequestState.connectionError(),
-        );
-      },
-    );
-
-    return items;
-  }
-
-  void selectLabor(LaborEntity item) {
-    selectedLabor.value = item;
-    laborSearchController.text = item.label;
-
-    final costCenters = item.allowableCostCenterList ?? [];
-
-    laborCostCenterListNotifier.value = List<AllowableCostCenterEntity>.from(costCenters);
-
-    selectedLaborCostCenter.value = _findDefaultCostCenter(costCenters);
-    _setLaborPriceByCostCenter();
-  }
-
-  void _setLaborPriceByCostCenter() {
-    final labor = selectedLabor.value;
-    final costCenter = selectedLaborCostCenter.value;
-
-    if (labor == null || costCenter == null) {
-      laborPriceController.clear();
-      return;
-    }
-
-    final price = _resolveLaborPrice(
-      labor: labor,
-      costCenter: costCenter,
-    );
-
-    laborPriceController.text = _formatPrice(price);
-  }
-
-  String _resolveLaborPrice({
-    required LaborEntity labor,
-    required AllowableCostCenterEntity costCenter,
-  }) {
-    switch (costCenter.code) {
-      case 'Company':
-      case 'Garanty':
-        return labor.companyPrice ?? '0';
-
-      case 'Customer':
-      default:
-        return labor.customerPrice ?? '0';
-    }
-  }
-
-  void onPartSearchChanged(String query) {
-    _partSearchDebounce?.cancel();
-
-    final trimmedQuery = query.trim();
-
-    if (trimmedQuery.length < 3) {
-      partListNotifier.value = [];
-      isPartLoading.value = false;
-      return;
-    }
-
-    isPartLoading.value = true;
-    _partSearchDebounce = Timer(
-      const Duration(seconds: 1),
-          () => _searchParts(trimmedQuery),
-    );
-  }
-
-  Future<void> _searchParts(String query) async {
-    isPartLoading.value = true;
-
-    final param = PartListParamEntity(
-      serviceType: ServiceType.reliefService,
-      defectId: selectedRequest?.defectId ?? 0,
-      serviceRequestId: selectedRequest?.id,
-      hasSubscription: emdadgarServiceDetailEntity?.hasSubscription,
-      kilometer: lastEvaluationEntity?.lastEvaluation?.customerKilometer,
-      emdadServiceId: emdadgarServiceDetailEntity?.serviceId,
-      hasGaranty: emdadgarServiceDetailEntity?.hasGaranty,
-      searchText: query,
-      workOrderCode: emdadgarServiceDetailEntity?.defectInfoProblemOrEzharCode,
-      laborGroupId: selectedLabor.value?.laborGroupId,
-      laborId: selectedLabor.value?.id,
-    );
-    final result = await _getPartListUseCase(param);
-    result.whenOrNull(
-      success: (data, failures, resultCode) {
-        partListNotifier.value = List<PartEntity>.from(data);
-      },
-      failure: (error, failures) {
-        _errorMessage = _fallbackError(failures ?? error.toString());
-        _emitError(_errorMessage);
-      },
-      connectionError: () =>
-          _safeEmit(const EvaluationAidServiceRequestState.connectionError()),
-    );
-
-    isPartLoading.value = false;
-  }
-
-  Future<void> selectPart(PartEntity item) async {
-    selectedPart.value = item;
-    partSearchController.text = item.label;
-
-    final costCenters = item.allowableCostCenterList ?? [];
-
-    partCostCenterListNotifier.value = costCenters;
-    partCostCenterListNotifier.value =
-    List<AllowableCostCenterEntity>.from(costCenters);
-
-    selectedPartCostCenter.value = _findDefaultCostCenter(costCenters);
-
-    partMarkListNotifier.value = [];
-
-    selectedPartMark.value = null;
-    partPriceController.clear();
-
-    await _getPartMarks(item);
-  }
-
-  void selectPartCostCenter(AllowableCostCenterEntity item) {
-    selectedPartCostCenter.value = item;
-  }
-
-  Future<void> _getPartMarks(PartEntity part) async {
-    isPartMarkLoading.value = true;
-
-    final param = PartMarksParamEntity(
-      serviceType: ServiceType.reliefService,
-      serviceRequestId: selectedRequest?.id,
-      defectId: selectedRequest?.defectId ?? 0,
-      serial: part.serial ?? '',
-      partGroupId: part.partGroupId ?? 0,
-    );
-
-    final result = await _getPartMarkListUseCase(param);
-
-    result.whenOrNull(
-      success: (data, failures, resultCode) {
-        partMarkListNotifier.value = List<PartMarkEntity>.from(data);
-      },
-      failure: (error, failures) {
-        partMarkListNotifier.value = [];
-
-        _errorMessage = _fallbackError(failures ?? error.toString());
-        _emitError(_errorMessage);
-      },
-      connectionError: () {
-        partMarkListNotifier.value = [];
-
-        _safeEmit(
-          const EvaluationAidServiceRequestState.connectionError(),
-        );
-      },
-    );
-
-    isPartMarkLoading.value = false;
-  }
-
-  Future<void> selectPartMark(PartMarkEntity item) async {
-    selectedPartMark.value = item;
-    await _getPartPrice();
-  }
-
-  Future<void> _getPartPrice() async {
-    final part = selectedPart.value;
-    final mark = selectedPartMark.value;
-
-    if (part == null || mark == null) return;
-
-    isPartPriceLoading.value = true;
-
-    final param = PartPriceParamEntity(
-      serial: selectedPart.value?.serial ?? '',
-      mark: mark.mark,
-    );
-
-    final result = await _getPartPriceUseCase(param);
-
-
-    result.whenOrNull(
-      success: (data, failures, resultCode) {
-        partPriceController.text = _formatPrice(
-          data.price?.toString() ?? '0',
-        );
-      },
-      failure: (error, failures) {
-        _errorMessage = _fallbackError(failures ?? error.toString());
-        _emitError(_errorMessage);
-      },
-      connectionError: () =>
-          _safeEmit(const EvaluationAidServiceRequestState.connectionError()),
-    );
-
-    isPartPriceLoading.value = false;
-  }
-
-
-
-  void addAnotherPart() {
-    final selectedPartItem = _buildSelectedPartEntity();
-
-    if (selectedPartItem == null) {
-      return;
-    }
-    selectedPartsNotifier.value = [
-      ...selectedPartsNotifier.value,
-      selectedPartItem,
-    ];
-
-    _clearCurrentPartInputs();
-  }
-
-  void removeSelectedPartAt(int index) {
-    final items = [...selectedPartsNotifier.value];
-
-    if (index < 0 || index >= items.length) return;
-
-    items.removeAt(index);
-    selectedPartsNotifier.value = items;
-  }
-
-  EvaluationSelectedPartEntity? _buildSelectedPartEntity() {
-    final part = selectedPart.value;
-    final mark = selectedPartMark.value;
-    final costCenter = selectedPartCostCenter.value;
-
-    if (part == null || mark == null || costCenter == null) {
-      return null;
-    }
-
-    return EvaluationSelectedPartEntity(
-      part: part,
-      mark: mark,
-      costCenter: costCenter,
-      count: int.tryParse(partCountController.text) ?? 1,
-      price: _parsePrice(partPriceController.text),
-    );
-  }
-
-  int _parsePrice(String value) {
-    final normalized = value.replaceAll(',', '').trim();
-    return int.tryParse(normalized) ?? 0;
-  }
-
-  void _clearCurrentPartInputs() {
-    selectedPart.value = null;
-    selectedPartCostCenter.value = null;
-    selectedPartMark.value = null;
-
-    partSearchController.clear();
-    partPriceController.clear();
-    partCountController.text = '1';
-
-    partListNotifier.value = [];
-
-    partCostCenterListNotifier.value = [];
-    partCostCenterListNotifier.value = [];
-
-    partMarkListNotifier.value.clear();
-    partMarkListNotifier.value = [];
-
-    isPartLoading.value = false;
-    isPartMarkLoading.value = false;
-    isPartPriceLoading.value = false;
-  }
-
-  void removeSelectedLabor(EvaluationSelectedLaborEntity labor) {
-    selectedLaborsNotifier.value = selectedLaborsNotifier.value
-        .where((item) => !_isSameLaborObject(item, labor))
-        .toList();
-
-    final laborId = labor.laborId;
-
-    if (laborId != null) {
-      final expandedIds = {...expandedLaborPartListIdsNotifier.value};
-      expandedIds.remove(laborId);
-      expandedLaborPartListIdsNotifier.value = expandedIds;
-    }
-  }
-
-  Future<bool> editSelectedLabor(EvaluationSelectedLaborEntity labor,) async {
-    addPartAndLaborSheetMode = AddPartAndLaborSheetMode.editLabor;
-    editingOriginalLabor = labor;
-
-    _clearAddPartAndLaborSheetInputs();
-
-    _fillLaborSheetFromSelectedLabor(labor);
-
-    selectedPartsNotifier.value = List<EvaluationSelectedPartEntity>.from(
-      labor.evaluationParts,
-    );
-
-    return true;
-  }
-
-  Future<bool> addPartToSelectedLabor(
-      EvaluationSelectedLaborEntity labor,) async {
-    addPartAndLaborSheetMode = AddPartAndLaborSheetMode.addPartToLabor;
-    editingOriginalLabor = labor;
-
-    _clearAddPartAndLaborSheetInputs();
-
-    _fillLaborSheetFromSelectedLabor(labor);
-
-    selectedPartsNotifier.value = List<EvaluationSelectedPartEntity>.from(
-      labor.evaluationParts,
-    );
-
-    _clearCurrentPartInputs();
-
-    return true;
-  }
-
-  void removePartFromSelectedLabor({
-    required int laborIndex,
-    required int partIndex,
-  }) {
-    final labors = [...selectedLaborsNotifier.value];
-
-    if (laborIndex < 0 || laborIndex >= labors.length) return;
-
-    final labor = labors[laborIndex];
-    final parts = [...labor.evaluationParts];
-
-    if (partIndex < 0 || partIndex >= parts.length) return;
-
-    parts.removeAt(partIndex);
-
-    labors[laborIndex] = labor.copyWith(
-      evaluationParts: parts,
-    );
-
-    selectedLaborsNotifier.value = labors;
-  }
-
-  void toggleSelectedLaborPartsVisibility(EvaluationSelectedLaborEntity labor) {
-    final laborId = labor.laborId;
-    if (laborId == null) return;
-
-    final current = {...expandedLaborPartListIdsNotifier.value};
-
-    if (current.contains(laborId)) {
-      current.remove(laborId);
-    } else {
-      current.add(laborId);
-    }
-
-    expandedLaborPartListIdsNotifier.value = current;
-  }
-
-  AllowableCostCenterEntity? _findDefaultCostCenter(
-      List<AllowableCostCenterEntity> items,) {
-    if (items.isEmpty) return null;
-
-    return items.firstWhere(
-          (item) => item.selected == true,
-      orElse: () => items.first,
-    );
-  }
-
-  String _formatPrice(String value) {
-    if (value.isEmpty) return '';
-
-    final digits = value.replaceAll(RegExp(r'[^0-9]'), '');
-
-    if (digits.isEmpty) return '';
-
-    return digits.replaceAllMapped(
-      RegExp(r'\B(?=(\d{3})+(?!\d))'),
-          (match) => ',',
-    );
-  }
-
-  void selectLaborCostCenter(AllowableCostCenterEntity item) {
-    selectedLaborCostCenter.value = item;
-    _setLaborPriceByCostCenter();
-  }
 
   Future<void> getRepresentationList() async {
     transportForm.setRepresentationLoading(true);
@@ -791,7 +283,7 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     transportForm.fillFromLastEvaluation(
       acceptanceCode: lastEvaluation.acceptanceCode,
       transportDistanceKm: lastEvaluation.distanceHamlCustomer,
-      endWorkDate: lastEvaluation.endWorkDate,
+      endWorkDate: transportForm.formattedEndWorkDateTimeForServer,
       representationValue: lastEvaluation.id,
     );
   }
@@ -950,20 +442,28 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
 
 
   Future<void> submitEvaluationForAidService() async {
-    if (selectedLaborsNotifier.value.isEmpty) {
+    if (!laborPart.hasSelectedLabors) {
       _emitError('حداقل یک اجرت باید انتخاب شود');
       return;
     }
 
     _safeEmit(const EvaluationAidServiceRequestState.submitLoading());
 
-    final param = _buildEvaluationSubmitEntity();
+    final param = AidServiceEvaluationSubmitParamBuilder.build(
+      selectedRequest: selectedRequest,
+      emdadgarInfo: emdadgarInfo,
+      lastEvaluationEntity: lastEvaluationEntity,
+      emdadgarServiceDetailEntity: emdadgarServiceDetailEntity,
+      selectedServiceCategory: selectedServiceCategory.value,
+      mainForm: mainForm,
+      transportForm: transportForm,
+      selectedLabors: laborPart.selectedLabors,
+    );
 
     final result = await _submitEvaluationForAidServiceUseCase(param);
 
     result.whenOrNull(
       success: (data, failures, resultCode) {
-        /*PostEvaluationResponseEntity*/
         _safeEmit(const EvaluationAidServiceRequestState.submitSuccess());
       },
       failure: (error, failures) {
@@ -971,70 +471,8 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
         _emitError(_errorMessage);
       },
       connectionError: () {
-        _safeEmit(
-          const EvaluationAidServiceRequestState.connectionError(),
-        );
+        _safeEmit(const EvaluationAidServiceRequestState.connectionError());
       },
-    );
-  }
-
-  AidServiceEvaluationSubmitParamEntity _buildEvaluationSubmitEntity() {
-    return AidServiceEvaluationSubmitParamEntity(
-      serviceRequestId: selectedRequest?.id,
-      serviceType: selectedRequest?.serviceType?.value,
-      emdadgarId: emdadgarInfo?.id,
-      serviceCategoryId: selectedServiceCategory.value?.id ??
-          emdadgarServiceDetailEntity?.serviceCategoryId,
-      customerKilometer: int.tryParse(mainForm.kilometerController.text),
-      distanceToCustomer: int.tryParse(
-          mainForm.customerDistanceController.text),
-      assignDate: JalaliDateHelper.formatServerDateTime(
-          mainForm.assignDateTime),
-      arriveDate: JalaliDateHelper.formatServerDateTime(
-          mainForm.arriveDateTime),
-      //todo create endDateTime
-      //endWorkDate: JalaliDateHelper.formatServerIsoDateTime(form.endDateTime),
-      confirmValidation: false,
-      defectInfoId: selectedRequest?.defectId,
-      description: mainForm.descriptionController.text.trim(),
-      servicesAndLaborsAndPartsEvaluationPayload:
-      ServicesAndLaborsAndPartsEvaluationEntity(
-        evaluationServices: [
-          _buildEvaluationServiceEntity(),
-        ],
-      ),
-    );
-  }
-
-  EvaluationServiceEntity _buildEvaluationServiceEntity() {
-    return EvaluationServiceEntity(
-      serviceTypeId: selectedRequest?.serviceType?.value,
-      serviceTypeTitle: selectedRequest?.serviceType?.label,
-      serviceType: selectedRequest?.serviceType,
-      serviceId: emdadgarServiceDetailEntity?.serviceId,
-      serviceTitle: emdadgarServiceDetailEntity?.serviceTitle,
-      serviceCode: emdadgarServiceDetailEntity?.serviceCode,
-      serviceCategoryId: selectedServiceCategory.value?.id ??
-          emdadgarServiceDetailEntity?.serviceCategoryId,
-      serviceCategoryTitle: selectedServiceCategory.value?.title ??
-          emdadgarServiceDetailEntity?.serviceCategoryTitle,
-      serviceCategoryCode: selectedServiceCategory.value?.code ??
-          emdadgarServiceDetailEntity?.serviceCategoryCode,
-      defectInfoId: selectedRequest?.defectId,
-      defectInfoTitle: emdadgarServiceDetailEntity?.defectInfoTitle,
-      defectInfoProblemOrEzharCode:
-      emdadgarServiceDetailEntity?.defectInfoProblemOrEzharCode,
-
-      hasGaranty: emdadgarServiceDetailEntity?.hasGaranty ?? false,
-      hasSubscription: emdadgarServiceDetailEntity?.hasSubscription ?? false,
-      isSubscribedByNationalCode:
-      emdadgarServiceDetailEntity?.isSubscribedByNationalCode ?? false,
-      limitationDescription:
-      emdadgarServiceDetailEntity?.limitationDescription ?? '',
-      subscriptionId: lastEvaluationEntity?.lastEvaluation
-          ?.servicesAndLaborsAndPartsEvaluationPayload?.evaluationServices
-          ?.first.subscriptionId,
-      evaluationLabors: selectedLaborsNotifier.value,
     );
   }
 
@@ -1195,30 +633,382 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
 
   @override
   Future<void> close() {
-    selectedLaborsNotifier.dispose();
-    selectedPartsNotifier.dispose();
-    laborListNotifier.dispose();
-    laborCostCenterListNotifier.dispose();
-    isLaborLoading.dispose();
-    partListNotifier.dispose();
-    partCostCenterListNotifier.dispose();
-    partMarkListNotifier.dispose();
-    _laborSearchDebounce?.cancel();
-    _partSearchDebounce?.cancel();
+    laborPart.dispose();
+    mainForm.dispose();
+    transportForm.dispose();
+    selectedDefect.dispose();
+    selectedServiceCategory.dispose();
+    return super.close();
+  }
+}
+
+
+/*
+///fake cubit
+class EvaluationAidServiceRequestCubit
+    extends Cubit<EvaluationAidServiceRequestState> {
+  EvaluationAidServiceRequestCubit()
+      : super(const EvaluationAidServiceRequestState.idle());
+
+  // ---------------------------------------------------------------------------
+  // Main form
+  // ---------------------------------------------------------------------------
+  ReliefRequestEntity? selectedRequest;
+  final mainForm = EvaluationMainFormController();
+
+  final transportForm =
+  EvaluationTransportInformationFormController<RepresentationEntity>();
+
+  // ---------------------------------------------------------------------------
+  // Fake dropdown/state data
+  // ---------------------------------------------------------------------------
+
+  List<DefectEntity> defectList = <DefectEntity>[];
+  final selectedDefect = ValueNotifier<DefectEntity?>(null);
+
+  final List<ServiceCategoryEntity> serviceCategoryList = [];
+  final selectedServiceCategory = ValueNotifier<ServiceCategoryEntity?>(null);
+
+  bool isBottomSheetOpen = false;
+
+  VoidCallback? _retryAction;
+
+  // ---------------------------------------------------------------------------
+  // Labor/Part fake stubs
+  // These are kept only because UI probably reads them.
+  // They do nothing in this fake version.
+  // ---------------------------------------------------------------------------
+
+  AddPartAndLaborSheetMode addPartAndLaborSheetMode =
+      AddPartAndLaborSheetMode.create;
+
+  EvaluationSelectedLaborEntity? editingOriginalLabor;
+
+  final expandedLaborPartListIdsNotifier = ValueNotifier<Set<int>>({});
+
+  final laborSearchController = TextEditingController();
+  final laborPriceController = TextEditingController();
+
+  final partSearchController = TextEditingController();
+  final partPriceController = TextEditingController();
+  final partCountController = TextEditingController(text: '1');
+
+  final selectedLabor = ValueNotifier<LaborEntity?>(null);
+  final selectedLaborCostCenter =
+  ValueNotifier<AllowableCostCenterEntity?>(null);
+
+  final selectedPart = ValueNotifier<PartEntity?>(null);
+  final selectedPartCostCenter =
+  ValueNotifier<AllowableCostCenterEntity?>(null);
+  final selectedPartMark = ValueNotifier<PartMarkEntity?>(null);
+
+  final laborListNotifier = ValueNotifier<List<LaborEntity>>([]);
+  final isLaborLoading = ValueNotifier<bool>(false);
+
+  final laborCostCenterListNotifier =
+  ValueNotifier<List<AllowableCostCenterEntity>>([]);
+
+  final partListNotifier = ValueNotifier<List<PartEntity>>([]);
+  final isPartLoading = ValueNotifier<bool>(false);
+
+  final partCostCenterListNotifier =
+  ValueNotifier<List<AllowableCostCenterEntity>>([]);
+
+  final partMarkListNotifier = ValueNotifier<List<PartMarkEntity>>([]);
+
+  final selectedPartsNotifier =
+  ValueNotifier<List<EvaluationSelectedPartEntity>>([]);
+
+  final selectedLaborsNotifier =
+  ValueNotifier<List<EvaluationSelectedLaborEntity>>([]);
+
+  final isPartMarkLoading = ValueNotifier<bool>(false);
+  final isPartPriceLoading = ValueNotifier<bool>(false);
+
+  bool get hasSelectedParts => selectedPartsNotifier.value.isNotEmpty;
+
+  bool get hasSelectedLabors => selectedLaborsNotifier.value.isNotEmpty;
+
+  List<EvaluationSelectedLaborEntity> get selectedLabors =>
+      selectedLaborsNotifier.value;
+  String? _errorMessage;
+  EmdadgarInfoEntity? emdadgarInfo;
+  ResponseLastEvaluationEntity? lastEvaluationEntity;
+  EmdadgarServiceDetailEntity? emdadgarServiceDetailEntity;
+  // ---------------------------------------------------------------------------
+  // Fake init
+  // ---------------------------------------------------------------------------
+
+  Future<void> init() async {
+    _retryAction = init;
+
+    _safeEmit(const EvaluationAidServiceRequestState.loading());
+
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+
+    _fillFakeMainForm();
+    _fillFakeServiceCategories();
+
+    _safeEmit(const EvaluationAidServiceRequestState.loaded());
+  }
+
+  void _fillFakeMainForm() {
+    mainForm.kilometerController.text = '58400';
+    mainForm.customerDistanceController.text = '12';
+    mainForm.descriptionController.text = '';
+
+    mainForm.setServiceTitle('ارزیابی درخواست امدادی - تست UI');
+  }
+
+  void _fillFakeServiceCategories() {
+    serviceCategoryList
+      ..clear()
+      ..addAll([
+        _fakeCategory(
+          id: 1,
+          title: 'بازدید',
+          code: 'VISIT',
+        ),
+        _fakeCategory(
+          id: 21,
+          title: 'حمل',
+          code: 'HAML',
+        ),
+        _fakeCategory(
+          id: 8,
+          title: 'تعمیر',
+          code: 'REPAIR_ON_PLACE',
+        ),
+        _fakeCategory(
+          id: 10,
+          title: 'تعمیر ویژه',
+          code: 'REPAIR_ON_PLACE',
+        ),
+      ]);
+
+    selectedServiceCategory.value = serviceCategoryList.first;
+  }
+  ServiceCategoryEntity _fakeCategory({
+    required int id,
+    required String title,
+    required String code,
+  }) {
+    return ServiceCategoryEntity(
+      id: id,
+      title: title,
+      code: code,
+    );
+  }
+
+  // ---------------------------------------------------------------------------
+  // Dropdown handlers
+  // ---------------------------------------------------------------------------
+
+  Future<void> setSelectedServiceCategory(
+      ServiceCategoryEntity category,
+      ) async {
+    selectedServiceCategory.value = category;
+
+    switch (category.evaluationViewType) {
+      case EvaluationServiceCategoryViewType.transport:
+        mainForm.setServiceTitle('سرویس حمل - تست UI');
+        _fillFakeTransportForm();
+        break;
+
+      case EvaluationServiceCategoryViewType.laborAndPart:
+        mainForm.setServiceTitle('تعمیر - تست UI');
+        _clearFakeTransportForm();
+        break;
+
+      case EvaluationServiceCategoryViewType.none:
+        mainForm.setServiceTitle(category.title ?? 'بازدید - تست UI');
+        _clearFakeTransportForm();
+        break;
+    }
+
+    _safeEmit(const EvaluationAidServiceRequestState.loaded());
+  }
+
+  Future<void> selectDefect(DefectEntity defect) async {
+    selectedDefect.value = defect;
+    _safeEmit(const EvaluationAidServiceRequestState.loaded());
+  }
+
+  // ---------------------------------------------------------------------------
+  // Transport fake
+  // ---------------------------------------------------------------------------
+
+  Future<void> getRepresentationList() async {
+    // In fake mode, do nothing.
+    // This method only exists because UI may call it.
+  }
+
+  void fillTransportFormFromLastEvaluation() {
+    _fillFakeTransportForm();
+  }
+
+  void _fillFakeTransportForm() {
+    transportForm.fillFromLastEvaluation(
+      acceptanceCode: 34,
+      transportDistanceKm: 18,
+      endWorkDate: null,
+      representationValue: null,
+    );
+  }
+
+  void _clearFakeTransportForm() {
+    // اگر transportForm متد clear دارد، اینجا صدا بزن.
+    // فعلاً عمداً خالی گذاشته شده تا با ساختار فعلی‌ات conflict ندهد.
+  }
+
+  // ---------------------------------------------------------------------------
+  // Labor/Part fake methods
+  // ---------------------------------------------------------------------------
+
+  void prepareCreateLaborAndPartSheet() {}
+
+  void onLaborSearchChanged(String query) {}
+
+  bool saveLaborAndPartsFromSheet() => true;
+
+  void selectLabor(LaborEntity item) {
+    selectedLabor.value = item;
+  }
+
+  void selectLaborCostCenter(AllowableCostCenterEntity item) {
+    selectedLaborCostCenter.value = item;
+  }
+
+  void onPartSearchChanged(String query) {}
+
+  Future<void> selectPart(PartEntity item) async {
+    selectedPart.value = item;
+  }
+
+  void selectPartCostCenter(AllowableCostCenterEntity item) {
+    selectedPartCostCenter.value = item;
+  }
+
+  Future<void> selectPartMark(PartMarkEntity item) async {
+    selectedPartMark.value = item;
+  }
+
+  bool addAnotherPart() => true;
+
+  void removeSelectedPartAt(int index) {}
+
+  void removeSelectedLabor(EvaluationSelectedLaborEntity labor) {}
+
+  Future<bool> editSelectedLabor(EvaluationSelectedLaborEntity labor) async {
+    editingOriginalLabor = labor;
+    addPartAndLaborSheetMode = AddPartAndLaborSheetMode.editLabor;
+    return true;
+  }
+
+  Future<bool> addPartToSelectedLabor(
+      EvaluationSelectedLaborEntity labor,
+      ) async {
+    editingOriginalLabor = labor;
+    addPartAndLaborSheetMode = AddPartAndLaborSheetMode.addPartToLabor;
+    return true;
+  }
+
+  void removePartFromSelectedLabor({
+    required int laborIndex,
+    required int partIndex,
+  }) {}
+
+  void toggleSelectedLaborPartsVisibility(
+      EvaluationSelectedLaborEntity labor,
+      ) {}
+
+  // ---------------------------------------------------------------------------
+  // Submit fake
+  // ---------------------------------------------------------------------------
+
+  Future<void> submitEvaluationForAidService() async {
+    _safeEmit(const EvaluationAidServiceRequestState.submitLoading());
+
+    await Future<void>.delayed(const Duration(milliseconds: 300));
+
+    _safeEmit(const EvaluationAidServiceRequestState.submitSuccess());
+  }
+
+  // ---------------------------------------------------------------------------
+  // Bottom sheet state
+  // ---------------------------------------------------------------------------
+
+  void markBottomSheetOpen() {
+    isBottomSheetOpen = true;
+  }
+
+  void markBottomSheetClosed() {
+    isBottomSheetOpen = false;
+  }
+
+  // ---------------------------------------------------------------------------
+  // Retry/Error
+  // ---------------------------------------------------------------------------
+
+  void retryLastAction() => _retryAction?.call();
+
+  void _emitError([String? message]) {
+    _safeEmit(
+      EvaluationAidServiceRequestState.error(
+        message: BottomSheetMessageModel(
+          title: 'خطا',
+          message: message ?? 'خطای تستی در نسخه Fake Cubit',
+        ),
+      ),
+    );
+  }
+
+  void _safeEmit(EvaluationAidServiceRequestState state) {
+    if (!isClosed) emit(state);
+  }
+
+  // ---------------------------------------------------------------------------
+  // Dispose
+  // ---------------------------------------------------------------------------
+
+  @override
+  Future<void> close() {
+    selectedDefect.dispose();
+    selectedServiceCategory.dispose();
+
+    expandedLaborPartListIdsNotifier.dispose();
+
     laborSearchController.dispose();
     laborPriceController.dispose();
     partSearchController.dispose();
     partPriceController.dispose();
     partCountController.dispose();
+
     selectedLabor.dispose();
     selectedLaborCostCenter.dispose();
+
     selectedPart.dispose();
     selectedPartCostCenter.dispose();
     selectedPartMark.dispose();
+
+    laborListNotifier.dispose();
+    isLaborLoading.dispose();
+    laborCostCenterListNotifier.dispose();
+
+    partListNotifier.dispose();
     isPartLoading.dispose();
+    partCostCenterListNotifier.dispose();
+    partMarkListNotifier.dispose();
+
+    selectedPartsNotifier.dispose();
+    selectedLaborsNotifier.dispose();
+
     isPartMarkLoading.dispose();
     isPartPriceLoading.dispose();
+
+    mainForm.dispose();
     transportForm.dispose();
+
     return super.close();
   }
-}
+}*/
