@@ -163,7 +163,10 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
     rescuerNameController.dispose();
     cityController.dispose();
     provinceController.dispose();
+
     _selectedStatusNotifier.dispose();
+    selectedTimePeriodNotifier.dispose();
+
     return super.close();
   }
 }

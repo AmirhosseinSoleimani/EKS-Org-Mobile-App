@@ -433,4 +433,18 @@ class FollowUpRegisterCubit extends Cubit<FollowUpRegisterState> {
     }
     return 'درخواست شما با خطا مواجه شد، لطفا با پشتیبانی تماس بگیرید';
   }
+
+  @override
+  Future<void> close() {
+    announcementDiffNotifier.dispose();
+    filteredStatusItems.dispose();
+    selectedSource.dispose();
+    selectedFollowUpStatusType.dispose();
+
+    announcementTimeController.dispose();
+    announcementDateController.dispose();
+    descriptionController.dispose();
+
+    return super.close();
+  }
 }

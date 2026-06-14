@@ -324,4 +324,12 @@ class ChangeHomeServiceRequestAddressCubit
     }
     return 'درخواست شما با خطا مواجه شد، لطفا با پشتیبانی تماس بگیرید';
   }
+
+  @override
+  Future<void> close() {
+    selectedProvince.dispose();
+    addressController.dispose();
+
+    return super.close();
+  }
 }

@@ -277,5 +277,26 @@ class CompleteUrgentRequestCubit extends Cubit<CompleteUrgentRequestState> {
     if (msg?.trim().isNotEmpty == true) return msg!;
     return 'درخواست شما با خطا مواجه شد، لطفا با پشتیبانی تماس بگیرید';
   }
+
+  @override
+  Future<void> close() {
+    selectedCoverCars.dispose();
+    selectedColorCar.dispose();
+    genderNotifier.dispose();
+
+    isGettingReferenceCar.dispose();
+    isGettingCustomerInfo.dispose();
+
+    chassisNumberController.dispose();
+    engineNumberController.dispose();
+    buildYearController.dispose();
+    kilometerController.dispose();
+    licensePlateController.dispose();
+    nationalCodeController.dispose();
+    nameController.dispose();
+    familyNameController.dispose();
+
+    return super.close();
+  }
 }
 
