@@ -275,8 +275,7 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
 
     result.whenOrNull(
       success: (data, _, _) {
-        reasonListNotifier.value.clear();
-        reasonListNotifier.value.addAll(data);
+        reasonListNotifier.value = List<CancelRequestReasonEntity>.from(data);
 
         if (action == ServiceAssignAction.nonCooperation) {
           _safeEmit(
@@ -309,7 +308,7 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
     if (emdadgarListResult != FetchResultType.success) {
       return emdadgarListResult;
     }
-    print(selectedRequest?.hasEmdadGar);
+
     if (selectedRequest?.hasEmdadGar ?? false) {
       selectedEmdadgar =  emdadgarList.first;
       final start = LocationParamEntity(
@@ -699,7 +698,9 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
     aidDistanceKmController.dispose();
     agencyNameController.dispose();
     agencyCodeController.dispose();
-
+    descriptionController.dispose();
+    reasonListNotifier.dispose();
+    selectedCancelReason.dispose();
     return super.close();
   }
 }
