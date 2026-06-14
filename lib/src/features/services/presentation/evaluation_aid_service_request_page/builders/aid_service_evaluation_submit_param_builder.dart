@@ -28,7 +28,7 @@ class AidServiceEvaluationSubmitParamBuilder {
     required List<EvaluationSelectedLaborEntity> selectedLabors,
   }) {
     final isTransport =
-        selectedServiceCategory.evaluationViewType ==
+        selectedServiceCategory?.evaluationViewType ==
         EvaluationServiceCategoryViewType.transport;
 
     return AidServiceEvaluationSubmitParamEntity(
