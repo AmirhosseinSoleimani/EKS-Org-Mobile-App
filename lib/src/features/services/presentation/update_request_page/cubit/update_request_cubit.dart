@@ -33,15 +33,16 @@ part 'update_request_state.dart';
 
 @injectable
 class UpdateRequestCubit extends Cubit<UpdateRequestState> {
-  UpdateRequestCubit(this._fetchSelectedRequestItemUseCase,
-      this._getReliefRequestByIdUseCase,
-      this._getEmdadgarInfoUseCase,
-      this._getProvinceWithCityListUseCase,
-      this._getLocationDataUseCase,
-      this._getDefectsListUseCase,
-      this._getAidServicesListUseCase,
-      this._updateServiceRequestUseCase,)
-      : super(const UpdateRequestState.idle());
+  UpdateRequestCubit(
+    this._fetchSelectedRequestItemUseCase,
+    this._getReliefRequestByIdUseCase,
+    this._getEmdadgarInfoUseCase,
+    this._getProvinceWithCityListUseCase,
+    this._getLocationDataUseCase,
+    this._getDefectsListUseCase,
+    this._getAidServicesListUseCase,
+    this._updateServiceRequestUseCase,
+  ) : super(const UpdateRequestState.idle());
 
   final formKey = GlobalKey<FormState>();
   final validationNotifier = ValueNotifier<bool>(false);
@@ -77,13 +78,11 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
   final TextEditingController addressController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
 
-
   String? _errorMessage;
   VoidCallback? _retryAction;
 
-
- Future<void> init() async {
-   _retryAction = init;
+  Future<void> init() async {
+    _retryAction = init;
     final result = await _initializeData();
 
     switch (result) {
@@ -151,7 +150,7 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
   Future<FetchResultType> _fetchSelectedServiceRequest() async {
     try {
       selectedRequest =
-      (await _fetchSelectedRequestItemUseCase.call() as ReliefRequestEntity);
+          await _fetchSelectedRequestItemUseCase.call() as ReliefRequestEntity;
       return FetchResultType.success;
     } catch (_) {
       _errorMessage = _fallbackError();
@@ -226,7 +225,6 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
     return fetchResult;
   }
 
-
   Future<FetchResultType> _fetchProvinceList() async {
     final result = await _getProvinceWithCityListUseCase();
     FetchResultType fetchResult = FetchResultType.failure;
@@ -235,7 +233,11 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
       success: (data, _, _) {
         provinceList = data;
         selectedProvince.value = provinceList
-            .where((element) => element.provinceId == selectedRequest?.id)
+            .where(
+              (element) =>
+                  element.provinceId == selectedRequest?.provinceId &&
+                  element.cityId == selectedRequest?.cityId,
+            )
             .cast<ProvinceEntity?>()
             .firstOrNull;
 
@@ -315,12 +317,13 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
 
   Future<FetchResultType> _fetchAidServicesList() async {
     final param = ServicesParamEntity(
-        serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
-        carModelId: selectedRequest?.carModelId ?? 0,
-        carInfoGuid: selectedRequest?.carInfoGuid ?? '',
-        defectId: selectedRequest?.defectId ?? 0,
-        nationalCode: selectedRequest?.nationalCode ?? '',
-        kilometer: selectedRequest?.kilometer ?? 0);
+      serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
+      carModelId: selectedRequest?.carModelId ?? 0,
+      carInfoGuid: selectedRequest?.carInfoGuid ?? '',
+      defectId: selectedRequest?.defectId ?? 0,
+      nationalCode: selectedRequest?.nationalCode ?? '',
+      kilometer: selectedRequest?.kilometer ?? 0,
+    );
 
     final result = await _getAidServicesListUseCase(param);
 
@@ -331,8 +334,9 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
         serviceResponseEntity = data;
 
         selectedService.value = serviceResponseEntity?.emdadServices
-            .where((element) =>
-        element.serviceId == selectedRequest?.emdadServiceId)
+            .where(
+              (element) => element.serviceId == selectedRequest?.emdadServiceId,
+            )
             .cast<EmdadServiceEntity?>()
             .firstOrNull;
 
@@ -358,7 +362,7 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
 
   Future<void> updateServiceRequest() async {
     _retryAction = updateServiceRequest;
-   validationNotifier.value = true;
+    validationNotifier.value = true;
     final param = UpdateServiceRequestParamEntity(
       id: selectedRequest?.id,
       latitude: selectedLocation.value?.latitude,
@@ -378,7 +382,7 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
 
     result.when(
       success: (data, _, _) {
-        _safeEmit(UpdateRequestState.submitSuccess());
+        _safeEmit(const UpdateRequestState.submitSuccess());
       },
       failure: (_, msg) {
         _emitError(_fallbackError(msg));
@@ -389,14 +393,11 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
       },
     );
 
-   validationNotifier.value = false;
-
+    validationNotifier.value = false;
   }
 
   String _fallbackError([String? msg]) =>
-      msg
-          ?.trim()
-          .isNotEmpty == true
+      msg?.trim().isNotEmpty == true
           ? msg!
           : 'درخواست شما با خطا مواجه شد، لطفا با پشتیبانی تماس بگیرید';
 
@@ -424,8 +425,9 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
   }
 
   void filterServiceByisSelectable() {
-     filteredServices.value = (serviceResponseEntity?.emdadServices ?? [])
-         .where((e) => e.isSelectable).toList();
+    filteredServices.value = (serviceResponseEntity?.emdadServices ?? [])
+        .where((e) => e.isSelectable)
+        .toList();
   }
 
   void setSelectedService(EmdadServiceEntity service) {
@@ -435,6 +437,7 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
   void setSelectedDefect(DefectEntity defect) {
     selectedDefect.value = defect;
   }
+
   void setSelectedProvince(ProvinceEntity province) {
     selectedProvince.value = province;
   }
@@ -445,11 +448,28 @@ class UpdateRequestCubit extends Cubit<UpdateRequestState> {
     _fetchLocationData();
   }
 
-
   void _safeEmit(UpdateRequestState state) {
     if (!isClosed) emit(state);
   }
 
-
   void retryLastAction() => _retryAction?.call();
+
+  @override
+  Future<void> close() {
+    validationNotifier.dispose();
+    selectedDefect.dispose();
+    selectedProvince.dispose();
+    showAllServices.dispose();
+    selectedService.dispose();
+    filteredServices.dispose();
+    locationData.dispose();
+    selectedLocation.dispose();
+
+    licensePlateController.dispose();
+    clientPhoneNumberController.dispose();
+    addressController.dispose();
+    descriptionController.dispose();
+
+    return super.close();
+  }
 }
