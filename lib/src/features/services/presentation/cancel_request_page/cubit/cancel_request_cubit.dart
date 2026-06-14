@@ -582,4 +582,29 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
 
   void retryLastAction() => _retryAction?.call();
 
+  @override
+  Future<void> close() {
+    validationNotifier.dispose();
+
+    cancelRequestReasonNotifier.dispose();
+    kilometerReadOnlyListenable.dispose();
+    selectedCancelType.dispose();
+    selectedCancelReason.dispose();
+    showAllServices.dispose();
+
+    dispatchDateController.dispose();
+    dispatchTimeController.dispose();
+    cancelDateController.dispose();
+    cancelTimeController.dispose();
+
+    isGettingDistanceKilometer.dispose();
+    showDateTimeSection.dispose();
+    showSecondDropDown.dispose();
+
+    kilometerController.dispose();
+    descriptionController.dispose();
+
+    return super.close();
+  }
+
 }
