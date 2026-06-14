@@ -152,91 +152,8 @@ class ChangeHomeServiceRequestAddressCubit
     );
     return fetchResult;
   }
+
   Future<FetchResultType> _fetchProvinceList() async {
-    provinceList = <ProvinceEntity>[
-      const ProvinceEntity(
-        provinceId: 25,
-        provinceCode: 25,
-        cityId: 2502,
-        cityCode: 2502,
-        title: 'قم/دستجرد',
-        cityName: 'دستجرد',
-        latitude: 34.6399443,
-        longitude: 50.8759419,
-      ),
-      const ProvinceEntity(
-        provinceId: 25,
-        provinceCode: 25,
-        cityId: 2504,
-        cityCode: 2504,
-        title: 'قم/سلفچکان',
-        cityName: 'سلفچکان',
-        latitude: 34.4766738,
-        longitude: 50.4553687,
-      ),
-      const ProvinceEntity(
-        provinceId: 25,
-        provinceCode: 25,
-        cityId: 2505,
-        cityCode: 2505,
-        title: 'قم/جعفریه',
-        cityName: 'جعفریه',
-        latitude: 34.774489,
-        longitude: 50.514622,
-      ),
-      const ProvinceEntity(
-        provinceId: 26,
-        provinceCode: 26,
-        cityId: 2601,
-        cityCode: 2601,
-        title: 'کردستان/سنندج',
-        cityName: 'سنندج',
-        latitude: 35.3029422,
-        longitude: 47.0026312,
-      ),
-      const ProvinceEntity(
-        provinceId: 26,
-        provinceCode: 26,
-        cityId: 2602,
-        cityCode: 2602,
-        title: 'کردستان/قروه',
-        cityName: 'قروه',
-        latitude: 35.165218,
-        longitude: 47.799809,
-      ),
-      const ProvinceEntity(
-        provinceId: 26,
-        provinceCode: 26,
-        cityId: 2604,
-        cityCode: 2604,
-        title: 'کردستان/مریوان',
-        cityName: 'مریوان',
-        latitude: 35.5195216,
-        longitude: 46.1840209,
-      ),
-      const ProvinceEntity(
-        provinceId: 16,
-        provinceCode: 16,
-        cityId: 1601,
-        cityCode: 1601,
-        title: 'تهران/تهران',
-        cityName: 'تهران',
-        latitude: 35.702937,
-        longitude: 51.400449,
-      ),
-    ];
-
-    selectedProvince.value = provinceList
-        .where((element) => element.provinceId == selectedRequest?.id)
-        .cast<ProvinceEntity?>()
-        .firstOrNull;
-
-    return FetchResultType.success;
-  }
-
-
-
-/*  Future<FetchResultType> _fetchProvinceList() async {
     final result = await _getProvinceWithCityListUseCase();
     FetchResultType fetchResult = FetchResultType.failure;
 
@@ -262,7 +179,7 @@ class ChangeHomeServiceRequestAddressCubit
       },
     );
     return fetchResult;
-  }*/
+  }
 
   Future<void> changeRequestAddress() async {
     _safeEmit(ChangeHomeServiceRequestAddressState.submitLoading());
