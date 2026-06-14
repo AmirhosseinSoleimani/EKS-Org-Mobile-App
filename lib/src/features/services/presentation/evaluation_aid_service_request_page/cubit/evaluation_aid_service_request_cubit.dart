@@ -458,6 +458,7 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
       mainForm: mainForm,
       transportForm: transportForm,
       selectedLabors: laborPart.selectedLabors,
+      selectedDefect: selectedDefect.value,
     );
 
     final result = await _submitEvaluationForAidServiceUseCase(param);

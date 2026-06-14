@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/defect_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/emdadgar_service_detail_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/evaluation_service_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/last_evaluation_entity.dart';
@@ -26,6 +27,7 @@ class AidServiceEvaluationSubmitParamBuilder {
     required EvaluationTransportInformationFormController<RepresentationEntity>
     transportForm,
     required List<EvaluationSelectedLaborEntity> selectedLabors,
+    required DefectEntity? selectedDefect,
   }) {
     final isTransport =
         selectedServiceCategory?.evaluationViewType ==
@@ -72,7 +74,7 @@ class AidServiceEvaluationSubmitParamBuilder {
       )
           : null,*/
       confirmValidation: false,
-      defectInfoId: selectedRequest?.defectId,
+      defectInfoId: selectedDefect?.id ?? selectedRequest?.defectId,
       description: mainForm.descriptionController.text.trim(),
 
       servicesAndLaborsAndPartsEvaluationPayload:
@@ -84,6 +86,7 @@ class AidServiceEvaluationSubmitParamBuilder {
                 emdadgarServiceDetailEntity: emdadgarServiceDetailEntity,
                 selectedServiceCategory: selectedServiceCategory,
                 selectedLabors: selectedLabors,
+                selectedDefect: selectedDefect,
               ),
             ],
           ),
@@ -96,6 +99,7 @@ class AidServiceEvaluationSubmitParamBuilder {
     required EmdadgarServiceDetailEntity? emdadgarServiceDetailEntity,
     required ServiceCategoryEntity? selectedServiceCategory,
     required List<EvaluationSelectedLaborEntity> selectedLabors,
+    required DefectEntity? selectedDefect,
   }) {
     return EvaluationServiceEntity(
       serviceTypeId: selectedRequest?.serviceType?.value,
@@ -115,8 +119,7 @@ class AidServiceEvaluationSubmitParamBuilder {
       serviceCategoryCode:
           selectedServiceCategory?.code ??
           emdadgarServiceDetailEntity?.serviceCategoryCode,
-
-      defectInfoId: selectedRequest?.defectId,
+      defectInfoId: selectedDefect?.id ?? selectedRequest?.defectId,
       defectInfoTitle: emdadgarServiceDetailEntity?.defectInfoTitle,
       defectInfoProblemOrEzharCode:
           emdadgarServiceDetailEntity?.defectInfoProblemOrEzharCode,
