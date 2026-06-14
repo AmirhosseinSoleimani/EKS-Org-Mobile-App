@@ -572,19 +572,23 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
 
     return fetchResult;
   }
-
   Future<FetchResultType> getServiceDetailEvaluation() async {
     _retryAction = getServiceDetailEvaluation;
 
     final param = ServiceDetailForEvaluationParamEntity(
       serviceType: ServiceType.reliefService,
       aidServiceRequestId: selectedRequest?.id,
-      emdadgarDefectInfoId: selectedRequest?.defectId ?? 0,
-      emdadgarServiceCategoryId: selectedRequest?.emdadServiceCategoryId ?? 0,
+      emdadgarDefectInfoId:
+      selectedDefect.value?.id ?? selectedRequest?.defectId ?? 0,
+      emdadgarServiceCategoryId:
+      selectedServiceCategory.value?.id ??
+          selectedRequest?.emdadServiceCategoryId ??
+          0,
       serviceRequestId: selectedRequest?.id ?? 0,
       evaluationCustomerKilometer:
       lastEvaluationEntity?.lastEvaluation?.customerKilometer,
     );
+
     final result = await _getServiceDetailEvaluationUseCase(param);
 
     late FetchResultType fetchResult = FetchResultType.failure;
