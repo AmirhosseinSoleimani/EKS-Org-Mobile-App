@@ -14,6 +14,8 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/control_inf
 import 'package:eks_sana_plus_org/src/features/services/presentation/emdadgar_invoice_page/emdadgar_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/evaluation_aid_service_request_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_history/evaluation_history_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_home_service_request_page/cubit/evaluation_home_service_request_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_home_service_request_page/evaluation_home_service_request_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/followup_register_page/follow_up_register_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/home_service_request_list_page/home_service_request_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/non_cooperation_page/non_cooperation_page.dart';
@@ -48,7 +50,7 @@ class Routes {
 
     return GoRouter(
       navigatorKey: parentNavigatorKey,
-      initialLocation: EvaluationAidServiceRequestPage.path,
+      initialLocation: EvaluationHomeServiceRequestPage.path,
       refreshListenable: startupGuard,
       observers: [
         routeObserver
@@ -274,13 +276,21 @@ class Routes {
                 state: state,
               ),
         ),
-
         GoRoute(
           path: EvaluationAidServiceRequestPage.path,
           name: EvaluationAidServiceRequestPage.name,
           pageBuilder: (context, state) =>
               getPage(
                 child: const EvaluationAidServiceRequestPage(),
+                state: state,
+              ),
+        ),
+        GoRoute(
+          path: EvaluationHomeServiceRequestPage.path,
+          name: EvaluationHomeServiceRequestPage.name,
+          pageBuilder: (context, state) =>
+              getPage(
+                child: const EvaluationHomeServiceRequestPage(),
                 state: state,
               ),
         ),

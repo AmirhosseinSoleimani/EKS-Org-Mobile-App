@@ -13,6 +13,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/control_inf
 import 'package:eks_sana_plus_org/src/features/services/presentation/emdadgar_invoice_page/emdadgar_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/evaluation_aid_service_request_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_history/evaluation_history_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_home_service_request_page/evaluation_home_service_request_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/followup_register_page/follow_up_register_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/non_cooperation_page/non_cooperation_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/online_map_page/online_map_page.dart';
@@ -122,11 +123,17 @@ enum RequestCardOperation {
     color: Color(0xFF864a1e),
     route: FollowUpRegisterPage.path,
   ),
-  factorRegister(
+  aidServiceFactorRegister(
     label: 'ثبت فاکتور',
     icon: Icons.insert_drive_file_rounded,
     color: Color(0xFF3699FF),
     route: EvaluationAidServiceRequestPage.path,
+  ),
+  homeServiceFactorRegister(
+    label: 'ثبت فاکتور',
+    icon: Icons.insert_drive_file_rounded,
+    color: Color(0xFF3699FF),
+    route: EvaluationHomeServiceRequestPage.path,
   ),
   assignAndCancelEmdadgar(
     label: 'تخصیص',
@@ -187,8 +194,14 @@ extension OperationItemVisibility on RequestCardOperation {
       }
       return false;
 
-      case RequestCardOperation.factorRegister:
+      case RequestCardOperation.aidServiceFactorRegister:
         if(type == ServiceType.reliefService){
+          return true;
+        }
+        return false;
+
+        case RequestCardOperation.homeServiceFactorRegister:
+        if(type == ServiceType.homeService){
           return true;
         }
         return false;

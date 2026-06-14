@@ -4,12 +4,12 @@ import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/last
 class LastEvaluationParamEntity {
   final int? serviceRequestId;
   final int? emdadgarId;
-  final ServiceType? serviceType;
+  final ServiceType serviceType;
 
   const LastEvaluationParamEntity({
     this.serviceRequestId,
     this.emdadgarId,
-    this.serviceType,
+    required this.serviceType,
   });
 
   LastEvaluationParamEntity copyWith({

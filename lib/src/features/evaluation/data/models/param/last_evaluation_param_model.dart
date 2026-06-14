@@ -6,7 +6,7 @@ class LastEvaluationParamModel extends LastEvaluationParamEntity {
   const LastEvaluationParamModel({
     super.serviceRequestId,
     super.emdadgarId,
-    super.serviceType,
+    required super.serviceType,
   });
 
   factory LastEvaluationParamModel.fromJson(Map<String, dynamic> json) {
