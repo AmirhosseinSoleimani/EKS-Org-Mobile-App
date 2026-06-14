@@ -144,6 +144,7 @@ class MapCubit extends Cubit<MapState> {
   Future<void> close() async {
     try {
       _searchDebouncer.dispose();
+      _moveThrottle.dispose();
     } catch (_) {}
 
     try {
@@ -154,7 +155,7 @@ class MapCubit extends Cubit<MapState> {
       searchController.dispose();
       addressController.dispose();
       findCurrentLocationLoading.dispose();
-      _mapMoveSub.cancel();
+      await _mapMoveSub.cancel();
     } catch (_) {}
 
     return super.close();
