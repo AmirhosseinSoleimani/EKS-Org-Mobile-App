@@ -237,8 +237,16 @@ class EvaluationHistoryCubit extends Cubit<EvaluationHistoryState> {
 
   }
 
-
   void _safeEmit(EvaluationHistoryState state) {
     if (!isClosed) emit(state);
   }
+
+  @override
+  Future<void> close() {
+    selectedEvaluationIsisAcceptedNotifier.dispose();
+
+    return super.close();
+  }
 }
+
+
