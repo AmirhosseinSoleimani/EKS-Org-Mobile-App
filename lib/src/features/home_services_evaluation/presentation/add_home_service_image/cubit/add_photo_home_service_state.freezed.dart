@@ -258,12 +258,12 @@ $AddPhotoHomeServiceErrorStateCopyWith<AddPhotoHomeServiceErrorState> get copyWi
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddPhotoHomeServiceErrorState&&const DeepCollectionEquality().equals(other.dialogDataModel, dialogDataModel));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddPhotoHomeServiceErrorState&&(identical(other.dialogDataModel, dialogDataModel) || other.dialogDataModel == dialogDataModel));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(dialogDataModel));
+int get hashCode => Object.hash(runtimeType,dialogDataModel);
 
 @override
 String toString() {
@@ -295,9 +295,9 @@ class _$AddPhotoHomeServiceErrorStateCopyWithImpl<$Res>
 
 /// Create a copy of AddPhotoHomeServiceState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? dialogDataModel = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? dialogDataModel = null,}) {
   return _then(AddPhotoHomeServiceErrorState(
-dialogDataModel: freezed == dialogDataModel ? _self.dialogDataModel : dialogDataModel // ignore: cast_nullable_to_non_nullable
+dialogDataModel: null == dialogDataModel ? _self.dialogDataModel : dialogDataModel // ignore: cast_nullable_to_non_nullable
 as DialogDataModel,
   ));
 }
@@ -452,12 +452,12 @@ $AddPhotoHomeServiceEvaluationStateCopyWith<AddPhotoHomeServiceEvaluationState> 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddPhotoHomeServiceEvaluationState&&const DeepCollectionEquality().equals(other.dialogDataModel, dialogDataModel));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is AddPhotoHomeServiceEvaluationState&&(identical(other.dialogDataModel, dialogDataModel) || other.dialogDataModel == dialogDataModel));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(dialogDataModel));
+int get hashCode => Object.hash(runtimeType,dialogDataModel);
 
 @override
 String toString() {
@@ -489,9 +489,9 @@ class _$AddPhotoHomeServiceEvaluationStateCopyWithImpl<$Res>
 
 /// Create a copy of AddPhotoHomeServiceState
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') $Res call({Object? dialogDataModel = freezed,}) {
+@pragma('vm:prefer-inline') $Res call({Object? dialogDataModel = null,}) {
   return _then(AddPhotoHomeServiceEvaluationState(
-dialogDataModel: freezed == dialogDataModel ? _self.dialogDataModel : dialogDataModel // ignore: cast_nullable_to_non_nullable
+dialogDataModel: null == dialogDataModel ? _self.dialogDataModel : dialogDataModel // ignore: cast_nullable_to_non_nullable
 as DialogDataModel,
   ));
 }

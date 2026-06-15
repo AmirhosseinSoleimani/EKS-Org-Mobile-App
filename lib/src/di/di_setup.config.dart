@@ -139,6 +139,8 @@ import '../features/home_services_evaluation/domain/usecase/set_last_evaluation_
     as _i570;
 import '../features/home_services_evaluation/presentation/add_home_service_image/cubit/add_photo_home_service_cubit.dart'
     as _i124;
+import '../features/home_services_evaluation/presentation/cubit/home_service_evaluation_cubit.dart'
+    as _i101;
 import '../features/home_services_evaluation/presentation/evaluation_draft.dart'
     as _i823;
 import '../features/home_services_evaluation/presentation/home_service_evaluation_first_step/cubit/home_service_evaluation_first_step_cubit.dart'
@@ -441,6 +443,9 @@ _i174.GetIt $initGetIt(
   gh.factory<_i757.AppCubit>(() => _i757.AppCubit());
   gh.factory<_i336.BottomNavigationBarCubit>(
     () => _i336.BottomNavigationBarCubit(),
+  );
+  gh.factory<_i101.HomeServiceEvaluationCubit>(
+    () => _i101.HomeServiceEvaluationCubit(),
   );
   gh.factory<_i866.EvaluationHomeServiceRequestCubit>(
     () => _i866.EvaluationHomeServiceRequestCubit(),
