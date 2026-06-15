@@ -3,8 +3,8 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/e
 
 class ServiceRequestModel extends ServiceRequestEntity {
   ServiceRequestModel({
+   required super.serviceType,
     super.serviceRequestId,
-    super.serviceType,
     super.serviceCategoryId,
     super.kilometer,
     super.planningId,
@@ -19,7 +19,7 @@ class ServiceRequestModel extends ServiceRequestEntity {
   Map<String, dynamic> toJson() {
     return {
       'serviceRequestId': serviceRequestId,
-      'serviceType': serviceType,
+      'serviceType': serviceType.value,
       'serviceCategoryId': serviceCategoryId,
       'kilometer': kilometer,
       'planningId': planningId,

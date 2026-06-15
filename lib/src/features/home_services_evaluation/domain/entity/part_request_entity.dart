@@ -1,7 +1,9 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
+
 import '../../data/model/part_request_model.dart';
 
 class PartRequestEntity {
-  int? serviceType;
+  ServiceType serviceType;
   int? serviceRequestId;
   int? emdadServiceId;
   int? emdadProductId;
@@ -16,6 +18,22 @@ class PartRequestEntity {
   int? carModelId;
   int? carTipId;
 
+  PartRequestEntity({
+    required this.serviceType,
+    this.serviceRequestId,
+    this.laborId,
+    this.hasSubscription,
+    this.hasGaranty,
+    this.kilometer,
+    this.laborGroupId,
+    this.searchText,
+    this.workOrderCode,
+    this.emdadServiceId,
+    this.emdadProductId,
+    this.guarantyStartDate,
+    this.carModelId,
+    this.carTipId,
+  });
   PartRequestModel toModel() {
     return PartRequestModel(
       serviceRequestId: serviceRequestId,
@@ -34,21 +52,4 @@ class PartRequestEntity {
       carTipId: carTipId,
     );
   }
-
-  PartRequestEntity({
-    this.serviceRequestId,
-    this.laborId,
-    this.serviceType,
-    this.hasSubscription,
-    this.hasGaranty,
-    this.kilometer,
-    this.laborGroupId,
-    this.searchText,
-    this.workOrderCode,
-    this.emdadServiceId,
-    this.emdadProductId,
-    this.guarantyStartDate,
-    this.carModelId,
-    this.carTipId,
-  });
 }

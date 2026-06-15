@@ -1,8 +1,9 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/labor_request_model.dart';
 
 class LaborRequestEntity {
   int? serviceRequestId;
-  int? serviceType;
+  ServiceType serviceType;
   int? emdadServiceId;
   int? emdadProductId;
   String? workOrderCode;
@@ -15,8 +16,8 @@ class LaborRequestEntity {
   int? carTipId;
 
   LaborRequestEntity({
+    required this.serviceType,
     this.serviceRequestId,
-    this.serviceType,
     this.emdadServiceId,
     this.emdadProductId,
     this.workOrderCode,
@@ -31,7 +32,7 @@ class LaborRequestEntity {
 
   LaborRequestEntity copyWith({
     int? serviceRequestId,
-    int? serviceType,
+    ServiceType? serviceType,
     int? emdadServiceId,
     int? emdadProductId,
     String? workOrderCode,

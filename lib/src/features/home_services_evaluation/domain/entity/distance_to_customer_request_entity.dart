@@ -1,15 +1,16 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/distance_to_customer_request_model.dart';
 
 class DistanceToCustomerRequestEntity {
   int? serviceRequestId;
   bool? needHaml;
-  int? serviceType;
+  ServiceType serviceType;
   bool? needCustomerDistance;
 
   DistanceToCustomerRequestEntity({
+    required this.serviceType,
     this.serviceRequestId,
     this.needHaml,
-    this.serviceType,
     this.needCustomerDistance,
   });
 

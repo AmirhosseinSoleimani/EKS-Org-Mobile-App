@@ -1,58 +1,44 @@
-import 'home_service_labor_selection_view_model.dart';
-import 'selected_home_service_part_view_model.dart';
+import 'home_service_part_selection_view_model.dart';
 
-class SelectedHomeServiceLaborViewModel {
+class SelectedHomeServicePartViewModel {
   final int id;
   final String title;
   final bool isRequired;
-  final List<SelectedHomeServicePartViewModel> parts;
 
-  const SelectedHomeServiceLaborViewModel({
+  const SelectedHomeServicePartViewModel({
     required this.id,
     required this.title,
     this.isRequired = false,
-    this.parts = const [],
   });
 
-  bool get hasParts => parts.isNotEmpty;
-
-  factory SelectedHomeServiceLaborViewModel.fromSelection(
-      HomeServiceLaborSelectionViewModel labor,
+  factory SelectedHomeServicePartViewModel.fromSelection(
+      HomeServicePartSelectionViewModel part,
       ) {
-    final selectedParts = labor.parts
-        .where((part) => part.isRequired || part.isSelected)
-        .map(SelectedHomeServicePartViewModel.fromSelection)
-        .toList();
-
-    return SelectedHomeServiceLaborViewModel(
-      id: labor.id,
-      title: labor.title,
-      isRequired: labor.isRequired,
-      parts: selectedParts,
+    return SelectedHomeServicePartViewModel(
+      id: part.id,
+      title: part.title,
+      isRequired: part.isRequired,
     );
   }
 
-  HomeServiceLaborSelectionViewModel toSelection() {
-    return HomeServiceLaborSelectionViewModel(
+  HomeServicePartSelectionViewModel toSelection() {
+    return HomeServicePartSelectionViewModel(
       id: id,
       title: title,
       isRequired: isRequired,
       isSelected: true,
-      parts: parts.map((part) => part.toSelection()).toList(),
     );
   }
 
-  SelectedHomeServiceLaborViewModel copyWith({
+  SelectedHomeServicePartViewModel copyWith({
     int? id,
     String? title,
     bool? isRequired,
-    List<SelectedHomeServicePartViewModel>? parts,
   }) {
-    return SelectedHomeServiceLaborViewModel(
+    return SelectedHomeServicePartViewModel(
       id: id ?? this.id,
       title: title ?? this.title,
       isRequired: isRequired ?? this.isRequired,
-      parts: parts ?? this.parts,
     );
   }
 }

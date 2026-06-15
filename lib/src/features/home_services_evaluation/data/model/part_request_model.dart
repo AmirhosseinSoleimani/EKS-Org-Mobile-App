@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/e
 
 class PartRequestModel extends PartRequestEntity {
   PartRequestModel({
+    required super.serviceType,
     super.emdadProductId,
     super.emdadServiceId,
     super.hasGaranty,
@@ -11,7 +12,6 @@ class PartRequestModel extends PartRequestEntity {
     super.laborId,
     super.searchText,
     super.serviceRequestId,
-    super.serviceType,
     super.workOrderCode,
     super.guarantyStartDate,
     super.carModelId,
@@ -29,7 +29,7 @@ class PartRequestModel extends PartRequestEntity {
     map['kilometer'] = kilometer;
     map['laborGroupId'] = laborGroupId;
     map['searchText'] = searchText;
-    map['serviceType'] = serviceType;
+    map['serviceType'] = serviceType.value;
     map['workOrderCode'] = workOrderCode;
     map['garantyStartDate'] = guarantyStartDate;
     map['carModelId'] = carModelId;

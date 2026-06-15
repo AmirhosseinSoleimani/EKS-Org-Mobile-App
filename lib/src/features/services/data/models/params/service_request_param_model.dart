@@ -2,8 +2,8 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/s
 
 class ServiceRequestParamModel extends ServiceRequestParamEntity {
   const ServiceRequestParamModel({
+    required super.serviceType,
     super.serviceRequestId,
-    super.serviceType,
   });
 
   factory ServiceRequestParamModel.fromJson(Map<String, dynamic> json) {

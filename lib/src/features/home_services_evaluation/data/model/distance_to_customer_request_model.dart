@@ -4,7 +4,7 @@ class DistanceToCustomerRequestModel extends DistanceToCustomerRequestEntity {
   DistanceToCustomerRequestModel({
     super.needHaml,
     super.serviceRequestId,
-    super.serviceType,
+    required super.serviceType,
     super.needCustomerDistance,
   });
 
@@ -12,7 +12,7 @@ class DistanceToCustomerRequestModel extends DistanceToCustomerRequestEntity {
     final map = <String, dynamic>{};
     map['needHaml'] = needHaml;
     map['ServiceRequestId'] = serviceRequestId;
-    map['serviceType'] = serviceType;
+    map['serviceType'] = serviceType.value;
     map['needCustomerDistance'] = needCustomerDistance;
     return map;
   }

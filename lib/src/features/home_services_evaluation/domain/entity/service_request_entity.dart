@@ -1,9 +1,10 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/service_request_model.dart';
 
 class ServiceRequestEntity {
   ServiceRequestEntity({
+    required this.serviceType,
     this.serviceRequestId,
-    this.serviceType,
     this.serviceCategoryId,
     this.kilometer,
     this.planningId,
@@ -16,7 +17,7 @@ class ServiceRequestEntity {
   });
 
   final int? serviceRequestId;
-  final int? serviceType;
+  final ServiceType serviceType;
   final int? serviceCategoryId;
   final int? kilometer;
   final int? planningId;
@@ -29,7 +30,7 @@ class ServiceRequestEntity {
 
   ServiceRequestEntity copyWith({
     int? serviceRequestId,
-    int? serviceType,
+    ServiceType? serviceType,
     int? serviceCategoryId,
     int? kilometer,
     int? planningId,
