@@ -25,7 +25,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import '../widgets/date_time_picker_section.dart';
-import '../widgets/submit_cancel_buttons.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/submit_cancel_buttons.dart';
 
 class CancelRequestPage extends StatelessWidget {
   static const path = "/cancel-request-page";

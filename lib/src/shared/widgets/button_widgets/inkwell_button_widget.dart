@@ -19,12 +19,14 @@ class InkwellButtonWidget extends StatelessWidget {
     this.loadingColor,
     this.suffixIcon,
     this.prefixIcon,
+    this.borderStyle,
   });
 
   final VoidCallback? onTap;
   final Color? backgroundColor;
   final Color? splashColor;
   final Color? borderColor;
+  final BorderStyle? borderStyle;
   final Color? titleColor;
   final String? title;
   final bool? showLoading;
@@ -61,6 +63,7 @@ class InkwellButtonWidget extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: borderRadius,
         side: BorderSide(
+          style: borderStyle ??  BorderStyle.solid,
           color: borderColor ?? Colors.transparent,
           width: 1,
         ),

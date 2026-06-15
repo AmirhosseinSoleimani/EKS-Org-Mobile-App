@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/mod
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/emdadgar_evaluation_accept_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/evaluation_post_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/evaluation_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/home_service_package_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/kilometer_from_image_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/labor_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/ocr_configuration_kilometer_response_model.dart';
@@ -14,6 +15,7 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/mod
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/service_response_model.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 import 'package:injectable/injectable.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/service_category_response_model.dart';
 import 'package:retrofit/retrofit.dart';
 
 part 'home_service_evaluation_service.g.dart';
@@ -76,4 +78,12 @@ abstract class HomeServiceEvaluationService {
   @POST('/api/HomeServiceEvaluation/GetOCRConfigurationForKilometer')
   Future<BaseSingleResponse<OcrConfigurationKilometerResponseModel?>>
   fetchOcrConfiguration(@Body() Map<String, dynamic> body);
+
+  @GET('/api/HomeServiceEvaluation/GetServiceCategories')
+  Future<BaseListResponse<ServiceCategoryResponseModel>> getServiceCategories(
+      @Queries() Map<String, dynamic> query,
+      );
+
+  @GET('api/HomeServiceRequest/GetHomeServicePackage')
+  Future<BaseListResponse<HomeServicePackageResponseModel>> getHomeServicePackage(@Queries() Map<String, dynamic> query);
 }

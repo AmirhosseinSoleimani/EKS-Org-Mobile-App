@@ -3,6 +3,8 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/e
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/distance_to_customer_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/emdadgar_evaluation_accept_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/evaluation_post_response_entity.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/home_service_package_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/home_service_package_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/kilometer_from_image_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/kilometer_from_image_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/labor_request_entity.dart';
@@ -21,6 +23,8 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/e
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/service_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/service_response_entity.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/service_category_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/service_category_response_entity.dart';
 
 abstract class HomeServiceEvaluationRepository {
   Future<ApiResult<EvaluationResponseEntity?>> getLastEvaluationHomeServices(
@@ -78,6 +82,12 @@ abstract class HomeServiceEvaluationRepository {
 
   Future<ApiResult<OcrConfigurationKilometerResponseEntity?>>
   fetchOcrConfiguration(OcrConfigurationKilometerRequestEntity? entity);
+
+  Future<ApiResult<List<ServiceCategoryResponseEntity?>>> getServiceCategories(
+      ServiceCategoryRequestEntity entity);
+
+
+  Future<ApiResult<List<HomeServicePackageResponseEntity?>>> getHomeServicePackage(HomeServicePackageRequestEntity? entity);
 
   void dispose();
 }

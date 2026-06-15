@@ -113,6 +113,8 @@ import '../features/home_services_evaluation/domain/usecase/get_active_service_r
     as _i226;
 import '../features/home_services_evaluation/domain/usecase/get_distance_to_customer_home_service_usecase.dart'
     as _i1026;
+import '../features/home_services_evaluation/domain/usecase/get_home_service_package_use_case.dart'
+    as _i1015;
 import '../features/home_services_evaluation/domain/usecase/get_labor_usecase.dart'
     as _i902;
 import '../features/home_services_evaluation/domain/usecase/get_last_evaluation_home_service_usecase.dart'
@@ -127,6 +129,8 @@ import '../features/home_services_evaluation/domain/usecase/get_part_usecase.dar
     as _i990;
 import '../features/home_services_evaluation/domain/usecase/get_reusable_price_usecase.dart'
     as _i91;
+import '../features/home_services_evaluation/domain/usecase/get_service_categories_usecase.dart'
+    as _i915;
 import '../features/home_services_evaluation/domain/usecase/get_services_usecase.dart'
     as _i978;
 import '../features/home_services_evaluation/domain/usecase/post_evaluation_accept_usecase.dart'
@@ -137,26 +141,10 @@ import '../features/home_services_evaluation/domain/usecase/set_active_service_r
     as _i497;
 import '../features/home_services_evaluation/domain/usecase/set_last_evaluation_usecase.dart'
     as _i570;
-import '../features/home_services_evaluation/presentation/add_home_service_image/cubit/add_photo_home_service_cubit.dart'
-    as _i124;
 import '../features/home_services_evaluation/presentation/cubit/home_service_evaluation_cubit.dart'
     as _i101;
 import '../features/home_services_evaluation/presentation/evaluation_draft.dart'
     as _i823;
-import '../features/home_services_evaluation/presentation/home_service_evaluation_first_step/cubit/home_service_evaluation_first_step_cubit.dart'
-    as _i317;
-import '../features/home_services_evaluation/presentation/home_service_evaluation_packages/cubit/home_service_evaluation_packages_cubit.dart'
-    as _i337;
-import '../features/home_services_evaluation/presentation/home_service_evaluation_second_step/cubit/home_service_evaluation_second_step_cubit.dart'
-    as _i648;
-import '../features/home_services_evaluation/presentation/home_service_kilometer_image/cubit/home_service_kilometer_image_cubit.dart'
-    as _i264;
-import '../features/home_services_evaluation/presentation/home_service_part/cubit/home_service_part_cubit.dart'
-    as _i551;
-import '../features/home_services_evaluation/presentation/labors_and_parts/cubit/labors_and_parts_cubit.dart'
-    as _i664;
-import '../features/home_services_evaluation/presentation/service_list/cubit/service_list_cubit.dart'
-    as _i379;
 import '../features/indicator_report/data/data_sources/indicator_report_data_source.dart'
     as _i691;
 import '../features/indicator_report/data/data_sources/indicator_report_data_source_impl.dart'
@@ -443,9 +431,6 @@ _i174.GetIt $initGetIt(
   gh.factory<_i757.AppCubit>(() => _i757.AppCubit());
   gh.factory<_i336.BottomNavigationBarCubit>(
     () => _i336.BottomNavigationBarCubit(),
-  );
-  gh.factory<_i101.HomeServiceEvaluationCubit>(
-    () => _i101.HomeServiceEvaluationCubit(),
   );
   gh.factory<_i866.EvaluationHomeServiceRequestCubit>(
     () => _i866.EvaluationHomeServiceRequestCubit(),
@@ -944,12 +929,6 @@ _i174.GetIt $initGetIt(
       gh<_i786.GetEmdadgarInfoUseCase>(),
     ),
   );
-  gh.factory<_i264.HomeServiceKilometerImageCubit>(
-    () => _i264.HomeServiceKilometerImageCubit(
-      gh<_i1042.FetchKilometerFromImageUseCase>(),
-      gh<_i823.EvaluationDraftStore>(),
-    ),
-  );
   gh.factory<_i566.LoginCubit>(
     () => _i566.LoginCubit(
       gh<_i139.LoginUseCase>(),
@@ -1008,13 +987,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i994.UpdateUserUseCase>(
     () => _i994.UpdateUserUseCase(gh<_i74.UserRepository>()),
   );
-  gh.factory<_i337.HomeServiceEvaluationPackagesCubit>(
-    () => _i337.HomeServiceEvaluationPackagesCubit(
-      gh<InvalidType>(),
-      gh<InvalidType>(),
-      gh<InvalidType>(),
-      gh<_i226.GetActiveServiceRequestUseCase>(),
-      gh<_i535.GetLastEvaluationUseCase>(),
+  gh.lazySingleton<_i1015.GetInsertHomeServicePackageUseCase>(
+    () => _i1015.GetInsertHomeServicePackageUseCase(
+      gh<_i347.HomeServiceEvaluationRepository>(),
     ),
   );
   gh.lazySingleton<_i902.GetLaborUseCase>(
@@ -1022,6 +997,11 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i990.GetPartUseCase>(
     () => _i990.GetPartUseCase(gh<_i347.HomeServiceEvaluationRepository>()),
+  );
+  gh.lazySingleton<_i915.GetServiceCategoriesUseCase>(
+    () => _i915.GetServiceCategoriesUseCase(
+      gh<_i347.HomeServiceEvaluationRepository>(),
+    ),
   );
   gh.lazySingleton<_i978.GetServicesUseCase>(
     () => _i978.GetServicesUseCase(gh<_i347.HomeServiceEvaluationRepository>()),
@@ -1106,21 +1086,6 @@ _i174.GetIt $initGetIt(
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
     ),
   );
-  gh.factory<_i379.ServiceListCubit>(
-    () => _i379.ServiceListCubit(
-      gh<_i978.GetServicesUseCase>(),
-      gh<_i226.GetActiveServiceRequestUseCase>(),
-      gh<_i535.GetLastEvaluationUseCase>(),
-    ),
-  );
-  gh.factory<_i648.HomeServiceEvaluationSecondStepCubit>(
-    () => _i648.HomeServiceEvaluationSecondStepCubit(
-      gh<_i226.GetActiveServiceRequestUseCase>(),
-      gh<_i535.GetLastEvaluationUseCase>(),
-      gh<_i684.PostEvaluationUseCase>(),
-      gh<_i978.GetServicesUseCase>(),
-    ),
-  );
   gh.factory<_i802.RequestDetailCubit>(
     () => _i802.RequestDetailCubit(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
@@ -1131,16 +1096,6 @@ _i174.GetIt $initGetIt(
       gh<_i955.GetRequestStatusHistoryUseCase>(),
     ),
   );
-  gh.factory<_i317.HomeServiceEvaluationFirstStepCubit>(
-    () => _i317.HomeServiceEvaluationFirstStepCubit(
-      gh<_i1059.GetLastEvaluationHomeServiceUseCase>(),
-      gh<_i1026.GetDistanceToCustomerHomeServiceUseCase>(),
-      gh<_i570.SetLastEvaluationUseCase>(),
-      gh<_i931.FetchOcrConfigurationUseCase>(),
-      gh<_i823.EvaluationDraftStore>(),
-      gh<_i497.SetActiveServiceRequestUseCase>(),
-    ),
-  );
   gh.factory<_i362.EmdadgarInvoiceCubit>(
     () => _i362.EmdadgarInvoiceCubit(
       gh<_i204.GetEmdadgarInvoiceUseCase>(),
@@ -1149,40 +1104,18 @@ _i174.GetIt $initGetIt(
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
     ),
   );
-  gh.factory<_i551.HomeServicePartCubit>(
-    () => _i551.HomeServicePartCubit(
+  gh.factory<_i101.HomeServiceEvaluationCubit>(
+    () => _i101.HomeServiceEvaluationCubit(
+      gh<_i978.GetServicesUseCase>(),
       gh<_i902.GetLaborUseCase>(),
       gh<_i990.GetPartUseCase>(),
-      gh<_i664.GetPartMarkHomeServiceUseCase>(),
-      gh<_i535.GetLastEvaluationUseCase>(),
-      gh<_i226.GetActiveServiceRequestUseCase>(),
-      gh<_i983.GetPartPriceHomeServiceUseCase>(),
-      gh<_i91.GetReusablePriceUseCase>(),
-    ),
-  );
-  gh.factory<_i664.LaborsAndPartsCubit>(
-    () => _i664.LaborsAndPartsCubit(
-      gh<_i902.GetLaborUseCase>(),
-      gh<_i990.GetPartUseCase>(),
-      gh<_i664.GetPartMarkHomeServiceUseCase>(),
-      gh<_i535.GetLastEvaluationUseCase>(),
-      gh<_i226.GetActiveServiceRequestUseCase>(),
-      gh<_i983.GetPartPriceHomeServiceUseCase>(),
-      gh<_i91.GetReusablePriceUseCase>(),
-    ),
-  );
-  gh.factory<_i124.AddPhotoHomeServiceCubit>(
-    () => _i124.AddPhotoHomeServiceCubit(
-      gh<InvalidType>(),
-      gh<InvalidType>(),
-      gh<InvalidType>(),
+      gh<_i1059.GetLastEvaluationHomeServiceUseCase>(),
+      gh<_i1026.GetDistanceToCustomerHomeServiceUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
       gh<_i684.PostEvaluationUseCase>(),
-      gh<InvalidType>(),
-      gh<InvalidType>(),
-      gh<InvalidType>(),
-      gh<InvalidType>(),
-      gh<_i931.FetchOcrConfigurationUseCase>(),
-      gh<_i823.EvaluationDraftStore>(),
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i915.GetServiceCategoriesUseCase>(),
+      gh<_i1015.GetInsertHomeServicePackageUseCase>(),
     ),
   );
   gh.lazySingleton<_i531.AcceptEvaluationUseCase>(

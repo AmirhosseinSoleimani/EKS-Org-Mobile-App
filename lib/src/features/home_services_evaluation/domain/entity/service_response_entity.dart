@@ -1,4 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/service_response_model.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/interfaces/dropdown_item.dart';
+import 'package:flutter/material.dart';
 
 class ServiceResponseEntity {
   ServiceResponseEntity({
@@ -7,7 +9,7 @@ class ServiceResponseEntity {
     this.guid,
     this.name,
     this.chassisNo,
-    this.emdadServices,
+    this.serviceList,
     this.defectInfo,
     this.imageBase64,
     this.imageMandatory,
@@ -19,7 +21,7 @@ class ServiceResponseEntity {
   final String? name;
   final String? chassisNo;
   final String? imageBase64;
-  final List<EmdadServiceResultEntity>? emdadServices;
+  final List<EmdadServiceResultEntity>? serviceList;
   final DefectCostAndTimeEntity? defectInfo;
   final bool? imageMandatory;
 
@@ -41,7 +43,7 @@ class ServiceResponseEntity {
       name: name ?? this.name,
       imageBase64: imageBase64 ?? this.imageBase64,
       chassisNo: chassisNo ?? this.chassisNo,
-      emdadServices: emdadServices ?? this.emdadServices,
+      serviceList: emdadServices ?? this.serviceList,
       defectInfo: defectInfo ?? this.defectInfo,
       imageMandatory: imageMandatory ?? this.imageMandatory,
     );
@@ -54,7 +56,7 @@ class ServiceResponseEntity {
       guid: guid,
       name: name,
       chassisNo: chassisNo,
-      emdadServices: emdadServices?.map((e) => e.toModel()).toList(),
+      serviceList: serviceList?.map((e) => e.toModel()).toList(),
       defectInfo: defectInfo?.toModel(),
       imageBase64: imageBase64,
       imageMandatory: imageMandatory,
@@ -62,7 +64,7 @@ class ServiceResponseEntity {
   }
 }
 
-class EmdadServiceResultEntity {
+class EmdadServiceResultEntity implements DropdownItem<int?> {
   EmdadServiceResultEntity({
     this.serviceType,
     this.serviceCategoryId,
@@ -218,6 +220,15 @@ class EmdadServiceResultEntity {
       imageMandatory: imageMandatory,
     );
   }
+
+  @override
+  String get label => serviceTypeTitle ?? '';
+
+  @override
+  Widget? leading(BuildContext context) => null;
+
+  @override
+  int? get value => serviceId;
 }
 
 class DefectCostAndTimeEntity {

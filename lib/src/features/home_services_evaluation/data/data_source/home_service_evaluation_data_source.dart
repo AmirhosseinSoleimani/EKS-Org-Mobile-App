@@ -1,3 +1,5 @@
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/home_service_package_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/home_service_package_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/service_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/distance_to_customer_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/distance_to_customer_response_model.dart';
@@ -19,7 +21,10 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/mod
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/part_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/reusable_price_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/service_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/service_category_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/service_category_response_model.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
+
 
 abstract class HomeServiceEvaluationDataSource {
   Future<BaseSingleResponse<EvaluationResponseModel?>> getLastEvaluationHomeServices(LastEvaluationRequestModel? model);
@@ -35,4 +40,6 @@ abstract class HomeServiceEvaluationDataSource {
 
   Future<BaseSingleResponse<KilometerFromImageResponseModel?>> fetchKilometerImage(KilometerFromImageRequestModel? model);
   Future<BaseSingleResponse<OcrConfigurationKilometerResponseModel?>> fetchOcrConfiguration(OcrConfigurationKilometerRequestModel? model);
+  Future<BaseListResponse<ServiceCategoryResponseModel>> getServiceCategories(ServiceCategoryRequestModel model);
+  Future<BaseListResponse<HomeServicePackageResponseModel?>> getHomeServicePackage(HomeServicePackageRequestModel? model);
 }

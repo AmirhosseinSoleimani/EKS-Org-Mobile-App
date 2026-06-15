@@ -8,7 +8,7 @@ class ServiceResponseModel extends ServiceResponseEntity {
     super.guid,
     super.name,
     super.chassisNo,
-    super.emdadServices,
+    super.serviceList,
     super.defectInfo,
     super.imageBase64,
     super.imageMandatory,
@@ -22,7 +22,7 @@ class ServiceResponseModel extends ServiceResponseEntity {
       name: json['name'],
       imageBase64: json['imageBase64'],
       chassisNo: json['chassisNo'],
-      emdadServices: (json['emdadServices'] as List).map((e) => EmdadServiceResultModel.fromJson(e)).toList(),
+      serviceList: (json['emdadServices'] as List).map((e) => EmdadServiceResultModel.fromJson(e)).toList(),
       defectInfo: json['defectInfo'] != null ? DefectCostAndTimeModel.fromJson(json['defectInfo']) : null,
       imageMandatory: json['isImageMandatory']
     );

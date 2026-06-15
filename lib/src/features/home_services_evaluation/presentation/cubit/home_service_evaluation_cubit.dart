@@ -1,18 +1,22 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
-import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/active_service_request_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/distance_to_customer_request_entity.dart';
-import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/labor_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/home_service_package_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/home_service_package_response_entity.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/home_service_part_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/labor_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/last_evaluation_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/part_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/part_response_entity.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/service_category_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/service_category_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/service_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/service_response_entity.dart';
-import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/usecase/get_active_service_request_usecase.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/usecase/get_distance_to_customer_home_service_usecase.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/usecase/get_home_service_package_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/usecase/get_labor_usecase.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/usecase/get_last_evaluation_home_service_usecase.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/usecase/get_part_usecase.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/usecase/get_service_categories_usecase.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/usecase/get_services_usecase.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/usecase/post_evaluation_usecase.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/cubit/home_service_evaluation_data.dart';
@@ -21,9 +25,12 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presenta
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/mappers/home_service_evaluation_selection_mapper.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/view_models/home_service_package_selection_view_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/view_models/selected_extra_service_view_model.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/view_models/selected_home_service_labor_view_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/view_models/selected_home_service_package_view_model.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/view_models/selected_home_service_part_view_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/service_request_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/usecases/fetch_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_emdadgar_info_use_case.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
@@ -41,7 +48,9 @@ class HomeServiceEvaluationCubit extends Cubit<HomeServiceEvaluationState> {
   _getDistanceToCustomerHomeServiceUseCase;
   final GetEmdadgarInfoUseCase _getEmdadgarInfoUseCase;
   final PostEvaluationUseCase _postEvaluationUseCase;
-  final GetActiveServiceRequestUseCase _getActiveServiceRequestUseCase;
+  final FetchSelectedRequestItemUseCase _fetchSelectedRequestItemUseCase;
+  final GetServiceCategoriesUseCase _getServiceCategoriesUseCase;
+  final GetInsertHomeServicePackageUseCase _getHomeServicePackageUseCase;
 
   HomeServiceEvaluationCubit(this._getServicesUseCase,
       this._getLaborUseCase,
@@ -50,7 +59,9 @@ class HomeServiceEvaluationCubit extends Cubit<HomeServiceEvaluationState> {
       this._getDistanceToCustomerHomeServiceUseCase,
       this._getEmdadgarInfoUseCase,
       this._postEvaluationUseCase,
-      this._getActiveServiceRequestUseCase,)
+      this._fetchSelectedRequestItemUseCase,
+      this._getServiceCategoriesUseCase,
+      this._getHomeServicePackageUseCase,)
       : super(const HomeServiceEvaluationState.idle());
 
   String? _errorMessage;
@@ -60,22 +71,7 @@ class HomeServiceEvaluationCubit extends Cubit<HomeServiceEvaluationState> {
   String? get errorMessage => _errorMessage;
 
   Future<void> init() async {
-    emit(
-      HomeServiceEvaluationState.loading(
-        data: data.copyWith(
-          clearPackageDraft: true,
-          clearEditingPackageLocalId: true,
-          clearAddingPartPackageLocalId: true,
-          clearSelectedServiceCategory: true,
-          clearSelectedPackage: true,
-          clearServiceResponse: true,
-          clearPackageLabors: true,
-          clearAvailablePartsForSelectedLabor: true,
-          clearLastEvaluationEntity: true,
-          clearDistanceToCustomerEntity: true,
-        ),
-      ),
-    );
+    emit(HomeServiceEvaluationState.loading(data: data));
 
     final selectedRequestLoaded = await _getSelectedRequest();
     if (!selectedRequestLoaded) return;
@@ -89,10 +85,17 @@ class HomeServiceEvaluationCubit extends Cubit<HomeServiceEvaluationState> {
     final distanceLoaded = await _getDistanceToCustomer();
     if (!distanceLoaded) return;
 
-    final servicesLoaded = await _getServices();
-    if (!servicesLoaded) return;
+    final serviceCategoriesLoaded = await _getServiceCategories();
+    if (!serviceCategoriesLoaded) return;
 
     emit(HomeServiceEvaluationState.loaded(data: data));
+  }
+
+  bool get isInitialized {
+    return data.selectedRequest != null &&
+        data.lastEvaluationEntity != null &&
+        data.distanceToCustomerEntity != null &&
+        data.serviceCategories.isNotEmpty;
   }
 
   Future<bool> _getEmdadgarInfo() async {
@@ -136,21 +139,54 @@ class HomeServiceEvaluationCubit extends Cubit<HomeServiceEvaluationState> {
   }
 
   Future<bool> _getSelectedRequest() async {
-    final result = await _getActiveServiceRequestUseCase();
+    final result = await _fetchSelectedRequestItemUseCase();
+
+    bool isSuccess = false;
+    try {
+      final request = await _fetchSelectedRequestItemUseCase.call();
+      if (request is HomeServiceRequestEntity) {
+        emit(
+          HomeServiceEvaluationState.loading(
+            data: data.copyWith(
+              selectedRequest: result as HomeServiceRequestEntity,
+            ),
+          ),
+        );
+        isSuccess = true;
+      }
+      else {
+        _emitFailure(_failuresToString('خطای دریافت اطلاعات درخواست'));
+      }
+    } catch (_) {
+      _emitFailure('خطای دریافت اطلاعات درخواست');
+    }
+
+    return isSuccess;
+  }
+
+
+
+  Future<bool> _getServiceCategories() async {
+    final result = await _getServiceCategoriesUseCase(
+      const ServiceCategoryRequestEntity(
+        serviceType: ServiceType.homeService,
+      ),
+    );
 
     bool isSuccess = false;
 
     result.whenOrNull(
-      success: (response, failures, resultCode) {
-        if (resultCode == 0 && response != null) {
-          final selectedRequest = _mapActiveRequestToHomeServiceRequest(
-            response,
-          );
-
+      success: (categories, failures, resultCode) {
+        if (resultCode == 0) {
           emit(
             HomeServiceEvaluationState.loading(
               data: data.copyWith(
-                selectedRequest: selectedRequest,
+                serviceCategories:
+                categories.whereType<ServiceCategoryResponseEntity>().toList(),
+                serviceList: const [],
+                clearSelectedServiceCategory: true,
+                clearSelectedService: true,
+                clearPackageDraft: true,
               ),
             ),
           );
@@ -161,61 +197,11 @@ class HomeServiceEvaluationCubit extends Cubit<HomeServiceEvaluationState> {
         }
       },
       failure: (error, msg) {
-        _emitFailure(msg ?? 'خطای دریافت اطلاعات درخواست');
+        _emitFailure(msg ?? 'خطای دریافت دسته‌بندی سرویس‌ها');
       },
     );
 
     return isSuccess;
-  }
-
-  HomeServiceRequestEntity _mapActiveRequestToHomeServiceRequest(
-      ActiveServiceRequestResponseEntity entity,) {
-    return HomeServiceRequestEntity(
-      id: entity.id,
-      trackCode: entity.trackCode,
-      firstName: entity.firstName,
-      lastName: entity.lastName,
-      latitude: entity.latitude,
-      longitude: entity.longitude,
-      aidAddress: entity.aidAddress,
-      carName: entity.carName,
-      licensePlate: entity.licensePlate,
-      requestStatus: entity.requestStatus,
-      requestStatusTitle: entity.requestStatusTitle,
-      requestDateTime: entity.insertDateTime,
-      requestDateTimeJalali: entity.requestDateTimeJalali,
-      insertDateTime: entity.insertDateTime,
-      insertDateTimeJalali: entity.insertDateTimeJalali,
-      customerMobileNumber: entity.customerMobileNumber,
-      description: entity.description,
-      carColorTitle: entity.carColorTitle,
-      carEngineNumber: entity.carEngineNumber,
-      chassisNumber: entity.chassisNumber ?? entity.vin,
-      kilometer: entity.kilometer,
-      nationalCode: entity.nationalNumber,
-      dispatcher: entity.etmamRequestAuthor,
-      emdadgarName: entity.emdadgarFullName,
-      emFullName: entity.emdadgarFullName,
-      emMobileNumber1: entity.emdadgarMobileNumber,
-      emVehicleTypeTitle: entity.emdadgarVehicleType,
-      emVehicleType: int.tryParse(entity.emdadgarVehicleType ?? '0'),
-      isGuaranty: entity.guaranty,
-      isSubscription: entity.subscription,
-      serviceType: ServiceType.homeService,
-      assignDate: entity.assignDate,
-      planningId: entity.planningId,
-      carInfoGuid: entity.carGuid,
-      carModelId: entity.carModelId,
-      emdadgarId: entity.emdadgarId,
-      invoiceDocumentGuid: entity.invoiceDocumentGuid,
-      vip: entity.vip,
-      /*  vipConditionId: entity.vipConditionId,*/
-      vipConditionTitle: entity.vipConditionTitle,
-      emdadServiceCategoryTitle: entity.serviceCategoryTitle,
-      emdadProductTitle: entity.serviceTitles?.isNotEmpty == true
-          ? entity.serviceTitles!.join('، ')
-          : entity.serviceCategoryGivenTitle,
-    );
   }
 
   Future<bool> _getLastEvaluation() async {
@@ -295,61 +281,6 @@ class HomeServiceEvaluationCubit extends Cubit<HomeServiceEvaluationState> {
     return isSuccess;
   }
 
-  Future<bool> _getServices() async {
-    final request = data.selectedRequest;
-    if (request == null) return false;
-
-    final result = await _getServicesUseCase(
-      ServiceRequestEntity(
-        serviceRequestId: request.id,
-        serviceType: ServiceType.homeService,
-        serviceCategoryId: null,
-        kilometer: request.kilometer,
-        planningId: request.planningId,
-        defectId: null,
-        nationalCode: request.nationalCode,
-        carInfoGuid: request.carInfoGuid,
-        vipConditionId: null,
-        guarantyStartDate: request.garantyStartDate,
-      ),
-    );
-
-    bool isSuccess = false;
-
-    result.whenOrNull(
-      success: (response, failures, resultCode) {
-        if (resultCode == 0 && response != null) {
-          final categories =
-          HomeServiceEvaluationSelectionMapper.extractCategories(response);
-
-          emit(
-            HomeServiceEvaluationState.loading(
-              data: data.copyWith(
-                serviceResponse: response,
-                serviceCategories: categories,
-                packages: const [],
-                clearSelectedServiceCategory: true,
-                clearSelectedPackage: true,
-                clearPackageDraft: true,
-                clearPackageLabors: true,
-                clearAvailablePartsForSelectedLabor: true,
-              ),
-            ),
-          );
-
-          isSuccess = true;
-        } else {
-          _emitFailure(_failuresToString(failures));
-        }
-      },
-      failure: (error, msg) {
-        _emitFailure(msg ?? 'خطای دریافت سرویس‌ها');
-      },
-    );
-
-    return isSuccess;
-  }
-
   void openAddPackageSheet() {
     emit(
       HomeServiceEvaluationState.sheetLoaded(
@@ -363,21 +294,17 @@ class HomeServiceEvaluationCubit extends Cubit<HomeServiceEvaluationState> {
     );
   }
 
-  void selectServiceCategory(EmdadServiceResultEntity category) {
-    final packages =
-    HomeServiceEvaluationSelectionMapper.extractPackagesByCategory(
-      serviceResponse: data.serviceResponse,
-      categoryId: category.serviceCategoryId,
-    );
-
+  void selectServiceCategory(ServiceCategoryResponseEntity category) {
     emit(
       HomeServiceEvaluationState.sheetLoaded(
         sheetType: HomeServiceEvaluationSheetType.package,
         data: data.copyWith(
           selectedServiceCategory: category,
-          packages: packages,
-          clearSelectedPackage: true,
+          serviceList: const [],
+          packageItems: const [],
+          clearSelectedService: true,
           clearPackageDraft: true,
+          clearPackageItems: true,
           clearPackageLabors: true,
           clearAvailablePartsForSelectedLabor: true,
         ),
@@ -385,65 +312,76 @@ class HomeServiceEvaluationCubit extends Cubit<HomeServiceEvaluationState> {
     );
   }
 
-  Future<void> selectPackage(EmdadServiceResultEntity package) async {
+  Future<void> searchServices(String query) async {
+    final request = data.selectedRequest;
+    final category = data.selectedServiceCategory;
+    final searchText = query.trim();
+
+    if (request == null || category == null) return;
+
+    if (searchText.length < 3) {
+      emit(
+        HomeServiceEvaluationState.sheetLoaded(
+          sheetType: HomeServiceEvaluationSheetType.package,
+          data: data.copyWith(
+            serviceList: const [],
+            packageItems: const [],
+            clearSelectedService: true,
+            clearPackageDraft: true,
+            clearPackageItems: true,
+            clearPackageLabors: true,
+            clearAvailablePartsForSelectedLabor: true,
+          ),
+        ),
+      );
+      return;
+    }
+
     emit(
       HomeServiceEvaluationState.sheetLoading(
         sheetType: HomeServiceEvaluationSheetType.package,
         data: data.copyWith(
-          selectedPackage: package,
+          serviceList: const [],
+          packageItems: const [],
+          clearSelectedService: true,
           clearPackageDraft: true,
+          clearPackageItems: true,
           clearPackageLabors: true,
           clearAvailablePartsForSelectedLabor: true,
         ),
       ),
     );
 
-    final request = data.selectedRequest;
-
-    final result = await _getLaborUseCase(
-      LaborRequestEntity(
-        serviceRequestId: request?.id,
+    final result = await _getServicesUseCase(
+      ServiceRequestEntity(
+        serviceRequestId: request.id,
         serviceType: ServiceType.homeService,
-        emdadServiceId: package.serviceId,
-        emdadProductId: package.productId,
-        workOrderCode: package.workOrderCode,
-        searchText: null,
-        hasSubscription: package.hasSubscription,
-        hasGaranty: request?.isGuaranty,
-        kilometer: request?.kilometer,
-        guarantyStartDate: request?.garantyStartDate,
-        carModelId: request?.carModelId,
-        carTipId: request?.garantyCarTipId,
+        serviceCategoryId: category.id,
+        kilometer: request.kilometer,
+        planningId: request.planningId,
+        defectId: null,
+        nationalCode: request.nationalCode,
+        carInfoGuid: request.carInfoGuid,
+        serviceName: searchText,
+        guarantyStartDate: request.garantyStartDate,
       ),
     );
 
     result.whenOrNull(
-      success: (labors, failures, resultCode) {
-        if (resultCode == 0) {
-          final validLabors = labors.whereType<LaborResponseEntity>().toList();
-
-          final mappedLabors = validLabors
-              .map(
-                (labor) =>
-                HomeServiceEvaluationSelectionMapper.laborToSelection(
-                  labor: labor,
-                ),
-          )
-              .toList();
-
-          final packageDraft =
-          HomeServiceEvaluationSelectionMapper.packageToSelection(
-            package: package,
-            labors: mappedLabors,
-          );
-
+      success: (response, failures, resultCode) {
+        if (resultCode == 0 && response != null) {
           emit(
             HomeServiceEvaluationState.sheetLoaded(
               sheetType: HomeServiceEvaluationSheetType.package,
               data: data.copyWith(
-                selectedPackage: package,
-                packageLabors: validLabors,
-                packageDraft: packageDraft,
+                serviceResponse: response,
+                serviceList: response.serviceList ?? const [],
+                packageItems: const [],
+                clearSelectedService: true,
+                clearPackageDraft: true,
+                clearPackageItems: true,
+                clearPackageLabors: true,
+                clearAvailablePartsForSelectedLabor: true,
               ),
             ),
           );
@@ -457,16 +395,282 @@ class HomeServiceEvaluationCubit extends Cubit<HomeServiceEvaluationState> {
       failure: (error, msg) {
         _emitSheetFailure(
           sheetType: HomeServiceEvaluationSheetType.package,
-          message: msg ?? 'خطای دریافت اجرت‌ها',
+          message: msg ?? 'خطای جستجوی سرویس',
         );
       },
     );
   }
 
+  Future<void> selectService(EmdadServiceResultEntity service) async {
+    final request = data.selectedRequest;
+    final category = data.selectedServiceCategory;
+
+    if (request == null || category == null) return;
+
+    emit(
+      HomeServiceEvaluationState.sheetLoading(
+        sheetType: HomeServiceEvaluationSheetType.package,
+        data: data.copyWith(
+          selectedService: service,
+          clearPackageDraft: true,
+          clearPackageItems: true,
+          clearPackageLabors: true,
+          clearAvailablePartsForSelectedLabor: true,
+        ),
+      ),
+    );
+
+    final result = await _getHomeServicePackageUseCase(
+      HomeServicePackageRequestEntity(
+        serviceType: ServiceType.homeService.value,
+        serviceName: service.serviceTitle,
+        serviceCategoryId: category.id,
+        nationalCode: request.nationalCode,
+        kilometer: request.kilometer,
+        carModelId: request.carModelId,
+        carModelGuid: request.carInfoGuid,
+        latitude: request.latitude,
+        longitude: request.longitude,
+        chassisNumber: request.chassisNumber,
+        cityId: request.cityId,
+        hasSubscription: request.isSubscription,
+        serviceId: service.serviceId,
+        planningId: request.planningId,
+        mobileNumber: request.customerMobileNumber,
+        serviceRequestId: request.id,
+      ),
+    );
+
+    result.whenOrNull(
+      success: (items, failures, resultCode) {
+        if (resultCode == 0) {
+          final packageItems =
+          items.whereType<HomeServicePackageResponseEntity>().toList();
+
+          emit(
+            HomeServiceEvaluationState.sheetLoaded(
+              sheetType: HomeServiceEvaluationSheetType.package,
+              data: data.copyWith(
+                selectedService: service,
+                packageItems: _initializeMandatorySelections(packageItems),
+              ),
+            ),
+          );
+        } else {
+          _emitSheetFailure(
+            sheetType: HomeServiceEvaluationSheetType.package,
+            message: _failuresToString(failures),
+          );
+        }
+      },
+      failure: (error, msg) {
+        _emitSheetFailure(
+          sheetType: HomeServiceEvaluationSheetType.package,
+          message: msg ?? 'خطای دریافت اجرت و قطعه',
+        );
+      },
+    );
+  }
+
+  List<HomeServicePackageResponseEntity> _initializeMandatorySelections(
+      List<HomeServicePackageResponseEntity> items,) {
+    return items.map((item) {
+      if (item.partGroups == null || item.partGroups!.isEmpty) {
+        return item.copyWith(
+          isSelected: item.isMandatory == true || item.isSelected,
+        );
+      }
+
+      final updatedGroups = item.partGroups!.map((group) {
+        final parts = group.parts ?? const <HomeServicePartEntity>[];
+
+        if (parts.isEmpty) return group;
+
+        final hasMandatoryPart = parts.any((part) => part.isMandatory == true);
+
+        if (!hasMandatoryPart) return group;
+
+        return group.copyWith(
+          parts: parts.map((part) {
+            return part.copyWith(
+              isSelected: part.isMandatory == true,
+            );
+          }).toList(),
+        );
+      }).toList();
+
+      return item.copyWith(
+        isSelected: item.isMandatory == true || item.isSelected,
+        partGroups: updatedGroups,
+      );
+    }).toList();
+  }
+
+  void togglePackageLabor({
+    required int laborId,
+    required bool selected,
+  }) {
+    final updatedItems = data.packageItems.map((item) {
+      if (item.laborId != laborId) return item;
+      if (item.isMandatory == true) return item;
+      if ((item.partGroups ?? []).isNotEmpty) return item;
+
+      return item.copyWith(isSelected: selected);
+    }).toList();
+
+    emit(
+      HomeServiceEvaluationState.sheetLoaded(
+        sheetType: HomeServiceEvaluationSheetType.package,
+        data: data.copyWith(packageItems: updatedItems),
+      ),
+    );
+  }
+
+  void selectPackagePart({
+    required int laborId,
+    required int partGroupId,
+    required int serial,
+  }) {
+    final updatedItems = data.packageItems.map((item) {
+      if (item.laborId != laborId) return item;
+
+      final updatedGroups = item.partGroups?.map((group) {
+        if (group.partGroupId != partGroupId) return group;
+
+        final parts = group.parts ?? const <HomeServicePartEntity>[];
+        final hasMandatoryPart = parts.any((part) => part.isMandatory == true);
+
+        if (hasMandatoryPart) {
+          return group.copyWith(
+            parts: parts.map((part) {
+              return part.copyWith(
+                isSelected: part.isMandatory == true,
+              );
+            }).toList(),
+          );
+        }
+
+        return group.copyWith(
+          parts: parts.map((part) {
+            return part.copyWith(
+              isSelected: part.serial == serial,
+            );
+          }).toList(),
+        );
+      }).toList();
+
+      return item.copyWith(
+        isSelected: true,
+        partGroups: updatedGroups,
+      );
+    }).toList();
+
+    emit(
+      HomeServiceEvaluationState.sheetLoaded(
+        sheetType: HomeServiceEvaluationSheetType.package,
+        data: data.copyWith(packageItems: updatedItems),
+      ),
+    );
+  }
+
+  bool get canConfirmPackageSelection {
+    final selectedService = data.selectedService;
+    if (selectedService == null) return false;
+
+    return data.packageItems.any(_isPackageItemSelected);
+  }
+
+  void confirmPackageSelection() {
+    final selectedService = data.selectedService;
+    if (selectedService == null || !canConfirmPackageSelection) return;
+
+    final editingLocalId = data.editingPackageLocalId;
+
+    final selectedPackage = SelectedHomeServicePackageViewModel(
+      localId: editingLocalId ??
+          DateTime
+              .now()
+              .microsecondsSinceEpoch
+              .toString(),
+      packageId: selectedService.serviceId ?? 0,
+      packageTitle: selectedService.serviceTitle ?? '',
+      categoryId: data.selectedServiceCategory?.id,
+      categoryTitle: data.selectedServiceCategory?.title,
+      labors: _mapSelectedPackageItemsToLabors(data.packageItems),
+    );
+
+    final updatedPackages = editingLocalId == null
+        ? [...data.selectedPackages, selectedPackage]
+        : data.selectedPackages.map((item) {
+      if (item.localId != editingLocalId) return item;
+      return selectedPackage;
+    }).toList();
+
+    emit(
+      HomeServiceEvaluationState.loaded(
+        data: data.copyWith(
+          selectedPackages: updatedPackages,
+          packageItems: const [],
+          clearPackageItems: true,
+          clearPackageDraft: true,
+          clearSelectedService: true,
+          clearEditingPackageLocalId: true,
+          clearAddingPartPackageLocalId: true,
+        ),
+      ),
+    );
+  }
+
+  List<SelectedHomeServiceLaborViewModel> _mapSelectedPackageItemsToLabors(
+      List<HomeServicePackageResponseEntity> items,) {
+    return items
+        .where(_isPackageItemSelected)
+        .map((item) {
+      final selectedParts = <SelectedHomeServicePartViewModel>[];
+
+      for (final group in item.partGroups ??
+          const <HomeServicePartGroupEntity>[]) {
+        for (final part in group.parts ?? const <HomeServicePartEntity>[]) {
+          if (part.isMandatory == true || part.isSelected == true) {
+            selectedParts.add(
+              SelectedHomeServicePartViewModel(
+                id: part.serial ?? 0,
+                title: part.partTitle ?? '',
+                isRequired: part.isMandatory == true,
+              ),
+            );
+          }
+        }
+      }
+
+      return SelectedHomeServiceLaborViewModel(
+        id: item.laborId ?? 0,
+        title: item.laborTitle ?? item.laborDesc ?? '',
+        isRequired: item.isMandatory == true,
+        parts: selectedParts,
+      );
+    })
+        .toList();
+  }
+
+  bool _isPackageItemSelected(HomeServicePackageResponseEntity item) {
+    if (item.isMandatory == true || item.isSelected == true) {
+      return true;
+    }
+
+    return item.partGroups?.any((group) {
+      return group.parts?.any((part) {
+        return part.isMandatory == true || part.isSelected == true;
+      }) ??
+          false;
+    }) ??
+        false;
+  }
+
   Future<void> getLaborParts({
     required int laborId,
   }) async {
-    final selectedPackage = data.selectedPackage;
+    final selectedPackage = data.selectedService;
     final request = data.selectedRequest;
     final labor = _findLaborById(laborId);
 

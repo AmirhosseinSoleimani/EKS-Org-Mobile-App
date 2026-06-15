@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/authentication/presentation/login/login_page.dart';
 import 'package:eks_sana_plus_org/src/features/bottom_navigation_bar/presentation/pages/bottom_nav_page.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/presentation/dashboard_page.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_page.dart';
 import 'package:eks_sana_plus_org/src/features/indicator_report/presentation/indicator_report_page/indicator_report_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/assign_and_cancel_emdadgar_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/cancel_request_page.dart';
@@ -14,8 +15,6 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/control_inf
 import 'package:eks_sana_plus_org/src/features/services/presentation/emdadgar_invoice_page/emdadgar_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/evaluation_aid_service_request_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_history/evaluation_history_page.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_home_service_request_page/cubit/evaluation_home_service_request_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_home_service_request_page/evaluation_home_service_request_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/followup_register_page/follow_up_register_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/home_service_request_list_page/home_service_request_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/non_cooperation_page/non_cooperation_page.dart';
@@ -50,7 +49,7 @@ class Routes {
 
     return GoRouter(
       navigatorKey: parentNavigatorKey,
-      initialLocation: EvaluationHomeServiceRequestPage.path,
+      initialLocation: LoginPage.path,
       refreshListenable: startupGuard,
       observers: [
         routeObserver
@@ -286,11 +285,11 @@ class Routes {
               ),
         ),
         GoRoute(
-          path: EvaluationHomeServiceRequestPage.path,
-          name: EvaluationHomeServiceRequestPage.name,
+          path: HomeServiceEvaluationPage.path,
+          name: HomeServiceEvaluationPage.name,
           pageBuilder: (context, state) =>
               getPage(
-                child: const EvaluationHomeServiceRequestPage(),
+                child: const HomeServiceEvaluationPage(),
                 state: state,
               ),
         ),

@@ -11,7 +11,7 @@ class HomeServiceEvaluationSelectionMapper {
   static List<EmdadServiceResultEntity> extractCategories(
       ServiceResponseEntity? serviceResponse,
       ) {
-    final services = serviceResponse?.emdadServices ?? [];
+    final services = serviceResponse?.serviceList ?? [];
 
     final Map<int, EmdadServiceResultEntity> categories = {};
 
@@ -32,7 +32,7 @@ class HomeServiceEvaluationSelectionMapper {
   }) {
     if (categoryId == null) return const [];
 
-    final services = serviceResponse?.emdadServices ?? [];
+    final services = serviceResponse?.serviceList ?? [];
 
     return services
         .where((service) => service.serviceCategoryId == categoryId)

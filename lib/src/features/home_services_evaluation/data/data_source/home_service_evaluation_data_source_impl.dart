@@ -4,6 +4,8 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/mod
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/emdadgar_evaluation_accept_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/evaluation_post_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/evaluation_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/home_service_package_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/home_service_package_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/kilometer_from_image_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/kilometer_from_image_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/labor_request_model.dart';
@@ -18,6 +20,8 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/mod
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/part_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/part_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/reusable_price_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/service_category_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/service_category_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/service_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/service_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/service/home_service_evaluation_service.dart';
@@ -129,4 +133,18 @@ class HomeServiceEvaluationDataSourceImpl
     final result = await _service.getServices(model?.toJson() ?? {});
     return result;
   }
+
+  @override
+  Future<BaseListResponse<ServiceCategoryResponseModel>> getServiceCategories(
+      ServiceCategoryRequestModel model,
+      ) async {
+    return await _service.getServiceCategories(model.toJson());
+  }
+
+  @override
+  Future<BaseListResponse<HomeServicePackageResponseModel?>> getHomeServicePackage(HomeServicePackageRequestModel? model) async {
+    final result = await _service.getHomeServicePackage(model?.toJson() ?? {});
+    return result;
+  }
+
 }
