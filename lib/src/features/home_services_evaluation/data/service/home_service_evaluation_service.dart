@@ -5,6 +5,8 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/mod
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/evaluation_post_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/evaluation_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/home_service_package_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/insert_home_service_category_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/insert_home_service_service_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/kilometer_from_image_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/labor_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/ocr_configuration_kilometer_response_model.dart';
@@ -13,6 +15,7 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/mod
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/part_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/reusable_price_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/service_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/insert_home_service_package_response_model.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 import 'package:injectable/injectable.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/service_category_response_model.dart';
@@ -86,4 +89,13 @@ abstract class HomeServiceEvaluationService {
 
   @GET('api/HomeServiceRequest/GetHomeServicePackage')
   Future<BaseListResponse<HomeServicePackageResponseModel>> getHomeServicePackage(@Queries() Map<String, dynamic> query);
+
+  @GET('/api/EmdadgarServiceRequest/GetHomeServicePackage')
+  Future<BaseListResponse<InsertHomeServicePackageResponseModel?>> fetchHomeServicePackage(@Queries() Map<String, dynamic> query);
+
+  @GET('/api/EmdadgarServiceRequest/GetServiceCategories')
+  Future<BaseListResponse<InsertHomeServiceCategoryResponseModel>?> fetchHomeServiceCategories(@Body() Map<String, dynamic> body);
+
+  @GET('/api/EmdadgarServiceRequest/GetServices')
+  Future<BaseSingleResponse<InsertHomeServiceServiceResponseModel?>> fetchHomeServiceServices(@Queries() Map<String, dynamic> query);
 }

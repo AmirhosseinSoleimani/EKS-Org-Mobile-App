@@ -546,6 +546,131 @@ class _HomeServiceEvaluationService implements HomeServiceEvaluationService {
     return _value;
   }
 
+  @override
+  Future<BaseListResponse<InsertHomeServicePackageResponseModel?>>
+  fetchHomeServicePackage(Map<String, dynamic> query) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.addAll(query);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options =
+        _setStreamType<
+          BaseListResponse<InsertHomeServicePackageResponseModel?>
+        >(
+          Options(method: 'GET', headers: _headers, extra: _extra)
+              .compose(
+                _dio.options,
+                '/api/EmdadgarServiceRequest/GetHomeServicePackage',
+                queryParameters: queryParameters,
+                data: _data,
+              )
+              .copyWith(
+                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+              ),
+        );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseListResponse<InsertHomeServicePackageResponseModel?> _value;
+    try {
+      _value =
+          BaseListResponse<InsertHomeServicePackageResponseModel?>.fromJson(
+            _result.data!,
+            (json) => json == null
+                ? null
+                : InsertHomeServicePackageResponseModel.fromJson(
+                    json as Map<String, dynamic>,
+                  ),
+          );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseListResponse<InsertHomeServiceCategoryResponseModel>?>
+  fetchHomeServiceCategories(Map<String, dynamic> body) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
+    final _options =
+        _setStreamType<
+          BaseListResponse<InsertHomeServiceCategoryResponseModel>?
+        >(
+          Options(method: 'GET', headers: _headers, extra: _extra)
+              .compose(
+                _dio.options,
+                '/api/EmdadgarServiceRequest/GetServiceCategories',
+                queryParameters: queryParameters,
+                data: _data,
+              )
+              .copyWith(
+                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+              ),
+        );
+    final _result = await _dio.fetch<Map<String, dynamic>?>(_options);
+    late BaseListResponse<InsertHomeServiceCategoryResponseModel>? _value;
+    try {
+      _value = _result.data == null
+          ? null
+          : BaseListResponse<InsertHomeServiceCategoryResponseModel>.fromJson(
+              _result.data!,
+              (json) => InsertHomeServiceCategoryResponseModel.fromJson(
+                json as Map<String, dynamic>,
+              ),
+            );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
+  @override
+  Future<BaseSingleResponse<InsertHomeServiceServiceResponseModel?>>
+  fetchHomeServiceServices(Map<String, dynamic> query) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.addAll(query);
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _options =
+        _setStreamType<
+          BaseSingleResponse<InsertHomeServiceServiceResponseModel?>
+        >(
+          Options(method: 'GET', headers: _headers, extra: _extra)
+              .compose(
+                _dio.options,
+                '/api/EmdadgarServiceRequest/GetServices',
+                queryParameters: queryParameters,
+                data: _data,
+              )
+              .copyWith(
+                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+              ),
+        );
+    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
+    late BaseSingleResponse<InsertHomeServiceServiceResponseModel?> _value;
+    try {
+      _value =
+          BaseSingleResponse<InsertHomeServiceServiceResponseModel?>.fromJson(
+            _result.data!,
+            (json) => json == null
+                ? null
+                : InsertHomeServiceServiceResponseModel.fromJson(
+                    json as Map<String, dynamic>,
+                  ),
+          );
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
+      rethrow;
+    }
+    return _value;
+  }
+
   RequestOptions _setStreamType<T>(RequestOptions requestOptions) {
     if (T != dynamic &&
         !(requestOptions.responseType == ResponseType.bytes ||

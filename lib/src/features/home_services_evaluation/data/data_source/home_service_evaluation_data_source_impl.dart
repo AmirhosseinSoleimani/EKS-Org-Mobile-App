@@ -6,6 +6,10 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/mod
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/evaluation_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/home_service_package_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/home_service_package_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/insert_home_service_category_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/insert_home_service_package_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/insert_home_service_service_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/insert_home_service_service_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/kilometer_from_image_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/kilometer_from_image_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/labor_request_model.dart';
@@ -25,6 +29,7 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/mod
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/service_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/service_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/service/home_service_evaluation_service.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/insert_home_service_package_response_model.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 import 'package:injectable/injectable.dart';
 
@@ -144,6 +149,24 @@ class HomeServiceEvaluationDataSourceImpl
   @override
   Future<BaseListResponse<HomeServicePackageResponseModel?>> getHomeServicePackage(HomeServicePackageRequestModel? model) async {
     final result = await _service.getHomeServicePackage(model?.toJson() ?? {});
+    return result;
+  }
+
+  @override
+  Future<BaseListResponse<InsertHomeServiceCategoryResponseModel>?> fetchHomeServiceCategories() async {
+    final result = await _service.fetchHomeServiceCategories({});
+    return result;
+  }
+
+  @override
+  Future<BaseListResponse<InsertHomeServicePackageResponseModel?>> fetchHomeServicePackage(InsertHomeServicePackageRequestModel? model) async {
+    final result = await _service.fetchHomeServicePackage(model?.toJson() ?? {});
+    return result;
+  }
+
+  @override
+  Future<BaseSingleResponse<InsertHomeServiceServiceResponseModel?>> fetchHomeServiceService(InsertHomeServiceServiceRequestModel? model) async{
+    final result = await _service.fetchHomeServiceServices(model?.toJson() ?? {});
     return result;
   }
 

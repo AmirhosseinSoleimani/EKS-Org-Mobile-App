@@ -16,7 +16,6 @@ class UserNameTextFormFieldWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<LoginCubit>();
     return TextFormFieldWidget(
       labelText: "نام کاربری",
       controller: controller,
@@ -24,7 +23,6 @@ class UserNameTextFormFieldWidget extends StatelessWidget {
       textInputType: TextInputType.name,
       textAlign: TextAlign.start,
       textInputAction: TextInputAction.done,
-      //validator: (value) => cubit.phoneNumberValidate(value),
      
     );
   }

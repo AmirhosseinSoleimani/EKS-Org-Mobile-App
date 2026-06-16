@@ -1,5 +1,9 @@
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/home_service_package_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/home_service_package_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/insert_home_service_category_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/insert_home_service_package_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/insert_home_service_service_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/insert_home_service_service_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/service_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/distance_to_customer_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/distance_to_customer_response_model.dart';
@@ -23,6 +27,7 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/mod
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/service_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/service_category_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/service_category_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/insert_home_service_package_response_model.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 
 
@@ -42,4 +47,10 @@ abstract class HomeServiceEvaluationDataSource {
   Future<BaseSingleResponse<OcrConfigurationKilometerResponseModel?>> fetchOcrConfiguration(OcrConfigurationKilometerRequestModel? model);
   Future<BaseListResponse<ServiceCategoryResponseModel>> getServiceCategories(ServiceCategoryRequestModel model);
   Future<BaseListResponse<HomeServicePackageResponseModel?>> getHomeServicePackage(HomeServicePackageRequestModel? model);
+
+  Future<BaseListResponse<InsertHomeServiceCategoryResponseModel>?> fetchHomeServiceCategories();
+
+  Future<BaseSingleResponse<InsertHomeServiceServiceResponseModel?>> fetchHomeServiceService(InsertHomeServiceServiceRequestModel? model);
+
+  Future<BaseListResponse<InsertHomeServicePackageResponseModel?>> fetchHomeServicePackage(InsertHomeServicePackageRequestModel? model);
 }

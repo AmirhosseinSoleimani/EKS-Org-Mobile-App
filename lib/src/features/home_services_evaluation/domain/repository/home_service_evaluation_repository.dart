@@ -5,6 +5,11 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/e
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/evaluation_post_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/home_service_package_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/home_service_package_response_entity.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/insert_home_service_category_response_entity.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/insert_home_service_package_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/insert_home_service_package_response_entity.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/insert_home_service_service_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/insert_home_service_service_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/kilometer_from_image_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/kilometer_from_image_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/labor_request_entity.dart';
@@ -20,11 +25,11 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/e
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/part_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/part_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/reusable_price_response_entity.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/service_category_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/service_category_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/service_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/service_response_entity.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
-import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/service_category_request_entity.dart';
-import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/service_category_response_entity.dart';
 
 abstract class HomeServiceEvaluationRepository {
   Future<ApiResult<EvaluationResponseEntity?>> getLastEvaluationHomeServices(
@@ -88,6 +93,19 @@ abstract class HomeServiceEvaluationRepository {
 
 
   Future<ApiResult<List<HomeServicePackageResponseEntity?>>> getHomeServicePackage(HomeServicePackageRequestEntity? entity);
+
+  Future<ApiResult<List<
+      InsertHomeServiceCategoryResponseEntity>?>> fetchHomeServiceCategories();
+
+
+  Future<ApiResult<
+      List<InsertHomeServicePackageResponseEntity?>>> fetchHomeServicePackage(
+      InsertHomeServicePackageRequestEntity? entity);
+
+
+  Future<ApiResult<
+      InsertHomeServiceServiceResponseEntity?>> fetchHomeServiceServices(
+      InsertHomeServiceServiceRequestEntity? entity);
 
   void dispose();
 }

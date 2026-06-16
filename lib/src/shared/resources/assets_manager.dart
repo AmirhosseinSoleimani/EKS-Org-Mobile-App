@@ -12,6 +12,8 @@ class ImageManager {
   static const String noInternet = '${_basePath}no_internet.png';
   static const String onMissionEmpty = '${_basePath}on_mission_empty.png';
   static const String availableEmpty = '${_basePath}available_empty.png';
+  static const String primaryService = '${_basePath}firs_service.png';
+  static const String activeIcon = '${_basePath}active_icon.png';
 
   //not used yet
   static const String error = '${_basePath}error_process.png';
