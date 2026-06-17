@@ -34,7 +34,7 @@ class HomeServiceEvaluationPackageWidget extends StatelessWidget {
           state.whenOrNull(
             error: (message) {
               BottomSheetMessage.showError(
-                isDismissible: false,
+                isDismissible: true,
                 context: context,
                 data: BottomSheetMessageModel(title: '', message: message),
               );
@@ -51,23 +51,25 @@ class HomeServiceEvaluationPackageWidget extends StatelessWidget {
         },
         builder: (context, state) {
           return state.maybeWhen(
-            servicePackageLoading: () => Column(
-              children: [
-                Align(
-                  alignment: Alignment.centerLeft,
-                  child: InkWell(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: const Icon(
-                      Icons.close,
-                      size: 24,
-                      color: Colors.black,
+            servicePackageLoading: () => Material(
+              child: Column(
+                children: [
+                  Align(
+                    alignment: Alignment.centerLeft,
+                    child: InkWell(
+                      onTap: () => Navigator.of(context).pop(),
+                      child: const Icon(
+                        Icons.close,
+                        size: 24,
+                        color: Colors.black,
+                      ),
                     ),
                   ),
-                ),
-                 Expanded(
-                  child: Center(child: CircularProgressIndicator(color: ServiceType.homeService.serviceColor)),
-                ),
-              ],
+                   Expanded(
+                    child: Center(child: CircularProgressIndicator(color: ServiceType.homeService.serviceColor)),
+                  ),
+                ],
+              ),
             ),
             orElse: () => RefreshIndicator(
               color: ServiceType.homeService.serviceColor,

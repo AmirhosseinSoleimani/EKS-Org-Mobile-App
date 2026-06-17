@@ -96,6 +96,8 @@ class HomeServiceEvaluationSecondStepCubit
         }
       },
       failure: (error, failures) {
+        print(error);
+        print(failures);
         _emitError(failures ?? '');
         resultValue = false;
       },

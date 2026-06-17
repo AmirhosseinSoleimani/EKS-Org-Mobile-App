@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/data_source/home_service_evaluation_data_source.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/distance_to_customer_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/distance_to_customer_response_model.dart';
@@ -154,7 +155,7 @@ class HomeServiceEvaluationDataSourceImpl
 
   @override
   Future<BaseListResponse<InsertHomeServiceCategoryResponseModel>?> fetchHomeServiceCategories() async {
-    final result = await _service.fetchHomeServiceCategories({});
+    final result = await _service.fetchHomeServiceCategories(ServiceCategoryRequestModel(serviceType: ServiceType.homeService).toJson());
     return result;
   }
 

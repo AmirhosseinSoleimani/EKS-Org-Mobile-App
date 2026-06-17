@@ -84,10 +84,7 @@ class HomeServiceEvaluationCategoryWidget extends StatelessWidget {
                             height: 60,
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(12),
-                              child: Image.asset(
-                                ImageManager.primaryService,
-                                fit: BoxFit.cover,
-                              ),
+                              child:Icon(Icons.home_repair_service),
                             ),
                           ),
 

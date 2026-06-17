@@ -90,12 +90,12 @@ abstract class HomeServiceEvaluationService {
   @GET('api/HomeServiceRequest/GetHomeServicePackage')
   Future<BaseListResponse<HomeServicePackageResponseModel>> getHomeServicePackage(@Queries() Map<String, dynamic> query);
 
-  @GET('/api/EmdadgarServiceRequest/GetHomeServicePackage')
+  @GET('/api/HomeServiceRequest/GetHomeServicePackage')
   Future<BaseListResponse<InsertHomeServicePackageResponseModel?>> fetchHomeServicePackage(@Queries() Map<String, dynamic> query);
 
-  @GET('/api/EmdadgarServiceRequest/GetServiceCategories')
-  Future<BaseListResponse<InsertHomeServiceCategoryResponseModel>?> fetchHomeServiceCategories(@Body() Map<String, dynamic> body);
+  @GET('/api/HomeServiceEvaluation/GetServiceCategories')
+  Future<BaseListResponse<InsertHomeServiceCategoryResponseModel>?> fetchHomeServiceCategories(@Queries() Map<String, dynamic> body);
 
-  @GET('/api/EmdadgarServiceRequest/GetServices')
+  @GET('/api/HomeServiceEvaluation/GetServices')
   Future<BaseSingleResponse<InsertHomeServiceServiceResponseModel?>> fetchHomeServiceServices(@Queries() Map<String, dynamic> query);
 }

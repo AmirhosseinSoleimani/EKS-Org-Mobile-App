@@ -561,7 +561,7 @@ class _HomeServiceEvaluationService implements HomeServiceEvaluationService {
           Options(method: 'GET', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/EmdadgarServiceRequest/GetHomeServicePackage',
+                '/api/HomeServiceRequest/GetHomeServicePackage',
                 queryParameters: queryParameters,
                 data: _data,
               )
@@ -593,9 +593,9 @@ class _HomeServiceEvaluationService implements HomeServiceEvaluationService {
   fetchHomeServiceCategories(Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
+    queryParameters.addAll(body);
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
-    _data.addAll(body);
+    const Map<String, dynamic>? _data = null;
     final _options =
         _setStreamType<
           BaseListResponse<InsertHomeServiceCategoryResponseModel>?
@@ -603,7 +603,7 @@ class _HomeServiceEvaluationService implements HomeServiceEvaluationService {
           Options(method: 'GET', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/EmdadgarServiceRequest/GetServiceCategories',
+                '/api/HomeServiceEvaluation/GetServiceCategories',
                 queryParameters: queryParameters,
                 data: _data,
               )
@@ -644,7 +644,7 @@ class _HomeServiceEvaluationService implements HomeServiceEvaluationService {
           Options(method: 'GET', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/EmdadgarServiceRequest/GetServices',
+                '/api/HomeServiceEvaluation/GetServices',
                 queryParameters: queryParameters,
                 data: _data,
               )

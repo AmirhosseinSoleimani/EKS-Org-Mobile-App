@@ -56,7 +56,7 @@ class HomeServicePartPage extends StatelessWidget {
           state.whenOrNull(
             error: (bottomSheetMessageModel) {
               BottomSheetMessage.showError(
-                isDismissible: false,
+                isDismissible: true,
                 context: context,
                 data: bottomSheetMessageModel,
               );

@@ -17,7 +17,11 @@ class InsertHomeServiceServiceInfoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<HomeServiceEvaluationPackagesCubit>()..init(),
-      child: const _InsertHomeServiceServiceInfoView(),
+      child: const Scaffold(
+        body: SafeArea(
+          child: _InsertHomeServiceServiceInfoView(),
+        ),
+      ),
     );
   }
 }
@@ -36,7 +40,7 @@ class _InsertHomeServiceServiceInfoView extends StatelessWidget {
       listener: (context, state) {
         if (state is HomeServiceEvaluationPackagesErrorState) {
           BottomSheetMessage.showError(
-            isDismissible: false,
+            isDismissible: true,
             context: context,
             data: BottomSheetMessageModel(title: '', message: state.message),
           );

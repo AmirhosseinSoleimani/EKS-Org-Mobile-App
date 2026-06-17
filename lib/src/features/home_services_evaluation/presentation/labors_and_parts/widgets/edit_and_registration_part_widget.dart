@@ -75,8 +75,8 @@ class EditAndRegistrationPartWidget extends StatelessWidget {
               return BottomSheetMessage.showError(
                 context: context,
                 data: bottomSheetMessage,
-                isDismissible: false,
-                enableDrag: false,
+                isDismissible: true,
+                enableDrag: true,
               );
             },
             notice: (bottomSheetMessage) {

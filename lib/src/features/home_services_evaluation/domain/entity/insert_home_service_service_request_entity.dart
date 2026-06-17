@@ -7,15 +7,17 @@ class InsertHomeServiceServiceRequestEntity {
   final int? serviceRequestId;
   final int? kilometer;
   final int? carModelId;
-  final String? carModelGuid;
+  final String? carInfoGuid;
+  final String? chassisNumber;
 
   const InsertHomeServiceServiceRequestEntity({
     this.serviceType,
     this.serviceCategoryId,
     this.kilometer,
     this.carModelId,
-    this.carModelGuid,
+    this.carInfoGuid,
     this.serviceRequestId,
+    this.chassisNumber,
   });
 
   InsertHomeServiceServiceRequestModel toModel() {
@@ -24,9 +26,9 @@ class InsertHomeServiceServiceRequestEntity {
       serviceCategoryId: serviceCategoryId,
       kilometer: kilometer,
       carModelId: carModelId,
-      carModelGuid: carModelGuid,
+      carInfoGuid: carInfoGuid,
       serviceRequestId: serviceRequestId,
+      chassisNumber: chassisNumber,
     );
   }
-
 }

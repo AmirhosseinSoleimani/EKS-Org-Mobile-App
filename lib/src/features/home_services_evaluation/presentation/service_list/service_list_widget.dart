@@ -37,7 +37,7 @@ class ServiceListWidget extends StatelessWidget {
         listener: (context, state) => state.whenOrNull(
           error: (bottomSheetMessage) {
             return BottomSheetMessage.showError(
-              isDismissible: false,
+              isDismissible: true,
               context: context,
               data: bottomSheetMessage,
             );

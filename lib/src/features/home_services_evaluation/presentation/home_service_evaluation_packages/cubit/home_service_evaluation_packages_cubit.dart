@@ -203,7 +203,8 @@ class HomeServiceEvaluationPackagesCubit
         serviceRequestId: _activeServiceRequestSubject.valueOrNull?.id,
         kilometer: _lastEvaluationSubject.valueOrNull?.customerKilometer,
         carModelId: _activeServiceRequestSubject.valueOrNull?.carModelId,
-        carModelGuid: _activeServiceRequestSubject.valueOrNull?.carGuid,
+        carInfoGuid: _activeServiceRequestSubject.valueOrNull?.carGuid,
+        chassisNumber: _activeServiceRequestSubject.valueOrNull?.chassisNumber,
       ),
     );
     result.whenOrNull(

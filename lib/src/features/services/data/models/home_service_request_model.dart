@@ -186,7 +186,7 @@ class HomeServiceRequestModel extends HomeServiceRequestEntity {
 
       carInfoId: json['carInfoId'],
       carModelId: json['carModelId'],
-      carInfoGuid: json['carInfoGuid'],
+      carInfoGuid: json['carGuid'],
 
       carGroupTitle: json['carGroupTitle'],
       carFactory: json['carFactory'],

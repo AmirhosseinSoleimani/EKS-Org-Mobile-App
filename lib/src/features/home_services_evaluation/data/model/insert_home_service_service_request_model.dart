@@ -3,12 +3,13 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/e
 class InsertHomeServiceServiceRequestModel
     extends InsertHomeServiceServiceRequestEntity {
   InsertHomeServiceServiceRequestModel({
-    super.carModelGuid,
+    super.carInfoGuid,
     super.carModelId,
     super.kilometer,
     super.serviceCategoryId,
     super.serviceType,
     super.serviceRequestId,
+    super.chassisNumber,
   });
 
   Map<String, dynamic> toJson() => {
@@ -16,7 +17,8 @@ class InsertHomeServiceServiceRequestModel
     'serviceCategoryId': serviceCategoryId,
     'kilometer': kilometer,
     'carModelId': carModelId,
-    'carInfoGuid': carModelGuid,
+    'carInfoGuid': carInfoGuid,
     'serviceRequestId': serviceRequestId,
+    'chassisNumber': chassisNumber,
   };
 }
