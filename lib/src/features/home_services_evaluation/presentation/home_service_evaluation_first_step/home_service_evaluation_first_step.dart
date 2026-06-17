@@ -1,6 +1,7 @@
 import 'dart:ui';
 
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
+import 'package:eks_sana_plus_org/src/common/utils/extensions/string_ext.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/home_service_evaluation_second_step.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/time_distance_form_widget.dart';
@@ -39,6 +40,7 @@ class _HomeServiceEvaluationFirstStepView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cubit = context.read<HomeServiceEvaluationFirstStepCubit>();
     return BlocConsumer<
       HomeServiceEvaluationFirstStepCubit,
       HomeServiceEvaluationFirstStepState
@@ -90,7 +92,28 @@ class _HomeServiceEvaluationFirstStepView extends StatelessWidget {
             ),
             child: isLoading
                 ?  Center(child: CircularProgressIndicator(color: ServiceType.homeService.serviceColor))
-                : const _HomeServiceEvaluationFirstStepBody(),
+                : _HomeServiceEvaluationFirstStepBody(cubit: cubit),
+          ),
+          bottomNavigationBar: BlocBuilder<
+              HomeServiceEvaluationFirstStepCubit,
+              HomeServiceEvaluationFirstStepState
+          >(
+            builder: (context, state) {
+              final isSubmitting = state.maybeWhen(
+                submitLoading: () => true,
+                orElse: () => false,
+              );
+
+              return Padding(
+                padding: const EdgeInsets.all(16.0),
+                child: InkwellButtonWidget(
+                  title: 'ذخیره و ادامه',
+                  showLoading: isSubmitting,
+                  backgroundColor: ServiceType.homeService.serviceColor,
+                  onTap: isSubmitting ? null : cubit.submit,
+                ),
+              );
+            },
           ),
         );
       },
@@ -99,13 +122,12 @@ class _HomeServiceEvaluationFirstStepView extends StatelessWidget {
 }
 
 class _HomeServiceEvaluationFirstStepBody extends StatelessWidget {
-  const _HomeServiceEvaluationFirstStepBody();
+  final HomeServiceEvaluationFirstStepCubit cubit;
+
+  const _HomeServiceEvaluationFirstStepBody({required this.cubit});
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<HomeServiceEvaluationFirstStepCubit>();
-
-
     return Padding(
       padding: const EdgeInsets.all(AppPadding.p16),
       child: ListView(
@@ -132,38 +154,33 @@ class _HomeServiceEvaluationFirstStepBody extends StatelessWidget {
             _formElementGap(),
           ],
           Space.h8,
-          if(cubit.mainForm != null)...[
-            TimeDistanceFormSection(
-              assignDateController: cubit.mainForm!.assignDateController,
-              assignTimeController: cubit.mainForm!.assignTimeController,
-              arriveDateController: cubit.mainForm!.arriveDateController,
-              arriveTimeController: cubit.mainForm!.arriveTimeController,
+          StreamBuilder<bool>(
+            stream: cubit.kmReadOnly$,
+            initialData: cubit.kilometerFieldReadOnly,
+            builder: (context, snap) {
+              final readOnly = snap.data ?? true;
 
-              kilometerController: cubit.mainForm!.kilometerController,
-              customerDistanceController: cubit.mainForm!
-                  .customerDistanceController,
-
-              onAssignDateChange: cubit.mainForm!.setAssignDate,
-              onAssignTimeChange: cubit.mainForm!.setAssignTime,
-              onArriveDateChange: cubit.mainForm!.setArriveDate,
-              onArriveTimeChange: cubit.mainForm!.setArriveTime,
-            ),
-          ],
-          BlocBuilder<
-            HomeServiceEvaluationFirstStepCubit,
-            HomeServiceEvaluationFirstStepState
-          >(
-            builder: (context, state) {
-              final isSubmitting = state.maybeWhen(
-                submitLoading: () => true,
-                orElse: () => false,
-              );
-
-              return InkwellButtonWidget(
-                title: 'ذخیره و ادامه',
-                showLoading: isSubmitting,
-                backgroundColor: ServiceType.homeService.serviceColor,
-                onTap: isSubmitting ? null : cubit.submit,
+              return TimeDistanceFormSection(
+                assignDateController: cubit.mainForm.assignDateController,
+                assignTimeController: cubit.mainForm.assignTimeController,
+                arriveDateController: cubit.mainForm.arriveDateController,
+                arriveTimeController: cubit.mainForm.arriveTimeController,
+                kilometerController: cubit.mainForm.kilometerController,
+                customerDistanceController: cubit.mainForm
+                    .customerDistanceController,
+                onAssignDateChange: cubit.mainForm.setAssignDate,
+                onAssignTimeChange: cubit.mainForm.setAssignTime,
+                onArriveDateChange: cubit.mainForm.setArriveDate,
+                onArriveTimeChange: cubit.mainForm.setArriveTime,
+                kilometerLabel: cubit.activeServiceRequestStream.valueOrNull
+                    ?.saipaKilometer != null
+                    ? 'کیلومتر خودرو مشتری (کیلومتر سایپایدک: ${cubit
+                    .activeServiceRequestStream.valueOrNull!.saipaKilometer
+                    .toString().convertNumberWithLanguage()})'
+                    : 'کیلومتر خودرو مشتری',
+                customerDistanceLabel:
+                'مسافت طی شده تا مشتری (${cubit.assignTrackerNameController
+                    .text})',
               );
             },
           ),

@@ -33,6 +33,9 @@ class TimeDistanceFormSection extends StatelessWidget {
   final TextInputType kilometerKeyboardType;
   final TextInputType customerDistanceKeyboardType;
 
+  final bool kilometerReadOnly;
+  final bool customerDistanceReadOnly;
+
   final bool hasBorder;
 
   const TimeDistanceFormSection({
@@ -58,7 +61,8 @@ class TimeDistanceFormSection extends StatelessWidget {
     this.customerDistanceHintText,
     this.kilometerKeyboardType = TextInputType.number,
     this.customerDistanceKeyboardType = TextInputType.number,
-
+    this.kilometerReadOnly = false,
+    this.customerDistanceReadOnly = false,
     this.hasBorder = false,
   });
 
@@ -74,6 +78,7 @@ class TimeDistanceFormSection extends StatelessWidget {
           TextFormFieldWidget(
             controller: kilometerController,
             labelText: kilometerLabel,
+            readOnly: kilometerReadOnly,
             hintText: kilometerHintText,
             textInputType: kilometerKeyboardType,
             textInputFormatter: const [
@@ -86,6 +91,7 @@ class TimeDistanceFormSection extends StatelessWidget {
             labelText: customerDistanceLabel,
             hintText: customerDistanceHintText,
             textInputType: customerDistanceKeyboardType,
+            readOnly: customerDistanceReadOnly,
             textInputFormatter: const [
               ThousandsSeparatorInputFormatter(),
             ],

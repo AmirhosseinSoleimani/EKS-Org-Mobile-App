@@ -56,14 +56,19 @@ class HomeServiceEvaluationFirstStepCubit
     this._fetchSelectedRequestItemUseCase,
     this._getReliefRequestByIdUseCase,
     this._getEmdadgarInfoUseCase,
-  ) : super(const HomeServiceEvaluationFirstStepState.idle()) {
+  ): super(const HomeServiceEvaluationFirstStepState.idle()) {
+    mainForm = EvaluationMainFormController(
+      onChanged: _syncMainFormToEvaluation,
+    );
+
     _draftSub = _draft.stream.listen(_onDraftChanged);
     _recalcKmReadOnly();
   }
 
+
   HomeServiceRequestEntity? requestEntity;
   EmdadgarInfoEntity? emdadgarInfo;
-    EvaluationMainFormController? mainForm;
+  late final EvaluationMainFormController mainForm;
   final TextEditingController startTimeController = TextEditingController();
   final TextEditingController arriveTimeController = TextEditingController();
   final TextEditingController reliefDistanceController =
@@ -122,8 +127,31 @@ class HomeServiceEvaluationFirstStepCubit
     _kmReadOnlySubject.add(kilometerFieldReadOnly);
   }
 
+  void _syncMainFormToEvaluation() {
+    final eval = _evaluationSubject.valueOrNull;
+    final current = eval?.lastEvaluationEntity;
+
+    if (eval == null || current == null) return;
+
+    final updated = current.copyWith(
+      customerKilometer: int.tryParse(
+        mainForm.kilometerController.text.trim(),
+      ),
+      distanceToCustomer: double.tryParse(
+        mainForm.customerDistanceController.text.trim(),
+      ),
+      assignDate: mainForm.assignDateTime?.toIso8601String(),
+      arriveDate: mainForm.arriveDateTime?.toIso8601String(),
+      description: mainForm.descriptionController.text,
+    );
+
+    _evaluationSubject.add(
+      eval.copyWith(lastEvaluationEntity: updated),
+    );
+  }
+
   void _onDraftChanged(EvaluationDraft draft) {
-    if (draft.customerKilometer != null) {
+    if (mainForm?.kilometerController != null) {
       final txt = draft.customerKilometer.toString().padLeft(6, '0');
       if (customerCarKilometerController.text != txt) {
         customerCarKilometerController.text = txt;
@@ -179,8 +207,6 @@ class HomeServiceEvaluationFirstStepCubit
         );
         break;
     }
-
-    mainForm = EvaluationMainFormController(_syncToCubit);
   }
   Future<FetchResultType> _initializeData() async {
     final selectedResult = await _fetchSelectedRequest();
@@ -410,6 +436,17 @@ class HomeServiceEvaluationFirstStepCubit
       success: (data, failures, resultCode) async {
         if (resultCode == 0) {
           _evaluationSubject.add(data);
+
+          final lastEvaluation =
+              _evaluationSubject.valueOrNull?.lastEvaluationEntity;
+
+          mainForm.fill(
+            kilometer: lastEvaluation?.customerKilometer,
+            distanceToCustomer: lastEvaluation?.distanceToCustomer,
+            assignDate: lastEvaluation?.assignDate,
+            arriveDate: lastEvaluation?.arriveDate,
+            description: lastEvaluation?.description,
+          );
         } else {
           errMsg = failures?.listToString().trim();
           if (errMsg == null || errMsg!.isEmpty) {
@@ -443,31 +480,34 @@ class HomeServiceEvaluationFirstStepCubit
       success: (data, failures, resultCode) async {
         if (resultCode == 0) {
           final currentEval = _evaluationSubject.valueOrNull;
-          if (_evaluationSubject
-                      .valueOrNull
-                      ?.lastEvaluationEntity
-                      ?.distanceToCustomer ==
-                  null ||
-              reliefDistanceController.text.isEmpty) {
-            reliefDistanceController.text =
+          if (_evaluationSubject.valueOrNull
+              ?.lastEvaluationEntity
+              ?.distanceToCustomer ==
+              null ||
+              mainForm.customerDistanceController.text.isEmpty) {
+            mainForm.customerDistanceController.text =
                 data?.drivenDistance?.toString() ?? '';
+
             final updatedLast = currentEval?.lastEvaluationEntity?.copyWith(
               distanceToCustomer:
-                  double.tryParse(reliefDistanceController.text) ?? 0,
+              double.tryParse(mainForm.customerDistanceController.text) ?? 0,
             );
+
             final updatedEval = currentEval?.copyWith(
               lastEvaluationEntity: updatedLast,
             );
+
             if (updatedEval != null) {
               _evaluationSubject.add(updatedEval);
             }
           }
+
           assignTrackerNameController.text =
               data?.startTimeFollowUpName?.toString() ?? '';
-          startTimeController.text =
-              data?.startTime?.toString().convertNumberWithLanguage() ?? '';
-          arriveTimeController.text =
-              data?.arrivedTime?.toString().convertNumberWithLanguage() ?? '';
+
+          mainForm.setAssignDateTimeFromString(data?.startTimeDate);
+          mainForm.setArriveDateTimeFromString(data?.arrivedTimeDate);
+
           final updatedLast = _evaluationSubject
               .valueOrNull
               ?.lastEvaluationEntity
@@ -521,7 +561,7 @@ class HomeServiceEvaluationFirstStepCubit
       return;
     }
 
-    final text = customerCarKilometerController.text.trim();
+    final text =  mainForm.kilometerController.text.trim();
     if (text.isEmpty) {
       emit(
         HomeServiceEvaluationFirstStepState.submitError(
@@ -555,7 +595,14 @@ class HomeServiceEvaluationFirstStepCubit
         _evaluationSubject.valueOrNull?.lastEvaluationEntity ??
         LastEvaluationEntity();
     final updated = current.copyWith(
-      customerKilometer: customerKilometer,
+      customerKilometer: int.tryParse(
+        mainForm.kilometerController.text.trim(),
+      ),
+      distanceToCustomer: double.tryParse(
+        mainForm.customerDistanceController.text.trim(),
+      ),
+      assignDate: mainForm.assignDateTime?.toIso8601String(),
+      arriveDate: mainForm.arriveDateTime?.toIso8601String(),
       description: addDescriptionController.text,
     );
     _evaluationSubject.valueOrNull?.lastEvaluationEntity = updated;
