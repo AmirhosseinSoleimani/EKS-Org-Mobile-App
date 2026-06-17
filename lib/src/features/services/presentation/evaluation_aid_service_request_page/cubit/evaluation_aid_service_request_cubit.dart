@@ -45,7 +45,7 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../../evaluation/domain/entities/defect_entity.dart';
-import 'evaluation_main_form_controller.dart';
+import '../controllers/evaluation_main_form_controller.dart';
 
 part 'evaluation_aid_service_request_cubit.freezed.dart';
 part 'evaluation_aid_service_request_state.dart';

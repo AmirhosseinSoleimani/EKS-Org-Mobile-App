@@ -1,9 +1,9 @@
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/chassis_request_history_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/chassis_request_history_page/widgets/chassis_request_header.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_row.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/key_value_row.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_wiget_row.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_details_button.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/status_label.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:flutter/material.dart';
 
 class ChassisRequestHistoryCard extends StatelessWidget {

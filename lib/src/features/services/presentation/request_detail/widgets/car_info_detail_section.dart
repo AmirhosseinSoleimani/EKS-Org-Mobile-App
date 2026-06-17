@@ -2,7 +2,7 @@ import 'package:eks_sana_plus_org/src/common/utils/car_plate_parser.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/cubit/request_detail_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/car_plate.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_row.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/key_value_row.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:flutter/material.dart';
 

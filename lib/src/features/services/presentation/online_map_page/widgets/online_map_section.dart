@@ -1,7 +1,7 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/online_map_page/cubit/online_map_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_row.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/key_value_row.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/expand_toggle_button.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/online_map_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/static_map_widget.dart';

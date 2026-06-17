@@ -1,11 +1,11 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/change_home_service_request_address_page/cubit/change_home_service_request_address_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/expandable_section.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/expandable_section.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/request_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/address_location_section.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/agent_info_detail_section.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_status_section.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/agent_info_detail_section.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/request_status_section.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';

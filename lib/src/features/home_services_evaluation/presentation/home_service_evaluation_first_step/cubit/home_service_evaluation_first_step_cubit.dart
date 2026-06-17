@@ -15,6 +15,7 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/u
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/usecase/set_active_service_request_usecase.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/usecase/set_last_evaluation_usecase.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/evaluation_draft.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_first_step/controllers/evaluation_main_form_controller.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_first_step/mapper/home_service_request_entity_mapper.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/cubit/home_service_evaluation_second_step_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_info_entity.dart';
@@ -41,7 +42,6 @@ class HomeServiceEvaluationFirstStepCubit
   _getLastEvaluationHomeServiceUseCase;
   final SetActiveServiceRequestUseCase _setActiveServiceRequestUseCase;
   final SetLastEvaluationUseCase _setLastEvaluationUseCase;
-  final FetchOcrConfigurationUseCase _fetchOcrConfigurationUseCase;
   final EvaluationDraftStore _draft;
   final FetchSelectedRequestItemUseCase _fetchSelectedRequestItemUseCase;
   final GetHomeServiceRequestByIdUseCase _getReliefRequestByIdUseCase;
@@ -51,7 +51,6 @@ class HomeServiceEvaluationFirstStepCubit
     this._getLastEvaluationHomeServiceUseCase,
     this._getDistanceToCustomerHomeServiceUseCase,
     this._setLastEvaluationUseCase,
-    this._fetchOcrConfigurationUseCase,
     this._draft,
     this._setActiveServiceRequestUseCase,
     this._fetchSelectedRequestItemUseCase,
@@ -64,7 +63,7 @@ class HomeServiceEvaluationFirstStepCubit
 
   HomeServiceRequestEntity? requestEntity;
   EmdadgarInfoEntity? emdadgarInfo;
-
+    EvaluationMainFormController? mainForm;
   final TextEditingController startTimeController = TextEditingController();
   final TextEditingController arriveTimeController = TextEditingController();
   final TextEditingController reliefDistanceController =
@@ -138,35 +137,57 @@ class HomeServiceEvaluationFirstStepCubit
   }
 
   Future<void> initState() async {
+    emit(const HomeServiceEvaluationFirstStepState.loading());
     final result = await _initializeData();
 
     switch (result) {
       case FetchResultType.success:
+
         emit(const HomeServiceEvaluationFirstStepState.success());
         break;
 
       case FetchResultType.failure:
-        _emitError('درخواست با خطا مواجه شد، لطفا با پشتیبانی تماس بگیرید');
+        emit(
+          HomeServiceEvaluationFirstStepState.error(
+            message: BottomSheetMessageModel(
+              title: '',
+              message: 'درخواست با خطا مواجه شد، لطفا با پشتیبانی تماس بگیرید',
+            ),
+          ),
+        );
         break;
 
       case FetchResultType.connectionError:
-        _emitError('ارتباط با سرور برقرار نشد');
+        emit(
+          HomeServiceEvaluationFirstStepState.error(
+            message: BottomSheetMessageModel(
+              title: '',
+              message: 'ارتباط با سرور برقرار نشد',
+            ),
+          ),
+        );
         break;
 
       case FetchResultType.expireToken:
-        _emitError('نشست شما منقضی شده است. لطفا دوباره وارد شوید');
+        emit(
+          HomeServiceEvaluationFirstStepState.error(
+            message: BottomSheetMessageModel(
+              title: '',
+              message: 'نشست شما منقضی شده است. لطفا دوباره وارد شوید',
+            ),
+          ),
+        );
         break;
     }
-  }
 
+    mainForm = EvaluationMainFormController(_syncToCubit);
+  }
   Future<FetchResultType> _initializeData() async {
     final selectedResult = await _fetchSelectedRequest();
 
     if (selectedResult != FetchResultType.success) {
       return selectedResult;
     }
-
-    emit(const HomeServiceEvaluationFirstStepState.loading());
 
     final requestResult = await _fetchServiceRequestData();
 
@@ -185,7 +206,6 @@ class HomeServiceEvaluationFirstStepCubit
     );
 
     if (setActiveServiceError != null) {
-      _emitError(setActiveServiceError);
       return FetchResultType.failure;
     }
 
@@ -200,7 +220,6 @@ class HomeServiceEvaluationFirstStepCubit
     );
 
     if (lastEvaluationError != null) {
-      _emitError(lastEvaluationError);
       return FetchResultType.failure;
     }
 
@@ -210,16 +229,6 @@ class HomeServiceEvaluationFirstStepCubit
     );
 
     if (distanceToCustomerError != null) {
-      _emitError(distanceToCustomerError);
-      return FetchResultType.failure;
-    }
-
-    final ocrConfigurationError = await _fetchOcrConfiguration(
-      serviceType: request?.serviceType ?? 0,
-    );
-
-    if (ocrConfigurationError != null) {
-      _emitError(ocrConfigurationError);
       return FetchResultType.failure;
     }
 
@@ -227,6 +236,28 @@ class HomeServiceEvaluationFirstStepCubit
     HomeServiceEvaluationSecondStepCubit.customerServiceList?.clear();
 
     return FetchResultType.success;
+  }
+
+  void _syncToCubit() {
+    final form = mainForm;
+
+    final eval = _evaluationSubject.valueOrNull?.lastEvaluationEntity;
+
+    final updated = eval?.copyWith(
+      assignDate: form?.assignDateTime?.toIso8601String(),
+      arriveDate: form?.arriveDateTime?.toIso8601String(),
+      customerKilometer: int.tryParse(form?.kilometerController.text??'0'),
+      distanceToCustomer:
+      double.tryParse(form?.customerDistanceController.text ?? '0'),
+    );
+
+    if (updated != null) {
+      _evaluationSubject.add(
+        _evaluationSubject.valueOrNull?.copyWith(
+          lastEvaluationEntity: updated,
+        ),
+      );
+    }
   }
 
   Future<FetchResultType> _fetchSelectedRequest() async {
@@ -455,34 +486,6 @@ class HomeServiceEvaluationFirstStepCubit
           if (updatedEval2 != null) {
             _evaluationSubject.add(updatedEval2);
           }
-        } else {
-          errMsg = failures?.listToString().trim();
-          if (errMsg == null || errMsg!.isEmpty) {
-            errMsg = 'درخواست با خطا مواجه شد، لطفا با پشتیبانی تماس بگیرید';
-          }
-        }
-      },
-      failure: (error, failures) {
-        errMsg = (failures ?? error.toString()).trim();
-        if (errMsg!.isEmpty) {
-          errMsg = 'درخواست با خطا مواجه شد، لطفا با پشتیبانی تماس بگیرید';
-        }
-      },
-    );
-    return (errMsg != null && errMsg!.isNotEmpty) ? errMsg : null;
-  }
-
-  Future<String?> _fetchOcrConfiguration({int? serviceType}) async {
-    final result = await _fetchOcrConfigurationUseCase.call(
-      OcrConfigurationKilometerRequestEntity(serviceType: serviceType),
-    );
-    String? errMsg;
-    result.whenOrNull(
-      success: (data, failures, resultCode) async {
-        if (resultCode == 0) {
-          _isKmImageMandatorySubject.add(data?.isSavingImageMandatory);
-          _isKmInputEnabledSubject.add(data?.isKilometerInputEnabled);
-          _recalcKmReadOnly();
         } else {
           errMsg = failures?.listToString().trim();
           if (errMsg == null || errMsg!.isEmpty) {

@@ -945,6 +945,18 @@ _i174.GetIt $initGetIt(
       gh<_i786.GetEmdadgarInfoUseCase>(),
     ),
   );
+  gh.factory<_i317.HomeServiceEvaluationFirstStepCubit>(
+    () => _i317.HomeServiceEvaluationFirstStepCubit(
+      gh<_i1059.GetLastEvaluationHomeServiceUseCase>(),
+      gh<_i1026.GetDistanceToCustomerHomeServiceUseCase>(),
+      gh<_i570.SetLastEvaluationUseCase>(),
+      gh<_i823.EvaluationDraftStore>(),
+      gh<_i497.SetActiveServiceRequestUseCase>(),
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
+    ),
+  );
   gh.factory<_i566.LoginCubit>(
     () => _i566.LoginCubit(
       gh<_i139.LoginUseCase>(),
@@ -1141,19 +1153,6 @@ _i174.GetIt $initGetIt(
       gh<_i67.GetRequestFollowupHistoryUseCase>(),
       gh<_i786.GetEmdadgarInfoUseCase>(),
       gh<_i955.GetRequestStatusHistoryUseCase>(),
-    ),
-  );
-  gh.factory<_i317.HomeServiceEvaluationFirstStepCubit>(
-    () => _i317.HomeServiceEvaluationFirstStepCubit(
-      gh<_i1059.GetLastEvaluationHomeServiceUseCase>(),
-      gh<_i1026.GetDistanceToCustomerHomeServiceUseCase>(),
-      gh<_i570.SetLastEvaluationUseCase>(),
-      gh<_i931.FetchOcrConfigurationUseCase>(),
-      gh<_i823.EvaluationDraftStore>(),
-      gh<_i497.SetActiveServiceRequestUseCase>(),
-      gh<_i376.FetchSelectedRequestItemUseCase>(),
-      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
-      gh<_i786.GetEmdadgarInfoUseCase>(),
     ),
   );
   gh.factory<_i362.EmdadgarInvoiceCubit>(

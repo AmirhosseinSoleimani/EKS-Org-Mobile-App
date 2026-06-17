@@ -1,14 +1,18 @@
 import 'dart:ui';
 
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
-import 'package:eks_sana_plus_org/src/common/utils/extensions/string_ext.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/home_service_evaluation_second_step.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/time_distance_form_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/agent_info_detail_section.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/expandable_section.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/request_detail_section.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/request_status_section.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -66,8 +70,8 @@ class _HomeServiceEvaluationFirstStepView extends StatelessWidget {
                 Navigator.of(context).pop();
                 context.read<HomeServiceEvaluationFirstStepCubit>().initState();
               },
-              isDismissible: false,
-              enableDrag: false,
+              isDismissible: true,
+              enableDrag: true,
             );
           },
         );
@@ -79,7 +83,7 @@ class _HomeServiceEvaluationFirstStepView extends StatelessWidget {
         );
 
         return Scaffold(
-          appBar: const SimpleAppBar(title: 'ثبت ارزیابی خدمت در محل'),
+          appBar: const SimpleAppBar(title: 'ثبت فاکتور'),
           body: ScrollConfiguration(
             behavior: ScrollConfiguration.of(context).copyWith(
               dragDevices: {PointerDeviceKind.touch, PointerDeviceKind.mouse},
@@ -108,82 +112,43 @@ class _HomeServiceEvaluationFirstStepBody extends StatelessWidget {
         physics: const BouncingScrollPhysics(),
         children: [
           Space.h4,
-
-          StreamBuilder<bool>(
-            stream: cubit.kmReadOnly$,
-            initialData: cubit.kilometerFieldReadOnly,
-            builder: (context, snap) {
-              final readOnly = snap.data ?? true;
-              final saipaKilometer =
-                  cubit.activeServiceRequestStream.valueOrNull?.saipaKilometer;
-
-              return TextFormFieldWidget(
-                controller: cubit.customerCarKilometerController,
-                readOnly: readOnly,
-                textDirection: TextDirection.ltr,
-                textAlign: TextAlign.center,
-                textInputType: TextInputType.number,
-                labelText: saipaKilometer != null
-                    ? 'کیلومتر خودرو مشتری (کیلومتر سایپایدک: ${saipaKilometer.toString().convertNumberWithLanguage()})'
-                    : 'کیلومتر خودرو مشتری',
-                mandatory: true,
-                maxLength: 6,
-              );
-            },
+          ExpandableSection(
+            isExpanded: false,
+            header: RequestStatusSection(request: cubit.requestEntity),
+            child: RequestDetailSection(
+              selectedRequest: cubit.requestEntity,
+              showCustomerInfo: true,
+            ),
           ),
-
-          Space.h16,
-
-          Row(
-            children: [
-              Expanded(
-                child: TextFormFieldWidget(
-                  controller: cubit.startTimeController,
-                  readOnly: true,
-                  textDirection: TextDirection.ltr,
-                  textAlign: TextAlign.center,
-                  textInputType: TextInputType.number,
-                  labelText: 'زمان اعزام',
-                ),
+          if (cubit.emdadgarInfo != null) ...[
+            ExpandableSection(
+              isExpanded: false,
+              header: const BodyMediumText(text: "اطلاعات امداد رسان"),
+              child: AgentInfoDetailSection(
+                agentInfo: cubit.emdadgarInfo!,
+                selectedRequest: cubit.requestEntity,
               ),
-              Space.w8,
-              Expanded(
-                child: TextFormFieldWidget(
-                  controller: cubit.arriveTimeController,
-                  readOnly: true,
-                  textDirection: TextDirection.ltr,
-                  textAlign: TextAlign.center,
-                  textInputType: TextInputType.number,
-                  labelText: 'زمان حضور',
-                ),
-              ),
-            ],
-          ),
+            ),
+            _formElementGap(),
+          ],
+          Space.h8,
+          if(cubit.mainForm != null)...[
+            TimeDistanceFormSection(
+              assignDateController: cubit.mainForm!.assignDateController,
+              assignTimeController: cubit.mainForm!.assignTimeController,
+              arriveDateController: cubit.mainForm!.arriveDateController,
+              arriveTimeController: cubit.mainForm!.arriveTimeController,
 
-          Space.h16,
+              kilometerController: cubit.mainForm!.kilometerController,
+              customerDistanceController: cubit.mainForm!
+                  .customerDistanceController,
 
-          TextFormFieldWidget(
-            controller: cubit.reliefDistanceController,
-            readOnly: true,
-            textDirection: TextDirection.ltr,
-            textAlign: TextAlign.center,
-            textInputType: TextInputType.number,
-            labelText:
-                'مسافت طی شده تا مشتری (${cubit.assignTrackerNameController.text})',
-            mandatory: true,
-          ),
-
-          Space.h16,
-
-          TextFormFieldWidget(
-            controller: cubit.addDescriptionController,
-            maxLines: 5,
-            maxLength: 500,
-            labelText: 'توضیحات',
-          ),
-
-          Space.h24,
-
+              onAssignDateChange: cubit.mainForm!.setAssignDate,
+              onAssignTimeChange: cubit.mainForm!.setAssignTime,
+              onArriveDateChange: cubit.mainForm!.setArriveDate,
+              onArriveTimeChange: cubit.mainForm!.setArriveTime,
+            ),
+          ],
           BlocBuilder<
             HomeServiceEvaluationFirstStepCubit,
             HomeServiceEvaluationFirstStepState
@@ -206,4 +171,6 @@ class _HomeServiceEvaluationFirstStepBody extends StatelessWidget {
       ),
     );
   }
+
+  SizedBox _formElementGap() => Space.h8;
 }

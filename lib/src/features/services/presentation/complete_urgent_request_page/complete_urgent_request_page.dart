@@ -7,7 +7,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_requ
 import 'package:eks_sana_plus_org/src/features/services/presentation/complete_urgent_request_page/cubit/complete_urgent_request_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/dropdown_selector.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/status_label.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/submit_cancel_buttons.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/two_text_fields_row.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';

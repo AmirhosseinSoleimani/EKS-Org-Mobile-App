@@ -1,8 +1,8 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/cubit/request_detail_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_detail_section.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/request_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_status_history_section.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_status_section.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/request_status_section.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/main_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
@@ -13,10 +13,10 @@ import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../widgets/agent_info_detail_section.dart';
+import '../../../../shared/widgets/request_widgets/agent_info_detail_section.dart';
 import 'widgets/car_info_detail_section.dart';
 import 'widgets/customer_info_detail_section.dart';
-import 'widgets/expandable_section.dart';
+import '../../../../shared/widgets/request_widgets/expandable_section.dart';
 import 'widgets/request_followup_history_section.dart';
 import 'widgets/request_location_detail_section.dart';
 

@@ -1,5 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/cubit/request_detail_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_row.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/key_value_row.dart';
 import 'package:flutter/material.dart';
 
 class CustomerInfoDetailSection extends StatelessWidget {

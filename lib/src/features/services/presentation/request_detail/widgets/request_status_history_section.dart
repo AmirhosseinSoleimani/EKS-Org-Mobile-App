@@ -1,5 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/request_status_history_entity.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_row.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/key_value_row.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/timeline_item_card.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/vertical_line_indicator.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
