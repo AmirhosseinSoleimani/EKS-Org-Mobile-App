@@ -5,6 +5,7 @@ import '../../data/models/part_model.dart';
 import 'allowable_cost_center_entity.dart';
 
 class PartEntity implements DropdownItem<String?>{
+  final int? id;
   final String? name;
   final String? serial;
   final List<AllowableCostCenterEntity>? allowableCostCenterList;
@@ -14,6 +15,7 @@ class PartEntity implements DropdownItem<String?>{
   final String? partGroupName;
 
   const PartEntity({
+    this.id,
     this.name,
     this.serial,
     this.allowableCostCenterList,
@@ -25,6 +27,7 @@ class PartEntity implements DropdownItem<String?>{
 
   PartModel toModel() {
     return PartModel(
+      id: id,
       name: name,
       serial: serial,
       allowableCostCenterList:
@@ -37,6 +40,7 @@ class PartEntity implements DropdownItem<String?>{
   }
 
   PartEntity copyWith({
+    int? id,
     String? name,
     String? serial,
     List<AllowableCostCenterEntity>? allowableCostCenterList,
@@ -46,6 +50,7 @@ class PartEntity implements DropdownItem<String?>{
     String? partGroupName,
   }) {
     return PartEntity(
+      id: id ?? this.id,
       name: name ?? this.name,
       serial: serial ?? this.serial,
       allowableCostCenterList:
@@ -63,7 +68,7 @@ class PartEntity implements DropdownItem<String?>{
   String get label => name ?? '';
 
   @override
-  String? get value => serial;
+  String? get value => (id != null && id! > 0) ? id.toString() : serial;
 
   @override
   Widget? leading(BuildContext context) => null;

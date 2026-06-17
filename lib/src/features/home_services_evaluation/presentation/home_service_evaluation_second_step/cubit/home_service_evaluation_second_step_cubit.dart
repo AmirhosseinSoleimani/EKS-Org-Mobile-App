@@ -194,7 +194,7 @@ class HomeServiceEvaluationSecondStepCubit
     result.whenOrNull(
       success: (data, failures, resultCode) {
         if (resultCode == 0) {
-          id = data?.id ?? 0;
+          id = int.tryParse(data?.id ?? '0') ?? 0;
           emit(const HomeServiceEvaluationSecondStepState.submitSuccess());
         } else {
           _emitSubmitError(failures?.listToString() ?? '');

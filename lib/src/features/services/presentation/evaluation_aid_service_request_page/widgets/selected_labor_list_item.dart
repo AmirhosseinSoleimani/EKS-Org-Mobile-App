@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 class SelectedLaborListItem extends StatelessWidget {
   final EvaluationSelectedLaborEntity labor;
   final bool isPartsExpanded;
+  final bool hasBorder;
   final VoidCallback onAddPart;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
@@ -19,6 +20,7 @@ class SelectedLaborListItem extends StatelessWidget {
     super.key,
     required this.labor,
     required this.isPartsExpanded,
+    this.hasBorder = true,
     required this.onAddPart,
     required this.onEdit,
     required this.onDelete,
@@ -30,7 +32,6 @@ class SelectedLaborListItem extends StatelessWidget {
   static const _animationDuration = Duration(milliseconds: 250);
 
   static const _backgroundColor = Color(0x66F2F2F2);
-  static const _dividerColor = Color(0xFFE7E7E7);
 
   @override
   Widget build(BuildContext context) {
@@ -41,7 +42,9 @@ class SelectedLaborListItem extends StatelessWidget {
       padding: const EdgeInsets.all(_itemPadding),
       decoration: BoxDecoration(
         color: _backgroundColor,
-        border: Border.all(color: colorScheme.onInverseSurface),
+        border: hasBorder
+            ? Border.all(color: colorScheme.onInverseSurface)
+            : null,
         borderRadius: BorderRadius.circular(_borderRadius),
       ),
       child: Column(

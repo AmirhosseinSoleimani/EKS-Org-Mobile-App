@@ -1,17 +1,18 @@
-import 'dart:convert';
-import 'dart:typed_data';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
-import 'package:eks_sana_plus_org/src/common/utils/extensions/string_ext.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/evaluation_part_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/evaluation_service_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/cubit/home_service_evaluation_second_step_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/widgets/part_container_widget.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/mapper/evaluation_labor_response_mapper.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_part/page/home_service_search_part_page.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/widgets/edit_and_registration_part_widget.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/widgets/selected_labor_list_item.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../../domain/entity/evaluation_service_entity.dart';
 
 class ServiceCustomerContainerWidget extends StatelessWidget {
   const ServiceCustomerContainerWidget({
@@ -55,24 +56,22 @@ class ServiceCustomerContainerWidget extends StatelessWidget {
                 color: colorScheme.inverseSurface,
               ),
             ),
-            child: const Padding(
+            child:  Padding(
               padding: EdgeInsets.all(4.0),
               child: Icon(
                 Icons.delete,
                 size: 20,
-                color: Colors.red,
+                color: colorScheme.primary,
               ),
             ),
           ),
         ),
 
-        title: Text(
+        title: BodyMediumText(text:
           '${evaluationServiceEntity.serviceTitle} (${evaluationServiceEntity.serviceCategoryTitle})',
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 14.0,
-            color: Colors.black,
-          ),
+          fontWeight: FontWeight.bold,
+          fontSize: 14.0,
+          color: Colors.black,
         ),
 
         children: (evaluationServiceEntity.evaluationLabors?.isNotEmpty ?? false)
@@ -83,177 +82,44 @@ class ServiceCustomerContainerWidget extends StatelessWidget {
           final element = entry.value;
           final laborIndex = entry.key;
 
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              decoration: BoxDecoration(
-                border: Border.all(
-                  width: 2,
-                  color: colorScheme.inverseSurface,
-                ),
-                borderRadius: const BorderRadius.all(Radius.circular(12)),
-                color: Colors.white,
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 6.0),
-                child: Column(
-                  children: [
-                    /// LABOR HEADER
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Expanded(
-                            child: Text(
-                              'نام اجرت: ${element.laborGroupDesc ?? '-'}',
-                              style: Theme.of(context)
-                                  .textTheme
-                                  .bodyMedium!
-                                  .copyWith(
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12.0,
-                              ),
-                            ),
-                          ),
-                          Text(
-                            element.costCenterObject?.name ?? '',
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12.0,
-                              color:
-                              (element.costCenterObject?.id == 0)
-                                  ? ServiceType
-                                  .homeService.serviceColor
-                                  : Colors.green,
-                            ),
-                          ),
-                        ],
-                      ),
+          return (element.parts?.isNotEmpty ?? false) ? ListView.builder(
+            padding: EdgeInsets.all(8),
+            shrinkWrap: true,
+            physics:
+            const NeverScrollableScrollPhysics(),
+            itemCount: element.parts?.length,
+            itemBuilder: (BuildContext context, int index) {
+              final selectedLabor = element.toSelectedEntity();
+              return SelectedLaborListItem(
+                labor: selectedLabor,
+                isPartsExpanded: true,
+                onAddPart: () async =>
+                await _navigateAddPart(context, laborIndex),
+
+                onEdit: () =>
+                    _navigateEditLabor(
+                        context: context,
+                        laborIndex: laborIndex,
+                        evaluationPartEntity: element
+                            .parts?[index] ??
+                            EvaluationPartResponseEntity(),
+                        partIndex: index
                     ),
-
-                    /// PRICE + ADD PART
-                    Padding(
-                      padding:
-                      const EdgeInsets.symmetric(horizontal: 8.0),
-                      child: Row(
-                        children: [
-                          Text(
-                            'قیمت: ${element.laborPrice} ریال'
-                                .splitPriceByComma()
-                                .convertNumberWithLanguage(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .bodyMedium!
-                                .copyWith(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 12.0,
-                            ),
-                          ),
-                          const Spacer(),
-
-                          /// ADD PART
-                          InkWell(
-                            onTap: () async {
-                              await Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (_) =>
-                                      HomeServiceSearchPartPage(
-                                        serviceIndex: serviceIndex,
-                                        laborIndex: laborIndex,
-                                      ),
-                                ),
-                              );
-
-                              context
-                                  .read<
-                                  HomeServiceEvaluationSecondStepCubit>()
-                                  .refresh();
-                            },
-                            child: Container(
-                              decoration: BoxDecoration(
-                                border: Border.all(
-                                  width: 1,
-                                  color: ServiceType
-                                      .homeService.serviceColor,
-                                ),
-                                borderRadius: const BorderRadius.all(
-                                  Radius.circular(12),
-                                ),
-                              ),
-                              child: Padding(
-                                padding: const EdgeInsets.all(8.0),
-                                child: Row(
-                                  children: [
-                                    Icon(
-                                      Icons.add,
-                                      size: 16,
-                                      color: ServiceType
-                                          .homeService.serviceColor,
-                                    ),
-                                    const SizedBox(width: 4),
-                                    Text(
-                                      'افزودن قطعه',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: ServiceType
-                                            .homeService.serviceColor,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                onDelete: () =>
+                    _showDeleteLaborBottomSheet(
+                      context,
+                      element.parts?[index] ??
+                          EvaluationPartResponseEntity(),
+                      laborIndex,
+                      true,
                     ),
+                onToggleShowMoreParts: () {},
+              );
+            },
 
-                    /// PARTS
-                    if (element.parts?.isNotEmpty ?? false) ...[
-                      Space.h16,
-                      ListView.builder(
-                        shrinkWrap: true,
-                        physics:
-                        const NeverScrollableScrollPhysics(),
-                        itemCount: element.parts?.length,
-                        itemBuilder: (BuildContext context, int index) {
-                          return Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: PartContainerWidget(
-                              entity: element.parts?[index] ??
-                                  EvaluationPartResponseEntity(),
-                              serviceIndex: serviceIndex,
-                              laborIndex: laborIndex,
-                              partIndex: index,
-                              isEditablePart: true,
-                            ),
-                          );
-                        },
-                      ),
-                    ],
-                  ],
-                ),
-              ),
-            ),
-          );
+          ) : EmptyListWidget();
         }).toList()
-            : const [
-          Padding(
-            padding: EdgeInsets.all(12.0),
-            child: Text(
-              'موردی جهت نمایش وجود ندارد',
-              style: TextStyle(
-                fontSize: 14.0,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-          ),
-        ],
+            : [EmptyListWidget()],
       ),
     );
   }
@@ -313,5 +179,135 @@ class ServiceCustomerContainerWidget extends StatelessWidget {
         );
       },
     );
+  }
+
+  void _navigateEditLabor({
+    required BuildContext context,
+    required int laborIndex,
+    required EvaluationPartResponseEntity evaluationPartEntity,
+    required int partIndex,
+  }) async {
+    await Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) =>
+            EditAndRegistrationPartWidget(
+              evaluationPartEntity: evaluationPartEntity,
+              serviceIndex: serviceIndex,
+              laborIndex: laborIndex,
+              partIndex: partIndex,
+              isEditablePart: true,
+              partCustomerIndex: partIndex,
+            ),
+      ),
+    );
+
+    if (context.mounted) {
+      context
+          .read<HomeServiceEvaluationSecondStepCubit>()
+          .refresh();
+    }
+  }
+
+  void _showDeleteLaborBottomSheet(BuildContext context,
+      EvaluationPartResponseEntity entity, int laborIndex,
+      bool? isEditablePart) {
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
+    showModalBottomSheet(
+      context: context,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      ),
+      builder: (_) {
+        return Padding(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Text(
+                'آیا از حذف این قطعه اطمینان دارید؟',
+                style: Theme
+                    .of(
+                  context,
+                )
+                    .textTheme
+                    .bodyMedium
+                    ?.copyWith(fontWeight: FontWeight.bold),
+              ),
+
+              Space.h16,
+
+              Row(
+                children: [
+                  Expanded(
+                    child: InkwellButtonWidget(
+                      title: 'لغو',
+                      backgroundColor: colorScheme.surface,
+                      onTap: () => Navigator.pop(context),
+                    ),
+                  ),
+
+                  Space.w8,
+
+                  Expanded(
+                    child: InkwellButtonWidget(
+                      title: 'حذف',
+                      backgroundColor: ServiceType.homeService.serviceColor,
+                      onTap: () {
+                        _handleDelete(
+                            context, entity, laborIndex, isEditablePart);
+                        Navigator.pop(context);
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  void _handleDelete(BuildContext context, EvaluationPartResponseEntity entity,
+      int laborIndex, bool? isEditablePart) {
+    final cubit = context.read<HomeServiceEvaluationSecondStepCubit>();
+
+    if (isEditablePart ?? false) {
+      HomeServiceEvaluationSecondStepCubit
+          .customerServiceList?[serviceIndex]
+          .evaluationLabors?[laborIndex]
+          .parts
+          ?.remove(entity);
+    } else {
+      HomeServiceEvaluationSecondStepCubit
+          .selectedServiceList?[serviceIndex]
+          .evaluationLabors?[laborIndex]
+          .parts
+          ?.remove(entity);
+    }
+
+    cubit.refresh();
+  }
+
+  Future<void> _navigateAddPart(BuildContext context, int laborIndex) async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(
+        builder: (_) =>
+            HomeServiceSearchPartPage(
+              serviceIndex: serviceIndex,
+              laborIndex: laborIndex,
+            ),
+      ),
+    );
+    if (context.mounted) {
+      context
+          .read<
+          HomeServiceEvaluationSecondStepCubit>()
+          .refresh();
+    }
   }
 }

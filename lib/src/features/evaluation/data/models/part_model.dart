@@ -3,6 +3,7 @@ import 'allowable_cost_center_model.dart';
 
 class PartModel extends PartEntity {
   const PartModel({
+    super.id,
     super.name,
     super.serial,
     super.allowableCostCenterList,
@@ -14,6 +15,7 @@ class PartModel extends PartEntity {
 
   factory PartModel.fromJson(Map<String, dynamic> json) {
     return PartModel(
+      id: json['id'],
       name: json['name'],
       serial: json['serial'],
       allowableCostCenterList: json['allowableCostCenterList'] == null

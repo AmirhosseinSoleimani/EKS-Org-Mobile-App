@@ -146,10 +146,11 @@ class _HomeServiceEvaluationSecondStepBody extends StatelessWidget {
                 return const SizedBox.shrink();
               }
 
-              return ListView.builder(
+              return ListView.separated(
                 shrinkWrap: true,
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: customerServices.length,
+                padding: EdgeInsets.symmetric(vertical: 8),
                 itemBuilder: (context, index) {
                   final service = customerServices[index];
 
@@ -161,6 +162,13 @@ class _HomeServiceEvaluationSecondStepBody extends StatelessWidget {
                         evaluationServiceEntity: service,
                       );
                     },
+                  );
+                },
+                separatorBuilder: (context, index) {
+                  return  Divider(
+                    height: 1,
+                    thickness: 1,
+                    color: Colors.grey.withAlpha(100),
                   );
                 },
               );

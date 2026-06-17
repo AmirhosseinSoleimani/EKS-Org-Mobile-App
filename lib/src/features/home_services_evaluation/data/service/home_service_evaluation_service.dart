@@ -29,7 +29,7 @@ abstract class HomeServiceEvaluationService {
   @factoryMethod
   factory HomeServiceEvaluationService(Dio dio) = _HomeServiceEvaluationService;
 
-  @POST('/api/HomeServiceEvaluation/Post')
+  @POST('/api/HomeServiceEvaluation/PostHomeServiceEvaluation')
   Future<BaseSingleResponse<EvaluationPostResponseModel?>> postEvaluation(
     @Body() Map<String, dynamic> body,
   );

@@ -8,6 +8,7 @@ class EvaluationPostResponseModel extends EvaluationPostResponseEntity {
   });
 
   factory EvaluationPostResponseModel.fromJson(Map<String, dynamic> json) {
+
     return EvaluationPostResponseModel(
       id: json['id'],
     );
