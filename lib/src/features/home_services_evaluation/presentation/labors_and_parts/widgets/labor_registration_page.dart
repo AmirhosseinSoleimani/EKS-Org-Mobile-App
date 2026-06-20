@@ -8,6 +8,7 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presenta
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/cubit/labors_and_parts_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/cubit/labors_and_parts_state.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/ek_choose_car_problem_button.dart';
@@ -27,10 +28,7 @@ class LaborRegistrationPage extends StatelessWidget {
   final LaborResponseEntity? entity;
   final int serviceIndex;
 
-  @override
-  String? screenName(BuildContext context) {
-    return 'ثبت اجرت';
-  }
+
 
   @override
   Widget build(BuildContext context) {
@@ -45,75 +43,78 @@ class LaborRegistrationPage extends StatelessWidget {
   }
 
   Widget _build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: BlocBuilder<LaborsAndPartsCubit, LaborsAndPartsState>(
-        builder: (BuildContext context, state) {
-          final cubit = context.read<LaborsAndPartsCubit>();
-          final laborItem = cubit.selectLaborResponseEntity;
-          final costCenterList = laborItem?.allowableCostCenterList ?? [];
-          final hasCostCenters = costCenterList.isNotEmpty;
-          return Column(
-            mainAxisAlignment: MainAxisAlignment.start,
-            children: [
-              EkChooseCarProblemButton(
-                title: cubit.selectLaborResponseEntity?.name ?? '-',
-                label: 'نام اجرت',
-                onTap: () {
-                  Navigator.of(context).pop();
-                },
-                height: 67,
-              ),
-              Space.h16,
-              if (hasCostCenters)
-                EkDropDown(
-                  costCenterList.map((e) => e.name ?? '').toList(),
-                  borderColor: Colors.grey,
-                  prefixIcon: const SizedBox(),
-                  postfixIcon: const Icon(
-                    Icons.keyboard_arrow_down_rounded,
-                    color: Colors.grey,
-                    size: 24,
+    return Scaffold(
+      appBar: SimpleAppBar(title: 'ثبت اجرت'),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: BlocBuilder<LaborsAndPartsCubit, LaborsAndPartsState>(
+          builder: (BuildContext context, state) {
+            final cubit = context.read<LaborsAndPartsCubit>();
+            final laborItem = cubit.selectLaborResponseEntity;
+            final costCenterList = laborItem?.allowableCostCenterList ?? [];
+            final hasCostCenters = costCenterList.isNotEmpty;
+            return Column(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: [
+                EkChooseCarProblemButton(
+                  title: cubit.selectLaborResponseEntity?.name ?? '-',
+                  label: 'نام اجرت',
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  height: 67,
+                ),
+                Space.h16,
+                if (hasCostCenters)
+                  EkDropDown(
+                    costCenterList.map((e) => e.name ?? '').toList(),
+                    borderColor: Colors.grey,
+                    prefixIcon: const SizedBox(),
+                    postfixIcon: const Icon(
+                      Icons.keyboard_arrow_down_rounded,
+                      color: Colors.grey,
+                      size: 24,
+                    ),
+                    selectedItem:
+                        cubit.selectLaborCostCenterEntity?.name ??
+                        'لطفا یک گزینه را انتخاب کنید',
+                    label:
+                        'مرکز هزینه'
+                        ' *',
+                    onItemValue: (value) {
+                      _onCostCenterSelected(value, context);
+                    },
                   ),
-                  selectedItem:
-                      cubit.selectLaborCostCenterEntity?.name ??
-                      'لطفا یک گزینه را انتخاب کنید',
-                  label:
-                      'مرکز هزینه'
-                      ' *',
-                  onItemValue: (value) {
-                    _onCostCenterSelected(value, context);
+                if (hasCostCenters) Space.h16,
+                StreamBuilder<String?>(
+                  stream: cubit.priceLaborSubject,
+                  builder: (context, snapshot) {
+                    if (snapshot.data?.isNotEmpty ?? false) {
+                      return EkInputDecoratorTextBox(
+                        label: 'قیمت',
+                        text: snapshot.data
+                            .toString()
+                            .splitPriceByComma()
+                            .addPriceTag()
+                            .convertNumberWithLanguage(),
+                      );
+                    } else {
+                      return const SizedBox();
+                    }
                   },
                 ),
-              if (hasCostCenters) Space.h16,
-              StreamBuilder<String?>(
-                stream: cubit.priceLaborSubject,
-                builder: (context, snapshot) {
-                  if (snapshot.data?.isNotEmpty ?? false) {
-                    return EkInputDecoratorTextBox(
-                      label: 'قیمت',
-                      text: snapshot.data
-                          .toString()
-                          .splitPriceByComma()
-                          .addPriceTag()
-                          .convertNumberWithLanguage(),
-                    );
-                  } else {
-                    return const SizedBox();
-                  }
-                },
-              ),
-              Space.h16,
-              InkwellButtonWidget(
-                title: 'تائید',
-                backgroundColor: ServiceType.homeService.serviceColor,
-                onTap: () {
-                  _onConfirmButtonPressed(context, serviceIndex);
-                },
-              ),
-            ],
-          );
-        },
+                Space.h16,
+                InkwellButtonWidget(
+                  title: 'تائید',
+                  backgroundColor: ServiceType.homeService.serviceColor,
+                  onTap: () {
+                    _onConfirmButtonPressed(context, serviceIndex);
+                  },
+                ),
+              ],
+            );
+          },
+        ),
       ),
     );
   }

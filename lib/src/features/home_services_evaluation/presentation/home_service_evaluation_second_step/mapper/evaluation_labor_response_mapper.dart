@@ -20,7 +20,7 @@ extension EvaluationLaborResponseMapper on EvaluationLaborResponseEntity {
   LaborEntity _mapLabor() {
     return LaborEntity(
       id: laborId,
-      name: laborGroupDesc,
+      name: laborName,
       code: laborCode,
       laborGroupId: laborGroupId,
       laborGroupTitle: laborName,

@@ -1,18 +1,16 @@
-import 'dart:convert';
-import 'dart:typed_data';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/common/utils/extensions/string_ext.dart';
-import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/evaluation_part_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/evaluation_service_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/cubit/home_service_evaluation_second_step_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/widgets/part_container_widget.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/mapper/evaluation_labor_response_mapper.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/widgets/search_labor_page.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/widgets/search_part_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/widgets/selected_labor_list_item.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
-import '../../../domain/entity/evaluation_service_entity.dart';
 
 class ServiceAddedContainerWidget extends StatelessWidget {
   const ServiceAddedContainerWidget({
@@ -33,8 +31,11 @@ class ServiceAddedContainerWidget extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 8.0),
       child: ExpansionTile(
-        collapsedBackgroundColor:colorScheme.inverseSurface,
-        backgroundColor: colorScheme.inverseSurface,
+        collapsedBackgroundColor: Colors.white,
+        backgroundColor: Colors.white,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.all(Radius.circular(12.0)),
+        ),
 
         // ================= DELETE SERVICE (BOTTOM SHEET) =================
         trailing: InkWell(
@@ -48,12 +49,12 @@ class ServiceAddedContainerWidget extends StatelessWidget {
                 color: colorScheme.inverseSurface,
               ),
             ),
-            child: const Padding(
+            child: Padding(
               padding: EdgeInsets.all(4.0),
               child: Icon(
                 Icons.delete,
                 size: 20,
-                color: Colors.red,
+                color: colorScheme.primary,
               ),
             ),
           ),
@@ -75,295 +76,68 @@ class ServiceAddedContainerWidget extends StatelessWidget {
               physics: const NeverScrollableScrollPhysics(),
               itemCount: entity.evaluationLabors!.length,
               itemBuilder: (context, laborIndex) {
-                final element = entity.evaluationLabors![laborIndex];
+                final labor = entity.evaluationLabors![laborIndex];
 
-                return _buildLaborItem(
-                  context: context,
-                  element: element,
-                  laborIndex: laborIndex,
+                return SelectedLaborListItem(
+                  labor: labor.toSelectedEntity(),
+                  isPartsExpanded: true,
+                  onDelete: () {
+                    context
+                        .read<HomeServiceEvaluationSecondStepCubit>()
+                        .deleteLabor(
+                      serviceIndex: index,
+                      laborIndex: laborIndex,
+                      isCustomer: false,
+                    );
+                  },
+
+                  onAddPart: () async {
+                    await _navigateAddPart(context, laborIndex);
+
+                    if (context.mounted) {
+                      context
+                          .read<HomeServiceEvaluationSecondStepCubit>()
+                          .refresh();
+                    }
+                  },
+                  onToggleShowMoreParts: () {},
+
+                  onEdit: () {},
                 );
               },
             ),
 
           Space.h16,
 
-          _buildAddLaborButton(context),
+          _buildAddLaborButton(context, colorScheme),
         ],
       ),
     );
   }
 
-  // ================= LABOR ITEM =================
-
-  Widget _buildLaborItem({
-    required BuildContext context,
-    required dynamic element,
-    required int laborIndex,
-  }) {
-
-    final colorScheme = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.all(8.0),
-      child: Container(
-        decoration: BoxDecoration(
-          border: Border.all(
-            width: 1,
-            color: colorScheme.inverseSurface,
-          ),
-          borderRadius: const BorderRadius.all(Radius.circular(12)),
-          color: colorScheme.inverseSurface,
-        ),
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'نام اجرت: ${element.laborName}',
-                      style: Theme.of(context)
-                          .textTheme
-                          .bodyMedium
-                          ?.copyWith(fontWeight: FontWeight.bold),
-                    ),
-                  ),
-
-                  InkWell(
-                    onTap: () => _showDeleteLaborBottomSheet(
-                      context,
-                      laborIndex,
-                      element,
-                    ),
-                    child: Container(
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Colors.white,
-                        border: Border.all(
-                          width: 1,
-                          color: colorScheme.inverseSurface,
-                        ),
-                      ),
-                      child: const Padding(
-                        padding: EdgeInsets.all(4.0),
-                        child: Icon(
-                          Icons.delete,
-                          size: 20,
-                          color: Colors.red,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Row(
-                children: [
-                  Text(
-                    'قیمت: ${element.laborPrice} ریال',
-                    style: Theme.of(context)
-                        .textTheme
-                        .bodyMedium
-                        ?.copyWith(fontWeight: FontWeight.bold),
-                  ),
-                  const Spacer(),
-                  Text(
-                    element.costCenterObject?.name ?? '',
-                    style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                      fontWeight: FontWeight.bold,
-                      color: (element.costCenterObject?.id == 0)
-                          ? ServiceType.homeService.serviceColor
-                          : Colors.green,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-
-            if (element.parts?.isNotEmpty ?? false) ...[
-              Space.h16,
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: element.parts!.length,
-                itemBuilder: (context, partIndex) {
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: PartContainerWidget(
-                      entity: element.parts![partIndex],
-                      isEditablePart: false,
-                      serviceIndex: index,
-                      laborIndex: laborIndex,
-                      partIndex: partIndex,
-                    ),
-                  );
-                },
-              ),
-            ],
-
-            Space.h16,
-
-            _buildAddPartButton(context, laborIndex),
-          ],
-        ),
+  Widget _buildAddLaborButton(BuildContext context, ColorScheme colorScheme) {
+    return InkwellButtonWidget(
+      title: 'افزودن سایر خدمات',
+      prefixIcon: Icon(
+        Icons.add,
+        color: ServiceType.homeService.serviceColor,
       ),
-    );
-  }
-
-  // ================= BUTTONS =================
-
-  Widget _buildAddLaborButton(BuildContext context) {
-    return InkWell(
+      backgroundColor: colorScheme.onPrimary,
+      borderColor: ServiceType.homeService.serviceColor,
+      titleColor: ServiceType.homeService.serviceColor,
       onTap: () => _navigateAddLabor(context),
-      child: _button('افزودن اجرت'),
     );
   }
-
-  Widget _buildAddPartButton(BuildContext context, int laborIndex) {
-    return InkWell(
-      onTap: () => _navigateAddPart(context, laborIndex),
-      child: _button('افزودن قطعه'),
-    );
-  }
-
-  Widget _button(String title) {
-    return Container(
-      width: double.infinity,
-      decoration: BoxDecoration(
-        border: Border.all(width: 2, color: Colors.green),
-        borderRadius: const BorderRadius.all(Radius.circular(12.0)),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Center(
-          child: Text(
-            title,
-            style: const TextStyle(
-              fontSize: 14.0,
-              fontWeight: FontWeight.bold,
-              color: Colors.green,
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  // ================= BOTTOM SHEETS =================
 
   void _showDeleteBottomSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (_) {
-        return Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'آیا از حذف این سرویس اطمینان دارید؟',
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              Space.h16,
-              Row(
-                children: [
-                  Expanded(
-                    child: InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: const Center(child: Text('لغو')),
-                    ),
-                  ),
-                  Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        onTapDelete?.call();
-                        Navigator.pop(context);
-                      },
-                      child: Center(
-                        child: Text(
-                          'حذف',
-                          style: TextStyle(color: ServiceType.homeService.serviceColor),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
+    BottomSheetMessage.showErrorWithAction(context: context,
+        data: BottomSheetMessageModel(
+            title: '', message: 'آیا از حذف این سرویس اطمینان دارید؟'),
+        onPositive: () {
+          onTapDelete?.call();
+        });
   }
 
-  void _showDeleteLaborBottomSheet(
-      BuildContext context,
-      int laborIndex,
-      dynamic element,
-      ) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.white,
-      builder: (_) {
-        return Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Text(
-                'آیا از حذف این اجرت اطمینان دارید؟',
-                style: TextStyle(fontWeight: FontWeight.bold),
-              ),
-              Space.h16,
-              Row(
-                children: [
-                  Expanded(
-                    child: InkWell(
-                      onTap: () => Navigator.pop(context),
-                      child: const Center(child: Text('لغو')),
-                    ),
-                  ),
-                  Expanded(
-                    child: InkWell(
-                      onTap: () {
-                        HomeServiceEvaluationSecondStepCubit
-                            .selectedServiceList?[index]
-                            .evaluationLabors
-                            ?.remove(element);
-
-                        context
-                            .read<HomeServiceEvaluationSecondStepCubit>()
-                            .refresh();
-
-                        Navigator.pop(context);
-                      },
-                      child: Center(
-                        child: Text(
-                          'حذف',
-                          style: TextStyle(color: ServiceType.homeService.serviceColor),
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  // ================= NAVIGATION =================
 
   void _navigateAddLabor(BuildContext context) async {
     final cubit = context.read<HomeServiceEvaluationSecondStepCubit>();
@@ -377,7 +151,7 @@ class ServiceAddedContainerWidget extends StatelessWidget {
     cubit.refresh();
   }
 
-  void _navigateAddPart(BuildContext context, int laborIndex) async {
+  Future<void> _navigateAddPart(BuildContext context, int laborIndex) async {
     final cubit = context.read<HomeServiceEvaluationSecondStepCubit>();
 
     await Navigator.of(context).push(

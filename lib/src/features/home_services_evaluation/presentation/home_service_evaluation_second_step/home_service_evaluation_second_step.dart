@@ -1,13 +1,11 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
-import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/evaluation_service_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_packages/page/home_service_evaluation_packages_page.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/cubit/home_service_evaluation_second_step_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/cubit/home_service_evaluation_second_step_state.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/widgets/service_added_container_widget.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/widgets/service_customer_container_widget.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
-
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
@@ -122,168 +120,173 @@ class _HomeServiceEvaluationSecondStepBody extends StatelessWidget {
     final cubit = context.read<HomeServiceEvaluationSecondStepCubit>();
     final colorScheme = Theme.of(context).colorScheme;
 
-    return FormSectionContainer(
-      child: ListView(
-        physics: const BouncingScrollPhysics(),
-        children: [
-          const TitleLargeText(
-            text: 'جزئیات سرویس',
-            fontSize: 16,
-            textAlign: TextAlign.start,
-          ),
+    return ListView(
+      physics: const BouncingScrollPhysics(),
+      children: [
 
-          Space.h32,
+        // ===================== CUSTOMER SERVICES =====================
+        FormSectionContainer(
+          hasBorder: true,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
 
-          BlocBuilder<
-              HomeServiceEvaluationSecondStepCubit,
-              HomeServiceEvaluationSecondStepState
-          >(
-            builder: (context, state) {
-              final customerServices =
-                  HomeServiceEvaluationSecondStepCubit.customerServiceList ?? [];
+              const TitleLargeText(
+                text: 'جزئیات سرویس',
+                fontSize: 16,
+                textAlign: TextAlign.start,
+              ),
 
-              if (customerServices.isEmpty) {
-                return const SizedBox.shrink();
-              }
+              Space.h32,
 
-              return ListView.separated(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: customerServices.length,
-                padding: EdgeInsets.symmetric(vertical: 8),
-                itemBuilder: (context, index) {
-                  final service = customerServices[index];
-
-                  return ServiceCustomerContainerWidget(
-                    evaluationServiceEntity: service,
-                    serviceIndex: index,
-                    onTapDelete: () {
-                      cubit.deleteCustomerEvaluationService(
-                        evaluationServiceEntity: service,
-                      );
-                    },
-                  );
-                },
-                separatorBuilder: (context, index) {
-                  return  Divider(
-                    height: 1,
-                    thickness: 1,
-                    color: Colors.grey.withAlpha(100),
-                  );
-                },
-              );
-            },
-          ),
-
-          if (HomeServiceEvaluationSecondStepCubit
-              .selectedServiceList
-              ?.isNotEmpty ==
-              true) ...[
-            ListView.builder(
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              itemCount: HomeServiceEvaluationSecondStepCubit
-                  .selectedServiceList
-                  ?.length ??
-                  0,
-              itemBuilder: (context, index) {
-                final service = HomeServiceEvaluationSecondStepCubit
-                    .selectedServiceList?[index] ??
-                    EvaluationServiceEntity();
-
-                return ServiceAddedContainerWidget(
-                  entity: service,
-                  index: index,
-                  onTapDelete: () {
-                    cubit.deleteSelectedEvaluationService(
-                      evaluationServiceEntity: service,
-                    );
-                  },
-                );
-              },
-            ),
-          ],
-
-          Space.h16,
-
-          InkwellButtonWidget(
-            title: 'افزودن سرویس',
-            prefixIcon: Icon(Icons.add, color: ServiceType.homeService.serviceColor),
-            backgroundColor: colorScheme.onPrimary,
-            borderColor: ServiceType.homeService.serviceColor,
-            titleColor: ServiceType.homeService.serviceColor,
-            onTap: () async {
-              await Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => const InsertHomeServiceServiceInfoPage(),
-                ),
-              );
-
-              cubit.refresh();
-            },
-          ),
-          Space.h16,
-          StreamBuilder<bool?>(
-            stream: cubit.addOtherServiceSubject.stream,
-            initialData: cubit.addOtherServiceSubject.valueOrNull,
-            builder: (context, snapshot) {
-              final hasOtherService = snapshot.data == true;
-
-              if (hasOtherService) {
-                return const SizedBox.shrink();
-              }
-
-              return BlocBuilder<
-                  HomeServiceEvaluationSecondStepCubit,
-                  HomeServiceEvaluationSecondStepState
-              >(
+              BlocBuilder<HomeServiceEvaluationSecondStepCubit,
+                  HomeServiceEvaluationSecondStepState>(
                 builder: (context, state) {
-                  final isOtherServiceLoading = state.maybeWhen(
-                    otherServiceLoading: () => true,
-                    orElse: () => false,
-                  );
+                  final customerServices =
+                      HomeServiceEvaluationSecondStepCubit
+                          .customerServiceList ??
+                          [];
 
-                  if (isOtherServiceLoading) {
-                    return  Center(child: CircularProgressIndicator(color: ServiceType.homeService.serviceColor));
+                  if (customerServices.isEmpty) {
+                    return const SizedBox.shrink();
                   }
 
-                  return Row(
-                    mainAxisAlignment: MainAxisAlignment.end,
-                    mainAxisSize: MainAxisSize.max,
-                    children: [
-                      InkWell(
-                        borderRadius: BorderRadius.circular(AppSize.s8),
-                        onTap: cubit.fetchOtherService,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            vertical: AppPadding.p8,
-                          ),
-                          child: Row(
-                            children: [
-                              Icon(
-                                Icons.add,
-                                size: AppSize.s20,
-                                color: ServiceType.homeService.serviceColor,
-                              ),
-                              Space.w8,
-                              TitleLargeText(text:
-                                'افزودن سایر خدمات',
-                                color: ServiceType.homeService.serviceColor,
-                                fontSize: 15,
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+                  return Column(
+                    children: customerServices.map((service) {
+                      return ServiceCustomerContainerWidget(
+                        evaluationServiceEntity: service,
+                        serviceIndex: customerServices.indexOf(service),
+                        onTapDelete: () {
+                          cubit.deleteCustomerEvaluationService(
+                            evaluationServiceEntity: service,
+                          );
+                        },
+                      );
+                    }).toList(),
                   );
                 },
-              );
-            },
-          ),
+              ),
 
-        ],
-      ),
+              Space.h16,
+              InkwellButtonWidget(
+                title: 'افزودن سرویس',
+                prefixIcon: Icon(
+                  Icons.add,
+                  color: ServiceType.homeService.serviceColor,
+                ),
+                backgroundColor: colorScheme.onPrimary,
+                borderColor: ServiceType.homeService.serviceColor,
+                titleColor: ServiceType.homeService.serviceColor,
+                onTap: () async {
+                  await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) =>
+                      const InsertHomeServiceServiceInfoPage(),
+                    ),
+                  );
+
+                  cubit.refresh();
+                },
+              ),
+            ],
+          ),
+        ),
+
+        Space.h16,
+
+        // ===================== OTHER SERVICES SECTION =====================
+        BlocBuilder<HomeServiceEvaluationSecondStepCubit,
+            HomeServiceEvaluationSecondStepState>(
+          builder: (context, state) {
+            final isLoading = state.maybeWhen(
+              otherServiceLoading: () => true,
+              orElse: () => false,
+            );
+
+            final hasOtherService =
+                HomeServiceEvaluationSecondStepCubit.selectedServiceList
+                    ?.any((e) => e.serviceCode == '99') ==
+                    true;
+
+            // ===================== LOADING =====================
+            if (isLoading) {
+              return Center(
+                child: CircularProgressIndicator(
+                  color: ServiceType.homeService.serviceColor,
+                ),
+              );
+            }
+
+            // ===================== OTHER SERVICE FORM =====================
+            if (hasOtherService) {
+              return FormSectionContainer(
+                hasBorder: true,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const TitleLargeText(
+                      text: 'سایر خدمات',
+                      fontSize: 16,
+                    ),
+
+                    Space.h16,
+
+                    Column(
+                      children: HomeServiceEvaluationSecondStepCubit
+                          .selectedServiceList!
+                          .where((e) => e.serviceCode == '99')
+                          .map((service) {
+                        return ServiceAddedContainerWidget(
+                          entity: service,
+                          index: HomeServiceEvaluationSecondStepCubit
+                              .selectedServiceList!
+                              .indexOf(service),
+                          onTapDelete: () {
+                            cubit.deleteSelectedEvaluationService(
+                              evaluationServiceEntity: service,
+                            );
+                          },
+                        );
+                      }).toList(),
+                    ),
+                  ],
+                ),
+              );
+            }
+
+            // ===================== ONLY BUTTON =====================
+            return Align(
+              alignment: Alignment.centerLeft,
+              child: InkWell(
+                onTap: () => cubit.fetchOtherService(),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.add,
+                      size: 20,
+                      color: ServiceType.homeService.serviceColor,
+                    ),
+                    Space.w8,
+                    Text(
+                      'افزودن سایر خدمات',
+                      style: Theme
+                          .of(context)
+                          .textTheme
+                          .titleMedium
+                          ?.copyWith(
+                          fontWeight: FontWeight.bold,
+                          color: ServiceType.homeService.serviceColor,
+                          fontSize: 14
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        ),
+      ],
     );
   }
 }

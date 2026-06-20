@@ -31,7 +31,11 @@ class HomeServiceEvaluationSecondStepCubit
     this._getLastEvaluationUseCase,
     this._postEvaluationUseCase,
   ) : super(const HomeServiceEvaluationSecondStepState.idle());
+  final BehaviorSubject<bool> _openOtherServiceForm =
+  BehaviorSubject<bool>.seeded(false);
 
+  BehaviorSubject<bool> get openOtherServiceForm =>
+      _openOtherServiceForm;
   final BehaviorSubject<ActiveServiceRequestResponseEntity?>
   _activeServiceRequestSubject =
       BehaviorSubject<ActiveServiceRequestResponseEntity?>();
@@ -252,6 +256,7 @@ class HomeServiceEvaluationSecondStepCubit
       selectedServiceList?.add(evaluationEntity);
 
       _addOtherServiceSubject.add(true);
+      _openOtherServiceForm.add(true);
 
       emit(const HomeServiceEvaluationSecondStepState.otherServiceSuccess());
     } catch (_) {
