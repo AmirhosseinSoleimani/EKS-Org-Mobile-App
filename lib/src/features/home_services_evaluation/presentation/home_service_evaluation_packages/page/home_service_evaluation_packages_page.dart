@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presenta
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_packages/cubit/home_service_evaluation_packages_state.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_packages/page/widgets/home_service_evaluation_category_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
@@ -17,7 +18,9 @@ class InsertHomeServiceServiceInfoPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<HomeServiceEvaluationPackagesCubit>()..init(),
-      child: const Scaffold(
+      child:  Scaffold(
+        backgroundColor: Theme.of(context).colorScheme.onPrimary,
+        appBar: SimpleAppBar(title: 'افزودن سرویس'),
         body: SafeArea(
           child: _InsertHomeServiceServiceInfoView(),
         ),
@@ -61,6 +64,8 @@ class _InsertHomeServiceServiceInfoView extends StatelessWidget {
         }
       },
       builder: (context, state) {
+        final cubit =  context
+            .read<HomeServiceEvaluationPackagesCubit>();
         return state.maybeWhen(
           loading: () => Center(
             child: CircularProgressIndicator(
@@ -72,20 +77,9 @@ class _InsertHomeServiceServiceInfoView extends StatelessWidget {
             child: ListView(
               physics: const BouncingScrollPhysics(),
               children: [
-                const Align(
-                  alignment: AlignmentDirectional.centerStart,
-                  child: Text(
-                    'سرویس مورد نیاز خود را انتخاب کنید:',
-                    style: TextStyle(fontSize: 16, fontWeight: FontWeight.w400),
-                  ),
-                ),
-
-                Space.h8,
 
                 const HomeServiceEvaluationCategoryWidget(),
-
                 Space.h16,
-
                 BlocBuilder<
                   HomeServiceEvaluationPackagesCubit,
                   HomeServiceEvaluationPackagesState
@@ -105,9 +99,7 @@ class _InsertHomeServiceServiceInfoView extends StatelessWidget {
                           title: 'تائید',
                           backgroundColor: ServiceType.homeService.serviceColor,
                           onTap: () {
-                            context
-                                .read<HomeServiceEvaluationPackagesCubit>()
-                                .validateServices();
+                              cubit.validateServices();
                           },
                         );
                       },
@@ -122,49 +114,4 @@ class _InsertHomeServiceServiceInfoView extends StatelessWidget {
     );
   }
 
-  // ================= BottomSheet =================
-
-  void _showErrorBottomSheet(
-    BuildContext context, {
-    required String title,
-    required String message,
-    required bool dismissible,
-  }) {
-    showModalBottomSheet(
-      context: context,
-      isDismissible: dismissible,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (_) {
-        return Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                title,
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
-              ),
-
-              Space.h12,
-
-              Text(message, style: Theme.of(context).textTheme.bodyMedium),
-
-              Space.h20,
-
-              InkwellButtonWidget(
-                title: 'باشه',
-                backgroundColor: ServiceType.homeService.serviceColor,
-                onTap: () => Navigator.pop(context),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
 }

@@ -208,6 +208,7 @@ class _HomeServiceEvaluationSecondStepBody extends StatelessWidget {
 
           InkwellButtonWidget(
             title: 'افزودن سرویس',
+            prefixIcon: Icon(Icons.add, color: ServiceType.homeService.serviceColor),
             backgroundColor: colorScheme.onPrimary,
             borderColor: ServiceType.homeService.serviceColor,
             titleColor: ServiceType.homeService.serviceColor,

@@ -1,8 +1,10 @@
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/insert_home_service_category_response_model.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/interfaces/dropdown_item.dart';
+import 'package:flutter/src/widgets/framework.dart';
 
 import 'insert_home_service_service_response_entity.dart';
 
-class InsertHomeServiceCategoryResponseEntity {
+class InsertHomeServiceCategoryResponseEntity implements DropdownItem<int>{
   const InsertHomeServiceCategoryResponseEntity({
     this.categoryId,
     this.categoryTitle,
@@ -80,4 +82,13 @@ class InsertHomeServiceCategoryResponseEntity {
       homeServices: homeServices?.map((e) => e.toModel()).toList(),
     );
   }
+
+  @override
+  String get label => title ?? '';
+
+  @override
+  Widget? leading(BuildContext context) => null;
+
+  @override
+  int get value => id ?? 0;
 }

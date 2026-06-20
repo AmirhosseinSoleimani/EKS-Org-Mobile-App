@@ -1,4 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/insert_home_service_service_response_model.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/interfaces/dropdown_item.dart';
+import 'package:flutter/src/widgets/framework.dart';
 
 import 'insert_home_service_labor_entity.dart';
 
@@ -18,7 +20,7 @@ class InsertHomeServiceServiceResponseEntity {
 
 
 
-class InsertHomeServiceServiceItemResponseEntity {
+class InsertHomeServiceServiceItemResponseEntity  implements DropdownItem<int>{
   const InsertHomeServiceServiceItemResponseEntity({
     this.id,
     this.categoryId,
@@ -93,4 +95,13 @@ class InsertHomeServiceServiceItemResponseEntity {
       labors: labors?.map((labor) => labor.toModel()).toList(),
     );
   }
+
+  @override
+  String get label => title ?? '';
+
+  @override
+  Widget? leading(BuildContext context) => null;
+
+  @override
+  int get value => id??0;
 }

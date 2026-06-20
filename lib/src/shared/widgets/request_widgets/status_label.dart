@@ -5,6 +5,7 @@ enum StatusLabelVariant {
   filled,
   outlined,
   filledWhiteText,
+  filledWithoutBorder,
 }
 
 
@@ -44,7 +45,7 @@ class StatusLabel extends StatelessWidget {
       padding: padding,
       decoration: BoxDecoration(
         color: resolvedBackgroundColor,
-        border: Border.all(color: color),
+        border: (variant == StatusLabelVariant.filledWithoutBorder)? null: Border.all(color: color),
         borderRadius: BorderRadius.circular(borderRadius),
       ),
       child: BodySmallText(
@@ -68,6 +69,8 @@ class StatusLabel extends StatelessWidget {
 
       case StatusLabelVariant.filledWhiteText:
         return color;
+      case StatusLabelVariant.filledWithoutBorder:
+        return color.withOpacity(0.2);
     }
   }
 
@@ -82,6 +85,7 @@ class StatusLabel extends StatelessWidget {
     switch (variant) {
       case StatusLabelVariant.filled:
       case StatusLabelVariant.outlined:
+      case StatusLabelVariant.filledWithoutBorder:
         return color;
 
       case StatusLabelVariant.filledWhiteText:
