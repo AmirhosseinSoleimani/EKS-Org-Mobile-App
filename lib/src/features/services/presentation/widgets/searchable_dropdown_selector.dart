@@ -72,7 +72,11 @@ class _SearchableDropdownSelectorState<T extends DropdownItem>
     if (!_canShowOverlay) return;
 
     if (_overlayEntry != null) {
-      _overlayEntry!.markNeedsBuild();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (_overlayEntry != null) {
+          _overlayEntry!.markNeedsBuild();
+        }
+      });
       return;
     }
 
@@ -133,9 +137,7 @@ class _SearchableDropdownSelectorState<T extends DropdownItem>
     final shouldCloseOverlay =
         widget.isLoading ||
             !widget.enabled ||
-            widget.controller.text
-                .trim()
-                .length < 3;
+            widget.controller.text.trim().length < 3;
 
     if (shouldCloseOverlay) {
       _removeOverlay();
@@ -145,15 +147,17 @@ class _SearchableDropdownSelectorState<T extends DropdownItem>
     final loadingFinished = oldWidget.isLoading && !widget.isLoading;
     final itemsChanged = oldWidget.items != widget.items;
 
-    if (loadingFinished && widget.controller.text
-        .trim()
-        .length >= 3) {
-      _showOverlay();
+    if (loadingFinished && widget.controller.text.trim().length >= 3) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _showOverlay();
+      });
       return;
     }
 
     if (itemsChanged && _overlayEntry != null) {
-      _overlayEntry!.markNeedsBuild();
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _overlayEntry?.markNeedsBuild();
+      });
     }
   }
 

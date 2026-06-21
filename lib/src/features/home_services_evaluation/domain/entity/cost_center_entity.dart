@@ -1,6 +1,8 @@
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/cost_center_model.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/interfaces/dropdown_item.dart';
+import 'package:flutter/material.dart';
 
-class CostCenterEntity {
+class CostCenterEntity  implements DropdownItem<int?>{
   final String? name;
   final String? code;
   final int? id;
@@ -18,4 +20,13 @@ class CostCenterEntity {
   CostCenterModel toModel() {
     return CostCenterModel(id: id, name: name, code: code);
   }
+
+  @override
+  String get label => name ?? '';
+
+  @override
+  int? get value => id;
+
+  @override
+  Widget? leading(BuildContext context) => null;
 }

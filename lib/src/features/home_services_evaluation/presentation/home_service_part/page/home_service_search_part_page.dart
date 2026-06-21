@@ -1,11 +1,11 @@
-import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
+
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_part/cubit/home_service_part_cubit.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/part_response_entity.dart';
-import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_part/cubit/home_service_part_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_part/cubit/home_service_part_state.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/searchable_dropdown_selector.dart';
+
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -44,124 +44,54 @@ class HomeServiceSearchPartPage extends StatelessWidget {
     final cubit = context.read<HomeServicePartCubit>();
     final colorScheme = Theme.of(context).colorScheme;
 
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: BlocBuilder<HomeServicePartCubit, HomeServicePartState>(
-        builder: (context, state) {
-          return Column(
-            children: [
-              TextFormFieldWidget(
-                suffixIcon: const Icon(Icons.search),
-                controller: cubit.searchPartController,
-                labelText: 'قطعه',
-                mandatory: true,
-                onChanged: cubit.onSearchPartChanged,
+    return Scaffold(
+      backgroundColor: colorScheme.onPrimary,
+      appBar: SimpleAppBar(title: 'جستجوی قطعه'),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: BlocBuilder<HomeServicePartCubit, HomeServicePartState>(
+          builder: (context, state) {
+            return SearchableDropdownSelector<PartResponseEntity>(
+              label: 'نام قطعه',
+              hintText: 'حداقل ۳ کاراکتر وارد کنید',
+              controller: cubit.searchPartController,
+              selectedNotifier: ValueNotifier<PartResponseEntity?>(null),
+
+              items: cubit.partResponseListSubject.valueOrNull
+                  ?.whereType<PartResponseEntity>()
+                  .toList() ??
+                  [],
+
+              isLoading: state.maybeWhen(
+                loading: () => true,
+                orElse: () => false,
               ),
 
-              Space.h16,
+              itemTitleBuilder: (item) => item.name ?? '',
 
-              // ================= LIST =================
-              Expanded(
-                child: BlocBuilder<
-                    HomeServicePartCubit,
-                    HomeServicePartState>(
-                  builder: (context, state) {
-                    return state.maybeWhen(
-                      loading: () =>  CircularProgressIndicator(color: ServiceType.homeService.serviceColor),
-                      success: () {
-                        return StreamBuilder<List<PartResponseEntity?>>(
-                          stream: cubit.partResponseListSubject,
-                          builder: (context, snapshot) {
-                            final items = snapshot.data;
+              onSearchChanged: (value) {
+                cubit.onSearchPartChanged(value);
+              },
 
-                            if (items?.isNotEmpty ?? false) {
-                              return ListView.builder(
-                                itemCount: items!.length,
-                                itemBuilder: (context, index) {
-                                  final item = items[index];
-
-                                  return Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      InkWell(
-                                        onTap: () {
-                                          if (item?.serial != null) {
-                                            Navigator.of(context).push(
-                                              MaterialPageRoute(
-                                                builder: (_) =>
-                                                    HomeServicePartPage(
-                                                      serviceIndex:
-                                                      serviceIndex,
-                                                      laborIndex: laborIndex,
-                                                      partIndex: index,
-                                                      partResponseEntity: item,
-                                                    ),
-                                              ),
-                                            );
-                                          }
-                                        },
-                                        child: SizedBox(
-                                          width: double.infinity,
-                                          child: Padding(
-                                            padding:
-                                            const EdgeInsets.fromLTRB(
-                                                0, 12, 12, 12),
-                                            child: Text(
-                                              item?.name ?? '_',
-                                              style: Theme.of(context)
-                                                  .textTheme
-                                                  .bodyMedium,
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-
-                                      if (index != items.length - 1)
-                                        Divider(
-                                          thickness: 1,
-                                          color: colorScheme.outline,
-                                        ),
-                                    ],
-                                  );
-                                },
-                              );
-                            }
-
-                            // ================= EMPTY STATES =================
-                            if (cubit.searchPartController.text.length <
-                                3) {
-                              return const Center(
-                                child: Text(
-                                  'جهت جستجو حداقل سه حرف وارد نمائید',
-                                ),
-                              );
-                            }
-
-                            return Center(
-                              child: Text(
-                                'موردی جهت نمایش وجود ندارد',
-                                style: Theme.of(context)
-                                    .textTheme
-                                    .bodyMedium,
-                              ),
-                            );
-                          },
-                        );
-                      },
-
-                      orElse: () => const Center(
-                        child: Text(
-                          'جهت جستجو حداقل سه حرف وارد نمائید',
-                        ),
+              onSelect: (item) {
+                if (item.serial != null) {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => HomeServicePartPage(
+                        serviceIndex: serviceIndex,
+                        laborIndex: laborIndex,
+                        partIndex: cubit.partResponseListSubject.valueOrNull
+                            ?.indexOf(item) ??
+                            0,
+                        partResponseEntity: item,
                       ),
-                    );
-                  },
-                ),
-              ),
-            ],
-          );
-        },
+                    ),
+                  );
+                }
+              },
+            );
+          },
+        ),
       ),
     );
   }

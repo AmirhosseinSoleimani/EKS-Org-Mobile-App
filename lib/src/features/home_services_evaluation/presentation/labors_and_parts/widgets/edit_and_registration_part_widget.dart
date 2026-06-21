@@ -1,20 +1,23 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
-import 'package:eks_sana_plus_org/src/common/utils/digit_to_word.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/cost_center_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/evaluation_part_response_entity.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/part_mark_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/part_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/reusable_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/cubit/labors_and_parts_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/cubit/labors_and_parts_state.dart';
-import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/widgets/search_customer_part_page.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/widgets/search_reusable_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/dropdown_selector.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/searchable_dropdown_selector.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/ek_choose_car_problem_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/formatter/thousands_separator_input_formatter.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -40,10 +43,6 @@ class EditAndRegistrationPartWidget extends StatelessWidget {
   final bool? changeCustomerPart;
   final int? partCustomerIndex;
 
-  @override
-  String? screenName(BuildContext context) {
-    return 'ثبت قطعه';
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -66,46 +65,69 @@ class EditAndRegistrationPartWidget extends StatelessWidget {
   }
 
   Widget _build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: BlocConsumer<LaborsAndPartsCubit, LaborsAndPartsState>(
-        listener: (BuildContext context, LaborsAndPartsState state) {
-          state.whenOrNull(
-            error: (bottomSheetMessage) {
-              return BottomSheetMessage.showError(
-                context: context,
-                data: bottomSheetMessage,
-                isDismissible: true,
-                enableDrag: true,
-              );
-            },
-            notice: (bottomSheetMessage) {
-              return BottomSheetMessage.showNotice(
-                buttonColor: ServiceType.homeService.serviceColor,
-                context: context,
-                data: bottomSheetMessage,
-                isDismissible: true,
-                enableDrag: true,
-              );
-            },
-            submitEditPartMarkSuccess: () => Navigator.of(context).pop(),
-            submitAddPartMarkSuccess: () {
-              Navigator.of(context).pop();
-              Navigator.of(context).pop();
-              if (changeCustomerPart ?? false) {
-                Navigator.of(context).pop();
-              }
-            },
-          );
-        },
-        builder: (BuildContext context, state) {
-          return state.maybeWhen(
-            loading: () => CircularProgressIndicator(
-              color: ServiceType.homeService.serviceColor,
-            ),
-            orElse: () => _successPartMarkWidget(context: context),
-          );
-        },
+    return Scaffold(
+      appBar: SimpleAppBar(title: 'ثبت قطعه'),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: FormSectionContainer(
+          hasBorder: true,
+          child: Column(
+            children: [
+              Align(alignment: AlignmentGeometry.topRight,
+                  child: TitleLargeText(text: "قطعه", fontSize: 16,)),
+              Space.h16,
+              Divider(thickness: 0.5,color: Colors.grey.withAlpha(150)),
+              Space.h32,
+              BlocConsumer<LaborsAndPartsCubit, LaborsAndPartsState>(
+                listener: (BuildContext context, LaborsAndPartsState state) {
+                  state.whenOrNull(
+                    error: (bottomSheetMessage) {
+                      return BottomSheetMessage.showError(
+                        context: context,
+                        data: bottomSheetMessage,
+                        isDismissible: true,
+                        enableDrag: true,
+                      );
+                    },
+                    notice: (bottomSheetMessage) {
+                      return BottomSheetMessage.showNotice(
+                        buttonColor: ServiceType.homeService.serviceColor,
+                        context: context,
+                        data: bottomSheetMessage,
+                        isDismissible: true,
+                        enableDrag: true,
+                      );
+                    },
+                    submitEditPartMarkSuccess: () =>
+                        Navigator.of(context).pop(),
+                    submitAddPartMarkSuccess: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                      if (changeCustomerPart ?? false) {
+                        Navigator.of(context).pop();
+                      }
+                    },
+                  );
+                },
+                builder: (BuildContext context, state) {
+                  return state.maybeWhen(
+                    loading: () =>
+                        Center(
+                          child: SizedBox(
+                            width: 50,
+                            height: 50,
+                            child: CircularProgressIndicator(
+                              color: ServiceType.homeService.serviceColor,
+                            ),
+                          ),
+                        ),
+                    orElse: () => _successPartMarkWidget(context: context),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -120,14 +142,6 @@ class EditAndRegistrationPartWidget extends StatelessWidget {
         BlocBuilder<LaborsAndPartsCubit, LaborsAndPartsState>(
           builder: (BuildContext context, LaborsAndPartsState state) {
             return state.maybeWhen(
-              partPriceLoading: () => Center(
-                child: SizedBox(
-                  height: 60.0,
-                  child: CircularProgressIndicator(
-                    color: ServiceType.homeService.serviceColor,
-                  ),
-                ),
-              ),
               partPriceSuccess: () => _successPartPriceWidget(context: context),
               reusablePriceSuccess: () =>
                   _successPartPriceWidget(context: context),
@@ -164,38 +178,7 @@ class EditAndRegistrationPartWidget extends StatelessWidget {
     final cubit = context.read<LaborsAndPartsCubit>();
     return Column(
       children: [
-        TextFormFieldWidget(
-          controller: cubit.priceController,
 
-          labelText: 'مبلغ قطعه',
-          mandatory: true,
-          textInputType: TextInputType.number,
-          readOnly: cubit.selectPartResponseEntity?.mark == '500'
-              ? false
-              : true,
-          maxLength: 8,
-          onChanged: (value) {
-            cubit.pricePartSubject.add(value);
-          },
-        ),
-        Space.h8,
-        StreamBuilder<String?>(
-          stream: cubit.pricePartSubject,
-          builder: (context, snapshot) {
-            return (snapshot.data?.isNotEmpty ?? false)
-                ? Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      '${DigitToWord.toWord(snapshot.data, StrType.numWord)} ریال',
-                      style: const TextStyle(
-                        fontSize: 14.0,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  )
-                : const SizedBox();
-          },
-        ),
         StreamBuilder<ReusableEntity?>(
           stream: cubit.reusableSubject,
           builder: (context, snapshot) {
@@ -287,88 +270,168 @@ class EditAndRegistrationPartWidget extends StatelessWidget {
     final cubit = context.read<LaborsAndPartsCubit>();
     return Column(
       children: [
-        EkChooseCarProblemButton(
-          title: cubit.selectPartResponseEntity?.name ?? '-',
-          label: 'قطعه',
-          onTap: () {
-            if (isEditablePart ?? false) {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => SearchCustomerPartPage(
-                    serviceIndex: serviceIndex,
-                    laborIndex: laborIndex,
-                    customerPartIndex: partCustomerIndex ?? 0,
-                  ),
-                ),
-              );
-            }
+        BlocBuilder<LaborsAndPartsCubit, LaborsAndPartsState>(
+          builder: (context, state) {
+            final isLoading = state.maybeWhen(
+              partLoading: () => true,
+              orElse: () => false,
+            );
+
+            return StreamBuilder<List<PartResponseEntity?>>(
+              stream: cubit.partResponseListSubject.stream,
+              builder: (context, snapshot) {
+                final items = snapshot.data ?? [];
+                cubit.searchPartController.text =
+                    cubit.selectPartResponseEntity.value?.name ?? '-';
+                return SearchableDropdownSelector<PartResponseEntity>(
+                  label: 'نام قطعه',
+                  hintText: 'حداقل ۳ کاراکتر وارد کنید',
+                  controller: cubit.searchPartController,
+                  selectedNotifier: cubit.selectPartResponseEntity,
+                  items: items.whereType<PartResponseEntity>().toList(),
+                  isLoading: isLoading,
+                  itemTitleBuilder: (item) => item.name ?? '',
+                  onSearchChanged: (query) {
+                    if (query.length >= 3) {
+                      cubit.getCustomerPart(
+                        value: query,
+                        laborIndex: laborIndex,
+                        serviceIndex: serviceIndex,
+                      );
+                    }
+                  },
+                  onSelect: (item) =>
+                      cubit.selectPart(partResponseEntity: item),
+                );
+              },
+            );
           },
-          height: 67,
         ),
         Space.h16,
-        if (cubit.selectPartResponseEntity != null)
-          EkDropDown(
-            cubit.markList.map((e) => e?.mark ?? '').toList(),
-            borderColor: Colors.grey,
-            postfixIcon: const Icon(
-              Icons.keyboard_arrow_down_rounded,
-              color: Colors.grey,
-              size: 24,
-            ),
-            selectedItem:
-                cubit.selectPartResponseEntity?.mark ??
-                "لطفا یک گزینه انتخاب کنید",
-            label:
-                'مارک‌ها'
-                ' *',
-            onItemValue: (value) {
-              cubit.selectPartResponseEntity?.mark = value;
-              cubit.getPartPrice(mark: value);
-            },
-          ),
-        Space.h16,
         if (cubit
-                .selectPartResponseEntity
-                ?.allowableCostCenterList
-                ?.isNotEmpty ??
+            .selectPartResponseEntity
+            .value
+            ?.allowableCostCenterList
+            ?.isNotEmpty ??
             false) ...[
-          EkDropDown(
-            fillColor: Colors.white,
-            cubit.selectPartResponseEntity?.allowableCostCenterList
-                    ?.map((e) => e.name ?? '')
-                    .toList() ??
-                [],
-            borderColor: Colors.grey,
-            prefixIcon: const SizedBox(),
-            postfixIcon: const Icon(
-              Icons.keyboard_arrow_down_rounded,
-              color: Colors.grey,
-              size: 24,
-            ),
-            selectedItem:
-                cubit.selectPartCostCenterEntity?.name ??
-                'لطفا یک گزینه را انتخاب کنید',
-            label:
-                'مرکز هزینه'
-                ' *',
-            onItemValue: (value) {
-              final costCenterList =
-                  cubit.selectPartResponseEntity?.allowableCostCenterList ?? [];
-              cubit.selectPartCostCenterEntity = costCenterList.firstWhere(
-                (i) => i.name == value,
-                orElse: () => CostCenterEntity().toModel(),
+          ValueListenableBuilder<PartResponseEntity?>(
+            valueListenable: cubit.selectPartResponseEntity,
+            builder: (context, part, _) {
+              final items = part?.allowableCostCenterList ?? [];
+
+              return DropdownSelector<CostCenterEntity>(
+                label: 'مرکز هزینه',
+                placeholder: 'انتخاب مرکز هزینه',
+                selectedNotifier: cubit.selectPartCostCenterEntity,
+                items: items,
+                enabled: items.isNotEmpty,
+                itemTitleBuilder: (item) => item.name ?? '',
+                onSelect: (value) {
+                  final costCenterList =
+                      cubit
+                          .selectPartResponseEntity
+                          .value
+                          ?.allowableCostCenterList ??
+                          [];
+                  cubit.selectPartCostCenterEntity.value = costCenterList
+                      .firstWhere(
+                        (i) => i.id == value.id,
+                    orElse: () => CostCenterEntity().toModel(),
+                  );
+                },
               );
             },
           ),
           Space.h16,
         ],
-        TextFormFieldWidget(
-          controller: cubit.countController,
-          textDirection: TextDirection.ltr,
-          textInputType: TextInputType.number,
-          labelText: 'تعداد',
-          mandatory: true,
-          maxLength: 3,
+
+        if (cubit.selectPartResponseEntity.value != null)
+          BlocBuilder<LaborsAndPartsCubit, LaborsAndPartsState>(
+            builder: (context, state) {
+              final cubit = context.read<LaborsAndPartsCubit>();
+
+              final isLoading = state.maybeWhen(
+                markLoading: () => true,
+                orElse: () => false,
+              );
+
+              return ValueListenableBuilder<List<PartMarkResponseEntity>>(
+                valueListenable: cubit.markList,
+                builder: (context, items, _) {
+                  return DropdownSelector<PartMarkResponseEntity>(
+                    label: 'مارک ها',
+                    placeholder: isLoading
+                        ? 'در حال بارگذاری...'
+                        : 'انتخاب مارک',
+                    selectedNotifier: cubit.selectedMark,
+                    items: items,
+                    isLoading: isLoading,
+                    enabled: items.isNotEmpty && !isLoading,
+                    itemTitleBuilder: (item) => item.mark ?? '',
+                    onSelect: (value) {
+                      cubit.selectPartResponseEntity.value?.mark = value.mark;
+                      cubit.getPartPrice(mark: value.mark);
+                      cubit.selectedMark.value = value;
+                    },
+                  );
+                },
+              );
+            },
+          ),
+
+        Space.h16,
+        Row(
+          children: [
+            Expanded(
+              child: BlocBuilder<LaborsAndPartsCubit, LaborsAndPartsState>(
+                builder: (context, state) {
+                  final cubit = context.read<LaborsAndPartsCubit>();
+
+                  final isLoading = state.maybeWhen(
+                    partPriceLoading: () => true,
+                    orElse: () => false,
+                  );
+
+                  return TextFormFieldWidget(
+                    controller: cubit.priceController,
+                    labelText: 'قیمت',
+                    hintText: 'قیمت',
+                    readOnly: cubit.selectPartResponseEntity.value?.mark ==
+                        '500'
+                        ? false
+                        : true,
+                    maxLength: 8,
+                    textInputType: TextInputType.number,
+                    textInputFormatter: const [
+                      ThousandsSeparatorInputFormatter(),
+                    ],
+                    suffixIcon: isLoading
+                        ? const Padding(
+                      padding: EdgeInsets.all(12),
+                      child: SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    )
+                        : null,
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: TextFormFieldWidget(
+                controller: cubit.countController,
+                textDirection: TextDirection.ltr,
+                labelText: 'تعداد',
+                hintText: 'تعداد',
+                maxLength: 3,
+                mandatory: true,
+                textInputType: TextInputType.number,
+              ),
+            ),
+          ],
         ),
         Space.h16,
       ],

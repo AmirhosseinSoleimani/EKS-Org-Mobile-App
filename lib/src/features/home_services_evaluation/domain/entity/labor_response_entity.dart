@@ -1,8 +1,10 @@
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/labor_response_model.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/interfaces/dropdown_item.dart';
+import 'package:flutter/src/widgets/framework.dart';
 
 import 'cost_center_entity.dart';
 
-class LaborResponseEntity {
+class LaborResponseEntity implements DropdownItem<int?>{
   String? name;
   int? id;
   String? companyPrice;
@@ -92,4 +94,13 @@ class LaborResponseEntity {
       isImageMandatory: isImageMandatory,
     );
   }
+
+  @override
+  String get label => name ?? '';
+
+  @override
+  Widget? leading(BuildContext context) => null;
+
+  @override
+  int? get value => id;
 }

@@ -1,8 +1,10 @@
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/part_response_model.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/interfaces/dropdown_item.dart';
+import 'package:flutter/src/widgets/framework.dart';
 
 import 'cost_center_entity.dart';
 
-class PartResponseEntity {
+class PartResponseEntity  implements DropdownItem<String?>{
   String? name;
   String? serial;
   int? garantyDurationDayKilometer;
@@ -62,4 +64,13 @@ class PartResponseEntity {
     this.garantyKilometerKilometer,
     this.mark,
   });
+
+  @override
+  String get label => name ??'';
+
+  @override
+  Widget? leading(BuildContext context)=> null;
+
+  @override
+  String? get value => serial ?? '';
 }

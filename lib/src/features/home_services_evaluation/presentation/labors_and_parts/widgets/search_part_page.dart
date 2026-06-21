@@ -1,11 +1,9 @@
-import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/part_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/cubit/labors_and_parts_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/cubit/labors_and_parts_state.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/searchable_dropdown_selector.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -40,22 +38,29 @@ class SearchPartHomeServicePage extends StatelessWidget {
   Widget _build(BuildContext context) {
     final cubit = context.read<LaborsAndPartsCubit>();
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: SimpleAppBar(title: 'جستجوی قطعه'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: BlocBuilder<LaborsAndPartsCubit, LaborsAndPartsState>(
           builder: (BuildContext context, state) {
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                TextFormFieldWidget(
-                  suffixIcon: const Icon(Icons.search),
-                  controller: context
-                      .read<LaborsAndPartsCubit>()
-                      .searchPartController,
-                  labelText: 'قطعه',
-                  mandatory: true,
-                  onChanged: (value) {
+            final isLoading = state.maybeWhen(
+              partLoading: () => true,
+              orElse: () => false,
+            );
+            return StreamBuilder<List<PartResponseEntity?>>(
+              stream: cubit.partResponseListSubject.stream,
+              builder: (context, snapshot) {
+                final items = snapshot.data ?? [];
+                return SearchableDropdownSelector<PartResponseEntity>(
+                    label: 'قطعه',
+                    hintText: 'حداقل ۳ کاراکتر وارد کنید',
+                    controller: cubit.searchPartController,
+                    selectedNotifier: cubit.selectPartResponseEntity,
+                    items: items.whereType<PartResponseEntity>().toList(),
+                    isLoading: isLoading,
+                    itemTitleBuilder: (item) => item.name ?? '',
+                    onSearchChanged: (value) {
                     if (value.length >= 3) {
                       cubit.getPart(
                         value: value,
@@ -64,105 +69,32 @@ class SearchPartHomeServicePage extends StatelessWidget {
                       );
                     }
                   },
-                ),
-                Space.h16,
-                Expanded(
-                  flex: 5,
-                  child: BlocBuilder<LaborsAndPartsCubit, LaborsAndPartsState>(
-                    builder: (context, state) {
-                      return state.maybeWhen(
-                        success: () {
-                          return StreamBuilder<List<PartResponseEntity?>>(
-                            stream: cubit.partResponseListSubject,
-                            builder: (BuildContext context, snapshot) {
-                              if (snapshot.data?.isNotEmpty ?? false) {
-                                return ListView.builder(
-                                  itemCount: snapshot.data?.length,
-                                  itemBuilder: (BuildContext context, int index) {
-                                    return Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        InkWell(
-                                          onTap: () {
-                                            if (cubit
-                                                    .partResponseListSubject
-                                                    .valueOrNull?[index]
-                                                    ?.serial !=
-                                                null) {
-                                              Navigator.of(context).push(
-                                                MaterialPageRoute(
-                                                  builder: (_) =>
-                                                      EditAndRegistrationPartWidget(
-                                                        serviceIndex:
-                                                            serviceIndex,
-                                                        laborIndex: laborIndex,
-                                                        partIndex: index,
-                                                        partResponseEntity: cubit
-                                                            .partResponseListSubject
-                                                            .valueOrNull?[index],
-                                                      ),
-                                                ),
-                                              );
-                                            }
-                                          },
-                                          child: SizedBox(
-                                            width: double.maxFinite,
-                                            child: Padding(
-                                              padding: const EdgeInsets.fromLTRB(
-                                                0,
-                                                12,
-                                                12,
-                                                12,
-                                              ),
-                                              child: Text(
-                                                snapshot.data?[index]?.name ??
-                                                    '_',
-                                                style: Theme.of(
-                                                  context,
-                                                ).textTheme.bodyMedium,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                        if (index !=
-                                            (snapshot.data?.length ?? 0) - 1)
-                                          const Divider(
-                                            thickness: 1,
-                                            color: Colors.grey,
-                                          ),
-                                      ],
-                                    );
-                                  },
-                                );
-                              } else if (cubit.searchPartController.text.length <
-                                  3) {
-                                return const Center(
-                                  child: Text(
-                                    'جهت جستجو حداقل سه حرف وارد نمائید',
-                                  ),
-                                );
-                              } else {
-                                return Center(
-                                  child: Text("موردی جهت نمایش وجود ندارد"),
+                    onSelect: (item) {
+                      if (item.serial !=
+                          null) {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                              builder: (_) {
+                                final list = cubit.partResponseListSubject
+                                    .valueOrNull ?? [];
+
+                                final index = list.indexWhere((e) =>
+                                e?.serial == item.serial);
+                                return EditAndRegistrationPartWidget(
+                                  serviceIndex:
+                                  serviceIndex,
+                                  laborIndex: laborIndex,
+                                  partIndex: index,
+                                  partResponseEntity: item,
                                 );
                               }
-                            },
-                          );
-                        },
-                        loading: () => Center(
-                          child: CircularProgressIndicator(
-                            color: ServiceType.homeService.serviceColor,
+
                           ),
-                        ),
-                        orElse: () => const Center(
-                          child: Text('جهت جستجو حداقل سه حرف وارد نمائید'),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-              ],
+                        );
+                      }
+                    }
+                );
+              },
             );
           },
         ),

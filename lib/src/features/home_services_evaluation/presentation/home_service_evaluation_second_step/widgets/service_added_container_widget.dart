@@ -117,7 +117,7 @@ class ServiceAddedContainerWidget extends StatelessWidget {
 
   Widget _buildAddLaborButton(BuildContext context, ColorScheme colorScheme) {
     return InkwellButtonWidget(
-      title: 'افزودن سایر خدمات',
+      title: 'افزودن اجرت',
       prefixIcon: Icon(
         Icons.add,
         color: ServiceType.homeService.serviceColor,

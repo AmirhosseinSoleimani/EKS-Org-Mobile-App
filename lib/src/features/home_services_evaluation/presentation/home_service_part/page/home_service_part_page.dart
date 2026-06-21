@@ -1,17 +1,20 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
-import 'package:eks_sana_plus_org/src/common/utils/digit_to_word.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/part_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/reusable_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_part/cubit/home_service_part_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_part/cubit/home_service_part_state.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/widgets/search_reusable_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/ek_choose_car_problem_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/formatter/thousands_separator_input_formatter.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -46,44 +49,58 @@ class HomeServicePartPage extends StatelessWidget {
   }
 
   Widget _build(BuildContext context) {
-    final cubit = context.read<HomeServicePartCubit>();
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Padding(
-      padding: const EdgeInsets.all(16.0),
-      child: BlocConsumer<HomeServicePartCubit, HomeServicePartState>(
-        listener: (context, state) {
-          state.whenOrNull(
-            error: (bottomSheetMessageModel) {
-              BottomSheetMessage.showError(
-                isDismissible: true,
-                context: context,
-                data: bottomSheetMessageModel,
-              );
-            },
-            notice: (bottomSheetMessageModel) {
-              BottomSheetMessage.showNotice(
-                isDismissible: true,
-                context: context,
-                data: bottomSheetMessageModel,
-                buttonColor: ServiceType.homeService.serviceColor,
-              );
-            },
-            submitEditPartMarkSuccess: () {
-              Navigator.of(context).pop();
-            },
-            submitAddPartMarkSuccess: () {
-              Navigator.of(context).pop();
-              Navigator.of(context).pop();
-            },
-          );
-        },
-        builder: (context, state) {
-          return state.maybeWhen(
-            loading: () =>  Center(child: CircularProgressIndicator(color: ServiceType.homeService.serviceColor)),
-            orElse: () => _successPartMarkWidget(context: context),
-          );
-        },
+    return Scaffold(
+      appBar: SimpleAppBar(title: 'ثبت قطعه'),
+      body: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: FormSectionContainer(
+          child: Column(
+            children: [
+              Align(alignment: AlignmentGeometry.topRight,
+                  child: TitleLargeText(text: "قطعه", fontSize: 16)),
+              Space.h16,
+              Divider(thickness: 0.5, color: Colors.grey.withAlpha(150)),
+              Space.h32,
+              BlocConsumer<HomeServicePartCubit, HomeServicePartState>(
+                listener: (context, state) {
+                  state.whenOrNull(
+                    error: (bottomSheetMessageModel) {
+                      BottomSheetMessage.showError(
+                        isDismissible: true,
+                        context: context,
+                        data: bottomSheetMessageModel,
+                      );
+                    },
+                    notice: (bottomSheetMessageModel) {
+                      BottomSheetMessage.showNotice(
+                        isDismissible: true,
+                        context: context,
+                        data: bottomSheetMessageModel,
+                        buttonColor: ServiceType.homeService.serviceColor,
+                      );
+                    },
+                    submitEditPartMarkSuccess: () {
+                      Navigator.of(context).pop();
+                    },
+                    submitAddPartMarkSuccess: () {
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                    },
+                  );
+                },
+                builder: (context, state) {
+                  return state.maybeWhen(
+                    loading: () =>
+                        Center(
+                            child: CircularProgressIndicator(color: ServiceType
+                                .homeService.serviceColor)),
+                    orElse: () => _successPartMarkWidget(context: context),
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }
@@ -100,9 +117,6 @@ class HomeServicePartPage extends StatelessWidget {
         BlocBuilder<HomeServicePartCubit, HomeServicePartState>(
           builder: (context, state) {
             return state.maybeWhen(
-              partPriceLoading: () =>  Center(
-                child: SizedBox(height: 60, child: CircularProgressIndicator(color: ServiceType.homeService.serviceColor)),
-              ),
               partPriceSuccess: () => _successPartPriceWidget(context: context),
               reusablePriceSuccess: () =>
                   _successPartPriceWidget(context: context),
@@ -132,41 +146,6 @@ class HomeServicePartPage extends StatelessWidget {
 
     return Column(
       children: [
-        TextFormFieldWidget(
-          controller: cubit.priceController,
-          textDirection: TextDirection.ltr,
-          labelText: 'مبلغ قطعه',
-          mandatory: true,
-          textInputType: TextInputType.number,
-          readOnly: cubit.selectPartResponseEntity?.mark == '500'
-              ? false
-              : true,
-          maxLength: 8,
-          onChanged: (value) {
-            cubit.pricePartSubject.add(value);
-          },
-        ),
-
-        Space.h8,
-
-        StreamBuilder<String?>(
-          stream: cubit.pricePartSubject,
-          builder: (context, snapshot) {
-            return (snapshot.data?.isNotEmpty ?? false)
-                ? Align(
-                    alignment: Alignment.centerRight,
-                    child: Text(
-                      '${DigitToWord.toWord(snapshot.data, StrType.numWord)} ریال',
-                      style: const TextStyle(
-                        fontSize: 14,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  )
-                : const SizedBox();
-          },
-        ),
-
         StreamBuilder<ReusableEntity?>(
           stream: cubit.reusableSubject,
           builder: (context, snapshot) {
@@ -243,27 +222,8 @@ class HomeServicePartPage extends StatelessWidget {
           title: cubit.selectPartResponseEntity?.name ?? '-',
           label: 'قطعه',
           onTap: () {},
-          height: 67,
+
         ),
-
-        Space.h16,
-
-        if (cubit.selectPartResponseEntity != null)
-          EkDropDown(
-            cubit.markList.map((e) => e?.mark ?? '').toList(),
-            borderColor: Theme.of(context).colorScheme.outline,
-            postfixIcon: Icon(
-              Icons.keyboard_arrow_down_rounded,
-              color: colorScheme.onSurface,
-            ),
-            selectedItem: cubit.selectPartResponseEntity?.mark ?? 'انتخاب',
-            label: 'مارک‌ها *',
-            onItemValue: (value) {
-              cubit.selectPartResponseEntity?.mark = value;
-              cubit.getPartPrice(mark: value);
-            },
-          ),
-
         Space.h16,
 
         if (cubit
@@ -294,15 +254,80 @@ class HomeServicePartPage extends StatelessWidget {
           ),
 
         Space.h16,
+        if (cubit.selectPartResponseEntity != null)
+          EkDropDown(
+            cubit.markList.map((e) => e?.mark ?? '').toList(),
+            borderColor: Theme
+                .of(context)
+                .colorScheme
+                .outline,
+            postfixIcon: Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: colorScheme.onSurface,
+            ),
+            selectedItem: cubit.selectPartResponseEntity?.mark ?? 'انتخاب',
+            label: 'مارک‌ها *',
+            onItemValue: (value) {
+              cubit.selectPartResponseEntity?.mark = value;
+              cubit.getPartPrice(mark: value);
+            },
+          ),
 
-        TextFormFieldWidget(
-          controller: cubit.countController,
-          textInputType: TextInputType.number,
-          labelText: 'تعداد',
-          mandatory: true,
-          maxLength: 3,
+        Space.h16,
+
+        Row(
+          children: [
+            Expanded(
+              child: BlocBuilder<HomeServicePartCubit, HomeServicePartState>(
+                builder: (context, state) {
+                  final cubit = context.read<HomeServicePartCubit>();
+
+                  final isLoading = state.maybeWhen(
+                    partPriceLoading: () => true,
+                    orElse: () => false,
+                  );
+
+                  return TextFormFieldWidget(
+                    controller: cubit.priceController,
+                    labelText: 'قیمت',
+                    hintText: 'قیمت',
+                    readOnly: cubit.selectPartResponseEntity?.mark ==
+                        '500'
+                        ? false
+                        : true,
+                    maxLength: 8,
+                    textInputType: TextInputType.number,
+                    textInputFormatter: const [
+                      ThousandsSeparatorInputFormatter(),
+                    ],
+                    suffixIcon: isLoading
+                        ? const Padding(
+                      padding: EdgeInsets.all(12),
+                      child: SizedBox(
+                        width: 16,
+                        height: 16,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      ),
+                    )
+                        : null,
+                  );
+                },
+              ),
+            ),
+            const SizedBox(width: 12),
+            Expanded(
+              child: TextFormFieldWidget(
+                controller: cubit.countController,
+                textDirection: TextDirection.ltr,
+                labelText: 'تعداد',
+                hintText: 'تعداد',
+                maxLength: 3,
+                mandatory: true,
+                textInputType: TextInputType.number,
+              ),
+            ),
+          ],
         ),
-
         Space.h16,
       ],
     );

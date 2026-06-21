@@ -102,9 +102,11 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
 
   LaborResponseEntity? selectLaborResponseEntity = LaborResponseEntity();
   CostCenterEntity? selectLaborCostCenterEntity = CostCenterEntity();
-  PartResponseEntity? selectPartResponseEntity = PartResponseEntity();
-  CostCenterEntity? selectPartCostCenterEntity = CostCenterEntity();
-  final List<PartMarkResponseEntity?> markList = [];
+  ValueNotifier<PartResponseEntity?>  selectPartResponseEntity = ValueNotifier(PartResponseEntity());
+
+  ValueNotifier<CostCenterEntity?> selectPartCostCenterEntity = ValueNotifier<CostCenterEntity?>(null);
+  final  ValueNotifier<List<PartMarkResponseEntity>> markList = ValueNotifier([]);
+  final  ValueNotifier<PartMarkResponseEntity?> selectedMark = ValueNotifier(null);
   List<String> overlapCodes = [];
   String? maxPartPrice;
 
@@ -230,7 +232,7 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
       );
     }
     if (isEditablePart ?? false) {
-      selectPartResponseEntity = PartResponseEntity(
+      selectPartResponseEntity.value = PartResponseEntity(
         name: evaluationPartEntity?.partName ?? '',
         serial: evaluationPartEntity?.serial.toString(),
         partGroupId: evaluationPartEntity?.partGroupId,
@@ -244,16 +246,17 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
         garantyKilometerKilometer:
             evaluationPartEntity?.garantyKilometerKilometer,
       );
-      selectPartCostCenterEntity =
+      selectPartCostCenterEntity.value =
           evaluationPartEntity?.costCenterObject ?? CostCenterEntity();
     } else {
-      selectPartResponseEntity = partResponseEntity;
-      if (selectPartResponseEntity?.allowableCostCenterList?.isNotEmpty ??
+      selectPartResponseEntity.value = partResponseEntity;
+      if (selectPartResponseEntity.value?.allowableCostCenterList?.isNotEmpty ??
           false) {
-        selectPartCostCenterEntity =
-            selectPartResponseEntity?.allowableCostCenterList?.first;
+        selectPartCostCenterEntity.value =
+            selectPartResponseEntity.value?.allowableCostCenterList?.first;
       }
     }
+
     final partMarkResult = await _getPartMark();
     if (partMarkResult == 'Success') {
       return emit(const LaborsAndPartsState.success());
@@ -270,7 +273,7 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
     required String value,
     required int serviceIndex,
   }) async {
-    emit(const LaborsAndPartsState.loading());
+    emit(const LaborsAndPartsState.laborLoading());
     final evaluationService =
         HomeServiceEvaluationSecondStepCubit.selectedServiceList?[serviceIndex];
     final laborRequestEntity = LaborRequestEntity(
@@ -373,7 +376,7 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
     required int laborIndex,
     required int serviceIndex,
   }) async {
-    emit(const LaborsAndPartsState.loading());
+    emit(const LaborsAndPartsState.partLoading());
     final evaluationService =
         HomeServiceEvaluationSecondStepCubit.customerServiceList?[serviceIndex];
     final partRequestEntity = PartRequestEntity(
@@ -428,7 +431,7 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
     bool? isEditablePart,
   }) async {
     emit(const LaborsAndPartsState.submitLoading());
-    if (selectPartResponseEntity?.mark == 'لطفا یک گزینه را انتخاب کنید') {
+    if (selectPartResponseEntity.value?.mark == 'لطفا یک گزینه را انتخاب کنید') {
       emit(
         LaborsAndPartsState.notice(
           message: BottomSheetMessageModel(
@@ -445,7 +448,7 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
           .evaluationLabors?[laborIndex]
           .parts;
       final partSelected = partsEvaluation?[partIndex];
-      partSelected?.mark = selectPartResponseEntity?.mark;
+      partSelected?.mark = selectPartResponseEntity.value?.mark;
       partSelected?.partPrice = int.tryParse(priceController.text);
       partSelected?.count = int.tryParse(countController.text);
       emit(const LaborsAndPartsState.submitEditPartMarkSuccess());
@@ -454,11 +457,11 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
           .customerServiceList?[serviceIndex]
           .evaluationLabors?[laborIndex]
           .parts?[partIndex] = EvaluationPartResponseModel(
-        mark: selectPartResponseEntity?.mark,
+        mark: selectPartResponseEntity.value?.mark,
         partPrice: int.tryParse(priceController.text),
-        partGroupId: selectPartResponseEntity?.partGroupId,
-        partGroupName: selectPartResponseEntity?.partGroupName,
-        partName: selectPartResponseEntity?.name,
+        partGroupId: selectPartResponseEntity.value?.partGroupId,
+        partGroupName: selectPartResponseEntity.value?.partGroupName,
+        partName: selectPartResponseEntity.value?.name,
         laborCode: HomeServiceEvaluationSecondStepCubit
             .customerServiceList?[serviceIndex]
             .evaluationLabors?[laborIndex]
@@ -471,43 +474,41 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
             .customerServiceList?[serviceIndex]
             .evaluationLabors?[laborIndex]
             .laborId,
-        costCenterObject: selectPartCostCenterEntity,
+        costCenterObject: selectPartCostCenterEntity.value,
         count: int.tryParse(countController.text),
-        costCenterList: selectPartResponseEntity?.allowableCostCenterList,
+        costCenterList: selectPartResponseEntity.value?.allowableCostCenterList,
         reusablePartName: _reusableSubject.valueOrNull?.name,
         reusablePartSerial: _reusableSubject.valueOrNull?.serial,
         reusablePrice: _reusableSubject.valueOrNull?.price,
         garantyKilometerKilometer:
-            selectPartResponseEntity?.garantyKilometerKilometer,
+            selectPartResponseEntity.value?.garantyKilometerKilometer,
         garantyDurationDayKilometer:
-            selectPartResponseEntity?.garantyDurationDayKilometer,
+            selectPartResponseEntity.value?.garantyDurationDayKilometer,
         isReusable: _reusableSubject.valueOrNull?.hasReusable,
-        serial: int.tryParse(selectPartResponseEntity?.serial ?? '0'),
+        serial: int.tryParse(selectPartResponseEntity.value?.serial ?? '0'),
       );
       emit(const LaborsAndPartsState.submitAddPartMarkSuccess());
     }
   }
 
   Future<String> _getPartMark() async {
+    emit(LaborsAndPartsState.markLoading());
     String resultMessage = '';
     PartMarkRequestEntity entity = PartMarkRequestEntity(
-      serial: selectPartResponseEntity?.serial,
+      serial: selectPartResponseEntity.value?.serial,
       serviceRequestId: _activeServiceRequestSubject.valueOrNull?.id,
       defectId: _activeServiceRequestSubject.valueOrNull?.defectId,
-      partGroupId: selectPartResponseEntity?.partGroupId,
+      partGroupId: selectPartResponseEntity.value?.partGroupId,
       serviceType: 2,
     );
     final result = await _getPartMarkHomeServiceUseCase.call(entity);
     result.whenOrNull(
       success: (data, failures, resultCode) async {
-        markList.clear();
-        markList.add(
-          const PartMarkResponseEntity(mark: 'لطفا یک گزینه را انتخاب کنید'),
-        );
+        markList.value = [const PartMarkResponseEntity(mark: 'لطفا یک گزینه را انتخاب کنید')];
         if (resultCode == 0) {
-          markList.addAll(data);
-          selectPartResponseEntity = selectPartResponseEntity?.copyWith(
-            mark: markList.first?.mark,
+          markList.value = List<PartMarkResponseEntity>.from(data);
+          selectPartResponseEntity.value = selectPartResponseEntity.value?.copyWith(
+            mark: markList.value.first.mark,
           );
           resultMessage = 'Success';
         } else {
@@ -523,12 +524,12 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
 
   Future<void> getPartPrice({String? mark}) async {
     emit(const LaborsAndPartsState.partPriceLoading());
-    selectPartResponseEntity?.mark = mark;
+    selectPartResponseEntity.value?.mark = mark;
     final result = await _getPartPriceHomeServiceUseCase.call(
       PartPriceRequestEntity(
         mark: mark,
         serviceType: 2,
-        serial: selectPartResponseEntity?.serial,
+        serial: selectPartResponseEntity.value?.serial,
       ),
     );
     result.whenOrNull(
@@ -622,7 +623,7 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
     bool? isEditablePart,
   }) async {
     emit(const LaborsAndPartsState.submitLoading());
-    if (selectPartResponseEntity?.mark == 'لطفا یک گزینه را انتخاب کنید') {
+    if (selectPartResponseEntity.value?.mark == 'لطفا یک گزینه را انتخاب کنید') {
       emit(
         LaborsAndPartsState.notice(
           message: BottomSheetMessageModel(
@@ -639,7 +640,7 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
           .evaluationLabors?[laborIndex]
           .parts;
       final partSelected = partsEvaluation?[partIndex];
-      partSelected?.mark = selectPartResponseEntity?.mark;
+      partSelected?.mark = selectPartResponseEntity.value?.mark;
       partSelected?.partPrice = int.tryParse(priceController.text);
       partSelected?.count = int.tryParse(countController.text);
       emit(const LaborsAndPartsState.submitEditPartMarkSuccess());
@@ -650,11 +651,11 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
           .parts
           ?.add(
             EvaluationPartResponseEntity(
-              mark: selectPartResponseEntity?.mark,
+              mark: selectPartResponseEntity.value?.mark,
               partPrice: int.tryParse(priceController.text),
-              partGroupId: selectPartResponseEntity?.partGroupId,
-              partGroupName: selectPartResponseEntity?.partGroupName,
-              partName: selectPartResponseEntity?.name,
+              partGroupId: selectPartResponseEntity.value?.partGroupId,
+              partGroupName: selectPartResponseEntity.value?.partGroupName,
+              partName: selectPartResponseEntity.value?.name,
               laborCode: HomeServiceEvaluationSecondStepCubit
                   .selectedServiceList?[serviceIndex]
                   .evaluationLabors?[laborIndex]
@@ -667,18 +668,18 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
                   .selectedServiceList?[serviceIndex]
                   .evaluationLabors?[laborIndex]
                   .laborId,
-              costCenterObject: selectPartCostCenterEntity,
+              costCenterObject: selectPartCostCenterEntity.value,
               count: int.tryParse(countController.text),
-              costCenterList: selectPartResponseEntity?.allowableCostCenterList,
+              costCenterList: selectPartResponseEntity.value?.allowableCostCenterList,
               reusablePartName: _reusableSubject.valueOrNull?.name,
               reusablePartSerial: _reusableSubject.valueOrNull?.serial,
               reusablePrice: _reusableSubject.valueOrNull?.price,
               garantyKilometerKilometer:
-                  selectPartResponseEntity?.garantyKilometerKilometer,
+                  selectPartResponseEntity.value?.garantyKilometerKilometer,
               garantyDurationDayKilometer:
-                  selectPartResponseEntity?.garantyDurationDayKilometer,
+                  selectPartResponseEntity.value?.garantyDurationDayKilometer,
               isReusable: _reusableSubject.valueOrNull?.hasReusable,
-              serial: int.tryParse(selectPartResponseEntity?.serial ?? '0'),
+              serial: int.tryParse(selectPartResponseEntity.value?.serial ?? '0'),
             ),
           );
       emit(const LaborsAndPartsState.submitAddPartMarkSuccess());

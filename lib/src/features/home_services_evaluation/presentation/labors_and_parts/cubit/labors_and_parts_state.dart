@@ -11,6 +11,9 @@ class LaborsAndPartsState with _$LaborsAndPartsState {
   const factory LaborsAndPartsState.error({ required BottomSheetMessageModel message,}) = LaborsAndPartsErrorState;
   const factory LaborsAndPartsState.notice({ required BottomSheetMessageModel message,}) = LaborsAndPartsNoticeState;
   const factory LaborsAndPartsState.partPriceLoading() = LaborsAndPartsPartPriceLoadingState;
+  const factory LaborsAndPartsState.laborLoading() = LaborsAndPartsLaborLoadingState;
+  const factory LaborsAndPartsState.partLoading() = LaborsAndPartsPartLoadingState;
+  const factory LaborsAndPartsState.markLoading() = LaborsAndPartsMarkLoadingState;
   const factory LaborsAndPartsState.partPriceSuccess() = LaborsAndPartsPartPriceSuccessState;
   const factory LaborsAndPartsState.reusablePriceLoading() = LaborsAndPartsReusablePartPriceLoadingState;
   const factory LaborsAndPartsState.reusablePriceSuccess() = LaborsAndPartsReusablePartPriceSuccessState;

@@ -7,6 +7,7 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/e
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/cubit/home_service_evaluation_second_step_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/cubit/labors_and_parts_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/cubit/labors_and_parts_state.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
@@ -14,7 +15,8 @@ import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/ek_choose_car_problem_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/ek_input_decorator_text_box.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -38,81 +40,111 @@ class LaborRegistrationPage extends StatelessWidget {
         bloc.selectLabor(entity: entity);
         return bloc;
       },
-      child: _build(context),
+      child: LaborRegistrationPageBody(
+        entity: entity, serviceIndex: serviceIndex,),
     );
   }
+}
 
-  Widget _build(BuildContext context) {
+
+class LaborRegistrationPageBody extends StatelessWidget {
+  final LaborResponseEntity? entity;
+  final int serviceIndex;
+
+  const LaborRegistrationPageBody(
+      {super.key, required this.entity, required this.serviceIndex});
+
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.read<LaborsAndPartsCubit>();
     return Scaffold(
+      backgroundColor: Colors.white,
       appBar: SimpleAppBar(title: 'ثبت اجرت'),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
-        child: BlocBuilder<LaborsAndPartsCubit, LaborsAndPartsState>(
-          builder: (BuildContext context, state) {
-            final cubit = context.read<LaborsAndPartsCubit>();
-            final laborItem = cubit.selectLaborResponseEntity;
-            final costCenterList = laborItem?.allowableCostCenterList ?? [];
-            final hasCostCenters = costCenterList.isNotEmpty;
-            return Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                EkChooseCarProblemButton(
-                  title: cubit.selectLaborResponseEntity?.name ?? '-',
-                  label: 'نام اجرت',
-                  onTap: () {
-                    Navigator.of(context).pop();
-                  },
-                  height: 67,
-                ),
-                Space.h16,
-                if (hasCostCenters)
-                  EkDropDown(
-                    costCenterList.map((e) => e.name ?? '').toList(),
-                    borderColor: Colors.grey,
-                    prefixIcon: const SizedBox(),
-                    postfixIcon: const Icon(
-                      Icons.keyboard_arrow_down_rounded,
-                      color: Colors.grey,
-                      size: 24,
-                    ),
-                    selectedItem:
-                        cubit.selectLaborCostCenterEntity?.name ??
-                        'لطفا یک گزینه را انتخاب کنید',
-                    label:
-                        'مرکز هزینه'
-                        ' *',
-                    onItemValue: (value) {
-                      _onCostCenterSelected(value, context);
-                    },
-                  ),
-                if (hasCostCenters) Space.h16,
-                StreamBuilder<String?>(
-                  stream: cubit.priceLaborSubject,
-                  builder: (context, snapshot) {
-                    if (snapshot.data?.isNotEmpty ?? false) {
-                      return EkInputDecoratorTextBox(
-                        label: 'قیمت',
-                        text: snapshot.data
-                            .toString()
-                            .splitPriceByComma()
-                            .addPriceTag()
-                            .convertNumberWithLanguage(),
-                      );
-                    } else {
-                      return const SizedBox();
-                    }
-                  },
-                ),
-                Space.h16,
-                InkwellButtonWidget(
-                  title: 'تائید',
-                  backgroundColor: ServiceType.homeService.serviceColor,
-                  onTap: () {
-                    _onConfirmButtonPressed(context, serviceIndex);
-                  },
-                ),
-              ],
-            );
+        child: FormSectionContainer(
+          hasBorder: true,
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Align(alignment: AlignmentGeometry.topRight,
+                  child: TitleLargeText(text: "جزئیات اجرت", fontSize: 16,)),
+              Space.h16,
+              Divider(thickness: 0.5, color: Colors.grey.withAlpha(150)),
+              Space.h32,
+              BlocBuilder<LaborsAndPartsCubit, LaborsAndPartsState>(
+                builder: (BuildContext context, state) {
+                  final laborItem = cubit.selectLaborResponseEntity;
+                  final costCenterList = laborItem?.allowableCostCenterList ??
+                      [];
+                  final hasCostCenters = costCenterList.isNotEmpty;
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      EkChooseCarProblemButton(
+                        title: cubit.selectLaborResponseEntity?.name ?? '-',
+                        label: 'نام اجرت',
+                        onTap: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                      Space.h16,
+                      if (hasCostCenters)
+                        EkDropDown(
+                          costCenterList.map((e) => e.name ?? '').toList(),
+                          borderColor: Colors.grey,
+                          prefixIcon: const SizedBox(),
+                          postfixIcon: const Icon(
+                            Icons.keyboard_arrow_down_rounded,
+                            color: Colors.grey,
+                            size: 24,
+                          ),
+                          selectedItem:
+                          cubit.selectLaborCostCenterEntity?.name ??
+                              'لطفا یک گزینه را انتخاب کنید',
+                          label:
+                          'مرکز هزینه'
+                              ' *',
+                          onItemValue: (value) {
+                            _onCostCenterSelected(value, context);
+                          },
+                        ),
+                      if (hasCostCenters) Space.h16,
+                      StreamBuilder<String?>(
+                        stream: cubit.priceLaborSubject,
+                        builder: (context, snapshot) {
+                          if (snapshot.data?.isNotEmpty ?? false) {
+                            return TextFormFieldWidget(
+                              labelText: 'قیمت',
+                              controller: TextEditingController(
+                                  text: snapshot.data
+                                      .toString()
+                                      .splitPriceByComma()
+                                      .addPriceTag()
+                                      .convertNumberWithLanguage()),
+                            );
+                          } else {
+                            return const SizedBox();
+                          }
+                        },
+                      ),
+                    ],
+                  );
+                },
+              ),
+            ],
+          ),
+        ),
+      ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(16.0),
+        child: InkwellButtonWidget(
+          title: 'تائید',
+          backgroundColor: ServiceType.homeService.serviceColor,
+          onTap: () {
+            _onConfirmButtonPressed(context, cubit, serviceIndex);
           },
         ),
       ),
@@ -124,37 +156,37 @@ class LaborRegistrationPage extends StatelessWidget {
     final costCenterList =
         cubit.selectLaborResponseEntity?.allowableCostCenterList ?? [];
     final costCenter = costCenterList.firstWhere(
-      (i) => i.name == value,
+          (i) => i.name == value,
       orElse: () => CostCenterEntity().toModel(),
     );
     cubit.selectLaborCostCenterEntity = costCenter;
     cubit.selectLaborCostCenterEntity?.id == 0
         ? cubit.priceLaborSubject.add(
-            cubit.selectLaborResponseEntity?.customerPrice ?? '0',
-          )
+      cubit.selectLaborResponseEntity?.customerPrice ?? '0',
+    )
         : cubit.priceLaborSubject.add(
-            cubit.selectLaborResponseEntity?.companyPrice ?? '0',
-          );
+      cubit.selectLaborResponseEntity?.companyPrice ?? '0',
+    );
   }
 
-  void _onConfirmButtonPressed(BuildContext context, int serviceIndex) {
-    final cubit = context.read<LaborsAndPartsCubit>();
+  void _onConfirmButtonPressed(BuildContext context, LaborsAndPartsCubit cubit,
+      int serviceIndex) {
     final selectedLabor = cubit.selectLaborResponseEntity;
     final overlapCodes = cubit.overlapCodes;
     if (HomeServiceEvaluationSecondStepCubit
-            .selectedServiceList?[serviceIndex]
-            .evaluationLabors ==
+        .selectedServiceList?[serviceIndex]
+        .evaluationLabors ==
         null) {
       HomeServiceEvaluationSecondStepCubit
-              .selectedServiceList?[serviceIndex]
-              .evaluationLabors =
-          [];
+          .selectedServiceList?[serviceIndex]
+          .evaluationLabors =
+      [];
     }
     final laborsList =
         HomeServiceEvaluationSecondStepCubit
             .selectedServiceList?[serviceIndex]
             .evaluationLabors ??
-        [];
+            [];
 
     if (_hasOverlap(selectedLabor?.overlapCodes, overlapCodes)) {
       _showBottomSheet(
