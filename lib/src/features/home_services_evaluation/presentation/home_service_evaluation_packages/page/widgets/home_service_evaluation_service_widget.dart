@@ -670,11 +670,7 @@ class HomeServiceEvaluationServiceWidget extends StatelessWidget {
                 ),
                 FadeEffect(curve: Curves.easeIn, duration: 500.ms),
               ],
-              child: HomeServiceEvaluationPackageWidget(
-                serviceId: entity?.id,
-                categoryId: entity?.categoryId,
-                entity: entity,
-              ),
+              child: HomeServiceEvaluationPackageWidget(),
             ),
           );
         },

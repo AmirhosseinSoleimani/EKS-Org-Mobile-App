@@ -1,5 +1,6 @@
 import 'dart:convert';
 
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/insert_home_service_category_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/insert_home_service_service_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_packages/cubit/home_service_evaluation_packages_cubit.dart';
@@ -11,235 +12,6 @@ import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-/*
-
-class HomeServiceEvaluationCategoryWidget extends StatelessWidget {
-  const HomeServiceEvaluationCategoryWidget({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final cubit = context.read<HomeServiceEvaluationPackagesCubit>();
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return StreamBuilder<List<InsertHomeServiceCategoryResponseEntity?>>(
-      stream: cubit.homeServiceCategoryListStream,
-      builder: (context, snapshot) {
-        final items = snapshot.data;
-      if (items?.isNotEmpty ?? false) {
-          return ValueListenableBuilder<int?>(
-            valueListenable: cubit.expandedIdNotifier,
-            builder: (context, expandedId, _) {
-              return ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: items!.length,
-                itemBuilder: (context, index) {
-                  final item = items[index];
-                  final isExpanded =
-                      expandedId == item?.categoryId;
-
-                  return BlocBuilder<
-                      HomeServiceEvaluationPackagesCubit,
-                      HomeServiceEvaluationPackagesState>(
-                    buildWhen: (prev, next) {
-                      return next.maybeWhen(
-                        servicesSuccess: (id) =>
-                        id == item?.categoryId,
-                        servicesLoading: (id) =>
-                        id == item?.categoryId,
-                        orElse: () => false,
-                      );
-                    },
-                    builder: (context, state) {
-                      return Padding(
-                        padding: const EdgeInsets.symmetric(vertical: 8),
-                        child: ExpansionTile(
-                          key: ValueKey(
-                            isExpanded ? item?.categoryId : UniqueKey(),
-                          ),
-
-                          initiallyExpanded: isExpanded,
-
-                          onExpansionChanged: (expanded) {
-                            if (expanded) {
-                              cubit.expandedIdNotifier.value =
-                                  item?.categoryId;
-
-                              cubit.fetchHomeServiceServices(
-                                id: item?.categoryId,
-                              );
-                            } else {
-                              cubit.expandedIdNotifier.value = null;
-                            }
-                          },
-
-                          // ================= COLORS FIX =================
-                          collapsedBackgroundColor:
-                          colorScheme.surfaceContainerHighest,
-                          backgroundColor:
-                          colorScheme.surfaceContainerHighest,
-
-                          // ================= IMAGE =================
-                          leading: SizedBox(
-                            height: 60,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(12),
-                              child:Icon(Icons.home_repair_service),
-                            ),
-                          ),
-
-                          // ================= ICON =================
-                          trailing: Icon(
-                            IconManager.arrowDown,
-                            size: 20,
-                            color: colorScheme.onSurface,
-                          ),
-
-                          // ================= TITLE =================
-                          title: Text(
-                            item?.categoryTitle ?? '-',
-                            style: Theme.of(context).textTheme.bodyMedium,
-                          ),
-
-                          // ================= CHILDREN =================
-                          children: [
-                            state.maybeWhen(
-                              servicesLoading: (_) =>
-                               Padding(
-                                padding: EdgeInsets.symmetric(vertical: 16),
-                                child: Center(
-                                  child: CircularProgressIndicator(color: ServiceType.homeService.serviceColor),
-                                ),
-                              ),
-
-                              servicesSuccess: (_) =>
-                              (item?.homeServices?.isNotEmpty ?? false)
-                                  ? ListView.builder(
-                                shrinkWrap: true,
-                                physics:
-                                const BouncingScrollPhysics(),
-                                itemCount:
-                                item!.homeServices!.length,
-                                itemBuilder:
-                                    (context, homeServiceIndex) {
-                                  return HomeServiceEvaluationServiceWidget(
-                                    entity: item.homeServices![
-                                    homeServiceIndex],
-                                  );
-                                },
-                              )
-                                  : Padding(
-                                padding:
-                                const EdgeInsets.symmetric(
-                                    vertical: 16),
-                                child: Text(
-                                  'موردی جهت نمایش وجود ندارد',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium,
-                                ),
-                              ),
-
-                              orElse: () => Padding(
-                                padding:
-                                const EdgeInsets.symmetric(vertical: 16),
-                                child: Text(
-                                  'موردی جهت نمایش وجود ندارد',
-                                  style: Theme.of(context)
-                                      .textTheme
-                                      .bodyMedium,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                },
-              );
-            },
-          );
-        }
-
-        return Center(
-          child: Text(
-            'موردی جهت نمایش وجود ندارد',
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _buildCategoryDropdown(BuildContext context) {
-    final cubit = context.read<HomeServiceEvaluationPackagesCubit>();
-
-    return StreamBuilder<List<InsertHomeServiceCategoryResponseEntity?>>(
-      stream: cubit.homeServiceCategoryListStream,
-      builder: (context, snapshot) {
-        final items = snapshot.data ?? [];
-
-        return DropdownSelector<InsertHomeServiceCategoryResponseEntity>(
-          label: 'دسته‌بندی سرویس',
-          placeholder: 'انتخاب دسته‌بندی',
-          items: items.whereType<InsertHomeServiceCategoryResponseEntity>().toList(),
-          selectedNotifier: ValueNotifier(null),
-          itemTitleBuilder: (item) => item.categoryTitle ?? '-',
-          onSelect: (category) {
-            cubit.expandedIdNotifier.value = category.categoryId;
-            cubit.fetchHomeServiceServices(id: category.categoryId);
-          },
-        );
-      },
-    );
-  }
-
-  Widget _buildServiceDropdown(BuildContext context) {
-    final cubit = context.read<HomeServiceEvaluationPackagesCubit>();
-
-    return StreamBuilder<List<InsertHomeServiceCategoryResponseEntity?>>(
-      stream: cubit.homeServiceCategoryListStream,
-      builder: (context, snapshot) {
-        final categories = snapshot.data ?? [];
-
-        final selectedCategoryId = cubit.expandedIdNotifier.value;
-
-        final selectedCategory = categories.firstWhere(
-              (e) => e?.categoryId == selectedCategoryId,
-          orElse: () => null,
-        );
-
-        final services = selectedCategory?.homeServices ?? [];
-
-        return DropdownSelector<InsertHomeServiceServiceItemResponseEntity>(
-          label: 'سرویس',
-          placeholder: 'انتخاب سرویس',
-          items: services,
-          enabled: services.isNotEmpty,
-          itemTitleBuilder: (item) => item.title ?? '-',
-          selectedNotifier: ValueNotifier(null),
-          onSelect: (service) {
-            cubit.fetchHomeServicePackage(entity: service);
-          },
-        );
-      },
-    );
-  }
-
-  Widget homeServicesImage({
-    required String base64StringWithPrefix,
-  }) {
-    final base64String = base64StringWithPrefix.split(',').last;
-    final bytes = base64Decode(base64String);
-
-    return Image.memory(
-      bytes,
-      fit: BoxFit.cover,
-    );
-  }
-}
-*/
 
 class HomeServiceEvaluationCategoryWidget extends StatelessWidget {
   const HomeServiceEvaluationCategoryWidget({super.key});
@@ -287,11 +59,12 @@ class HomeServiceEvaluationCategoryWidget extends StatelessWidget {
           items: items
               .whereType<InsertHomeServiceCategoryResponseEntity>()
               .toList(),
-          selectedNotifier: ValueNotifier(null),
+          selectedNotifier: cubit.selectedCategoryNotifier,
           itemTitleBuilder: (item) => item.categoryTitle ?? '-',
           onSelect: (category) {
             cubit.expandedIdNotifier.value = category.categoryId;
             cubit.fetchHomeServiceServices(id: category.categoryId);
+            cubit.setSelectedCategory(category);
           },
         );
       },
@@ -337,10 +110,11 @@ class HomeServiceEvaluationCategoryWidget extends StatelessWidget {
               items: services,
               enabled: true,
               itemTitleBuilder: (item) => item.title ?? '-',
-              selectedNotifier: ValueNotifier(null),
+              selectedNotifier: cubit.selectedServiceNotifier,
 
               onSelect: (service) {
                 cubit.fetchHomeServicePackage(entity: service);
+                cubit.setSelectedService(service);
               },
             );
           },
@@ -364,7 +138,17 @@ class HomeServiceEvaluationCategoryWidget extends StatelessWidget {
         );
       },
       builder: (context, state) {
-        return StreamBuilder<List<InsertHomeServiceCategoryResponseEntity?>>(
+        final pageHeight = MediaQuery.of(context).size.height;
+        return state.maybeWhen(
+          servicePackageLoading: () =>  SizedBox(
+            height: pageHeight * 0.4,
+            child: Center(
+              child: CircularProgressIndicator(
+                color: ServiceType.homeService.serviceColor,
+              ),
+            ),
+          ),
+        orElse: () => StreamBuilder<List<InsertHomeServiceCategoryResponseEntity?>>(
           stream: cubit.homeServiceCategoryListStream,
           builder: (context, snapshot) {
             final categories = snapshot.data ?? [];
@@ -378,8 +162,6 @@ class HomeServiceEvaluationCategoryWidget extends StatelessWidget {
 
             final services = category?.homeServices ?? [];
 
-            /// 🔥 KEY POINT:
-            /// فقط وقتی success شد نمایش بده
             final shouldShow =
             state.maybeWhen(
               servicePackageSuccess: () => true,
@@ -406,23 +188,15 @@ class HomeServiceEvaluationCategoryWidget extends StatelessWidget {
 
                   Space.h16,
 
-                  Column(
-                    children: services.map((service) {
-                      return Padding(
-                        padding: const EdgeInsets.only(bottom: 12),
-                        child: HomeServiceEvaluationPackageWidget(
-                          serviceId: service.id,
-                          categoryId: service.categoryId,
-                          entity: service,
-                        ),
-                      );
-                    }).toList(),
-                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(bottom: 12),
+                    child: HomeServiceEvaluationPackageWidget(),
+                  )
                 ],
               ),
             );
           },
-        );
+        ),);
       },
     );
   }

@@ -75,6 +75,22 @@ class HomeServiceEvaluationPackagesCubit
   final ValueNotifier<int?> expandedIdNotifier = ValueNotifier(null);
   final ValueNotifier<int?> packageExpandedIdNotifier = ValueNotifier(null);
 
+  final ValueNotifier<
+      InsertHomeServiceCategoryResponseEntity?> selectedCategoryNotifier = ValueNotifier(
+      null);
+
+  void setSelectedCategory(InsertHomeServiceCategoryResponseEntity category) {
+    selectedCategoryNotifier.value = category;
+  }
+
+  final ValueNotifier<
+      InsertHomeServiceServiceItemResponseEntity?> selectedServiceNotifier = ValueNotifier(
+      null);
+
+  void setSelectedService(InsertHomeServiceServiceItemResponseEntity service) {
+    selectedServiceNotifier.value = service;
+  }
+
   Future<void> init() async {
     emit(const HomeServiceEvaluationPackagesState.loading());
     final activeServiceRequestResult = await _getActiveServiceRequest();
@@ -628,11 +644,9 @@ class HomeServiceEvaluationPackagesCubit
       ),
     );
     result.whenOrNull(
-      success: (data, failures, resultCode) {
+      success: (data, failures, resultCode) async {
         if (resultCode == 0) {
-          _homeServicePackageListSubject
-            ..add([])
-            ..add(data);
+          _homeServicePackageListSubject.add(data);
           initializeMandatoryPartSelection();
           if ((data.isNotEmpty) && (data[0]?.id != null)) {
             packageExpandedIdNotifier.value = data[0]?.id;
