@@ -519,7 +519,6 @@ class HomeServicePartCubit extends Cubit<HomeServicePartState> {
         serial: int.tryParse(selectPartResponseEntity?.serial ?? '0'),
       );
       emit(const HomeServicePartState.submitAddPartMarkSuccess());
-      print('555555555555555');
     }
   }
 

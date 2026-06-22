@@ -72,6 +72,7 @@ class EditAndRegistrationPartWidget extends StatelessWidget {
         child: FormSectionContainer(
           hasBorder: true,
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Align(alignment: AlignmentGeometry.topRight,
                   child: TitleLargeText(text: "قطعه", fontSize: 16,)),
@@ -129,31 +130,13 @@ class EditAndRegistrationPartWidget extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Widget _successPartMarkWidget({required BuildContext context}) {
-    final cubit = context.read<LaborsAndPartsCubit>();
-    return ListView(
-      shrinkWrap: true,
-      physics: const BouncingScrollPhysics(),
-      children: [
-        _partMarkContainer(context: context),
-        BlocBuilder<LaborsAndPartsCubit, LaborsAndPartsState>(
-          builder: (BuildContext context, LaborsAndPartsState state) {
-            return state.maybeWhen(
-              partPriceSuccess: () => _successPartPriceWidget(context: context),
-              reusablePriceSuccess: () =>
-                  _successPartPriceWidget(context: context),
-              orElse: () => const SizedBox(),
-            );
-          },
-        ),
-        Space.h16,
-        InkwellButtonWidget(
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(16),
+        child: InkwellButtonWidget(
           title: 'تائید',
           backgroundColor: ServiceType.homeService.serviceColor,
           onTap: () {
+            final cubit = context.read<LaborsAndPartsCubit>();
             if (changeCustomerPart ?? false) {
               cubit.submitCustomerPart(
                 serviceIndex: serviceIndex,
@@ -167,6 +150,26 @@ class EditAndRegistrationPartWidget extends StatelessWidget {
               serviceIndex: serviceIndex,
               partIndex: partIndex,
               isEditablePart: isEditablePart,
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  Widget _successPartMarkWidget({required BuildContext context}) {
+    return ListView(
+      shrinkWrap: true,
+      physics: const BouncingScrollPhysics(),
+      children: [
+        _partMarkContainer(context: context),
+        BlocBuilder<LaborsAndPartsCubit, LaborsAndPartsState>(
+          builder: (BuildContext context, LaborsAndPartsState state) {
+            return state.maybeWhen(
+              partPriceSuccess: () => _successPartPriceWidget(context: context),
+              reusablePriceSuccess: () =>
+                  _successPartPriceWidget(context: context),
+              orElse: () => const SizedBox(),
             );
           },
         ),

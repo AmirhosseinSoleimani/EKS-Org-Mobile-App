@@ -55,6 +55,7 @@ class HomeServicePartPage extends StatelessWidget {
         padding: const EdgeInsets.all(16.0),
         child: FormSectionContainer(
           child: Column(
+            mainAxisSize: MainAxisSize.min,
             children: [
               Align(alignment: AlignmentGeometry.topRight,
                   child: TitleLargeText(text: "قطعه", fontSize: 16)),
@@ -102,12 +103,25 @@ class HomeServicePartPage extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar:  Padding(
+        padding: const EdgeInsets.all(16),
+        child: InkwellButtonWidget(
+          title: 'تائید',
+          backgroundColor: ServiceType.homeService.serviceColor,
+          onTap: () {
+            final cubit = context.read<HomeServicePartCubit>();
+            cubit.submitPart(
+              laborIndex: laborIndex,
+              serviceIndex: serviceIndex,
+              partIndex: partIndex,
+            );
+          },
+        ),
+      ),
     );
   }
 
   Widget _successPartMarkWidget({required BuildContext context}) {
-    final cubit = context.read<HomeServicePartCubit>();
-
     return ListView(
       shrinkWrap: true,
       physics: const BouncingScrollPhysics(),
@@ -121,19 +135,6 @@ class HomeServicePartPage extends StatelessWidget {
               reusablePriceSuccess: () =>
                   _successPartPriceWidget(context: context),
               orElse: () => const SizedBox(),
-            );
-          },
-        ),
-
-        Space.h16,
-        InkwellButtonWidget(
-          title: 'تائید',
-          backgroundColor: ServiceType.homeService.serviceColor,
-          onTap: () {
-            cubit.submitPart(
-              laborIndex: laborIndex,
-              serviceIndex: serviceIndex,
-              partIndex: partIndex,
             );
           },
         ),

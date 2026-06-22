@@ -37,6 +37,8 @@ class SvgManager {
   static const String dakaldarKhodroSavar = '${_basePath}peymankar.svg';
   static const String peymankarDakaldar = '${_basePath}peymankar.svg';
   static const String customerMarker = '${_basePath}customer_marker.svg';
+  static const String delete = '${_basePath}delete.svg';
+  static const String edit = '${_basePath}edit.svg';
 
 
   //not used yet
