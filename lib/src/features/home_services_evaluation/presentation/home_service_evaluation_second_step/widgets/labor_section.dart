@@ -1,12 +1,14 @@
 
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/evaluation_labor_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/evaluation_part_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/widgets/add_part_button.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/widgets/selected_part_item.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 
 class LaborSection extends StatelessWidget {
-  final dynamic labor;
+  final EvaluationLaborResponseEntity labor;
   final int laborIndex;
 
   final VoidCallback onAddPart;
@@ -35,7 +37,13 @@ class LaborSection extends StatelessWidget {
       children: [
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8),
-          child: BodyMediumText(text: labor.laborName ?? ''),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+            BodyMediumText(text: labor.laborName ?? ''),
+            Space.h16,
+            BodyMediumText(text:  'قیمت: ${labor.laborPrice?.toRialPrice()}', textAlign: TextAlign.right,),
+          ],),
         ),
 
         if (parts.isNotEmpty) ...[

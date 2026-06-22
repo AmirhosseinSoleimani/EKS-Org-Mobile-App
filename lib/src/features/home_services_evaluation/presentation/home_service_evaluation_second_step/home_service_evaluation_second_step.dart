@@ -5,7 +5,10 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presenta
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/cubit/home_service_evaluation_second_step_state.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/widgets/service_added_container_widget.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/widgets/service_customer_container_widget.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/emdadgar_invoice_page/emdadgar_invoice_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/pre_invoice_page/pre_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
+import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/use_case/customer_pre_invoice_on_the_fly_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
@@ -13,6 +16,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_butt
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeServiceEvaluationSecondStep extends StatelessWidget {
   const HomeServiceEvaluationSecondStep({super.key});
@@ -57,11 +61,8 @@ class _HomeServiceEvaluationSecondStepView extends StatelessWidget {
             );
           },
           submitSuccess: () {
-            // TODO:
-            // اینجا باید به صفحه فاکتور پروژه فعلی وصل شود.
-            // فعلاً اگر InvoicePage در پروژه فعلی آماده نیست،
-            // فقط pop یا route مناسب خودت را بگذار.
             Navigator.of(context).pop();
+            context.go(PreInvoicePage.path);
           },
           submitNeedPhotoSuccess: () {
             // TODO:

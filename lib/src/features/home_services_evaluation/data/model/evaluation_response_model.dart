@@ -109,7 +109,7 @@ class LastEvaluationModel extends LastEvaluationEntity {
 
   Map<String, dynamic> toJson() {
     return {
-      'serviceRequestId': serviceRequestId,
+      'serviceRequestId': serviceRequestId.toString(),
       'serviceType': serviceType,
       'id': id,
       'emdadgarId': emdadgarId,
@@ -118,7 +118,7 @@ class LastEvaluationModel extends LastEvaluationEntity {
       'emdadServiceCategoryId': serviceCategoryId,
       'distanceToCustomer': distanceToCustomer,
       'customerKilometer': customerKilometer,
-      'isAccepted': isAccepted,
+      'isAccepted': true,
       'description': description,
       'stopTime': stopTime,
       'createNewServiceRequest': createNewServiceRequest,

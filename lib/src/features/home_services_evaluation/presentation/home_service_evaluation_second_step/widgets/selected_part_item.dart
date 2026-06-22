@@ -186,6 +186,7 @@ void _openBottomSheet(
         ),
       ],
     ),
+    actionWidget: SizedBox.shrink(),
   );
 }
 
