@@ -1,4 +1,5 @@
 import 'dart:async';
+import 'dart:ui';
 
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/common/utils/extensions/iterable_ext.dart';
@@ -61,6 +62,9 @@ class HomeServiceEvaluationSecondStepCubit
   static List<EvaluationImageEntity>? evaluationKilometerImageList = [];
 
   int id = 0;
+  VoidCallback? _retryAction;
+
+  void retryLastAction() => _retryAction?.call();
 
   @override
   Future<void> close() async {
@@ -71,6 +75,8 @@ class HomeServiceEvaluationSecondStepCubit
   }
 
   Future<void> initState() async {
+    _retryAction = initState;
+
     emit(const HomeServiceEvaluationSecondStepState.loading());
 
     final activeServiceRequestResult = await _getActiveServiceRequest();
@@ -100,8 +106,6 @@ class HomeServiceEvaluationSecondStepCubit
         }
       },
       failure: (error, failures) {
-        print(error);
-        print(failures);
         _emitError(failures ?? '');
         resultValue = false;
       },
@@ -159,6 +163,7 @@ class HomeServiceEvaluationSecondStepCubit
   }
 
   Future<void> postEvaluation() async {
+    _retryAction = postEvaluation;
     emit(const HomeServiceEvaluationSecondStepState.submitLoading());
 
     final lastEvaluationEntity = _lastEvaluationSubject.valueOrNull;
@@ -198,7 +203,7 @@ class HomeServiceEvaluationSecondStepCubit
     result.whenOrNull(
       success: (data, failures, resultCode) {
         if (resultCode == 0) {
-          id = int.tryParse(data?.id ?? '0') ?? 0;
+          id = int.tryParse( data?.id.toString() ?? '0') ?? 0;
           emit(const HomeServiceEvaluationSecondStepState.submitSuccess());
         } else {
           _emitSubmitError(failures?.listToString() ?? '');

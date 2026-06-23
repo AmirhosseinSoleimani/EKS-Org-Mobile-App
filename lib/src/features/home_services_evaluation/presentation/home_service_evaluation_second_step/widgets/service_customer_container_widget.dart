@@ -77,9 +77,10 @@ class ServiceCustomerContainerWidget extends StatelessWidget {
         data: BottomSheetMessageModel(
           title: '', message: 'آیا از حذف این سرویس اطمینان دارید؟',),
         positiveText: 'حذف',
-        onButtonTap: (context) {
-          Navigator.pop(context);
-          onTapDelete?.call();
+        onButtonTap: () {
+
+         onTapDelete?.call();
+         Navigator.pop(context);
         });
 
   }

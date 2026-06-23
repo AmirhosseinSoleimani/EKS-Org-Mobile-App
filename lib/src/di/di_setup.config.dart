@@ -149,6 +149,8 @@ import '../features/home_services_evaluation/domain/usecase/set_last_evaluation_
     as _i570;
 import '../features/home_services_evaluation/presentation/evaluation_draft.dart'
     as _i823;
+import '../features/home_services_evaluation/presentation/evaluation_invoice_page/cubit/evaluation_invoice_cubit.dart'
+    as _i510;
 import '../features/home_services_evaluation/presentation/home_service_evaluation_first_step/cubit/home_service_evaluation_first_step_cubit.dart'
     as _i317;
 import '../features/home_services_evaluation/presentation/home_service_evaluation_packages/cubit/home_service_evaluation_packages_cubit.dart'
@@ -1266,6 +1268,15 @@ _i174.GetIt $initGetIt(
       gh<_i335.CustomerPreInvoiceOnTheFlyUseCase>(),
       gh<_i531.AcceptEvaluationUseCase>(),
       gh<_i734.GetEmdadgarFollowupsDataUseCase>(),
+    ),
+  );
+  gh.factory<_i510.EvaluationInvoiceCubit>(
+    () => _i510.EvaluationInvoiceCubit(
+      gh<_i335.CustomerPreInvoiceOnTheFlyUseCase>(),
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      gh<_i531.AcceptEvaluationUseCase>(),
     ),
   );
   gh.factory<_i319.EvaluationAidServiceRequestCubit>(

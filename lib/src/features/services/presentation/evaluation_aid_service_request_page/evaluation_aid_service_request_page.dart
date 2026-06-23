@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/representation_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/service_category_entity.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/evaluation_invoice_page/evaluation_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/bottom_sheet/add_part_and_labor_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/cubit/evaluation_aid_service_request_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/widgets/evaluation_service_category_dynamic_section.dart';
@@ -51,6 +52,7 @@ class _View extends StatelessWidget {
     >(
       listener: (context, state) {
         state.whenOrNull(
+          submitSuccess: (id) => context.go(EvaluationInvoicePage.path, extra: id),
           error: (message) {
             BottomSheetMessage.showErrorWithAction(
               context: context,

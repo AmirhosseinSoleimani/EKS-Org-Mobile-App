@@ -33,7 +33,7 @@ class _HomeServiceEvaluationService implements HomeServiceEvaluationService {
           Options(method: 'POST', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/HomeServiceEvaluation/PostHomeServiceEvaluation',
+                '/api/HomeServiceEvaluation/Post',
                 queryParameters: queryParameters,
                 data: _data,
               )

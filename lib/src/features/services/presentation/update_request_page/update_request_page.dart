@@ -61,7 +61,10 @@ class _View extends StatelessWidget {
             BottomSheetMessage.showErrorWithAction(
               context: context,
               data: message,
-              onPositive: cubit.retryLastAction,
+              onPositive: () {
+                context.pop();
+                cubit.retryLastAction();
+              },
             );
           },
           connectionError: () {

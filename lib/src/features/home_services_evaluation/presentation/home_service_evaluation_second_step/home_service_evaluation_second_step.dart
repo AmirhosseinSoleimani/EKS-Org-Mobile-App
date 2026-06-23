@@ -1,14 +1,12 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/evaluation_invoice_page/evaluation_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_packages/page/home_service_evaluation_packages_page.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/cubit/home_service_evaluation_second_step_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/cubit/home_service_evaluation_second_step_state.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/widgets/service_added_container_widget.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/widgets/service_customer_container_widget.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/emdadgar_invoice_page/emdadgar_invoice_page.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/pre_invoice_page/pre_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
-import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/use_case/customer_pre_invoice_on_the_fly_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
@@ -17,6 +15,8 @@ import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_te
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+
+import '../../domain/entity/evaluation_service_entity.dart';
 
 class HomeServiceEvaluationSecondStep extends StatelessWidget {
   const HomeServiceEvaluationSecondStep({super.key});
@@ -50,6 +50,12 @@ class _HomeServiceEvaluationSecondStepView extends StatelessWidget {
               data: message,
               isDismissible: true,
               enableDrag: true,
+
+              onButtonTap:(){
+                final cubit = context.read<HomeServiceEvaluationSecondStepCubit>();
+                context.pop();
+                cubit.retryLastAction();
+              }
             );
           },
           submitError: (message) {
@@ -58,16 +64,20 @@ class _HomeServiceEvaluationSecondStepView extends StatelessWidget {
               data: message,
               isDismissible: true,
               enableDrag: true,
+              onButtonTap: (){
+                final cubit = context.read<HomeServiceEvaluationSecondStepCubit>();
+                cubit.retryLastAction();
+                context.pop();
+              }
             );
           },
           submitSuccess: () {
             Navigator.of(context).pop();
-            context.go(PreInvoicePage.path);
+            context.push(EvaluationInvoicePage.path, extra: context.read<HomeServiceEvaluationSecondStepCubit>().id);
           },
           submitNeedPhotoSuccess: () {
             // TODO:
-            // اینجا باید به صفحه AddPhotoHomeServicePage پروژه فعلی وصل شود.
-            // اگر صفحه عکس هنوز migrate نشده، بعداً این navigation را وصل کن.
+
           },
         );
       },
@@ -101,7 +111,7 @@ class _HomeServiceEvaluationSecondStepView extends StatelessWidget {
                 child: InkwellButtonWidget(
                   title: 'ذخیره و ادامه',
                   showLoading: isSubmitting,
-                  onTap: isSubmitting ? null : cubit.postEvaluation,
+                  onTap: isSubmitting ? () {}: cubit.postEvaluation,
                   backgroundColor: ServiceType.homeService.serviceColor,
                 ),
               );
@@ -153,17 +163,23 @@ class _HomeServiceEvaluationSecondStepBody extends StatelessWidget {
                   }
 
                   return Column(
-                    children: customerServices.map((service) {
-                      return ServiceCustomerContainerWidget(
-                        evaluationServiceEntity: service,
-                        serviceIndex: customerServices.indexOf(service),
-                        onTapDelete: () {
-                          cubit.deleteCustomerEvaluationService(
-                            evaluationServiceEntity: service,
+                    children: [
+                      ListView.builder(
+                        shrinkWrap: true,
+                        physics: const NeverScrollableScrollPhysics(),
+                        itemCount: HomeServiceEvaluationSecondStepCubit.customerServiceList?.length,
+                        itemBuilder: (BuildContext context, int index) {
+                          return ServiceCustomerContainerWidget(
+                            evaluationServiceEntity: HomeServiceEvaluationSecondStepCubit.customerServiceList?[index] ?? EvaluationServiceEntity(),
+                            onTapDelete: () =>
+                                cubit.deleteCustomerEvaluationService(
+                                  evaluationServiceEntity: HomeServiceEvaluationSecondStepCubit.customerServiceList?[index],
+                                ),
+                            serviceIndex: index,
                           );
                         },
-                      );
-                    }).toList(),
+                      ),
+                    ],
                   );
                 },
               ),

@@ -84,7 +84,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
 
 
   EmdadgarServiceDetailEntity? emdadgarServiceDetailEntity;
-  int? emdadgarEvaluationId;
+  String? emdadgarEvaluationId;
   final cancelRequestReasonNotifier =
   ValueNotifier<List<CancelRequestReasonEntity>>([]);
 
@@ -517,7 +517,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
             final param = AcceptEvaluationParamEntity(
               serviceType: selectedRequest?.serviceType ??
                   ServiceType.reliefService,
-              emdadgarEvaluationId: data.id,
+              emdadgarEvaluationId: data.id.toString(),
             );
             final customerPreInvoiceResult = await _customerPreInvoiceOnTheFlyUseCase(
                 param);
@@ -563,7 +563,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
   Future<void> acceptEvaluation () async {
     _safeEmit(CancelRequestState.submitLoading());
     final param = AcceptEvaluationParamEntity(serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
-        emdadgarEvaluationId: emdadgarEvaluationId);
+        emdadgarEvaluationId: emdadgarEvaluationId.toString());
 
     final result = await _acceptEvaluationUseCase(param);
     result.whenOrNull(

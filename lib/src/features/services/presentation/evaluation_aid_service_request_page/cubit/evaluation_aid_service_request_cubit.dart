@@ -465,7 +465,8 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
 
     result.whenOrNull(
       success: (data, failures, resultCode) {
-        _safeEmit(const EvaluationAidServiceRequestState.submitSuccess());
+        _safeEmit(
+            EvaluationAidServiceRequestState.submitSuccess(id: data.id ?? '0'));
       },
       failure: (error, failures) {
         _errorMessage = _fallbackError(failures ?? error.toString());

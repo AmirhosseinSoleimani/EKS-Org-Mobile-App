@@ -143,7 +143,7 @@ return closeBottomSheetAndRefresh(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  loading,TResult Function()?  loaded,TResult Function( BottomSheetMessageModel message)?  error,TResult Function()?  connectionError,TResult Function()?  submitLoading,TResult Function()?  submitSuccess,TResult Function()?  showAddPartAndLaborBottomSheet,TResult Function()?  closeBottomSheetAndRefresh,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  loading,TResult Function()?  loaded,TResult Function( BottomSheetMessageModel message)?  error,TResult Function()?  connectionError,TResult Function()?  submitLoading,TResult Function( String id)?  submitSuccess,TResult Function()?  showAddPartAndLaborBottomSheet,TResult Function()?  closeBottomSheetAndRefresh,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle();case _Loading() when loading != null:
@@ -152,7 +152,7 @@ return loaded();case _Error() when error != null:
 return error(_that.message);case _ConnectionError() when connectionError != null:
 return connectionError();case _SubmitLoading() when submitLoading != null:
 return submitLoading();case _SubmitSuccess() when submitSuccess != null:
-return submitSuccess();case _ShowAddPartAndLaborBottomSheet() when showAddPartAndLaborBottomSheet != null:
+return submitSuccess(_that.id);case _ShowAddPartAndLaborBottomSheet() when showAddPartAndLaborBottomSheet != null:
 return showAddPartAndLaborBottomSheet();case _CloseBottomSheetBeforeRefresh() when closeBottomSheetAndRefresh != null:
 return closeBottomSheetAndRefresh();case _:
   return orElse();
@@ -172,7 +172,7 @@ return closeBottomSheetAndRefresh();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  loading,required TResult Function()  loaded,required TResult Function( BottomSheetMessageModel message)  error,required TResult Function()  connectionError,required TResult Function()  submitLoading,required TResult Function()  submitSuccess,required TResult Function()  showAddPartAndLaborBottomSheet,required TResult Function()  closeBottomSheetAndRefresh,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  loading,required TResult Function()  loaded,required TResult Function( BottomSheetMessageModel message)  error,required TResult Function()  connectionError,required TResult Function()  submitLoading,required TResult Function( String id)  submitSuccess,required TResult Function()  showAddPartAndLaborBottomSheet,required TResult Function()  closeBottomSheetAndRefresh,}) {final _that = this;
 switch (_that) {
 case _Idle():
 return idle();case _Loading():
@@ -181,7 +181,7 @@ return loaded();case _Error():
 return error(_that.message);case _ConnectionError():
 return connectionError();case _SubmitLoading():
 return submitLoading();case _SubmitSuccess():
-return submitSuccess();case _ShowAddPartAndLaborBottomSheet():
+return submitSuccess(_that.id);case _ShowAddPartAndLaborBottomSheet():
 return showAddPartAndLaborBottomSheet();case _CloseBottomSheetBeforeRefresh():
 return closeBottomSheetAndRefresh();case _:
   throw StateError('Unexpected subclass');
@@ -200,7 +200,7 @@ return closeBottomSheetAndRefresh();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  loading,TResult? Function()?  loaded,TResult? Function( BottomSheetMessageModel message)?  error,TResult? Function()?  connectionError,TResult? Function()?  submitLoading,TResult? Function()?  submitSuccess,TResult? Function()?  showAddPartAndLaborBottomSheet,TResult? Function()?  closeBottomSheetAndRefresh,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  loading,TResult? Function()?  loaded,TResult? Function( BottomSheetMessageModel message)?  error,TResult? Function()?  connectionError,TResult? Function()?  submitLoading,TResult? Function( String id)?  submitSuccess,TResult? Function()?  showAddPartAndLaborBottomSheet,TResult? Function()?  closeBottomSheetAndRefresh,}) {final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle();case _Loading() when loading != null:
@@ -209,7 +209,7 @@ return loaded();case _Error() when error != null:
 return error(_that.message);case _ConnectionError() when connectionError != null:
 return connectionError();case _SubmitLoading() when submitLoading != null:
 return submitLoading();case _SubmitSuccess() when submitSuccess != null:
-return submitSuccess();case _ShowAddPartAndLaborBottomSheet() when showAddPartAndLaborBottomSheet != null:
+return submitSuccess(_that.id);case _ShowAddPartAndLaborBottomSheet() when showAddPartAndLaborBottomSheet != null:
 return showAddPartAndLaborBottomSheet();case _CloseBottomSheetBeforeRefresh() when closeBottomSheetAndRefresh != null:
 return closeBottomSheetAndRefresh();case _:
   return null;
@@ -449,33 +449,67 @@ String toString() {
 
 
 class _SubmitSuccess implements EvaluationAidServiceRequestState {
-  const _SubmitSuccess();
+  const _SubmitSuccess({required this.id});
   
 
+ final  String id;
 
-
+/// Create a copy of EvaluationAidServiceRequestState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$SubmitSuccessCopyWith<_SubmitSuccess> get copyWith => __$SubmitSuccessCopyWithImpl<_SubmitSuccess>(this, _$identity);
 
 
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubmitSuccess);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _SubmitSuccess&&(identical(other.id, id) || other.id == id));
 }
 
 
 @override
-int get hashCode => runtimeType.hashCode;
+int get hashCode => Object.hash(runtimeType,id);
 
 @override
 String toString() {
-  return 'EvaluationAidServiceRequestState.submitSuccess()';
+  return 'EvaluationAidServiceRequestState.submitSuccess(id: $id)';
 }
 
 
 }
 
+/// @nodoc
+abstract mixin class _$SubmitSuccessCopyWith<$Res> implements $EvaluationAidServiceRequestStateCopyWith<$Res> {
+  factory _$SubmitSuccessCopyWith(_SubmitSuccess value, $Res Function(_SubmitSuccess) _then) = __$SubmitSuccessCopyWithImpl;
+@useResult
+$Res call({
+ String id
+});
 
 
+
+
+}
+/// @nodoc
+class __$SubmitSuccessCopyWithImpl<$Res>
+    implements _$SubmitSuccessCopyWith<$Res> {
+  __$SubmitSuccessCopyWithImpl(this._self, this._then);
+
+  final _SubmitSuccess _self;
+  final $Res Function(_SubmitSuccess) _then;
+
+/// Create a copy of EvaluationAidServiceRequestState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') $Res call({Object? id = null,}) {
+  return _then(_SubmitSuccess(
+id: null == id ? _self.id : id // ignore: cast_nullable_to_non_nullable
+as String,
+  ));
+}
+
+
+}
 
 /// @nodoc
 

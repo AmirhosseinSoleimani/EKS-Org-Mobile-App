@@ -3,9 +3,9 @@ import 'package:eks_sana_plus_org/src/features/evaluation/data/models/post_evalu
 class PostEvaluationResponseEntity {
   PostEvaluationResponseEntity({this.id});
 
-  int? id;
+  String? id;
 
-  PostEvaluationResponseEntity copyWith({int? id}) {
+  PostEvaluationResponseEntity copyWith({String? id}) {
     return PostEvaluationResponseEntity(id: id ?? this.id);
   }
 

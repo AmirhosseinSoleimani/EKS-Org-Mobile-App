@@ -18,7 +18,7 @@ class EvaluationAidServiceRequestState with _$EvaluationAidServiceRequestState {
   const factory EvaluationAidServiceRequestState.submitLoading() =
       _SubmitLoading;
 
-  const factory EvaluationAidServiceRequestState.submitSuccess() =
+  const factory EvaluationAidServiceRequestState.submitSuccess({required String id}) =
       _SubmitSuccess;
 
   const factory EvaluationAidServiceRequestState.showAddPartAndLaborBottomSheet() =

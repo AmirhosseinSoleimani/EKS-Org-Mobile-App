@@ -4,10 +4,11 @@ class AcceptEvaluationParamModel extends AcceptEvaluationParamEntity {
   const AcceptEvaluationParamModel({
     required super.serviceType,
     super.emdadgarEvaluationId,
+    super.serviceRequestId,
   });
 
   Map<String,dynamic> toJson() => {
-    'ServiceType': serviceType,
+    'serviceRequestId': serviceRequestId,
     'emdadgarEvaluationId': emdadgarEvaluationId,
     'serviceType': serviceType.value,
   };
