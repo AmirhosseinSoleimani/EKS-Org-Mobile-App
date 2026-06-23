@@ -15,6 +15,13 @@ class AidServiceEvaluationSubmitParamModel
     super.confirmValidation = false,
     super.defectInfoId,
     super.description,
+    super.representaionCode,
+    super.acceptanceCode,
+    super.representation,
+    super.emdadgarEvaluationId,
+    super.distanceHamlCustomer,
+    super.representationId,
+    super.emdadServiceCategoryId,
     required super.servicesAndLaborsAndPartsEvaluationPayload,
   });
 
@@ -32,6 +39,12 @@ class AidServiceEvaluationSubmitParamModel
       'ConfirmValidation': confirmValidation,
       'DefectInfoId': defectInfoId,
       'Description': description,
+      'representaionCode': representaionCode,
+      'acceptanceCode': acceptanceCode,
+      'representationId': representationId,
+      'emdadgarEvaluationId': emdadgarEvaluationId,
+      'emdadServiceCategoryId': emdadServiceCategoryId,
+      'distanceHamlCustomer': distanceHamlCustomer,
       'servicesAndLaborsAndPartsEvaluationPayload':
           servicesAndLaborsAndPartsEvaluationPayload.toModel().toJson(),
     };

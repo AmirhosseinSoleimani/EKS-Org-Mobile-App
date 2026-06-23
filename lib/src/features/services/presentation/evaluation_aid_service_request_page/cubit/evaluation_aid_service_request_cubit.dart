@@ -506,6 +506,10 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     _retryAction = () => setSelectedServiceCategory(category);
 
     selectedServiceCategory.value = category;
+    if (selectedServiceCategory.value.evaluationViewType ==
+        EvaluationServiceCategoryViewType.transport) {
+      getRepresentationList();
+    }
 
     await _getServiceDetailAndHandleResult();
   }

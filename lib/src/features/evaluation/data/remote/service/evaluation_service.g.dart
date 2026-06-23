@@ -654,7 +654,7 @@ class _EvaluationService implements EvaluationService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/AidServiceEvaluation/GetRepresentationList',
+            '/api/Representation/GetByFilterJson',
             queryParameters: queryParameters,
             data: _data,
           )

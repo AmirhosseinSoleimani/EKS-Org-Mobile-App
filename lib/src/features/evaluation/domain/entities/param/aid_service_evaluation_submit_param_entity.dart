@@ -14,8 +14,16 @@ class AidServiceEvaluationSubmitParamEntity {
   final String? arriveDate;
   final String? endWorkDate;
   final bool confirmValidation;
+  final bool representation;
   final int? defectInfoId;
   final String? description;
+  final int? representaionCode;
+  final int? distanceHamlCustomer;
+  final int? acceptanceCode;
+  final int? emdadgarEvaluationId;
+  final int? emdadServiceCategoryId;
+  final int? representationId;
+
 
   final ServicesAndLaborsAndPartsEvaluationEntity
   servicesAndLaborsAndPartsEvaluationPayload;
@@ -33,6 +41,13 @@ class AidServiceEvaluationSubmitParamEntity {
     this.confirmValidation = false,
     this.defectInfoId,
     this.description,
+    this.representaionCode,
+    this.acceptanceCode,
+    this.representationId,
+    this.representation= false,
+    this.distanceHamlCustomer,
+    this.emdadServiceCategoryId,
+    this.emdadgarEvaluationId,
     required this.servicesAndLaborsAndPartsEvaluationPayload,
   });
 
@@ -41,13 +56,20 @@ class AidServiceEvaluationSubmitParamEntity {
     ServiceType? serviceType,
     int? emdadgarId,
     int? serviceCategoryId,
+    int? distanceHamlCustomer,
     int? customerKilometer,
     int? distanceToCustomer,
     String? assignDate,
     String? arriveDate,
     String? endWorkDate,
     bool? confirmValidation,
+    bool? representation,
     int? defectInfoId,
+    int? representaionCode,
+    int? acceptanceCode,
+    int? emdadServiceCategoryId,
+    int? emdadgarEvaluationId,
+    int? representationId,
     String? description,
     ServicesAndLaborsAndPartsEvaluationEntity?
     servicesAndLaborsAndPartsEvaluationPayload,
@@ -65,6 +87,13 @@ class AidServiceEvaluationSubmitParamEntity {
       confirmValidation: confirmValidation ?? this.confirmValidation,
       defectInfoId: defectInfoId ?? this.defectInfoId,
       description: description ?? this.description,
+      acceptanceCode: acceptanceCode ?? this.acceptanceCode,
+      representaionCode: representaionCode ?? this.representaionCode,
+      emdadServiceCategoryId: emdadServiceCategoryId ?? this.emdadServiceCategoryId,
+      representation: representation ?? this.representation,
+      representationId: representationId ?? this.representationId,
+      distanceHamlCustomer: distanceHamlCustomer ?? this.distanceHamlCustomer,
+      emdadgarEvaluationId: emdadgarEvaluationId ?? this.emdadgarEvaluationId,
       servicesAndLaborsAndPartsEvaluationPayload:
       servicesAndLaborsAndPartsEvaluationPayload ??
           this.servicesAndLaborsAndPartsEvaluationPayload,
@@ -82,9 +111,16 @@ class AidServiceEvaluationSubmitParamEntity {
       assignDate: assignDate,
       arriveDate: arriveDate,
       endWorkDate: endWorkDate,
+      acceptanceCode: acceptanceCode,
+      representationId: representationId,
       confirmValidation: confirmValidation,
       defectInfoId: defectInfoId,
       description: description,
+      emdadServiceCategoryId: emdadServiceCategoryId,
+      representation: representation,
+      representaionCode: representaionCode,
+      distanceHamlCustomer: distanceHamlCustomer,
+      emdadgarEvaluationId: emdadgarEvaluationId,
       servicesAndLaborsAndPartsEvaluationPayload:
           servicesAndLaborsAndPartsEvaluationPayload,
     );

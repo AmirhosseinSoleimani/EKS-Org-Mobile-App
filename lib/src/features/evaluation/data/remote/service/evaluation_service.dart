@@ -104,7 +104,7 @@ abstract class EvaluationService {
       ResponseLastEvaluationModel>> getLastEvaluation(
       @Body() Map<String, dynamic> body);
 
-  @POST('/api/AidServiceEvaluation/GetRepresentationList')
+  @POST('/api/Representation/GetByFilterJson')
   Future<BaseListResponse<RepresentationModel>> getRepresentationList(
       @Body() Map<String, dynamic> body);
 

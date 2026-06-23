@@ -57,23 +57,28 @@ class AidServiceEvaluationSubmitParamBuilder {
       endWorkDate: isTransport
           ? JalaliDateHelper.formatServerDateTime(transportForm.endWorkDateTime)
           : null,
+      representation:  transportForm.selectedRepresentation.value != null,
+      representaionCode:
+      transportForm.selectedRepresentation.value?.systemCode != null
+          ? int.tryParse(
+        transportForm.selectedRepresentation.value!.systemCode!,
+      )
+          : null,
 
-      /*    acceptanceCode: isTransport
+         acceptanceCode: isTransport
           ? int.tryParse(transportForm.acceptanceCodeController.text.trim())
           : null,
 
-      distanceHamlCustomer: isTransport
+        distanceHamlCustomer: isTransport
           ? int.tryParse(
-        transportForm.transportDistanceController.text.trim(),
-      )
-          : null,
-
-      representationId: isTransport
+        transportForm.transportDistanceController.text.trim()) : null,
+      emdadServiceCategoryId:
+      selectedServiceCategory?.id ??
+          emdadgarServiceDetailEntity?.serviceCategoryId,
+      emdadgarEvaluationId:  lastEvaluationEntity?.lastEvaluation?.id,
+       representationId: isTransport
           ? int.tryParse(
-        transportForm.selectedRepresentation.value?.value?.toString() ??
-            '',
-      )
-          : null,*/
+        transportForm.selectedRepresentation.value?.value?.toString() ?? '') : null,
       confirmValidation: false,
       defectInfoId: selectedDefect?.id ?? selectedRequest?.defectId,
       description: mainForm.descriptionController.text.trim(),
