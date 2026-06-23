@@ -87,7 +87,7 @@ class EvaluationServiceModel extends EvaluationServiceEntity {
     return {
       'evaluationLabors':
       evaluationLabors?.map((item) => item.toModel().toJson()).toList(),
-      "serviceType": serviceType,
+      "serviceType": serviceType?.value,
       "serviceTypeId": serviceTypeId,
       "serviceTypeTitle": serviceTypeTitle,
       "serviceId": serviceId,

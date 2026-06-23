@@ -52,7 +52,7 @@ class _View extends StatelessWidget {
     >(
       listener: (context, state) {
         state.whenOrNull(
-          submitSuccess: (id) => context.go(EvaluationInvoicePage.path, extra: id),
+          submitSuccess: (id) => context.push(EvaluationInvoicePage.path, extra: int.tryParse(id)),
           error: (message) {
             BottomSheetMessage.showErrorWithAction(
               context: context,
@@ -66,7 +66,7 @@ class _View extends StatelessWidget {
           connectionError: () {
             BottomSheetMessage.showCustom(
               context: context,
-              content: NoInternetBottomSheet(onRetry: cubit.init),
+              content: NoInternetBottomSheet(onRetry:   cubit.retryLastAction),
               actionWidget: const SizedBox.shrink(),
               isDismissible: true,
               enableDrag: true,

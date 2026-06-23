@@ -9,7 +9,7 @@ import 'package:injectable/injectable.dart';
 class AcceptEvaluationUseCase
     extends
         BaseUseCase<
-          ApiResult<AcceptEvaluationResponseEntity>,
+          ApiResult<void>,
           AcceptEvaluationParamEntity
         > {
   EvaluationRepository evaluationRepository;
@@ -17,7 +17,7 @@ class AcceptEvaluationUseCase
   AcceptEvaluationUseCase(this.evaluationRepository);
 
   @override
-  Future<ApiResult<AcceptEvaluationResponseEntity>> call(
+  Future<ApiResult<void>> call(
     AcceptEvaluationParamEntity arg,
   ) async {
     return await evaluationRepository.acceptEvaluation(arg);

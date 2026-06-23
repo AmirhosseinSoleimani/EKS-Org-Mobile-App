@@ -3,7 +3,10 @@ import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/post_e
 class PostEvaluationResponseModel extends PostEvaluationResponseEntity {
   PostEvaluationResponseModel({super.id});
 
-  PostEvaluationResponseModel.fromJson(dynamic json) {
-    id = json;
+  factory PostEvaluationResponseModel.fromJson(Map<String, dynamic> json){
+    print('asdasdasdasasdsad');
+    print(json);
+    return PostEvaluationResponseModel(id: json['id'].toString());
+
   }
 }

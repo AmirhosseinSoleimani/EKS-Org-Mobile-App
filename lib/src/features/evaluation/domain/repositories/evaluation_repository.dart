@@ -54,7 +54,7 @@ abstract class EvaluationRepository {
   Future<ApiResult<PostEvaluationResponseEntity>> postEvaluation(
       ServiceEvaluationParamEntity param);
 
-  Future<ApiResult<AcceptEvaluationResponseEntity>> acceptEvaluation(
+  Future<ApiResult<void>> acceptEvaluation(
       AcceptEvaluationParamEntity param);
 
   Future<ApiResult<

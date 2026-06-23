@@ -7,6 +7,7 @@ import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/emdadg
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/labor_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/last_evaluation_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/RepresentationParamEntity.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/aid_service_evaluation_submit_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/category_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/evaluation_selected_labor_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/evaluation_selected_part_entity.dart';
@@ -37,6 +38,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/controllers/evaluation_labor_part_controller.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/cubit/evaluation_transport_Information_form_controller.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/enums/add_part_and_labor_sheet_mode.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/enums/evaluation_service_category_view_type.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter/material.dart';
@@ -442,14 +444,16 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
 
 
   Future<void> submitEvaluationForAidService() async {
-    if (!laborPart.hasSelectedLabors) {
+    _retryAction = submitEvaluationForAidService;
+    final type = selectedServiceCategory.value.evaluationViewType;
+    if (!laborPart.hasSelectedLabors &&  type == EvaluationServiceCategoryViewType.laborAndPart) {
       _emitError('حداقل یک اجرت باید انتخاب شود');
       return;
     }
 
     _safeEmit(const EvaluationAidServiceRequestState.submitLoading());
 
-    final param = AidServiceEvaluationSubmitParamBuilder.build(
+    final AidServiceEvaluationSubmitParamEntity param = AidServiceEvaluationSubmitParamBuilder.build(
       selectedRequest: selectedRequest,
       emdadgarInfo: emdadgarInfo,
       lastEvaluationEntity: lastEvaluationEntity,
@@ -489,15 +493,16 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
   }
 
   Future<void> selectDefect(DefectEntity defect) async {
+    _safeEmit(const EvaluationAidServiceRequestState.getInfoLoading());
     _retryAction = () => selectDefect(defect);
-
     selectedDefect.value = defect;
 
     await _getServiceDetailAndHandleResult();
   }
 
   Future<void> setSelectedServiceCategory(
-      ServiceCategoryEntity category,) async {
+      ServiceCategoryEntity category) async {
+    _safeEmit(const EvaluationAidServiceRequestState.getInfoLoading());
     _retryAction = () => setSelectedServiceCategory(category);
 
     selectedServiceCategory.value = category;
@@ -506,6 +511,7 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
   }
 
   Future<bool> _getServiceDetailAndHandleResult() async {
+    _safeEmit(const EvaluationAidServiceRequestState.getInfoLoading());
     final result = await getServiceDetailEvaluation();
 
     if (result == FetchResultType.success) {
@@ -522,8 +528,6 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
   }
 
   Future<FetchResultType> getCategoryList() async {
-    _retryAction = getCategoryList;
-
     final param = CategoryParamEntity(serviceType: ServiceType.reliefService,
         planningId: selectedRequest?.planningId ?? 0);
     final result = await _getCategoriesListUseCase(param);
@@ -548,8 +552,6 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
   }
 
   Future<FetchResultType> getLastEvaluation() async {
-    _retryAction = getLastEvaluation;
-
     final param = LastEvaluationParamEntity(
       serviceType: ServiceType.reliefService,
       emdadgarId: emdadgarInfo?.id,
@@ -575,8 +577,6 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     return fetchResult;
   }
   Future<FetchResultType> getServiceDetailEvaluation() async {
-    _retryAction = getServiceDetailEvaluation;
-
     final param = ServiceDetailForEvaluationParamEntity(
       serviceType: ServiceType.reliefService,
       aidServiceRequestId: selectedRequest?.id,

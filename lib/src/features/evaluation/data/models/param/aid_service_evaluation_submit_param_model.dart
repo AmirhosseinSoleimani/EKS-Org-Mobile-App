@@ -1,43 +1,27 @@
-import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/services_and_labors_and_parts_evaluation_model.dart';
+import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/aid_service_evaluation_submit_param_entity.dart';
 
-class AidServiceEvaluationSubmitParamModel {
-  final int? serviceRequestId;
-  final int? serviceType;
-  final int? emdadgarId;
-  final int? serviceCategoryId;
-  final int? customerKilometer;
-  final int? distanceToCustomer;
-
-  final String? assignDate;
-  final String? arriveDate;
-  final String? endWorkDate;
-  final bool confirmValidation;
-  final int? defectInfoId;
-  final String? description;
-
-  final ServicesAndLaborsAndPartsEvaluationModel
-  servicesAndLaborsAndPartsEvaluationPayload;
-
+class AidServiceEvaluationSubmitParamModel
+    extends AidServiceEvaluationSubmitParamEntity {
   const AidServiceEvaluationSubmitParamModel({
-    this.serviceRequestId,
-    this.serviceType,
-    this.emdadgarId,
-    this.serviceCategoryId,
-    this.customerKilometer,
-    this.distanceToCustomer,
-    this.assignDate,
-    this.arriveDate,
-    this.endWorkDate,
-    this.confirmValidation = false,
-    this.defectInfoId,
-    this.description,
-    required this.servicesAndLaborsAndPartsEvaluationPayload,
+    required super.serviceType,
+    super.serviceRequestId,
+    super.emdadgarId,
+    super.serviceCategoryId,
+    super.customerKilometer,
+    super.distanceToCustomer,
+    super.assignDate,
+    super.arriveDate,
+    super.endWorkDate,
+    super.confirmValidation = false,
+    super.defectInfoId,
+    super.description,
+    required super.servicesAndLaborsAndPartsEvaluationPayload,
   });
 
   Map<String, dynamic> toJson() {
     return {
       'serviceRequestId': serviceRequestId,
-      'serviceType': serviceType,
+      'serviceType': serviceType.value,
       'emdadgarId': emdadgarId,
       'serviceCategoryId': serviceCategoryId,
       'customerKilometer': customerKilometer,
@@ -49,7 +33,7 @@ class AidServiceEvaluationSubmitParamModel {
       'DefectInfoId': defectInfoId,
       'Description': description,
       'servicesAndLaborsAndPartsEvaluationPayload':
-          servicesAndLaborsAndPartsEvaluationPayload.toJson(),
+          servicesAndLaborsAndPartsEvaluationPayload.toModel().toJson(),
     };
   }
 }

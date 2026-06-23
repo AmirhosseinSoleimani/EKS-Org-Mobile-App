@@ -1,9 +1,10 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/param/aid_service_evaluation_submit_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/services_and_labors_and_parts_evaluation_entity.dart';
 
 class AidServiceEvaluationSubmitParamEntity {
   final int? serviceRequestId;
-  final int? serviceType;
+  final ServiceType serviceType;
   final int? emdadgarId;
   final int? serviceCategoryId;
   final int? customerKilometer;
@@ -20,8 +21,8 @@ class AidServiceEvaluationSubmitParamEntity {
   servicesAndLaborsAndPartsEvaluationPayload;
 
   const AidServiceEvaluationSubmitParamEntity({
+    required this.serviceType,
     this.serviceRequestId,
-    this.serviceType,
     this.emdadgarId,
     this.serviceCategoryId,
     this.customerKilometer,
@@ -37,7 +38,7 @@ class AidServiceEvaluationSubmitParamEntity {
 
   AidServiceEvaluationSubmitParamEntity copyWith({
     int? serviceRequestId,
-    int? serviceType,
+    ServiceType? serviceType,
     int? emdadgarId,
     int? serviceCategoryId,
     int? customerKilometer,
@@ -85,7 +86,7 @@ class AidServiceEvaluationSubmitParamEntity {
       defectInfoId: defectInfoId,
       description: description,
       servicesAndLaborsAndPartsEvaluationPayload:
-      servicesAndLaborsAndPartsEvaluationPayload.toModel(),
+          servicesAndLaborsAndPartsEvaluationPayload,
     );
   }
 }

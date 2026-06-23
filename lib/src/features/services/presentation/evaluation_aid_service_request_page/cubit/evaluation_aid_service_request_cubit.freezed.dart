@@ -55,12 +55,13 @@ extension EvaluationAidServiceRequestStatePatterns on EvaluationAidServiceReques
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Idle value)?  idle,TResult Function( _Loading value)?  loading,TResult Function( _Loaded value)?  loaded,TResult Function( _Error value)?  error,TResult Function( _ConnectionError value)?  connectionError,TResult Function( _SubmitLoading value)?  submitLoading,TResult Function( _SubmitSuccess value)?  submitSuccess,TResult Function( _ShowAddPartAndLaborBottomSheet value)?  showAddPartAndLaborBottomSheet,TResult Function( _CloseBottomSheetBeforeRefresh value)?  closeBottomSheetAndRefresh,required TResult orElse(),}){
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _Idle value)?  idle,TResult Function( _Loading value)?  loading,TResult Function( _GetInfoLoading value)?  getInfoLoading,TResult Function( _Loaded value)?  loaded,TResult Function( _Error value)?  error,TResult Function( _ConnectionError value)?  connectionError,TResult Function( _SubmitLoading value)?  submitLoading,TResult Function( _SubmitSuccess value)?  submitSuccess,TResult Function( _ShowAddPartAndLaborBottomSheet value)?  showAddPartAndLaborBottomSheet,TResult Function( _CloseBottomSheetBeforeRefresh value)?  closeBottomSheetAndRefresh,required TResult orElse(),}){
 final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle(_that);case _Loading() when loading != null:
-return loading(_that);case _Loaded() when loaded != null:
+return loading(_that);case _GetInfoLoading() when getInfoLoading != null:
+return getInfoLoading(_that);case _Loaded() when loaded != null:
 return loaded(_that);case _Error() when error != null:
 return error(_that);case _ConnectionError() when connectionError != null:
 return connectionError(_that);case _SubmitLoading() when submitLoading != null:
@@ -85,12 +86,13 @@ return closeBottomSheetAndRefresh(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Idle value)  idle,required TResult Function( _Loading value)  loading,required TResult Function( _Loaded value)  loaded,required TResult Function( _Error value)  error,required TResult Function( _ConnectionError value)  connectionError,required TResult Function( _SubmitLoading value)  submitLoading,required TResult Function( _SubmitSuccess value)  submitSuccess,required TResult Function( _ShowAddPartAndLaborBottomSheet value)  showAddPartAndLaborBottomSheet,required TResult Function( _CloseBottomSheetBeforeRefresh value)  closeBottomSheetAndRefresh,}){
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _Idle value)  idle,required TResult Function( _Loading value)  loading,required TResult Function( _GetInfoLoading value)  getInfoLoading,required TResult Function( _Loaded value)  loaded,required TResult Function( _Error value)  error,required TResult Function( _ConnectionError value)  connectionError,required TResult Function( _SubmitLoading value)  submitLoading,required TResult Function( _SubmitSuccess value)  submitSuccess,required TResult Function( _ShowAddPartAndLaborBottomSheet value)  showAddPartAndLaborBottomSheet,required TResult Function( _CloseBottomSheetBeforeRefresh value)  closeBottomSheetAndRefresh,}){
 final _that = this;
 switch (_that) {
 case _Idle():
 return idle(_that);case _Loading():
-return loading(_that);case _Loaded():
+return loading(_that);case _GetInfoLoading():
+return getInfoLoading(_that);case _Loaded():
 return loaded(_that);case _Error():
 return error(_that);case _ConnectionError():
 return connectionError(_that);case _SubmitLoading():
@@ -114,12 +116,13 @@ return closeBottomSheetAndRefresh(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Idle value)?  idle,TResult? Function( _Loading value)?  loading,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Error value)?  error,TResult? Function( _ConnectionError value)?  connectionError,TResult? Function( _SubmitLoading value)?  submitLoading,TResult? Function( _SubmitSuccess value)?  submitSuccess,TResult? Function( _ShowAddPartAndLaborBottomSheet value)?  showAddPartAndLaborBottomSheet,TResult? Function( _CloseBottomSheetBeforeRefresh value)?  closeBottomSheetAndRefresh,}){
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _Idle value)?  idle,TResult? Function( _Loading value)?  loading,TResult? Function( _GetInfoLoading value)?  getInfoLoading,TResult? Function( _Loaded value)?  loaded,TResult? Function( _Error value)?  error,TResult? Function( _ConnectionError value)?  connectionError,TResult? Function( _SubmitLoading value)?  submitLoading,TResult? Function( _SubmitSuccess value)?  submitSuccess,TResult? Function( _ShowAddPartAndLaborBottomSheet value)?  showAddPartAndLaborBottomSheet,TResult? Function( _CloseBottomSheetBeforeRefresh value)?  closeBottomSheetAndRefresh,}){
 final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle(_that);case _Loading() when loading != null:
-return loading(_that);case _Loaded() when loaded != null:
+return loading(_that);case _GetInfoLoading() when getInfoLoading != null:
+return getInfoLoading(_that);case _Loaded() when loaded != null:
 return loaded(_that);case _Error() when error != null:
 return error(_that);case _ConnectionError() when connectionError != null:
 return connectionError(_that);case _SubmitLoading() when submitLoading != null:
@@ -143,11 +146,12 @@ return closeBottomSheetAndRefresh(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  loading,TResult Function()?  loaded,TResult Function( BottomSheetMessageModel message)?  error,TResult Function()?  connectionError,TResult Function()?  submitLoading,TResult Function( String id)?  submitSuccess,TResult Function()?  showAddPartAndLaborBottomSheet,TResult Function()?  closeBottomSheetAndRefresh,required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function()?  idle,TResult Function()?  loading,TResult Function()?  getInfoLoading,TResult Function()?  loaded,TResult Function( BottomSheetMessageModel message)?  error,TResult Function()?  connectionError,TResult Function()?  submitLoading,TResult Function( String id)?  submitSuccess,TResult Function()?  showAddPartAndLaborBottomSheet,TResult Function()?  closeBottomSheetAndRefresh,required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle();case _Loading() when loading != null:
-return loading();case _Loaded() when loaded != null:
+return loading();case _GetInfoLoading() when getInfoLoading != null:
+return getInfoLoading();case _Loaded() when loaded != null:
 return loaded();case _Error() when error != null:
 return error(_that.message);case _ConnectionError() when connectionError != null:
 return connectionError();case _SubmitLoading() when submitLoading != null:
@@ -172,11 +176,12 @@ return closeBottomSheetAndRefresh();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  loading,required TResult Function()  loaded,required TResult Function( BottomSheetMessageModel message)  error,required TResult Function()  connectionError,required TResult Function()  submitLoading,required TResult Function( String id)  submitSuccess,required TResult Function()  showAddPartAndLaborBottomSheet,required TResult Function()  closeBottomSheetAndRefresh,}) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function()  idle,required TResult Function()  loading,required TResult Function()  getInfoLoading,required TResult Function()  loaded,required TResult Function( BottomSheetMessageModel message)  error,required TResult Function()  connectionError,required TResult Function()  submitLoading,required TResult Function( String id)  submitSuccess,required TResult Function()  showAddPartAndLaborBottomSheet,required TResult Function()  closeBottomSheetAndRefresh,}) {final _that = this;
 switch (_that) {
 case _Idle():
 return idle();case _Loading():
-return loading();case _Loaded():
+return loading();case _GetInfoLoading():
+return getInfoLoading();case _Loaded():
 return loaded();case _Error():
 return error(_that.message);case _ConnectionError():
 return connectionError();case _SubmitLoading():
@@ -200,11 +205,12 @@ return closeBottomSheetAndRefresh();case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  loading,TResult? Function()?  loaded,TResult? Function( BottomSheetMessageModel message)?  error,TResult? Function()?  connectionError,TResult? Function()?  submitLoading,TResult? Function( String id)?  submitSuccess,TResult? Function()?  showAddPartAndLaborBottomSheet,TResult? Function()?  closeBottomSheetAndRefresh,}) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function()?  idle,TResult? Function()?  loading,TResult? Function()?  getInfoLoading,TResult? Function()?  loaded,TResult? Function( BottomSheetMessageModel message)?  error,TResult? Function()?  connectionError,TResult? Function()?  submitLoading,TResult? Function( String id)?  submitSuccess,TResult? Function()?  showAddPartAndLaborBottomSheet,TResult? Function()?  closeBottomSheetAndRefresh,}) {final _that = this;
 switch (_that) {
 case _Idle() when idle != null:
 return idle();case _Loading() when loading != null:
-return loading();case _Loaded() when loaded != null:
+return loading();case _GetInfoLoading() when getInfoLoading != null:
+return getInfoLoading();case _Loaded() when loaded != null:
 return loaded();case _Error() when error != null:
 return error(_that.message);case _ConnectionError() when connectionError != null:
 return connectionError();case _SubmitLoading() when submitLoading != null:
@@ -275,6 +281,38 @@ int get hashCode => runtimeType.hashCode;
 @override
 String toString() {
   return 'EvaluationAidServiceRequestState.loading()';
+}
+
+
+}
+
+
+
+
+/// @nodoc
+
+
+class _GetInfoLoading implements EvaluationAidServiceRequestState {
+  const _GetInfoLoading();
+  
+
+
+
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _GetInfoLoading);
+}
+
+
+@override
+int get hashCode => runtimeType.hashCode;
+
+@override
+String toString() {
+  return 'EvaluationAidServiceRequestState.getInfoLoading()';
 }
 
 

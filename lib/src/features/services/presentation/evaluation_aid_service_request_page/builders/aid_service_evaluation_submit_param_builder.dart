@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/defect_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/emdadgar_service_detail_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/evaluation_service_entity.dart';
@@ -35,7 +36,7 @@ class AidServiceEvaluationSubmitParamBuilder {
 
     return AidServiceEvaluationSubmitParamEntity(
       serviceRequestId: selectedRequest?.id,
-      serviceType: selectedRequest?.serviceType?.value,
+      serviceType: ServiceType.reliefService,
       emdadgarId: emdadgarInfo?.id,
       serviceCategoryId:
           selectedServiceCategory?.id ??

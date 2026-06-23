@@ -47,7 +47,7 @@ abstract class EvaluationRemoteDataSource {
   Future<BaseSingleResponse<PostEvaluationResponseModel?>> postEvaluation(
       ServiceEvaluationParamModel param);
 
-  Future<BaseSingleResponse<AcceptEvaluationResponseModel?>> acceptEvaluation(
+  Future<BaseSingleResponse> acceptEvaluation(
       AcceptEvaluationParamModel param);
 
   Future<BaseSingleResponse<

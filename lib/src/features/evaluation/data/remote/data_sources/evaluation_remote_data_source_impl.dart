@@ -69,7 +69,7 @@ class FinalizeInvoiceRemoteDataSourceImpl extends EvaluationRemoteDataSource {
   }
 
   @override
-  Future<BaseSingleResponse<AcceptEvaluationResponseModel?>> acceptEvaluation(
+  Future<BaseSingleResponse> acceptEvaluation(
       AcceptEvaluationParamModel param) async {
     return (param.serviceType == ServiceType.reliefService)
         ? await _service.aidEvaluationAccept(param.toJson())

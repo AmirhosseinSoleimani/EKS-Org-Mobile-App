@@ -61,7 +61,7 @@ class _View extends StatelessWidget {
               BottomSheetMessage.showNotice(
                 context: context,
                 isDismissible: false,
-                buttonColor: ServiceType.homeService.serviceColor,
+                buttonColor: cubit.selectedRequest?.serviceType?.serviceColor,
                 data: BottomSheetMessageModel(
                   title: '',
                   message: 'عملیات با موفقیت انجام شد',

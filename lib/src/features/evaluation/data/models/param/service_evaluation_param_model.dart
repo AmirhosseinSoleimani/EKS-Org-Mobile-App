@@ -43,6 +43,7 @@ class ServiceEvaluationParamModel extends ServiceEvaluationParamEntity {
   }
 
   Map<String, dynamic> toJson() {
+    print('xxxxxxxxxxxxxxxxxxxxxxxxxxx 1');
     return {
       "assignDate": _formatDate(assignDate),
       "cancelReasonDetailId": cancelReasonDetailId,

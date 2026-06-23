@@ -5,6 +5,7 @@ class EvaluationAidServiceRequestState with _$EvaluationAidServiceRequestState {
   const factory EvaluationAidServiceRequestState.idle() = _Idle;
 
   const factory EvaluationAidServiceRequestState.loading() = _Loading;
+  const factory EvaluationAidServiceRequestState.getInfoLoading() = _GetInfoLoading;
 
   const factory EvaluationAidServiceRequestState.loaded() = _Loaded;
 

@@ -87,7 +87,7 @@ class EvaluationRepositoryImpl extends EvaluationRepository {
   }
 
   @override
-  Future<ApiResult<AcceptEvaluationResponseEntity>> acceptEvaluation(AcceptEvaluationParamEntity param) async {
+  Future<ApiResult<void>> acceptEvaluation(AcceptEvaluationParamEntity param) async {
     try {
       final result = await _remoteDataSource
           .acceptEvaluation(param.toModel());
