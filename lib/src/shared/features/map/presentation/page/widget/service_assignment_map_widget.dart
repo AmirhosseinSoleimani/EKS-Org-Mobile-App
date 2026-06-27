@@ -1,9 +1,9 @@
 import 'package:eks_sana_plus_org/src/common/constants/app_constants.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/cubit/assign_and_cancel_emdadgar_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/map/emdadgar_marker_style_resolver.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/map/map_control_buttons.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/map/map_pin_marker.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/emdadgar_marker_style_resolver.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/map_control_buttons.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/map_pin_marker.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/map_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
