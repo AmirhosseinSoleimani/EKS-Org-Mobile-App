@@ -111,45 +111,50 @@ class RequestCard extends StatelessWidget {
     );
   }
 
+
   Widget _buildOperationsGrid(BuildContext context) {
     final items = RequestCardOperation.values
         .where((item) => item.isVisible(request))
         .toList();
-
     return GridView.builder(
       key: ValueKey('operations_${request.id}'),
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: items.length,
-      gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-        crossAxisCount: 4,
-        mainAxisSpacing: 1,
-        crossAxisSpacing: 1,
-        childAspectRatio: 1.6,
+      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
+        maxCrossAxisExtent: 90,
+        mainAxisSpacing: 16,
+        crossAxisSpacing: 8,
+        childAspectRatio: 1,
       ),
       itemBuilder: (context, index) {
         final item = items[index];
 
-        return Padding(
-          padding: const EdgeInsets.all(4.0),
-          child: Tooltip(
-            message: item.label,
-            child: InkWell(
-              onTap: () {
-                onSelected(request);
-                context.push(item.route, extra: request.id);
-              },
-              child: CircleAvatar(
-                radius: 20,
-                backgroundColor: item.color,
-                child: Icon(
-                  item.icon,
-                  color: Colors.white,
-                  size: 20,
+        return LayoutBuilder(
+          builder: (context, constraints) {
+            final size = constraints.maxWidth.clamp(40.0, 72.0);
+
+            return Tooltip(
+              message: item.label,
+              child: InkWell(
+                onTap: () {
+                  onSelected(request);
+                  context.push(item.route, extra: request.id);
+                },
+                child: Center(
+                  child: CircleAvatar(
+                    radius: size / 2.2,
+                    backgroundColor: item.color,
+                    child: Icon(
+                      item.icon,
+                      color: Colors.white,
+                      size: size * 0.40,
+                    ),
+                  ),
                 ),
               ),
-            ),
-          ),
+            );
+          },
         );
       },
     );
