@@ -30,6 +30,7 @@ class RequestListViewer extends StatefulWidget {
 
 class _RequestListViewerState extends State<RequestListViewer> {
   late final ScrollController _controller;
+  final ValueNotifier<num?> _selectedOperationRequestId = ValueNotifier<num?>(null);
 
   @override
   void initState() {
@@ -52,6 +53,7 @@ class _RequestListViewerState extends State<RequestListViewer> {
   void dispose() {
     _controller.removeListener(_onScroll);
     _controller.dispose();
+    _selectedOperationRequestId.dispose();
     super.dispose();
   }
 
@@ -89,6 +91,7 @@ class _RequestListViewerState extends State<RequestListViewer> {
               ServiceType.reliefService.serviceColor,
           serviceIcon: Icons.build,
           onSelected: widget.onSelected,
+          selectedOperationRequestId: _selectedOperationRequestId,
         );
       },
     );

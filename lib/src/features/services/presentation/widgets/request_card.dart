@@ -7,104 +7,117 @@ import '../enums/request_card_operation.dart';
 import 'request_header.dart';
 import 'request_info_row.dart';
 
-enum RequestCardMode {
-  normal,
-  operations,
-}
-
 class RequestCard extends StatelessWidget {
   final BaseRequestEntity request;
   final String serviceTitle;
   final Color serviceColor;
   final IconData serviceIcon;
   final Function(BaseRequestEntity) onSelected;
+  final ValueNotifier<num?> selectedOperationRequestId;
 
-  final ValueNotifier<RequestCardMode> _state =
-      ValueNotifier(RequestCardMode.normal);
-
-  RequestCard({
+  const RequestCard({
     super.key,
     required this.request,
     required this.serviceTitle,
     required this.serviceColor,
     required this.serviceIcon,
     required this.onSelected,
+    required this.selectedOperationRequestId,
   });
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(12),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(.05),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+    return ValueListenableBuilder<num?>(
+      valueListenable: selectedOperationRequestId,
+      builder: (context, selectedRequestId, _) {
+        final isOperationsMode = selectedRequestId == request.id;
+
+        return Container(
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha(80),
+                blurRadius: 10,
+                offset: const Offset(0, 4),
+              ),
+            ],
           ),
-        ],
-      ),
-      padding: const EdgeInsets.all(16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          RequestHeader(
-            request: request,
-          ),
-          const SizedBox(height: 16),
-          ValueListenableBuilder<RequestCardMode>(
-            valueListenable: _state,
-            builder: (context, mode, _) {
-              return AnimatedSwitcher(
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              RequestHeader(
+                request: request,
+              ),
+              const SizedBox(height: 16),
+              AnimatedSwitcher(
                 duration: const Duration(milliseconds: 350),
                 transitionBuilder: (child, animation) {
                   return FadeTransition(
                     opacity: animation,
-                    child: ScaleTransition(scale: animation, child: child),
+                    child: ScaleTransition(
+                      scale: animation,
+                      child: child,
+                    ),
                   );
                 },
-                child: mode == RequestCardMode.normal
-                    ? _buildInfoList(context)
-                    : _buildOperationsGrid(context),
-              );
-            },
+                child: isOperationsMode
+                    ? _buildOperationsGrid(context)
+                    : _buildInfoList(context),
+              ),
+              const SizedBox(height: 12),
+              Divider(
+                height: 1,
+                color: Theme.of(context).colorScheme.tertiaryFixed,
+              ),
+              const SizedBox(height: 12),
+              _buildBottomBar(
+                context: context,
+                isOperationsMode: isOperationsMode,
+              ),
+            ],
           ),
-          const SizedBox(height: 12),
-          Divider(
-              height: 1, color: Theme.of(context).colorScheme.tertiaryFixed),
-          const SizedBox(height: 12),
-          _buildBottomBar(context),
-        ],
-      ),
+        );
+      },
     );
   }
 
   Widget _buildInfoList(BuildContext context) {
     return Column(
-      key: const ValueKey("info"),
+      key: ValueKey('info_${request.id}'),
       children: [
         RequestInfoRow(
-            icon: Icons.person,
-            text: "${request.firstName} ${request.lastName}"),
-        const SizedBox(height: 8),
-        RequestInfoRow(icon: Icons.location_on, text: request.aidAddress ?? ''),
+          icon: Icons.person,
+          text: "${request.firstName} ${request.lastName}",
+        ),
         const SizedBox(height: 8),
         RequestInfoRow(
-            icon: Icons.check_circle,
-            text: "${request.carName} - ${request.licensePlate}"),
+          icon: Icons.location_on,
+          text: request.aidAddress ?? '',
+        ),
         const SizedBox(height: 8),
-        RequestInfoRow(icon: Icons.settings, text: serviceTitle),
+        RequestInfoRow(
+          icon: Icons.check_circle,
+          text: "${request.carName} - ${request.licensePlate}",
+        ),
+        const SizedBox(height: 8),
+        RequestInfoRow(
+          icon: Icons.settings,
+          text: serviceTitle,
+        ),
       ],
     );
   }
 
   Widget _buildOperationsGrid(BuildContext context) {
-    final items =
-        RequestCardOperation.values.where((item) => item.isVisible(request)).toList();
+    final items = RequestCardOperation.values
+        .where((item) => item.isVisible(request))
+        .toList();
 
     return GridView.builder(
-      key: const ValueKey("operations"),
+      key: ValueKey('operations_${request.id}'),
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
       itemCount: items.length,
@@ -116,10 +129,11 @@ class RequestCard extends StatelessWidget {
       ),
       itemBuilder: (context, index) {
         final item = items[index];
+
         return Padding(
           padding: const EdgeInsets.all(4.0),
           child: Tooltip(
-            message: items[index].label,
+            message: item.label,
             child: InkWell(
               onTap: () {
                 onSelected(request);
@@ -128,7 +142,11 @@ class RequestCard extends StatelessWidget {
               child: CircleAvatar(
                 radius: 20,
                 backgroundColor: item.color,
-                child: Icon(item.icon, color: Colors.white, size: 20),
+                child: Icon(
+                  item.icon,
+                  color: Colors.white,
+                  size: 20,
+                ),
               ),
             ),
           ),
@@ -137,37 +155,30 @@ class RequestCard extends StatelessWidget {
     );
   }
 
-  Widget _buildBottomBar(BuildContext context) {
+  Widget _buildBottomBar({
+    required BuildContext context,
+    required bool isOperationsMode,
+  }) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         InkWell(
           onTap: () {
-            _state.value = _state.value == RequestCardMode.normal
-                ? RequestCardMode.operations
-                : RequestCardMode.normal;
+            if (isOperationsMode) {
+              selectedOperationRequestId.value = null;
+            } else {
+              selectedOperationRequestId.value = request.id;
+            }
           },
           child: Row(
             children: [
-              ValueListenableBuilder<RequestCardMode>(
-                valueListenable: _state,
-                builder: (context, mode, _) {
-                  return Row(
-                    children: [
-                      Icon(
-                          mode == RequestCardMode.normal
-                              ? Icons.apps
-                              : Icons.menu,
-                          size: 22),
-                      const SizedBox(width: 6),
-                      BodyMediumText(
-                        text: mode == RequestCardMode.normal
-                            ? "عملیات"
-                            : "اطلاعات درخواست",
-                      ),
-                    ],
-                  );
-                },
+              Icon(
+                isOperationsMode ? Icons.menu : Icons.apps,
+                size: 22,
+              ),
+              const SizedBox(width: 6),
+              BodyMediumText(
+                text: isOperationsMode ? "اطلاعات درخواست" : "عملیات",
               ),
             ],
           ),
