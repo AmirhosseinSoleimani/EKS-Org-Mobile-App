@@ -8,7 +8,9 @@ import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widg
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
+import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/map/emdadgar_marker_style_resolver.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/map/emdadgar_marker_style_resolver.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/map/route_map_widget.dart';
 class OnlineMapSection extends StatelessWidget {
   const OnlineMapSection({super.key});
 
@@ -24,6 +26,12 @@ class OnlineMapSection extends StatelessWidget {
         final emdadgar = cubit.emdadgarInfo;
         final isExpanded = cubit.isDetailsExpanded;
 
+        const markerStyleResolver = EmdadgarMarkerStyleResolver();
+
+        final mapHeight = MediaQuery.of(context).size.width * 1.2;
+
+        final canShowRouteMap = routeData != null && emdadgar != null;
+
         return Container(
           padding: const EdgeInsets.all(AppSize.s16),
           decoration: BoxDecoration(
@@ -36,20 +44,19 @@ class OnlineMapSection extends StatelessWidget {
                 borderRadius: BorderRadius.circular(AppSize.s12),
                 child: SizedBox(
                   width: double.infinity,
-                  height: MediaQuery
-                      .of(context)
-                      .size
-                      .width * 1.2,
-                  child: routeData != null ? OnlineMapWidget(
-                    mapData: routeData,
-                    emdadgarLat: emdadgar?.lastLocationLatitude ?? 0,
-                    emdadgarLng: emdadgar?.lastLocationLongitude ?? 0,
-                    destLat: request?.latitude ?? 0,
-                    destLng: request?.longitude ?? 0,
-                  ) : StaticMapWidget(
+                  height: MediaQuery.of(context).size.width * 1.2,
+                    child: canShowRouteMap
+                        ? RouteMapWidget(
+                      routeData: routeData,
+                      height: mapHeight,
+                      showInfoBox: false,
+                      startMarkerStyle: markerStyleResolver.resolveInfo(emdadgar),
+                      destinationMarkerStyle: markerStyleResolver.resolveCustomer(),
+                    ) : StaticMapWidget(
                       serviceType: request?.serviceType ?? ServiceType.reliefService,
                       latitude: request?.latitude ?? 0,
-                      longitude: request?.longitude ?? 0),
+                      longitude: request?.longitude ?? 0,
+                    ),
                 ),
               ),
               Space.h16,
@@ -60,15 +67,18 @@ class OnlineMapSection extends StatelessWidget {
                     value: (request is ReliefRequestEntity) ? request
                         .emdadgarAssignDurationTitle ?? "-" : "-",
                   ),
+                  Space.h8,
                   KeyValueRow(
                     label: "زمان تقریبی (اکنون)",
                     value: routeData?.routes.first.duration.text ?? "-",
                   ),
+                  Space.h8,
                   KeyValueRow(
                     label: "فاصله تقریبی (اعزام)",
                     value: (request is ReliefRequestEntity) ? request
                         .emdadgarAssignDistanceTitle ?? "-" : '-',
                   ),
+                  Space.h8,
                   KeyValueRow(
                     label: "فاصله تقریبی (اکنون)",
                     value: routeData?.routes.first.distance.text ?? "-",
@@ -83,14 +93,17 @@ class OnlineMapSection extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   child: Column(
                     children: [
+                      Space.h8,
                       KeyValueRow(
                         label: "استان",
                         value: request?.provinceName ?? "-",
                       ),
+                      Space.h8,
                       KeyValueRow(
                         label: "شهر",
                         value: request?.cityName ?? "-",
                       ),
+                      Space.h8,
                       KeyValueRow(
                         label: "آدرس",
                         value: request?.aidAddress ?? "-",
