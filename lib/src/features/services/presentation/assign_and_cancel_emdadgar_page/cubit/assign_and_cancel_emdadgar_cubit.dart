@@ -604,7 +604,7 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
     required LocationParamEntity start,
     LocationParamEntity? destination,
   }) async {
-    /*final param = RouteParamEntity(
+    final param = RouteParamEntity(
       includeLegs: true,
       includeStepsPoints: true,
       start: start,
@@ -629,10 +629,8 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
       },
     );
 
-    return fetchResult;*/
+    return fetchResult;
 
-    setMockRouteData();
-    return  FetchResultType.success;
   }
 
   void _safeEmit(AssignAndCancelEmdadgarState state) {

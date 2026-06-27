@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/cubit/request_detail_cubit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/request_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/request_status_history_section.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/request_status_section.dart';
@@ -55,7 +56,7 @@ class RequestDetailPage extends StatelessWidget {
           );
         },
         child: Scaffold(
-            appBar: const MainAppBar(title: "جزئیات درخواست"),
+            appBar: const SimpleAppBar(title: "جزئیات درخواست"),
             body: ScrollConfiguration(
               behavior: ScrollConfiguration.of(context).copyWith(
                 dragDevices: {

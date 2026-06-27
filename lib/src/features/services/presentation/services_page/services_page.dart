@@ -21,51 +21,53 @@ class ServicesPage extends StatelessWidget {
 
     return Scaffold(
       appBar: const MainAppBar(title: 'خدمات'),
-      body: GridView.count(
-        crossAxisCount: 2,
-        crossAxisSpacing: AppSize.s18,
-        mainAxisSpacing: AppSize.s18,
-        padding: const EdgeInsets.all(AppPadding.p16),
-        children: [
-          /// امدادی
-          GestureDetector(
-            onTap: () => context.pushNamed(ReliefRequestListPage.name),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ServiceIconWidget(
-                  backgroundColor: ServiceType.reliefService.serviceColor,
-                  iconColor: colorScheme.onPrimary,
-                  imagePath: ImageManager.emdadServece,
-                ),
-                Space.h16,
-                const BodyMediumText(
-                  text: "درخواست های امدادی",
-                  textAlign: TextAlign.center,
-                ),
-              ],
+      body: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8),
+        child: GridView.count(
+          crossAxisCount: 2,
+          crossAxisSpacing: AppSize.s18,
+          mainAxisSpacing: AppSize.s18,
+          padding: const EdgeInsets.all(AppPadding.p16),
+          children: [
+            GestureDetector(
+              onTap: () => context.pushNamed(ReliefRequestListPage.name),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  ServiceIconWidget(
+                    backgroundColor: ServiceType.reliefService.serviceColor,
+                    iconColor: colorScheme.onPrimary,
+                    imagePath: ImageManager.emdadServece,
+                  ),
+                  Space.h16,
+                  const BodyMediumText(
+                    text: "درخواست های امدادی",
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
-          ),
 
-          GestureDetector(
-            onTap: () => context.pushNamed(HomeServiceRequestListPage.name),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                ServiceIconWidget(
-                  backgroundColor: ServiceType.homeService.serviceColor,
-                  iconColor: colorScheme.onPrimary,
-                  imagePath: ImageManager.locationService,
-                ),
-                Space.h16,
-                const BodyMediumText(
-                  text: "درخواست های خدمت در محل",
-                  textAlign: TextAlign.center,
-                ),
-              ],
+            GestureDetector(
+              onTap: () => context.pushNamed(HomeServiceRequestListPage.name),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                children: [
+                  ServiceIconWidget(
+                    backgroundColor: ServiceType.homeService.serviceColor,
+                    iconColor: colorScheme.onPrimary,
+                    imagePath: ImageManager.locationService,
+                  ),
+                  Space.h16,
+                  const BodyMediumText(
+                    text: "درخواست های خدمت در محل",
+                    textAlign: TextAlign.center,
+                  ),
+                ],
+              ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
