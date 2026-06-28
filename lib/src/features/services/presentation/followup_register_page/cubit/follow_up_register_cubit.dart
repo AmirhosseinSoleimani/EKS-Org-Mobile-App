@@ -90,6 +90,10 @@ class FollowUpRegisterCubit extends Cubit<FollowUpRegisterState> {
     return (selectedRequest?.requestStatus ?? 0) > 1;
   }
 
+  VoidCallback? _retryAction;
+
+  void retryLastAction() => _retryAction?.call();
+
   void setSelectedSource(Source? source) {
     selectedSource.value = source;
 
@@ -172,6 +176,7 @@ class FollowUpRegisterCubit extends Cubit<FollowUpRegisterState> {
   }
 
   Future<void> init() async {
+    _retryAction = init;
     final result = await _initializeData();
 
     switch (result) {
@@ -306,6 +311,7 @@ class FollowUpRegisterCubit extends Cubit<FollowUpRegisterState> {
 
 
   Future<void> createFollowUp() async {
+    _retryAction = createFollowUp;
     _safeEmit(FollowUpRegisterState.submitLoading());
     final param = CreateFollowUpParamEntity(
       serviceType: selectedRequest?.serviceType?.value,
@@ -343,10 +349,6 @@ class FollowUpRegisterCubit extends Cubit<FollowUpRegisterState> {
     final result = await _getRequestFollowupHistoryUseCase(param);
     result.whenOrNull(
       success: (data, _, _) {
-        /*followups.clear();
-        followups.addAll(data.followUpList ?? []);
-        _displayedItemsCount = 2;*/
-
         _historyList = data.followUpList ?? [];
         _displayedItemsCount =
             currentDisplayCount.clamp(0, _historyList.length);
