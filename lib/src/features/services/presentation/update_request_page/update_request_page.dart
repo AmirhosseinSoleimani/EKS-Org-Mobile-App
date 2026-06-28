@@ -6,7 +6,7 @@ import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/emdad_
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/expandable_section.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/request_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/update_request_page/cubit/update_request_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/update_request_page/widgets/map_message_box.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/map_message_box.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/update_request_page/widgets/service_item_widget.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/update_request_page/widgets/submit_button.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/address_location_section.dart';

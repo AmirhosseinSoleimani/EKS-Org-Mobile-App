@@ -51,13 +51,10 @@ class OnlineMapCubit extends Cubit<OnlineMapState> {
       : 'درخواست شما با خطا مواجه شد، لطفا با پشتیبانی تماس بگیرید';
 
   Future<void> init() async {
-    _safeEmit(const OnlineMapState.loading());
-
     final result = await _initializeData();
 
     switch (result) {
       case FetchResultType.success:
-      // اگر نیاز به لود نقشه داریم
         if (_shouldFetchEmdadgarInfo) {
           _safeEmit(const OnlineMapState.loadedWithoutMap());
           await _loadMapData();
@@ -87,7 +84,8 @@ class OnlineMapCubit extends Cubit<OnlineMapState> {
     if (selectedResult != FetchResultType.success) {
       return selectedResult;
     }
-
+    _safeEmit(const OnlineMapState.loading());
+    
     final requestResult = await _fetchServiceRequestData();
     if (requestResult != FetchResultType.success) {
       return requestResult;

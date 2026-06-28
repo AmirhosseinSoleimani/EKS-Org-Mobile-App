@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_info_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/extensions/string_extensions.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/key_value_row.dart';
 import 'package:flutter/material.dart';
 
@@ -23,7 +24,7 @@ class AgentInfoDetailSection extends StatelessWidget {
         ),
         KeyValueRow(
           label: "شماره موبایل",
-          value: agentInfo.mobile ?? agentInfo.irancellMobile ?? "-",
+          value: agentInfo.mobile ?? agentInfo.mobile?.toLocalMobile() ?? "-",
         ),
         KeyValueRow(
           label: "نوع ناوگان",
@@ -51,24 +52,6 @@ class AgentInfoDetailSection extends StatelessWidget {
               : "-",
         ),
 
-        /* if(agentInfo is ReliefRequestEntity)...[
-          KeyValueRow(
-            label: "مسافت طی شده",
-            value: (agentInfo as ReliefRequestEntity).emdadgarAssignDistanceTitle ?? '-',
-          ),
-          KeyValueRow(
-            label: "مسافت حمل شده خودرو",
-            value: (agentInfo as ReliefRequestEntity).emdadgarAssignDistanceTitle ?? '-',
-          ),
-          KeyValueRow(
-            label: "ایراد ارزیابی شده",
-            value: (agentInfo as ReliefRequestEntity).emdadServiceTitle ?? '-',
-          ),
-          KeyValueRow(
-            label: "سرویس ارائه شده",
-            value: (agentInfo as ReliefRequestEntity).emdadServiceTitle ?? '-',
-          ),
-        ],*/
         KeyValueRow(
           label: "توضیحات امداد رسان",
           value: agentInfo.statusTitle ?? '-',

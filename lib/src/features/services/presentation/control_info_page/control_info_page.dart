@@ -113,7 +113,7 @@ class _LoadedView extends StatelessWidget {
         child: Column(
           children: [
             ExpandableSection(
-              isExpanded: false,
+              isExpanded: true,
               header: RequestStatusSection(request: cubit.selectedRequest),
               child: RequestDetailSection(
                 selectedRequest: cubit.selectedRequest,

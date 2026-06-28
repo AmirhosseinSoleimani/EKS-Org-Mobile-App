@@ -41,15 +41,20 @@ class ChangeHomeServiceRequestAddressCubit
   String? _errorMessage;
   BaseRequestEntity? selectedRequest;
   EmdadgarInfoEntity? emdadgarInfo;
-  AddressInfoEntity? selectedLocation;
+  final selectedLocation = ValueNotifier<AddressInfoEntity?>(null);
   List<ProvinceEntity> provinceList = <ProvinceEntity>[];
 
   final selectedProvince = ValueNotifier<ProvinceEntity?>(null);
 
   final addressController = TextEditingController();
 
+  VoidCallback? _retryAction;
+
+  void retryLastAction() => _retryAction?.call();
+
 
   Future<void> init() async {
+    _retryAction =  init;
     _safeEmit(const ChangeHomeServiceRequestAddressState.loading());
     final result = await _initializeData();
 
@@ -115,6 +120,11 @@ class ChangeHomeServiceRequestAddressCubit
     result.whenOrNull(
       success: (data, _, _) {
         selectedRequest = data;
+
+        selectedLocation.value = AddressInfoEntity(
+          latitude: selectedRequest?.latitude,
+          longitude: selectedRequest?.longitude,
+        );
         fetchResult = FetchResultType.success;
       },
       failure: (_, msg) {
@@ -182,13 +192,14 @@ class ChangeHomeServiceRequestAddressCubit
   }
 
   Future<void> changeRequestAddress() async {
+    _retryAction =  changeRequestAddress;
     _safeEmit(ChangeHomeServiceRequestAddressState.submitLoading());
 
     final param = ChangeAddressHomeServiceParamEntity(
       homeServiceRequestId: selectedRequest?.id ?? 0,
       cityId: selectedProvince.value?.cityId,
-      latitude: selectedLocation?.latitude,
-      longitude: selectedLocation?.longitude,
+      latitude: selectedLocation.value?.latitude,
+      longitude: selectedLocation.value?.longitude,
       address: addressController.text,
     );
     final result = await _changeHomeServiceRequestAddressUseCase(param);
@@ -209,14 +220,14 @@ class ChangeHomeServiceRequestAddressCubit
 
   void setSelectedProvince(ProvinceEntity province) {
     selectedProvince.value = province;
-    selectedLocation = (selectedLocation ?? const AddressInfoEntity()).copyWith(
+    selectedLocation.value = (selectedLocation.value ?? const AddressInfoEntity()).copyWith(
       latitude: province.latitude,
       longitude: province.longitude,
     );
   }
 
   void setSelectedLocation(AddressInfoEntity location) {
-    selectedLocation = location;
+    selectedLocation.value = location;
     addressController.text = location.address ?? '';
   }
 
@@ -246,6 +257,7 @@ class ChangeHomeServiceRequestAddressCubit
   Future<void> close() {
     selectedProvince.dispose();
     addressController.dispose();
+    selectedLocation.dispose();
 
     return super.close();
   }

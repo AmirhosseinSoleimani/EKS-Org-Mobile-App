@@ -34,7 +34,7 @@ class CartableCycleListView extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withAlpha(15),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -45,7 +45,7 @@ class CartableCycleListView extends StatelessWidget {
         children: [
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: const BodySmallText(text: "لیست چرخه کارتابل"),
+            child: const BodyMediumText(text: "لیست چرخه کارتابل"),
           ),
           const SizedBox(height: 8),
           if (isEmpty)
@@ -101,6 +101,7 @@ class CartableCycleListView extends StatelessWidget {
                                         BodySmallText(
                                           text: item.description!,
                                           textAlign: TextAlign.start,
+                                            lineHeight: 2.8,
                                         ),
                                       ],
                                     )
@@ -112,11 +113,13 @@ class CartableCycleListView extends StatelessWidget {
                                 value:
                                     item.serviceRequestTrackCode?.toString() ?? "-",
                               ),
+                              Space.h8,
                               KeyValueRow(
                                 label: "تاریخ ثبت پیغام",
                                 value:
                                     "${item.sendDateJalali ?? '-'} - ${item.sendTime ?? '-'}",
                               ),
+                              Space.h4,
                               KeyValueWidgetRow(
                                 label: "وضعیت درخواست",
                                 value: StatusLabel(

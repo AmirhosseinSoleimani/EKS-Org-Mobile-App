@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/common/constants/source.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/follow_up_status_type_entity.dart';
@@ -69,6 +70,8 @@ class _View extends StatelessWidget {
             BottomSheetMessage.showNotice(
               isDismissible: false,
               context: context,
+              buttonColor: cubit.selectedRequest?.serviceType?.serviceColor ??
+                  ServiceType.reliefService.serviceColor,
               data: BottomSheetMessageModel(
                 title: '',
                 message: 'پیگیری ثبت گردید',
@@ -97,6 +100,8 @@ class _View extends StatelessWidget {
                   title: 'ثبت پیگیری',
                   showLoading: isLoading,
                   onTap: cubit.createFollowUp,
+                  backgroundColor: cubit.selectedRequest?.serviceType?.serviceColor ??
+                ServiceType.reliefService.serviceColor,
                 ),
               );
             },

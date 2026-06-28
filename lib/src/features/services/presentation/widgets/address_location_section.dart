@@ -42,8 +42,8 @@ class AddressLocationSection extends StatelessWidget {
 
   Future<void> _showSelectableMap(BuildContext context) async {
     final AddressInfoEntity initialLocation = AddressInfoEntity(
-      latitude: selectedProvince.value?.latitude,
-      longitude: selectedProvince.value?.longitude,
+      latitude:latitude,
+      longitude: longitude,
     );
 
     final result = await SelectableMapBottomSheet.show(

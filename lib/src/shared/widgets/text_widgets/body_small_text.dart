@@ -8,6 +8,7 @@ class BodySmallText extends StatelessWidget {
   final TextAlign textAlign;
   final TextOverflow? textOverflow;
   final int? maxLines;
+  final double? lineHeight;
 
   const BodySmallText({
     super.key,
@@ -18,6 +19,7 @@ class BodySmallText extends StatelessWidget {
     this.textAlign = TextAlign.start,
     this.textOverflow,
     this.maxLines,
+    this.lineHeight,
   });
 
   @override
@@ -28,7 +30,7 @@ class BodySmallText extends StatelessWidget {
       maxLines: maxLines,
       textDirection: TextDirection.rtl,
       textAlign: textAlign,
-      style: theme.textTheme.bodySmall?.copyWith(fontSize: fontSize , color: color, fontWeight: fontWeight,overflow: textOverflow,),
+      style: theme.textTheme.bodySmall?.copyWith(fontSize: fontSize , color: color, fontWeight: fontWeight,overflow: textOverflow,height: lineHeight),
     );
   }
 }

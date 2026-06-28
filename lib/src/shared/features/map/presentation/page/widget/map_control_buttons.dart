@@ -30,7 +30,7 @@ class MapControlButtons extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(8),
         decoration: BoxDecoration(
-          color: const Color(0xffF2F2F2),
+          color:  Colors.white.withAlpha(200),
           borderRadius: BorderRadius.circular(12),
         ),
         child: Column(

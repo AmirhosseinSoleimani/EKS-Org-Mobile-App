@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/key_value_row.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_status_history_page/cubit/request_status_history_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_status_history_page/cubit/request_status_history_state.dart';
@@ -132,8 +133,13 @@ class RequestStatusHistoryListView extends StatelessWidget {
                 return  Padding(
                   padding: const EdgeInsets.all(12),
                   child: Center(
-                    child: CircularProgressIndicator(
-                      color:  cubit.selectedRequest?.serviceType?.serviceColor,
+                    child: SizedBox(
+                      height: 24,width: 24,
+                      child: CircularProgressIndicator(
+                        color:  cubit.selectedRequest?.serviceType?.serviceColor,
+                        strokeWidth: 2,
+
+                      ),
                     ),
                   ),
                 );
@@ -146,10 +152,10 @@ class RequestStatusHistoryListView extends StatelessWidget {
                     children: [
                       BodyMediumText(
                         text: 'مشاهده بیشتر',
-                        color: Theme.of(context).colorScheme.primary,
+                        color: cubit.selectedRequest?.serviceType?.serviceColor ?? ServiceType.reliefService.serviceColor,
                       ),
                       Space.w4,
-                      const Icon(Icons.expand_more),
+                       Icon(Icons.expand_more, color: cubit.selectedRequest?.serviceType?.serviceColor ?? ServiceType.reliefService.serviceColor,),
                     ],
                   ),
                 ),

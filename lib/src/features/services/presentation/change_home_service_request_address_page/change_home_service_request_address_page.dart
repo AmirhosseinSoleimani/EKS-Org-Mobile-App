@@ -1,16 +1,18 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/change_home_service_request_address_page/cubit/change_home_service_request_address_cubit.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/expandable_section.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/request_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/address_location_section.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/agent_info_detail_section.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/request_status_section.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/map_message_box.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/address_info_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/agent_info_detail_section.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/expandable_section.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/request_detail_section.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/request_status_section.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/gestures.dart';
@@ -49,7 +51,7 @@ class _View extends StatelessWidget {
             BottomSheetMessage.showErrorWithAction(
               context: context,
               data: message,
-              onPositive: cubit.init,
+              onPositive: cubit.retryLastAction,
             );
           },
           connectionError: () {
@@ -165,17 +167,37 @@ class _LoadedView extends StatelessWidget {
               ),
             ],
             Space.h8,
-            AddressLocationSection(
-              latitude: cubit.selectedRequest?.latitude ?? 0,
-              longitude: cubit.selectedRequest?.longitude ?? 0,
-              selectedProvince: cubit.selectedProvince,
-              provinceList: cubit.provinceList,
-              addressController: cubit.addressController,
+            ValueListenableBuilder<AddressInfoEntity?>(
+                valueListenable: cubit.selectedLocation,
+                builder: (context, selectedLocation, child) {
+                  final latitude =
+                      selectedLocation?.latitude ??
+                          cubit.selectedRequest?.latitude ?? 0;
 
-              onProvinceSelected: cubit.setSelectedProvince,
-              onLocationSelected: cubit.setSelectedLocation,
-              serviceType: ServiceType.homeService,
+                  final longitude =
+                      selectedLocation?.longitude ??
+                          cubit.selectedRequest?.longitude ?? 0;
+
+                  return AddressLocationSection(
+                    key: ValueKey('$latitude-$longitude'),
+                    latitude: cubit.selectedLocation.value?.latitude ?? 0,
+                    longitude: cubit.selectedLocation.value?.longitude ?? 0,
+                    selectedProvince: cubit.selectedProvince,
+                    provinceList: cubit.provinceList,
+                    serviceType: ServiceType.homeService,
+                    addressController: cubit.addressController,
+                    onProvinceSelected: cubit.setSelectedProvince,
+                    onLocationSelected: cubit.setSelectedLocation,
+                    extraWidgets: [
+                      const MapMessageBox(
+                        message:
+                        "این محدوده در طرح ترافیک قرار دارد و ممکن است محدودیت تردد داشته باشد.",
+                      ),
+                    ],
+                  );
+                }
             ),
+
 
           ],
         ),

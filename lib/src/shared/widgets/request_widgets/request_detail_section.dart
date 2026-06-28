@@ -1,6 +1,7 @@
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/extensions/string_extensions.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/key_value_row.dart';
 import 'package:flutter/material.dart';
 
@@ -55,7 +56,7 @@ class RequestDetailSection extends StatelessWidget {
         ),
         KeyValueRow(
           label: "شماره تماس مشتری",
-          value: selectedRequest?.customerMobileNumber ?? "-",
+          value: selectedRequest?.customerMobileNumber?.toLocalMobile() ?? "-",
         ),
         KeyValueRow(
           label: "آدرس",
