@@ -45,9 +45,9 @@ class RouteInfoBox extends StatelessWidget {
             ),
           ),
         ),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
         Container(width: 1, height: 32, color: const Color(0xffE5E7EB)),
-        const SizedBox(height: 8),
+        const SizedBox(height: 12),
         Expanded(
           child: Center(
             child: _RouteInfoItem(
@@ -99,7 +99,7 @@ class _RouteInfoItem extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final isTight = constraints.maxWidth < 140;
+        final isTight = constraints.maxWidth < 190;
 
         return FittedBox(
           fit: BoxFit.scaleDown,
