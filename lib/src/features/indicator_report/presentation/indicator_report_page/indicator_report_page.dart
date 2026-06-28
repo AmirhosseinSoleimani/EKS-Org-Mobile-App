@@ -76,10 +76,13 @@ class _IndicatorReportView extends StatelessWidget {
                     return state.maybeWhen(
                       idle: () => const SizedBox.shrink(),
 
-                      loading: () => const Center(
-                        child: Padding(
-                          padding: EdgeInsets.only(top: AppSize.s40),
-                          child: CircularProgressIndicator(),
+                      loading: () =>  SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.7,
+                        child: const Center(
+                          child: Padding(
+                            padding: EdgeInsets.only(top: AppSize.s40),
+                            child: CircularProgressIndicator(),
+                          ),
                         ),
                       ),
 
