@@ -122,9 +122,9 @@ class RequestCard extends StatelessWidget {
       physics: const NeverScrollableScrollPhysics(),
       itemCount: items.length,
       gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 90,
-        mainAxisSpacing: 16,
-        crossAxisSpacing: 8,
+        maxCrossAxisExtent: 70,
+        mainAxisSpacing: 8,
+        crossAxisSpacing: 16,
         childAspectRatio: 1,
       ),
       itemBuilder: (context, index) {
@@ -144,7 +144,7 @@ class RequestCard extends StatelessWidget {
                 child: Center(
                   child: CircleAvatar(
                     radius: size / 2.2,
-                    backgroundColor: item.color,
+                    backgroundColor: item.color.withAlpha(230),
                     child: Icon(
                       item.icon,
                       color: Colors.white,

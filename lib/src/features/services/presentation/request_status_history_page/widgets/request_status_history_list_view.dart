@@ -29,7 +29,7 @@ class RequestStatusHistoryListView extends StatelessWidget {
         borderRadius: BorderRadius.circular(4),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withAlpha(15),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -81,7 +81,7 @@ class RequestStatusHistoryListView extends StatelessWidget {
                                 label: item.title ?? '-',
                                 valueFontSize: 14,
                                 boldLabel: true,
-                                value: item.insertDateTime ?? '-',
+                                value: item.insertDateTimeJalali ?? '-',
                               ),
                               Space.h8,
                               KeyValueRow(
