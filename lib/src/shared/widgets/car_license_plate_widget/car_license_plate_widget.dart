@@ -216,7 +216,7 @@ class _LicensePlateTextFormFieldWidgetState
                                 children: [
                                   if (value == 'ژ')
                                     Icon(
-                                      IconManager.wheelChair,
+                                      Icons.wheelchair_pickup_outlined,
                                       size: AppSize.s20,
                                       color: Theme.of(
                                         context,
@@ -232,7 +232,7 @@ class _LicensePlateTextFormFieldWidgetState
                                     ),
                                   Space.w4,
                                   const Icon(
-                                    IconManager.arrowDown,
+                                    Icons.arrow_drop_down,
                                     size: AppSize.s16,
                                   ),
                                 ],
@@ -293,7 +293,7 @@ class _LicensePlateTextFormFieldWidgetState
                         fit: BoxFit.fill,
                         errorBuilder: (context, error, stackTrace) {
                           return const Icon(
-                            IconManager.errorImage,
+                            Icons.image_not_supported,
                             size: AppSize.s24,
                           );
                         },

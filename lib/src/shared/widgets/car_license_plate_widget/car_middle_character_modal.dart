@@ -127,7 +127,7 @@ class CarMiddleCharacterModal {
         IconButton(
           onPressed: () => context.pop(),
           icon: Icon(
-            IconManager.close,
+            Icons.close,
             color: Theme.of(context).colorScheme.error,
             size: AppSize.s20,
           ),
@@ -147,7 +147,7 @@ class CarMiddleCharacterModal {
       labelText: 'جستجو... ',
       hintText: 'جستجو... ',
       suffixIcon: Icon(
-        IconManager.search,
+        Icons.search,
         size: AppSize.s20,
         color: Theme.of(context).colorScheme.onTertiary,
       ),
@@ -189,7 +189,7 @@ class CarMiddleCharacterModal {
                   child: Align(
                     alignment: Alignment.centerRight,
                     child: Icon(
-                      IconManager.wheelChair,
+                      Icons.wheelchair_pickup_outlined,
                       size: AppSize.s20,
                       color: Theme.of(context).colorScheme.onSurface,
                     ),

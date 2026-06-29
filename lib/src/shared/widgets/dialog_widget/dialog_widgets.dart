@@ -124,7 +124,7 @@ class BaseDialogWidget extends StatelessWidget {
             cancelFunc?.call();
           },
           child: Icon(
-            IconManager.close,
+            Icons.close,
             color: color ?? Theme.of(context).colorScheme.onSurface,
           ),
         ),

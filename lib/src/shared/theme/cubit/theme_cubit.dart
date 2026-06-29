@@ -42,12 +42,11 @@ class ThemeCubit extends Cubit<ThemeState> {
   IconData _getIcon(AppTheme appTheme) {
     switch (appTheme) {
       case AppTheme.dark:
-        return IconManager.darkMode;
+        return  Icons.dark_mode;
       case AppTheme.light:
-        return IconManager.lightMode;
+        return Icons.sunny;
       case AppTheme.system:
-      default:
-        return IconManager.lightMode;
+      return Icons.sunny;
     }
   }
 

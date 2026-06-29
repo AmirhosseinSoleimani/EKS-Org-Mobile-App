@@ -68,7 +68,7 @@ class _DropDownListItemsWidgetState extends State<DropDownListItemsWidget> {
         ),
         isExpanded: true,
         icon: const Icon(
-          IconManager.arrowDown,
+          Icons.arrow_drop_down,
           size: AppSize.s20,
           color: ColorLightManager.primaryContainer,
         ),

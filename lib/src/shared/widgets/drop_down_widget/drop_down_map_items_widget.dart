@@ -47,7 +47,7 @@ class DropDownMapItemsWidget extends StatelessWidget {
             ),
             isExpanded: true,
             icon: Icon(
-              IconManager.arrowDown,
+              Icons.arrow_drop_down,
               size: AppSize.s20,
               color: Theme.of(context).colorScheme.onTertiary,
             ),

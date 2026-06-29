@@ -315,7 +315,7 @@ class ImageWidget extends StatelessWidget {
   Widget _errorFallback() => SizedBox(
     width: width,
     height: height,
-    child: const Center(child: Icon(IconManager.errorImage)),
+    child: const Center(child: Icon(Icons.image_not_supported)),
   );
 }
 

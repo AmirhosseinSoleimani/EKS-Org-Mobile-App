@@ -82,7 +82,7 @@ class HomeServiceEvaluationServiceWidget extends StatelessWidget {
                                 base64StringWithPrefix: entity?.imageGuid ?? '',
                               )
                             : Icon(
-                                IconManager.errorImage,
+                                Icons.image_not_supported,
                                 size: AppSize.s42,
                                 color: colorScheme.inverseSurface,
                               ),
@@ -136,7 +136,7 @@ class HomeServiceEvaluationServiceWidget extends StatelessWidget {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Icon(
-                                          IconManager.carRepair,
+                                          Icons.car_repair,
                                           color: ServiceType
                                               .homeService
                                               .serviceColor,
@@ -233,8 +233,7 @@ class HomeServiceEvaluationServiceWidget extends StatelessWidget {
                                                                   );
                                                                 },
                                                                 child: const Icon(
-                                                                  IconManager
-                                                                      .close,
+                                                                  Icons.close,
                                                                   color: Colors
                                                                       .black,
                                                                 ),
@@ -275,8 +274,7 @@ class HomeServiceEvaluationServiceWidget extends StatelessWidget {
                                                                             .start,
                                                                     children: [
                                                                       Icon(
-                                                                        IconManager
-                                                                            .warning,
+                                                                        Icons.warning_amber_sharp,
                                                                         size: AppSize
                                                                             .s24,
                                                                         color: colorScheme
@@ -323,7 +321,7 @@ class HomeServiceEvaluationServiceWidget extends StatelessWidget {
                                                 AppPadding.p2,
                                               ),
                                               child: Icon(
-                                                IconManager.delete,
+                                                Icons.delete,
                                                 color: colorScheme.error,
                                                 size: AppSize.s20,
                                               ),
@@ -338,7 +336,7 @@ class HomeServiceEvaluationServiceWidget extends StatelessWidget {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Icon(
-                                          IconManager.localOffer,
+                                          Icons.local_offer_outlined,
                                           color: ServiceType
                                               .homeService
                                               .serviceColor,
@@ -416,8 +414,7 @@ class HomeServiceEvaluationServiceWidget extends StatelessWidget {
                                                             .start,
                                                     children: [
                                                       Icon(
-                                                        IconManager
-                                                            .settingSuggest,
+                                                        Icons.settings_suggest_rounded,
                                                         color: ServiceType
                                                             .homeService
                                                             .serviceColor,
@@ -449,7 +446,7 @@ class HomeServiceEvaluationServiceWidget extends StatelessWidget {
                                                             .start,
                                                     children: [
                                                       Icon(
-                                                        IconManager.localOffer,
+                                                        Icons.local_offer_outlined,
                                                         color: ServiceType
                                                             .homeService
                                                             .serviceColor,
@@ -504,8 +501,7 @@ class HomeServiceEvaluationServiceWidget extends StatelessWidget {
                                                               .start,
                                                       children: [
                                                         Icon(
-                                                          IconManager
-                                                              .localOffer,
+                                                          Icons.local_offer_outlined,
                                                           color: ServiceType
                                                               .homeService
                                                               .serviceColor,
@@ -610,7 +606,7 @@ class HomeServiceEvaluationServiceWidget extends StatelessWidget {
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
                                 Icon(
-                                  IconManager.edit,
+                                  Icons.edit_outlined,
                                   size: AppSize.s24,
                                   color: ServiceType.homeService.serviceColor,
                                 ),
