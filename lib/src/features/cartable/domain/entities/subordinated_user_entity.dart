@@ -1,25 +1,25 @@
 import 'package:eks_sana_plus_org/src/features/cartable/data/models/subordinated_user_model.dart';
 
 class SubordinatedUserEntity {
-  final int id;
-  final String guid;
-  final String name;
-  final bool isRoot;
-  final bool isRole;
-  final bool isUser;
-  final int onlineStatus;
+  final int? id;
+  final String? guid;
+  final String? name;
+  final bool? isRoot;
+  final bool? isRole;
+  final bool? isUser;
+  final int? onlineStatus;
   final int? cartableMessagesCount;
   final bool? hasWorkTimespan;
   final List<SubordinatedUserEntity> subordinateds;
 
   const SubordinatedUserEntity({
-    required this.id,
-    required this.guid,
-    required this.name,
-    required this.isRoot,
-    required this.isRole,
-    required this.isUser,
-    required this.onlineStatus,
+    this.id,
+    this.guid,
+    this.name,
+    this.isRoot,
+    this.isRole,
+    this.isUser,
+    this.onlineStatus,
     this.cartableMessagesCount,
     this.hasWorkTimespan,
     this.subordinateds = const [],

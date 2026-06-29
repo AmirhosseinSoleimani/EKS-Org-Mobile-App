@@ -1,4 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/cartable/data/data_sources/cartable_data_source.dart';
+import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/cartable_item_entity.dart';
+import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/param/get_cartable_items_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/param/get_subordinated_users_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/subordinated_user_entity.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/repositories/cartable_repository.dart';
@@ -18,6 +20,16 @@ class CartableRepositoryImpl extends CartableRepository {
   ) async {
     try {
       final result = await _dataSource.getSubordinatedUsers(param.toModel());
+      return result.toApiResult();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<List<CartableItemEntity>>> getCartableItemList(GetCartableItemParamEntity param) async {
+    try {
+      final result = await _dataSource.getCartableItemList(param.toModel());
       return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);

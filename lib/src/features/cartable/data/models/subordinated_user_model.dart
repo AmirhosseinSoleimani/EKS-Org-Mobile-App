@@ -2,13 +2,13 @@ import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/subordin
 
 class SubordinatedUserModel extends SubordinatedUserEntity {
   const SubordinatedUserModel({
-    required super.id,
-    required super.guid,
-    required super.name,
-    required super.isRoot,
-    required super.isRole,
-    required super.isUser,
-    required super.onlineStatus,
+    super.id,
+    super.guid,
+    super.name,
+    super.isRoot,
+    super.isRole,
+    super.isUser,
+    super.onlineStatus,
     super.cartableMessagesCount,
     super.hasWorkTimespan,
     super.subordinateds,

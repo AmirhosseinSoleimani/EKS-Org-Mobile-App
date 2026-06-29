@@ -54,6 +54,10 @@ import '../features/cartable/data/repositories/cartable_repository_impl.dart'
 import '../features/cartable/data/service/cartable_service.dart' as _i1027;
 import '../features/cartable/domain/repositories/cartable_repository.dart'
     as _i133;
+import '../features/cartable/domain/use_cases/get_cartable_item_list_use_case.dart'
+    as _i862;
+import '../features/cartable/domain/use_cases/get_subordinated_users_list_use_case.dart'
+    as _i45;
 import '../features/cartable/presentation/cubit/cartable_cubit.dart' as _i330;
 import '../features/dashboard/data/data_sources/dashboard_data_source.dart'
     as _i320;
@@ -980,6 +984,13 @@ _i174.GetIt $initGetIt(
       gh<_i433.GetCancelReasonRequestUseCase>(),
       gh<_i707.GetNonCooperationListUseCase>(),
     ),
+  );
+  gh.lazySingleton<_i862.GetHomeServiceRequestListUseCase>(
+    () =>
+        _i862.GetHomeServiceRequestListUseCase(gh<_i133.CartableRepository>()),
+  );
+  gh.lazySingleton<_i45.GetHomeServiceRequestListUseCase>(
+    () => _i45.GetHomeServiceRequestListUseCase(gh<_i133.CartableRepository>()),
   );
   gh.factory<_i563.RequestStatusHistoryCubit>(
     () => _i563.RequestStatusHistoryCubit(
