@@ -1,3 +1,6 @@
+import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_src.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -18,6 +21,10 @@ class BottomNavPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    final selectedColor = colorScheme.primary;
+    final unselectedColor = colorScheme.secondaryFixed;
     return Scaffold(
       body: navigationShell,
       bottomNavigationBar: BottomNavigationBar(
@@ -25,28 +32,87 @@ class BottomNavPage extends StatelessWidget {
         onTap: _onTap,
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
         type: BottomNavigationBarType.fixed,
-        items: const [
+        selectedItemColor: selectedColor,
+        unselectedItemColor: unselectedColor,
+        elevation: 16,
+
+        selectedLabelStyle: const TextStyle(
+          fontSize: 12.5,
+          fontWeight: FontWeight.w600,
+        ),
+        unselectedLabelStyle: const TextStyle(
+          fontSize: 12.5,
+          fontWeight: FontWeight.w500,
+        ),
+        items: [
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: _BottomNavSvgIcon(src: SvgManager.homeIcon,
+              color: colorScheme.onTertiaryFixed,),
             label: "داشبورد",
+            activeIcon: _BottomNavSvgIcon(
+              src: SvgManager.homeIcon,
+              color: colorScheme.primary,
+            ),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.home),
+            icon: _BottomNavSvgIcon(src: SvgManager.listAltIcon,
+              color: colorScheme.onTertiaryFixed,),
             label: "کارتابل",
+            activeIcon: _BottomNavSvgIcon(
+              src: SvgManager.listAltIcon,
+              color: colorScheme.primary,
+            ),
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.build),
+            icon: _BottomNavSvgIcon(src: SvgManager.buildIcon,
+              color: colorScheme.onTertiaryFixed,),
+            activeIcon: _BottomNavSvgIcon(
+              src: SvgManager.buildIcon,
+              color: colorScheme.primary,
+            ),
             label: "خدمات",
+
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart),
+            icon: _BottomNavSvgIcon(src: SvgManager.domainIcon,
+              color: colorScheme.onTertiaryFixed,),
+            activeIcon: _BottomNavSvgIcon(
+              src: SvgManager.domainIcon,
+              color: colorScheme.primary,
+            ),
             label: "نمایندگی",
           ),
           BottomNavigationBarItem(
-            icon: Icon(Icons.bar_chart),
+            icon: _BottomNavSvgIcon(src: SvgManager.assignmentIcon,
+              color: colorScheme.onTertiaryFixed,),
+            activeIcon: _BottomNavSvgIcon(
+              src: SvgManager.assignmentIcon,
+              color: colorScheme.primary,
+            ),
             label: "گزارش ها",
           ),
         ],
+      ),
+    );
+  }
+}
+
+class _BottomNavSvgIcon extends StatelessWidget {
+  final String src;
+  final Color color;
+
+  const _BottomNavSvgIcon({
+    required this.src,
+    required this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: 8,top: 4),
+      child: SvgWidget(
+        src: SvgAsset(src),
+        color: color,
       ),
     );
   }

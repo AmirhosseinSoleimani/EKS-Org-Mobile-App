@@ -40,6 +40,7 @@ class SvgManager {
   static const String domainIcon = '${_basePath}domain_icon.svg';
   static const String buildIcon = '${_basePath}build_icon.svg';
   static const String assignmentIcon = '${_basePath}assignment_icon.svg';
+  static const String listAltIcon = '${_basePath}list_alt_icon.svg';
 }
 
 

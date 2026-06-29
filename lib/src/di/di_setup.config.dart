@@ -45,6 +45,16 @@ import '../features/bottom_navigation_bar/domain/use_case/urgent_request_usecase
     as _i565;
 import '../features/bottom_navigation_bar/presentation/cubit/bottom_navigation_bar_cubit.dart'
     as _i336;
+import '../features/cartable/data/data_sources/cartable_data_source.dart'
+    as _i249;
+import '../features/cartable/data/data_sources/cartable_data_source_impl.dart'
+    as _i18;
+import '../features/cartable/data/repositories/cartable_repository_impl.dart'
+    as _i304;
+import '../features/cartable/data/service/cartable_service.dart' as _i1027;
+import '../features/cartable/domain/repositories/cartable_repository.dart'
+    as _i133;
+import '../features/cartable/presentation/cubit/cartable_cubit.dart' as _i330;
 import '../features/dashboard/data/data_sources/dashboard_data_source.dart'
     as _i320;
 import '../features/dashboard/data/data_sources/dashboard_data_source_impl.dart'
@@ -177,6 +187,18 @@ import '../features/indicator_report/domain/use_cases/fetch_indicator_report_use
     as _i375;
 import '../features/indicator_report/presentation/indicator_report_page/cubit/indicator_report_cubit.dart'
     as _i951;
+import '../features/representation/data/data_sources/representation_data_source.dart'
+    as _i59;
+import '../features/representation/data/data_sources/representation_data_source_impl.dart'
+    as _i423;
+import '../features/representation/data/repositories/representation_repository_impl.dart'
+    as _i386;
+import '../features/representation/data/service/representation_service.dart'
+    as _i854;
+import '../features/representation/domain/repositories/representation_repository.dart'
+    as _i815;
+import '../features/representation/presentation/cubit/representation_cubit.dart'
+    as _i79;
 import '../features/services/data/data_source/request_history_data_source.dart'
     as _i1016;
 import '../features/services/data/data_source/request_history_data_source_impl.dart'
@@ -450,6 +472,8 @@ _i174.GetIt $initGetIt(
   gh.factory<_i336.BottomNavigationBarCubit>(
     () => _i336.BottomNavigationBarCubit(),
   );
+  gh.factory<_i330.CartableCubit>(() => _i330.CartableCubit());
+  gh.factory<_i79.RepresentationCubit>(() => _i79.RepresentationCubit());
   gh.factory<_i866.EvaluationHomeServiceRequestCubit>(
     () => _i866.EvaluationHomeServiceRequestCubit(),
   );
@@ -529,6 +553,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i626.AuthService>(() => _i626.AuthService(gh<_i361.Dio>()));
   gh.lazySingleton<_i438.MainService>(() => _i438.MainService(gh<_i361.Dio>()));
+  gh.lazySingleton<_i1027.CartableService>(
+    () => _i1027.CartableService(gh<_i361.Dio>()),
+  );
   gh.lazySingleton<_i953.DashboardService>(
     () => _i953.DashboardService(gh<_i361.Dio>()),
   );
@@ -540,6 +567,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i140.IndicatorReportService>(
     () => _i140.IndicatorReportService(gh<_i361.Dio>()),
+  );
+  gh.lazySingleton<_i854.RepresentationService>(
+    () => _i854.RepresentationService(gh<_i361.Dio>()),
   );
   gh.lazySingleton<_i483.RequestService>(
     () => _i483.RequestService(gh<_i361.Dio>()),
@@ -576,6 +606,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i602.DashboardRepository>(
     () => _i650.DashboardRepositoryImpl(gh<_i320.DashboardDataSource>()),
   );
+  gh.lazySingleton<_i249.CartableDataSource>(
+    () => _i18.CartableDataSourceImpl(gh<_i1027.CartableService>()),
+  );
   gh.lazySingleton<_i296.ApplyHighAccuracyUseCase>(
     () => _i296.ApplyHighAccuracyUseCase(
       gh<_i995.LocationPermissionRepository>(),
@@ -593,6 +626,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i935.InvoiceDataSource>(
     () => _i981.InvoiceDataSourceImpl(gh<_i634.InvoiceService>()),
+  );
+  gh.lazySingleton<_i59.RepresentationDataSource>(
+    () => _i423.RepresentationDataSourceImpl(gh<_i854.RepresentationService>()),
   );
   gh.lazySingleton<_i670.DateTimeInfoDataSource>(
     () => _i940.DateTimeInfoDataSourceImpl(gh<_i99.DateTimeService>()),
@@ -612,6 +648,9 @@ _i174.GetIt $initGetIt(
     () => _i983.HomeServiceEvaluationDataSourceImpl(
       gh<_i204.HomeServiceEvaluationService>(),
     ),
+  );
+  gh.lazySingleton<_i133.CartableRepository>(
+    () => _i304.CartableRepositoryImpl(gh<_i249.CartableDataSource>()),
   );
   gh.lazySingleton<_i92.MapRepository>(
     () => _i810.MapRepositoryImpl(gh<_i971.MapDataSource>()),
@@ -668,6 +707,10 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i1061.ObserveNetworkUseCase>(
     () => _i1061.ObserveNetworkUseCase(gh<_i422.ObserveNetworkRepository>()),
+  );
+  gh.lazySingleton<_i815.RepresentationRepository>(
+    () =>
+        _i386.RepresentationRepositoryImpl(gh<_i59.RepresentationDataSource>()),
   );
   gh.lazySingleton<_i74.UserRepository>(
     () => _i880.UserRepositoryImpl(gh<_i1039.UserDataSource>()),
