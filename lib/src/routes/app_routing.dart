@@ -94,7 +94,7 @@ class Routes {
               ],
             ),
 
-            /// 1 - CARTABLE
+            /*/// 1 - CARTABLE
             StatefulShellBranch(
               navigatorKey: cartableNavigatorKey,
               routes: [
@@ -107,7 +107,7 @@ class Routes {
                   ),
                 ),
               ],
-            ),
+            ),*/
 
             /// SERVICES
             StatefulShellBranch(
@@ -141,7 +141,7 @@ class Routes {
             ),
 
             /// 3 - REPRESENTATION
-            StatefulShellBranch(
+            /*StatefulShellBranch(
               navigatorKey: representationNavigatorKey,
               routes: [
                 GoRoute(
@@ -153,7 +153,7 @@ class Routes {
                   ),
                 ),
               ],
-            ),
+            ),*/
 
             /// INDICATOR REPORT
             StatefulShellBranch(
