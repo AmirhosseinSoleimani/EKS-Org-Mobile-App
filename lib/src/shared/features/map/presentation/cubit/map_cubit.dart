@@ -152,7 +152,7 @@ class MapCubit extends Cubit<MapState> {
         (a.longitude - b.longitude).abs() > eps;
   }
 
-  void onMapMoved(MapPosition position) {
+  void onMapMoved( position) {
     if (position.center == null) return;
     _moveThrottle.run(() {
       final center = lat_lng.LatLng(position.center!.latitude, position.center!.longitude);
