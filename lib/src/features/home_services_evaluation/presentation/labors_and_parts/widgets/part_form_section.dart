@@ -4,7 +4,7 @@ import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/part_e
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/part_mark_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/bottom_sheet/selected_part_list_item.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/dropdown_selector.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/form_section_container.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/searchable_dropdown_selector.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/formatter/thousands_separator_input_formatter.dart';

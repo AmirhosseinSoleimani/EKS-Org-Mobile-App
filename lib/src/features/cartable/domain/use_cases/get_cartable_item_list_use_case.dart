@@ -6,7 +6,7 @@ import 'package:eks_sana_plus_org/src/shared/usecase/use_case.dart';
 import 'package:injectable/injectable.dart';
 
 @lazySingleton
-class GetHomeServiceRequestListUseCase
+class GetCartableItemListUseCase
     extends
         BaseUseCase<
           ApiResult<List<CartableItemEntity>>,
@@ -14,7 +14,7 @@ class GetHomeServiceRequestListUseCase
         > {
   final CartableRepository _repository;
 
-  GetHomeServiceRequestListUseCase(this._repository);
+  GetCartableItemListUseCase(this._repository);
 
   @override
   Future<ApiResult<List<CartableItemEntity>>> call(arg) async {

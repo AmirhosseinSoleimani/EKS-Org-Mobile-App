@@ -476,7 +476,6 @@ _i174.GetIt $initGetIt(
   gh.factory<_i336.BottomNavigationBarCubit>(
     () => _i336.BottomNavigationBarCubit(),
   );
-  gh.factory<_i330.CartableCubit>(() => _i330.CartableCubit());
   gh.factory<_i79.RepresentationCubit>(() => _i79.RepresentationCubit());
   gh.factory<_i866.EvaluationHomeServiceRequestCubit>(
     () => _i866.EvaluationHomeServiceRequestCubit(),
@@ -985,12 +984,11 @@ _i174.GetIt $initGetIt(
       gh<_i707.GetNonCooperationListUseCase>(),
     ),
   );
-  gh.lazySingleton<_i862.GetHomeServiceRequestListUseCase>(
-    () =>
-        _i862.GetHomeServiceRequestListUseCase(gh<_i133.CartableRepository>()),
+  gh.lazySingleton<_i862.GetCartableItemListUseCase>(
+    () => _i862.GetCartableItemListUseCase(gh<_i133.CartableRepository>()),
   );
-  gh.lazySingleton<_i45.GetHomeServiceRequestListUseCase>(
-    () => _i45.GetHomeServiceRequestListUseCase(gh<_i133.CartableRepository>()),
+  gh.lazySingleton<_i45.GetSubordinatedUsersUseCase>(
+    () => _i45.GetSubordinatedUsersUseCase(gh<_i133.CartableRepository>()),
   );
   gh.factory<_i563.RequestStatusHistoryCubit>(
     () => _i563.RequestStatusHistoryCubit(
@@ -1209,6 +1207,12 @@ _i174.GetIt $initGetIt(
       gh<_i67.GetRequestFollowupHistoryUseCase>(),
       gh<_i786.GetEmdadgarInfoUseCase>(),
       gh<_i955.GetRequestStatusHistoryUseCase>(),
+    ),
+  );
+  gh.factory<_i330.CartableCubit>(
+    () => _i330.CartableCubit(
+      gh<_i45.GetSubordinatedUsersUseCase>(),
+      gh<_i862.GetCartableItemListUseCase>(),
     ),
   );
   gh.factory<_i362.EmdadgarInvoiceCubit>(
