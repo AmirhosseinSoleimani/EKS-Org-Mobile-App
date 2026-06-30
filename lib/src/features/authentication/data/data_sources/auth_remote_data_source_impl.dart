@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/shared/features/session/data/models/current_session_model.dart';
 import 'package:eks_sana_plus_org/src/features/authentication/data/models/login_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/authentication/data/models/login_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/authentication/data/service/auth_service.dart';
@@ -15,5 +16,10 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
   @override
   Future<BaseSingleResponse<LoginResponseModel?>> login(LoginRequestModel model) async {
     return await _service.login(model.toJson());
+  }
+
+  @override
+  Future<BaseSingleResponse<CurrentSessionModel?>> getCurrentSession()async {
+    return await _service.getCurrentSession({});
   }
 }
