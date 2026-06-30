@@ -1,4 +1,4 @@
-library eks_sana_plus_org.globals;
+library;
 
 //TODO below defined coordinates from intent incoming from outside the app
 //TODO this is used for temporary storage for lat/long on shared location user tap from outside

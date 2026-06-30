@@ -1,19 +1,15 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/material.dart';
 
 class RequestHeader extends StatelessWidget {
   final BaseRequestEntity request;
-
-  final Color serviceColor;
-  final IconData serviceIcon;
-
   const RequestHeader({
     super.key,
     required this.request,
-    required this.serviceColor,
-    required this.serviceIcon,
   });
 
   @override
@@ -21,14 +17,22 @@ class RequestHeader extends StatelessWidget {
     return Row(
       children: [
         Container(
-          padding: const EdgeInsets.all(16),
+          width: 54,
+          height: 54,
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: serviceColor,
+            color: request.serviceType?.serviceColor.withAlpha(40),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(
-            serviceIcon,
-            color: Colors.white,
+          child: Image.asset(
+            width: 48,
+            height: 48,
+            request.serviceType == ServiceType.reliefService
+                ? ImageManager.emdadServece
+                : ImageManager.locationService,
+
+
+            fit: BoxFit.contain,
           ),
         ),
         const SizedBox(width: 12),

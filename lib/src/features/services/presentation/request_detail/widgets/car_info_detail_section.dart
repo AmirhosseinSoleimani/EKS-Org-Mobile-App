@@ -2,7 +2,7 @@ import 'package:eks_sana_plus_org/src/common/utils/car_plate_parser.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/cubit/request_detail_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/car_plate.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_row.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/key_value_row.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:flutter/material.dart';
 
@@ -14,34 +14,34 @@ class CarInfoDetailSection extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final request = cubit.selectedRequest;
-    final carTag = request.licensePlate ?? '';
+    final carTag = request?.licensePlate ?? '';
     final plate = CarPlateParser.parse(carTag);
 
     return Column(
       children: [
         KeyValueRow(
           label: "نام",
-          value: request.carName ?? '-',
+          value: request?.carName ?? '-',
         ),
         KeyValueRow(
           label: "شماره شاسی",
-          value: request.chassisNumber ?? "-",
+          value: request?.chassisNumber ?? "-",
         ),
         KeyValueRow(
           label: "شماره موتور",
-          value: request.carEngineNumber ?? "-",
+          value: request?.carEngineNumber ?? "-",
         ),
         KeyValueRow(
           label: "رنگ",
-          value: request.carColorTitle ?? "-",
+          value: request?.carColorTitle ?? "-",
         ),
         KeyValueRow(
           label: "سال ساخت",
-          value: request.carProductionYear.toString(),
+          value: request?.carProductionYear.toString() ?? '-',
         ),
         KeyValueRow(
           label: "کیلومتر مشتری",
-          value: request.kilometer?.toString() ?? "-",
+          value: request?.kilometer?.toString() ?? "-",
         ),
         if (request is ReliefRequestEntity) ...[
           KeyValueRow(

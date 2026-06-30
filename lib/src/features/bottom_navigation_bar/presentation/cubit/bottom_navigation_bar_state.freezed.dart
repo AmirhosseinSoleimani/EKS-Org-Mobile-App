@@ -1,5 +1,5 @@
-// coverage:ignore-file
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// coverage:ignore-file
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
@@ -9,235 +9,266 @@ part of 'bottom_navigation_bar_state.dart';
 // FreezedGenerator
 // **************************************************************************
 
+// dart format off
 T _$identity<T>(T value) => value;
-
-final _privateConstructorUsedError = UnsupportedError(
-    'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
-
 /// @nodoc
 mixin _$BottomNavigationBarState {
-  int get currentIndex => throw _privateConstructorUsedError;
-  int get activeCount => throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(int currentIndex, int activeCount) currentIndex,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int currentIndex, int activeCount)? currentIndex,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int currentIndex, int activeCount)? currentIndex,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_CurrentIndexState value) currentIndex,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_CurrentIndexState value)? currentIndex,
-  }) =>
-      throw _privateConstructorUsedError;
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_CurrentIndexState value)? currentIndex,
-    required TResult orElse(),
-  }) =>
-      throw _privateConstructorUsedError;
 
-  @JsonKey(ignore: true)
-  $BottomNavigationBarStateCopyWith<BottomNavigationBarState> get copyWith =>
-      throw _privateConstructorUsedError;
+ int get currentIndex; int get activeCount;
+/// Create a copy of BottomNavigationBarState
+/// with the given fields replaced by the non-null parameter values.
+@JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+$BottomNavigationBarStateCopyWith<BottomNavigationBarState> get copyWith => _$BottomNavigationBarStateCopyWithImpl<BottomNavigationBarState>(this as BottomNavigationBarState, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is BottomNavigationBarState&&(identical(other.currentIndex, currentIndex) || other.currentIndex == currentIndex)&&(identical(other.activeCount, activeCount) || other.activeCount == activeCount));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,currentIndex,activeCount);
+
+@override
+String toString() {
+  return 'BottomNavigationBarState(currentIndex: $currentIndex, activeCount: $activeCount)';
+}
+
+
 }
 
 /// @nodoc
-abstract class $BottomNavigationBarStateCopyWith<$Res> {
-  factory $BottomNavigationBarStateCopyWith(BottomNavigationBarState value,
-          $Res Function(BottomNavigationBarState) then) =
-      _$BottomNavigationBarStateCopyWithImpl<$Res, BottomNavigationBarState>;
-  @useResult
-  $Res call({int currentIndex, int activeCount});
-}
+abstract mixin class $BottomNavigationBarStateCopyWith<$Res>  {
+  factory $BottomNavigationBarStateCopyWith(BottomNavigationBarState value, $Res Function(BottomNavigationBarState) _then) = _$BottomNavigationBarStateCopyWithImpl;
+@useResult
+$Res call({
+ int currentIndex, int activeCount
+});
 
+
+
+
+}
 /// @nodoc
-class _$BottomNavigationBarStateCopyWithImpl<$Res,
-        $Val extends BottomNavigationBarState>
+class _$BottomNavigationBarStateCopyWithImpl<$Res>
     implements $BottomNavigationBarStateCopyWith<$Res> {
-  _$BottomNavigationBarStateCopyWithImpl(this._value, this._then);
+  _$BottomNavigationBarStateCopyWithImpl(this._self, this._then);
 
-  // ignore: unused_field
-  final $Val _value;
-  // ignore: unused_field
-  final $Res Function($Val) _then;
+  final BottomNavigationBarState _self;
+  final $Res Function(BottomNavigationBarState) _then;
 
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? currentIndex = null,
-    Object? activeCount = null,
-  }) {
-    return _then(_value.copyWith(
-      currentIndex: null == currentIndex
-          ? _value.currentIndex
-          : currentIndex // ignore: cast_nullable_to_non_nullable
-              as int,
-      activeCount: null == activeCount
-          ? _value.activeCount
-          : activeCount // ignore: cast_nullable_to_non_nullable
-              as int,
-    ) as $Val);
-  }
+/// Create a copy of BottomNavigationBarState
+/// with the given fields replaced by the non-null parameter values.
+@pragma('vm:prefer-inline') @override $Res call({Object? currentIndex = null,Object? activeCount = null,}) {
+  return _then(_self.copyWith(
+currentIndex: null == currentIndex ? _self.currentIndex : currentIndex // ignore: cast_nullable_to_non_nullable
+as int,activeCount: null == activeCount ? _self.activeCount : activeCount // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
+}
+
+}
+
+
+/// Adds pattern-matching-related methods to [BottomNavigationBarState].
+extension BottomNavigationBarStatePatterns on BottomNavigationBarState {
+/// A variant of `map` that fallback to returning `orElse`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeMap<TResult extends Object?>({TResult Function( _CurrentIndexState value)?  currentIndex,required TResult orElse(),}){
+final _that = this;
+switch (_that) {
+case _CurrentIndexState() when currentIndex != null:
+return currentIndex(_that);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// Callbacks receives the raw object, upcasted.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case final Subclass2 value:
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult map<TResult extends Object?>({required TResult Function( _CurrentIndexState value)  currentIndex,}){
+final _that = this;
+switch (_that) {
+case _CurrentIndexState():
+return currentIndex(_that);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `map` that fallback to returning `null`.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case final Subclass value:
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? mapOrNull<TResult extends Object?>({TResult? Function( _CurrentIndexState value)?  currentIndex,}){
+final _that = this;
+switch (_that) {
+case _CurrentIndexState() when currentIndex != null:
+return currentIndex(_that);case _:
+  return null;
+
+}
+}
+/// A variant of `when` that fallback to an `orElse` callback.
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return orElse();
+/// }
+/// ```
+
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>({TResult Function( int currentIndex,  int activeCount)?  currentIndex,required TResult orElse(),}) {final _that = this;
+switch (_that) {
+case _CurrentIndexState() when currentIndex != null:
+return currentIndex(_that.currentIndex,_that.activeCount);case _:
+  return orElse();
+
+}
+}
+/// A `switch`-like method, using callbacks.
+///
+/// As opposed to `map`, this offers destructuring.
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case Subclass2(:final field2):
+///     return ...;
+/// }
+/// ```
+
+@optionalTypeArgs TResult when<TResult extends Object?>({required TResult Function( int currentIndex,  int activeCount)  currentIndex,}) {final _that = this;
+switch (_that) {
+case _CurrentIndexState():
+return currentIndex(_that.currentIndex,_that.activeCount);case _:
+  throw StateError('Unexpected subclass');
+
+}
+}
+/// A variant of `when` that fallback to returning `null`
+///
+/// It is equivalent to doing:
+/// ```dart
+/// switch (sealedClass) {
+///   case Subclass(:final field):
+///     return ...;
+///   case _:
+///     return null;
+/// }
+/// ```
+
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>({TResult? Function( int currentIndex,  int activeCount)?  currentIndex,}) {final _that = this;
+switch (_that) {
+case _CurrentIndexState() when currentIndex != null:
+return currentIndex(_that.currentIndex,_that.activeCount);case _:
+  return null;
+
+}
+}
+
 }
 
 /// @nodoc
-abstract class _$$CurrentIndexStateImplCopyWith<$Res>
-    implements $BottomNavigationBarStateCopyWith<$Res> {
-  factory _$$CurrentIndexStateImplCopyWith(_$CurrentIndexStateImpl value,
-          $Res Function(_$CurrentIndexStateImpl) then) =
-      __$$CurrentIndexStateImplCopyWithImpl<$Res>;
-  @override
-  @useResult
-  $Res call({int currentIndex, int activeCount});
+
+
+class _CurrentIndexState implements BottomNavigationBarState {
+  const _CurrentIndexState(this.currentIndex, {this.activeCount = 0});
+  
+
+@override final  int currentIndex;
+@override@JsonKey() final  int activeCount;
+
+/// Create a copy of BottomNavigationBarState
+/// with the given fields replaced by the non-null parameter values.
+@override @JsonKey(includeFromJson: false, includeToJson: false)
+@pragma('vm:prefer-inline')
+_$CurrentIndexStateCopyWith<_CurrentIndexState> get copyWith => __$CurrentIndexStateCopyWithImpl<_CurrentIndexState>(this, _$identity);
+
+
+
+@override
+bool operator ==(Object other) {
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CurrentIndexState&&(identical(other.currentIndex, currentIndex) || other.currentIndex == currentIndex)&&(identical(other.activeCount, activeCount) || other.activeCount == activeCount));
+}
+
+
+@override
+int get hashCode => Object.hash(runtimeType,currentIndex,activeCount);
+
+@override
+String toString() {
+  return 'BottomNavigationBarState.currentIndex(currentIndex: $currentIndex, activeCount: $activeCount)';
+}
+
+
 }
 
 /// @nodoc
-class __$$CurrentIndexStateImplCopyWithImpl<$Res>
-    extends _$BottomNavigationBarStateCopyWithImpl<$Res,
-        _$CurrentIndexStateImpl>
-    implements _$$CurrentIndexStateImplCopyWith<$Res> {
-  __$$CurrentIndexStateImplCopyWithImpl(_$CurrentIndexStateImpl _value,
-      $Res Function(_$CurrentIndexStateImpl) _then)
-      : super(_value, _then);
+abstract mixin class _$CurrentIndexStateCopyWith<$Res> implements $BottomNavigationBarStateCopyWith<$Res> {
+  factory _$CurrentIndexStateCopyWith(_CurrentIndexState value, $Res Function(_CurrentIndexState) _then) = __$CurrentIndexStateCopyWithImpl;
+@override @useResult
+$Res call({
+ int currentIndex, int activeCount
+});
 
-  @pragma('vm:prefer-inline')
-  @override
-  $Res call({
-    Object? currentIndex = null,
-    Object? activeCount = null,
-  }) {
-    return _then(_$CurrentIndexStateImpl(
-      null == currentIndex
-          ? _value.currentIndex
-          : currentIndex // ignore: cast_nullable_to_non_nullable
-              as int,
-      activeCount: null == activeCount
-          ? _value.activeCount
-          : activeCount // ignore: cast_nullable_to_non_nullable
-              as int,
-    ));
-  }
+
+
+
 }
-
 /// @nodoc
+class __$CurrentIndexStateCopyWithImpl<$Res>
+    implements _$CurrentIndexStateCopyWith<$Res> {
+  __$CurrentIndexStateCopyWithImpl(this._self, this._then);
 
-class _$CurrentIndexStateImpl implements _CurrentIndexState {
-  const _$CurrentIndexStateImpl(this.currentIndex, {this.activeCount = 0});
+  final _CurrentIndexState _self;
+  final $Res Function(_CurrentIndexState) _then;
 
-  @override
-  final int currentIndex;
-  @override
-  @JsonKey()
-  final int activeCount;
-
-  @override
-  String toString() {
-    return 'BottomNavigationBarState.currentIndex(currentIndex: $currentIndex, activeCount: $activeCount)';
-  }
-
-  @override
-  bool operator ==(Object other) {
-    return identical(this, other) ||
-        (other.runtimeType == runtimeType &&
-            other is _$CurrentIndexStateImpl &&
-            (identical(other.currentIndex, currentIndex) ||
-                other.currentIndex == currentIndex) &&
-            (identical(other.activeCount, activeCount) ||
-                other.activeCount == activeCount));
-  }
-
-  @override
-  int get hashCode => Object.hash(runtimeType, currentIndex, activeCount);
-
-  @JsonKey(ignore: true)
-  @override
-  @pragma('vm:prefer-inline')
-  _$$CurrentIndexStateImplCopyWith<_$CurrentIndexStateImpl> get copyWith =>
-      __$$CurrentIndexStateImplCopyWithImpl<_$CurrentIndexStateImpl>(
-          this, _$identity);
-
-  @override
-  @optionalTypeArgs
-  TResult when<TResult extends Object?>({
-    required TResult Function(int currentIndex, int activeCount) currentIndex,
-  }) {
-    return currentIndex(this.currentIndex, activeCount);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? whenOrNull<TResult extends Object?>({
-    TResult? Function(int currentIndex, int activeCount)? currentIndex,
-  }) {
-    return currentIndex?.call(this.currentIndex, activeCount);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeWhen<TResult extends Object?>({
-    TResult Function(int currentIndex, int activeCount)? currentIndex,
-    required TResult orElse(),
-  }) {
-    if (currentIndex != null) {
-      return currentIndex(this.currentIndex, activeCount);
-    }
-    return orElse();
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult map<TResult extends Object?>({
-    required TResult Function(_CurrentIndexState value) currentIndex,
-  }) {
-    return currentIndex(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult? mapOrNull<TResult extends Object?>({
-    TResult? Function(_CurrentIndexState value)? currentIndex,
-  }) {
-    return currentIndex?.call(this);
-  }
-
-  @override
-  @optionalTypeArgs
-  TResult maybeMap<TResult extends Object?>({
-    TResult Function(_CurrentIndexState value)? currentIndex,
-    required TResult orElse(),
-  }) {
-    if (currentIndex != null) {
-      return currentIndex(this);
-    }
-    return orElse();
-  }
+/// Create a copy of BottomNavigationBarState
+/// with the given fields replaced by the non-null parameter values.
+@override @pragma('vm:prefer-inline') $Res call({Object? currentIndex = null,Object? activeCount = null,}) {
+  return _then(_CurrentIndexState(
+null == currentIndex ? _self.currentIndex : currentIndex // ignore: cast_nullable_to_non_nullable
+as int,activeCount: null == activeCount ? _self.activeCount : activeCount // ignore: cast_nullable_to_non_nullable
+as int,
+  ));
 }
 
-abstract class _CurrentIndexState implements BottomNavigationBarState {
-  const factory _CurrentIndexState(final int currentIndex,
-      {final int activeCount}) = _$CurrentIndexStateImpl;
 
-  @override
-  int get currentIndex;
-  @override
-  int get activeCount;
-  @override
-  @JsonKey(ignore: true)
-  _$$CurrentIndexStateImplCopyWith<_$CurrentIndexStateImpl> get copyWith =>
-      throw _privateConstructorUsedError;
 }
+
+// dart format on

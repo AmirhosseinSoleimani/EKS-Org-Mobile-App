@@ -3,10 +3,9 @@ import 'package:eks_sana_plus_org/src/features/authentication/presentation/login
 import 'package:eks_sana_plus_org/src/features/authentication/presentation/login/cubit/login_state.dart';
 import 'package:eks_sana_plus_org/src/features/authentication/presentation/login/widgets/password_text_form_field.dart';
 import 'package:eks_sana_plus_org/src/features/authentication/presentation/login/widgets/user_name_text_form_field.dart';
-import 'package:eks_sana_plus_org/src/features/dashboard/presentation/dashboard_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/services_page/services_page.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/logo_widget/logo_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
@@ -80,7 +79,7 @@ class _LoginFormCardState extends State<_LoginFormCard> {
     return BlocListener<LoginCubit, LoginState>(
       listener: (context, state) {
         state.whenOrNull(
-          success: () => context.go(DashboardPage.path),
+          success: () => context.go(ServicesPage.path),
           error: (message) {
             SnakeBarWidget.showError(context: context, message: message);
           },
@@ -92,7 +91,7 @@ class _LoginFormCardState extends State<_LoginFormCard> {
               ),
               actionWidget: const SizedBox.shrink(),
               isDismissible: false,
-              enableDrag: false,
+              enableDrag: true,
             );
           },
         );

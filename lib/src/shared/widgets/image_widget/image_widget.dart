@@ -204,7 +204,7 @@ class ImageWidget extends StatelessWidget {
         height: height,
         fit: fit,
         alignment: alignment,
-        errorBuilder: (_, __, ___) => _errorFallback(),
+        errorBuilder: (_, _, _) => _errorFallback(),
       );
     } else if (assetName != null) {
       child = Image.asset(
@@ -215,7 +215,7 @@ class ImageWidget extends StatelessWidget {
         alignment: alignment,
         package: package,
         bundle: bundle,
-        errorBuilder: (_, __, ___) => _errorFallback(),
+        errorBuilder: (_, _, _) => _errorFallback(),
       );
     } else if (bytes != null) {
       child = Image.memory(
@@ -224,7 +224,7 @@ class ImageWidget extends StatelessWidget {
         height: height,
         fit: fit,
         alignment: alignment,
-        errorBuilder: (_, __, ___) => _errorFallback(),
+        errorBuilder: (_, _, _) => _errorFallback(),
       );
     } else {
       child = _errorFallback();
@@ -258,8 +258,8 @@ class ImageWidget extends StatelessWidget {
         height: height,
         fit: fit,
         fadeInDuration: fadeInDuration,
-        placeholder: (_, __) => placeholder ?? _defaultPlaceholder(),
-        errorWidget: (_, __, ___) => errorWidget ?? _errorFallback(),
+        placeholder: (_, _) => placeholder ?? _defaultPlaceholder(),
+        errorWidget: (_, _, _) => errorWidget ?? _errorFallback(),
         memCacheWidth: _memCache(width),
         memCacheHeight: _memCache(height),
         imageBuilder: (_, provider) => _wrapProvider(provider),
@@ -315,7 +315,7 @@ class ImageWidget extends StatelessWidget {
   Widget _errorFallback() => SizedBox(
     width: width,
     height: height,
-    child: const Center(child: Icon(IconManager.errorImage)),
+    child: const Center(child: Icon(Icons.image_not_supported)),
   );
 }
 
@@ -360,12 +360,12 @@ class _NetworkTimedImageState extends State<_NetworkTimedImage> {
 
     _stream = widget.provider.resolve(const ImageConfiguration());
     _listener = ImageStreamListener(
-          (ImageInfo _, bool __) {
+          (ImageInfo _, bool _) {
         if (!mounted) return;
         _timer?.cancel();
         setState(() => _loaded = true);
       },
-      onError: (Object _, StackTrace? __) {
+      onError: (Object _, StackTrace? _) {
         if (!mounted) return;
         _timer?.cancel();
         setState(() => _failed = true);

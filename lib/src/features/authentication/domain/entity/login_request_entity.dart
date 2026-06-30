@@ -14,8 +14,8 @@ class LoginRequestEntity {
     String? fcmToken,
   }) {
     return LoginRequestEntity(
-      userName: otpCode ?? this.userName,
-      password: fcmToken ?? this.password,
+      userName: otpCode ?? userName,
+      password: fcmToken ?? password,
     );
   }
 

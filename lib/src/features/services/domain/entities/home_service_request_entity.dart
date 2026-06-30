@@ -2,6 +2,34 @@ import 'package:eks_sana_plus_org/src/features/services/data/models/home_service
 
 import 'abstract/base_request_entity.dart';
 
+
+class HomeServiceRequestListEntity {
+  final List<HomeServiceRequestEntity> items;
+  final int totalCount;
+
+  const HomeServiceRequestListEntity({
+    required this.items,
+    required this.totalCount,
+  });
+
+  HomeServiceRequestListEntity copyWith({
+    List<HomeServiceRequestEntity>? items,
+    int? totalCount,
+  }) {
+    return HomeServiceRequestListEntity(
+      items: items ?? this.items,
+      totalCount: totalCount ?? this.totalCount,
+    );
+  }
+
+  HomeServiceRequestListModel toModel() {
+    return HomeServiceRequestListModel(
+      items: items,
+      totalCount: totalCount,
+    );
+  }
+}
+
 class HomeServiceRequestEntity extends BaseRequestEntity {
   final String? requestDay;
   final String? bookedDateTimeJalali;
@@ -9,9 +37,12 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
   final String? emdadServiceCategoryTitle;
   final String? emdadgarName;
 
+  @override
   final String? agencyName;
+  @override
   final String? agencyCode;
 
+  @override
   final String? requestDateTime;
   final String? requestDayTime;
   final bool? vip;
@@ -43,7 +74,7 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
     super.personTypeTitle,
     super.chassisNumber,
     super.kilometer,
-    super.nationalNumber,
+    super.nationalCode,
     super.dispatcher,
     super.emFullName,
     super.emMobileNumber1,
@@ -66,109 +97,43 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
     this.vip,
     this.vipConditionTitle,
     this.emdadProductTitle,
+    super.serviceType,
+    super.agencyVehicleLabelCode,
+    super.assignDate,
+    super.assignDateTimeJalali,
+    super.callMobileNumber,
+    super.carFactory,
+    super.carFactoryTitle,
+    super.carGroupTitle,
+    super.carInfoGuid,
+    super.carInfoId,
+    super.carModelId,
+    super.emdadgarId,
+    super.garantyCarTipId,
+    super.garantyDescription,
+    super.garantyEndDate,
+    super.garantyIsGaranty,
+    super.garantyLastKilometer,
+    super.garantyReceptionDate,
+    super.garantySiteDescription,
+    super.garantyStartDate,
+    super.garantyStatusCode,
+    super.hasEmdadgar,
+    super.insertDateTime,
+    super.insertDateTimeJalali,
+    super.invoiceDocumentGuid,
+    super.isSaipa,
+    super.personType,
+    super.planningId,
+    super.requestDateTimeJalali,
+    super.vehicleUsageId,
+    super.vehicleUsageTitle,
+    super.wageGroupType,
+    super.weightGroupTitle,
+    super.cityId,
+    super.provinceId,
   });
 
-  HomeServiceRequestEntity copyWith({
-    int? id,
-    int? trackCode,
-    String? firstName,
-    String? lastName,
-    String? chassisNumber,
-    int? kilometer,
-    String? nationalNumber,
-    double? latitude,
-    double? longitude,
-    String? aidAddress,
-    String? cityName,
-    String? provinceName,
-    String? carName,
-    int? carProductionYear,
-    String? licensePlate,
-    int? requestStatus,
-    String? requestStatusTitle,
-    String? requestDateJalali,
-    String? requestTime,
-    String? customerMobileNumber,
-    String? description,
-    String? carColorTitle,
-    String? carEngineNumber,
-    String? genderTitle,
-    String? personTypeTitle,
-    String? dispatcher,
-    bool? isGuaranty,
-    bool? isSubscription,
-    String? emFullName,
-    String? emMobileNumber1,
-    String? emVehicleTypeTitle,
-    int? emVehicleType,
-    String? emVehicleSubTypeTitle,
-    int? emVehicleSubType,
-    String? emRepresentationName,
-    String? emRepresentationCode,
-    String? requestDay,
-    String? bookedDateTimeJalali,
-    String? emdadServiceCategoryTitle,
-    String? emdadgarName,
-    String? agencyName,
-    String? agencyCode,
-    String? requestDateTime,
-    String? requestDayTime,
-    bool? vip,
-    String? vipConditionTitle,
-    String? emdadProductTitle,
-  }) {
-    return HomeServiceRequestEntity(
-      id: id ?? this.id,
-      trackCode: trackCode ?? this.trackCode,
-      firstName: firstName ?? this.firstName,
-      lastName: lastName ?? this.lastName,
-      latitude: latitude ?? this.latitude,
-      longitude: longitude ?? this.longitude,
-      aidAddress: aidAddress ?? this.aidAddress,
-      cityName: cityName ?? this.cityName,
-      provinceName: provinceName ?? this.provinceName,
-      carName: carName ?? this.carName,
-      carProductionYear: carProductionYear ?? this.carProductionYear,
-      licensePlate: licensePlate ?? this.licensePlate,
-      requestStatus: requestStatus ?? this.requestStatus,
-      requestStatusTitle: requestStatusTitle ?? this.requestStatusTitle,
-      requestDateJalali: requestDateJalali ?? this.requestDateJalali,
-      requestTime: requestTime ?? this.requestTime,
-      chassisNumber: chassisNumber ?? this.chassisNumber,
-      kilometer: kilometer ?? this.kilometer,
-      nationalNumber: nationalNumber ?? this.nationalNumber,
-      customerMobileNumber: customerMobileNumber ?? this.customerMobileNumber,
-      description: description ?? this.description,
-      carColorTitle: carColorTitle ?? this.carColorTitle,
-      carEngineNumber: carEngineNumber ?? this.carEngineNumber,
-      genderTitle: genderTitle ?? this.genderTitle,
-      personTypeTitle: personTypeTitle ?? this.personTypeTitle,
-      dispatcher: dispatcher ?? this.dispatcher,
-      isGuaranty: isGuaranty ?? this.isGuaranty,
-      isSubscription: isSubscription ?? this.isSubscription,
-      emFullName: emFullName ?? this.emFullName,
-      emMobileNumber1: emMobileNumber1 ?? this.emMobileNumber1,
-      emVehicleTypeTitle: emVehicleTypeTitle ?? this.emVehicleTypeTitle,
-      emVehicleType: emVehicleType ?? this.emVehicleType,
-      emVehicleSubTypeTitle:
-          emVehicleSubTypeTitle ?? this.emVehicleSubTypeTitle,
-      emVehicleSubType: emVehicleSubType ?? this.emVehicleSubType,
-      emRepresentationName: emRepresentationName ?? this.emRepresentationName,
-      emRepresentationCode: emRepresentationCode ?? this.emRepresentationCode,
-      requestDay: requestDay ?? this.requestDay,
-      bookedDateTimeJalali: bookedDateTimeJalali ?? this.bookedDateTimeJalali,
-      emdadServiceCategoryTitle:
-          emdadServiceCategoryTitle ?? this.emdadServiceCategoryTitle,
-      emdadgarName: emdadgarName ?? this.emdadgarName,
-      agencyName: agencyName ?? this.agencyName,
-      agencyCode: agencyCode ?? this.agencyCode,
-      requestDateTime: requestDateTime ?? this.requestDateTime,
-      requestDayTime: requestDayTime ?? this.requestDayTime,
-      vip: vip ?? this.vip,
-      vipConditionTitle: vipConditionTitle ?? this.vipConditionTitle,
-      emdadProductTitle: emdadProductTitle ?? this.emdadProductTitle,
-    );
-  }
   HomeServiceRequestModel toModel() {
     return HomeServiceRequestModel(
       id: id,
@@ -201,7 +166,7 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
       personTypeTitle: personTypeTitle,
       chassisNumber: chassisNumber,
       kilometer: kilometer,
-      nationalNumber: nationalNumber,
+      nationalCode: nationalCode,
       dispatcher: dispatcher,
       emFullName: emFullName,
       emMobileNumber1: emMobileNumber1,
@@ -218,6 +183,7 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
       vip: vip,
       vipConditionTitle: vipConditionTitle,
       emdadProductTitle: emdadProductTitle,
+      serviceType: serviceType,
     );
   }
 }

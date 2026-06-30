@@ -82,8 +82,8 @@ class LightThemeData extends AppThemeData {
         bodyLarge: getBoldStyle(fontSize: AppSize.s18, color: ColorLightManager.onSurface),
         bodyMedium: getSemiBoldStyle(fontSize: AppSize.s14, color: ColorLightManager.onSurface),
         bodySmall: getRegularStyle(fontSize: AppSize.s12, color: ColorLightManager.onSurface),
-        labelLarge: getBoldStyle(fontSize: AppSize.s14, color: ColorLightManager.onSurface),
-        labelMedium: getSemiBoldStyle(fontSize: AppSize.s14, color: ColorLightManager.onSurface),
+        labelLarge: getBoldStyle(fontSize: AppSize.s18, color: ColorLightManager.onSurface),
+        labelMedium: getSemiBoldStyle(fontSize: AppSize.s16, color: ColorLightManager.onSurface),
         labelSmall: getRegularStyle(fontSize: AppSize.s14, color: ColorLightManager.onSurface),
       ).apply(fontFamily: FontConstants.fontFamilyPersian,
       )

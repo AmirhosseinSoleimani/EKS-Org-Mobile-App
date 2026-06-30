@@ -8,7 +8,8 @@ class BodyMediumText extends StatelessWidget {
   final TextAlign? textAlign;
   final int? maxLines;
   final TextDirection? textDirection;
-  final TextOverflow textOverflow;
+  final TextOverflow? textOverflow;
+  final FontWeight? fontWeight;
 
   const BodyMediumText({
     super.key,
@@ -18,7 +19,8 @@ class BodyMediumText extends StatelessWidget {
     this.textAlign,
     this.lineHeight,
     this.maxLines,
-    this.textOverflow = TextOverflow.ellipsis,
+    this.textOverflow ,
+    this.fontWeight,
     this.textDirection = TextDirection.rtl,
   });
 
@@ -32,8 +34,12 @@ class BodyMediumText extends StatelessWidget {
       maxLines: maxLines,
       style: Theme.of(context)
           .textTheme
-          .bodyMedium
-          ?.copyWith(fontSize: fontSize, color: color, height: lineHeight),
+          .bodyMedium?.copyWith(
+        fontSize: fontSize,
+        color: color,
+        height: lineHeight,
+        fontWeight: fontWeight,
+      ),
     );
   }
 }

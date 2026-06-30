@@ -1,6 +1,6 @@
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/inkwell_button_widget/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:flutter/material.dart';
 
 enum CloseButtonMode {
@@ -124,7 +124,7 @@ class BaseDialogWidget extends StatelessWidget {
             cancelFunc?.call();
           },
           child: Icon(
-            IconManager.close,
+            Icons.close,
             color: color ?? Theme.of(context).colorScheme.onSurface,
           ),
         ),

@@ -1,6 +1,7 @@
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/inkwell_button_widget/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 
 class NoInternetBottomSheet extends StatelessWidget {
@@ -19,6 +20,7 @@ class NoInternetBottomSheet extends StatelessWidget {
       padding: const EdgeInsets.symmetric(horizontal: AppPadding.p8),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.end,
+        crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           _buildImage(screenSize),
           const SizedBox(height: AppSize.s24),
@@ -41,24 +43,9 @@ class NoInternetBottomSheet extends StatelessWidget {
   }
 
   Widget _buildSubtitle(BuildContext context) {
-    final theme = Theme.of(context).textTheme.bodyMedium;
-
-    return RichText(
-      textAlign: TextAlign.start,
-      text: TextSpan(
-        style: theme,
-        children: [
-          const TextSpan(
-            text:
-                'اتصال به اینترنت را بررسی و دوباره تلاش کنید.\nدر صورت دسترسی نداشتن به اینترنت، ',
-          ),
-          TextSpan(
-            text: 'برای درخواست تلفنی امداد با 096550',
-            style: theme?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          const TextSpan(text: ' تماس بگیرید.'),
-        ],
-      ),
+    return const BodyMediumText(
+      text:
+          'اتصال به اینترنت را بررسی و دوباره تلاش کنید.\nدر صورت دسترسی نداشتن به اینترنت، ',
     );
   }
 

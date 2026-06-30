@@ -2,6 +2,7 @@ import 'dart:async';
 
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:eks_sana_plus_org/src/common/constants/app_constants.dart';
+import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/address_info_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/address_to_location_response_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/map_request_entity.dart';
@@ -33,6 +34,7 @@ class MapCubit extends Cubit<MapState> {
   final SetAddressInfoUseCase _setAddressInfoUseCase;
   final FetchAddressToLocationUseCase _fetchAddressToLocationUseCase;
   final Connectivity _connectivity = Connectivity();
+  AddressInfoEntity? _initialLocation;
   MapCubit(
       this._fetchAddressInfoUseCase,
       this._ensureLocationReadingUseCase,
@@ -101,6 +103,10 @@ class MapCubit extends Cubit<MapState> {
 
   }
 
+  void setInitialLocation(AddressInfoEntity? address) {
+    _initialLocation = address;
+  }
+
   Future<void> init() async {
     _safeEmit(const MapState.idle());
     _retryAction = init;
@@ -108,11 +114,19 @@ class MapCubit extends Cubit<MapState> {
       return;
     }
     try {
-      final addressInfoEntity = await _fetchAddressInfoUseCase();
-      _location = lat_lng.LatLng(
-        addressInfoEntity?.latitude ?? AppConstants.defaultLatitude,
-        addressInfoEntity?.longitude ?? AppConstants.defaultLongitude,
-      );
+      if (_initialLocation != null) {
+        _location = lat_lng.LatLng(
+          _initialLocation!.latitude ?? AppConstants.defaultLatitude,
+          _initialLocation!.longitude ?? AppConstants.defaultLongitude,
+        );
+     }else{
+       final addressInfoEntity = await _fetchAddressInfoUseCase();
+       _location = lat_lng.LatLng(
+         addressInfoEntity?.latitude ?? AppConstants.defaultLatitude,
+         addressInfoEntity?.longitude ?? AppConstants.defaultLongitude,
+       );
+
+     }
       await _centerMapSafely(_location, zoom: 17);
       _mapMoveSub = mapController.mapEventStream.listen((event) {
         if (event is MapEventMove && findCurrentLocationLoading.value) {
@@ -130,6 +144,7 @@ class MapCubit extends Cubit<MapState> {
   Future<void> close() async {
     try {
       _searchDebouncer.dispose();
+      _moveThrottle.dispose();
     } catch (_) {}
 
     try {
@@ -140,7 +155,7 @@ class MapCubit extends Cubit<MapState> {
       searchController.dispose();
       addressController.dispose();
       findCurrentLocationLoading.dispose();
-      _mapMoveSub.cancel();
+      await _mapMoveSub.cancel();
     } catch (_) {}
 
     return super.close();
@@ -152,10 +167,9 @@ class MapCubit extends Cubit<MapState> {
         (a.longitude - b.longitude).abs() > eps;
   }
 
-  void onMapMoved( position) {
-    if (position.center == null) return;
+  void onMapMoved(MapCamera position) {
     _moveThrottle.run(() {
-      final center = lat_lng.LatLng(position.center!.latitude, position.center!.longitude);
+      final center = lat_lng.LatLng(position.center.latitude, position.center.longitude);
       if(_movedEnough(_location, center)) {
         _location = center;
       }
@@ -292,7 +306,7 @@ class MapCubit extends Cubit<MapState> {
           )
       );
       result.whenOrNull(
-        success: (data, _, __) {
+        success: (data, _, _) {
           addressToLocationResponseEntity = data ?? const AddressToLocationResponseEntity();
           _safeEmit(const MapState.searchSuccess());
         },

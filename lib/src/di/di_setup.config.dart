@@ -1,4 +1,5 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
+// dart format width=80
 
 // **************************************************************************
 // InjectableConfigGenerator
@@ -12,7 +13,6 @@ import 'package:connectivity_plus/connectivity_plus.dart' as _i895;
 import 'package:dio/dio.dart' as _i361;
 import 'package:get_it/get_it.dart' as _i174;
 import 'package:injectable/injectable.dart' as _i526;
-import 'package:location/location.dart' as _i645;
 import 'package:sliding_up_panel/sliding_up_panel.dart' as _i882;
 
 import '../app/cubit/app_cubit/app_cubit.dart' as _i757;
@@ -45,6 +45,134 @@ import '../features/bottom_navigation_bar/domain/use_case/urgent_request_usecase
     as _i565;
 import '../features/bottom_navigation_bar/presentation/cubit/bottom_navigation_bar_cubit.dart'
     as _i336;
+import '../features/cartable/data/data_sources/cartable_data_source.dart'
+    as _i249;
+import '../features/cartable/data/data_sources/cartable_data_source_impl.dart'
+    as _i18;
+import '../features/cartable/data/repositories/cartable_repository_impl.dart'
+    as _i304;
+import '../features/cartable/data/service/cartable_service.dart' as _i1027;
+import '../features/cartable/domain/repositories/cartable_repository.dart'
+    as _i133;
+import '../features/cartable/presentation/cubit/cartable_cubit.dart' as _i330;
+import '../features/dashboard/data/data_sources/dashboard_data_source.dart'
+    as _i320;
+import '../features/dashboard/data/data_sources/dashboard_data_source_impl.dart'
+    as _i822;
+import '../features/dashboard/data/repositories/dashboard_repository_impl.dart'
+    as _i650;
+import '../features/dashboard/data/service/dashboard_service.dart' as _i953;
+import '../features/dashboard/domain/repositories/dashboard_repository.dart'
+    as _i602;
+import '../features/dashboard/domain/use_cases/get_dashboard_data_use_case.dart'
+    as _i208;
+import '../features/dashboard/presentation/cubit/dashboard_cubit.dart' as _i932;
+import '../features/evaluation/data/remote/data_sources/evaluation_remote_data_source.dart'
+    as _i1023;
+import '../features/evaluation/data/remote/data_sources/evaluation_remote_data_source_impl.dart'
+    as _i832;
+import '../features/evaluation/data/remote/service/evaluation_service.dart'
+    as _i606;
+import '../features/evaluation/data/repositories/evaluation_repository_impl.dart'
+    as _i903;
+import '../features/evaluation/domain/repositories/evaluation_repository.dart'
+    as _i122;
+import '../features/evaluation/domain/usecase/accept_evaluation_use_case.dart'
+    as _i531;
+import '../features/evaluation/domain/usecase/get_aid_services_list_use_case.dart'
+    as _i270;
+import '../features/evaluation/domain/usecase/get_categories_list_use_case.dart'
+    as _i1016;
+import '../features/evaluation/domain/usecase/get_defects_list_use_case.dart'
+    as _i163;
+import '../features/evaluation/domain/usecase/get_home_service_package_list_use_case.dart'
+    as _i392;
+import '../features/evaluation/domain/usecase/get_labor_list_use_case.dart'
+    as _i915;
+import '../features/evaluation/domain/usecase/get_last_evaluation_use_case.dart'
+    as _i476;
+import '../features/evaluation/domain/usecase/get_part_list_use_case.dart'
+    as _i361;
+import '../features/evaluation/domain/usecase/get_part_mark_list_use_case.dart'
+    as _i655;
+import '../features/evaluation/domain/usecase/get_part_price_list_use_case.dart'
+    as _i923;
+import '../features/evaluation/domain/usecase/get_representation_list_use_case.dart'
+    as _i229;
+import '../features/evaluation/domain/usecase/get_service_detail_evaluation_use_case.dart'
+    as _i16;
+import '../features/evaluation/domain/usecase/post_evaluation_use_case.dart'
+    as _i296;
+import '../features/evaluation/domain/usecase/submit_evaluation_for_aid_service_use_case.dart'
+    as _i571;
+import '../features/home_services_evaluation/data/data_source/home_service_evaluation_data_source.dart'
+    as _i999;
+import '../features/home_services_evaluation/data/data_source/home_service_evaluation_data_source_impl.dart'
+    as _i983;
+import '../features/home_services_evaluation/data/repository/home_service_evaluation_repository_impl.dart'
+    as _i1063;
+import '../features/home_services_evaluation/data/service/home_service_evaluation_service.dart'
+    as _i204;
+import '../features/home_services_evaluation/domain/repository/home_service_evaluation_repository.dart'
+    as _i347;
+import '../features/home_services_evaluation/domain/usecase/fetch_insert_home_service_category_use_case.dart'
+    as _i178;
+import '../features/home_services_evaluation/domain/usecase/fetch_insert_home_service_package_use_case.dart'
+    as _i1004;
+import '../features/home_services_evaluation/domain/usecase/fetch_insert_home_service_service_use_case.dart'
+    as _i780;
+import '../features/home_services_evaluation/domain/usecase/fetch_kilometer_from_image_use_case.dart'
+    as _i1042;
+import '../features/home_services_evaluation/domain/usecase/fetch_ocr_configuration_use_case.dart'
+    as _i931;
+import '../features/home_services_evaluation/domain/usecase/get_active_service_request_usecase.dart'
+    as _i226;
+import '../features/home_services_evaluation/domain/usecase/get_distance_to_customer_home_service_usecase.dart'
+    as _i1026;
+import '../features/home_services_evaluation/domain/usecase/get_home_service_package_use_case.dart'
+    as _i1015;
+import '../features/home_services_evaluation/domain/usecase/get_labor_usecase.dart'
+    as _i902;
+import '../features/home_services_evaluation/domain/usecase/get_last_evaluation_home_service_usecase.dart'
+    as _i1059;
+import '../features/home_services_evaluation/domain/usecase/get_last_evaluation_usecase.dart'
+    as _i535;
+import '../features/home_services_evaluation/domain/usecase/get_part_mark_usecase.dart'
+    as _i664;
+import '../features/home_services_evaluation/domain/usecase/get_part_price_usecase.dart'
+    as _i983;
+import '../features/home_services_evaluation/domain/usecase/get_part_usecase.dart'
+    as _i990;
+import '../features/home_services_evaluation/domain/usecase/get_reusable_price_usecase.dart'
+    as _i91;
+import '../features/home_services_evaluation/domain/usecase/get_service_categories_usecase.dart'
+    as _i915;
+import '../features/home_services_evaluation/domain/usecase/get_services_usecase.dart'
+    as _i978;
+import '../features/home_services_evaluation/domain/usecase/post_evaluation_accept_usecase.dart'
+    as _i626;
+import '../features/home_services_evaluation/domain/usecase/post_evaluation_usecase.dart'
+    as _i684;
+import '../features/home_services_evaluation/domain/usecase/set_active_service_request_usecase.dart'
+    as _i497;
+import '../features/home_services_evaluation/domain/usecase/set_last_evaluation_usecase.dart'
+    as _i570;
+import '../features/home_services_evaluation/presentation/evaluation_draft.dart'
+    as _i823;
+import '../features/home_services_evaluation/presentation/evaluation_invoice_page/cubit/evaluation_invoice_cubit.dart'
+    as _i510;
+import '../features/home_services_evaluation/presentation/home_service_evaluation_first_step/cubit/home_service_evaluation_first_step_cubit.dart'
+    as _i317;
+import '../features/home_services_evaluation/presentation/home_service_evaluation_packages/cubit/home_service_evaluation_packages_cubit.dart'
+    as _i337;
+import '../features/home_services_evaluation/presentation/home_service_evaluation_second_step/cubit/home_service_evaluation_second_step_cubit.dart'
+    as _i648;
+import '../features/home_services_evaluation/presentation/home_service_part/cubit/home_service_part_cubit.dart'
+    as _i551;
+import '../features/home_services_evaluation/presentation/labors_and_parts/cubit/labors_and_parts_cubit.dart'
+    as _i664;
+import '../features/home_services_evaluation/presentation/service_list/cubit/service_list_cubit.dart'
+    as _i379;
 import '../features/indicator_report/data/data_sources/indicator_report_data_source.dart'
     as _i691;
 import '../features/indicator_report/data/data_sources/indicator_report_data_source_impl.dart'
@@ -59,6 +187,18 @@ import '../features/indicator_report/domain/use_cases/fetch_indicator_report_use
     as _i375;
 import '../features/indicator_report/presentation/indicator_report_page/cubit/indicator_report_cubit.dart'
     as _i951;
+import '../features/representation/data/data_sources/representation_data_source.dart'
+    as _i59;
+import '../features/representation/data/data_sources/representation_data_source_impl.dart'
+    as _i423;
+import '../features/representation/data/repositories/representation_repository_impl.dart'
+    as _i386;
+import '../features/representation/data/service/representation_service.dart'
+    as _i854;
+import '../features/representation/domain/repositories/representation_repository.dart'
+    as _i815;
+import '../features/representation/presentation/cubit/representation_cubit.dart'
+    as _i79;
 import '../features/services/data/data_source/request_history_data_source.dart'
     as _i1016;
 import '../features/services/data/data_source/request_history_data_source_impl.dart'
@@ -72,16 +212,110 @@ import '../features/services/domain/repository/request_repository.dart'
     as _i603;
 import '../features/services/domain/repository/request_repository_share_data.dart'
     as _i838;
+import '../features/services/domain/usecases/cancel_service_request_use_case.dart'
+    as _i320;
+import '../features/services/domain/usecases/change_home_service_request_address_use_case.dart'
+    as _i998;
+import '../features/services/domain/usecases/change_home_service_request_time_use_case.dart'
+    as _i509;
+import '../features/services/domain/usecases/complete_aid_urgent_request_use_case.dart'
+    as _i364;
+import '../features/services/domain/usecases/create_follow_up_use_case.dart'
+    as _i949;
+import '../features/services/domain/usecases/fetch_selected_request_item_use_case.dart'
+    as _i376;
+import '../features/services/domain/usecases/get_basic_data_use_case.dart'
+    as _i1061;
+import '../features/services/domain/usecases/get_cancel_reason_request_use_case.dart'
+    as _i433;
+import '../features/services/domain/usecases/get_cartable_cycle_list_use_case.dart'
+    as _i765;
+import '../features/services/domain/usecases/get_chassis_request_history_list_use_case.dart'
+    as _i581;
+import '../features/services/domain/usecases/get_check_depot_use_case.dart'
+    as _i990;
+import '../features/services/domain/usecases/get_distance_kilometer_use_case.dart'
+    as _i985;
+import '../features/services/domain/usecases/get_emdadgar_followups_data_use_case.dart'
+    as _i734;
+import '../features/services/domain/usecases/get_emdadgar_info_use_case.dart'
+    as _i786;
+import '../features/services/domain/usecases/get_emdadgar_list_use_case.dart'
+    as _i955;
+import '../features/services/domain/usecases/get_evaluation_history_list_use_case.dart'
+    as _i467;
+import '../features/services/domain/usecases/get_follow_up_status_type_list_use_case.dart'
+    as _i474;
+import '../features/services/domain/usecases/get_home_service_request_by_id_use_case.dart'
+    as _i63;
 import '../features/services/domain/usecases/get_home_service_request_list_use_case.dart'
     as _i809;
+import '../features/services/domain/usecases/get_home_service_times_use_case.dart'
+    as _i352;
+import '../features/services/domain/usecases/get_minimal_customer_info_use_case.dart'
+    as _i812;
+import '../features/services/domain/usecases/get_non_cooperation_list_use_case.dart'
+    as _i707;
+import '../features/services/domain/usecases/get_reference_car_use_case.dart'
+    as _i639;
+import '../features/services/domain/usecases/get_relief_request_by_id_use_case.dart'
+    as _i672;
 import '../features/services/domain/usecases/get_relief_request_list_use_case.dart'
     as _i192;
+import '../features/services/domain/usecases/get_request_control_info_use_case.dart'
+    as _i543;
+import '../features/services/domain/usecases/get_request_followup_history_use_case.dart'
+    as _i67;
+import '../features/services/domain/usecases/get_request_status_history_use_case.dart'
+    as _i955;
+import '../features/services/domain/usecases/service_assign_use_case.dart'
+    as _i595;
+import '../features/services/domain/usecases/set_selected_request_item_use_case.dart'
+    as _i369;
+import '../features/services/domain/usecases/update_service_request_use_case.dart'
+    as _i180;
+import '../features/services/presentation/assign_and_cancel_emdadgar_page/cubit/assign_and_cancel_emdadgar_cubit.dart'
+    as _i860;
+import '../features/services/presentation/cancel_request_page/cubit/cancel_request_cubit.dart'
+    as _i872;
+import '../features/services/presentation/cartable_cycle_page/cubit/cartable_cycle_cubit.dart'
+    as _i1029;
+import '../features/services/presentation/change_home_service_request_address_page/cubit/change_home_service_request_address_cubit.dart'
+    as _i806;
+import '../features/services/presentation/change_home_service_request_time_page/cubit/change_home_service_request_time_cubit.dart'
+    as _i815;
+import '../features/services/presentation/chassis_request_history_page/cubit/chassis_request_history_cubit.dart'
+    as _i891;
+import '../features/services/presentation/complete_urgent_request_page/cubit/complete_urgent_request_cubit.dart'
+    as _i1038;
+import '../features/services/presentation/control_info_page/cubit/control_info_cubit.dart'
+    as _i66;
+import '../features/services/presentation/emdadgar_invoice_page/cubit/emdadgar_invoice_cubit.dart'
+    as _i362;
+import '../features/services/presentation/evaluation_aid_service_request_page/cubit/evaluation_aid_service_request_cubit.dart'
+    as _i319;
+import '../features/services/presentation/evaluation_history/cubit/evaluation_history_cubit.dart'
+    as _i154;
+import '../features/services/presentation/evaluation_home_service_request_page/cubit/evaluation_home_service_request_cubit.dart'
+    as _i866;
+import '../features/services/presentation/followup_register_page/cubit/follow_up_register_cubit.dart'
+    as _i264;
 import '../features/services/presentation/home_service_request_list_page/cubit/home_service_request_list_cubit.dart'
     as _i1013;
+import '../features/services/presentation/non_cooperation_page/cubit/non_cooperation_cubit.dart'
+    as _i165;
+import '../features/services/presentation/online_map_page/cubit/online_map_cubit.dart'
+    as _i709;
+import '../features/services/presentation/pre_invoice_page/cubit/pre_invoice_cubit.dart'
+    as _i809;
 import '../features/services/presentation/relief_request_list_page/cubit/relief_request_list_cubit.dart'
     as _i1048;
 import '../features/services/presentation/request_detail/cubit/request_detail_cubit.dart'
     as _i802;
+import '../features/services/presentation/request_status_history_page/cubit/request_status_history_cubit.dart'
+    as _i563;
+import '../features/services/presentation/update_request_page/cubit/update_request_cubit.dart'
+    as _i792;
 import '../routes/startup_guard.dart' as _i238;
 import '../services/local_service/session_local_storage_service/data/data_source/secure_session_storage_mobile_impl.dart'
     as _i577;
@@ -102,14 +336,12 @@ import '../shared/features/invoice/data/repository/invoice_repository_impl.dart'
     as _i161;
 import '../shared/features/invoice/domain/repository/invoice_repository.dart'
     as _i829;
-import '../shared/features/invoice/domain/use_case/confirm_home_service_invoice_use_case.dart'
-    as _i242;
-import '../shared/features/invoice/domain/use_case/fetch_invoice_use_case.dart'
-    as _i981;
-import '../shared/features/invoice/domain/use_case/fetch_pre_invoice_on_the_fly_use_case.dart'
-    as _i349;
-import '../shared/features/invoice/domain/use_case/fetch_pre_invoice_use_case.dart'
-    as _i949;
+import '../shared/features/invoice/domain/use_case/customer_pre_invoice_on_the_fly_use_case.dart'
+    as _i335;
+import '../shared/features/invoice/domain/use_case/get_emdadgar_invoice_use_case.dart'
+    as _i204;
+import '../shared/features/invoice/domain/use_case/get_pre_invoice_use_case.dart'
+    as _i116;
 import '../shared/features/map/data/data_source/location_permission_data_source.dart'
     as _i221;
 import '../shared/features/map/data/data_source/location_permission_data_source_impl.dart'
@@ -123,6 +355,7 @@ import '../shared/features/map/data/repository_impl/map_repository_impl.dart'
     as _i810;
 import '../shared/features/map/data/repository_impl/map_share_data_repository_impl.dart'
     as _i173;
+import '../shared/features/map/data/service/address_service.dart' as _i1036;
 import '../shared/features/map/data/service/location_permission_service.dart'
     as _i988;
 import '../shared/features/map/data/service/map_service.dart' as _i929;
@@ -141,8 +374,15 @@ import '../shared/features/map/domain/usecase/fetch_address_to_location_use_case
     as _i739;
 import '../shared/features/map/domain/usecase/fetch_location_to_address_use_case.dart'
     as _i730;
+import '../shared/features/map/domain/usecase/get_area_base_info_use_case.dart'
+    as _i159;
 import '../shared/features/map/domain/usecase/get_current_location_use_case.dart'
     as _i705;
+import '../shared/features/map/domain/usecase/get_location_data_use_case.dart'
+    as _i850;
+import '../shared/features/map/domain/usecase/get_province_with_city_list_use_case.dart'
+    as _i265;
+import '../shared/features/map/domain/usecase/get_route_use_case.dart' as _i678;
 import '../shared/features/map/domain/usecase/set_address_info_use_case.dart'
     as _i453;
 import '../shared/features/map/presentation/cubit/map_cubit.dart' as _i84;
@@ -160,6 +400,18 @@ import '../shared/features/observe_network/domain/use_case/get_current_network_u
     as _i471;
 import '../shared/features/observe_network/domain/use_case/observe_network_use_case.dart'
     as _i1061;
+import '../shared/features/server_date_time/data/data_sources/date_time_info_data_source.dart'
+    as _i670;
+import '../shared/features/server_date_time/data/data_sources/indicator_report_data_source_impl.dart'
+    as _i940;
+import '../shared/features/server_date_time/data/repositories/dashboard_report_repository_impl.dart'
+    as _i258;
+import '../shared/features/server_date_time/data/service/date_time_service.dart'
+    as _i99;
+import '../shared/features/server_date_time/domain/repositories/date_time_info_repository.dart'
+    as _i489;
+import '../shared/features/server_date_time/domain/use_cases/get_server_date_time_use_case.dart'
+    as _i100;
 import '../shared/features/user/data/data_source/user_data_source.dart'
     as _i1039;
 import '../shared/features/user/data/data_source/user_data_source_impl.dart'
@@ -212,205 +464,881 @@ _i174.GetIt $initGetIt(
   String? environment,
   _i526.EnvironmentFilter? environmentFilter,
 }) {
-  final gh = _i526.GetItHelper(
-    getIt,
-    environment,
-    environmentFilter,
-  );
+  final gh = _i526.GetItHelper(getIt, environment, environmentFilter);
   final slidingPanelControllerModule = _$SlidingPanelControllerModule();
   final networkModule = _$NetworkModule();
   final appModule = _$AppModule();
   gh.factory<_i757.AppCubit>(() => _i757.AppCubit());
   gh.factory<_i336.BottomNavigationBarCubit>(
-      () => _i336.BottomNavigationBarCubit());
+    () => _i336.BottomNavigationBarCubit(),
+  );
+  gh.factory<_i330.CartableCubit>(() => _i330.CartableCubit());
+  gh.factory<_i79.RepresentationCubit>(() => _i79.RepresentationCubit());
+  gh.factory<_i866.EvaluationHomeServiceRequestCubit>(
+    () => _i866.EvaluationHomeServiceRequestCubit(),
+  );
   gh.factory<_i190.ThemeCubit>(() => _i190.ThemeCubit());
-  gh.factory<_i802.RequestDetailCubit>(() => _i802.RequestDetailCubit());
   gh.singleton<_i882.PanelController>(
-      () => slidingPanelControllerModule.panelController);
+    () => slidingPanelControllerModule.panelController,
+  );
   gh.singleton<_i466.DioTokenInterceptor>(
-      () => networkModule.dioTokenInterceptor);
+    () => networkModule.dioTokenInterceptor,
+  );
   gh.singleton<_i137.PrettyDioLogger>(() => networkModule.prettyDioLogger);
   gh.lazySingleton<_i238.StartupGuard>(() => appModule.startupGuard);
   gh.lazySingleton<_i826.PhoneNumberValidatorUseCase>(
-      () => _i826.PhoneNumberValidatorUseCase());
+    () => _i826.PhoneNumberValidatorUseCase(),
+  );
+  gh.lazySingleton<_i823.EvaluationDraftStore>(
+    () => _i823.EvaluationDraftStore(),
+  );
   gh.lazySingleton<_i838.RequestRepositoryShareData>(
-      () => _i318.RequestRepositoryShareDataImpl());
+    () => _i318.RequestRepositoryShareDataImpl(),
+  );
   gh.lazySingleton<_i837.MapShareDataRepository>(
-      () => _i173.MapShareDataRepositoryImpl());
+    () => _i173.MapShareDataRepositoryImpl(),
+  );
+  gh.lazySingleton<_i376.FetchSelectedRequestItemUseCase>(
+    () => _i376.FetchSelectedRequestItemUseCase(
+      gh<_i838.RequestRepositoryShareData>(),
+    ),
+  );
+  gh.lazySingleton<_i369.SetSelectedRequestItemUseCase>(
+    () => _i369.SetSelectedRequestItemUseCase(
+      gh<_i838.RequestRepositoryShareData>(),
+    ),
+  );
+  gh.lazySingleton<_i406.FetchAddressInfoUseCase>(
+    () => _i406.FetchAddressInfoUseCase(gh<_i837.MapShareDataRepository>()),
+  );
+  gh.lazySingleton<_i453.SetAddressInfoUseCase>(
+    () => _i453.SetAddressInfoUseCase(gh<_i837.MapShareDataRepository>()),
+  );
   gh.lazySingleton<_i988.ILocationDeviceService>(
-      () => _i988.LocationDeviceService(gh<_i645.Location>()));
+    () => _i988.LocationDeviceService(),
+  );
   gh.lazySingleton<_i308.SessionStorage>(
     () => _i577.SessionStorageMobileImpl(),
     registerFor: {_mobile},
   );
   gh.lazySingleton<_i988.IPermissionDeviceService>(
-      () => _i988.PermissionDeviceService());
+    () => _i988.PermissionDeviceService(),
+  );
+  gh.lazySingleton<_i221.LocationPermissionDataSource>(
+    () => _i1040.LocationPermissionDataSourceImpl(
+      gh<_i988.ILocationDeviceService>(),
+      gh<_i988.IPermissionDeviceService>(),
+    ),
+  );
   gh.lazySingleton<_i528.ConnectivityService>(
-      () => _i528.ConnectivityServiceImpl(gh<_i895.Connectivity>()));
-  gh.lazySingleton<_i406.FetchAddressInfoUseCase>(
-      () => _i406.FetchAddressInfoUseCase(gh<_i837.MapShareDataRepository>()));
-  gh.lazySingleton<_i453.SetAddressInfoUseCase>(
-      () => _i453.SetAddressInfoUseCase(gh<_i837.MapShareDataRepository>()));
+    () => _i528.ConnectivityServiceImpl(gh<_i895.Connectivity>()),
+  );
+  gh.singleton<_i361.Dio>(
+    () => networkModule.dio(
+      gh<_i466.DioTokenInterceptor>(),
+      gh<_i137.PrettyDioLogger>(),
+    ),
+  );
   gh.lazySingleton<_i308.SessionStorage>(
     () => _i718.SessionStorageWebImpl(),
     registerFor: {_web},
   );
-  gh.lazySingleton<_i221.LocationPermissionDataSource>(
-      () => _i1040.LocationPermissionDataSourceImpl(
-            gh<_i988.ILocationDeviceService>(),
-            gh<_i988.IPermissionDeviceService>(),
-          ));
-  gh.singleton<_i361.Dio>(() => networkModule.dio(
-        gh<_i466.DioTokenInterceptor>(),
-        gh<_i137.PrettyDioLogger>(),
-      ));
+  gh.lazySingleton<_i995.LocationPermissionRepository>(
+    () => _i838.LocationPermissionRepositoryImpl(
+      gh<_i221.LocationPermissionDataSource>(),
+    ),
+  );
   gh.lazySingleton<_i333.ObserveNetworkDataSource>(
-      () => _i52.ObserveNetworkDataSourceImpl(gh<_i528.ConnectivityService>()));
-  gh.lazySingleton<_i422.ObserveNetworkRepository>(() =>
-      _i16.ObserveNetworkRepositoryImpl(gh<_i333.ObserveNetworkDataSource>()));
+    () => _i52.ObserveNetworkDataSourceImpl(gh<_i528.ConnectivityService>()),
+  );
   gh.lazySingleton<_i626.AuthService>(() => _i626.AuthService(gh<_i361.Dio>()));
   gh.lazySingleton<_i438.MainService>(() => _i438.MainService(gh<_i361.Dio>()));
-  gh.lazySingleton<_i634.InvoiceService>(
-      () => _i634.InvoiceService(gh<_i361.Dio>()));
-  gh.lazySingleton<_i313.UserService>(() => _i313.UserService(gh<_i361.Dio>()));
+  gh.lazySingleton<_i1027.CartableService>(
+    () => _i1027.CartableService(gh<_i361.Dio>()),
+  );
+  gh.lazySingleton<_i953.DashboardService>(
+    () => _i953.DashboardService(gh<_i361.Dio>()),
+  );
+  gh.lazySingleton<_i606.EvaluationService>(
+    () => _i606.EvaluationService(gh<_i361.Dio>()),
+  );
+  gh.lazySingleton<_i204.HomeServiceEvaluationService>(
+    () => _i204.HomeServiceEvaluationService(gh<_i361.Dio>()),
+  );
   gh.lazySingleton<_i140.IndicatorReportService>(
-      () => _i140.IndicatorReportService(gh<_i361.Dio>()));
+    () => _i140.IndicatorReportService(gh<_i361.Dio>()),
+  );
+  gh.lazySingleton<_i854.RepresentationService>(
+    () => _i854.RepresentationService(gh<_i361.Dio>()),
+  );
   gh.lazySingleton<_i483.RequestService>(
-      () => _i483.RequestService(gh<_i361.Dio>()));
+    () => _i483.RequestService(gh<_i361.Dio>()),
+  );
+  gh.lazySingleton<_i634.InvoiceService>(
+    () => _i634.InvoiceService(gh<_i361.Dio>()),
+  );
+  gh.lazySingleton<_i1036.AddressService>(
+    () => _i1036.AddressService(gh<_i361.Dio>()),
+  );
   gh.lazySingleton<_i929.MapService>(() => _i929.MapService(gh<_i361.Dio>()));
+  gh.lazySingleton<_i99.DateTimeService>(
+    () => _i99.DateTimeService(gh<_i361.Dio>()),
+  );
+  gh.lazySingleton<_i313.UserService>(() => _i313.UserService(gh<_i361.Dio>()));
+  gh.lazySingleton<_i691.IndicatorReportDataSource>(
+    () =>
+        _i87.IndicatorReportDataSourceImpl(gh<_i140.IndicatorReportService>()),
+  );
+  gh.lazySingleton<_i320.DashboardDataSource>(
+    () => _i822.DashboardDataSourceImpl(gh<_i953.DashboardService>()),
+  );
+  gh.lazySingleton<_i227.IndicatorReportRepository>(
+    () => _i282.IndicatorReportRepositoryImpl(
+      gh<_i691.IndicatorReportDataSource>(),
+    ),
+  );
   gh.lazySingleton<_i475.MainRemoteDataSource>(
-      () => _i203.MainRemoteDataSourceImpl(gh<_i438.MainService>()));
-  gh.lazySingleton<_i471.GetCurrentNetworkStatusUseCase>(() =>
-      _i471.GetCurrentNetworkStatusUseCase(
-          gh<_i422.ObserveNetworkRepository>()));
-  gh.lazySingleton<_i1061.ObserveNetworkUseCase>(
-      () => _i1061.ObserveNetworkUseCase(gh<_i422.ObserveNetworkRepository>()));
-  gh.lazySingleton<_i971.MapDataSource>(
-      () => _i583.MapDataSourceImpl(gh<_i929.MapService>()));
-  gh.lazySingleton<_i691.IndicatorReportDataSource>(() =>
-      _i87.IndicatorReportDataSourceImpl(gh<_i140.IndicatorReportService>()));
-  gh.lazySingleton<_i995.LocationPermissionRepository>(() =>
-      _i838.LocationPermissionRepositoryImpl(
-          gh<_i221.LocationPermissionDataSource>()));
-  gh.lazySingleton<_i479.AuthRemoteDataSource>(
-      () => _i51.AuthRemoteDataSourceImpl(gh<_i626.AuthService>()));
-  gh.lazySingleton<_i1016.RequestDataSource>(
-      () => _i576.RequestDataSourceImpl(gh<_i483.RequestService>()));
-  gh.lazySingleton<_i227.IndicatorReportRepository>(() =>
-      _i282.IndicatorReportRepositoryImpl(
-          gh<_i691.IndicatorReportDataSource>()));
-  gh.lazySingleton<_i1039.UserDataSource>(
-      () => _i793.UserDataSourceImpl(gh<_i313.UserService>()));
-  gh.lazySingleton<_i296.ApplyHighAccuracyUseCase>(() =>
-      _i296.ApplyHighAccuracyUseCase(gh<_i995.LocationPermissionRepository>()));
-  gh.lazySingleton<_i283.EnsureLocationReadingUseCase>(() =>
-      _i283.EnsureLocationReadingUseCase(
-          gh<_i995.LocationPermissionRepository>()));
-  gh.lazySingleton<_i705.GetCurrentLocationUseCase>(() =>
-      _i705.GetCurrentLocationUseCase(
-          gh<_i995.LocationPermissionRepository>()));
-  gh.lazySingleton<_i92.MapRepository>(
-      () => _i810.MapRepositoryImpl(gh<_i971.MapDataSource>()));
-  gh.lazySingleton<_i716.AuthRepository>(() => _i781.AuthRepositoryImpl(
-        gh<_i479.AuthRemoteDataSource>(),
-        gh<_i308.SessionStorage>(),
-      ));
+    () => _i203.MainRemoteDataSourceImpl(gh<_i438.MainService>()),
+  );
   gh.lazySingleton<_i854.MainRepository>(
-      () => _i320.MainRepositoryImpl(gh<_i475.MainRemoteDataSource>()));
+    () => _i320.MainRepositoryImpl(gh<_i475.MainRemoteDataSource>()),
+  );
+  gh.lazySingleton<_i602.DashboardRepository>(
+    () => _i650.DashboardRepositoryImpl(gh<_i320.DashboardDataSource>()),
+  );
+  gh.lazySingleton<_i249.CartableDataSource>(
+    () => _i18.CartableDataSourceImpl(gh<_i1027.CartableService>()),
+  );
+  gh.lazySingleton<_i296.ApplyHighAccuracyUseCase>(
+    () => _i296.ApplyHighAccuracyUseCase(
+      gh<_i995.LocationPermissionRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i283.EnsureLocationReadingUseCase>(
+    () => _i283.EnsureLocationReadingUseCase(
+      gh<_i995.LocationPermissionRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i705.GetCurrentLocationUseCase>(
+    () => _i705.GetCurrentLocationUseCase(
+      gh<_i995.LocationPermissionRepository>(),
+    ),
+  );
   gh.lazySingleton<_i935.InvoiceDataSource>(
-      () => _i981.InvoiceDataSourceImpl(gh<_i634.InvoiceService>()));
-  gh.lazySingleton<_i829.InvoiceRepository>(
-      () => _i161.InvoiceRepositoryImpl(gh<_i935.InvoiceDataSource>()));
-  gh.lazySingleton<_i375.FetchIndicatorReportUseCase>(() =>
-      _i375.FetchIndicatorReportUseCase(gh<_i227.IndicatorReportRepository>()));
-  gh.lazySingleton<_i242.ConfirmHomeServiceInvoiceUseCase>(() =>
-      _i242.ConfirmHomeServiceInvoiceUseCase(gh<_i829.InvoiceRepository>()));
-  gh.lazySingleton<_i981.FetchInvoiceUseCase>(
-      () => _i981.FetchInvoiceUseCase(gh<_i829.InvoiceRepository>()));
-  gh.lazySingleton<_i349.FetchPreInvoiceOnTheFlyUseCase>(() =>
-      _i349.FetchPreInvoiceOnTheFlyUseCase(gh<_i829.InvoiceRepository>()));
-  gh.lazySingleton<_i949.FetchPreInvoiceUseCase>(
-      () => _i949.FetchPreInvoiceUseCase(gh<_i829.InvoiceRepository>()));
-  gh.lazySingleton<_i74.UserRepository>(
-      () => _i880.UserRepositoryImpl(gh<_i1039.UserDataSource>()));
-  gh.lazySingleton<_i139.LoginUseCase>(
-      () => _i139.LoginUseCase(gh<_i716.AuthRepository>()));
+    () => _i981.InvoiceDataSourceImpl(gh<_i634.InvoiceService>()),
+  );
+  gh.lazySingleton<_i59.RepresentationDataSource>(
+    () => _i423.RepresentationDataSourceImpl(gh<_i854.RepresentationService>()),
+  );
+  gh.lazySingleton<_i670.DateTimeInfoDataSource>(
+    () => _i940.DateTimeInfoDataSourceImpl(gh<_i99.DateTimeService>()),
+  );
+  gh.lazySingleton<_i971.MapDataSource>(
+    () => _i583.MapDataSourceImpl(
+      gh<_i929.MapService>(),
+      gh<_i1036.AddressService>(),
+    ),
+  );
+  gh.lazySingleton<_i375.FetchIndicatorReportUseCase>(
+    () => _i375.FetchIndicatorReportUseCase(
+      gh<_i227.IndicatorReportRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i999.HomeServiceEvaluationDataSource>(
+    () => _i983.HomeServiceEvaluationDataSourceImpl(
+      gh<_i204.HomeServiceEvaluationService>(),
+    ),
+  );
+  gh.lazySingleton<_i133.CartableRepository>(
+    () => _i304.CartableRepositoryImpl(gh<_i249.CartableDataSource>()),
+  );
+  gh.lazySingleton<_i92.MapRepository>(
+    () => _i810.MapRepositoryImpl(gh<_i971.MapDataSource>()),
+  );
   gh.lazySingleton<_i565.UrgentRequestUseCase>(
-      () => _i565.UrgentRequestUseCase(gh<_i854.MainRepository>()));
+    () => _i565.UrgentRequestUseCase(gh<_i854.MainRepository>()),
+  );
+  gh.lazySingleton<_i1016.RequestDataSource>(
+    () => _i576.RequestDataSourceImpl(gh<_i483.RequestService>()),
+  );
+  gh.lazySingleton<_i1023.EvaluationRemoteDataSource>(
+    () => _i832.FinalizeInvoiceRemoteDataSourceImpl(
+      gh<_i606.EvaluationService>(),
+    ),
+  );
+  gh.lazySingleton<_i479.AuthRemoteDataSource>(
+    () => _i51.AuthRemoteDataSourceImpl(gh<_i626.AuthService>()),
+  );
+  gh.lazySingleton<_i829.InvoiceRepository>(
+    () => _i161.InvoiceRepositoryImpl(gh<_i935.InvoiceDataSource>()),
+  );
+  gh.lazySingleton<_i1039.UserDataSource>(
+    () => _i793.UserDataSourceImpl(gh<_i313.UserService>()),
+  );
+  gh.lazySingleton<_i603.RequestRepository>(
+    () => _i794.RequestRepositoryImpl(gh<_i1016.RequestDataSource>()),
+  );
+  gh.lazySingleton<_i998.ChangeHomeServiceRequestAddressUseCase>(
+    () => _i998.ChangeHomeServiceRequestAddressUseCase(
+      gh<_i603.RequestRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i509.ChangeHomeServiceRequestTimeUseCase>(
+    () => _i509.ChangeHomeServiceRequestTimeUseCase(
+      gh<_i603.RequestRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i352.GetHomeServiceTimesTimesUseCase>(
+    () => _i352.GetHomeServiceTimesTimesUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i422.ObserveNetworkRepository>(
+    () =>
+        _i16.ObserveNetworkRepositoryImpl(gh<_i333.ObserveNetworkDataSource>()),
+  );
+  gh.lazySingleton<_i347.HomeServiceEvaluationRepository>(
+    () => _i1063.HomeServiceEvaluationRepositoryImpl(
+      gh<_i999.HomeServiceEvaluationDataSource>(),
+    ),
+  );
+  gh.lazySingleton<_i471.GetCurrentNetworkStatusUseCase>(
+    () => _i471.GetCurrentNetworkStatusUseCase(
+      gh<_i422.ObserveNetworkRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i1061.ObserveNetworkUseCase>(
+    () => _i1061.ObserveNetworkUseCase(gh<_i422.ObserveNetworkRepository>()),
+  );
+  gh.lazySingleton<_i815.RepresentationRepository>(
+    () =>
+        _i386.RepresentationRepositoryImpl(gh<_i59.RepresentationDataSource>()),
+  );
+  gh.lazySingleton<_i74.UserRepository>(
+    () => _i880.UserRepositoryImpl(gh<_i1039.UserDataSource>()),
+  );
+  gh.lazySingleton<_i489.DateTimeInfoRepository>(
+    () => _i258.DateTimeRepositoryImpl(gh<_i670.DateTimeInfoDataSource>()),
+  );
   gh.lazySingleton<_i499.FetchProfileUseCase>(
     () => _i499.FetchProfileUseCase(gh<_i74.UserRepository>()),
-    registerFor: {
-      _default,
-      _mobile,
-    },
+    registerFor: {_default, _mobile},
   );
-  gh.lazySingleton<_i138.LogoutUseCase>(() => _i138.LogoutUseCase(
-        gh<_i74.UserRepository>(),
-        gh<_i308.SessionStorage>(),
-      ));
-  gh.lazySingleton<_i603.RequestRepository>(
-      () => _i794.RequestRepositoryImpl(gh<_i1016.RequestDataSource>()));
   gh.lazySingleton<_i739.FetchAddressToLocationUseCase>(
-      () => _i739.FetchAddressToLocationUseCase(gh<_i92.MapRepository>()));
+    () => _i739.FetchAddressToLocationUseCase(gh<_i92.MapRepository>()),
+  );
   gh.lazySingleton<_i730.FetchLocationToAddressUseCase>(
-      () => _i730.FetchLocationToAddressUseCase(gh<_i92.MapRepository>()));
-  gh.lazySingleton<_i216.FetchBaseUserInfoUseCase>(
-      () => _i216.FetchBaseUserInfoUseCase(gh<_i74.UserRepository>()));
-  gh.lazySingleton<_i422.FetchCarSelectedUseCase>(
-      () => _i422.FetchCarSelectedUseCase(gh<_i74.UserRepository>()));
-  gh.lazySingleton<_i435.FetchColorListUseCase>(
-      () => _i435.FetchColorListUseCase(gh<_i74.UserRepository>()));
-  gh.lazySingleton<_i979.FetchCoverCarListUseCase>(
-      () => _i979.FetchCoverCarListUseCase(gh<_i74.UserRepository>()));
-  gh.lazySingleton<_i489.FetchDegreeListUseCase>(
-      () => _i489.FetchDegreeListUseCase(gh<_i74.UserRepository>()));
-  gh.lazySingleton<_i332.FetchUserJobsUseCase>(
-      () => _i332.FetchUserJobsUseCase(gh<_i74.UserRepository>()));
-  gh.lazySingleton<_i1055.ObserveCarInfoListUseCase>(
-      () => _i1055.ObserveCarInfoListUseCase(gh<_i74.UserRepository>()));
-  gh.lazySingleton<_i147.ObserveUserEntityUseCase>(
-      () => _i147.ObserveUserEntityUseCase(gh<_i74.UserRepository>()));
-  gh.lazySingleton<_i605.SetCarSelectedUseCase>(
-      () => _i605.SetCarSelectedUseCase(gh<_i74.UserRepository>()));
-  gh.lazySingleton<_i422.SetProfileUseCase>(
-      () => _i422.SetProfileUseCase(gh<_i74.UserRepository>()));
-  gh.lazySingleton<_i254.UpdateProfileUseCase>(
-      () => _i254.UpdateProfileUseCase(gh<_i74.UserRepository>()));
-  gh.lazySingleton<_i274.GetThemeUseCase>(
-      () => _i274.GetThemeUseCase(gh<_i74.UserRepository>()));
-  gh.lazySingleton<_i776.SetThemeUseCase>(
-      () => _i776.SetThemeUseCase(gh<_i74.UserRepository>()));
-  gh.lazySingleton<_i994.UpdateUserUseCase>(
-      () => _i994.UpdateUserUseCase(gh<_i74.UserRepository>()));
-  gh.factory<_i951.IndicatorReportCubit>(() =>
-      _i951.IndicatorReportCubit(gh<_i375.FetchIndicatorReportUseCase>()));
-  gh.factory<_i566.LoginCubit>(() => _i566.LoginCubit(
-        gh<_i139.LoginUseCase>(),
-        gh<_i826.PhoneNumberValidatorUseCase>(),
-      ));
-  gh.lazySingleton<_i856.SetCarSelectedKilometerUseCase>(
-      () => _i856.SetCarSelectedKilometerUseCase(
-            gh<_i74.UserRepository>(),
-            gh<_i422.FetchCarSelectedUseCase>(),
-          ));
-  gh.factory<_i84.MapCubit>(() => _i84.MapCubit(
-        gh<_i406.FetchAddressInfoUseCase>(),
-        gh<_i283.EnsureLocationReadingUseCase>(),
-        gh<_i296.ApplyHighAccuracyUseCase>(),
-        gh<_i705.GetCurrentLocationUseCase>(),
-        gh<_i730.FetchLocationToAddressUseCase>(),
-        gh<_i453.SetAddressInfoUseCase>(),
-        gh<_i739.FetchAddressToLocationUseCase>(),
-      ));
-  gh.lazySingleton<_i809.GetHomeServiceRequestListUseCase>(() =>
-      _i809.GetHomeServiceRequestListUseCase(gh<_i603.RequestRepository>()));
+    () => _i730.FetchLocationToAddressUseCase(gh<_i92.MapRepository>()),
+  );
+  gh.lazySingleton<_i159.GetAreaBaseInfoUseCase>(
+    () => _i159.GetAreaBaseInfoUseCase(gh<_i92.MapRepository>()),
+  );
+  gh.lazySingleton<_i850.GetLocationDataUseCase>(
+    () => _i850.GetLocationDataUseCase(gh<_i92.MapRepository>()),
+  );
+  gh.lazySingleton<_i265.GetProvinceWithCityListUseCase>(
+    () => _i265.GetProvinceWithCityListUseCase(gh<_i92.MapRepository>()),
+  );
+  gh.lazySingleton<_i678.GetRouteUseCase>(
+    () => _i678.GetRouteUseCase(gh<_i92.MapRepository>()),
+  );
+  gh.factory<_i84.MapCubit>(
+    () => _i84.MapCubit(
+      gh<_i406.FetchAddressInfoUseCase>(),
+      gh<_i283.EnsureLocationReadingUseCase>(),
+      gh<_i296.ApplyHighAccuracyUseCase>(),
+      gh<_i705.GetCurrentLocationUseCase>(),
+      gh<_i730.FetchLocationToAddressUseCase>(),
+      gh<_i453.SetAddressInfoUseCase>(),
+      gh<_i739.FetchAddressToLocationUseCase>(),
+    ),
+  );
+  gh.lazySingleton<_i320.CancelServiceRequestUseCase>(
+    () => _i320.CancelServiceRequestUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i364.CompleteAidUrgentRequestUseCase>(
+    () => _i364.CompleteAidUrgentRequestUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i949.CreateFollowUpUseCase>(
+    () => _i949.CreateFollowUpUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i1061.GetBasicDataUseCase>(
+    () => _i1061.GetBasicDataUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i433.GetCancelReasonRequestUseCase>(
+    () => _i433.GetCancelReasonRequestUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i765.GetCartableCycleListUseCase>(
+    () => _i765.GetCartableCycleListUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i581.GetChassisRequestHistoryListUseCase>(
+    () => _i581.GetChassisRequestHistoryListUseCase(
+      gh<_i603.RequestRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i990.GetCheckDepotUseCase>(
+    () => _i990.GetCheckDepotUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i985.GetDistanceKilometerUseCase>(
+    () => _i985.GetDistanceKilometerUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i734.GetEmdadgarFollowupsDataUseCase>(
+    () => _i734.GetEmdadgarFollowupsDataUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i786.GetEmdadgarInfoUseCase>(
+    () => _i786.GetEmdadgarInfoUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i955.GetEmdadgarListUseCase>(
+    () => _i955.GetEmdadgarListUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i467.GetEvaluationHistoryListUseCase>(
+    () => _i467.GetEvaluationHistoryListUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i474.GetFollowUpStatusTypeListUseCase>(
+    () => _i474.GetFollowUpStatusTypeListUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i63.GetHomeServiceRequestByIdUseCase>(
+    () => _i63.GetHomeServiceRequestByIdUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i809.GetHomeServiceRequestListUseCase>(
+    () => _i809.GetHomeServiceRequestListUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i812.GetMinimalCustomerInfoUseCase>(
+    () => _i812.GetMinimalCustomerInfoUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i707.GetNonCooperationListUseCase>(
+    () => _i707.GetNonCooperationListUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i639.GetReferenceCarUseCase>(
+    () => _i639.GetReferenceCarUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i672.GetReliefRequestByIdUseCase>(
+    () => _i672.GetReliefRequestByIdUseCase(gh<_i603.RequestRepository>()),
+  );
   gh.lazySingleton<_i192.GetReliefRequestListUseCase>(
-      () => _i192.GetReliefRequestListUseCase(gh<_i603.RequestRepository>()));
-  gh.factory<_i1048.ReliefRequestListCubit>(() =>
-      _i1048.ReliefRequestListCubit(gh<_i192.GetReliefRequestListUseCase>()));
-  gh.factory<_i1013.HomeServiceRequestListCubit>(() =>
-      _i1013.HomeServiceRequestListCubit(
-          gh<_i809.GetHomeServiceRequestListUseCase>()));
+    () => _i192.GetReliefRequestListUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i543.GetRequestControlInfoUseCase>(
+    () => _i543.GetRequestControlInfoUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i67.GetRequestFollowupHistoryUseCase>(
+    () => _i67.GetRequestFollowupHistoryUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i955.GetRequestStatusHistoryUseCase>(
+    () => _i955.GetRequestStatusHistoryUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i595.ServiceAssignUseCase>(
+    () => _i595.ServiceAssignUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i180.UpdateServiceRequestUseCase>(
+    () => _i180.UpdateServiceRequestUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i100.GetServerDateTimeUseCase>(
+    () => _i100.GetServerDateTimeUseCase(gh<_i489.DateTimeInfoRepository>()),
+  );
+  gh.factory<_i891.ChassisRequestHistoryCubit>(
+    () => _i891.ChassisRequestHistoryCubit(
+      gh<_i581.GetChassisRequestHistoryListUseCase>(),
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+    ),
+  );
+  gh.lazySingleton<_i208.GetDashboardDataUseCase>(
+    () => _i208.GetDashboardDataUseCase(gh<_i602.DashboardRepository>()),
+  );
+  gh.lazySingleton<_i138.LogoutUseCase>(
+    () => _i138.LogoutUseCase(
+      gh<_i74.UserRepository>(),
+      gh<_i308.SessionStorage>(),
+    ),
+  );
+  gh.factory<_i1029.CartableCycleCubit>(
+    () => _i1029.CartableCycleCubit(
+      gh<_i765.GetCartableCycleListUseCase>(),
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
+    ),
+  );
+  gh.factory<_i264.FollowUpRegisterCubit>(
+    () => _i264.FollowUpRegisterCubit(
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
+      gh<_i67.GetRequestFollowupHistoryUseCase>(),
+      gh<_i474.GetFollowUpStatusTypeListUseCase>(),
+      gh<_i949.CreateFollowUpUseCase>(),
+      gh<_i100.GetServerDateTimeUseCase>(),
+    ),
+  );
+  gh.factory<_i66.ControlInfoCubit>(
+    () => _i66.ControlInfoCubit(
+      gh<_i543.GetRequestControlInfoUseCase>(),
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
+    ),
+  );
+  gh.factory<_i815.ChangeHomeServiceRequestTimeCubit>(
+    () => _i815.ChangeHomeServiceRequestTimeCubit(
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
+      gh<_i352.GetHomeServiceTimesTimesUseCase>(),
+      gh<_i509.ChangeHomeServiceRequestTimeUseCase>(),
+    ),
+  );
+  gh.lazySingleton<_i335.CustomerPreInvoiceOnTheFlyUseCase>(
+    () =>
+        _i335.CustomerPreInvoiceOnTheFlyUseCase(gh<_i829.InvoiceRepository>()),
+  );
+  gh.lazySingleton<_i204.GetEmdadgarInvoiceUseCase>(
+    () => _i204.GetEmdadgarInvoiceUseCase(gh<_i829.InvoiceRepository>()),
+  );
+  gh.lazySingleton<_i116.GetPreInvoiceUseCase>(
+    () => _i116.GetPreInvoiceUseCase(gh<_i829.InvoiceRepository>()),
+  );
+  gh.factory<_i951.IndicatorReportCubit>(
+    () => _i951.IndicatorReportCubit(gh<_i375.FetchIndicatorReportUseCase>()),
+  );
+  gh.lazySingleton<_i716.AuthRepository>(
+    () => _i781.AuthRepositoryImpl(
+      gh<_i479.AuthRemoteDataSource>(),
+      gh<_i308.SessionStorage>(),
+    ),
+  );
+  gh.lazySingleton<_i1042.FetchKilometerFromImageUseCase>(
+    () => _i1042.FetchKilometerFromImageUseCase(
+      gh<_i347.HomeServiceEvaluationRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i931.FetchOcrConfigurationUseCase>(
+    () => _i931.FetchOcrConfigurationUseCase(
+      gh<_i347.HomeServiceEvaluationRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i226.GetActiveServiceRequestUseCase>(
+    () => _i226.GetActiveServiceRequestUseCase(
+      gh<_i347.HomeServiceEvaluationRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i1026.GetDistanceToCustomerHomeServiceUseCase>(
+    () => _i1026.GetDistanceToCustomerHomeServiceUseCase(
+      gh<_i347.HomeServiceEvaluationRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i1059.GetLastEvaluationHomeServiceUseCase>(
+    () => _i1059.GetLastEvaluationHomeServiceUseCase(
+      gh<_i347.HomeServiceEvaluationRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i535.GetLastEvaluationUseCase>(
+    () => _i535.GetLastEvaluationUseCase(
+      gh<_i347.HomeServiceEvaluationRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i664.GetPartMarkHomeServiceUseCase>(
+    () => _i664.GetPartMarkHomeServiceUseCase(
+      gh<_i347.HomeServiceEvaluationRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i983.GetPartPriceHomeServiceUseCase>(
+    () => _i983.GetPartPriceHomeServiceUseCase(
+      gh<_i347.HomeServiceEvaluationRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i91.GetReusablePriceUseCase>(
+    () => _i91.GetReusablePriceUseCase(
+      gh<_i347.HomeServiceEvaluationRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i497.SetActiveServiceRequestUseCase>(
+    () => _i497.SetActiveServiceRequestUseCase(
+      gh<_i347.HomeServiceEvaluationRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i570.SetLastEvaluationUseCase>(
+    () => _i570.SetLastEvaluationUseCase(
+      gh<_i347.HomeServiceEvaluationRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i139.LoginUseCase>(
+    () => _i139.LoginUseCase(gh<_i716.AuthRepository>()),
+  );
+  gh.factory<_i860.AssignAndCancelEmdadgarCubit>(
+    () => _i860.AssignAndCancelEmdadgarCubit(
+      gh<_i955.GetEmdadgarListUseCase>(),
+      gh<_i595.ServiceAssignUseCase>(),
+      gh<_i990.GetCheckDepotUseCase>(),
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      gh<_i678.GetRouteUseCase>(),
+      gh<_i159.GetAreaBaseInfoUseCase>(),
+      gh<_i433.GetCancelReasonRequestUseCase>(),
+      gh<_i707.GetNonCooperationListUseCase>(),
+    ),
+  );
+  gh.factory<_i563.RequestStatusHistoryCubit>(
+    () => _i563.RequestStatusHistoryCubit(
+      gh<_i955.GetRequestStatusHistoryUseCase>(),
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
+    ),
+  );
+  gh.factory<_i317.HomeServiceEvaluationFirstStepCubit>(
+    () => _i317.HomeServiceEvaluationFirstStepCubit(
+      gh<_i1059.GetLastEvaluationHomeServiceUseCase>(),
+      gh<_i1026.GetDistanceToCustomerHomeServiceUseCase>(),
+      gh<_i570.SetLastEvaluationUseCase>(),
+      gh<_i823.EvaluationDraftStore>(),
+      gh<_i497.SetActiveServiceRequestUseCase>(),
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
+    ),
+  );
+  gh.factory<_i566.LoginCubit>(
+    () => _i566.LoginCubit(
+      gh<_i139.LoginUseCase>(),
+      gh<_i826.PhoneNumberValidatorUseCase>(),
+    ),
+  );
+  gh.lazySingleton<_i122.EvaluationRepository>(
+    () =>
+        _i903.EvaluationRepositoryImpl(gh<_i1023.EvaluationRemoteDataSource>()),
+  );
+  gh.factory<_i932.DashboardCubit>(
+    () => _i932.DashboardCubit(
+      gh<_i208.GetDashboardDataUseCase>(),
+      gh<_i100.GetServerDateTimeUseCase>(),
+    ),
+  );
+  gh.lazySingleton<_i216.FetchBaseUserInfoUseCase>(
+    () => _i216.FetchBaseUserInfoUseCase(gh<_i74.UserRepository>()),
+  );
+  gh.lazySingleton<_i422.FetchCarSelectedUseCase>(
+    () => _i422.FetchCarSelectedUseCase(gh<_i74.UserRepository>()),
+  );
+  gh.lazySingleton<_i435.FetchColorListUseCase>(
+    () => _i435.FetchColorListUseCase(gh<_i74.UserRepository>()),
+  );
+  gh.lazySingleton<_i979.FetchCoverCarListUseCase>(
+    () => _i979.FetchCoverCarListUseCase(gh<_i74.UserRepository>()),
+  );
+  gh.lazySingleton<_i489.FetchDegreeListUseCase>(
+    () => _i489.FetchDegreeListUseCase(gh<_i74.UserRepository>()),
+  );
+  gh.lazySingleton<_i332.FetchUserJobsUseCase>(
+    () => _i332.FetchUserJobsUseCase(gh<_i74.UserRepository>()),
+  );
+  gh.lazySingleton<_i1055.ObserveCarInfoListUseCase>(
+    () => _i1055.ObserveCarInfoListUseCase(gh<_i74.UserRepository>()),
+  );
+  gh.lazySingleton<_i147.ObserveUserEntityUseCase>(
+    () => _i147.ObserveUserEntityUseCase(gh<_i74.UserRepository>()),
+  );
+  gh.lazySingleton<_i605.SetCarSelectedUseCase>(
+    () => _i605.SetCarSelectedUseCase(gh<_i74.UserRepository>()),
+  );
+  gh.lazySingleton<_i422.SetProfileUseCase>(
+    () => _i422.SetProfileUseCase(gh<_i74.UserRepository>()),
+  );
+  gh.lazySingleton<_i254.UpdateProfileUseCase>(
+    () => _i254.UpdateProfileUseCase(gh<_i74.UserRepository>()),
+  );
+  gh.lazySingleton<_i274.GetThemeUseCase>(
+    () => _i274.GetThemeUseCase(gh<_i74.UserRepository>()),
+  );
+  gh.lazySingleton<_i776.SetThemeUseCase>(
+    () => _i776.SetThemeUseCase(gh<_i74.UserRepository>()),
+  );
+  gh.lazySingleton<_i994.UpdateUserUseCase>(
+    () => _i994.UpdateUserUseCase(gh<_i74.UserRepository>()),
+  );
+  gh.lazySingleton<_i178.FetchInsertHomeServiceCategoryUseCase>(
+    () => _i178.FetchInsertHomeServiceCategoryUseCase(
+      gh<_i347.HomeServiceEvaluationRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i1004.FetchInsertHomeServicePackageUseCase>(
+    () => _i1004.FetchInsertHomeServicePackageUseCase(
+      gh<_i347.HomeServiceEvaluationRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i780.FetchInsertHomeServiceServiceUseCase>(
+    () => _i780.FetchInsertHomeServiceServiceUseCase(
+      gh<_i347.HomeServiceEvaluationRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i1015.GetInsertHomeServicePackageUseCase>(
+    () => _i1015.GetInsertHomeServicePackageUseCase(
+      gh<_i347.HomeServiceEvaluationRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i902.GetLaborUseCase>(
+    () => _i902.GetLaborUseCase(gh<_i347.HomeServiceEvaluationRepository>()),
+  );
+  gh.lazySingleton<_i990.GetPartUseCase>(
+    () => _i990.GetPartUseCase(gh<_i347.HomeServiceEvaluationRepository>()),
+  );
+  gh.lazySingleton<_i915.GetServiceCategoriesUseCase>(
+    () => _i915.GetServiceCategoriesUseCase(
+      gh<_i347.HomeServiceEvaluationRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i978.GetServicesUseCase>(
+    () => _i978.GetServicesUseCase(gh<_i347.HomeServiceEvaluationRepository>()),
+  );
+  gh.lazySingleton<_i626.PostEvaluationAcceptUseCase>(
+    () => _i626.PostEvaluationAcceptUseCase(
+      gh<_i347.HomeServiceEvaluationRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i684.PostEvaluationUseCase>(
+    () => _i684.PostEvaluationUseCase(
+      gh<_i347.HomeServiceEvaluationRepository>(),
+    ),
+  );
+  gh.factory<_i154.EvaluationHistoryCubit>(
+    () => _i154.EvaluationHistoryCubit(
+      gh<_i467.GetEvaluationHistoryListUseCase>(),
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
+    ),
+  );
+  gh.factory<_i1013.HomeServiceRequestListCubit>(
+    () => _i1013.HomeServiceRequestListCubit(
+      gh<_i809.GetHomeServiceRequestListUseCase>(),
+      gh<_i369.SetSelectedRequestItemUseCase>(),
+    ),
+  );
+  gh.lazySingleton<_i856.SetCarSelectedKilometerUseCase>(
+    () => _i856.SetCarSelectedKilometerUseCase(
+      gh<_i74.UserRepository>(),
+      gh<_i422.FetchCarSelectedUseCase>(),
+    ),
+  );
+  gh.factory<_i1038.CompleteUrgentRequestCubit>(
+    () => _i1038.CompleteUrgentRequestCubit(
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i1061.GetBasicDataUseCase>(),
+      gh<_i639.GetReferenceCarUseCase>(),
+      gh<_i812.GetMinimalCustomerInfoUseCase>(),
+      gh<_i364.CompleteAidUrgentRequestUseCase>(),
+    ),
+  );
+  gh.factory<_i806.ChangeHomeServiceRequestAddressCubit>(
+    () => _i806.ChangeHomeServiceRequestAddressCubit(
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
+      gh<_i265.GetProvinceWithCityListUseCase>(),
+      gh<_i998.ChangeHomeServiceRequestAddressUseCase>(),
+    ),
+  );
+  gh.factory<_i809.PreInvoiceCubit>(
+    () => _i809.PreInvoiceCubit(
+      gh<_i116.GetPreInvoiceUseCase>(),
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+    ),
+  );
+  gh.factory<_i709.OnlineMapCubit>(
+    () => _i709.OnlineMapCubit(
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
+      gh<_i678.GetRouteUseCase>(),
+    ),
+  );
+  gh.factory<_i1048.ReliefRequestListCubit>(
+    () => _i1048.ReliefRequestListCubit(
+      gh<_i192.GetReliefRequestListUseCase>(),
+      gh<_i369.SetSelectedRequestItemUseCase>(),
+    ),
+  );
+  gh.factory<_i165.NonCooperationCubit>(
+    () => _i165.NonCooperationCubit(
+      gh<_i707.GetNonCooperationListUseCase>(),
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+    ),
+  );
+  gh.factory<_i379.ServiceListCubit>(
+    () => _i379.ServiceListCubit(
+      gh<_i978.GetServicesUseCase>(),
+      gh<_i226.GetActiveServiceRequestUseCase>(),
+      gh<_i535.GetLastEvaluationUseCase>(),
+    ),
+  );
+  gh.factory<_i337.HomeServiceEvaluationPackagesCubit>(
+    () => _i337.HomeServiceEvaluationPackagesCubit(
+      gh<_i1004.FetchInsertHomeServicePackageUseCase>(),
+      gh<_i780.FetchInsertHomeServiceServiceUseCase>(),
+      gh<_i178.FetchInsertHomeServiceCategoryUseCase>(),
+      gh<_i226.GetActiveServiceRequestUseCase>(),
+      gh<_i535.GetLastEvaluationUseCase>(),
+    ),
+  );
+  gh.factory<_i802.RequestDetailCubit>(
+    () => _i802.RequestDetailCubit(
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      gh<_i67.GetRequestFollowupHistoryUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
+      gh<_i955.GetRequestStatusHistoryUseCase>(),
+    ),
+  );
+  gh.factory<_i362.EmdadgarInvoiceCubit>(
+    () => _i362.EmdadgarInvoiceCubit(
+      gh<_i204.GetEmdadgarInvoiceUseCase>(),
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+    ),
+  );
+  gh.factory<_i551.HomeServicePartCubit>(
+    () => _i551.HomeServicePartCubit(
+      gh<_i902.GetLaborUseCase>(),
+      gh<_i990.GetPartUseCase>(),
+      gh<_i664.GetPartMarkHomeServiceUseCase>(),
+      gh<_i535.GetLastEvaluationUseCase>(),
+      gh<_i226.GetActiveServiceRequestUseCase>(),
+      gh<_i983.GetPartPriceHomeServiceUseCase>(),
+      gh<_i91.GetReusablePriceUseCase>(),
+    ),
+  );
+  gh.factory<_i664.LaborsAndPartsCubit>(
+    () => _i664.LaborsAndPartsCubit(
+      gh<_i902.GetLaborUseCase>(),
+      gh<_i990.GetPartUseCase>(),
+      gh<_i664.GetPartMarkHomeServiceUseCase>(),
+      gh<_i535.GetLastEvaluationUseCase>(),
+      gh<_i226.GetActiveServiceRequestUseCase>(),
+      gh<_i983.GetPartPriceHomeServiceUseCase>(),
+      gh<_i91.GetReusablePriceUseCase>(),
+    ),
+  );
+  gh.lazySingleton<_i531.AcceptEvaluationUseCase>(
+    () => _i531.AcceptEvaluationUseCase(gh<_i122.EvaluationRepository>()),
+  );
+  gh.lazySingleton<_i270.GetAidServicesListUseCase>(
+    () => _i270.GetAidServicesListUseCase(gh<_i122.EvaluationRepository>()),
+  );
+  gh.lazySingleton<_i1016.GetCategoriesListUseCase>(
+    () => _i1016.GetCategoriesListUseCase(gh<_i122.EvaluationRepository>()),
+  );
+  gh.lazySingleton<_i163.GetDefectsListUseCase>(
+    () => _i163.GetDefectsListUseCase(gh<_i122.EvaluationRepository>()),
+  );
+  gh.lazySingleton<_i392.GetHomeServicePackageListUseCase>(
+    () => _i392.GetHomeServicePackageListUseCase(
+      gh<_i122.EvaluationRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i915.GetLaborListUseCase>(
+    () => _i915.GetLaborListUseCase(gh<_i122.EvaluationRepository>()),
+  );
+  gh.lazySingleton<_i476.GetLastEvaluationUseCase>(
+    () => _i476.GetLastEvaluationUseCase(gh<_i122.EvaluationRepository>()),
+  );
+  gh.lazySingleton<_i361.GetPartListUseCase>(
+    () => _i361.GetPartListUseCase(gh<_i122.EvaluationRepository>()),
+  );
+  gh.lazySingleton<_i655.GetPartMarkListUseCase>(
+    () => _i655.GetPartMarkListUseCase(gh<_i122.EvaluationRepository>()),
+  );
+  gh.lazySingleton<_i923.GetPartPriceUseCase>(
+    () => _i923.GetPartPriceUseCase(gh<_i122.EvaluationRepository>()),
+  );
+  gh.lazySingleton<_i229.GetRepresentationListUseCase>(
+    () => _i229.GetRepresentationListUseCase(gh<_i122.EvaluationRepository>()),
+  );
+  gh.lazySingleton<_i16.GetServiceDetailEvaluationUseCase>(
+    () => _i16.GetServiceDetailEvaluationUseCase(
+      gh<_i122.EvaluationRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i296.PostEvaluationUseCase>(
+    () => _i296.PostEvaluationUseCase(gh<_i122.EvaluationRepository>()),
+  );
+  gh.lazySingleton<_i571.SubmitEvaluationForAidServiceUseCase>(
+    () => _i571.SubmitEvaluationForAidServiceUseCase(
+      gh<_i122.EvaluationRepository>(),
+    ),
+  );
+  gh.factory<_i648.HomeServiceEvaluationSecondStepCubit>(
+    () => _i648.HomeServiceEvaluationSecondStepCubit(
+      gh<_i226.GetActiveServiceRequestUseCase>(),
+      gh<_i535.GetLastEvaluationUseCase>(),
+      gh<_i684.PostEvaluationUseCase>(),
+    ),
+  );
+  gh.factory<_i792.UpdateRequestCubit>(
+    () => _i792.UpdateRequestCubit(
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
+      gh<_i265.GetProvinceWithCityListUseCase>(),
+      gh<_i850.GetLocationDataUseCase>(),
+      gh<_i163.GetDefectsListUseCase>(),
+      gh<_i270.GetAidServicesListUseCase>(),
+      gh<_i180.UpdateServiceRequestUseCase>(),
+    ),
+  );
+  gh.factory<_i872.CancelRequestCubit>(
+    () => _i872.CancelRequestCubit(
+      gh<_i433.GetCancelReasonRequestUseCase>(),
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      gh<_i985.GetDistanceKilometerUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
+      gh<_i16.GetServiceDetailEvaluationUseCase>(),
+      gh<_i296.PostEvaluationUseCase>(),
+      gh<_i320.CancelServiceRequestUseCase>(),
+      gh<_i335.CustomerPreInvoiceOnTheFlyUseCase>(),
+      gh<_i531.AcceptEvaluationUseCase>(),
+      gh<_i734.GetEmdadgarFollowupsDataUseCase>(),
+    ),
+  );
+  gh.factory<_i510.EvaluationInvoiceCubit>(
+    () => _i510.EvaluationInvoiceCubit(
+      gh<_i335.CustomerPreInvoiceOnTheFlyUseCase>(),
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+      gh<_i531.AcceptEvaluationUseCase>(),
+    ),
+  );
+  gh.factory<_i319.EvaluationAidServiceRequestCubit>(
+    () => _i319.EvaluationAidServiceRequestCubit(
+      gh<_i376.FetchSelectedRequestItemUseCase>(),
+      gh<_i672.GetReliefRequestByIdUseCase>(),
+      gh<_i786.GetEmdadgarInfoUseCase>(),
+      gh<_i1016.GetCategoriesListUseCase>(),
+      gh<_i361.GetPartListUseCase>(),
+      gh<_i655.GetPartMarkListUseCase>(),
+      gh<_i923.GetPartPriceUseCase>(),
+      gh<_i163.GetDefectsListUseCase>(),
+      gh<_i16.GetServiceDetailEvaluationUseCase>(),
+      gh<_i476.GetLastEvaluationUseCase>(),
+      gh<_i915.GetLaborListUseCase>(),
+      gh<_i571.SubmitEvaluationForAidServiceUseCase>(),
+      gh<_i229.GetRepresentationListUseCase>(),
+    ),
+  );
   return getIt;
 }
 

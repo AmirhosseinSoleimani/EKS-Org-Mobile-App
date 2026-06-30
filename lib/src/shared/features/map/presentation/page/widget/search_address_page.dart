@@ -50,7 +50,7 @@ class SearchAddressPage extends StatelessWidget {
                 color: colorScheme.onTertiary,
               ),
               suffixIcon: Icon(
-                IconManager.search,
+                Icons.search,
                 size: AppSize.s24,
                 color: colorScheme.onTertiary,
               ),
@@ -141,7 +141,7 @@ class AddressContainer extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             children: [
               Icon(
-                IconManager.location,
+                Icons.my_location_outlined,
                 color: Theme.of(context).colorScheme.onSurface,
                 size: AppSize.s28,
               ),

@@ -1,4 +1,4 @@
-
+import 'package:geolocator/geolocator.dart';
 import 'package:injectable/injectable.dart';
 import 'package:location/location.dart' as loc;
 import 'package:permission_handler/permission_handler.dart' as perm;
@@ -11,25 +11,45 @@ abstract class ILocationDeviceService {
 }
 
 @LazySingleton(as: ILocationDeviceService)
+@LazySingleton(as: ILocationDeviceService)
 class LocationDeviceService implements ILocationDeviceService {
-  LocationDeviceService(this._location);
-  final loc.Location _location;
 
   @override
-  Future<void> changeSettings({required loc.LocationAccuracy accuracy, int interval = 0, double distanceFilter = 0}) =>
-      _location.changeSettings(accuracy: accuracy, interval: interval, distanceFilter: distanceFilter);
+  Future<void> changeSettings({
+    required loc.LocationAccuracy accuracy,
+    int interval = 0,
+    double distanceFilter = 0,
+  }) async {
+    // geolocator تنظیم global مثل location plugin ندارد
+    // پس اینجا عملاً کاری لازم نیست
+  }
 
   @override
-  Future<loc.LocationData> getLocation() => _location.getLocation();
+  Future<loc.LocationData> getLocation() async {
+    final position = await Geolocator.getCurrentPosition(
+      desiredAccuracy: LocationAccuracy.high,
+    );
 
+    return loc.LocationData.fromMap({
+      "latitude": position.latitude,
+      "longitude": position.longitude,
+      "accuracy": position.accuracy,
+      "altitude": position.altitude,
+      "speed": position.speed,
+    });
+  }
 
   @override
-  Future<bool> requestService() => _location.requestService();
-
+  Future<bool> requestService() async {
+    return await Geolocator.isLocationServiceEnabled();
+  }
 
   @override
-  Future<bool> serviceEnabled() => _location.serviceEnabled();
+  Future<bool> serviceEnabled() async {
+    return await Geolocator.isLocationServiceEnabled();
+  }
 }
+
 
 
 

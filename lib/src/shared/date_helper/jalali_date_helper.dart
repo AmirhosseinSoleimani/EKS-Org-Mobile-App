@@ -66,4 +66,58 @@ class JalaliDateHelper {
 
     return weekdays[jalali.weekDay - 1];
   }
+
+  static DateTime? jalaliDateTimeToGregorianDateTime(DateTime? jalaliDateTime) {
+    if (jalaliDateTime == null) return null;
+
+    // اگر سال میلادی بود، همان را برگردان
+    if (jalaliDateTime.year > 1700) {
+      return jalaliDateTime;
+    }
+
+    final gregorian = Jalali(
+      jalaliDateTime.year,
+      jalaliDateTime.month,
+      jalaliDateTime.day,
+      jalaliDateTime.hour,
+      jalaliDateTime.minute,
+      jalaliDateTime.second,
+    ).toGregorian();
+
+    return DateTime(
+      gregorian.year,
+      gregorian.month,
+      gregorian.day,
+      jalaliDateTime.hour,
+      jalaliDateTime.minute,
+      jalaliDateTime.second,
+    );
+  }
+
+  static String? formatServerDateTime(DateTime? dateTime) {
+    final gregorianDateTime = jalaliDateTimeToGregorianDateTime(dateTime);
+    if (gregorianDateTime == null) return null;
+
+    final year = gregorianDateTime.year.toString().padLeft(4, '0');
+    final month = gregorianDateTime.month.toString().padLeft(2, '0');
+    final day = gregorianDateTime.day.toString().padLeft(2, '0');
+    final hour = gregorianDateTime.hour.toString().padLeft(2, '0');
+    final minute = gregorianDateTime.minute.toString().padLeft(2, '0');
+
+    return '$year-$month-$day $hour:$minute';
+  }
+
+  static String? formatServerIsoDateTime(DateTime? dateTime) {
+    final gregorianDateTime = jalaliDateTimeToGregorianDateTime(dateTime);
+    if (gregorianDateTime == null) return null;
+
+    final year = gregorianDateTime.year.toString().padLeft(4, '0');
+    final month = gregorianDateTime.month.toString().padLeft(2, '0');
+    final day = gregorianDateTime.day.toString().padLeft(2, '0');
+    final hour = gregorianDateTime.hour.toString().padLeft(2, '0');
+    final minute = gregorianDateTime.minute.toString().padLeft(2, '0');
+    final second = gregorianDateTime.second.toString().padLeft(2, '0');
+
+    return '$year-$month-${day}T$hour:$minute:$second';
+  }
 }

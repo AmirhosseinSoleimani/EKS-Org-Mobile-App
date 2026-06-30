@@ -7,8 +7,8 @@ abstract class SlidingPanelControllerModule {
   @singleton
   PanelController get panelController => _getPanelController();
 
-  _getPanelController() {
-    PanelController _panelController = PanelController();
-    return _panelController;
+  PanelController _getPanelController() {
+    PanelController panelController = PanelController();
+    return panelController;
   }
 }

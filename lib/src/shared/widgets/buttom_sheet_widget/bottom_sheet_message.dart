@@ -19,6 +19,7 @@ class BottomSheetMessage {
     double? topRadius,
     Color? backgroundColor,
     VoidCallback? onDismiss,
+    double? maxHeight,
   }) {
     return _showSheet(
         context: context,
@@ -33,7 +34,7 @@ class BottomSheetMessage {
           actionWidget: actionWidget,
           backgroundColor: backgroundColor,
           borderRadius: topRadius,
-
+          maxHeight: maxHeight,
         )
     );
   }
@@ -45,6 +46,7 @@ class BottomSheetMessage {
     bool enableDrag = true,
     String positiveText = 'تائید',
     Color? buttonColor,
+    VoidCallback? onPositive,
   }) {
     final theme = Theme.of(context);
     return _showSheet(
@@ -56,8 +58,14 @@ class BottomSheetMessage {
         title: data.title,
         message: data.message,
         positiveTxt: positiveText,
+
         buttonColor: buttonColor ?? theme.colorScheme.primary,
-        positiveFunc: context.pop,
+        positiveFunc: () {
+          context.pop();
+          if (onPositive != null) {
+            onPositive();
+          }
+        },
 
       ),
     );

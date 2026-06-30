@@ -1,5 +1,48 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/Followup_Model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/cancel_request_reason_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/car_covers_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/cartable_cycle_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/chassis_request_history_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/check_depot_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/complete_urgent_request_data_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/control_info_models/control_info_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/day_schedule_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/distance_kilometer_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar/emdadgar_followups_data_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar/emdadgar_info_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar/emdadgar_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/emdadgar/service_assign_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/evaluation_history_item_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/follow_up_status_type_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/home_service_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/message_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/minimal_customer_info_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/non_cooperation_list_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/cancel_reason_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/cancel_request_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/change_address_home_service_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/change_time_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/chassis_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/check_depot_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/complete_urgent_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/create_follow_up_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/distance_kilometer_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/emdadgar_list_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/get_emdadgar_followups_data_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/get_reference_car_param_data.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/get_times_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/minimal_customer_info_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/request_filter_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/request_operation_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/service_assign_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/service_request_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/params/update_service_request_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/post_follow_up_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/reference_car_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/relief_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/request_status_history_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/update_service_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/service/request_service.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 import 'package:injectable/injectable.dart';
@@ -12,10 +55,148 @@ class RequestDataSourceImpl extends RequestDataSource {
   RequestDataSourceImpl(this._service);
 
   @override
-  Future<BaseListResponse<ReliefRequestModel>> getReliefRequestList() async =>
-      await _service.getReliefRequestList({"Filter":{"Logic":"and","Filters":[{"Field":"requestStatus","Operator":"eq","Value":-100}]},"Sort":[],"Skip":0,"PageSize":50});
+  Future<BaseSingleResponse<ReliefRequestListModel>> getReliefRequestList(RequestFilterParamModel param) async =>
+      await _service.getReliefRequestList(param.toJson());
 
   @override
-  Future<BaseListResponse<HomeServiceRequestModel>> getHomeServiceRequestList() async =>
-      await _service.getHomeServiceRequestList({"Filter":{"Logic":"and","Filters":[{"Field":"requestStatus","Operator":"eq","Value":-100}]},"Sort":[],"Skip":0,"PageSize":50});
+  Future<BaseSingleResponse<ReliefRequestModel>> getReliefRequestById(
+      int id) async =>
+      await _service.getReliefRequestById({"id": id});
+
+  @override
+  Future<BaseSingleResponse<HomeServiceRequestListModel>> getHomeServiceRequestList(RequestFilterParamModel param) async =>
+      await _service.getHomeServiceRequestList(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<HomeServiceRequestModel>> getHomeServiceRequestById(
+      int id) async => await _service.getHomeServiceRequestById({"id": id});
+
+  @override
+  Future<BaseSingleResponse<NonCooperationListModel>> getNonCooperationList(
+      RequestOperationParamModel param) async =>
+      await _service.getNonCooperationList(param.toJson());
+
+  @override
+  Future<BaseListResponse<CartableCycleItemModel>> getCartableCycleList(RequestOperationParamModel param)async =>
+      await _service.getCartableCycleList(param.toJson());
+
+  @override
+  Future<BaseListResponse<EvaluationHistoryItemModel>> getEvaluationHistory(
+      ServiceRequestParamModel param) async =>
+      param.serviceType == ServiceType.reliefService.value
+          ? await _service.getAidServiceEvaluationHistory(param.toJson())
+          : await _service.getHomeServiceServiceEvaluationHistory(
+          param.toJson());
+
+  @override
+  Future<BaseSingleResponse<RequestStatusHistoryListModel>>
+  getRequestStatusHistory(RequestOperationParamModel param) async =>
+      await _service.getRequestStatusHistory(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<EmdadgarInfoModel>> getEmdadgarInfo(
+      ServiceRequestParamModel param) async =>
+      await _service.getEmdadgarInfo(param.toJson());
+
+
+
+  @override
+  Future<BaseListResponse<ChassisRequestHistoryModel>> getChassisRequestHistoryList(ChassisParamModel param)  async =>
+      await _service.getChassisRequestHistoryList(param.toJson());
+
+
+  @override
+  Future<BaseSingleResponse<ControlInfoModel>> getControlInfo(
+          ServiceRequestParamModel param) async =>
+      await _service.getControlInfo(param.toJson());
+
+
+  @override
+  Future<BaseSingleResponse<FollowupModel>> getRequestFollowUp(RequestOperationParamModel param) async =>
+      await _service.getRequestFollowUp(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<UpdateServiceResponseModel>> updateServiceRequest(UpdateServiceRequestParamModel param) async =>
+      await _service.updateServiceRequest(param.toJson());
+
+  @override
+  Future<BaseListResponse<CancelRequestReasonModel>> getCancelReasons(
+      CancelReasonParamModel param) async =>
+      await _service.getCancelReasons(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<DistanceKilometerModel>> getDistanceKilometer(
+      DistanceKilometerParamModel param) async =>
+      param.serviceType == ServiceType.reliefService
+          ? await _service.getAidDistanceKilometer(param.toJson())
+          : await _service.getHomeServiceDistanceKilometer(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<void>> cancelServiceRequest(
+      CancelRequestParamModel param) async =>
+      param.serviceType == ServiceType.reliefService
+          ? await _service.cancelAidRequestService(param.toJson())
+          : await _service.cancelHomeServiceRequest(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<EmdadgarFollowupsDataModel>> getEmdadgarFollowupsData(GetEmdadgarFollowupsDataParamModel param) async =>
+     await _service.getAidEmdadgarFollowupsData(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<CompleteUrgentRequestDataModel>> completeAidUrgentRequest(CompleteUrgentParamModel param) async =>
+      await _service.completeAidUrgentRequest(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<CarCoversDataModel?>> getBasicData() async =>
+      await _service.getBasicData({});
+
+  @override
+  Future<BaseSingleResponse<ReferenceCarModel?>> getReferenceCar(
+      GetReferenceCarParamModel param) async =>
+      await _service.getReferenceCar(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<MinimalCustomerInfoModel?>> getMinimalCustomerInfo(
+      MinimalCustomerInfoParamModel param) async =>
+      await _service.getMinimalCustomerInfo(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<PostFollowUpResponseModel>> createFollowUp(
+      CreateFollowUpParamModel param) async =>
+      await _service.createFollowUp(param.toJson());
+
+  @override
+  Future<BaseListResponse<
+      FollowUpStatusTypeModel>> getFollowUpStatusTypes() async =>
+      await _service.getFollowUpStatusTypes({});
+
+  @override
+  Future<BaseSingleResponse<MessageModel>> changeTime(
+      ChangeTimeParamModel param) async =>
+      await _service.changeTime(param.toJson());
+
+  @override
+  Future<BaseListResponse<DayScheduleModel>> getTimes(
+      GetTimesParamModel param) async =>
+      await _service.getTimes(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<MessageModel>> changeAddressHomeServiceRequest(
+      ChangeAddressHomeServiceParamModel param) async =>
+      await _service.changeAddressHomeServiceRequest(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<CheckDepotModel>> getCheckDepot(CheckDepotParamModel param) async =>
+  await _service.getCheckDepot(param.toJson());
+
+  @override
+  Future<BaseListResponse<EmdadgarModel>> getEmdadgarList(EmdadgarListParamModel param)  async =>
+      await _service.getEmdadgarList(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<ServiceAssignResponseModel>> serviceAssign(ServiceAssignParamModel param) async =>
+      param.serviceType == ServiceType.reliefService
+          ? await _service.aidServiceAssign(param.toJson())
+          : await _service.homeServiceAssign(param.toJson());
+
 }

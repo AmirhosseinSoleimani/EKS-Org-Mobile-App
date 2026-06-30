@@ -17,7 +17,7 @@ class CarImageWidget extends StatelessWidget {
       width: width ?? AppSize.s150,
       height: height ?? AppSize.s150,
       fit: BoxFit.contain,
-      errorBuilder: (context, _, __) {
+      errorBuilder: (context, _, _) {
         return const Center(
           child: Icon(
             Icons.image_not_supported,

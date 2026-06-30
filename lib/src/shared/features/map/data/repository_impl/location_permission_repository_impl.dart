@@ -33,9 +33,10 @@ class LocationPermissionRepositoryImpl extends LocationPermissionRepository {
       bool enabled = await _dataSource.isServiceEnabled();
       if (!enabled) {
         enabled = await _dataSource.requestService();
-        if (!enabled)
+        if (!enabled) {
           return const ApiResult.success(
               data: PermissionOutcome.gpsOff, resultCode: 1);
+        }
       }
     } catch (_) {
       return const ApiResult.success(

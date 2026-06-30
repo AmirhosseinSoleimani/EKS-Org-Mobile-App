@@ -1,6 +1,16 @@
-import 'package:eks_sana_plus_org/src/features/services/data/models/FollowupModel.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/Followup_Model.dart';
 
 class FollowupEntity {
+  final List<FollowupItemEntity>? followUpList;
+
+  const FollowupEntity({this.followUpList});
+
+  FollowupModel toModel() => FollowupModel(
+    followUpList: followUpList?.map((part) => part.toModel()).toList(),
+  );
+}
+
+class FollowupItemEntity {
   final int? id;
   final String? followUpDateTime;
   final int? actionType;
@@ -26,7 +36,7 @@ class FollowupEntity {
   final int? serviceType;
   final String? description;
 
-  const FollowupEntity({
+  const FollowupItemEntity({
     this.id,
     this.followUpDateTime,
     this.actionType,
@@ -53,7 +63,7 @@ class FollowupEntity {
     this.description,
   });
 
-  FollowupEntity copyWith({
+  FollowupItemEntity copyWith({
     int? id,
     String? followUpDateTime,
     int? actionType,
@@ -79,7 +89,7 @@ class FollowupEntity {
     int? serviceRequestId,
     int? serviceType,
   }) {
-    return FollowupEntity(
+    return FollowupItemEntity(
       id: id ?? this.id,
       followUpDateTime: followUpDateTime ?? this.followUpDateTime,
       actionType: actionType ?? this.actionType,
@@ -99,8 +109,7 @@ class FollowupEntity {
       sourceTypeName: sourceTypeName ?? this.sourceTypeName,
       sourceTypeTitle: sourceTypeTitle ?? this.sourceTypeTitle,
       insertDateTime: insertDateTime ?? this.insertDateTime,
-      insertDateTimeJalali:
-      insertDateTimeJalali ?? this.insertDateTimeJalali,
+      insertDateTimeJalali: insertDateTimeJalali ?? this.insertDateTimeJalali,
       insertTime: insertTime ?? this.insertTime,
       serviceRequestId: serviceRequestId ?? this.serviceRequestId,
       serviceType: serviceType ?? this.serviceType,
@@ -108,7 +117,7 @@ class FollowupEntity {
     );
   }
 
-  FollowupModel toModel() => FollowupModel(
+  FollowupItemModel toModel() => FollowupItemModel(
     id: id,
     followUpDateTime: followUpDateTime,
     actionType: actionType,

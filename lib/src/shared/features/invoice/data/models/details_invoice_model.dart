@@ -28,8 +28,9 @@ class DetailsInvoiceItemModel extends DetailsInvoiceItemEntity {
     super.aidItemType,
     super.aidItemTypeStr,
     super.customerPrice,
+    super.customerBasePrice,
     super.companyPrice,
-    super.description,
+    super.customerDiscountPrice,
   });
 
   factory DetailsInvoiceItemModel.fromJson(Map<String, dynamic> json) {
@@ -39,8 +40,9 @@ class DetailsInvoiceItemModel extends DetailsInvoiceItemEntity {
       aidItemType: json['aidItemType'],
       aidItemTypeStr: json['aidItemTypeStr'],
       customerPrice: json['customerPrice'],
+      customerBasePrice: json['customerBasePrice'],
+      customerDiscountPrice: json['customerDiscountPrice'],
       companyPrice: json['companyPrice'],
-      description: json['description'],
     );
   }
 }

@@ -2,6 +2,33 @@ import 'package:eks_sana_plus_org/src/features/services/data/models/relief_reque
 
 import 'abstract/base_request_entity.dart';
 
+class ReliefRequestListEntity {
+  final List<ReliefRequestEntity> items;
+  final int totalCount;
+
+  const ReliefRequestListEntity({
+    required this.items,
+    required this.totalCount,
+  });
+
+  ReliefRequestListEntity copyWith({
+    List<ReliefRequestEntity>? items,
+    int? totalCount,
+  }) {
+    return ReliefRequestListEntity(
+      items: items ?? this.items,
+      totalCount: totalCount ?? this.totalCount,
+    );
+  }
+
+  ReliefRequestListModel toModel() {
+    return ReliefRequestListModel(
+      items: items,
+      totalCount: totalCount,
+    );
+  }
+}
+
 class ReliefRequestEntity extends BaseRequestEntity {
   final int? defectId;
   final String? defectTitle;
@@ -9,13 +36,15 @@ class ReliefRequestEntity extends BaseRequestEntity {
   final bool? isUrgentRequest;
 
   final String? emdadServiceTitle;
-
+  final int? emdadServiceCategoryId;
+  final int? emdadServiceId;
   final String? hamlReasonTitle;
   final String? wheelQuestionTitle;
 
   final String? emdadgarAssignDistanceTitle;
   final String? emdadgarAssignDurationTitle;
 
+  @override
   final String? assignDate;
   final String? assignTime;
 
@@ -27,6 +56,8 @@ class ReliefRequestEntity extends BaseRequestEntity {
     super.latitude,
     super.longitude,
     super.aidAddress,
+    super.cityId,
+    super.provinceId,
     super.cityName,
     super.provinceName,
     super.carName,
@@ -44,7 +75,7 @@ class ReliefRequestEntity extends BaseRequestEntity {
     super.personTypeTitle,
     super.chassisNumber,
     super.kilometer,
-    super.nationalNumber,
+    super.nationalCode,
     super.emFullName,
     super.emMobileNumber1,
     super.emVehicleTypeTitle,
@@ -66,108 +97,44 @@ class ReliefRequestEntity extends BaseRequestEntity {
     this.emdadgarAssignDurationTitle,
     this.assignDate,
     this.assignTime,
+    this.emdadServiceCategoryId,
+    this.emdadServiceId,
+    super.serviceType,
+    super.agencyVehicleLabelCode,
+    super.assignDateTimeJalali,
+    super.callMobileNumber,
+    super.carFactory,
+    super.carFactoryTitle,
+    super.carGroupTitle,
+    super.carInfoGuid,
+    super.carInfoId,
+    super.carModelId,
+    super.emdadgarId,
+    super.garantyCarTipId,
+    super.garantyDescription,
+    super.garantyEndDate,
+    super.garantyIsGaranty,
+    super.garantyLastKilometer,
+    super.garantyReceptionDate,
+    super.garantySiteDescription,
+    super.garantyStartDate,
+    super.garantyStatusCode,
+    super.hasEmdadgar,
+    super.insertDateTime,
+    super.insertDateTimeJalali,
+    super.invoiceDocumentGuid,
+    super.isSaipa,
+    super.personType,
+    super.planningId,
+    super.requestDateTimeJalali,
+    super.vehicleUsageId,
+    super.vehicleUsageTitle,
+    super.wageGroupType,
+    super.weightGroupTitle,
+    super.agencyCode,
+    super.agencyName,
+    super.requestDateTime,
   });
-
-  ReliefRequestEntity copyWith({
-    int? id,
-    int? trackCode,
-    String? firstName,
-    String? lastName,
-    String? chassisNumber,
-    int? kilometer,
-    String? nationalNumber,
-    double? latitude,
-    double? longitude,
-    String? aidAddress,
-    String? cityName,
-    String? provinceName,
-    String? carName,
-    int? carProductionYear,
-    String? licensePlate,
-    int? requestStatus,
-    String? requestStatusTitle,
-    String? requestDateJalali,
-    String? requestTime,
-    String? customerMobileNumber,
-    String? description,
-    String? carColorTitle,
-    String? carEngineNumber,
-    String? genderTitle,
-    String? personTypeTitle,
-    String? dispatcher,
-    bool? isGuaranty,
-    bool? isSubscription,
-    String? emFullName,
-    String? emMobileNumber1,
-    String? emVehicleTypeTitle,
-    int? emVehicleType,
-    String? emVehicleSubTypeTitle,
-    int? emVehicleSubType,
-    String? emRepresentationName,
-    String? emRepresentationCode,
-    int? defectId,
-    String? defectTitle,
-    bool? isUrgentRequest,
-    String? emdadServiceTitle,
-    String? hamlReasonTitle,
-    String? wheelQuestionTitle,
-    String? emdadgarAssignDistanceTitle,
-    String? emdadgarAssignDurationTitle,
-    String? assignDate,
-    String? assignTime,
-  }) {
-    return ReliefRequestEntity(
-      id: id ?? this.id,
-      trackCode: trackCode ?? this.trackCode,
-      firstName: firstName ?? this.firstName,
-      lastName: lastName ?? this.lastName,
-      latitude: latitude ?? this.latitude,
-      longitude: longitude ?? this.longitude,
-      aidAddress: aidAddress ?? this.aidAddress,
-      cityName: cityName ?? this.cityName,
-      provinceName: provinceName ?? this.provinceName,
-      carName: carName ?? this.carName,
-      carProductionYear: carProductionYear ?? this.carProductionYear,
-      licensePlate: licensePlate ?? this.licensePlate,
-      requestStatus: requestStatus ?? this.requestStatus,
-      requestStatusTitle: requestStatusTitle ?? this.requestStatusTitle,
-      requestDateJalali: requestDateJalali ?? this.requestDateJalali,
-      requestTime: requestTime ?? this.requestTime,
-      chassisNumber: chassisNumber ?? this.chassisNumber,
-      kilometer: kilometer ?? this.kilometer,
-      nationalNumber: nationalNumber ?? this.nationalNumber,
-      customerMobileNumber: customerMobileNumber ?? this.customerMobileNumber,
-      description: description ?? this.description,
-      carColorTitle: carColorTitle ?? this.carColorTitle,
-      carEngineNumber: carEngineNumber ?? this.carEngineNumber,
-      genderTitle: genderTitle ?? this.genderTitle,
-      personTypeTitle: personTypeTitle ?? this.personTypeTitle,
-      dispatcher: dispatcher ?? this.dispatcher,
-      isGuaranty: isGuaranty ?? this.isGuaranty,
-      isSubscription: isSubscription ?? this.isSubscription,
-      emFullName: emFullName ?? this.emFullName,
-      emMobileNumber1: emMobileNumber1 ?? this.emMobileNumber1,
-      emVehicleTypeTitle: emVehicleTypeTitle ?? this.emVehicleTypeTitle,
-      emVehicleType: emVehicleType ?? this.emVehicleType,
-      emVehicleSubTypeTitle:
-          emVehicleSubTypeTitle ?? this.emVehicleSubTypeTitle,
-      emVehicleSubType: emVehicleSubType ?? this.emVehicleSubType,
-      emRepresentationName: emRepresentationName ?? this.emRepresentationName,
-      emRepresentationCode: emRepresentationCode ?? this.emRepresentationCode,
-      defectId: defectId ?? this.defectId,
-      defectTitle: defectTitle ?? this.defectTitle,
-      isUrgentRequest: isUrgentRequest ?? this.isUrgentRequest,
-      emdadServiceTitle: emdadServiceTitle ?? this.emdadServiceTitle,
-      hamlReasonTitle: hamlReasonTitle ?? this.hamlReasonTitle,
-      wheelQuestionTitle: wheelQuestionTitle ?? this.wheelQuestionTitle,
-      emdadgarAssignDistanceTitle:
-          emdadgarAssignDistanceTitle ?? this.emdadgarAssignDistanceTitle,
-      emdadgarAssignDurationTitle:
-          emdadgarAssignDurationTitle ?? this.emdadgarAssignDurationTitle,
-      assignDate: assignDate ?? this.assignDate,
-      assignTime: assignTime ?? this.assignTime,
-    );
-  }
 
   ReliefRequestModel toModel() {
     return ReliefRequestModel(
@@ -206,7 +173,7 @@ class ReliefRequestEntity extends BaseRequestEntity {
       emFullName: emFullName,
       emRepresentationCode: emRepresentationCode,
       emVehicleTypeTitle: emVehicleTypeTitle,
-      nationalNumber: nationalNumber,
+      nationalCode: nationalCode,
       isSubscription: isSubscription,
       emVehicleSubTypeTitle: emVehicleSubTypeTitle,
       emMobileNumber1: emMobileNumber1,
@@ -217,6 +184,12 @@ class ReliefRequestEntity extends BaseRequestEntity {
       emdadgarAssignDurationTitle: emdadgarAssignDurationTitle,
       hamlReasonTitle: hamlReasonTitle,
       wheelQuestionTitle: wheelQuestionTitle,
+      serviceType: serviceType,
+      agencyCode: agencyCode,
+      agencyName:agencyName,
+      requestDateTime:requestDateTime,
+      emdadServiceCategoryId: emdadServiceCategoryId,
+      emdadServiceId: emdadServiceId,
     );
   }
 }

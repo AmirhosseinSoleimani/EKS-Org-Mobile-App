@@ -59,7 +59,7 @@ class MapActions extends StatelessWidget {
       backgroundColor: colorScheme.onPrimary,
       onPressed: () => cubit.ensureAndCenterOnUser(),
       icon: Icon(
-        IconManager.myLocation,
+        Icons.my_location_outlined,
         color: colorScheme.onTertiary,
       ),
       label: 'موقعیت من'.titleMedium(context, fontSize: AppSize.s16),
@@ -95,7 +95,7 @@ class MapSearchField extends StatelessWidget {
           fontSize: AppSize.s14
       ),
       suffixIcon: const Icon(
-        IconManager.search,
+        Icons.search,
         size: AppSize.s24,
       ),
       backgroundColor: Theme.of(context).colorScheme.surface,

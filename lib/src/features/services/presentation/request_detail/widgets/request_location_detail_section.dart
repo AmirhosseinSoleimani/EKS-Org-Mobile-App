@@ -1,8 +1,8 @@
 import 'package:eks_sana_plus_org/src/common/constants/app_constants.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/static_map_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/movable_map_widget.dart';
 import 'package:flutter/material.dart';
 
-import 'key_value_row.dart';
+import '../../../../../shared/widgets/request_widgets/key_value_row.dart';
 
 class RequestLocationDetailSection extends StatelessWidget {
   final String? province;
@@ -42,7 +42,7 @@ class RequestLocationDetailSection extends StatelessWidget {
         const SizedBox(height: 8),
         SizedBox(
           height: 250,
-          child: StaticMapWidget(
+          child: MovableMapWidget(
               latitude: latitude ?? AppConstants.defaultLatitude,
               longitude: longitude ?? AppConstants.defaultLongitude),
         ),

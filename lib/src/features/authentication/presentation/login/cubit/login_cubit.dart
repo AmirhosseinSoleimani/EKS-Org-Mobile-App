@@ -3,6 +3,7 @@ import 'package:eks_sana_plus_org/src/features/authentication/domain/entity/logi
 import 'package:eks_sana_plus_org/src/features/authentication/domain/use_cases/login_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/authentication/domain/use_cases/phone_number_validator_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/authentication/presentation/login/cubit/login_state.dart';
+import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -37,21 +38,23 @@ class LoginCubit extends Cubit<LoginState> {
   void privacyPolicyUrl() => launchUrl(Uri.parse(AppConstants.privacyPolicyUrl));
 
   Future<void> login() async {
-     emit(const LoginState.loading());
-     final loginParam = LoginRequestEntity(
-       userName: userNameController.text,
-     password: passwordController.text,
-     );
+    emit(const LoginState.loading());
+    final loginParam = LoginRequestEntity(
+      userName: userNameController.text,
+      password: passwordController.text,
+    );
     final result = await loginUseCase.call(loginParam);
-      result.whenOrNull(
-        success: (_, __, ___) => emit(const LoginState.success()),
-        failure: (error, failure) {
+    result.whenOrNull(
+      success: (data, failures, resultCode) {
+        emit(const LoginState.success());
+      },
+      failure: (error, failure) {
         emit(
           LoginState.error(
             errorMessage: failure ?? 'درخواست شما با خطا مواجه شد، لطفا با شماره 096550 تماس بگیرید',
           ),
         );
-        },
+      },
       connectionError: () => emit(const LoginState.connectionError()),
     );
   }

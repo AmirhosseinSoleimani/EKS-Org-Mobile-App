@@ -41,62 +41,75 @@ class DatePickerWidget extends StatelessWidget {
       hintText: hintText,
       textAlign: TextAlign.right,
       textDirection: TextDirection.ltr,
-      onTap: () async{
+      onTap: () async {
         Jalali? picked = await showPersianDatePicker(
-          initialEntryMode: PersianDatePickerEntryMode.calendarOnly,
+            locale: Locale('fa', 'IR'),
+            initialEntryMode: PersianDatePickerEntryMode.calendarOnly,
             context: context,
             initialDate: initialDate ?? Jalali.now(),
             firstDate: Jalali(1300, 1),
             lastDate: lastDate ?? Jalali.now(),
-            builder: (_, child) {
-              return Theme(
-                data: ThemeData(
-                    colorScheme: ColorScheme(
-                        primary: Theme.of(context).colorScheme.primary,
-                        brightness: Brightness.light,
-                        onPrimary: Theme.of(context).colorScheme.surface,
-                        secondary: Theme.of(context).colorScheme.surface,
-                        onSecondary: Theme.of(context).colorScheme.surface,
-                        error: Theme.of(context).colorScheme.error,
-                        onError: Theme.of(context).colorScheme.onError,
-                        surface: Theme.of(context).colorScheme.surface,
-                        onSurface: Theme.of(context).colorScheme.onSurface,
-                        primaryContainer: Theme.of(context).colorScheme.surface,
-                    ),
-                    textTheme: TextTheme(
-                      headlineLarge: getBoldStyle(fontSize: AppSize.s24, color: ColorLightManager.surface),
-                      headlineMedium: getSemiBoldStyle(fontSize: AppSize.s24, color: ColorLightManager.surface),
-                      headlineSmall: getRegularStyle(fontSize: AppSize.s24, color: ColorLightManager.surface),
-
-                      titleLarge: getBoldStyle(fontSize: AppSize.s20, color: ColorLightManager.surface),
-                      titleMedium: getSemiBoldStyle(fontSize: AppSize.s20, color: ColorLightManager.surface),
-                      titleSmall: getRegularStyle(fontSize: AppSize.s20, color: ColorLightManager.surface),
-
-                      displayLarge: getBoldStyle(fontSize: AppSize.s18, color: ColorLightManager.surface),
-                      displayMedium: getSemiBoldStyle(fontSize: AppSize.s18, color: ColorLightManager.surface),
-                      displaySmall: getRegularStyle(fontSize: AppSize.s18, color: ColorLightManager.surface),
-
-                      bodyLarge: getBoldStyle(fontSize: AppSize.s16, color: ColorLightManager.surface),
-                      bodyMedium: getSemiBoldStyle(fontSize: AppSize.s16, color: ColorLightManager.surface),
-                      bodySmall: getRegularStyle(fontSize: AppSize.s16, color: ColorLightManager.surface),
-
-                      labelLarge: getBoldStyle(fontSize: AppSize.s14, color: ColorLightManager.surface),
-                      labelMedium: getSemiBoldStyle(fontSize: AppSize.s14, color: ColorLightManager.surface),
-                      labelSmall: getRegularStyle(fontSize: AppSize.s14, color: ColorLightManager.surface),
-                    ).apply(fontFamily: FontConstants.fontFamilyPersian,
-                    ),
-                    dialogTheme: DialogThemeData(
-                      backgroundColor: Theme.of(context).colorScheme.surface,
-                      shadowColor:Theme.of(context).colorScheme.surface,
-                      surfaceTintColor: Theme.of(context).colorScheme.surface,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(AppSize.s12),
+            initialDatePickerMode: PersianDatePickerMode.year,
+            builder: (ctx, child) {
+              return Localizations.override(
+                context: context,
+                locale: const Locale('fa', 'IR'),
+                delegates: const [
+                  PersianMaterialLocalizations.delegate,
+                  PersianCupertinoLocalizations.delegate,
+                ],
+                child: Directionality(
+                  textDirection: TextDirection.rtl,
+                  child: Theme(
+                    data: ThemeData(
+                        colorScheme: ColorScheme(
+                            primary: Theme.of(context).colorScheme.primary,
+                            brightness: Brightness.light,
+                            onPrimary: Theme.of(context).colorScheme.surface,
+                            secondary: Theme.of(context).colorScheme.surface,
+                            onSecondary: Theme.of(context).colorScheme.surface,
+                            error: Theme.of(context).colorScheme.error,
+                            onError: Theme.of(context).colorScheme.onError,
+                            surface: Theme.of(context).colorScheme.surface,
+                            onSurface: Theme.of(context).colorScheme.onSurface,
+                            primaryContainer: Theme.of(context).colorScheme.surface,
                         ),
-                      ),
-                    )
+                        textTheme: TextTheme(
+                          headlineLarge: getBoldStyle(fontSize: AppSize.s24, color: ColorLightManager.surface),
+                          headlineMedium: getSemiBoldStyle(fontSize: AppSize.s24, color: ColorLightManager.surface),
+                          headlineSmall: getRegularStyle(fontSize: AppSize.s24, color: ColorLightManager.surface),
+
+                          titleLarge: getBoldStyle(fontSize: AppSize.s20, color: ColorLightManager.surface),
+                          titleMedium: getSemiBoldStyle(fontSize: AppSize.s20, color: ColorLightManager.surface),
+                          titleSmall: getRegularStyle(fontSize: AppSize.s20, color: ColorLightManager.surface),
+
+                          displayLarge: getBoldStyle(fontSize: AppSize.s18, color: ColorLightManager.surface),
+                          displayMedium: getSemiBoldStyle(fontSize: AppSize.s18, color: ColorLightManager.surface),
+                          displaySmall: getRegularStyle(fontSize: AppSize.s18, color: ColorLightManager.surface),
+
+                          bodyLarge: getBoldStyle(fontSize: AppSize.s16, color: ColorLightManager.surface),
+                          bodyMedium: getSemiBoldStyle(fontSize: AppSize.s16, color: ColorLightManager.surface),
+                          bodySmall: getRegularStyle(fontSize: AppSize.s16, color: ColorLightManager.surface),
+
+                          labelLarge: getBoldStyle(fontSize: AppSize.s14, color: ColorLightManager.surface),
+                          labelMedium: getSemiBoldStyle(fontSize: AppSize.s14, color: ColorLightManager.surface),
+                          labelSmall: getRegularStyle(fontSize: AppSize.s14, color: ColorLightManager.surface),
+                        ).apply(fontFamily: FontConstants.fontFamilyPersian,
+                        ),
+                        dialogTheme: DialogThemeData(
+                          backgroundColor: Theme.of(context).colorScheme.surface,
+                          shadowColor:Theme.of(context).colorScheme.surface,
+                          surfaceTintColor: Theme.of(context).colorScheme.surface,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(AppSize.s12),
+                            ),
+                          ),
+                        )
+                    ),
+                    child: child ?? const SizedBox.shrink(),
+                  ),
                 ),
-                child: child ?? const SizedBox.shrink(),
               );
             });
         if (picked != null) {

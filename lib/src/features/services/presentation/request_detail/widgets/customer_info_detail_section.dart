@@ -1,5 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/cubit/request_detail_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_row.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/key_value_row.dart';
 import 'package:flutter/material.dart';
 
 class CustomerInfoDetailSection extends StatelessWidget {
@@ -16,27 +16,27 @@ class CustomerInfoDetailSection extends StatelessWidget {
       children: [
         KeyValueRow(
           label: "نام",
-          value: cubit.selectedRequest.firstName ?? "-",
+          value: cubit.selectedRequest?.firstName ?? "-",
         ),
         KeyValueRow(
           label: "نام خانوادگی",
-          value: cubit.selectedRequest.lastName ?? "-",
+          value: cubit.selectedRequest?.lastName ?? "-",
         ),
         KeyValueRow(
           label: "کد ملی",
-          value: cubit.selectedRequest.nationalNumber ?? "-",
+          value: cubit.selectedRequest?.nationalCode ?? "-",
         ),
         KeyValueRow(
           label: "شماره موبایل",
-          value: cubit.selectedRequest.customerMobileNumber ?? "-",
+          value: cubit.selectedRequest?.customerMobileNumber ?? "-",
         ),
         KeyValueRow(
           label: "نوع شخص",
-          value: cubit.selectedRequest.personTypeTitle ?? "-",
+          value: cubit.selectedRequest?.personTypeTitle ?? "-",
         ),
         KeyValueRow(
           label: "جنسیت",
-          value: cubit.selectedRequest.genderTitle ?? "-",
+          value: cubit.selectedRequest?.genderTitle ?? "-",
         ),
       ],
     );

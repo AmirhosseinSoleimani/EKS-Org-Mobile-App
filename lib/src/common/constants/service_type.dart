@@ -9,7 +9,7 @@ enum ServiceType implements DropdownItem {
   homeService(2, 'خدمت در محل', ColorLightManager.secondary, Icons.home_repair_service)/*,
   saleProduct(5, 'فروش تجاری', ColorDarkManager.purple)*/;
 
-  final int value;
+
   final Color serviceColor;
   final IconData icon;
 
@@ -18,6 +18,9 @@ enum ServiceType implements DropdownItem {
 
   @override
   final String label;
+
+  @override
+  final int value;
 
   @override
   Widget leading(BuildContext context) {

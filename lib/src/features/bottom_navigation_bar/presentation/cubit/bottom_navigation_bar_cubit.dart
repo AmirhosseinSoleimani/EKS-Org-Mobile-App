@@ -5,7 +5,7 @@ import 'bottom_navigation_bar_state.dart';
 @injectable
 class BottomNavigationBarCubit extends Cubit<BottomNavigationBarState> {
 
-  BottomNavigationBarCubit() : super(const BottomNavigationBarState.currentIndex(0));
+  BottomNavigationBarCubit() : super(const BottomNavigationBarState.currentIndex(1));
 
   void init() {
 

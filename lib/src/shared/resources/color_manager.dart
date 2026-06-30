@@ -19,9 +19,10 @@ class ColorLightManager {
   static const error = Color(0xFFC30000);
   static const inversePrimary = Color(0xFFFFF2F2);
   static const onError = Color(0xFF00966D);
+  static const success = Color(0xFFd7fff3);
   static const surfaceBright = Color(0xFFF3FDFA);
 
-  static const surface = Color(0xFFF9F9F9);
+  static const surface = Color(0xFFF5F5F5);
   static const primaryFixedDim = Color(0xFFEFEFF0);
   static const onSurface = Color(0xFF212121);
 
@@ -44,8 +45,8 @@ class ColorLightManager {
 
   static const surfaceTint = Color(0xff909090);
 
-  static const inverseSurface = Color(0xffADADAD);
-  static const onSecondaryFixed = Color(0xff8E8E8E);
+  static const inverseSurface = Color(0xffd8d8d8);
+  static const onSecondaryFixed = Color(0xffCBCBCB);
   static const onInverseSurface = Color(0xffE7E7E7);
 
   static const secondaryFixed = Color(0xff61646B);
