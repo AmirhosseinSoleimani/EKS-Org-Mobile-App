@@ -113,9 +113,6 @@ class ServiceAssignmentMapWidget extends StatelessWidget {
                             final markerStyle =
                             markerStyleResolver.resolve(emdadgar);
 
-                            final bool isThisMarkerLoading =
-                                loadingEmdadgarId == emdadgar.id;
-
                             return Marker(
                               width: AppSize.s48,
                               height: AppSize.s48,
@@ -219,31 +216,6 @@ class ServiceAssignmentMapWidget extends StatelessWidget {
           ),
         );
       },
-    );
-  }
-}
-
-class _CircleMapButton extends StatelessWidget {
-  final IconData icon;
-  final VoidCallback? onTap;
-
-  const _CircleMapButton({required this.icon, this.onTap});
-
-  @override
-  Widget build(BuildContext context) {
-    return Material(
-      color: Colors.white,
-      shape: const CircleBorder(),
-      elevation: 3,
-      child: InkWell(
-        customBorder: const CircleBorder(),
-        onTap: onTap,
-        child: SizedBox(
-          width: AppSize.s40,
-          height: AppSize.s40,
-          child: Icon(icon, color: Color(0xff6C35D4), size: 24),
-        ),
-      ),
     );
   }
 }

@@ -42,10 +42,6 @@ class LocationParamModel extends LocationParamEntity {
   }
 
   Map<String, dynamic> toJson() {
-    print("ASDasd");
-    print(latitude);
-    print(longitude);
-    print("ASDasd");
     return {
       "latitude": latitude,
       "longitude": longitude,

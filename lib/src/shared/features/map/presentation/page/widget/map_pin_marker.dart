@@ -17,6 +17,7 @@ class MapPinMarker extends StatelessWidget {
       children: [
         SvgWidget(
           src: SvgAsset(iconPath),
+          color: color,
           width: AppSize.s48,
           height: AppSize.s48,
         ),
