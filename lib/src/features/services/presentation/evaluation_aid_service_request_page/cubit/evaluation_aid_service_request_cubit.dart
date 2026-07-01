@@ -442,23 +442,34 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     return fetchResult;
   }
 
-
   Future<void> submitEvaluationForAidService() async {
     _retryAction = submitEvaluationForAidService;
-    final type = selectedServiceCategory.value.evaluationViewType;
-    if (!laborPart.hasSelectedLabors &&  type == EvaluationServiceCategoryViewType.laborAndPart) {
+
+    final validationMessage = _validateEvaluationForm();
+
+    if (validationMessage != null) {
+      _emitError(validationMessage);
+      return;
+    }
+
+    final serviceCategory = selectedServiceCategory.value!;
+    final type = serviceCategory.evaluationViewType;
+
+    if (!laborPart.hasSelectedLabors &&
+        type == EvaluationServiceCategoryViewType.laborAndPart) {
       _emitError('حداقل یک اجرت باید انتخاب شود');
       return;
     }
 
     _safeEmit(const EvaluationAidServiceRequestState.submitLoading());
 
-    final AidServiceEvaluationSubmitParamEntity param = AidServiceEvaluationSubmitParamBuilder.build(
+    final AidServiceEvaluationSubmitParamEntity param =
+    AidServiceEvaluationSubmitParamBuilder.build(
       selectedRequest: selectedRequest,
       emdadgarInfo: emdadgarInfo,
       lastEvaluationEntity: lastEvaluationEntity,
       emdadgarServiceDetailEntity: emdadgarServiceDetailEntity,
-      selectedServiceCategory: selectedServiceCategory.value,
+      selectedServiceCategory: serviceCategory,
       mainForm: mainForm,
       transportForm: transportForm,
       selectedLabors: laborPart.selectedLabors,
@@ -470,7 +481,10 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     result.whenOrNull(
       success: (data, failures, resultCode) {
         _safeEmit(
-            EvaluationAidServiceRequestState.submitSuccess(id: data.id ?? '0'));
+          EvaluationAidServiceRequestState.submitSuccess(
+            id: data.id ?? '0',
+          ),
+        );
       },
       failure: (error, failures) {
         _errorMessage = _fallbackError(failures ?? error.toString());
@@ -480,6 +494,65 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
         _safeEmit(const EvaluationAidServiceRequestState.connectionError());
       },
     );
+  }
+
+  String? _validateEvaluationForm() {
+    if (selectedDefect.value == null) {
+      return 'لطفاً ایراد خودرو را انتخاب کنید';
+    }
+
+    if (selectedServiceCategory.value == null) {
+      return 'لطفاً نوع امداد را انتخاب کنید';
+    }
+
+    final kilometerText = _normalizeNumberText(
+      mainForm.kilometerController.text,
+    );
+
+    if (kilometerText.isEmpty) {
+      return 'لطفاً کیلومتر خودرو را وارد کنید';
+    }
+
+    final kilometer = int.tryParse(kilometerText);
+
+    if (kilometer == null) {
+      return 'کیلومتر خودرو باید عدد معتبر باشد';
+    }
+
+    if (kilometer <= 0) {
+      return 'کیلومتر خودرو باید بزرگ‌تر از صفر باشد';
+    }
+
+    return null;
+  }
+
+  String _normalizeNumberText(String value) {
+    return value
+        .trim()
+        .replaceAll(',', '')
+        .replaceAll('٬', '')
+        .replaceAll(' ', '')
+        .replaceAll('‌', '')
+        .replaceAll('۰', '0')
+        .replaceAll('۱', '1')
+        .replaceAll('۲', '2')
+        .replaceAll('۳', '3')
+        .replaceAll('۴', '4')
+        .replaceAll('۵', '5')
+        .replaceAll('۶', '6')
+        .replaceAll('۷', '7')
+        .replaceAll('۸', '8')
+        .replaceAll('۹', '9')
+        .replaceAll('٠', '0')
+        .replaceAll('١', '1')
+        .replaceAll('٢', '2')
+        .replaceAll('٣', '3')
+        .replaceAll('٤', '4')
+        .replaceAll('٥', '5')
+        .replaceAll('٦', '6')
+        .replaceAll('٧', '7')
+        .replaceAll('٨', '8')
+        .replaceAll('٩', '9');
   }
 
   bool isBottomSheetOpen = false;

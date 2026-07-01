@@ -7,6 +7,7 @@ class OverlayDropdownMenu<T extends DropdownItem> extends StatefulWidget {
   final Offset position;
   final double width;
   final List<T> items;
+  final String Function(T)? itemTitleBuilder;
 
   final ValueChanged<T> onSelect;
   final VoidCallback onDismiss;
@@ -18,6 +19,7 @@ class OverlayDropdownMenu<T extends DropdownItem> extends StatefulWidget {
     required this.items,
     required this.onSelect,
     required this.onDismiss,
+    this.itemTitleBuilder,
   });
 
   @override
@@ -42,9 +44,22 @@ class _OverlayDropdownMenuState<T extends DropdownItem>
   }
 
   @override
+  void didUpdateWidget(covariant OverlayDropdownMenu<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (_scrollController.hasClients) {
+      _scrollController.jumpTo(0);
+    }
+  }
+
+  @override
   void dispose() {
     _scrollController.dispose();
     super.dispose();
+  }
+
+  String _itemTitle(T item) {
+    return widget.itemTitleBuilder?.call(item) ?? item.label;
   }
 
   ScrollbarOrientation _resolveScrollbarOrientation(BuildContext context) {
@@ -59,14 +74,12 @@ class _OverlayDropdownMenuState<T extends DropdownItem>
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        /// tap outside → dismiss
         GestureDetector(
           onTap: widget.onDismiss,
           behavior: HitTestBehavior.translucent,
           child: const SizedBox.expand(),
         ),
 
-        /// dropdown menu
         Positioned(
           top: widget.position.dy,
           left: widget.position.dx,
@@ -80,11 +93,14 @@ class _OverlayDropdownMenuState<T extends DropdownItem>
               constraints: const BoxConstraints(
                 maxHeight: _menuMaxHeight,
               ),
-              child: Scrollbar(
+              child: widget.items.isEmpty
+                  ? _buildEmptyResult()
+                  : Scrollbar(
                 controller: _scrollController,
                 thumbVisibility: _shouldShowScrollbar,
                 trackVisibility: _shouldShowScrollbar,
-                scrollbarOrientation: _resolveScrollbarOrientation(context),
+                scrollbarOrientation:
+                _resolveScrollbarOrientation(context),
                 child: ListView.builder(
                   controller: _scrollController,
                   padding: EdgeInsets.zero,
@@ -110,7 +126,7 @@ class _OverlayDropdownMenuState<T extends DropdownItem>
                             ],
                             Expanded(
                               child: BodyMediumText(
-                                text: item.label,
+                                text: _itemTitle(item),
                               ),
                             ),
                           ],
@@ -124,6 +140,17 @@ class _OverlayDropdownMenuState<T extends DropdownItem>
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildEmptyResult() {
+    return const SizedBox(
+      height: 72,
+      child: Center(
+        child: BodyMediumText(
+          text: 'موردی یافت نشد',
+        ),
+      ),
     );
   }
 }
