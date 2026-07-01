@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
@@ -12,8 +14,10 @@ class RequestCard extends StatelessWidget {
   final String serviceTitle;
   final Color serviceColor;
   final IconData serviceIcon;
-  final Function(BaseRequestEntity) onSelected;
+  final FutureOr<void> Function(BaseRequestEntity) onSelected;
+  final FutureOr<void> Function()? onRefreshAfterReturn;
   final ValueNotifier<num?> selectedOperationRequestId;
+
 
   const RequestCard({
     super.key,
@@ -23,6 +27,7 @@ class RequestCard extends StatelessWidget {
     required this.serviceIcon,
     required this.onSelected,
     required this.selectedOperationRequestId,
+    required this.onRefreshAfterReturn,
   });
 
   @override
@@ -137,9 +142,18 @@ class RequestCard extends StatelessWidget {
             return Tooltip(
               message: item.label,
               child: InkWell(
-                onTap: () {
-                  onSelected(request);
-                  context.push(item.route, extra: request.id);
+                onTap: () async {
+                  await Future.sync(() => onSelected(request));
+
+                  if (!context.mounted) return;
+
+                  await context.push(item.route, extra: request.id);
+
+                  if (!context.mounted) return;
+
+                  selectedOperationRequestId.value = null;
+
+                  await Future.sync(() => onRefreshAfterReturn?.call());
                 },
                 child: Center(
                   child: CircleAvatar(

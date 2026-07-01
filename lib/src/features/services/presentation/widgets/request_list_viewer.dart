@@ -5,7 +5,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_ser
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:flutter/material.dart';
-
+import 'dart:async';
 import 'request_card.dart';
 
 class RequestListViewer extends StatefulWidget {
@@ -14,6 +14,7 @@ class RequestListViewer extends StatefulWidget {
   final VoidCallback onLoadMore;
   final bool hasMore;
   final int totalCount;
+  final FutureOr<void> Function()? onRefreshAfterReturn;
 
   const RequestListViewer({
     super.key,
@@ -22,6 +23,7 @@ class RequestListViewer extends StatefulWidget {
     required this.onLoadMore,
     required this.hasMore,
     required this.totalCount,
+    required this.onRefreshAfterReturn,
   });
 
   @override
@@ -91,6 +93,7 @@ class _RequestListViewerState extends State<RequestListViewer> {
               ServiceType.reliefService.serviceColor,
           serviceIcon: Icons.build,
           onSelected: widget.onSelected,
+          onRefreshAfterReturn: widget.onRefreshAfterReturn,
           selectedOperationRequestId: _selectedOperationRequestId,
         );
       },
