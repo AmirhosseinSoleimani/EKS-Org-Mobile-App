@@ -1,3 +1,4 @@
+import 'dart:async';
 
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
@@ -5,7 +6,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_ser
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:flutter/material.dart';
-import 'dart:async';
+
 import 'request_card.dart';
 
 class RequestListViewer extends StatefulWidget {
@@ -67,9 +68,10 @@ class _RequestListViewerState extends State<RequestListViewer> {
     }
     return ListView.separated(
       controller: _controller,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       itemCount: itemCount + 1,
-      separatorBuilder: (_, _) => const SizedBox(height: 12),
+      separatorBuilder: (context, index) =>
+          SizedBox(height: index == 0 ? 0 : 16),
       itemBuilder: (context, index) {
         if (index == 0 && widget.totalCount > 0) {
           return const SizedBox();
@@ -78,10 +80,8 @@ class _RequestListViewerState extends State<RequestListViewer> {
         final adjustedIndex = index - 1;
 
         if (adjustedIndex >= widget.items.length) {
-          return  Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Center(child: CircularProgressIndicator(color: widget.items.first.serviceType?.serviceColor,)),
-          );
+          return Center(child: CircularProgressIndicator(
+            color: widget.items.first.serviceType?.serviceColor,));
         }
 
         final item = widget.items[adjustedIndex];
