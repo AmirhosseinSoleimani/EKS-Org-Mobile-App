@@ -62,6 +62,38 @@ class FollowUpRegisterCubit extends Cubit<FollowUpRegisterState> {
   List<FollowupItemEntity> get displayedHistory =>
       _historyList.take(_displayedItemsCount).toList();
 
+  FollowupItemEntity? get latestRegisteredFollowup {
+    if (_historyList.isEmpty) return null;
+
+    final items = _historyList
+        .where((item) => item.isDeleted != true)
+        .toList();
+
+    if (items.isEmpty) return null;
+
+    items.sort((a, b) {
+      final aDate = _parseInsertDateTime(a.insertDateTime);
+      final bDate = _parseInsertDateTime(b.insertDateTime);
+
+      if (aDate == null && bDate == null) {
+        return (b.id ?? 0).compareTo(a.id ?? 0);
+      }
+
+      if (aDate == null) return 1;
+      if (bDate == null) return -1;
+
+      return bDate.compareTo(aDate);
+    });
+
+    return items.first;
+  }
+
+  DateTime? _parseInsertDateTime(String? value) {
+    if (value == null || value.trim().isEmpty) return null;
+
+    return DateTime.tryParse(value.trim());
+  }
+
 
   String? _errorMessage;
   BaseRequestEntity? selectedRequest;
