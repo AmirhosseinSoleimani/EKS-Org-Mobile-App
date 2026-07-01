@@ -1,12 +1,11 @@
+import 'package:eks_sana_plus_org/src/app/cubit/app_cubit/app_cubit.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/authentication/presentation/login/login_page.dart';
 import 'package:eks_sana_plus_org/src/features/bottom_navigation_bar/presentation/pages/bottom_nav_page.dart';
-import 'package:eks_sana_plus_org/src/features/cartable/presentation/cartable_page.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/presentation/dashboard_page.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/evaluation_invoice_page/evaluation_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_first_step/home_service_evaluation_first_step.dart';
 import 'package:eks_sana_plus_org/src/features/indicator_report/presentation/indicator_report_page/indicator_report_page.dart';
-import 'package:eks_sana_plus_org/src/features/representation/presentation/representation_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/assign_and_cancel_emdadgar_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/cancel_request_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cartable_cycle_page/cartable_cycle_page.dart';
@@ -28,6 +27,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/request_det
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_status_history_page/request_status_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/services_page/services_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/update_request_page/update_request_page.dart';
+import 'package:eks_sana_plus_org/src/routes/current_session_sync_navigator_observer.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -51,13 +51,20 @@ class Routes {
   static Future<GoRouter> routes({String? initialLocation}) async {
 
     final startupGuard = getIt<StartupGuard>();
-
+    final appCubit = getIt<AppCubit>();
     return GoRouter(
       navigatorKey: parentNavigatorKey,
       initialLocation: LoginPage.path,
       refreshListenable: startupGuard,
       observers: [
-        routeObserver
+        routeObserver,
+        CurrentSessionSyncNavigatorObserver(
+          onRouteChanged: () {
+            return appCubit.ensureCurrentSessionSynced(
+              silent: true,
+            );
+          },
+        ),
       ],
 
       routes: [

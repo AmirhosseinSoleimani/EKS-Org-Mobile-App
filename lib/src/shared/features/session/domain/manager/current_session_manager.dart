@@ -10,6 +10,10 @@ abstract class CurrentSessionManager {
 
   bool get hasSession;
 
+  DateTime? get lastSyncedAt;
+
+  bool isStale(Duration maxAge);
+
   void setCurrentSession(CurrentSessionEntity session);
 
   void clear();

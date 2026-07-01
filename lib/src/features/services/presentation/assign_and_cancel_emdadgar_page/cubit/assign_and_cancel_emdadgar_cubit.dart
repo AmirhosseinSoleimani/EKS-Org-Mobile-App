@@ -274,6 +274,7 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
     final emdadServiceId = (selectedRequest is ReliefRequestEntity) ? (
         selectedRequest as ReliefRequestEntity
     ).emdadServiceId : null;
+    final int? aidDistanceKm = int.tryParse(aidDistanceKmController.text);
     final param = EmdadgarListParamEntity(
       serviceRequestId: selectedRequest?.id ?? 0,
       serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
@@ -281,7 +282,7 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
       isActive: true,
       aidPerName: emdadgarNameController.text,
       aidPerCode: aidPerCodeController.text,
-      aidDistanceKm: int.tryParse(aidDistanceKmController.text),
+      aidDistanceKm: (aidDistanceKm == null ) ? 50: aidDistanceKm,
       onlyReadyEmdadgar: onlyReadyEmdadgar.value,
       requestCityEmdadgar: requestCityEmdadgar.value,
       requestProvinceEmdadgar: requestProvinceEmdadgar.value,

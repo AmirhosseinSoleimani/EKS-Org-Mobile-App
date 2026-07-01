@@ -10,6 +10,7 @@ import 'package:injectable/injectable.dart';
 @LazySingleton(as: CurrentSessionManager)
 class CurrentSessionMemoryManager implements CurrentSessionManager {
   CurrentSessionEntity? _currentSession;
+  DateTime? _lastSyncedAt;
 
   final StreamController<CurrentSessionEntity?> _controller =
   StreamController<CurrentSessionEntity?>.broadcast();
@@ -32,6 +33,18 @@ class CurrentSessionMemoryManager implements CurrentSessionManager {
 
   @override
   bool get hasSession => _currentSession != null;
+
+  @override
+  DateTime? get lastSyncedAt => _lastSyncedAt;
+
+  @override
+  bool isStale(Duration maxAge) {
+    final syncedAt = _lastSyncedAt;
+    if (syncedAt == null) return true;
+
+    return DateTime.now().difference(syncedAt) > maxAge;
+  }
+
 
   @override
   void setCurrentSession(CurrentSessionEntity session) {

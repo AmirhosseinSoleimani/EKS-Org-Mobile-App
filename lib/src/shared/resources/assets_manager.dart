@@ -41,6 +41,7 @@ class SvgManager {
   static const String buildIcon = '${_basePath}build_icon.svg';
   static const String assignmentIcon = '${_basePath}assignment_icon.svg';
   static const String listAltIcon = '${_basePath}list_alt_icon.svg';
+  static const String emptyMarker = '${_basePath}empty_marker.svg';
 }
 
 

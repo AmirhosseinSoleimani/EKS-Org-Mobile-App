@@ -418,6 +418,8 @@ import '../shared/features/session/domain/manager/current_session_manager.dart'
     as _i1058;
 import '../shared/features/session/domain/manager/current_session_memory_manager.dart'
     as _i950;
+import '../shared/features/session/domain/use_cases/sync_current_session_use_case.dart'
+    as _i695;
 import '../shared/features/user/data/data_source/user_data_source.dart'
     as _i1039;
 import '../shared/features/user/data/data_source/user_data_source_impl.dart'
@@ -447,7 +449,6 @@ _i174.GetIt $initGetIt(
   final slidingPanelControllerModule = _$SlidingPanelControllerModule();
   final networkModule = _$NetworkModule();
   final appModule = _$AppModule();
-  gh.factory<_i757.AppCubit>(() => _i757.AppCubit());
   gh.factory<_i336.BottomNavigationBarCubit>(
     () => _i336.BottomNavigationBarCubit(),
   );
@@ -1137,6 +1138,12 @@ _i174.GetIt $initGetIt(
       gh<_i955.GetRequestStatusHistoryUseCase>(),
     ),
   );
+  gh.lazySingleton<_i695.SyncCurrentSessionUseCase>(
+    () => _i695.SyncCurrentSessionUseCase(
+      gh<_i424.GetCurrentSessionUseCase>(),
+      gh<_i1058.CurrentSessionManager>(),
+    ),
+  );
   gh.factory<_i362.EmdadgarInvoiceCubit>(
     () => _i362.EmdadgarInvoiceCubit(
       gh<_i204.GetEmdadgarInvoiceUseCase>(),
@@ -1173,6 +1180,12 @@ _i174.GetIt $initGetIt(
       gh<_i226.GetActiveServiceRequestUseCase>(),
       gh<_i983.GetPartPriceHomeServiceUseCase>(),
       gh<_i91.GetReusablePriceUseCase>(),
+    ),
+  );
+  gh.factory<_i757.AppCubit>(
+    () => _i757.AppCubit(
+      gh<_i695.SyncCurrentSessionUseCase>(),
+      gh<_i1058.CurrentSessionManager>(),
     ),
   );
   gh.lazySingleton<_i531.AcceptEvaluationUseCase>(

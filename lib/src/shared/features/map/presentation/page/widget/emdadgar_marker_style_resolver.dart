@@ -14,6 +14,8 @@ class EmdadgarMarkerStyleResolver {
     return _resolveByCodes(
       navganTypeCode: emdadgar.navganTypeCode,
       status: emdadgar.status,
+      inVacation: emdadgar.inVacation,
+      inShift: emdadgar.inShift,
     );
   }
 
@@ -21,31 +23,54 @@ class EmdadgarMarkerStyleResolver {
     return _resolveByCodes(
       navganTypeCode: emdadgar.navganTypeCode,
       status: emdadgar.status,
+      inVacation: emdadgar.inVacation,
+      inShift: emdadgar.inShift,
     );
   }
 
   MarkerStyle resolveCustomer() {
     return const MarkerStyle(
       iconPath: SvgManager.customerMarker,
-      color: Color(0xff6C35D4),
     );
   }
 
   MarkerStyle _resolveByCodes({
     required int? navganTypeCode,
     required int? status,
+    required bool? inVacation,
+    required bool? inShift,
   }) {
     final iconPath =
         MapMarkerConfig.navganIcons[navganTypeCode] ??
             MapMarkerConfig.defaultIcon;
 
-    final color =
-        MapMarkerConfig.statusColors[status] ??
-            MapMarkerConfig.defaultColor;
+    final color =_resolveColor(
+      status: status,
+      inVacation: inVacation,
+      inShift: inShift,
+    );
+
 
     return MarkerStyle(
       iconPath: iconPath,
       color: color,
     );
+  }
+
+  Color _resolveColor({
+    required int? status,
+    required bool? inVacation,
+    required bool? inShift,
+  }) {
+    if (inVacation == true) {
+      return MapMarkerConfig.vacationColor;
+    }
+
+    if (inShift == false) {
+      return MapMarkerConfig.outOfShiftColor;
+    }
+
+    return MapMarkerConfig.statusColors[status] ??
+        MapMarkerConfig.defaultColor;
   }
 }
