@@ -388,7 +388,47 @@ class EvaluationLaborPartController {
     selectedPartsNotifier.value = items;
   }
 
+  bool get _hasCurrentPartInput {
+    final partText = partSearchController.text.trim();
+    final priceText = partPriceController.text.trim();
+    final countText = partCountController.text.trim();
+
+    return selectedPart.value != null ||
+        selectedPartCostCenter.value != null ||
+        selectedPartMark.value != null ||
+        partText.isNotEmpty ||
+        priceText.isNotEmpty ||
+        (countText.isNotEmpty && countText != '1');
+  }
+
+  bool _appendCurrentPartIfNeeded() {
+    if (!_hasCurrentPartInput) {
+      return true;
+    }
+
+    final selectedPartItem = _buildSelectedPartEntity();
+
+    if (selectedPartItem == null) {
+      _emitError('لطفاً قطعه، برند و مرکز هزینه قطعه را انتخاب کنید');
+      return false;
+    }
+
+    selectedPartsNotifier.value = [
+      ...selectedPartsNotifier.value,
+      selectedPartItem,
+    ];
+
+    _clearCurrentPartInputs();
+    return true;
+  }
+
   bool saveLaborAndPartsFromSheet() {
+    final partAdded = _appendCurrentPartIfNeeded();
+
+    if (!partAdded) {
+      return false;
+    }
+
     final selectedLaborItem = _buildSelectedLaborFromSheet();
 
     if (selectedLaborItem == null) return false;
@@ -400,6 +440,7 @@ class EvaluationLaborPartController {
           selectedLaborItem,
         ];
         break;
+
       case AddPartAndLaborSheetMode.editLabor:
       case AddPartAndLaborSheetMode.addPartToLabor:
         final updated = _replaceEditingLabor(selectedLaborItem);
