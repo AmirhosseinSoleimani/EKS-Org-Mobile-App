@@ -5,6 +5,7 @@ import 'package:eks_sana_plus_org/src/shared/features/session/domain/manager/cur
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/main_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -13,6 +14,7 @@ import 'package:go_router/go_router.dart';
 
 import 'widgets/active_cartable_user_section.dart';
 import 'widgets/search_with_refresh_section.dart';
+import 'widgets/searchable_tree_bottom_sheet_content.dart';
 
 class CartablePage extends StatelessWidget {
   static const path = '/cartable-page';
@@ -32,31 +34,13 @@ class CartablePage extends StatelessWidget {
 class CartablePageView extends StatelessWidget {
   const CartablePageView({super.key});
 
-  void _showChangeActiveUserBottomSheet(BuildContext context) {
-    final cubit = context.read<CartableCubit>();
-
-    BottomSheetMessage.showCustom(
-      context: context,
-      content: const SizedBox(),
-
-      /*
-      content: SearchableTreeBottomSheetContent(
-        searchController: cubit.subordinatedUserSearchController,
-        hintText: 'جستجو در کاربران',
-        onSearchChanged: cubit.onSubordinatedUserSearchChanged,
-        child: const SearchableTreeListPlaceholder(),
-      ),
-      */
-    );
-  }
-
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<CartableCubit>();
     final currentSessionManager = getIt<CurrentSessionManager>();
 
     return BlocConsumer<CartableCubit, CartableState>(
-     /* listenWhen: (previous, current) {
+      listenWhen: (previous, current) {
         final wasUsersLoading =
             previous.data.isSubordinatedUsersLoading;
 
@@ -64,7 +48,7 @@ class CartablePageView extends StatelessWidget {
             current.data.isSubordinatedUsersLoading;
 
         return wasUsersLoading && !isUsersLoading;
-      },*/
+      },
 
       listener: (context, state) {
         state.whenOrNull(
@@ -156,6 +140,44 @@ class CartablePageView extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  void _showChangeActiveUserBottomSheet(BuildContext context) {
+    final cubit = context.read<CartableCubit>();
+    final screenHeight = MediaQuery.sizeOf(context).height;
+
+    BottomSheetMessage.showCustom(
+      backgroundColor: Colors.white,
+      context: context,
+      content: SizedBox(
+        height: screenHeight * 0.85,
+        child: BlocProvider.value(
+          value: cubit,
+          child: BlocBuilder<CartableCubit, CartableState>(
+            builder: (sheetContext, state) {
+              return SearchableTreeBottomSheetContent(
+                searchController:
+                cubit.subordinatedUserSearchController,
+                hintText: 'جستجو در کاربران',
+                users: state.data.filteredSubordinatedUsersTree,
+                onSearchChanged:
+                cubit.onSubordinatedUserSearchChanged,
+
+                onConfirm: (selectedItem, selectedPath) async {
+                  Navigator.of(sheetContext).pop();
+
+                  await cubit.selectActiveCartableUser(
+                    selectedItem: selectedItem,
+                    selectedPath: selectedPath,
+                  );
+                },
+              );
+            },
+          ),
+        ),
+      ),
+      actionWidget: const SizedBox.shrink(),
     );
   }
 }
