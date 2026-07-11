@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/app/cubit/app_cubit/app_cubit.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/authentication/presentation/login/login_page.dart';
 import 'package:eks_sana_plus_org/src/features/bottom_navigation_bar/presentation/pages/bottom_nav_page.dart';
+import 'package:eks_sana_plus_org/src/features/cartable/presentation/cartable_page.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/presentation/dashboard_page.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/evaluation_invoice_page/evaluation_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_first_step/home_service_evaluation_first_step.dart';
@@ -101,7 +102,7 @@ class Routes {
               ],
             ),
 
-            /*/// 1 - CARTABLE
+            /// 1 - CARTABLE
             StatefulShellBranch(
               navigatorKey: cartableNavigatorKey,
               routes: [
@@ -114,7 +115,7 @@ class Routes {
                   ),
                 ),
               ],
-            ),*/
+            ),
 
             /// SERVICES
             StatefulShellBranch(

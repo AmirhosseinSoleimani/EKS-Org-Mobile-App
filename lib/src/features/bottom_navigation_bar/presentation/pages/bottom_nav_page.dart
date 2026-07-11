@@ -54,7 +54,7 @@ class BottomNavPage extends StatelessWidget {
               color: colorScheme.primary,
             ),
           ),
-        /*  BottomNavigationBarItem(
+         BottomNavigationBarItem(
             icon: _BottomNavSvgIcon(src: SvgManager.listAltIcon,
               color: colorScheme.onTertiaryFixed,),
             label: "کارتابل",
@@ -62,7 +62,7 @@ class BottomNavPage extends StatelessWidget {
               src: SvgManager.listAltIcon,
               color: colorScheme.primary,
             ),
-          ),*/
+          ),
           BottomNavigationBarItem(
             icon: _BottomNavSvgIcon(src: SvgManager.buildIcon,
               color: colorScheme.onTertiaryFixed,),

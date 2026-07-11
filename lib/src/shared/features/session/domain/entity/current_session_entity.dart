@@ -104,6 +104,46 @@ class CurrentSessionEntity {
     return result;
   }
 
+  String? get displayName {
+    final normalizedFullName = fullName?.trim();
+
+    if (normalizedFullName != null && normalizedFullName.isNotEmpty) {
+      return normalizedFullName;
+    }
+
+    final combinedName = [
+      firstName?.trim(),
+      lastName?.trim(),
+    ]
+        .whereType<String>()
+        .where((item) => item.isNotEmpty)
+        .join(' ');
+
+    if (combinedName.isNotEmpty) {
+      return combinedName;
+    }
+
+    final normalizedUserName = userName?.trim();
+
+    if (normalizedUserName != null && normalizedUserName.isNotEmpty) {
+      return normalizedUserName;
+    }
+
+    return null;
+  }
+
+  String? get displayRoleName {
+    for (final role in roles ?? const <CurrentSessionRoleEntity>[]) {
+      final roleName = role.name?.trim();
+
+      if (roleName != null && roleName.isNotEmpty) {
+        return roleName;
+      }
+    }
+
+    return null;
+  }
+
   CurrentSessionEntity copyWith({
     String? guid,
     int? authenticationType,

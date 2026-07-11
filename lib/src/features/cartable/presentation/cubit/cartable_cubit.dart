@@ -44,12 +44,19 @@ class CartableCubit extends Cubit<CartableState> {
     );
   }
 
-  Future<void> init() async {
+ /* Future<void> init() async {
     await getSubordinatedUsers();
   }
-
+*/
   Future<void> getSubordinatedUsers() async {
+    if (_data.isSubordinatedUsersLoading) {
+      return;
+    }
+
     _retryAction = getSubordinatedUsers;
+
+    subordinatedUserSearchController.clear();
+
 
     emit(
       CartableState.loading(
@@ -70,26 +77,11 @@ class CartableCubit extends Cubit<CartableState> {
         ),
       );
 
-      SubordinatedUserEntity? selectedUser;
-
       result.whenOrNull(
         success: (items, failures, resultCode) {
           final tree = items;
 
           final root = _findRootNode(tree);
-
-          final activeUser = _data.activeCartableUser ??
-              _resolveInitialActiveCartableUser(
-                root: root,
-                tree: tree,
-              );
-
-          final activeUserRoleTitle = _resolveRoleTitleForUser(
-            users: tree,
-            user: activeUser,
-          );
-
-          selectedUser = activeUser;
 
           emit(
             CartableState.loaded(
@@ -97,8 +89,7 @@ class CartableCubit extends Cubit<CartableState> {
                 subordinatedUsersRoot: root,
                 subordinatedUsersTree: tree,
                 filteredSubordinatedUsersTree: tree,
-                activeCartableUser: activeUser,
-                activeCartableUserRoleTitle: activeUserRoleTitle,
+                subordinatedUserSearchText: '',
                 isSubordinatedUsersLoading: false,
               ),
             ),
@@ -111,8 +102,8 @@ class CartableCubit extends Cubit<CartableState> {
                 isSubordinatedUsersLoading: false,
               ),
               message: _buildErrorMessage(
-                title: '',
-                message: failures ?? error?.toString() ?? '',
+                title: 'خطا در دریافت کاربران',
+                message: failures ?? error?.toString() ??  'دریافت لیست کاربران با خطا مواجه شد.',
               ),
             ),
           );
@@ -127,12 +118,6 @@ class CartableCubit extends Cubit<CartableState> {
           );
         },
       );
-
-      final selectedUserGuid = selectedUser?.guid?.trim();
-
-      if (selectedUserGuid != null && selectedUserGuid.isNotEmpty) {
-        await getCartableItemsByActiveUser();
-      }
     } catch (error) {
       emit(
         CartableState.error(
@@ -429,59 +414,6 @@ class CartableCubit extends Cubit<CartableState> {
     }
 
     return users.isNotEmpty ? users.first : null;
-  }
-
-  SubordinatedUserEntity? _resolveInitialActiveCartableUser({
-    required SubordinatedUserEntity? root,
-    required List<SubordinatedUserEntity> tree,
-  }) {
-    final rootGuid = root?.guid?.trim();
-
-    if (root?.isUser == true && rootGuid != null && rootGuid.isNotEmpty) {
-      return root;
-    }
-
-    return _findFirstSelectableUser(users: tree);
-  }
-
-  SubordinatedUserEntity? _findFirstSelectableUser({
-    required List<SubordinatedUserEntity> users,
-  }) {
-    for (final user in users) {
-      final guid = user.guid?.trim();
-
-      if (user.isUser == true && guid != null && guid.isNotEmpty) {
-        return user;
-      }
-
-      final childResult = _findFirstSelectableUser(
-        users: user.subordinateds,
-      );
-
-      if (childResult != null) {
-        return childResult;
-      }
-    }
-
-    return null;
-  }
-
-  String? _resolveRoleTitleForUser({
-    required List<SubordinatedUserEntity> users,
-    required SubordinatedUserEntity? user,
-  }) {
-    if (user == null) {
-      return null;
-    }
-
-    if (user.isRole == true) {
-      return user.name;
-    }
-
-    return _findNearestRoleTitleForUser(
-      users: users,
-      userGuid: user.guid,
-    );
   }
 
   String? _findNearestRoleTitleForUser({
