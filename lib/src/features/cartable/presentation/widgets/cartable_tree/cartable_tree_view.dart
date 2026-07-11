@@ -12,12 +12,14 @@ class CartableTreeView extends StatelessWidget {
   final bool forceExpanded;
   final CartableTreeSelectionController selectionController;
   final TreeNodeSelectionCallback onSelect;
+  final ScrollController scrollController;
 
   const CartableTreeView({
     super.key,
     required this.users,
     required this.forceExpanded,
     required this.selectionController,
+    required this.scrollController,
     required this.onSelect,
   });
 
@@ -28,6 +30,7 @@ class CartableTreeView extends StatelessWidget {
     }
 
     return ListView.builder(
+      controller: scrollController,
       key: const PageStorageKey<String>('cartable-tree-list'),
       keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       padding: EdgeInsets.zero,
@@ -45,6 +48,7 @@ class CartableTreeView extends StatelessWidget {
           forceExpanded: forceExpanded,
           initiallyExpanded: item.isRoot == true,
           selectionController: selectionController,
+
           onSelect: onSelect,
         );
       },

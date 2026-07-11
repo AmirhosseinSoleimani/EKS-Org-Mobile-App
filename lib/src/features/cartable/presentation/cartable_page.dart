@@ -13,6 +13,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 import 'widgets/active_cartable_user_section.dart';
+import 'widgets/cartable_tree/cartable_selection_confirm_button.dart';
+import 'widgets/cartable_tree/cartable_tree_selection_controller.dart';
 import 'widgets/search_with_refresh_section.dart';
 import 'widgets/searchable_tree_bottom_sheet_content.dart';
 
@@ -143,41 +145,74 @@ class CartablePageView extends StatelessWidget {
     );
   }
 
-  void _showChangeActiveUserBottomSheet(BuildContext context) {
+  Future<void> _showChangeActiveUserBottomSheet(
+      BuildContext context,
+      ) async {
     final cubit = context.read<CartableCubit>();
     final screenHeight = MediaQuery.sizeOf(context).height;
 
-    BottomSheetMessage.showCustom(
-      backgroundColor: Colors.white,
-      context: context,
-      content: SizedBox(
-        height: screenHeight * 0.85,
-        child: BlocProvider.value(
-          value: cubit,
-          child: BlocBuilder<CartableCubit, CartableState>(
-            builder: (sheetContext, state) {
-              return SearchableTreeBottomSheetContent(
-                searchController:
-                cubit.subordinatedUserSearchController,
-                hintText: 'جستجو در کاربران',
-                users: state.data.filteredSubordinatedUsersTree,
-                onSearchChanged:
-                cubit.onSubordinatedUserSearchChanged,
+    final selectionController =
+    CartableTreeSelectionController();
 
-                onConfirm: (selectedItem, selectedPath) async {
-                  Navigator.of(sheetContext).pop();
+    final sheetHeight = screenHeight * 0.85;
 
-                  await cubit.selectActiveCartableUser(
-                    selectedItem: selectedItem,
-                    selectedPath: selectedPath,
-                  );
-                },
-              );
-            },
+    // فضای DragHandle، paddingها و دکمه پایین
+    final contentHeight = (sheetHeight - 120)
+        .clamp(300.0, sheetHeight)
+        .toDouble();
+
+    try {
+      await BottomSheetMessage.showCustom(
+        context: context,
+        backgroundColor: Colors.white,
+        maxHeight: 0.85,
+
+        content: SizedBox(
+          height: contentHeight,
+          child: BlocProvider.value(
+            value: cubit,
+            child: BlocBuilder<CartableCubit, CartableState>(
+              builder: (sheetContext, state) {
+                return SearchableTreeBottomSheetContent(
+                  searchController:
+                  cubit.subordinatedUserSearchController,
+                  hintText: 'جستجو در کاربران',
+                  users:
+                  state.data.filteredSubordinatedUsersTree,
+                  onSearchChanged:
+                  cubit.onSubordinatedUserSearchChanged,
+                  selectionController: selectionController,
+                );
+              },
+            ),
           ),
         ),
-      ),
-      actionWidget: const SizedBox.shrink(),
-    );
+
+        actionWidget:
+        ValueListenableBuilder<CartableTreeSelection?>(
+          valueListenable:
+          selectionController.selectedSelection,
+          builder: (context, selection, _) {
+            return CartableSelectionConfirmButton(
+              enabled: selection != null,
+              onPressed: () async {
+                if (selection == null) {
+                  return;
+                }
+
+                Navigator.of(context).pop();
+
+                await cubit.selectActiveCartableUser(
+                  selectedItem: selection.item,
+                  selectedPath: selection.path,
+                );
+              },
+            );
+          },
+        ),
+      );
+    } finally {
+      selectionController.dispose();
+    }
   }
 }

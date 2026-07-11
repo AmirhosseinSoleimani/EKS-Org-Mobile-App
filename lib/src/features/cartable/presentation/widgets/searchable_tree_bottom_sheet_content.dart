@@ -1,10 +1,9 @@
 import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/subordinated_user_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 
-import 'cartable_tree/cartable_selection_confirm_button.dart';
 import 'cartable_tree/cartable_selection_header.dart';
-import 'cartable_tree/cartable_tree_callbacks.dart';
 import 'cartable_tree/cartable_tree_selection_controller.dart';
 import 'cartable_tree/cartable_tree_utils.dart';
 import 'cartable_tree/cartable_tree_view.dart';
@@ -15,14 +14,14 @@ class SearchableTreeBottomSheetContent extends StatefulWidget {
   final String hintText;
   final List<SubordinatedUserEntity> users;
   final ValueChanged<String>? onSearchChanged;
-  final CartableSelectionCallback onConfirm;
+  final CartableTreeSelectionController selectionController;
 
   const SearchableTreeBottomSheetContent({
     super.key,
     required this.searchController,
     required this.hintText,
     required this.users,
-    required this.onConfirm,
+    required this.selectionController,
     this.onSearchChanged,
   });
 
@@ -33,8 +32,9 @@ class SearchableTreeBottomSheetContent extends StatefulWidget {
 
 class _SearchableTreeBottomSheetContentState
     extends State<SearchableTreeBottomSheetContent> {
-  final CartableTreeSelectionController _selectionController =
-      CartableTreeSelectionController();
+  final ScrollController _treeScrollController =
+  ScrollController();
+
 
   Map<String, _TreeNodeSelection> _selectionByNodeKey = {};
 
@@ -61,8 +61,8 @@ class _SearchableTreeBottomSheetContentState
 
   @override
   void dispose() {
-    _selectionController.dispose();
     super.dispose();
+    _treeScrollController.dispose();
   }
 
   void _selectNode({
@@ -70,23 +70,10 @@ class _SearchableTreeBottomSheetContentState
     required List<SubordinatedUserEntity> path,
     required String nodeKey,
   }) {
-    _selectionController.select(
+    widget.selectionController.select(
       nodeKey: nodeKey,
       item: item,
       path: path,
-    );
-  }
-
-  Future<void> _confirmSelection() async {
-    final selection = _selectionController.selectedSelection.value;
-
-    if (selection == null) {
-      return;
-    }
-
-    await widget.onConfirm(
-      selection.item,
-      selection.path,
     );
   }
 
@@ -144,7 +131,7 @@ class _SearchableTreeBottomSheetContentState
       return;
     }
 
-    _selectionController.select(
+    widget.selectionController.select(
       nodeKey: nodeKey,
       item: selection.item,
       path: selection.path,
@@ -156,54 +143,108 @@ class _SearchableTreeBottomSheetContentState
     final treeView = CartableTreeView(
       users: widget.users,
       forceExpanded: _isSearching,
-      selectionController: _selectionController,
+      selectionController:
+      widget.selectionController,
+      scrollController:
+      _treeScrollController,
       onSelect: _selectNode,
     );
 
     return SafeArea(
       top: false,
       child: Padding(
-        padding: const EdgeInsets.all(AppPadding.p16),
+        padding: const EdgeInsets.all(
+          AppPadding.p16,
+        ),
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
+          crossAxisAlignment:
+          CrossAxisAlignment.stretch,
           children: [
             CartableSelectionHeader(
               onClose: _closeBottomSheet,
             ),
-            const SizedBox(height: AppSize.s16),
+
+            const SizedBox(
+              height: AppSize.s16,
+            ),
+
             SearchInputField(
-              controller: widget.searchController,
+              controller:
+              widget.searchController,
               hintText: widget.hintText,
-              onChanged: widget.onSearchChanged,
+              onChanged:
+              widget.onSearchChanged,
             ),
-            const SizedBox(height: AppSize.s16),
+
+            const SizedBox(
+              height: AppSize.s16,
+            ),
+
             Expanded(
-              child: ValueListenableBuilder<String?>(
-                valueListenable: _selectionController.selectedNodeKey,
-                child: treeView,
-                builder: (context, selectedNodeKey, child) {
-                  return RadioGroup<String>(
-                    groupValue: selectedNodeKey,
-                    onChanged: _onRadioChanged,
-                    child: child!,
-                  );
-                },
+              child: Listener(
+                onPointerSignal:
+                _handlePointerSignal,
+                child: ScrollConfiguration(
+                  behavior:
+                  ScrollConfiguration.of(context)
+                      .copyWith(
+                    dragDevices: {
+                      PointerDeviceKind.touch,
+                      PointerDeviceKind.mouse,
+                    },
+                    scrollbars: true,
+                  ),
+                  child:
+                  ValueListenableBuilder<String?>(
+                    valueListenable: widget
+                        .selectionController
+                        .selectedNodeKey,
+                    child: treeView,
+                    builder: (
+                        context,
+                        selectedNodeKey,
+                        child,
+                        ) {
+                      return RadioGroup<String>(
+                        groupValue:
+                        selectedNodeKey,
+                        onChanged:
+                        _onRadioChanged,
+                        child: child!,
+                      );
+                    },
+                  ),
+                ),
               ),
-            ),
-            const SizedBox(height: AppSize.s16),
-            ValueListenableBuilder<CartableTreeSelection?>(
-              valueListenable: _selectionController.selectedSelection,
-              builder: (context, selection, _) {
-                return CartableSelectionConfirmButton(
-                  enabled: selection != null,
-                  onPressed: _confirmSelection,
-                );
-              },
             ),
           ],
         ),
       ),
     );
+  }
+
+  void _handlePointerSignal(
+      PointerSignalEvent event,
+      ) {
+    if (event is! PointerScrollEvent) {
+      return;
+    }
+
+    if (!_treeScrollController.hasClients) {
+      return;
+    }
+
+    final position = _treeScrollController.position;
+
+    final targetOffset = (
+        _treeScrollController.offset +
+            event.scrollDelta.dy
+    ).clamp(
+      position.minScrollExtent,
+      position.maxScrollExtent,
+    ).toDouble();
+
+    _treeScrollController.jumpTo(targetOffset);
   }
 }
 
