@@ -34,7 +34,9 @@ class AidServiceEvaluationSubmitParamBuilder {
         selectedServiceCategory?.evaluationViewType ==
         EvaluationServiceCategoryViewType.transport;
 
+
     return AidServiceEvaluationSubmitParamEntity(
+
       serviceRequestId: selectedRequest?.id,
       serviceType: ServiceType.reliefService,
       emdadgarId: emdadgarInfo?.id,
@@ -42,7 +44,7 @@ class AidServiceEvaluationSubmitParamBuilder {
           selectedServiceCategory?.id ??
           emdadgarServiceDetailEntity?.serviceCategoryId,
 
-      customerKilometer: int.tryParse(mainForm.kilometerController.text),
+      customerKilometer: int.tryParse(mainForm.kilometerController.text.replaceAll(',', '')),
       distanceToCustomer: int.tryParse(
         mainForm.customerDistanceController.text,
       ),

@@ -5,7 +5,10 @@ class MapMarkerConfig {
   static const Color customerColor = Color(0xff6C35D4);
   static const Color onServiceColor = Color(0xffF59E0B);
   static const Color onMissionColor = Color(0xff22C55E);
+  static const Color vacationColor = Color(0xffEF4444);
+  static const Color outOfShiftColor = Color(0xff9CA3AF);
   static const Color defaultColor = Color(0xff22C55E);
+
 
   static const String customerIcon = ImageManager.customerMarker;
   static const String defaultEmdadgarIcon = ImageManager.onMissionEmpty;

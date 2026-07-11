@@ -4,24 +4,24 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/follow_up_status_type_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/followup_register_page/cubit/follow_up_register_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/followup_register_page/widgets/dispatch_time_diff_box.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/followup_register_page/widgets/request_followup_history_item.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/followup_register_page/widgets/request_followup_history_section.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/expandable_section.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/request_detail_section.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/agent_info_detail_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/date_time_picker_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/dropdown_selector.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/form_section_container.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/request_status_section.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/form_section_container.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/agent_info_detail_section.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/expandable_section.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/request_detail_section.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/request_status_section.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -69,6 +69,8 @@ class _View extends StatelessWidget {
            submitSuccess:  (data) {
             BottomSheetMessage.showNotice(
               isDismissible: false,
+              enableDrag: false,
+              onPositive: () => cubit.init(),
               context: context,
               buttonColor: cubit.selectedRequest?.serviceType?.serviceColor ??
                   ServiceType.reliefService.serviceColor,
@@ -169,12 +171,27 @@ class _LoadedView extends StatelessWidget {
               ),
             ],
             Space.h8,
+            if(cubit.latestRegisteredFollowup != null)...[
+              ExpandableSection(
+                isExpanded: false,
+                header: const BodyMediumText(text: "آخرین پیگیری"),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    RequestFollowupHistoryItem.fromEntity(
+                        cubit.latestRegisteredFollowup!),
+                  ],
+                ),
+              ),
+              Space.h8,
+            ],
+
             FormSectionContainer(
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  TitleLargeText(text: "پیگیری جدید", fontSize: 16),
-                  Space.h32,
+                  BodyMediumText(text: "پیگیری جدید", fontSize: 16),
+                  Space.h16,
                   DropdownSelector<Source>(
                     label: "نوع منبع پیگیری",
                     placeholder: "انتخاب",
@@ -236,8 +253,8 @@ class _LoadedView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  const TitleLargeText(text: "تاریخچه پیگیری", fontSize: 16),
-                  Space.h32,
+                  const BodyMediumText(text: "تاریخچه پیگیری", fontSize: 16),
+                  Space.h16,
                   const RequestFollowupHistorySection(),
                   _formElementGap(),
                 ],

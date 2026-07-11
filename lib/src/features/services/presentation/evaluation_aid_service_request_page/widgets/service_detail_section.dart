@@ -30,10 +30,10 @@ class ServiceDetailSection extends StatelessWidget {
           ),
 
           Space.h32,
-
           DropdownSelector<DefectEntity>(
             label: 'ایراد خودرو',
             placeholder: 'انتخاب ایراد خودرو',
+            searchable: true,
             selectedNotifier: cubit.selectedDefect,
             items: cubit.defectList,
             itemTitleBuilder: (item) => item.title ?? '',

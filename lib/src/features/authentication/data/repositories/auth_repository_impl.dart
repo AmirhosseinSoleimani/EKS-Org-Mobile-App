@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/authentication/data/data_sources/auth_remote_data_source.dart';
+import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_entity.dart';
 import 'package:eks_sana_plus_org/src/features/authentication/domain/entity/login_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/authentication/domain/entity/login_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/authentication/domain/repositories/auth_repository.dart';
@@ -30,6 +31,16 @@ class AuthRepositoryImpl extends AuthRepository {
           )
         );
       }
+      return result.toApiResult();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<CurrentSessionEntity?>> getCurrentSession() async {
+    try {
+      final result = await _dataSource.getCurrentSession();
       return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);

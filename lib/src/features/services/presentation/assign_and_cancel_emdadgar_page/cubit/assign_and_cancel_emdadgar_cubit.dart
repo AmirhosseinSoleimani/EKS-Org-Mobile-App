@@ -23,7 +23,6 @@ import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_reli
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/service_assign_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/enums/service_assign_action.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/data/models/online_route_model.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/area_base_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/online_route_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/params/area_base_info_param_entity.dart';
@@ -41,137 +40,6 @@ part 'assign_and_cancel_emdadgar_state.dart';
 
 @injectable
 class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
-
-
-  void setMockRouteData() {
-    final json = <String, dynamic>{
-      "routes": [
-        {
-          "legs": [
-            {
-              "steps": [
-                {
-                  "points": [
-                    [35.68813, 51.30939],
-                    [35.68854, 51.30800],
-                    [35.68926, 51.30559],
-                    [35.69019, 51.30229],
-                    [35.69161, 51.29750],
-                  ],
-                  "travelMode": "driving",
-                  "traffic": 2.0,
-                  "distance": {
-                    "text": "۱ کیلومتر",
-                    "value": 1000.0,
-                  },
-                  "duration": {
-                    "text": "۳ دقیقه",
-                    "value": 180.0,
-                  },
-                  "start": {
-                    "latitude": 35.68813,
-                    "longitude": 51.30939,
-                  },
-                  "destination": {
-                    "latitude": 35.69161,
-                    "longitude": 51.29750,
-                  },
-                },
-                {
-                  "points": [
-                    [35.69161, 51.29750],
-                    [35.69330, 51.29174],
-                    [35.69549, 51.28710],
-                    [35.69824, 51.28747],
-                  ],
-                  "travelMode": "driving",
-                  "traffic": 2.0,
-                  "distance": {
-                    "text": "۱ کیلومتر ۸۰۰ متر",
-                    "value": 1800.0,
-                  },
-                  "duration": {
-                    "text": "۴ دقیقه",
-                    "value": 240.0,
-                  },
-                  "start": {
-                    "latitude": 35.69161,
-                    "longitude": 51.29750,
-                  },
-                  "destination": {
-                    "latitude": 35.69824,
-                    "longitude": 51.28747,
-                  },
-                },
-                {
-                  "points": [
-                    [35.69824, 51.28747],
-                    [35.69976, 51.29581],
-                    [35.69906, 51.31613],
-                    [35.72064, 51.31736],
-                  ],
-                  "travelMode": "driving",
-                  "traffic": 3.0,
-                  "distance": {
-                    "text": "۷ کیلومتر ۹۰۰ متر",
-                    "value": 7900.0,
-                  },
-                  "duration": {
-                    "text": "۱۵ دقیقه",
-                    "value": 900.0,
-                  },
-                  "start": {
-                    "latitude": 35.69824,
-                    "longitude": 51.28747,
-                  },
-                  "destination": {
-                    "latitude": 35.72064,
-                    "longitude": 51.31736,
-                  },
-                },
-              ],
-              "distance": {
-                "text": "۱۰ کیلومتر ۷۰۰ متر",
-                "value": 10700.0,
-              },
-              "duration": {
-                "text": "۲۲ دقیقه",
-                "value": 1320.0,
-              },
-              "start": {
-                "latitude": 35.688129,
-                "longitude": 51.309386,
-              },
-              "destination": {
-                "latitude": 35.720644,
-                "longitude": 51.317357,
-              },
-            },
-          ],
-          "distance": {
-            "text": "۱۰ کیلومتر ۷۰۰ متر",
-            "value": 10700.0,
-          },
-          "duration": {
-            "text": "۲۲ دقیقه",
-            "value": 1320.0,
-          },
-          "start": {
-            "latitude": 35.688129,
-            "longitude": 51.309386,
-          },
-          "destination": {
-            "latitude": 35.720644,
-            "longitude": 51.317357,
-          },
-        },
-      ],
-    };
-
-    routeData = RouteDataModel.fromJson(json);
-
-  }
-
 
   AssignAndCancelEmdadgarCubit(this._getEmdadgarListUseCase,
       this._serviceAssignUseCase,
@@ -406,6 +274,7 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
     final emdadServiceId = (selectedRequest is ReliefRequestEntity) ? (
         selectedRequest as ReliefRequestEntity
     ).emdadServiceId : null;
+    final int? aidDistanceKm = int.tryParse(aidDistanceKmController.text);
     final param = EmdadgarListParamEntity(
       serviceRequestId: selectedRequest?.id ?? 0,
       serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
@@ -413,7 +282,7 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
       isActive: true,
       aidPerName: emdadgarNameController.text,
       aidPerCode: aidPerCodeController.text,
-      aidDistanceKm: int.tryParse(aidDistanceKmController.text),
+      aidDistanceKm: (aidDistanceKm == null ) ? 50: aidDistanceKm,
       onlyReadyEmdadgar: onlyReadyEmdadgar.value,
       requestCityEmdadgar: requestCityEmdadgar.value,
       requestProvinceEmdadgar: requestProvinceEmdadgar.value,
@@ -532,7 +401,11 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
         latitude: selectedEmdadgar?.lastLocationLatitude ?? 0,
         longitude: selectedEmdadgar?.lastLocationLongitude ?? 0);
 
-    final routeResult = await _getRoutes(start: start);
+    final destination = LocationParamEntity(
+        latitude: selectedRequest?.latitude ?? 0,
+        longitude: selectedRequest?.longitude ?? 0);
+
+    final routeResult = await _getRoutes(start: start, destination: destination);
     if (routeResult != FetchResultType.success) {
       _emitFetchResultState(routeResult);
       return;

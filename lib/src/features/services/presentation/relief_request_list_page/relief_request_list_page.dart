@@ -96,6 +96,7 @@ class _SelectedServicesView extends StatelessWidget {
                         onLoadMore: cubit.loadMore,
                         hasMore: cubit.hasMore,
                         totalCount: cubit.requestCount,
+                        onRefreshAfterReturn: cubit.fetchRequestList,
                       ),
                       loadingMore: () => RequestListViewer(
                         items: cubit.items,
@@ -103,6 +104,7 @@ class _SelectedServicesView extends StatelessWidget {
                         onLoadMore: cubit.loadMore,
                         hasMore: cubit.hasMore,
                         totalCount: cubit.requestCount,
+                        onRefreshAfterReturn: cubit.fetchRequestList,
                       ),
                       orElse: () {
                         return  RequestListViewer(
@@ -111,6 +113,7 @@ class _SelectedServicesView extends StatelessWidget {
                           onLoadMore: cubit.loadMore,
                           hasMore: false,
                           totalCount: cubit.requestCount,
+                          onRefreshAfterReturn: cubit.fetchRequestList,
                         );
                       },
                     );

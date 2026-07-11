@@ -25,6 +25,8 @@ import '../features/authentication/data/repositories/auth_repository_impl.dart'
 import '../features/authentication/data/service/auth_service.dart' as _i626;
 import '../features/authentication/domain/repositories/auth_repository.dart'
     as _i716;
+import '../features/authentication/domain/use_cases/get_current_session.dart'
+    as _i424;
 import '../features/authentication/domain/use_cases/login_use_case.dart'
     as _i139;
 import '../features/authentication/domain/use_cases/phone_number_validator_use_case.dart'
@@ -416,6 +418,12 @@ import '../shared/features/server_date_time/domain/repositories/date_time_info_r
     as _i489;
 import '../shared/features/server_date_time/domain/use_cases/get_server_date_time_use_case.dart'
     as _i100;
+import '../shared/features/session/domain/manager/current_session_manager.dart'
+    as _i1058;
+import '../shared/features/session/domain/manager/current_session_memory_manager.dart'
+    as _i950;
+import '../shared/features/session/domain/use_cases/sync_current_session_use_case.dart'
+    as _i695;
 import '../shared/features/user/data/data_source/user_data_source.dart'
     as _i1039;
 import '../shared/features/user/data/data_source/user_data_source_impl.dart'
@@ -424,33 +432,7 @@ import '../shared/features/user/data/repository/user_repository_impl.dart'
     as _i880;
 import '../shared/features/user/data/service/user_service.dart' as _i313;
 import '../shared/features/user/domain/repository/user_repository.dart' as _i74;
-import '../shared/features/user/domain/use_case/fetch_base_user_info_use_case.dart'
-    as _i216;
-import '../shared/features/user/domain/use_case/fetch_car_selected_use_case.dart'
-    as _i422;
-import '../shared/features/user/domain/use_case/fetch_color_list_use_case.dart'
-    as _i435;
-import '../shared/features/user/domain/use_case/fetch_cover_car_list_use_case.dart'
-    as _i979;
-import '../shared/features/user/domain/use_case/fetch_degree_list_use_case.dart'
-    as _i489;
-import '../shared/features/user/domain/use_case/fetch_profile_use_case.dart'
-    as _i499;
-import '../shared/features/user/domain/use_case/fetch_user_jobs_use_case.dart'
-    as _i332;
 import '../shared/features/user/domain/use_case/logout_use_case.dart' as _i138;
-import '../shared/features/user/domain/use_case/observe_car_info_list_use_case.dart'
-    as _i1055;
-import '../shared/features/user/domain/use_case/observe_user_entity_use_case.dart'
-    as _i147;
-import '../shared/features/user/domain/use_case/set_car_selected_kilometer_use_case.dart'
-    as _i856;
-import '../shared/features/user/domain/use_case/set_car_selected_use_case.dart'
-    as _i605;
-import '../shared/features/user/domain/use_case/set_profile_use_case.dart'
-    as _i422;
-import '../shared/features/user/domain/use_case/update_profile_use_case.dart'
-    as _i254;
 import '../shared/theme/cubit/theme_cubit.dart' as _i190;
 import '../shared/usecase/user_use_case/get_theme_usecase.dart' as _i274;
 import '../shared/usecase/user_use_case/set_theme_usecase.dart' as _i776;
@@ -460,7 +442,6 @@ import 'sliding_panel_module.dart' as _i997;
 
 const String _mobile = 'mobile';
 const String _web = 'web';
-const String _default = 'default';
 
 // initializes the registration of main-scope dependencies inside of GetIt
 _i174.GetIt $initGetIt(
@@ -472,7 +453,6 @@ _i174.GetIt $initGetIt(
   final slidingPanelControllerModule = _$SlidingPanelControllerModule();
   final networkModule = _$NetworkModule();
   final appModule = _$AppModule();
-  gh.factory<_i757.AppCubit>(() => _i757.AppCubit());
   gh.factory<_i336.BottomNavigationBarCubit>(
     () => _i336.BottomNavigationBarCubit(),
   );
@@ -516,6 +496,10 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i453.SetAddressInfoUseCase>(
     () => _i453.SetAddressInfoUseCase(gh<_i837.MapShareDataRepository>()),
+  );
+  gh.lazySingleton<_i1058.CurrentSessionManager>(
+    () => _i950.CurrentSessionMemoryManager(),
+    dispose: (i) => i.dispose(),
   );
   gh.lazySingleton<_i988.ILocationDeviceService>(
     () => _i988.LocationDeviceService(),
@@ -720,10 +704,6 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i489.DateTimeInfoRepository>(
     () => _i258.DateTimeRepositoryImpl(gh<_i670.DateTimeInfoDataSource>()),
-  );
-  gh.lazySingleton<_i499.FetchProfileUseCase>(
-    () => _i499.FetchProfileUseCase(gh<_i74.UserRepository>()),
-    registerFor: {_default, _mobile},
   );
   gh.lazySingleton<_i739.FetchAddressToLocationUseCase>(
     () => _i739.FetchAddressToLocationUseCase(gh<_i92.MapRepository>()),
@@ -967,6 +947,9 @@ _i174.GetIt $initGetIt(
       gh<_i347.HomeServiceEvaluationRepository>(),
     ),
   );
+  gh.lazySingleton<_i424.GetCurrentSessionUseCase>(
+    () => _i424.GetCurrentSessionUseCase(gh<_i716.AuthRepository>()),
+  );
   gh.lazySingleton<_i139.LoginUseCase>(
     () => _i139.LoginUseCase(gh<_i716.AuthRepository>()),
   );
@@ -1011,12 +994,6 @@ _i174.GetIt $initGetIt(
       gh<_i786.GetEmdadgarInfoUseCase>(),
     ),
   );
-  gh.factory<_i566.LoginCubit>(
-    () => _i566.LoginCubit(
-      gh<_i139.LoginUseCase>(),
-      gh<_i826.PhoneNumberValidatorUseCase>(),
-    ),
-  );
   gh.lazySingleton<_i122.EvaluationRepository>(
     () =>
         _i903.EvaluationRepositoryImpl(gh<_i1023.EvaluationRemoteDataSource>()),
@@ -1026,39 +1003,6 @@ _i174.GetIt $initGetIt(
       gh<_i208.GetDashboardDataUseCase>(),
       gh<_i100.GetServerDateTimeUseCase>(),
     ),
-  );
-  gh.lazySingleton<_i216.FetchBaseUserInfoUseCase>(
-    () => _i216.FetchBaseUserInfoUseCase(gh<_i74.UserRepository>()),
-  );
-  gh.lazySingleton<_i422.FetchCarSelectedUseCase>(
-    () => _i422.FetchCarSelectedUseCase(gh<_i74.UserRepository>()),
-  );
-  gh.lazySingleton<_i435.FetchColorListUseCase>(
-    () => _i435.FetchColorListUseCase(gh<_i74.UserRepository>()),
-  );
-  gh.lazySingleton<_i979.FetchCoverCarListUseCase>(
-    () => _i979.FetchCoverCarListUseCase(gh<_i74.UserRepository>()),
-  );
-  gh.lazySingleton<_i489.FetchDegreeListUseCase>(
-    () => _i489.FetchDegreeListUseCase(gh<_i74.UserRepository>()),
-  );
-  gh.lazySingleton<_i332.FetchUserJobsUseCase>(
-    () => _i332.FetchUserJobsUseCase(gh<_i74.UserRepository>()),
-  );
-  gh.lazySingleton<_i1055.ObserveCarInfoListUseCase>(
-    () => _i1055.ObserveCarInfoListUseCase(gh<_i74.UserRepository>()),
-  );
-  gh.lazySingleton<_i147.ObserveUserEntityUseCase>(
-    () => _i147.ObserveUserEntityUseCase(gh<_i74.UserRepository>()),
-  );
-  gh.lazySingleton<_i605.SetCarSelectedUseCase>(
-    () => _i605.SetCarSelectedUseCase(gh<_i74.UserRepository>()),
-  );
-  gh.lazySingleton<_i422.SetProfileUseCase>(
-    () => _i422.SetProfileUseCase(gh<_i74.UserRepository>()),
-  );
-  gh.lazySingleton<_i254.UpdateProfileUseCase>(
-    () => _i254.UpdateProfileUseCase(gh<_i74.UserRepository>()),
   );
   gh.lazySingleton<_i274.GetThemeUseCase>(
     () => _i274.GetThemeUseCase(gh<_i74.UserRepository>()),
@@ -1126,12 +1070,6 @@ _i174.GetIt $initGetIt(
     () => _i1013.HomeServiceRequestListCubit(
       gh<_i809.GetHomeServiceRequestListUseCase>(),
       gh<_i369.SetSelectedRequestItemUseCase>(),
-    ),
-  );
-  gh.lazySingleton<_i856.SetCarSelectedKilometerUseCase>(
-    () => _i856.SetCarSelectedKilometerUseCase(
-      gh<_i74.UserRepository>(),
-      gh<_i422.FetchCarSelectedUseCase>(),
     ),
   );
   gh.factory<_i1038.CompleteUrgentRequestCubit>(
@@ -1215,12 +1153,26 @@ _i174.GetIt $initGetIt(
       gh<_i862.GetCartableItemListUseCase>(),
     ),
   );
+  gh.lazySingleton<_i695.SyncCurrentSessionUseCase>(
+    () => _i695.SyncCurrentSessionUseCase(
+      gh<_i424.GetCurrentSessionUseCase>(),
+      gh<_i1058.CurrentSessionManager>(),
+    ),
+  );
   gh.factory<_i362.EmdadgarInvoiceCubit>(
     () => _i362.EmdadgarInvoiceCubit(
       gh<_i204.GetEmdadgarInvoiceUseCase>(),
       gh<_i376.FetchSelectedRequestItemUseCase>(),
       gh<_i672.GetReliefRequestByIdUseCase>(),
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+    ),
+  );
+  gh.factory<_i566.LoginCubit>(
+    () => _i566.LoginCubit(
+      gh<_i139.LoginUseCase>(),
+      gh<_i826.PhoneNumberValidatorUseCase>(),
+      gh<_i424.GetCurrentSessionUseCase>(),
+      gh<_i1058.CurrentSessionManager>(),
     ),
   );
   gh.factory<_i551.HomeServicePartCubit>(
@@ -1243,6 +1195,12 @@ _i174.GetIt $initGetIt(
       gh<_i226.GetActiveServiceRequestUseCase>(),
       gh<_i983.GetPartPriceHomeServiceUseCase>(),
       gh<_i91.GetReusablePriceUseCase>(),
+    ),
+  );
+  gh.factory<_i757.AppCubit>(
+    () => _i757.AppCubit(
+      gh<_i695.SyncCurrentSessionUseCase>(),
+      gh<_i1058.CurrentSessionManager>(),
     ),
   );
   gh.lazySingleton<_i531.AcceptEvaluationUseCase>(

@@ -135,10 +135,17 @@ enum RequestCardOperation {
     color: Color(0xFF3699FF),
     route: HomeServiceEvaluationFirstStep.path,
   ),
-  assignAndCancelEmdadgar(
+  assignEmdadgar(
     label: 'تخصیص',
     icon: Icons.person_add_alt_rounded,
     color: Color(0xFF3eb122),
+    route: AssignAndCancelEmdadgarPage.path,
+  ),
+
+   cancelEmdadgar(
+    label: 'لغو امداد رسان',
+    icon: Icons.person_add_alt_rounded,
+    color: Color(0xFFE9408F),
     route: AssignAndCancelEmdadgarPage.path,
   );
 
@@ -195,18 +202,38 @@ extension OperationItemVisibility on RequestCardOperation {
         return false;
 
       case RequestCardOperation.aidServiceFactorRegister:
-        if(type == ServiceType.reliefService){
+        if (type == ServiceType.reliefService &&
+            status == RequestStatus.completed) {
           return true;
         }
         return false;
 
       case RequestCardOperation.homeServiceFactorRegister:
-        if(type == ServiceType.homeService){
+        if (type == ServiceType.homeService &&
+            status == RequestStatus.completed) {
           return true;
         }
         return false;
 
+      case RequestCardOperation.followUpRegister:
+        if (status.value >= RequestStatus.dispatched.value &&
+            status.value <= RequestStatus.closed.value) {
+          return true;
+        }
+        return false;
 
+      case RequestCardOperation.assignEmdadgar:
+        if (status == RequestStatus.waitingAssignment) {
+          return true;
+        }
+        return false;
+
+      case RequestCardOperation.cancelEmdadgar:
+        if (status.value >= RequestStatus.dispatched.value &&
+            status.value <= RequestStatus.reserved.value) {
+          return true;
+        }
+        return false;
 
       default:
         return true;

@@ -1,3 +1,4 @@
+import 'dart:async';
 
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
@@ -14,6 +15,7 @@ class RequestListViewer extends StatefulWidget {
   final VoidCallback onLoadMore;
   final bool hasMore;
   final int totalCount;
+  final FutureOr<void> Function()? onRefreshAfterReturn;
 
   const RequestListViewer({
     super.key,
@@ -22,6 +24,7 @@ class RequestListViewer extends StatefulWidget {
     required this.onLoadMore,
     required this.hasMore,
     required this.totalCount,
+    required this.onRefreshAfterReturn,
   });
 
   @override
@@ -65,9 +68,10 @@ class _RequestListViewerState extends State<RequestListViewer> {
     }
     return ListView.separated(
       controller: _controller,
-      padding: const EdgeInsets.all(16),
+      padding: const EdgeInsets.symmetric(horizontal: 16),
       itemCount: itemCount + 1,
-      separatorBuilder: (_, _) => const SizedBox(height: 12),
+      separatorBuilder: (context, index) =>
+          SizedBox(height: index == 0 ? 0 : 16),
       itemBuilder: (context, index) {
         if (index == 0 && widget.totalCount > 0) {
           return const SizedBox();
@@ -76,10 +80,8 @@ class _RequestListViewerState extends State<RequestListViewer> {
         final adjustedIndex = index - 1;
 
         if (adjustedIndex >= widget.items.length) {
-          return  Padding(
-            padding: const EdgeInsets.symmetric(vertical: 16),
-            child: Center(child: CircularProgressIndicator(color: widget.items.first.serviceType?.serviceColor,)),
-          );
+          return Center(child: CircularProgressIndicator(
+            color: widget.items.first.serviceType?.serviceColor,));
         }
 
         final item = widget.items[adjustedIndex];
@@ -91,6 +93,7 @@ class _RequestListViewerState extends State<RequestListViewer> {
               ServiceType.reliefService.serviceColor,
           serviceIcon: Icons.build,
           onSelected: widget.onSelected,
+          onRefreshAfterReturn: widget.onRefreshAfterReturn,
           selectedOperationRequestId: _selectedOperationRequestId,
         );
       },
