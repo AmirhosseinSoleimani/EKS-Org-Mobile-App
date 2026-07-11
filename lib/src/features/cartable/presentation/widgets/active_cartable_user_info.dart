@@ -17,7 +17,7 @@ class ActiveCartableUserInfo extends StatelessWidget {
           text: 'کارتابل فعال: ${name?.trim().isNotEmpty == true ? name : '-'}',
           maxLines: 1,
           textOverflow: TextOverflow.ellipsis,
-          fontWeight: FontWeight.w600,
+          fontWeight: FontWeight.w800,
         ),
 
         const SizedBox(height: 4),

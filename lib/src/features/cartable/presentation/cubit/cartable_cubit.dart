@@ -254,18 +254,18 @@ class CartableCubit extends Cubit<CartableState> {
     await getCartableItemsByActiveUser();
   }
 
-  Future<void> selectActiveCartableUser(SubordinatedUserEntity user,) async {
-    final roleTitle = _resolveRoleTitleForUser(
-      users: _data.subordinatedUsersTree,
-      user: user,
-    );
+  Future<void> selectActiveCartableUser({
+    required SubordinatedUserEntity selectedItem,
+    required List<SubordinatedUserEntity> selectedPath,
+  }) async {
+    final roleTitle = _resolveRoleTitleFromPath(selectedPath);
 
     cartableSearchController.clear();
 
     emit(
       CartableState.loaded(
         data: _data.copyWith(
-          activeCartableUser: user,
+          activeCartableUser: selectedItem,
           activeCartableUserRoleTitle: roleTitle,
           cartableSearchText: '',
           cartableItems: [],
@@ -275,6 +275,22 @@ class CartableCubit extends Cubit<CartableState> {
     );
 
     await getCartableItemsByActiveUser();
+  }
+
+  String? _resolveRoleTitleFromPath(
+      List<SubordinatedUserEntity> path,
+      ) {
+    for (final item in path.reversed) {
+      if (item.isUser == false) {
+        final roleTitle = item.name?.trim();
+
+        if (roleTitle != null && roleTitle.isNotEmpty) {
+          return roleTitle;
+        }
+      }
+    }
+
+    return null;
   }
 
   void onCartableSearchChanged(String value) {

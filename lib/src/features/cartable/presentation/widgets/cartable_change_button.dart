@@ -21,7 +21,7 @@ class CartableChangeButton extends StatelessWidget {
       onTap: onTap,
       child: Container(
         padding: const EdgeInsets.symmetric(
-          horizontal: 12,
+          horizontal: 16,
           vertical: 8,
         ),
         decoration: BoxDecoration(
@@ -33,7 +33,11 @@ class CartableChangeButton extends StatelessWidget {
         ),
         child: Text(
           title,
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(
+          style: Theme
+              .of(context)
+              .textTheme
+              .bodyMedium
+              ?.copyWith(
             color: textColor,
             fontWeight: FontWeight.w500,
           ),

@@ -10,22 +10,25 @@ class UserAvatar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final errorColor = Theme.of(context).colorScheme.error;
+    final primaryColor = Theme
+        .of(context)
+        .colorScheme
+        .primary;
 
     final hasAvatar = avatarUrl != null && avatarUrl!.trim().isNotEmpty;
 
     return CircleAvatar(
-      radius: 22,
+      radius: 26,
       backgroundColor: hasAvatar
           ? Colors.transparent
-          : errorColor.withAlpha(90),
+          : primaryColor.withAlpha(30),
       backgroundImage: hasAvatar ? NetworkImage(avatarUrl!) : null,
       child: hasAvatar
           ? null
           : Icon(
-        Icons.person,
-        color: errorColor,
-        size: 24,
+        Icons.account_circle_outlined,
+        color: primaryColor,
+        size: 32,
       ),
     );
   }
