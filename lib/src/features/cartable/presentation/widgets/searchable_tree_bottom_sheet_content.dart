@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'cartable_tree/cartable_selection_confirm_button.dart';
 import 'cartable_tree/cartable_selection_header.dart';
 import 'cartable_tree/cartable_tree_callbacks.dart';
+import 'cartable_tree/cartable_tree_selection_controller.dart';
 import 'cartable_tree/cartable_tree_utils.dart';
 import 'cartable_tree/cartable_tree_view.dart';
 import 'search_input_field.dart';
@@ -32,18 +33,10 @@ class SearchableTreeBottomSheetContent extends StatefulWidget {
 
 class _SearchableTreeBottomSheetContentState
     extends State<SearchableTreeBottomSheetContent> {
-  final Set<String> _expandedNodeKeys = {};
+  final CartableTreeSelectionController _selectionController =
+      CartableTreeSelectionController();
+
   Map<String, _TreeNodeSelection> _selectionByNodeKey = {};
-
-  SubordinatedUserEntity? _selectedItem;
-  List<SubordinatedUserEntity>? _selectedPath;
-  String? _selectedNodeKey;
-
-  bool get _hasSelectedItem {
-    return _selectedItem != null &&
-        _selectedPath != null &&
-        _selectedPath!.isNotEmpty;
-  }
 
   bool get _isSearching {
     return widget.searchController.text.trim().isNotEmpty;
@@ -52,44 +45,24 @@ class _SearchableTreeBottomSheetContentState
   @override
   void initState() {
     super.initState();
-
-    _expandRootNodes(widget.users);
     _buildSelectionIndex();
   }
 
   @override
   void didUpdateWidget(
-      covariant SearchableTreeBottomSheetContent oldWidget,
-      ) {
+    covariant SearchableTreeBottomSheetContent oldWidget,
+  ) {
     super.didUpdateWidget(oldWidget);
 
     if (!identical(oldWidget.users, widget.users)) {
-      _expandRootNodes(widget.users);
       _buildSelectionIndex();
     }
   }
 
-  void _expandRootNodes(
-      List<SubordinatedUserEntity> users,
-      ) {
-    for (final user in users) {
-      if (user.isRoot == true &&
-          user.subordinateds.isNotEmpty) {
-        _expandedNodeKeys.add(
-          createCartableTreePathKey([user]),
-        );
-      }
-    }
-  }
-
-  void _toggleNode(String nodeKey) {
-    setState(() {
-      if (_expandedNodeKeys.contains(nodeKey)) {
-        _expandedNodeKeys.remove(nodeKey);
-      } else {
-        _expandedNodeKeys.add(nodeKey);
-      }
-    });
+  @override
+  void dispose() {
+    _selectionController.dispose();
+    super.dispose();
   }
 
   void _selectNode({
@@ -97,26 +70,23 @@ class _SearchableTreeBottomSheetContentState
     required List<SubordinatedUserEntity> path,
     required String nodeKey,
   }) {
-    setState(() {
-      _selectedItem = item;
-      _selectedPath = List.unmodifiable(path);
-      _selectedNodeKey = nodeKey;
-    });
+    _selectionController.select(
+      nodeKey: nodeKey,
+      item: item,
+      path: path,
+    );
   }
 
   Future<void> _confirmSelection() async {
-    final selectedItem = _selectedItem;
-    final selectedPath = _selectedPath;
+    final selection = _selectionController.selectedSelection.value;
 
-    if (selectedItem == null ||
-        selectedPath == null ||
-        selectedPath.isEmpty) {
+    if (selection == null) {
       return;
     }
 
     await widget.onConfirm(
-      selectedItem,
-      selectedPath,
+      selection.item,
+      selection.path,
     );
   }
 
@@ -124,77 +94,31 @@ class _SearchableTreeBottomSheetContentState
     Navigator.of(context).pop();
   }
 
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      top: false,
-      child: Padding(
-        padding: const EdgeInsets.all(
-          AppPadding.p16,
-        ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            CartableSelectionHeader(
-              onClose: _closeBottomSheet,
-            ),
-            const SizedBox(height: AppSize.s16),
-            SearchInputField(
-              controller: widget.searchController,
-              hintText: widget.hintText,
-              onChanged: widget.onSearchChanged,
-            ),
-            const SizedBox(height: AppSize.s16),
-            Expanded(
-              child: RadioGroup<String>(
-                groupValue: _selectedNodeKey,
-                onChanged: _onRadioChanged,
-                child: CartableTreeView(
-                  users: widget.users,
-                  expandedNodeKeys: _expandedNodeKeys,
-                  selectedNodeKey: _selectedNodeKey,
-                  forceExpanded: _isSearching,
-                  onToggle: _toggleNode,
-                  onSelect: _selectNode,
-                ),
-              ),
-            ),
-            const SizedBox(height: AppSize.s16),
-            CartableSelectionConfirmButton(
-              enabled: _hasSelectedItem,
-              onPressed: _confirmSelection,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
   void _buildSelectionIndex() {
     final result = <String, _TreeNodeSelection>{};
 
     void visit({
       required List<SubordinatedUserEntity> items,
       required List<SubordinatedUserEntity> parentPath,
+      required String parentNodeKey,
     }) {
       for (final item in items) {
-        final currentPath = [
-          ...parentPath,
-          item,
-        ];
-
-        final nodeKey = createCartableTreePathKey(
-          currentPath,
-        );
+        final currentPath = <SubordinatedUserEntity>[...parentPath, item];
+        final currentSegment = createCartableTreeNodeSegment(item);
+        final nodeKey = parentNodeKey.isEmpty
+            ? currentSegment
+            : '$parentNodeKey>$currentSegment';
 
         result[nodeKey] = _TreeNodeSelection(
           item: item,
-          path: List.unmodifiable(currentPath),
+          path: List<SubordinatedUserEntity>.unmodifiable(currentPath),
         );
 
         if (item.subordinateds.isNotEmpty) {
           visit(
             items: item.subordinateds,
             parentPath: currentPath,
+            parentNodeKey: nodeKey,
           );
         }
       }
@@ -202,7 +126,8 @@ class _SearchableTreeBottomSheetContentState
 
     visit(
       items: widget.users,
-      parentPath: const [],
+      parentPath: const <SubordinatedUserEntity>[],
+      parentNodeKey: '',
     );
 
     _selectionByNodeKey = result;
@@ -219,10 +144,65 @@ class _SearchableTreeBottomSheetContentState
       return;
     }
 
-    _selectNode(
+    _selectionController.select(
+      nodeKey: nodeKey,
       item: selection.item,
       path: selection.path,
-      nodeKey: nodeKey,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final treeView = CartableTreeView(
+      users: widget.users,
+      forceExpanded: _isSearching,
+      selectionController: _selectionController,
+      onSelect: _selectNode,
+    );
+
+    return SafeArea(
+      top: false,
+      child: Padding(
+        padding: const EdgeInsets.all(AppPadding.p16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: [
+            CartableSelectionHeader(
+              onClose: _closeBottomSheet,
+            ),
+            const SizedBox(height: AppSize.s16),
+            SearchInputField(
+              controller: widget.searchController,
+              hintText: widget.hintText,
+              onChanged: widget.onSearchChanged,
+            ),
+            const SizedBox(height: AppSize.s16),
+            Expanded(
+              child: ValueListenableBuilder<String?>(
+                valueListenable: _selectionController.selectedNodeKey,
+                child: treeView,
+                builder: (context, selectedNodeKey, child) {
+                  return RadioGroup<String>(
+                    groupValue: selectedNodeKey,
+                    onChanged: _onRadioChanged,
+                    child: child!,
+                  );
+                },
+              ),
+            ),
+            const SizedBox(height: AppSize.s16),
+            ValueListenableBuilder<CartableTreeSelection?>(
+              valueListenable: _selectionController.selectedSelection,
+              builder: (context, selection, _) {
+                return CartableSelectionConfirmButton(
+                  enabled: selection != null,
+                  onPressed: _confirmSelection,
+                );
+              },
+            ),
+          ],
+        ),
+      ),
     );
   }
 }

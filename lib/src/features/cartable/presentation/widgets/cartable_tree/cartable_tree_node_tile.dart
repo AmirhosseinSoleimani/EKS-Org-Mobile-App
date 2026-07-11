@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/subordinated_user_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'cartable_messages_badge.dart';
@@ -12,11 +13,9 @@ class CartableTreeNodeTile extends StatelessWidget {
   final SubordinatedUserEntity item;
   final String nodeKey;
   final List<SubordinatedUserEntity> path;
-
   final bool hasChildren;
   final bool isExpanded;
-  final bool isSelected;
-
+  final ValueListenable<bool> isSelectedListenable;
   final TreeNodeToggleCallback onToggle;
   final TreeNodeSelectionCallback onSelect;
 
@@ -27,22 +26,66 @@ class CartableTreeNodeTile extends StatelessWidget {
     required this.path,
     required this.hasChildren,
     required this.isExpanded,
-    required this.isSelected,
+    required this.isSelectedListenable,
     required this.onToggle,
     required this.onSelect,
   });
 
-  bool get _isOnline {
-    return item.onlineStatus == _onlineStatusValue;
-  }
+  bool get _isOnline => item.onlineStatus == _onlineStatusValue;
 
-  bool get _isLeaf {
-    return !hasChildren;
-  }
+  bool get _isLeaf => !hasChildren;
 
   void _handleSelection() {
-    onSelect(item: item, path: path, nodeKey: nodeKey);
+    onSelect(
+      item: item,
+      path: path,
+      nodeKey: nodeKey,
+    );
   }
+
+  @override
+  Widget build(BuildContext context) {
+    return ValueListenableBuilder<bool>(
+      valueListenable: isSelectedListenable,
+      builder: (context, isSelected, _) {
+        return _CartableTreeNodeTileBody(
+          item: item,
+          nodeKey: nodeKey,
+          hasChildren: hasChildren,
+          isLeaf: _isLeaf,
+          isOnline: _isOnline,
+          isExpanded: isExpanded,
+          isSelected: isSelected,
+          onToggle: () => onToggle(nodeKey),
+          onSelect: _handleSelection,
+        );
+      },
+    );
+  }
+}
+
+class _CartableTreeNodeTileBody extends StatelessWidget {
+  final SubordinatedUserEntity item;
+  final String nodeKey;
+  final bool hasChildren;
+  final bool isLeaf;
+  final bool isOnline;
+  final bool isExpanded;
+  final bool isSelected;
+  final VoidCallback onToggle;
+  final VoidCallback onSelect;
+
+  const _CartableTreeNodeTileBody({
+    required this.item,
+    required this.nodeKey,
+    required this.hasChildren,
+    required this.isLeaf,
+    required this.isOnline,
+    required this.isExpanded,
+    required this.isSelected,
+    required this.onToggle,
+    required this.onSelect,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -67,12 +110,15 @@ class CartableTreeNodeTile extends StatelessWidget {
             decoration: BoxDecoration(
               color: backgroundColor,
               borderRadius: BorderRadius.circular(AppSize.s12),
-              border: Border.all(color: borderColor, width: isSelected ? 2 : 1),
+              border: Border.all(
+                color: borderColor,
+                width: isSelected ? 2 : 1,
+              ),
             ),
             child: Material(
               color: Colors.transparent,
               child: InkWell(
-                onTap: _handleSelection,
+                onTap: onSelect,
                 borderRadius: BorderRadius.circular(AppSize.s12),
                 child: Padding(
                   padding: const EdgeInsets.all(AppPadding.p8),
@@ -82,27 +128,30 @@ class CartableTreeNodeTile extends StatelessWidget {
                         hasChildren: hasChildren,
                         isExpanded: isExpanded,
                         isSelected: isSelected,
-                        onTap: () {
-                          onToggle(nodeKey);
-                        },
+                        onTap: onToggle,
                       ),
                       const SizedBox(width: AppSize.s4),
-                      CartableTreeNodeAvatar(item: item, isOnline: _isOnline),
+                      CartableTreeNodeAvatar(
+                        item: item,
+                        isOnline: isOnline,
+                      ),
                       const SizedBox(width: AppSize.s12),
                       Expanded(
                         child: Row(
                           children: [
-                            Text(
-                              _resolveName(),
-                              maxLines: 2,
-                              overflow: TextOverflow.ellipsis,
-                              style: theme.textTheme.bodyMedium?.copyWith(
-                                fontWeight: isSelected
-                                    ? FontWeight.w700
-                                    : FontWeight.w500,
+                            Flexible(
+                              child: Text(
+                                _resolveName(),
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                                style: theme.textTheme.bodyMedium?.copyWith(
+                                  fontWeight: isSelected
+                                      ? FontWeight.w700
+                                      : FontWeight.w500,
+                                ),
                               ),
                             ),
-                            if (_isLeaf) ...[
+                            if (isLeaf) ...[
                               const SizedBox(width: AppSize.s8),
                               CartableMessagesBadge(
                                 count: item.cartableMessagesCount ?? 0,
@@ -111,20 +160,19 @@ class CartableTreeNodeTile extends StatelessWidget {
                           ],
                         ),
                       ),
-
-                      if (_isLeaf) ...[
+                      if (isLeaf) ...[
                         const SizedBox(width: AppSize.s8),
                         Radio<String>(
                           value: nodeKey,
-                          fillColor: WidgetStateProperty.resolveWith<Color>((
-                            states,
-                          ) {
-                            if (states.contains(WidgetState.selected)) {
-                              return colorScheme.primary;
-                            }
+                          fillColor: WidgetStateProperty.resolveWith<Color>(
+                            (states) {
+                              if (states.contains(WidgetState.selected)) {
+                                return colorScheme.primary;
+                              }
 
-                            return const Color(0xFF8E8E8E);
-                          }),
+                              return const Color(0xFF8E8E8E);
+                            },
+                          ),
                           materialTapTargetSize:
                               MaterialTapTargetSize.shrinkWrap,
                           visualDensity: VisualDensity.compact,
@@ -183,6 +231,7 @@ class _ExpandButton extends StatelessWidget {
     if (!hasChildren) {
       return const SizedBox.shrink();
     }
+
     final colorScheme = Theme.of(context).colorScheme;
 
     return SizedBox(
@@ -193,17 +242,13 @@ class _ExpandButton extends StatelessWidget {
         constraints: const BoxConstraints(),
         splashRadius: AppSize.s18,
         onPressed: onTap,
-        icon: AnimatedSwitcher(
-          duration: const Duration(milliseconds: 150),
-          child:Icon(
-            isExpanded
-                ? Icons.keyboard_arrow_up_rounded
-                : Icons.keyboard_arrow_left_rounded,
-            key: ValueKey(isExpanded),
-            color: isSelected
-                ? colorScheme.primary
-                : colorScheme.onSurfaceVariant,
-          ),
+        icon: Icon(
+          isExpanded
+              ? Icons.keyboard_arrow_up_rounded
+              : Icons.keyboard_arrow_left_rounded,
+          color: isSelected
+              ? colorScheme.primary
+              : colorScheme.onSurfaceVariant,
         ),
       ),
     );

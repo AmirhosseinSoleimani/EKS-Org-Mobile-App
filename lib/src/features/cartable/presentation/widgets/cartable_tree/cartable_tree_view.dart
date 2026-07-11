@@ -3,26 +3,21 @@ import 'package:flutter/material.dart';
 
 import 'cartable_tree_callbacks.dart';
 import 'cartable_tree_node.dart';
+import 'cartable_tree_selection_controller.dart';
 import 'cartable_tree_utils.dart';
 import 'empty_cartable_tree_result.dart';
 
 class CartableTreeView extends StatelessWidget {
   final List<SubordinatedUserEntity> users;
-
-  final Set<String> expandedNodeKeys;
-  final String? selectedNodeKey;
   final bool forceExpanded;
-
-  final TreeNodeToggleCallback onToggle;
+  final CartableTreeSelectionController selectionController;
   final TreeNodeSelectionCallback onSelect;
 
   const CartableTreeView({
     super.key,
     required this.users,
-    required this.expandedNodeKeys,
-    required this.selectedNodeKey,
     required this.forceExpanded,
-    required this.onToggle,
+    required this.selectionController,
     required this.onSelect,
   });
 
@@ -33,27 +28,23 @@ class CartableTreeView extends StatelessWidget {
     }
 
     return ListView.builder(
-      key: const PageStorageKey(
-        'cartable-tree-list',
-      ),
-      keyboardDismissBehavior:
-      ScrollViewKeyboardDismissBehavior.onDrag,
+      key: const PageStorageKey<String>('cartable-tree-list'),
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
       padding: EdgeInsets.zero,
       itemCount: users.length,
       itemBuilder: (context, index) {
         final item = users[index];
-        final path = [item];
+        final path = <SubordinatedUserEntity>[item];
+        final nodeKey = createCartableTreePathKey(path);
 
         return CartableTreeNode(
-          key: ValueKey(
-            createCartableTreePathKey(path),
-          ),
+          key: ValueKey<String>(nodeKey),
           item: item,
           path: path,
-          expandedNodeKeys: expandedNodeKeys,
-          selectedNodeKey: selectedNodeKey,
+          nodeKey: nodeKey,
           forceExpanded: forceExpanded,
-          onToggle: onToggle,
+          initiallyExpanded: item.isRoot == true,
+          selectionController: selectionController,
           onSelect: onSelect,
         );
       },

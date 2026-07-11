@@ -4,62 +4,84 @@ import 'package:flutter/material.dart';
 
 import 'cartable_tree_callbacks.dart';
 import 'cartable_tree_node_tile.dart';
+import 'cartable_tree_selection_controller.dart';
 import 'cartable_tree_utils.dart';
 
-class CartableTreeNode extends StatelessWidget {
+class CartableTreeNode extends StatefulWidget {
   final SubordinatedUserEntity item;
   final List<SubordinatedUserEntity> path;
-
-  final Set<String> expandedNodeKeys;
-  final String? selectedNodeKey;
+  final String nodeKey;
   final bool forceExpanded;
-
-  final TreeNodeToggleCallback onToggle;
+  final bool initiallyExpanded;
+  final CartableTreeSelectionController selectionController;
   final TreeNodeSelectionCallback onSelect;
 
   const CartableTreeNode({
     super.key,
     required this.item,
     required this.path,
-    required this.expandedNodeKeys,
-    required this.selectedNodeKey,
+    required this.nodeKey,
     required this.forceExpanded,
-    required this.onToggle,
+    required this.initiallyExpanded,
+    required this.selectionController,
     required this.onSelect,
   });
 
   @override
+  State<CartableTreeNode> createState() => _CartableTreeNodeState();
+}
+
+class _CartableTreeNodeState extends State<CartableTreeNode> {
+  late bool _isExpanded;
+
+  bool get _hasChildren => widget.item.subordinateds.isNotEmpty;
+
+  bool get _effectiveExpanded {
+    return _hasChildren && (widget.forceExpanded || _isExpanded);
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _isExpanded = widget.initiallyExpanded && _hasChildren;
+  }
+
+  void _toggleExpanded() {
+    if (!_hasChildren || widget.forceExpanded) {
+      return;
+    }
+
+    setState(() {
+      _isExpanded = !_isExpanded;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    final nodeKey = createCartableTreePathKey(path);
-    final hasChildren = item.subordinateds.isNotEmpty;
-
-    final isExpanded =
-        hasChildren && (forceExpanded || expandedNodeKeys.contains(nodeKey));
-
-    final isSelected = selectedNodeKey == nodeKey;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        CartableTreeNodeTile(
-          item: item,
-          nodeKey: nodeKey,
-          path: path,
-          hasChildren: hasChildren,
-          isExpanded: isExpanded,
-          isSelected: isSelected,
-          onToggle: onToggle,
-          onSelect: onSelect,
+        RepaintBoundary(
+          child: CartableTreeNodeTile(
+            item: widget.item,
+            nodeKey: widget.nodeKey,
+            path: widget.path,
+            hasChildren: _hasChildren,
+            isExpanded: _effectiveExpanded,
+            isSelectedListenable: widget.selectionController
+                .selectionListenableFor(widget.nodeKey),
+            onToggle: (_) => _toggleExpanded(),
+            onSelect: widget.onSelect,
+          ),
         ),
-        if (isExpanded)
+        if (_effectiveExpanded)
           _ChildrenSection(
-            parentPath: path,
-            children: item.subordinateds,
-            expandedNodeKeys: expandedNodeKeys,
-            selectedNodeKey: selectedNodeKey,
-            forceExpanded: forceExpanded,
-            onToggle: onToggle,
-            onSelect: onSelect,
+            parentPath: widget.path,
+            parentNodeKey: widget.nodeKey,
+            children: widget.item.subordinateds,
+            forceExpanded: widget.forceExpanded,
+            selectionController: widget.selectionController,
+            onSelect: widget.onSelect,
           ),
       ],
     );
@@ -68,22 +90,18 @@ class CartableTreeNode extends StatelessWidget {
 
 class _ChildrenSection extends StatelessWidget {
   final List<SubordinatedUserEntity> parentPath;
+  final String parentNodeKey;
   final List<SubordinatedUserEntity> children;
-
-  final Set<String> expandedNodeKeys;
-  final String? selectedNodeKey;
   final bool forceExpanded;
-
-  final TreeNodeToggleCallback onToggle;
+  final CartableTreeSelectionController selectionController;
   final TreeNodeSelectionCallback onSelect;
 
   const _ChildrenSection({
     required this.parentPath,
+    required this.parentNodeKey,
     required this.children,
-    required this.expandedNodeKeys,
-    required this.selectedNodeKey,
     required this.forceExpanded,
-    required this.onToggle,
+    required this.selectionController,
     required this.onSelect,
   });
 
@@ -107,22 +125,27 @@ class _ChildrenSection extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.stretch,
             children: [
               for (final child in children)
-                CartableTreeNode(
-                  key: ValueKey(
-                    createCartableTreePathKey([...parentPath, child]),
-                  ),
-                  item: child,
-                  path: [...parentPath, child],
-                  expandedNodeKeys: expandedNodeKeys,
-                  selectedNodeKey: selectedNodeKey,
-                  forceExpanded: forceExpanded,
-                  onToggle: onToggle,
-                  onSelect: onSelect,
-                ),
+                _buildChild(child),
             ],
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildChild(SubordinatedUserEntity child) {
+    final childPath = <SubordinatedUserEntity>[...parentPath, child];
+    final childNodeKey = '$parentNodeKey>${createCartableTreeNodeSegment(child)}';
+
+    return CartableTreeNode(
+      key: ValueKey<String>(childNodeKey),
+      item: child,
+      path: childPath,
+      nodeKey: childNodeKey,
+      forceExpanded: forceExpanded,
+      initiallyExpanded: false,
+      selectionController: selectionController,
+      onSelect: onSelect,
     );
   }
 }
