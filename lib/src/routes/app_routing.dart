@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/features/authentication/presentation/login
 import 'package:eks_sana_plus_org/src/features/bottom_navigation_bar/presentation/pages/bottom_nav_page.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/presentation/cartable_page.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/presentation/dashboard_page.dart';
+import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/emdad_unit_routes.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/evaluation_invoice_page/evaluation_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_first_step/home_service_evaluation_first_step.dart';
 import 'package:eks_sana_plus_org/src/features/indicator_report/presentation/indicator_report_page/indicator_report_page.dart';
@@ -350,6 +351,7 @@ class Routes {
           },
 
         ),
+        ...EmdadUnitRoutes.routes(getPage),
       ],
     );
   }

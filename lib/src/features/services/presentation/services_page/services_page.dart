@@ -1,4 +1,6 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
+import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/pages/emdad_unit_list_page.dart';
+import 'package:eks_sana_plus_org/src/features/leave/presentation/pages/leave_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/home_service_request_list_page/home_service_request_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/relief_request_list_page/relief_request_list_page.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/presentation/widgets/current_session_access_builder.dart';
@@ -51,6 +53,22 @@ class ServicesPage extends StatelessWidget {
                 iconColor: colorScheme.onPrimary,
                 imagePath: ImageManager.locationService,
                 onTap: () => context.pushNamed(HomeServiceRequestListPage.name),
+              ),
+            if (access.canShowHomeServiceRequestsMenu())
+              _ServicePageItem(
+                title: 'مرخصی',
+                backgroundColor: ServiceType.homeService.serviceColor,
+                iconColor: colorScheme.onPrimary,
+                imagePath: ImageManager.locationService,
+                onTap: () => context.pushNamed(LeavePage.name),
+              ),
+            if (access.canShowHomeServiceRequestsMenu())
+              _ServicePageItem(
+                title: 'واحد امدادی',
+                backgroundColor: ServiceType.homeService.serviceColor,
+                iconColor: colorScheme.onPrimary,
+                imagePath: ImageManager.locationService,
+                onTap: () => context.pushNamed(EmdadUnitListPage.name),
               ),
           ];
 

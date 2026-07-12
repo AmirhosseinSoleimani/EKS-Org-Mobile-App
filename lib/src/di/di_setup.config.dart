@@ -73,6 +73,37 @@ import '../features/dashboard/domain/repositories/dashboard_repository.dart'
 import '../features/dashboard/domain/use_cases/get_dashboard_data_use_case.dart'
     as _i208;
 import '../features/dashboard/presentation/cubit/dashboard_cubit.dart' as _i932;
+import '../features/emdad_unit/data/data_sources/emdad_unit_data_source.dart'
+    as _i930;
+import '../features/emdad_unit/data/data_sources/emdad_unit_data_source_impl.dart'
+    as _i539;
+import '../features/emdad_unit/data/repositories/emdad_unit_repository_impl.dart'
+    as _i79;
+import '../features/emdad_unit/data/services/emdad_unit_service.dart' as _i54;
+import '../features/emdad_unit/domain/repositories/emdad_unit_repository.dart'
+    as _i14;
+import '../features/emdad_unit/domain/use_cases/assign_emdad_unit_person_use_case.dart'
+    as _i125;
+import '../features/emdad_unit/domain/use_cases/change_emdad_unit_location_use_case.dart'
+    as _i343;
+import '../features/emdad_unit/domain/use_cases/create_emdad_unit_use_case.dart'
+    as _i930;
+import '../features/emdad_unit/domain/use_cases/delete_emdad_unit_person_use_case.dart'
+    as _i132;
+import '../features/emdad_unit/domain/use_cases/delete_emdad_unit_use_case.dart'
+    as _i831;
+import '../features/emdad_unit/domain/use_cases/get_emdad_unit_by_id_use_case.dart'
+    as _i928;
+import '../features/emdad_unit/domain/use_cases/get_emdad_unit_list_use_case.dart'
+    as _i262;
+import '../features/emdad_unit/domain/use_cases/get_emdad_unit_lookups_use_case.dart'
+    as _i690;
+import '../features/emdad_unit/domain/use_cases/get_emdad_unit_persons_use_case.dart'
+    as _i301;
+import '../features/emdad_unit/domain/use_cases/update_emdad_unit_image_use_case.dart'
+    as _i76;
+import '../features/emdad_unit/presentation/cubit/emdad_unit_cubit.dart'
+    as _i471;
 import '../features/evaluation/data/remote/data_sources/evaluation_remote_data_source.dart'
     as _i1023;
 import '../features/evaluation/data/remote/data_sources/evaluation_remote_data_source_impl.dart'
@@ -572,9 +603,15 @@ _i174.GetIt $initGetIt(
     () => _i99.DateTimeService(gh<_i361.Dio>()),
   );
   gh.lazySingleton<_i313.UserService>(() => _i313.UserService(gh<_i361.Dio>()));
+  gh.lazySingleton<_i54.EmdadUnitService>(
+    () => _i54.EmdadUnitService(gh<_i361.Dio>()),
+  );
   gh.lazySingleton<_i691.IndicatorReportDataSource>(
     () =>
         _i87.IndicatorReportDataSourceImpl(gh<_i140.IndicatorReportService>()),
+  );
+  gh.lazySingleton<_i930.EmdadUnitDataSource>(
+    () => _i539.EmdadUnitDataSourceImpl(gh<_i54.EmdadUnitService>()),
   );
   gh.lazySingleton<_i320.DashboardDataSource>(
     () => _i822.DashboardDataSourceImpl(gh<_i953.DashboardService>()),
@@ -659,6 +696,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i829.InvoiceRepository>(
     () => _i161.InvoiceRepositoryImpl(gh<_i935.InvoiceDataSource>()),
   );
+  gh.lazySingleton<_i14.EmdadUnitRepository>(
+    () => _i79.EmdadUnitRepositoryImpl(gh<_i930.EmdadUnitDataSource>()),
+  );
   gh.lazySingleton<_i1039.UserDataSource>(
     () => _i793.UserDataSourceImpl(gh<_i313.UserService>()),
   );
@@ -686,6 +726,36 @@ _i174.GetIt $initGetIt(
     () => _i1063.HomeServiceEvaluationRepositoryImpl(
       gh<_i999.HomeServiceEvaluationDataSource>(),
     ),
+  );
+  gh.factory<_i125.AssignEmdadUnitPersonUseCase>(
+    () => _i125.AssignEmdadUnitPersonUseCase(gh<_i14.EmdadUnitRepository>()),
+  );
+  gh.factory<_i343.ChangeEmdadUnitLocationUseCase>(
+    () => _i343.ChangeEmdadUnitLocationUseCase(gh<_i14.EmdadUnitRepository>()),
+  );
+  gh.factory<_i930.CreateEmdadUnitUseCase>(
+    () => _i930.CreateEmdadUnitUseCase(gh<_i14.EmdadUnitRepository>()),
+  );
+  gh.factory<_i132.DeleteEmdadUnitPersonUseCase>(
+    () => _i132.DeleteEmdadUnitPersonUseCase(gh<_i14.EmdadUnitRepository>()),
+  );
+  gh.factory<_i831.DeleteEmdadUnitUseCase>(
+    () => _i831.DeleteEmdadUnitUseCase(gh<_i14.EmdadUnitRepository>()),
+  );
+  gh.factory<_i928.GetEmdadUnitByIdUseCase>(
+    () => _i928.GetEmdadUnitByIdUseCase(gh<_i14.EmdadUnitRepository>()),
+  );
+  gh.factory<_i262.GetEmdadUnitListUseCase>(
+    () => _i262.GetEmdadUnitListUseCase(gh<_i14.EmdadUnitRepository>()),
+  );
+  gh.factory<_i690.GetEmdadUnitLookupsUseCase>(
+    () => _i690.GetEmdadUnitLookupsUseCase(gh<_i14.EmdadUnitRepository>()),
+  );
+  gh.factory<_i301.GetEmdadUnitPersonsUseCase>(
+    () => _i301.GetEmdadUnitPersonsUseCase(gh<_i14.EmdadUnitRepository>()),
+  );
+  gh.factory<_i76.UpdateEmdadUnitImageUseCase>(
+    () => _i76.UpdateEmdadUnitImageUseCase(gh<_i14.EmdadUnitRepository>()),
   );
   gh.lazySingleton<_i471.GetCurrentNetworkStatusUseCase>(
     () => _i471.GetCurrentNetworkStatusUseCase(
@@ -823,6 +893,20 @@ _i174.GetIt $initGetIt(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
       gh<_i672.GetReliefRequestByIdUseCase>(),
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+    ),
+  );
+  gh.factory<_i471.EmdadUnitCubit>(
+    () => _i471.EmdadUnitCubit(
+      gh<_i262.GetEmdadUnitListUseCase>(),
+      gh<_i928.GetEmdadUnitByIdUseCase>(),
+      gh<_i930.CreateEmdadUnitUseCase>(),
+      gh<_i76.UpdateEmdadUnitImageUseCase>(),
+      gh<_i831.DeleteEmdadUnitUseCase>(),
+      gh<_i301.GetEmdadUnitPersonsUseCase>(),
+      gh<_i125.AssignEmdadUnitPersonUseCase>(),
+      gh<_i132.DeleteEmdadUnitPersonUseCase>(),
+      gh<_i343.ChangeEmdadUnitLocationUseCase>(),
+      gh<_i690.GetEmdadUnitLookupsUseCase>(),
     ),
   );
   gh.lazySingleton<_i208.GetDashboardDataUseCase>(
