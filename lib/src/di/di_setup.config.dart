@@ -224,6 +224,24 @@ import '../features/indicator_report/domain/use_cases/fetch_indicator_report_use
     as _i375;
 import '../features/indicator_report/presentation/indicator_report_page/cubit/indicator_report_cubit.dart'
     as _i951;
+import '../features/leave/data/data_sources/leave_data_source.dart' as _i1017;
+import '../features/leave/data/data_sources/leave_data_source_impl.dart'
+    as _i336;
+import '../features/leave/data/repositories/leave_repository_impl.dart'
+    as _i691;
+import '../features/leave/data/service/leave_service.dart' as _i233;
+import '../features/leave/domain/repositories/leave_repository.dart' as _i217;
+import '../features/leave/domain/use_cases/change_leave_status_use_case.dart'
+    as _i283;
+import '../features/leave/domain/use_cases/get_leave_details_use_case.dart'
+    as _i70;
+import '../features/leave/domain/use_cases/get_leave_reasons_use_case.dart'
+    as _i706;
+import '../features/leave/domain/use_cases/get_leave_reports_use_case.dart'
+    as _i75;
+import '../features/leave/domain/use_cases/rollback_leave_request_use_case.dart'
+    as _i918;
+import '../features/leave/presentation/cubit/leave_cubit.dart' as _i710;
 import '../features/representation/data/data_sources/representation_data_source.dart'
     as _i59;
 import '../features/representation/data/data_sources/representation_data_source_impl.dart'
@@ -586,6 +604,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i140.IndicatorReportService>(
     () => _i140.IndicatorReportService(gh<_i361.Dio>()),
   );
+  gh.lazySingleton<_i233.LeaveService>(
+    () => _i233.LeaveService(gh<_i361.Dio>()),
+  );
   gh.lazySingleton<_i854.RepresentationService>(
     () => _i854.RepresentationService(gh<_i361.Dio>()),
   );
@@ -704,6 +725,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i603.RequestRepository>(
     () => _i794.RequestRepositoryImpl(gh<_i1016.RequestDataSource>()),
+  );
+  gh.lazySingleton<_i1017.LeaveDataSource>(
+    () => _i336.LeaveDataSourceImpl(gh<_i233.LeaveService>()),
   );
   gh.lazySingleton<_i998.ChangeHomeServiceRequestAddressUseCase>(
     () => _i998.ChangeHomeServiceRequestAddressUseCase(
@@ -1088,6 +1112,9 @@ _i174.GetIt $initGetIt(
       gh<_i100.GetServerDateTimeUseCase>(),
     ),
   );
+  gh.lazySingleton<_i217.LeaveRepository>(
+    () => _i691.LeaveRepositoryImpl(gh<_i1017.LeaveDataSource>()),
+  );
   gh.lazySingleton<_i274.GetThemeUseCase>(
     () => _i274.GetThemeUseCase(gh<_i74.UserRepository>()),
   );
@@ -1149,6 +1176,21 @@ _i174.GetIt $initGetIt(
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
       gh<_i786.GetEmdadgarInfoUseCase>(),
     ),
+  );
+  gh.lazySingleton<_i283.ChangeLeaveStatusUseCase>(
+    () => _i283.ChangeLeaveStatusUseCase(gh<_i217.LeaveRepository>()),
+  );
+  gh.lazySingleton<_i70.GetLeaveDetailsUseCase>(
+    () => _i70.GetLeaveDetailsUseCase(gh<_i217.LeaveRepository>()),
+  );
+  gh.lazySingleton<_i706.GetLeaveReasonsUseCase>(
+    () => _i706.GetLeaveReasonsUseCase(gh<_i217.LeaveRepository>()),
+  );
+  gh.lazySingleton<_i75.GetLeaveReportsUseCase>(
+    () => _i75.GetLeaveReportsUseCase(gh<_i217.LeaveRepository>()),
+  );
+  gh.lazySingleton<_i918.RollbackLeaveRequestUseCase>(
+    () => _i918.RollbackLeaveRequestUseCase(gh<_i217.LeaveRepository>()),
   );
   gh.factory<_i1013.HomeServiceRequestListCubit>(
     () => _i1013.HomeServiceRequestListCubit(
@@ -1229,6 +1271,15 @@ _i174.GetIt $initGetIt(
       gh<_i67.GetRequestFollowupHistoryUseCase>(),
       gh<_i786.GetEmdadgarInfoUseCase>(),
       gh<_i955.GetRequestStatusHistoryUseCase>(),
+    ),
+  );
+  gh.factory<_i710.LeaveCubit>(
+    () => _i710.LeaveCubit(
+      gh<_i75.GetLeaveReportsUseCase>(),
+      gh<_i70.GetLeaveDetailsUseCase>(),
+      gh<_i706.GetLeaveReasonsUseCase>(),
+      gh<_i283.ChangeLeaveStatusUseCase>(),
+      gh<_i918.RollbackLeaveRequestUseCase>(),
     ),
   );
   gh.factory<_i330.CartableCubit>(

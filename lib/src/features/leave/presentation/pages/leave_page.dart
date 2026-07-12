@@ -1,23 +1,18 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
-import 'package:eks_sana_plus_org/src/features/cartable/presentation/cubit/cartable_cubit.dart';
-import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_entity.dart';
-import 'package:eks_sana_plus_org/src/shared/features/session/domain/manager/current_session_manager.dart';
+import 'package:eks_sana_plus_org/src/features/leave/domain/entities/leave_status.dart';
+import 'package:eks_sana_plus_org/src/features/leave/presentation/cubit/leave_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/leave/presentation/cubit/leave_state.dart';
+import 'package:eks_sana_plus_org/src/features/leave/presentation/pages/leave_details_page.dart';
+import 'package:eks_sana_plus_org/src/features/leave/presentation/widgets/leave_filter_sheet.dart';
+import 'package:eks_sana_plus_org/src/features/leave/presentation/widgets/leave_list_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/main_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
-import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../cartable/presentation/widgets/active_cartable_user_section.dart';
-import '../../../cartable/presentation/widgets/search_with_refresh_section.dart';
-import '../../../cartable/presentation/widgets/searchable_tree_bottom_sheet_content.dart';
-
-
 class LeavePage extends StatelessWidget {
-
   static const path = '/leave-page';
   static const name = 'leave-page';
 
@@ -26,117 +21,113 @@ class LeavePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<CartableCubit>(),
-      child: const CartablePageView(),
+      create: (_) => getIt<LeaveCubit>()..init(),
+      child: const LeavePageView(),
     );
   }
 }
 
-class CartablePageView extends StatelessWidget {
-  const CartablePageView({super.key});
+class LeavePageView extends StatelessWidget {
+  const LeavePageView({super.key});
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<CartableCubit>();
-    final currentSessionManager = getIt<CurrentSessionManager>();
-
-    return BlocConsumer<CartableCubit, CartableState>(
+    return BlocConsumer<LeaveCubit, LeaveState>(
       listenWhen: (previous, current) {
-        final wasUsersLoading =
-            previous.data.isSubordinatedUsersLoading;
-
-        final isUsersLoading =
-            current.data.isSubordinatedUsersLoading;
-
-        return wasUsersLoading && !isUsersLoading;
+        return previous.lastMessage != current.lastMessage &&
+            current.lastMessage != null;
       },
-
       listener: (context, state) {
-        state.whenOrNull(
-          loaded: (data) {
-            _showChangeActiveUserBottomSheet(context);
-          },
-          error: (data, message) {
-            BottomSheetMessage.showError(
-                context: context,
-                data: message,
-                onButtonTap: () {
-                  context.pop();
-                  cubit.retryLastAction();
-                }
-            );
-          },
-          connectionError: (data) {
-            final cubit = context.read<CartableCubit>();
-
-            BottomSheetMessage.showCustom(
-              context: context,
-              content: NoInternetBottomSheet(
-                onRetry: cubit.getSubordinatedUsers,
-              ),
-              actionWidget: const SizedBox.shrink(),
-              isDismissible: false,
-              enableDrag: false,
-            );
-          },
+        BottomSheetMessage.showNotice(
+          context: context,
+          data: state.lastMessage!,
         );
       },
       builder: (context, state) {
-        final data = state.data;
+        final cubit = context.read<LeaveCubit>();
 
         return Scaffold(
-          appBar: const MainAppBar(
-            title: 'کارتابل',
-          ),
-          body: ScrollConfiguration(
-            behavior: ScrollConfiguration.of(context).copyWith(
-              dragDevices: {
-                PointerDeviceKind.touch,
-                PointerDeviceKind.mouse,
-              },
-            ),
-            child: Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                children: [
-                  Space.h8,
-                  StreamBuilder<CurrentSessionEntity?>(
-                    stream: currentSessionManager.currentSessionStream,
-                    initialData: currentSessionManager.currentSession,
-                    builder: (context, sessionSnapshot) {
-                      final currentSession = sessionSnapshot.data;
-                      final selectedCartableUser =
-                          data.activeCartableUser;
-
-                      final hasSelectedCartable =
-                          selectedCartableUser != null;
-
-                      final displayedName = hasSelectedCartable
-                          ? selectedCartableUser.name
-                          : currentSession?.displayName;
-
-                      final displayedRoleTitle = hasSelectedCartable
-                          ? data.activeCartableUserRoleTitle
-                          : currentSession?.displayRoleName;
-
-                      return ActiveCartableUserSection(
-                        name: displayedName,
-                        roleTitle: displayedRoleTitle,
-                        isLoading: data.isSubordinatedUsersLoading,
-                        onChangeCartableTap: cubit.getSubordinatedUsers,
-                      );
-                    },
+          backgroundColor: const Color(0xFFF6F4F3),
+          appBar: const MainAppBar(title: 'مرخصی ها'),
+          body: RefreshIndicator(
+            onRefresh: cubit.refresh,
+            child: CustomScrollView(
+              slivers: [
+                SliverToBoxAdapter(
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+                    child: Column(
+                      children: [
+                        Row(
+                          children: [
+                            Expanded(
+                              child: _FilterButton(
+                                onTap: () => _showFilters(context),
+                              ),
+                            ),
+                            Space.w12,
+                            Expanded(
+                              child: _TopDropdown(
+                                title: 'وضعیت',
+                                value: state.selectedStatus,
+                                items: LeaveCubit.statusOptions
+                                    .map(
+                                      (item) => DropdownMenuItem(
+                                    value: item.status,
+                                    child: Text(
+                                        item.title,
+                                      style: Theme.of(context).textTheme.bodyMedium,
+                                    ),
+                                  ),
+                                )
+                                    .toList(),
+                                onChanged: (value) {
+                                  if (value != null) {
+                                    cubit.onStatusChanged(value);
+                                  }
+                                },
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
                   ),
-                  Space.h24,
-                  SearchWithRefreshSection(
-                    controller: cubit.cartableSearchController,
-                    hintText: 'جستجو در کارتابل',
-                    onChanged: cubit.onCartableSearchChanged,
-                    onRefreshTap: cubit.refreshCartableItems,
+                ),
+                if (state.isListLoading)
+                  const SliverFillRemaining(
+                    child: Center(child: CircularProgressIndicator()),
+                  )
+                else if (state.filteredItems.isEmpty)
+                  const SliverFillRemaining(
+                    hasScrollBody: false,
+                    child: Center(
+                      child: Text('مرخصی‌ای برای نمایش وجود ندارد.'),
+                    ),
+                  )
+                else
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(16, 8, 16, 24),
+                    sliver: SliverList.builder(
+                      itemCount: state.filteredItems.length,
+                      itemBuilder: (context, index) {
+                        final item = state.filteredItems[index];
+                        return LeaveListCard(
+                          item: item,
+                          onDetailsTap: () async {
+                            final changed = await context.pushNamed<bool>(
+                              LeaveDetailsPage.name,
+                              extra: item.id,
+                            );
+                            if (changed == true && context.mounted) {
+                              context.read<LeaveCubit>().refresh();
+                            }
+                          },
+                        );
+                      },
+                    ),
                   ),
-                  Space.h24,
-                ],
-              ),
+              ],
             ),
           ),
         );
@@ -144,41 +135,91 @@ class CartablePageView extends StatelessWidget {
     );
   }
 
-  void _showChangeActiveUserBottomSheet(BuildContext context) {
-    final cubit = context.read<CartableCubit>();
-    final screenHeight = MediaQuery.sizeOf(context).height;
-
-    BottomSheetMessage.showCustom(
-      backgroundColor: Colors.white,
+  void _showFilters(BuildContext context) {
+    showModalBottomSheet<void>(
       context: context,
-      content: SizedBox(
-        height: screenHeight * 0.85,
-        child: BlocProvider.value(
-          value: cubit,
-          child: BlocBuilder<CartableCubit, CartableState>(
-            builder: (sheetContext, state) {
-              return SearchableTreeBottomSheetContent(
-                searchController:
-                cubit.subordinatedUserSearchController,
-                hintText: 'جستجو در کاربران',
-                users: state.data.filteredSubordinatedUsersTree,
-                onSearchChanged:
-                cubit.onSubordinatedUserSearchChanged,
-
-                onConfirm: (selectedItem, selectedPath) async {
-                  Navigator.of(sheetContext).pop();
-
-                  await cubit.selectActiveCartableUser(
-                    selectedItem: selectedItem,
-                    selectedPath: selectedPath,
-                  );
-                },
-              );
-            },
-          ),
-        ),
+      isScrollControlled: true,
+      backgroundColor: Colors.white,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
       ),
-      actionWidget: const SizedBox.shrink(),
+      builder: (_) {
+        return BlocProvider.value(
+          value: context.read<LeaveCubit>(),
+          child: const LeaveFilterSheet(),
+        );
+      },
     );
   }
 }
+
+class _FilterButton extends StatelessWidget {
+  const _FilterButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      borderRadius: BorderRadius.circular(8),
+      onTap: onTap,
+      child: Container(
+        height: 40,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(8),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Text(
+                'فیلترها',
+              style: Theme.of(context).textTheme.bodyMedium,
+            ),
+            Icon(Icons.keyboard_arrow_down_rounded),
+
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _TopDropdown extends StatelessWidget {
+  const _TopDropdown({
+    required this.title,
+    required this.value,
+    required this.items,
+    required this.onChanged,
+  });
+
+  final String title;
+  final LeaveStatus value;
+  final List<DropdownMenuItem<LeaveStatus>> items;
+  final ValueChanged<LeaveStatus?> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      height: 40,
+      padding: const EdgeInsets.symmetric(horizontal: 12),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+      ),
+      child: DropdownButtonHideUnderline(
+        child: DropdownButton<LeaveStatus>(
+          value: value,
+          isExpanded: true,
+          alignment: AlignmentDirectional.centerEnd,
+          icon: const Icon(Icons.keyboard_arrow_down_rounded),
+          items: items,
+          onChanged: onChanged,
+          hint: Text(title),
+        ),
+      ),
+    );
+  }
+}
+

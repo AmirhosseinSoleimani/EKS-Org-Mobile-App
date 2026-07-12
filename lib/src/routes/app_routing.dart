@@ -8,6 +8,7 @@ import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/emdad_uni
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/evaluation_invoice_page/evaluation_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_first_step/home_service_evaluation_first_step.dart';
 import 'package:eks_sana_plus_org/src/features/indicator_report/presentation/indicator_report_page/indicator_report_page.dart';
+import 'package:eks_sana_plus_org/src/features/leave/presentation/leave_routes.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/assign_and_cancel_emdadgar_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/cancel_request_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cartable_cycle_page/cartable_cycle_page.dart';
@@ -352,6 +353,7 @@ class Routes {
 
         ),
         ...EmdadUnitRoutes.routes(getPage),
+        ...LeaveRoutes.routes(getPage)
       ],
     );
   }
