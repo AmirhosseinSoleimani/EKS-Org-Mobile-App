@@ -1,6 +1,7 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/pages/emdad_unit_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/leave/presentation/pages/leave_page.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/presentation/plan_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/home_service_request_list_page/home_service_request_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/relief_request_list_page/relief_request_list_page.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/presentation/widgets/current_session_access_builder.dart';
@@ -57,15 +58,27 @@ class ServicesPage extends StatelessWidget {
           final sunItems = <Widget>[
             if (access.canShowHomeServiceRequestsMenu())
               _SanItemWidget(
-                title: 'مرخصی',
+                title: 'برنامه‌ریزی',
                 icon: Icons.calendar_month,
-                onTap: () => context.pushNamed(LeavePage.name),
+                onTap: () => context.pushNamed(PlanInfoPage.name),
+              ),
+            if (access.canShowHomeServiceRequestsMenu())
+              _SanItemWidget(
+                title: 'خودروی امدادی',
+                icon: Icons.local_shipping_outlined,
+                onTap: () => context.pushNamed(EmdadUnitListPage.name),
               ),
             if (access.canShowHomeServiceRequestsMenu())
               _SanItemWidget(
                 title: 'واحد امدادی',
-                icon: Icons.local_shipping_outlined,
+                icon: Icons.groups,
                 onTap: () => context.pushNamed(EmdadUnitListPage.name),
+              ),
+            if (access.canShowHomeServiceRequestsMenu())
+              _SanItemWidget(
+                title: 'مرخصی‌ها',
+                icon: Icons.event_busy,
+                onTap: () => context.pushNamed(LeavePage.name),
               ),
           ];
           if (serviceItems.isEmpty) {

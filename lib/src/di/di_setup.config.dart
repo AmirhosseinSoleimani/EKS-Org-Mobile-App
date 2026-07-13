@@ -242,6 +242,17 @@ import '../features/leave/domain/use_cases/get_leave_reports_use_case.dart'
 import '../features/leave/domain/use_cases/rollback_leave_request_use_case.dart'
     as _i918;
 import '../features/leave/presentation/cubit/leave_cubit.dart' as _i710;
+import '../features/plan_info/data/data_source/plan_info_data_source.dart'
+    as _i49;
+import '../features/plan_info/data/data_source/plan_info_data_source_impl.dart'
+    as _i722;
+import '../features/plan_info/data/repository/plan_info_repository_impl.dart'
+    as _i185;
+import '../features/plan_info/data/service/plan_info_service.dart' as _i131;
+import '../features/plan_info/domain/repository/plan_info_repository.dart'
+    as _i579;
+import '../features/plan_info/domain/usecases/plan_info_usecases.dart' as _i203;
+import '../features/plan_info/presentation/cubit/plan_info_cubit.dart' as _i943;
 import '../features/representation/data/data_sources/representation_data_source.dart'
     as _i59;
 import '../features/representation/data/data_sources/representation_data_source_impl.dart'
@@ -607,6 +618,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i233.LeaveService>(
     () => _i233.LeaveService(gh<_i361.Dio>()),
   );
+  gh.lazySingleton<_i131.PlanInfoService>(
+    () => _i131.PlanInfoService(gh<_i361.Dio>()),
+  );
   gh.lazySingleton<_i854.RepresentationService>(
     () => _i854.RepresentationService(gh<_i361.Dio>()),
   );
@@ -675,6 +689,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i59.RepresentationDataSource>(
     () => _i423.RepresentationDataSourceImpl(gh<_i854.RepresentationService>()),
   );
+  gh.lazySingleton<_i49.PlanInfoDataSource>(
+    () => _i722.PlanInfoDataSourceImpl(gh<_i131.PlanInfoService>()),
+  );
   gh.lazySingleton<_i670.DateTimeInfoDataSource>(
     () => _i940.DateTimeInfoDataSourceImpl(gh<_i99.DateTimeService>()),
   );
@@ -719,6 +736,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i14.EmdadUnitRepository>(
     () => _i79.EmdadUnitRepositoryImpl(gh<_i930.EmdadUnitDataSource>()),
+  );
+  gh.lazySingleton<_i579.PlanInfoRepository>(
+    () => _i185.PlanInfoRepositoryImpl(gh<_i49.PlanInfoDataSource>()),
   );
   gh.lazySingleton<_i1039.UserDataSource>(
     () => _i793.UserDataSourceImpl(gh<_i313.UserService>()),
@@ -798,6 +818,36 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i489.DateTimeInfoRepository>(
     () => _i258.DateTimeRepositoryImpl(gh<_i670.DateTimeInfoDataSource>()),
+  );
+  gh.lazySingleton<_i203.GetPlanListUseCase>(
+    () => _i203.GetPlanListUseCase(gh<_i579.PlanInfoRepository>()),
+  );
+  gh.lazySingleton<_i203.GetPlanByIdUseCase>(
+    () => _i203.GetPlanByIdUseCase(gh<_i579.PlanInfoRepository>()),
+  );
+  gh.lazySingleton<_i203.CreatePlanUseCase>(
+    () => _i203.CreatePlanUseCase(gh<_i579.PlanInfoRepository>()),
+  );
+  gh.lazySingleton<_i203.EditPlanUseCase>(
+    () => _i203.EditPlanUseCase(gh<_i579.PlanInfoRepository>()),
+  );
+  gh.lazySingleton<_i203.DeletePlanUseCase>(
+    () => _i203.DeletePlanUseCase(gh<_i579.PlanInfoRepository>()),
+  );
+  gh.lazySingleton<_i203.GetPlanStatusReasonsUseCase>(
+    () => _i203.GetPlanStatusReasonsUseCase(gh<_i579.PlanInfoRepository>()),
+  );
+  gh.lazySingleton<_i203.ChangePlanStatusUseCase>(
+    () => _i203.ChangePlanStatusUseCase(gh<_i579.PlanInfoRepository>()),
+  );
+  gh.lazySingleton<_i203.GetPlanReportUseCase>(
+    () => _i203.GetPlanReportUseCase(gh<_i579.PlanInfoRepository>()),
+  );
+  gh.lazySingleton<_i203.CancelPlanRequestsUseCase>(
+    () => _i203.CancelPlanRequestsUseCase(gh<_i579.PlanInfoRepository>()),
+  );
+  gh.lazySingleton<_i203.GetPlanLookupsUseCase>(
+    () => _i203.GetPlanLookupsUseCase(gh<_i579.PlanInfoRepository>()),
   );
   gh.lazySingleton<_i739.FetchAddressToLocationUseCase>(
     () => _i739.FetchAddressToLocationUseCase(gh<_i92.MapRepository>()),
@@ -1222,6 +1272,21 @@ _i174.GetIt $initGetIt(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
       gh<_i672.GetReliefRequestByIdUseCase>(),
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+    ),
+  );
+  gh.factory<_i943.PlanInfoCubit>(
+    () => _i943.PlanInfoCubit(
+      gh<_i203.GetPlanListUseCase>(),
+      gh<_i203.GetPlanByIdUseCase>(),
+      gh<_i203.CreatePlanUseCase>(),
+      gh<_i203.EditPlanUseCase>(),
+      gh<_i203.DeletePlanUseCase>(),
+      gh<_i203.GetPlanStatusReasonsUseCase>(),
+      gh<_i203.ChangePlanStatusUseCase>(),
+      gh<_i203.GetPlanReportUseCase>(),
+      gh<_i203.CancelPlanRequestsUseCase>(),
+      gh<_i203.GetPlanLookupsUseCase>(),
+      gh<_i1058.CurrentSessionManager>(),
     ),
   );
   gh.factory<_i709.OnlineMapCubit>(

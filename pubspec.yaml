@@ -60,6 +60,7 @@ dependencies:
   intl: ^0.20.2
   shamsi_date: ^1.1.1
   image_picker: ^1.2.3
+  open_filex: ^4.7.0
   fl_chart:
     path: packages/fl_chart
 
@@ -73,6 +74,7 @@ dev_dependencies:
   retrofit_generator: ^10.2.5
   json_serializable: ^6.8.0
   enum_to_string: ^2.0.1
+
 #  js: ^0.7.1
 #  flutter_launcher_icons: ^0.14.4
 #  analyzer: ^10.0.1
