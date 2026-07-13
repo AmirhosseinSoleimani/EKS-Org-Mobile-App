@@ -1072,6 +1072,13 @@ _i174.GetIt $initGetIt(
       gh<_i369.SetSelectedRequestItemUseCase>(),
     ),
   );
+  gh.factory<_i330.CartableCubit>(
+    () => _i330.CartableCubit(
+      gh<_i45.GetSubordinatedUsersUseCase>(),
+      gh<_i862.GetCartableItemListUseCase>(),
+      gh<_i369.SetSelectedRequestItemUseCase>(),
+    ),
+  );
   gh.factory<_i1038.CompleteUrgentRequestCubit>(
     () => _i1038.CompleteUrgentRequestCubit(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
@@ -1145,12 +1152,6 @@ _i174.GetIt $initGetIt(
       gh<_i67.GetRequestFollowupHistoryUseCase>(),
       gh<_i786.GetEmdadgarInfoUseCase>(),
       gh<_i955.GetRequestStatusHistoryUseCase>(),
-    ),
-  );
-  gh.factory<_i330.CartableCubit>(
-    () => _i330.CartableCubit(
-      gh<_i45.GetSubordinatedUsersUseCase>(),
-      gh<_i862.GetCartableItemListUseCase>(),
     ),
   );
   gh.lazySingleton<_i695.SyncCurrentSessionUseCase>(
