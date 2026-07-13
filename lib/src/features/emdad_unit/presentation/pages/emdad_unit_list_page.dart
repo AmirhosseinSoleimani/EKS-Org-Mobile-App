@@ -1,11 +1,15 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/emdad_unit_entity.dart';
+import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/params/emdad_unit_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/cubit/emdad_unit_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/pages/emdad_unit_form_page.dart';
+import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/pages/emdad_unit_grade_pattern_page.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/pages/emdad_unit_image_page.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/pages/emdad_unit_location_page.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/pages/emdad_unit_persons_page.dart';
+import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/emdad_unit_action_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/emdad_unit_card.dart';
+import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/emdad_unit_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/emdad_unit_filter_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
@@ -36,6 +40,7 @@ class _EmdadUnitListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<EmdadUnitCubit>();
+    final theme = Theme.of(context);
 
     return BlocListener<EmdadUnitCubit, EmdadUnitState>(
       listener: (context, state) {
@@ -47,7 +52,8 @@ class _EmdadUnitListView extends StatelessWidget {
         }
       },
       child: Scaffold(
-        appBar: const SimpleAppBar(title: 'واحدهای امدادی'),
+        backgroundColor: theme.colorScheme.surface,
+        appBar: const SimpleAppBar(title: 'واحد امدادی'),
         floatingActionButton: FloatingActionButton(
           onPressed: () async {
             final changed = await context.pushNamed<bool>(EmdadUnitFormPage.name);
@@ -64,34 +70,35 @@ class _EmdadUnitListView extends StatelessWidget {
           child: Column(
             children: [
               Padding(
-                padding: const EdgeInsets.all(AppPadding.p16),
-                child: Row(
-                  children: [
-                    Expanded(
-                      child: TextField(
-                        controller: cubit.nameController,
-                        decoration: const InputDecoration(
-                          labelText: 'جستجوی عنوان',
-                          prefixIcon: Icon(Icons.search_rounded),
+                padding: const EdgeInsets.fromLTRB(
+                  AppPadding.p16,
+                  AppPadding.p16,
+                  AppPadding.p16,
+                  AppPadding.p8,
+                ),
+                child: BlocBuilder<EmdadUnitCubit, EmdadUnitState>(
+                  buildWhen: (previous, current) => previous.filter != current.filter,
+                  builder: (context, state) {
+                    return Row(
+                      children: [
+                        Expanded(
+                          child: _TopFilterButton(
+                            title: 'فیلترها',
+                            isActive: state.filter.hasTextFilters,
+                            onTap: () => _showFilters(context, cubit),
+                          ),
                         ),
-                        onSubmitted: (value) {
-                          cubit.applyFilter(cubit.state.filter.copyWith(name: value));
-                        },
-                      ),
-                    ),
-                    Space.w8,
-                    IconButton.filledTonal(
-                      tooltip: 'فیلتر',
-                      onPressed: () => _showFilters(context, cubit),
-                      icon: const Icon(Icons.tune_rounded),
-                    ),
-                    Space.w8,
-                    IconButton.filledTonal(
-                      tooltip: 'بازخوانی',
-                      onPressed: () => cubit.fetchList(refresh: true),
-                      icon: const Icon(Icons.refresh_rounded),
-                    ),
-                  ],
+                        Space.w12,
+                        Expanded(
+                          child: _TopFilterButton(
+                            title: _statusTitle(state.filter.isActive),
+                            isActive: state.filter.isActive != null,
+                            onTap: () => _showStatusSheet(context, cubit, state.filter),
+                          ),
+                        ),
+                      ],
+                    );
+                  },
                 ),
               ),
               Expanded(
@@ -111,9 +118,13 @@ class _EmdadUnitListView extends StatelessWidget {
                     if (state.items.isEmpty) {
                       return _MessageState(
                         icon: Icons.inbox_outlined,
-                        title: 'رکوردی یافت نشد',
-                        actionTitle: 'بازخوانی',
-                        onAction: () => cubit.fetchList(refresh: true),
+                        title: state.filter.isActiveFilter
+                            ? 'نتیجه‌ای برای فیلترهای انتخابی یافت نشد'
+                            : 'رکوردی یافت نشد',
+                        actionTitle: state.filter.isActiveFilter ? 'پاک کردن فیلترها' : 'بازخوانی',
+                        onAction: state.filter.isActiveFilter
+                            ? cubit.clearFilter
+                            : () => cubit.fetchList(refresh: true),
                       );
                     }
 
@@ -132,7 +143,7 @@ class _EmdadUnitListView extends StatelessWidget {
                         child: ListView.builder(
                           padding: const EdgeInsets.fromLTRB(
                             AppPadding.p16,
-                            AppPadding.p0,
+                            AppPadding.p8,
                             AppPadding.p16,
                             AppPadding.p100,
                           ),
@@ -148,10 +159,7 @@ class _EmdadUnitListView extends StatelessWidget {
                             final item = state.items[index];
                             return EmdadUnitCard(
                               item: item,
-                              onEditImage: () => _openImagePage(context, item, cubit),
-                              onChangeLocation: () => _openLocationPage(context, item, cubit),
-                              onPersons: () => _openPersonsPage(context, item, cubit),
-                              onDelete: () => _confirmDelete(context, item, cubit),
+                              onAction: () => _showActionSheet(context, item, cubit),
                             );
                           },
                         ),
@@ -172,10 +180,73 @@ class _EmdadUnitListView extends StatelessWidget {
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
+      ),
       builder: (_) => EmdadUnitFilterSheet(
         initialFilter: cubit.state.filter,
         onApply: cubit.applyFilter,
         onClear: cubit.clearFilter,
+      ),
+    );
+  }
+
+  void _showStatusSheet(
+    BuildContext context,
+    EmdadUnitCubit cubit,
+    EmdadUnitFilterParamEntity filter,
+  ) {
+    showModalBottomSheet<void>(
+      context: context,
+      useSafeArea: true,
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
+      ),
+      builder: (context) => SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(AppPadding.p16),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              _StatusTile(title: 'همه', onTap: () {
+                Navigator.of(context).pop();
+                cubit.applyFilter(filter.copyWith(clearIsActive: true, skip: 0));
+              }),
+              _StatusTile(title: 'فعال', onTap: () {
+                Navigator.of(context).pop();
+                cubit.applyFilter(filter.copyWith(isActive: true, skip: 0));
+              }),
+              _StatusTile(title: 'غیرفعال', onTap: () {
+                Navigator.of(context).pop();
+                cubit.applyFilter(filter.copyWith(isActive: false, skip: 0));
+              }),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+
+  void _showActionSheet(
+    BuildContext context,
+    EmdadUnitEntity item,
+    EmdadUnitCubit cubit,
+  ) {
+    showModalBottomSheet<void>(
+      context: context,
+      useSafeArea: true,
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
+      ),
+      builder: (_) => EmdadUnitActionSheet(
+        onEditImage: () => _openImagePage(context, item, cubit),
+        onChangeLocation: () => _openLocationPage(context, item, cubit),
+        onPersons: () => _openPersonsPage(context, item, cubit),
+        onGradePatterns: () => _openGradePatternPage(context, item, cubit),
+        onDelete: () => _confirmDelete(context, item, cubit),
       ),
     );
   }
@@ -185,10 +256,7 @@ class _EmdadUnitListView extends StatelessWidget {
     EmdadUnitEntity item,
     EmdadUnitCubit cubit,
   ) async {
-    final changed = await context.pushNamed<bool>(
-      EmdadUnitImagePage.name,
-      extra: item,
-    );
+    final changed = await context.pushNamed<bool>(EmdadUnitImagePage.name, extra: item);
     if (changed == true && context.mounted) {
       cubit.fetchList(refresh: true);
     }
@@ -199,10 +267,7 @@ class _EmdadUnitListView extends StatelessWidget {
     EmdadUnitEntity item,
     EmdadUnitCubit cubit,
   ) async {
-    final changed = await context.pushNamed<bool>(
-      EmdadUnitLocationPage.name,
-      extra: item,
-    );
+    final changed = await context.pushNamed<bool>(EmdadUnitLocationPage.name, extra: item);
     if (changed == true && context.mounted) {
       cubit.fetchList(refresh: true);
     }
@@ -213,10 +278,18 @@ class _EmdadUnitListView extends StatelessWidget {
     EmdadUnitEntity item,
     EmdadUnitCubit cubit,
   ) async {
-    final changed = await context.pushNamed<bool>(
-      EmdadUnitPersonsPage.name,
-      extra: item,
-    );
+    final changed = await context.pushNamed<bool>(EmdadUnitPersonsPage.name, extra: item);
+    if (changed == true && context.mounted) {
+      cubit.fetchList(refresh: true);
+    }
+  }
+
+  Future<void> _openGradePatternPage(
+    BuildContext context,
+    EmdadUnitEntity item,
+    EmdadUnitCubit cubit,
+  ) async {
+    final changed = await context.pushNamed<bool>(EmdadUnitGradePatternPage.name, extra: item);
     if (changed == true && context.mounted) {
       cubit.fetchList(refresh: true);
     }
@@ -227,26 +300,119 @@ class _EmdadUnitListView extends StatelessWidget {
     EmdadUnitEntity item,
     EmdadUnitCubit cubit,
   ) async {
-    final confirmed = await showDialog<bool>(
+    if (item.id == null) return;
+    await showModalBottomSheet<bool>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('توجه'),
-        content: Text('آیا واحد امدادی ${item.name ?? ''} حذف شود؟'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('انصراف'),
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
+      ),
+      builder: (_) => BlocProvider.value(
+        value: cubit,
+        child: BlocBuilder<EmdadUnitCubit, EmdadUnitState>(
+          builder: (context, state) => EmdadUnitConfirmSheet(
+            title: 'حذف واحد امدادی',
+            message: 'آیا از حذف این مورد مطمئن هستید؟ این عمل غیرقابل بازگشت است.',
+            confirmTitle: 'حذف',
+            isSubmitting: state.status == EmdadUnitViewStatus.submitting,
+            onConfirm: () async {
+              final ok = await cubit.deleteItem(item.id!);
+              if (ok && context.mounted) Navigator.of(context).pop(true);
+            },
           ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('حذف'),
-          ),
-        ],
+        ),
       ),
     );
-    if (confirmed == true && item.id != null) {
-      await cubit.deleteItem(item.id!);
-    }
+  }
+
+  String _statusTitle(bool? value) {
+    if (value == true) return 'فعال';
+    if (value == false) return 'غیرفعال';
+    return 'وضعیت';
+  }
+}
+
+class _TopFilterButton extends StatelessWidget {
+  const _TopFilterButton({
+    required this.title,
+    required this.isActive,
+    required this.onTap,
+  });
+
+  final String title;
+  final bool isActive;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return InkWell(
+      borderRadius: BorderRadius.circular(AppSize.s8),
+      onTap: onTap,
+      child: Container(
+        height: AppSize.s48,
+        padding: const EdgeInsets.symmetric(horizontal: AppPadding.p14),
+        decoration: BoxDecoration(
+          color: theme.colorScheme.onPrimary,
+          borderRadius: BorderRadius.circular(AppSize.s8),
+          border: Border.all(
+            color: isActive
+                ? theme.colorScheme.primary.withOpacity(0.45)
+                : Colors.transparent,
+          ),
+        ),
+        child: Row(
+          children: [
+            Text(
+              title,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: isActive
+                    ? theme.colorScheme.primary
+                    : theme.colorScheme.onSurface,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            const Spacer(),
+            Icon(
+              Icons.keyboard_arrow_down_rounded,
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+
+            if (isActive) ...[
+              Space.w8,
+              Container(
+                width: AppSize.s6,
+                height: AppSize.s6,
+                decoration: BoxDecoration(
+                  color: theme.colorScheme.primary,
+                  shape: BoxShape.circle,
+                ),
+              ),
+            ],
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _StatusTile extends StatelessWidget {
+  const _StatusTile({
+    required this.title,
+    required this.onTap,
+  });
+
+  final String title;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: Text(title),
+      onTap: onTap,
+    );
   }
 }
 
@@ -265,15 +431,16 @@ class _MessageState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppPadding.p24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: AppSize.s48, color: Theme.of(context).colorScheme.primary),
+            Icon(icon, size: AppSize.s48, color: theme.colorScheme.primary),
             Space.h16,
-            Text(title, style: Theme.of(context).textTheme.titleSmall),
+            Text(title, textAlign: TextAlign.center, style: theme.textTheme.titleSmall),
             Space.h16,
             OutlinedButton(
               onPressed: onAction,
@@ -284,4 +451,20 @@ class _MessageState extends StatelessWidget {
       ),
     );
   }
+}
+
+extension _EmdadUnitFilterStateX on EmdadUnitFilterParamEntity {
+  bool get hasTextFilters {
+    return [
+      name,
+      agencyInfoName,
+      vehicleInfoTitle,
+      personInfoFullName,
+      locationTitle,
+    ].any((item) => item?.trim().isNotEmpty == true) ||
+        seatType != null ||
+        grade != null;
+  }
+
+  bool get isActiveFilter => hasTextFilters || isActive != null;
 }

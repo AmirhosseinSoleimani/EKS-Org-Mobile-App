@@ -21,36 +21,36 @@ class EmdadUnitFilterSheet extends StatefulWidget {
 
 class _EmdadUnitFilterSheetState extends State<EmdadUnitFilterSheet> {
   late final TextEditingController _nameController;
+  late final TextEditingController _personController;
   late final TextEditingController _agencyController;
   late final TextEditingController _vehicleController;
-  late final TextEditingController _personController;
   late final TextEditingController _locationController;
   int? _seatType;
   int? _grade;
-  bool? _isActive;
 
   @override
   void initState() {
     super.initState();
     final filter = widget.initialFilter;
     _nameController = TextEditingController(text: filter.name);
+    _personController = TextEditingController(text: filter.personInfoFullName);
     _agencyController = TextEditingController(text: filter.agencyInfoName);
     _vehicleController = TextEditingController(text: filter.vehicleInfoTitle);
-    _personController = TextEditingController(text: filter.personInfoFullName);
     _locationController = TextEditingController(text: filter.locationTitle);
     _seatType = filter.seatType;
     _grade = filter.grade;
-    _isActive = filter.isActive;
   }
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.only(
-          left: AppPadding.p16,
-          right: AppPadding.p16,
-          top: AppPadding.p16,
+          left: AppPadding.p20,
+          right: AppPadding.p20,
+          top: AppPadding.p8,
           bottom: MediaQuery.viewInsetsOf(context).bottom + AppPadding.p16,
         ),
         child: SingleChildScrollView(
@@ -58,28 +58,42 @@ class _EmdadUnitFilterSheetState extends State<EmdadUnitFilterSheet> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('فیلتر واحدهای امدادی', style: Theme.of(context).textTheme.titleMedium),
-              Space.h16,
+              Center(
+                child: Container(
+                  width: AppSize.s48,
+                  height: AppSize.s4,
+                  decoration: BoxDecoration(
+                    color: theme.colorScheme.outlineVariant.withOpacity(0.16),
+                    borderRadius: BorderRadius.circular(AppSize.s8),
+                  ),
+                ),
+              ),
+              Space.h24,
+              Text(
+                'جستجو و فیلتر',
+                style: theme.textTheme.titleMedium?.copyWith(
+                  fontWeight: FontWeight.w800,
+                ),
+              ),
+              Space.h24,
               _TextField(controller: _nameController, label: 'عنوان'),
+              _TextField(controller: _personController, label: 'امدادرسان'),
               _TextField(controller: _agencyController, label: 'نمایندگی'),
               _TextField(controller: _vehicleController, label: 'خودرو'),
-              _TextField(controller: _personController, label: 'امدادرسان'),
-              _TextField(controller: _locationController, label: 'محل استقرار'),
-              DropdownButtonFormField<int?>(
+              _SelectField<int>(
+                label: 'نوع مقر',
                 value: _seatType,
-                decoration: const InputDecoration(labelText: 'نوع مقر'),
                 items: const [
-                  DropdownMenuItem(value: null, child: Text('همه')),
                   DropdownMenuItem(value: 1, child: Text('نوع ۱')),
                   DropdownMenuItem(value: 2, child: Text('نوع ۲')),
                 ],
                 onChanged: (value) => setState(() => _seatType = value),
               ),
-              DropdownButtonFormField<int?>(
+              _TextField(controller: _locationController, label: 'محل استقرار'),
+              _SelectField<int>(
+                label: 'گرید',
                 value: _grade,
-                decoration: const InputDecoration(labelText: 'گرید'),
                 items: const [
-                  DropdownMenuItem(value: null, child: Text('همه')),
                   DropdownMenuItem(value: 1, child: Text('۱')),
                   DropdownMenuItem(value: 2, child: Text('۲')),
                   DropdownMenuItem(value: 3, child: Text('۳')),
@@ -87,16 +101,6 @@ class _EmdadUnitFilterSheetState extends State<EmdadUnitFilterSheet> {
                   DropdownMenuItem(value: 5, child: Text('۵')),
                 ],
                 onChanged: (value) => setState(() => _grade = value),
-              ),
-              DropdownButtonFormField<bool?>(
-                value: _isActive,
-                decoration: const InputDecoration(labelText: 'وضعیت'),
-                items: const [
-                  DropdownMenuItem(value: null, child: Text('همه')),
-                  DropdownMenuItem(value: true, child: Text('فعال')),
-                  DropdownMenuItem(value: false, child: Text('غیرفعال')),
-                ],
-                onChanged: (value) => setState(() => _isActive = value),
               ),
               Space.h24,
               Row(
@@ -107,17 +111,14 @@ class _EmdadUnitFilterSheetState extends State<EmdadUnitFilterSheet> {
                       onTap: _apply,
                     ),
                   ),
-                  Space.w12,
+                  Space.w16,
                   Expanded(
                     child: InkwellButtonWidget(
-                      title: 'پاک کردن',
-                      backgroundColor: Theme.of(context).colorScheme.surface,
-                      borderColor: Theme.of(context).colorScheme.outline,
-                      titleColor: Theme.of(context).colorScheme.onSurface,
-                      onTap: () {
-                        widget.onClear();
-                        Navigator.of(context).pop();
-                      },
+                      title: 'پاک کردن همه',
+                      backgroundColor: theme.colorScheme.onPrimary,
+                      borderColor: theme.colorScheme.outline.withOpacity(0.65),
+                      titleColor: theme.colorScheme.onSurface,
+                      onTap: _clear,
                     ),
                   ),
                 ],
@@ -132,30 +133,38 @@ class _EmdadUnitFilterSheetState extends State<EmdadUnitFilterSheet> {
   void _apply() {
     widget.onApply(EmdadUnitFilterParamEntity(
       name: _nameController.text,
+      personInfoFullName: _personController.text,
       agencyInfoName: _agencyController.text,
       vehicleInfoTitle: _vehicleController.text,
-      personInfoFullName: _personController.text,
       locationTitle: _locationController.text,
       seatType: _seatType,
       grade: _grade,
-      isActive: _isActive,
+      skip: 0,
     ));
+    Navigator.of(context).pop();
+  }
+
+  void _clear() {
+    widget.onClear();
     Navigator.of(context).pop();
   }
 
   @override
   void dispose() {
     _nameController.dispose();
+    _personController.dispose();
     _agencyController.dispose();
     _vehicleController.dispose();
-    _personController.dispose();
     _locationController.dispose();
     super.dispose();
   }
 }
 
 class _TextField extends StatelessWidget {
-  const _TextField({required this.controller, required this.label});
+  const _TextField({
+    required this.controller,
+    required this.label,
+  });
 
   final TextEditingController controller;
   final String label;
@@ -163,10 +172,52 @@ class _TextField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppPadding.p8),
+      padding: const EdgeInsets.only(bottom: AppPadding.p18),
       child: TextField(
         controller: controller,
-        decoration: InputDecoration(labelText: label),
+        textInputAction: TextInputAction.next,
+        decoration: InputDecoration(
+          labelText: label,
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppSize.s8),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _SelectField<T> extends StatelessWidget {
+  const _SelectField({
+    required this.label,
+    required this.value,
+    required this.items,
+    required this.onChanged,
+  });
+
+  final String label;
+  final T? value;
+  final List<DropdownMenuItem<T>> items;
+  final ValueChanged<T?> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppPadding.p18),
+      child: DropdownButtonFormField<T>(
+        value: value,
+        isExpanded: true,
+        decoration: InputDecoration(
+          labelText: label,
+          hintText: 'انتخاب کنید',
+          floatingLabelBehavior: FloatingLabelBehavior.always,
+          border: OutlineInputBorder(
+            borderRadius: BorderRadius.circular(AppSize.s8),
+          ),
+        ),
+        items: items,
+        onChanged: onChanged,
       ),
     );
   }

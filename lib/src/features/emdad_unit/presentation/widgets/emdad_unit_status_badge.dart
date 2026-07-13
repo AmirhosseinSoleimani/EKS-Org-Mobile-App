@@ -8,9 +8,12 @@ class EmdadUnitStatusBadge extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final active = isActive ?? false;
-    final colorScheme = Theme.of(context).colorScheme;
-    final color = active ? colorScheme.primary : colorScheme.error;
+    final active = isActive == true;
+    final theme = Theme.of(context);
+    final background = active
+        ? theme.colorScheme.onError.withValues(alpha: 0.10)
+        : theme.colorScheme.error.withValues(alpha: 0.10);
+    final foreground = active ? const Color(0xFF00966D) : theme.colorScheme.error;
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -18,13 +21,15 @@ class EmdadUnitStatusBadge extends StatelessWidget {
         vertical: AppPadding.p4,
       ),
       decoration: BoxDecoration(
-        color: color.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(AppSize.s8),
-        border: Border.all(color: color.withOpacity(0.35)),
+        color: background,
+        borderRadius: BorderRadius.circular(AppSize.s20),
       ),
       child: Text(
         active ? 'فعال' : 'غیرفعال',
-        style: Theme.of(context).textTheme.bodySmall?.copyWith(color: color),
+        style: theme.textTheme.bodySmall?.copyWith(
+          color: foreground,
+          fontWeight: FontWeight.w700,
+        ),
       ),
     );
   }

@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/emdad_unit_entity.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/pages/emdad_unit_form_page.dart';
+import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/pages/emdad_unit_grade_pattern_page.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/pages/emdad_unit_image_page.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/pages/emdad_unit_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/pages/emdad_unit_location_page.dart';
@@ -64,6 +65,14 @@ class EmdadUnitRoutes {
             child: EmdadUnitLocationPage(item: item),
             state: state,
           );
+        },
+      ),
+      GoRoute(
+        path: EmdadUnitGradePatternPage.path,
+        name: EmdadUnitGradePatternPage.name,
+        pageBuilder: (context, state) {
+          final item = state.extra as EmdadUnitEntity;
+          return getPage(child: EmdadUnitGradePatternPage(item: item), state: state);
         },
       ),
     ];

@@ -1,7 +1,11 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/emdad_unit_entity.dart';
+import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/emdad_unit_person_entity.dart';
+import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/lookup_entity.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/cubit/emdad_unit_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/emdad_unit_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/emdad_unit_status_badge.dart';
+import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/emdad_unit_summary_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
@@ -22,13 +26,15 @@ class EmdadUnitPersonsPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<EmdadUnitCubit>()..loadPersons(item),
-      child: const _EmdadUnitPersonsView(),
+      child: _EmdadUnitPersonsView(item: item),
     );
   }
 }
 
 class _EmdadUnitPersonsView extends StatefulWidget {
-  const _EmdadUnitPersonsView();
+  const _EmdadUnitPersonsView({required this.item});
+
+  final EmdadUnitEntity item;
 
   @override
   State<_EmdadUnitPersonsView> createState() => _EmdadUnitPersonsViewState();
@@ -41,6 +47,8 @@ class _EmdadUnitPersonsViewState extends State<_EmdadUnitPersonsView> {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<EmdadUnitCubit>();
+    final theme = Theme.of(context);
+
     return BlocListener<EmdadUnitCubit, EmdadUnitState>(
       listener: (context, state) {
         if (state.status == EmdadUnitViewStatus.failure && state.message != null) {
@@ -48,6 +56,7 @@ class _EmdadUnitPersonsViewState extends State<_EmdadUnitPersonsView> {
         }
         if (state.status == EmdadUnitViewStatus.success && state.message != null) {
           _changed = true;
+          setState(() => _selectedPersonId = null);
           SnakeBarWidget.showSuccess(context: context, message: state.message!);
         }
       },
@@ -57,73 +66,60 @@ class _EmdadUnitPersonsViewState extends State<_EmdadUnitPersonsView> {
           return false;
         },
         child: Scaffold(
-          appBar: const SimpleAppBar(title: 'امدادرسان‌ها'),
+          backgroundColor: theme.colorScheme.surface,
+          appBar: const SimpleAppBar(title: 'مدیریت امدادرسان‌ها'),
+          bottomNavigationBar: SafeArea(
+            minimum: const EdgeInsets.all(AppPadding.p16),
+            child: InkwellButtonWidget(
+              title: 'بستن',
+              backgroundColor: theme.colorScheme.onPrimary,
+              borderColor: theme.colorScheme.outline.withOpacity(0.65),
+              titleColor: theme.colorScheme.onSurface,
+              onTap: () => context.pop(_changed),
+            ),
+          ),
           body: BlocBuilder<EmdadUnitCubit, EmdadUnitState>(
             builder: (context, state) {
               if (state.status == EmdadUnitViewStatus.loading && state.persons.isEmpty) {
                 return const Center(child: CircularProgressIndicator());
               }
+              final eligiblePersons = _eligiblePersons(state);
               return ListView(
                 padding: const EdgeInsets.all(AppPadding.p16),
                 children: [
-                  Text(state.selectedItem?.name ?? '', style: Theme.of(context).textTheme.titleSmall),
+                  EmdadUnitSummaryCard(item: widget.item),
                   Space.h16,
-                  DropdownButtonFormField<int>(
-                    value: _selectedPersonId,
-                    isExpanded: true,
-                    decoration: const InputDecoration(labelText: 'امدادرسان'),
-                    items: state.agencyPersons
-                        .map((item) => DropdownMenuItem(
-                              value: item.id,
-                              child: Text(item.title, overflow: TextOverflow.ellipsis),
-                            ))
-                        .toList(),
+                  _AddPersonCard(
+                    selectedPersonId: _selectedPersonId,
+                    persons: eligiblePersons,
+                    isSubmitting: state.status == EmdadUnitViewStatus.submitting,
                     onChanged: (value) => setState(() => _selectedPersonId = value),
-                  ),
-                  Space.h12,
-                  InkwellButtonWidget(
-                    title: 'افزودن امدادرسان',
-                    showLoading: state.status == EmdadUnitViewStatus.submitting,
-                    onTap: () {
-                      if (_selectedPersonId == null) {
-                        SnakeBarWidget.showError(
-                          context: context,
-                          message: 'انتخاب امدادرسان اجباری می باشد',
-                        );
-                        return;
-                      }
-                      cubit.assignPerson(_selectedPersonId!);
-                      setState(() => _selectedPersonId = null);
-                    },
+                    onSubmit: () => _assignPerson(context, cubit),
                   ),
                   Space.h24,
+                  Row(
+                    children: [
+                      Text(
+                        'امدادرسان‌های ثبت‌شده',
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const Spacer(),
+                      _CountBadge(count: state.persons.length),
+                    ],
+                  ),
+                  Space.h12,
                   if (state.persons.isEmpty)
-                    const Center(child: Text('رکوردی یافت نشد.'))
+                    _EmptyCard(message: 'امدادرسانی برای این واحد ثبت نشده است.')
                   else
                     ...state.persons.map(
-                      (person) => Card(
-                        margin: const EdgeInsets.only(bottom: AppMargin.m12),
-                        child: ListTile(
-                          title: Text(person.fullName),
-                          subtitle: Text([
-                            person.nationalNumber,
-                            person.mobile,
-                            person.agencyInfoTitle,
-                          ].where((item) => item?.trim().isNotEmpty == true).join(' | ')),
-                          trailing: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              EmdadUnitStatusBadge(isActive: person.isActive),
-                              IconButton(
-                                tooltip: 'حذف',
-                                onPressed: person.id == null
-                                    ? null
-                                    : () => _confirmDelete(context, person.id!, person.fullName, cubit),
-                                icon: const Icon(Icons.delete_outline_rounded),
-                              ),
-                            ],
-                          ),
-                        ),
+                      (person) => _PersonCard(
+                        person: person,
+                        isSubmitting: state.status == EmdadUnitViewStatus.submitting,
+                        onDelete: person.id == null
+                            ? null
+                            : () => _confirmDelete(context, person, cubit),
                       ),
                     ),
                 ],
@@ -135,31 +131,273 @@ class _EmdadUnitPersonsViewState extends State<_EmdadUnitPersonsView> {
     );
   }
 
+  List<LookupEntity> _eligiblePersons(EmdadUnitState state) {
+    final assignedIds = state.persons
+        .map((person) => person.agencyPersonId)
+        .whereType<int>()
+        .toSet();
+    return state.agencyPersons
+        .where((person) => !assignedIds.contains(person.id))
+        .toList();
+  }
+
+  void _assignPerson(BuildContext context, EmdadUnitCubit cubit) {
+    final id = _selectedPersonId;
+    if (id == null) {
+      SnakeBarWidget.showError(
+        context: context,
+        message: 'انتخاب امدادرسان اجباری می باشد',
+      );
+      return;
+    }
+    cubit.assignPerson(id);
+  }
+
   Future<void> _confirmDelete(
     BuildContext context,
-    int id,
-    String name,
+    EmdadUnitPersonEntity person,
     EmdadUnitCubit cubit,
   ) async {
-    final confirmed = await showDialog<bool>(
+    await showModalBottomSheet<void>(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('توجه'),
-        content: Text('آیا امدادرسان $name حذف شود؟'),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.of(context).pop(false),
-            child: const Text('انصراف'),
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
+      ),
+      builder: (_) => BlocProvider.value(
+        value: cubit,
+        child: BlocBuilder<EmdadUnitCubit, EmdadUnitState>(
+          builder: (context, state) => EmdadUnitConfirmSheet(
+            title: 'حذف امدادرسان',
+            message: 'آیا از حذف این مورد مطمئن هستید؟ این عمل غیرقابل بازگشت است.',
+            confirmTitle: 'حذف',
+            isSubmitting: state.status == EmdadUnitViewStatus.submitting,
+            onConfirm: () async {
+              final ok = await cubit.deletePerson(person.id!);
+              if (ok && context.mounted) Navigator.of(context).pop();
+            },
           ),
-          FilledButton(
-            onPressed: () => Navigator.of(context).pop(true),
-            child: const Text('حذف'),
+        ),
+      ),
+    );
+  }
+}
+
+class _AddPersonCard extends StatelessWidget {
+  const _AddPersonCard({
+    required this.selectedPersonId,
+    required this.persons,
+    required this.isSubmitting,
+    required this.onChanged,
+    required this.onSubmit,
+  });
+
+  final int? selectedPersonId;
+  final List<LookupEntity> persons;
+  final bool isSubmitting;
+  final ValueChanged<int?> onChanged;
+  final VoidCallback onSubmit;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(AppPadding.p24),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.onPrimary,
+        borderRadius: BorderRadius.circular(AppSize.s8),
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text(
+            'افزودن امدادرسان',
+            style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+          ),
+          Space.h20,
+          DropdownButtonFormField<int>(
+            value: selectedPersonId,
+            isExpanded: true,
+            decoration: const InputDecoration(
+              labelText: 'امدادرسان',
+              hintText: 'انتخاب کنید',
+            ),
+            items: persons
+                .map(
+                  (item) => DropdownMenuItem(
+                    value: item.id,
+                    child: Text(item.title, overflow: TextOverflow.ellipsis),
+                  ),
+                )
+                .toList(),
+            onChanged: isSubmitting ? null : onChanged,
+          ),
+          Space.h32,
+          InkwellButtonWidget(
+            title: 'افزودن',
+            showLoading: isSubmitting,
+            onTap: selectedPersonId == null || isSubmitting ? null : onSubmit,
           ),
         ],
       ),
     );
-    if (confirmed == true) {
-      await cubit.deletePerson(id);
-    }
   }
+}
+
+class _PersonCard extends StatelessWidget {
+  const _PersonCard({
+    required this.person,
+    required this.isSubmitting,
+    required this.onDelete,
+  });
+
+  final EmdadUnitPersonEntity person;
+  final bool isSubmitting;
+  final VoidCallback? onDelete;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      margin: const EdgeInsets.only(bottom: AppMargin.m12),
+      padding: const EdgeInsets.all(AppPadding.p16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.onPrimary,
+        borderRadius: BorderRadius.circular(AppSize.s8),
+        boxShadow: [
+          BoxShadow(
+            color: theme.colorScheme.shadow.withOpacity(0.04),
+            blurRadius: AppSize.s12,
+            offset: const Offset(0, 6),
+          ),
+        ],
+      ),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            children: [
+              Expanded(
+                child: Text(
+                  _value(person.fullName),
+                  style: theme.textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+              ),
+              EmdadUnitStatusBadge(isActive: person.isActive),
+              Space.w8,
+              IconButton(
+                tooltip: 'حذف',
+                onPressed: isSubmitting ? null : onDelete,
+                icon: Icon(
+                  Icons.delete_outline_rounded,
+                  color: theme.colorScheme.error,
+                ),
+              ),
+            ],
+          ),
+          Space.h12,
+          Divider(height: AppSize.s1, color: theme.dividerColor.withOpacity(0.65)),
+          Space.h12,
+          _InfoLine(icon: Icons.badge_outlined, label: 'کد ملی', value: person.nationalNumber),
+          _InfoLine(icon: Icons.phone_outlined, label: 'شماره تماس', value: person.mobile),
+          _InfoLine(icon: Icons.business_outlined, label: 'نمایندگی', value: person.agencyInfoTitle),
+        ],
+      ),
+    );
+  }
+}
+
+class _InfoLine extends StatelessWidget {
+  const _InfoLine({
+    required this.icon,
+    required this.label,
+    required this.value,
+  });
+
+  final IconData icon;
+  final String label;
+  final String? value;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppPadding.p8),
+      child: Row(
+        children: [
+          Icon(icon, size: AppSize.s16, color: theme.colorScheme.onSurfaceVariant),
+          Space.w8,
+          Text(
+            '$label: ',
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+          Expanded(
+            child: Text(
+              _value(value),
+              maxLines: 1,
+              overflow: TextOverflow.ellipsis,
+              style: theme.textTheme.bodySmall,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
+class _CountBadge extends StatelessWidget {
+  const _CountBadge({required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppPadding.p10,
+        vertical: AppPadding.p4,
+      ),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.primary.withOpacity(0.10),
+        borderRadius: BorderRadius.circular(AppSize.s20),
+      ),
+      child: Text(
+        '$count مورد',
+        style: theme.textTheme.bodySmall?.copyWith(
+          color: theme.colorScheme.primary,
+          fontWeight: FontWeight.w800,
+        ),
+      ),
+    );
+  }
+}
+
+class _EmptyCard extends StatelessWidget {
+  const _EmptyCard({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Container(
+      padding: const EdgeInsets.all(AppPadding.p16),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.onPrimary,
+        borderRadius: BorderRadius.circular(AppSize.s8),
+      ),
+      child: Text(message, style: theme.textTheme.bodyMedium),
+    );
+  }
+}
+
+String _value(String? value) {
+  return value?.trim().isNotEmpty == true ? value!.trim() : '---';
 }
