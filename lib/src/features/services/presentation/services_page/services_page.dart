@@ -1,9 +1,13 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_info_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/pages/emdad_unit_list_page.dart';
+import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/pages/grade_pattern_form_page.dart';
+import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/pages/grade_pattern_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/leave/presentation/pages/leave_page.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/plan_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/home_service_request_list_page/home_service_request_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/relief_request_list_page/relief_request_list_page.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/pages/vehicle_info_list_page.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/presentation/widgets/current_session_access_builder.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
@@ -66,7 +70,7 @@ class ServicesPage extends StatelessWidget {
               _SanItemWidget(
                 title: 'خودروی امدادی',
                 icon: Icons.local_shipping_outlined,
-                onTap: () => context.pushNamed(EmdadUnitListPage.name),
+                onTap: () => context.pushNamed(VehicleInfoListPage.name),
               ),
             if (access.canShowHomeServiceRequestsMenu())
               _SanItemWidget(
@@ -80,6 +84,19 @@ class ServicesPage extends StatelessWidget {
                 icon: Icons.event_busy,
                 onTap: () => context.pushNamed(LeavePage.name),
               ),
+            if (access.canShowHomeServiceRequestsMenu())
+              _SanItemWidget(
+                title: 'الگوی‌گرید',
+                icon: Icons.grading,
+                onTap: () => context.pushNamed(GradePatternListPage.name),
+              ),
+            if (access.canShowHomeServiceRequestsMenu())
+              _SanItemWidget(
+                title: 'نمایندگی',
+                icon: Icons.person,
+                onTap: () => context.pushNamed(AgencyInfoListPage.name),
+              ),
+
           ];
           if (serviceItems.isEmpty) {
             return const Center(

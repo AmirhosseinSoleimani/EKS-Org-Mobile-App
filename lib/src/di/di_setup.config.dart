@@ -16,6 +16,24 @@ import 'package:injectable/injectable.dart' as _i526;
 import 'package:sliding_up_panel/sliding_up_panel.dart' as _i882;
 
 import '../app/cubit/app_cubit/app_cubit.dart' as _i757;
+import '../features/agency_info/data/data_sources/agency_info_data_source.dart'
+    as _i123;
+import '../features/agency_info/data/data_sources/agency_info_data_source_impl.dart'
+    as _i392;
+import '../features/agency_info/data/repositories/agency_info_repository_impl.dart'
+    as _i29;
+import '../features/agency_info/data/services/agency_info_service.dart'
+    as _i427;
+import '../features/agency_info/domain/repositories/agency_info_repository.dart'
+    as _i233;
+import '../features/agency_info/domain/use_cases/get_agency_info_by_id_use_case.dart'
+    as _i632;
+import '../features/agency_info/domain/use_cases/get_agency_info_list_use_case.dart'
+    as _i553;
+import '../features/agency_info/domain/use_cases/search_agency_info_use_case.dart'
+    as _i516;
+import '../features/agency_info/presentation/cubit/agency_info_cubit.dart'
+    as _i598;
 import '../features/authentication/data/data_sources/auth_remote_data_source.dart'
     as _i479;
 import '../features/authentication/data/data_sources/auth_remote_data_source_impl.dart'
@@ -56,10 +74,6 @@ import '../features/cartable/data/repositories/cartable_repository_impl.dart'
 import '../features/cartable/data/service/cartable_service.dart' as _i1027;
 import '../features/cartable/domain/repositories/cartable_repository.dart'
     as _i133;
-import '../features/cartable/domain/use_cases/archive_cartable_message_use_case.dart'
-    as _i657;
-import '../features/cartable/domain/use_cases/delegate_cartable_message_use_case.dart'
-    as _i301;
 import '../features/cartable/domain/use_cases/get_cartable_item_list_use_case.dart'
     as _i862;
 import '../features/cartable/domain/use_cases/get_subordinated_users_list_use_case.dart'
@@ -146,6 +160,36 @@ import '../features/evaluation/domain/usecase/post_evaluation_use_case.dart'
     as _i296;
 import '../features/evaluation/domain/usecase/submit_evaluation_for_aid_service_use_case.dart'
     as _i571;
+import '../features/grade_pattern/data/data_sources/grade_pattern_data_source.dart'
+    as _i480;
+import '../features/grade_pattern/data/data_sources/grade_pattern_data_source_impl.dart'
+    as _i88;
+import '../features/grade_pattern/data/repositories/grade_pattern_repository_impl.dart'
+    as _i864;
+import '../features/grade_pattern/data/services/grade_pattern_service.dart'
+    as _i300;
+import '../features/grade_pattern/domain/repositories/grade_pattern_repository.dart'
+    as _i577;
+import '../features/grade_pattern/domain/use_cases/assign_grade_pattern_reference_use_case.dart'
+    as _i825;
+import '../features/grade_pattern/domain/use_cases/create_grade_pattern_use_case.dart'
+    as _i833;
+import '../features/grade_pattern/domain/use_cases/delete_grade_pattern_reference_use_case.dart'
+    as _i33;
+import '../features/grade_pattern/domain/use_cases/delete_grade_pattern_use_case.dart'
+    as _i512;
+import '../features/grade_pattern/domain/use_cases/get_grade_pattern_by_id_use_case.dart'
+    as _i33;
+import '../features/grade_pattern/domain/use_cases/get_grade_pattern_list_use_case.dart'
+    as _i614;
+import '../features/grade_pattern/domain/use_cases/get_grade_pattern_references_use_case.dart'
+    as _i102;
+import '../features/grade_pattern/domain/use_cases/update_grade_pattern_use_case.dart'
+    as _i244;
+import '../features/grade_pattern/domain/use_cases/validate_grade_pattern_use_case.dart'
+    as _i928;
+import '../features/grade_pattern/presentation/cubit/grade_pattern_cubit.dart'
+    as _i791;
 import '../features/home_services_evaluation/data/data_source/home_service_evaluation_data_source.dart'
     as _i999;
 import '../features/home_services_evaluation/data/data_source/home_service_evaluation_data_source_impl.dart'
@@ -386,6 +430,20 @@ import '../features/services/presentation/request_status_history_page/cubit/requ
     as _i563;
 import '../features/services/presentation/update_request_page/cubit/update_request_cubit.dart'
     as _i792;
+import '../features/vehicle_info/data/data_sources/vehicle_info_data_source.dart'
+    as _i247;
+import '../features/vehicle_info/data/data_sources/vehicle_info_data_source_impl.dart'
+    as _i862;
+import '../features/vehicle_info/data/repositories/vehicle_info_repository_impl.dart'
+    as _i764;
+import '../features/vehicle_info/data/services/vehicle_info_service.dart'
+    as _i810;
+import '../features/vehicle_info/domain/repositories/vehicle_info_repository.dart'
+    as _i1027;
+import '../features/vehicle_info/domain/use_cases/vehicle_info_use_cases.dart'
+    as _i579;
+import '../features/vehicle_info/presentation/cubit/vehicle_info_cubit.dart'
+    as _i772;
 import '../routes/startup_guard.dart' as _i238;
 import '../services/local_service/session_local_storage_service/data/data_source/secure_session_storage_mobile_impl.dart'
     as _i577;
@@ -536,6 +594,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i826.PhoneNumberValidatorUseCase>(
     () => _i826.PhoneNumberValidatorUseCase(),
   );
+  gh.lazySingleton<_i928.ValidateGradePatternUseCase>(
+    () => _i928.ValidateGradePatternUseCase(),
+  );
   gh.lazySingleton<_i823.EvaluationDraftStore>(
     () => _i823.EvaluationDraftStore(),
   );
@@ -642,8 +703,17 @@ _i174.GetIt $initGetIt(
     () => _i99.DateTimeService(gh<_i361.Dio>()),
   );
   gh.lazySingleton<_i313.UserService>(() => _i313.UserService(gh<_i361.Dio>()));
+  gh.lazySingleton<_i427.AgencyInfoService>(
+    () => _i427.AgencyInfoService(gh<_i361.Dio>()),
+  );
   gh.lazySingleton<_i54.EmdadUnitService>(
     () => _i54.EmdadUnitService(gh<_i361.Dio>()),
+  );
+  gh.lazySingleton<_i300.GradePatternService>(
+    () => _i300.GradePatternService(gh<_i361.Dio>()),
+  );
+  gh.lazySingleton<_i810.VehicleInfoService>(
+    () => _i810.VehicleInfoService(gh<_i361.Dio>()),
   );
   gh.lazySingleton<_i691.IndicatorReportDataSource>(
     () =>
@@ -665,6 +735,12 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i854.MainRepository>(
     () => _i320.MainRepositoryImpl(gh<_i475.MainRemoteDataSource>()),
+  );
+  gh.lazySingleton<_i480.GradePatternDataSource>(
+    () => _i88.GradePatternDataSourceImpl(gh<_i300.GradePatternService>()),
+  );
+  gh.lazySingleton<_i247.VehicleInfoDataSource>(
+    () => _i862.VehicleInfoDataSourceImpl(gh<_i810.VehicleInfoService>()),
   );
   gh.lazySingleton<_i602.DashboardRepository>(
     () => _i650.DashboardRepositoryImpl(gh<_i320.DashboardDataSource>()),
@@ -705,6 +781,9 @@ _i174.GetIt $initGetIt(
       gh<_i1036.AddressService>(),
     ),
   );
+  gh.lazySingleton<_i123.AgencyInfoDataSource>(
+    () => _i392.AgencyInfoDataSourceImpl(gh<_i427.AgencyInfoService>()),
+  );
   gh.lazySingleton<_i375.FetchIndicatorReportUseCase>(
     () => _i375.FetchIndicatorReportUseCase(
       gh<_i227.IndicatorReportRepository>(),
@@ -721,8 +800,14 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i92.MapRepository>(
     () => _i810.MapRepositoryImpl(gh<_i971.MapDataSource>()),
   );
+  gh.lazySingleton<_i577.GradePatternRepository>(
+    () => _i864.GradePatternRepositoryImpl(gh<_i480.GradePatternDataSource>()),
+  );
   gh.lazySingleton<_i565.UrgentRequestUseCase>(
     () => _i565.UrgentRequestUseCase(gh<_i854.MainRepository>()),
+  );
+  gh.lazySingleton<_i233.AgencyInfoRepository>(
+    () => _i29.AgencyInfoRepositoryImpl(gh<_i123.AgencyInfoDataSource>()),
   );
   gh.lazySingleton<_i1016.RequestDataSource>(
     () => _i576.RequestDataSourceImpl(gh<_i483.RequestService>()),
@@ -996,6 +1081,9 @@ _i174.GetIt $initGetIt(
       gh<_i308.SessionStorage>(),
     ),
   );
+  gh.lazySingleton<_i1027.VehicleInfoRepository>(
+    () => _i764.VehicleInfoRepositoryImpl(gh<_i247.VehicleInfoDataSource>()),
+  );
   gh.factory<_i1029.CartableCycleCubit>(
     () => _i1029.CartableCycleCubit(
       gh<_i765.GetCartableCycleListUseCase>(),
@@ -1004,6 +1092,60 @@ _i174.GetIt $initGetIt(
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
       gh<_i786.GetEmdadgarInfoUseCase>(),
     ),
+  );
+  gh.factory<_i579.GetVehicleInfoListUseCase>(
+    () => _i579.GetVehicleInfoListUseCase(gh<_i1027.VehicleInfoRepository>()),
+  );
+  gh.factory<_i579.GetVehicleInfoByIdUseCase>(
+    () => _i579.GetVehicleInfoByIdUseCase(gh<_i1027.VehicleInfoRepository>()),
+  );
+  gh.factory<_i579.SaveVehicleInfoUseCase>(
+    () => _i579.SaveVehicleInfoUseCase(gh<_i1027.VehicleInfoRepository>()),
+  );
+  gh.factory<_i579.DeleteVehicleInfoUseCase>(
+    () => _i579.DeleteVehicleInfoUseCase(gh<_i1027.VehicleInfoRepository>()),
+  );
+  gh.factory<_i579.GetVehicleInfoLookupsUseCase>(
+    () =>
+        _i579.GetVehicleInfoLookupsUseCase(gh<_i1027.VehicleInfoRepository>()),
+  );
+  gh.factory<_i579.VehicleInfoToolsUseCase>(
+    () => _i579.VehicleInfoToolsUseCase(gh<_i1027.VehicleInfoRepository>()),
+  );
+  gh.factory<_i579.VehicleInfoServiceCategoriesUseCase>(
+    () => _i579.VehicleInfoServiceCategoriesUseCase(
+      gh<_i1027.VehicleInfoRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i825.AssignGradePatternReferenceUseCase>(
+    () => _i825.AssignGradePatternReferenceUseCase(
+      gh<_i577.GradePatternRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i833.CreateGradePatternUseCase>(
+    () => _i833.CreateGradePatternUseCase(gh<_i577.GradePatternRepository>()),
+  );
+  gh.lazySingleton<_i33.DeleteGradePatternReferenceUseCase>(
+    () => _i33.DeleteGradePatternReferenceUseCase(
+      gh<_i577.GradePatternRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i512.DeleteGradePatternUseCase>(
+    () => _i512.DeleteGradePatternUseCase(gh<_i577.GradePatternRepository>()),
+  );
+  gh.lazySingleton<_i33.GetGradePatternByIdUseCase>(
+    () => _i33.GetGradePatternByIdUseCase(gh<_i577.GradePatternRepository>()),
+  );
+  gh.lazySingleton<_i614.GetGradePatternListUseCase>(
+    () => _i614.GetGradePatternListUseCase(gh<_i577.GradePatternRepository>()),
+  );
+  gh.lazySingleton<_i102.GetGradePatternReferencesUseCase>(
+    () => _i102.GetGradePatternReferencesUseCase(
+      gh<_i577.GradePatternRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i244.UpdateGradePatternUseCase>(
+    () => _i244.UpdateGradePatternUseCase(gh<_i577.GradePatternRepository>()),
   );
   gh.factory<_i264.FollowUpRegisterCubit>(
     () => _i264.FollowUpRegisterCubit(
@@ -1025,6 +1167,15 @@ _i174.GetIt $initGetIt(
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
       gh<_i786.GetEmdadgarInfoUseCase>(),
     ),
+  );
+  gh.factory<_i632.GetAgencyInfoByIdUseCase>(
+    () => _i632.GetAgencyInfoByIdUseCase(gh<_i233.AgencyInfoRepository>()),
+  );
+  gh.factory<_i553.GetAgencyInfoListUseCase>(
+    () => _i553.GetAgencyInfoListUseCase(gh<_i233.AgencyInfoRepository>()),
+  );
+  gh.factory<_i516.SearchAgencyInfoUseCase>(
+    () => _i516.SearchAgencyInfoUseCase(gh<_i233.AgencyInfoRepository>()),
   );
   gh.factory<_i815.ChangeHomeServiceRequestTimeCubit>(
     () => _i815.ChangeHomeServiceRequestTimeCubit(
@@ -1129,11 +1280,19 @@ _i174.GetIt $initGetIt(
       gh<_i707.GetNonCooperationListUseCase>(),
     ),
   );
-  gh.lazySingleton<_i657.ArchiveCartableMessageUseCase>(
-    () => _i657.ArchiveCartableMessageUseCase(gh<_i133.CartableRepository>()),
-  );
-  gh.lazySingleton<_i301.DelegateCartableMessageUseCase>(
-    () => _i301.DelegateCartableMessageUseCase(gh<_i133.CartableRepository>()),
+  gh.factory<_i791.GradePatternCubit>(
+    () => _i791.GradePatternCubit(
+      gh<_i614.GetGradePatternListUseCase>(),
+      gh<_i33.GetGradePatternByIdUseCase>(),
+      gh<_i833.CreateGradePatternUseCase>(),
+      gh<_i244.UpdateGradePatternUseCase>(),
+      gh<_i512.DeleteGradePatternUseCase>(),
+      gh<_i102.GetGradePatternReferencesUseCase>(),
+      gh<_i825.AssignGradePatternReferenceUseCase>(),
+      gh<_i33.DeleteGradePatternReferenceUseCase>(),
+      gh<_i928.ValidateGradePatternUseCase>(),
+      gh<_i1058.CurrentSessionManager>(),
+    ),
   );
   gh.lazySingleton<_i862.GetCartableItemListUseCase>(
     () => _i862.GetCartableItemListUseCase(gh<_i133.CartableRepository>()),
@@ -1148,6 +1307,17 @@ _i174.GetIt $initGetIt(
       gh<_i672.GetReliefRequestByIdUseCase>(),
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
       gh<_i786.GetEmdadgarInfoUseCase>(),
+    ),
+  );
+  gh.factory<_i772.VehicleInfoCubit>(
+    () => _i772.VehicleInfoCubit(
+      gh<_i579.GetVehicleInfoListUseCase>(),
+      gh<_i579.GetVehicleInfoByIdUseCase>(),
+      gh<_i579.SaveVehicleInfoUseCase>(),
+      gh<_i579.DeleteVehicleInfoUseCase>(),
+      gh<_i579.GetVehicleInfoLookupsUseCase>(),
+      gh<_i579.VehicleInfoToolsUseCase>(),
+      gh<_i579.VehicleInfoServiceCategoriesUseCase>(),
     ),
   );
   gh.factory<_i317.HomeServiceEvaluationFirstStepCubit>(
@@ -1226,6 +1396,13 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i684.PostEvaluationUseCase>(
     () => _i684.PostEvaluationUseCase(
       gh<_i347.HomeServiceEvaluationRepository>(),
+    ),
+  );
+  gh.factory<_i598.AgencyInfoCubit>(
+    () => _i598.AgencyInfoCubit(
+      gh<_i553.GetAgencyInfoListUseCase>(),
+      gh<_i632.GetAgencyInfoByIdUseCase>(),
+      gh<_i516.SearchAgencyInfoUseCase>(),
     ),
   );
   gh.factory<_i154.EvaluationHistoryCubit>(
@@ -1357,6 +1534,12 @@ _i174.GetIt $initGetIt(
       gh<_i918.RollbackLeaveRequestUseCase>(),
     ),
   );
+  gh.factory<_i330.CartableCubit>(
+    () => _i330.CartableCubit(
+      gh<_i45.GetSubordinatedUsersUseCase>(),
+      gh<_i862.GetCartableItemListUseCase>(),
+    ),
+  );
   gh.lazySingleton<_i695.SyncCurrentSessionUseCase>(
     () => _i695.SyncCurrentSessionUseCase(
       gh<_i424.GetCurrentSessionUseCase>(),
@@ -1369,15 +1552,6 @@ _i174.GetIt $initGetIt(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
       gh<_i672.GetReliefRequestByIdUseCase>(),
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
-    ),
-  );
-  gh.factory<_i330.CartableCubit>(
-    () => _i330.CartableCubit(
-      gh<_i45.GetSubordinatedUsersUseCase>(),
-      gh<_i862.GetCartableItemListUseCase>(),
-      gh<_i301.DelegateCartableMessageUseCase>(),
-      gh<_i369.SetSelectedRequestItemUseCase>(),
-      gh<_i657.ArchiveCartableMessageUseCase>(),
     ),
   );
   gh.factory<_i566.LoginCubit>(

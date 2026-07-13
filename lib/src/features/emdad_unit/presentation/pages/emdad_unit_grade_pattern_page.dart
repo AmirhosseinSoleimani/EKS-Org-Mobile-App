@@ -1,14 +1,21 @@
+import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/emdad_unit_entity.dart';
-import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/emdad_unit_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/emdad_unit_summary_card.dart';
+import 'package:eks_sana_plus_org/src/features/grade_pattern/domain/entities/grade_pattern_entity.dart';
+import 'package:eks_sana_plus_org/src/features/grade_pattern/domain/entities/grade_pattern_reference_entity.dart';
+import 'package:eks_sana_plus_org/src/features/grade_pattern/domain/entities/params/grade_pattern_reference_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/cubit/grade_pattern_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/widgets/grade_pattern_confirm_sheet.dart';
+import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/widgets/grade_pattern_details_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-class EmdadUnitGradePatternPage extends StatefulWidget {
+class EmdadUnitGradePatternPage extends StatelessWidget {
   static const path = '/emdad-unit-grade-pattern-page';
   static const name = 'emdad-unit-grade-pattern-page';
 
@@ -17,80 +24,164 @@ class EmdadUnitGradePatternPage extends StatefulWidget {
   final EmdadUnitEntity item;
 
   @override
-  State<EmdadUnitGradePatternPage> createState() => _EmdadUnitGradePatternPageState();
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => getIt<GradePatternCubit>()
+        ..loadActivePatterns()
+        ..loadReferences(item.id ?? 0),
+      child: _EmdadUnitGradePatternView(item: item),
+    );
+  }
 }
 
-class _EmdadUnitGradePatternPageState extends State<EmdadUnitGradePatternPage> {
+class _EmdadUnitGradePatternView extends StatefulWidget {
+  const _EmdadUnitGradePatternView({required this.item});
+
+  final EmdadUnitEntity item;
+
+  @override
+  State<_EmdadUnitGradePatternView> createState() =>
+      _EmdadUnitGradePatternViewState();
+}
+
+class _EmdadUnitGradePatternViewState
+    extends State<_EmdadUnitGradePatternView> {
+  static const int _emdadUnitReferenceType = 1;
   int? _selectedPatternId;
   int? _selectedServiceType;
 
-  bool get _hasRegisteredPattern {
-    return widget.item.gradePatternName?.trim().isNotEmpty == true ||
-        widget.item.gradePatternCode != null;
-  }
-
   @override
   Widget build(BuildContext context) {
+    final cubit = context.read<GradePatternCubit>();
     final theme = Theme.of(context);
 
-    return Scaffold(
-      backgroundColor: theme.colorScheme.surface,
-      appBar: const SimpleAppBar(title: 'الگوی گرید'),
-      bottomNavigationBar: SafeArea(
-        minimum: const EdgeInsets.all(AppPadding.p16),
-        child: InkwellButtonWidget(
-          title: 'بستن',
-          backgroundColor: theme.colorScheme.onPrimary,
-          borderColor: theme.colorScheme.outline.withOpacity(0.65),
-          titleColor: theme.colorScheme.onSurface,
-          onTap: () => context.pop(false),
+    return BlocListener<GradePatternCubit, GradePatternState>(
+      listener: (context, state) {
+        state.whenOrNull(
+          failure: (message, items) {
+            SnakeBarWidget.showError(context: context, message: message);
+          },
+          success: (action, message, items) {
+            SnakeBarWidget.showSuccess(context: context, message: message);
+          },
+        );
+      },
+      child: Scaffold(
+        backgroundColor: theme.colorScheme.surface,
+        appBar: const SimpleAppBar(title: 'الگوی گرید'),
+        bottomNavigationBar: SafeArea(
+          minimum: const EdgeInsets.all(AppPadding.p16),
+          child: InkwellButtonWidget(
+            title: 'بستن',
+            backgroundColor: theme.colorScheme.onPrimary,
+            borderColor: theme.colorScheme.outline.withOpacity(0.65),
+            titleColor: theme.colorScheme.onSurface,
+            onTap: () => context.pop(false),
+          ),
+        ),
+        body: BlocBuilder<GradePatternCubit, GradePatternState>(
+          builder: (context, state) {
+            final isSubmitting = state.maybeWhen(
+              submitting: (_, __) => true,
+              orElse: () => false,
+            );
+            return RefreshIndicator(
+              onRefresh: () => cubit.loadReferences(widget.item.id ?? 0),
+              child: ListView(
+                padding: const EdgeInsets.all(AppPadding.p16),
+                children: [
+                  EmdadUnitSummaryCard(item: widget.item),
+                  Space.h16,
+                  _AssignCard(
+                    patterns: cubit.activePatterns,
+                    selectedPatternId: _selectedPatternId,
+                    selectedServiceType: _selectedServiceType,
+                    isSubmitting: isSubmitting,
+                    onPatternChanged: (value) {
+                      setState(() => _selectedPatternId = value);
+                    },
+                    onServiceChanged: (value) {
+                      setState(() => _selectedServiceType = value);
+                    },
+                    onSave: () => _assign(cubit),
+                  ),
+                  Space.h24,
+                  Row(
+                    children: [
+                      Text(
+                        'الگوهای ثبت‌شده',
+                        style: theme.textTheme.titleSmall?.copyWith(
+                          fontWeight: FontWeight.w800,
+                        ),
+                      ),
+                      const Spacer(),
+                      _CountBadge(count: cubit.references.length),
+                    ],
+                  ),
+                  Space.h12,
+                  if (cubit.references.isEmpty)
+                    _EmptyCard(message: 'الگوی گریدی برای این واحد ثبت نشده است.')
+                  else
+                    ...cubit.references.map(
+                          (reference) => _ReferenceCard(
+                        reference: reference,
+                        onDetails: () => _showDetails(context, cubit, reference),
+                        onDelete: () => _showDelete(context, cubit, reference),
+                      ),
+                    ),
+                ],
+              ),
+            );
+          },
         ),
       ),
-      body: ListView(
-        padding: const EdgeInsets.all(AppPadding.p16),
-        children: [
-          EmdadUnitSummaryCard(item: widget.item),
-          Space.h16,
-          _FormCard(
-            selectedPatternId: _selectedPatternId,
-            selectedServiceType: _selectedServiceType,
-            onPatternChanged: (value) => setState(() => _selectedPatternId = value),
-            onServiceChanged: (value) => setState(() => _selectedServiceType = value),
-            onSave: _saveUnsupported,
-          ),
-          Space.h24,
-          Row(
-            children: [
-              Text(
-                'الگوهای ثبت‌شده',
-                style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
-              ),
-              const Spacer(),
-              _CountBadge(count: _hasRegisteredPattern ? 1 : 0),
-            ],
-          ),
-          Space.h12,
-          if (!_hasRegisteredPattern)
-            _EmptyCard(message: 'الگوی گریدی برای این واحد ثبت نشده است.')
-          else
-            _GradePatternCard(
-              item: widget.item,
-              onDetails: () => _showDetails(context),
-              onDelete: () => _showDeleteUnsupported(context),
-            ),
-        ],
+    );
+  }
+
+  Future<void> _assign(GradePatternCubit cubit) async {
+    final refId = widget.item.id;
+    if (_selectedPatternId == null) {
+      SnakeBarWidget.showError(
+        context: context,
+        message: 'انتخاب الگوی گرید اجباری می باشد',
+      );
+      return;
+    }
+    if (_selectedServiceType == null) {
+      SnakeBarWidget.showError(
+        context: context,
+        message: 'نوع خدمت اجباری می باشد',
+      );
+      return;
+    }
+    if (refId == null) return;
+
+    final ok = await cubit.assignReference(
+      GradePatternReferenceParamEntity(
+        gradePatternId: _selectedPatternId!,
+        serviceTypeId: _selectedServiceType!,
+        refType: _emdadUnitReferenceType,
+        refId: refId,
       ),
     );
+    if (ok) {
+      setState(() {
+        _selectedPatternId = null;
+        _selectedServiceType = null;
+      });
+    }
   }
 
-  void _saveUnsupported() {
-    SnakeBarWidget.showError(
-      context: context,
-      message: 'عملیات ثبت الگوی گرید در قراردادهای فعلی این ویژگی وجود ندارد.',
-    );
-  }
-
-  void _showDeleteUnsupported(BuildContext context) {
+  Future<void> _showDetails(
+      BuildContext context,
+      GradePatternCubit cubit,
+      GradePatternReferenceEntity reference,
+      ) async {
+    final id = reference.gradePatternId;
+    if (id == null) return;
+    await cubit.loadDetail(id);
+    final item = cubit.state.whenOrNull(detailLoaded: (item) => item);
+    if (item == null || !context.mounted) return;
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -99,45 +190,49 @@ class _EmdadUnitGradePatternPageState extends State<EmdadUnitGradePatternPage> {
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
       ),
-      builder: (_) => EmdadUnitConfirmSheet(
+      builder: (_) => GradePatternDetailsSheet(item: item),
+    );
+  }
+
+  void _showDelete(
+      BuildContext context,
+      GradePatternCubit cubit,
+      GradePatternReferenceEntity reference,
+      ) {
+    final id = reference.id;
+    final refId = widget.item.id;
+    if (id == null || refId == null) return;
+    showModalBottomSheet<void>(
+      context: context,
+      useSafeArea: true,
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
+      ),
+      builder: (_) => GradePatternConfirmSheet(
         title: 'حذف الگوی گرید',
-        message: 'آیا از حذف این مورد مطمئن هستید؟ این عمل غیرقابل بازگشت است.',
-        confirmTitle: 'حذف',
-        onConfirm: () async {
-          SnakeBarWidget.showError(
-            context: context,
-            message: 'عملیات حذف الگوی گرید در قراردادهای فعلی این ویژگی وجود ندارد.',
-          );
-        },
+        message: 'آیا الگوی گرید ${reference.gradePatternName ?? ''} حذف شود؟',
+        onConfirm: () => cubit.deleteReference(id, refId),
       ),
-    );
-  }
-
-  void _showDetails(BuildContext context) {
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
-      ),
-      builder: (_) => _GradePatternDetailsSheet(item: widget.item),
     );
   }
 }
 
-class _FormCard extends StatelessWidget {
-  const _FormCard({
+class _AssignCard extends StatelessWidget {
+  const _AssignCard({
+    required this.patterns,
     required this.selectedPatternId,
     required this.selectedServiceType,
+    required this.isSubmitting,
     required this.onPatternChanged,
     required this.onServiceChanged,
     required this.onSave,
   });
 
+  final List<GradePatternEntity> patterns;
   final int? selectedPatternId;
   final int? selectedServiceType;
+  final bool isSubmitting;
   final ValueChanged<int?> onPatternChanged;
   final ValueChanged<int?> onServiceChanged;
   final VoidCallback onSave;
@@ -145,7 +240,6 @@ class _FormCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return Container(
       padding: const EdgeInsets.all(AppPadding.p16),
       decoration: BoxDecoration(
@@ -161,7 +255,15 @@ class _FormCard extends StatelessWidget {
               labelText: 'الگوی گرید',
               hintText: 'انتخاب کنید',
             ),
-            items: const [],
+            items: patterns
+                .where((item) => item.id != null)
+                .map(
+                  (item) => DropdownMenuItem(
+                value: item.id,
+                child: Text(item.name ?? '---'),
+              ),
+            )
+                .toList(),
             onChanged: onPatternChanged,
           ),
           Space.h12,
@@ -174,13 +276,14 @@ class _FormCard extends StatelessWidget {
             ),
             items: const [
               DropdownMenuItem(value: 1, child: Text('خدمات امدادی')),
-              DropdownMenuItem(value: 2, child: Text('حمل با کفی')),
+              DropdownMenuItem(value: 2, child: Text('خدمات در محل')),
             ],
             onChanged: onServiceChanged,
           ),
-          Space.h32,
+          Space.h24,
           InkwellButtonWidget(
             title: 'ذخیره',
+            showLoading: isSubmitting,
             onTap: onSave,
           ),
         ],
@@ -189,22 +292,22 @@ class _FormCard extends StatelessWidget {
   }
 }
 
-class _GradePatternCard extends StatelessWidget {
-  const _GradePatternCard({
-    required this.item,
+class _ReferenceCard extends StatelessWidget {
+  const _ReferenceCard({
+    required this.reference,
     required this.onDetails,
     required this.onDelete,
   });
 
-  final EmdadUnitEntity item;
+  final GradePatternReferenceEntity reference;
   final VoidCallback onDetails;
   final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
     return Container(
+      margin: const EdgeInsets.only(bottom: AppPadding.p12),
       padding: const EdgeInsets.all(AppPadding.p16),
       decoration: BoxDecoration(
         color: theme.colorScheme.onPrimary,
@@ -231,14 +334,14 @@ class _GradePatternCard extends StatelessWidget {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Text(
-                  'کد: ${item.gradePatternCode ?? '---'}',
+                  'کد: ${reference.gradePatternCode ?? '---'}',
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: theme.colorScheme.onSurfaceVariant,
                   ),
                 ),
                 Space.h4,
                 Text(
-                  'عنوان: ${_value(item.gradePatternName)}',
+                  'عنوان: ${_value(reference.gradePatternName)}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodyMedium?.copyWith(
@@ -247,7 +350,7 @@ class _GradePatternCard extends StatelessWidget {
                 ),
                 Space.h4,
                 Text(
-                  'نوع خدمت: ${_value(item.typeTitle)}',
+                  'نوع خدمت: ${_value(reference.serviceTypeTitle)}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   style: theme.textTheme.bodyMedium,
@@ -257,182 +360,6 @@ class _GradePatternCard extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _GradePatternDetailsSheet extends StatelessWidget {
-  const _GradePatternDetailsSheet({required this.item});
-
-  final EmdadUnitEntity item;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final levels = [
-      _Level('ممتاز', item.grade == 1),
-      _Level('عالی', item.grade == 2),
-      _Level('خوب', item.grade == 3),
-      _Level('متوسط', item.grade == 4),
-      _Level('نیاز به بهبود', item.grade == 5),
-      const _Level('در مرز بحران', false),
-      const _Level('بحرانی', false, isCritical: true),
-    ];
-
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(AppPadding.p16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Center(
-              child: Container(
-                width: AppSize.s40,
-                height: AppSize.s4,
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.outlineVariant.withOpacity(0.18),
-                  borderRadius: BorderRadius.circular(AppSize.s8),
-                ),
-              ),
-            ),
-            Space.h24,
-            Text(
-              'جزئیات الگوی گرید',
-              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
-            ),
-            Space.h20,
-            Flexible(
-              child: SingleChildScrollView(
-                child: Container(
-                  padding: const EdgeInsets.all(AppPadding.p16),
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.onPrimary,
-                    borderRadius: BorderRadius.circular(AppSize.s8),
-                    boxShadow: [
-                      BoxShadow(
-                        color: theme.colorScheme.shadow.withOpacity(0.06),
-                        blurRadius: AppSize.s16,
-                        offset: const Offset(0, 8),
-                      ),
-                    ],
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Row(
-                        children: [
-                          Icon(
-                            Icons.grid_view_rounded,
-                            size: AppSize.s20,
-                            color: theme.colorScheme.onSurfaceVariant,
-                          ),
-                          Space.w8,
-                          Text(
-                            'سطوح گرید',
-                            style: theme.textTheme.titleSmall?.copyWith(
-                              fontWeight: FontWeight.w800,
-                            ),
-                          ),
-                        ],
-                      ),
-                      Space.h16,
-                      ...levels.map(
-                        (level) => _LevelRow(
-                          level: level,
-                          coefficient: level.isSelected ? item.gradeCoefficient : null,
-                          percent: level.isSelected ? item.managmentCommisionPercent : null,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            Space.h16,
-            InkwellButtonWidget(
-              title: 'بستن',
-              onTap: () => Navigator.of(context).pop(),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _LevelRow extends StatelessWidget {
-  const _LevelRow({
-    required this.level,
-    required this.coefficient,
-    required this.percent,
-  });
-
-  final _Level level;
-  final num? coefficient;
-  final num? percent;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final color = level.isCritical ? theme.colorScheme.error : theme.colorScheme.primary;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(vertical: AppPadding.p14),
-      decoration: BoxDecoration(
-        border: Border(
-          bottom: BorderSide(color: theme.dividerColor.withOpacity(0.55)),
-        ),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            level.title,
-            style: theme.textTheme.titleSmall?.copyWith(
-              color: level.isCritical ? theme.colorScheme.error : null,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          Space.h8,
-          Wrap(
-            spacing: AppSize.s16,
-            runSpacing: AppSize.s8,
-            children: [
-              _Metric(label: 'ضریب گرید', value: coefficient, color: color),
-              _Metric(label: 'درصد حق مدیریت', value: percent, color: color),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _Metric extends StatelessWidget {
-  const _Metric({
-    required this.label,
-    required this.value,
-    required this.color,
-  });
-
-  final String label;
-  final num? value;
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Text.rich(
-      TextSpan(
-        children: [
-          TextSpan(text: '$label: '),
-          TextSpan(
-            text: value?.toString() ?? '---',
-            style: TextStyle(color: color, fontWeight: FontWeight.w800),
-          ),
-        ],
-      ),
-      style: Theme.of(context).textTheme.bodySmall,
     );
   }
 }
@@ -510,14 +437,6 @@ class _EmptyCard extends StatelessWidget {
       child: Text(message, style: theme.textTheme.bodyMedium),
     );
   }
-}
-
-class _Level {
-  const _Level(this.title, this.isSelected, {this.isCritical = false});
-
-  final String title;
-  final bool isSelected;
-  final bool isCritical;
 }
 
 String _value(String? value) {
