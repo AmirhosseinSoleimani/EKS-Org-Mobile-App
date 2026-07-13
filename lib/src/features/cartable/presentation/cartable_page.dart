@@ -1,5 +1,7 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/Cartable_item_action_entity.dart';
+import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/archive_cartable_message_response_entity.dart';
+import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/cartable_item_entity.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/presentation/actions/cartable_action_codes.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/presentation/cubit/cartable_cubit.dart';
@@ -297,18 +299,138 @@ class CartablePageView extends StatelessWidget {
     required CartableItemEntity item,
     required CartableItemActionEntity action,
   }) async {
-    final cartableItemId = item.id;
+    final messageGuid = item.guid?.trim();
 
-    if (cartableItemId == null) {
+    if (messageGuid == null || messageGuid.isEmpty) {
       _showInvalidCartableItemMessage(context);
       return;
     }
 
-    // بعد از ساخت UseCase آرشیو:
-    // await context.read<CartableCubit>().archiveCartableItem(
-    //   item: item,
-    //   action: action,
-    // );
+    await _showArchiveConfirmationBottomSheet(
+      context: context,
+      messageGuid: messageGuid,
+    );
+  }
+
+  Future<void> _showArchiveConfirmationBottomSheet({
+    required BuildContext context,
+    required String messageGuid,
+  }) async {
+    final cubit = context.read<CartableCubit>();
+
+    await BottomSheetMessage.showNoticeWithAction(
+      context: context,
+      isDismissible: false,
+      enableDrag: false,
+      data: BottomSheetMessageModel(
+        title: '',
+        message: 'آیا پیام مورد نظر بایگانی شود؟',
+      ),
+      positiveText: 'بله',
+      cancelTxt: 'خیر',
+      onPositive: () async {
+        final result = await cubit.archiveCartableMessage(
+          messageGuid: messageGuid,
+        );
+
+        if (!context.mounted) {
+          return;
+        }
+
+        context.pop();
+
+        await _handleArchiveResult(
+          context: context,
+          result: result,
+        );
+      },
+      cancelFunc: () {
+        context.pop();
+      },
+    );
+  }
+
+  Future<void> _handleArchiveResult({
+    required BuildContext context,
+    required ApiResult<ArchiveCartableMessageResponseEntity>? result,
+  }) async {
+    if (result == null) {
+      _showArchiveError(
+        context: context,
+        message: 'بایگانی پیام انجام نشد.',
+      );
+      return;
+    }
+
+    var isSuccessful = false;
+    var errorMessage = 'بایگانی پیام انجام نشد.';
+    var isConnectionError = false;
+
+    result.whenOrNull(
+      success: (data, failures, resultCode) {
+        isSuccessful = true;
+      },
+      failure: (error, failures) {
+        errorMessage = failures ??
+            error?.toString() ??
+            'بایگانی پیام انجام نشد.';
+      },
+      connectionError: () {
+        isConnectionError = true;
+        errorMessage = 'ارتباط با سرور برقرار نشد.';
+      },
+    );
+
+    if (isSuccessful) {
+      BottomSheetMessage.showNotice(
+        context: context,
+        isDismissible: false,
+        data: BottomSheetMessageModel(
+          title: '',
+          message: 'پیام مورد نظر بایگانی شد',
+        ),
+        onPositive: () {
+          context.pop();
+        },
+      );
+      return;
+    }
+
+    if (isConnectionError) {
+      BottomSheetMessage.showCustom(
+        context: context,
+        content: NoInternetBottomSheet(
+          onRetry: () {
+            context.pop();
+          },
+        ),
+        actionWidget: const SizedBox.shrink(),
+        isDismissible: false,
+        enableDrag: false,
+      );
+      return;
+    }
+
+    _showArchiveError(
+      context: context,
+      message: errorMessage,
+    );
+  }
+
+  void _showArchiveError({
+    required BuildContext context,
+    required String message,
+  }) {
+    BottomSheetMessage.showError(
+      context: context,
+      data: BottomSheetMessageModel(
+        title: 'خطا در بایگانی پیام',
+        message: message,
+      ),
+      onButtonTap: () {
+        context.pop();
+      },
+    );
   }
 
   Future<void> _handleInsertReport({

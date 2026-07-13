@@ -29,6 +29,8 @@ abstract class CartableStateData with _$CartableStateData {
 
     @Default(false) bool isCartableItemsLoading,
 
+    String? archivingMessageGuid,
+
     @Default(100) int pageSize,
     bool? includeSnoozedMessages,
   }) = _CartableStateData;

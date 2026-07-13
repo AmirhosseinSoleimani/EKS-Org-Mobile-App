@@ -165,7 +165,7 @@ class BottomSheetWidget extends StatelessWidget {
   }
 
   Widget _buildActions(BuildContext context) {
-    final showCancel = dismissible ?? false;
+    final showCancel = cancelFunc != null || cancelTxt != null;
 
     return Row(
       children: [

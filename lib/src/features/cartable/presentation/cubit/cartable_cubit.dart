@@ -1,10 +1,13 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/Cartable_item_action_entity.dart';
+import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/archive_cartable_message_response_entity.dart';
+import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/param/archive_cartable_message_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/cartable_item_entity.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/delegate_cartable_message_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/param/delegate_cartable_message_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/param/get_subordinated_users_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/subordinated_user_entity.dart';
+import 'package:eks_sana_plus_org/src/features/cartable/domain/use_cases/archive_cartable_message_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/use_cases/delegate_cartable_message_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/use_cases/get_cartable_item_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/use_cases/get_subordinated_users_list_use_case.dart';
@@ -34,12 +37,14 @@ class CartableCubit extends Cubit<CartableState> {
       this._getCartableItemListUseCase,
       this._delegateCartableMessageUseCase,
       this._setSelectedRequestItemUseCase,
+      this._archiveCartableMessageUseCase,
       ) : super(const CartableState.idle());
 
   final GetSubordinatedUsersUseCase _getSubordinatedUsersUseCase;
   final GetCartableItemListUseCase _getCartableItemListUseCase;
   final DelegateCartableMessageUseCase _delegateCartableMessageUseCase;
   final SetSelectedRequestItemUseCase _setSelectedRequestItemUseCase;
+  final ArchiveCartableMessageUseCase _archiveCartableMessageUseCase;
 
   final TextEditingController cartableSearchController =
   TextEditingController();
@@ -272,6 +277,8 @@ class CartableCubit extends Cubit<CartableState> {
         );
     }
   }
+
+
 /*
   Future<void> getCartableItemsByActiveUser() async {
     final activeUser = _data.activeCartableUser;
@@ -689,6 +696,72 @@ class CartableCubit extends Cubit<CartableState> {
     }
   }
 
+
+  Future<ApiResult<ArchiveCartableMessageResponseEntity>?> archiveCartableMessage({
+    required String messageGuid,
+  }) async {
+    final normalizedMessageGuid = messageGuid.trim();
+
+    if (normalizedMessageGuid.isEmpty ||
+        _data.archivingMessageGuid != null) {
+      return null;
+    }
+
+    _retryAction = null;
+
+    emit(
+      CartableState.loading(
+        data: _data.copyWith(
+          archivingMessageGuid: normalizedMessageGuid,
+        ),
+      ),
+    );
+
+    try {
+      final result = await _archiveCartableMessageUseCase(
+        ArchiveCartableMessageParamEntity(
+          messageGuid: normalizedMessageGuid,
+        ),
+      );
+
+      var isSuccessful = false;
+
+      result.whenOrNull(
+        success: (data, failures, resultCode) {
+          isSuccessful = true;
+        },
+      );
+
+      emit(
+        CartableState.loaded(
+          data: _data.copyWith(
+            archivingMessageGuid: null,
+          ),
+        ),
+      );
+
+      if (isSuccessful) {
+        await getCartableItemsByActiveUser();
+      }
+
+      return result;
+    } catch (error) {
+      debugPrint(
+        'archiveCartableMessage ERROR → $error',
+      );
+
+      emit(
+        CartableState.loaded(
+          data: _data.copyWith(
+            archivingMessageGuid: null,
+          ),
+        ),
+      );
+
+      return null;
+    }
+  }
+
   BottomSheetMessageModel _buildErrorMessage({
     required String title,
     required String message,
@@ -1053,6 +1126,14 @@ class CartableCubit extends Cubit<CartableState> {
         buttonCssClass: 'btn btn-success',
         iconCssClass: 'fa fa-clock',
         orderNo: 101,
+      ),
+      CartableItemActionEntity(
+        guid: '2a5f1a02-55af-4f70-af81-3503ea6c45e3',
+        title: 'آرشیو',
+        code: 'CartableMessage-Archive',
+        buttonCssClass: 'btn btn-secondary',
+        iconCssClass: 'fa fa-archive',
+        orderNo: 3,
       ),
     ];
   }
