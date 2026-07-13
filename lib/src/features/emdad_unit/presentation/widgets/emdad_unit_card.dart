@@ -123,25 +123,22 @@ class EmdadUnitCard extends StatelessWidget {
           Space.h16,
           Align(
             alignment: Alignment.centerLeft,
-            child: SizedBox(
-
-              child: InkwellButtonWidget(
-                title: 'عملیات',
-                height: AppSize.s42,
-                backgroundColor: theme.colorScheme.secondaryContainer,
-                titleColor: theme.colorScheme.onSurface,
-                prefixIcon: Icon(
-                  Icons.settings_outlined,
-                  size: AppSize.s20,
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-                suffixIcon: Icon(
-                  Icons.expand_more_outlined,
-                  size: AppSize.s20,
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-                onTap: onAction,
+            child:  InkwellButtonWidget(
+              title: 'عملیات',
+              height: AppSize.s42,
+              backgroundColor: theme.colorScheme.secondaryContainer,
+              titleColor: theme.colorScheme.onSurface,
+              prefixIcon: Icon(
+                Icons.settings_outlined,
+                size: AppSize.s20,
+                color: theme.colorScheme.onSurfaceVariant,
               ),
+              suffixIcon: Icon(
+                Icons.expand_more_outlined,
+                size: AppSize.s20,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+              onTap: onAction,
             ),
           ),
         ],

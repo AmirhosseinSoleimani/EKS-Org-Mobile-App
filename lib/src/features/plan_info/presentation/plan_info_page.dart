@@ -14,6 +14,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_src.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -500,9 +501,9 @@ class _PlanCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final isActive = item.isActive;
-
     return Card(
       margin: EdgeInsets.zero,
+      color: Colors.white,
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSize.s8),
       ),
@@ -569,10 +570,22 @@ class _PlanCard extends StatelessWidget {
             Space.h8,
             Align(
               alignment: Alignment.centerLeft,
-              child: IconButton(
-                icon: const Icon(Icons.more_vert),
-                tooltip: 'عملیات',
-                onPressed: () => _showActionsSheet(context),
+              child: InkwellButtonWidget(
+                title: 'عملیات',
+                height: AppSize.s42,
+                backgroundColor: colorScheme.secondaryContainer,
+                titleColor: colorScheme.onSurface,
+                prefixIcon: Icon(
+                  Icons.settings_outlined,
+                  size: AppSize.s20,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+                suffixIcon: Icon(
+                  Icons.expand_more_outlined,
+                  size: AppSize.s20,
+                  color: colorScheme.onSurfaceVariant,
+                ),
+                onTap: () => _showActionsSheet(context),
               ),
             ),
           ],
@@ -659,13 +672,16 @@ class _ActionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = isDestructive
         ? Theme.of(context).colorScheme.error
-        : Theme.of(context).colorScheme.onSurface;
+        : Theme
+        .of(context)
+        .colorScheme
+        .onPrimaryFixed;
 
     return ListTile(
       leading: Icon(icon, color: color),
-      title: Text(
+      title: BodyMediumText(text:
         title,
-        style: TextStyle(color: color),
+        color: color,
       ),
       onTap: () {
         Navigator.of(context).pop();
@@ -686,6 +702,9 @@ class _InfoLine extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
     return Padding(
       padding: const EdgeInsets.only(bottom: AppPadding.p6),
       child: Row(
@@ -694,13 +713,16 @@ class _InfoLine extends StatelessWidget {
           Icon(
             icon,
             size: AppSize.s18,
-            color: Theme.of(context).colorScheme.primary,
+            color: Theme
+                .of(context)
+                .colorScheme
+                .onPrimaryFixed,
           ),
           Space.w8,
           Expanded(
-            child: Text(
+            child: BodyMediumText(text:
               text,
-              style: Theme.of(context).textTheme.bodyMedium,
+              color: colorScheme.onTertiaryFixed,
             ),
           ),
         ],
