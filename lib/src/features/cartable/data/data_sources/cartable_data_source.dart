@@ -1,4 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/cartable/data/models/cartable_item_model.dart';
+import 'package:eks_sana_plus_org/src/features/cartable/data/models/delegate_cartable_message_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/cartable/data/models/params/delegate_cartable_message_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/data/models/params/get_cartable_items_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/data/models/params/get_subordinated_users_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/data/models/subordinated_user_model.dart';
@@ -9,4 +11,7 @@ abstract class CartableDataSource {
 
   Future<BaseListResponse<CartableItemModel>> getCartableItemList(
       GetCartableItemParamModel param);
+
+  Future<BaseSingleResponse<DelegateCartableMessageResponseModel>>
+      delegateCartableMessage(DelegateCartableMessageParamModel param);
 }

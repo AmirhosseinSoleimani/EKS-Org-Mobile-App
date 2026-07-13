@@ -56,6 +56,8 @@ import '../features/cartable/data/repositories/cartable_repository_impl.dart'
 import '../features/cartable/data/service/cartable_service.dart' as _i1027;
 import '../features/cartable/domain/repositories/cartable_repository.dart'
     as _i133;
+import '../features/cartable/domain/use_cases/delegate_cartable_message_use_case.dart'
+    as _i301;
 import '../features/cartable/domain/use_cases/get_cartable_item_list_use_case.dart'
     as _i862;
 import '../features/cartable/domain/use_cases/get_subordinated_users_list_use_case.dart'
@@ -966,6 +968,9 @@ _i174.GetIt $initGetIt(
       gh<_i433.GetCancelReasonRequestUseCase>(),
       gh<_i707.GetNonCooperationListUseCase>(),
     ),
+  );
+  gh.lazySingleton<_i301.DelegateCartableMessageUseCase>(
+    () => _i301.DelegateCartableMessageUseCase(gh<_i133.CartableRepository>()),
   );
   gh.lazySingleton<_i862.GetCartableItemListUseCase>(
     () => _i862.GetCartableItemListUseCase(gh<_i133.CartableRepository>()),
