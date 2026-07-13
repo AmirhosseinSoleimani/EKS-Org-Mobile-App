@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/pages/emdad_unit_list_page.dart';
+import 'package:eks_sana_plus_org/src/features/emdad_vehicle/emdad_vehicle_page.dart';
 import 'package:eks_sana_plus_org/src/features/leave/presentation/pages/leave_page.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/plan_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/home_service_request_list_page/home_service_request_list_page.dart';
@@ -66,7 +67,7 @@ class ServicesPage extends StatelessWidget {
               _SanItemWidget(
                 title: 'خودروی امدادی',
                 icon: Icons.local_shipping_outlined,
-                onTap: () => context.pushNamed(EmdadUnitListPage.name),
+                onTap: () => context.pushNamed(EmdadVehiclePage.name),
               ),
             if (access.canShowHomeServiceRequestsMenu())
               _SanItemWidget(

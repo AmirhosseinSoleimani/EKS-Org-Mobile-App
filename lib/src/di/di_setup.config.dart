@@ -108,6 +108,46 @@ import '../features/emdad_unit/domain/use_cases/update_emdad_unit_image_use_case
     as _i76;
 import '../features/emdad_unit/presentation/cubit/emdad_unit_cubit.dart'
     as _i471;
+import '../features/emdad_vehicle/data/data_sources/emdad_vehicle_data_source.dart'
+    as _i639;
+import '../features/emdad_vehicle/data/data_sources/emdad_vehicle_data_source_impl.dart'
+    as _i808;
+import '../features/emdad_vehicle/data/repositories/emdad_vehicle_repository_impl.dart'
+    as _i77;
+import '../features/emdad_vehicle/data/service/emdad_vehicle_service.dart'
+    as _i2;
+import '../features/emdad_vehicle/domain/repositories/emdad_vehicle_repository.dart'
+    as _i139;
+import '../features/emdad_vehicle/domain/use_cases/create_emdad_vehicle_use_case.dart'
+    as _i147;
+import '../features/emdad_vehicle/domain/use_cases/delete_emdad_vehicle_use_case.dart'
+    as _i996;
+import '../features/emdad_vehicle/domain/use_cases/get_active_vehicle_models_use_case.dart'
+    as _i1054;
+import '../features/emdad_vehicle/domain/use_cases/get_emdad_vehicle_by_id_use_case.dart'
+    as _i263;
+import '../features/emdad_vehicle/domain/use_cases/get_emdad_vehicle_list_use_case.dart'
+    as _i943;
+import '../features/emdad_vehicle/domain/use_cases/get_imei_list_use_case.dart'
+    as _i341;
+import '../features/emdad_vehicle/domain/use_cases/get_vehicle_defects_use_case.dart'
+    as _i438;
+import '../features/emdad_vehicle/domain/use_cases/get_vehicle_history_use_case.dart'
+    as _i871;
+import '../features/emdad_vehicle/domain/use_cases/get_vehicle_services_use_case.dart'
+    as _i657;
+import '../features/emdad_vehicle/domain/use_cases/get_vehicle_tools_use_case.dart'
+    as _i1019;
+import '../features/emdad_vehicle/domain/use_cases/submit_vehicle_defect_limitation_use_case.dart'
+    as _i1026;
+import '../features/emdad_vehicle/domain/use_cases/submit_vehicle_services_use_case.dart'
+    as _i516;
+import '../features/emdad_vehicle/domain/use_cases/submit_vehicle_tools_use_case.dart'
+    as _i336;
+import '../features/emdad_vehicle/domain/use_cases/update_emdad_vehicle_use_case.dart'
+    as _i558;
+import '../features/emdad_vehicle/presentation/cubit/emdad_vehicle_cubit.dart'
+    as _i1071;
 import '../features/evaluation/data/remote/data_sources/evaluation_remote_data_source.dart'
     as _i1023;
 import '../features/evaluation/data/remote/data_sources/evaluation_remote_data_source_impl.dart'
@@ -520,6 +560,7 @@ _i174.GetIt $initGetIt(
   gh.factory<_i336.BottomNavigationBarCubit>(
     () => _i336.BottomNavigationBarCubit(),
   );
+  gh.factory<_i1071.EmdadVehicleCubit>(() => _i1071.EmdadVehicleCubit());
   gh.factory<_i79.RepresentationCubit>(() => _i79.RepresentationCubit());
   gh.factory<_i866.EvaluationHomeServiceRequestCubit>(
     () => _i866.EvaluationHomeServiceRequestCubit(),
@@ -609,6 +650,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i953.DashboardService>(
     () => _i953.DashboardService(gh<_i361.Dio>()),
+  );
+  gh.lazySingleton<_i2.EmdadVehicleService>(
+    () => _i2.EmdadVehicleService(gh<_i361.Dio>()),
   );
   gh.lazySingleton<_i606.EvaluationService>(
     () => _i606.EvaluationService(gh<_i361.Dio>()),
@@ -731,6 +775,9 @@ _i174.GetIt $initGetIt(
     () => _i832.FinalizeInvoiceRemoteDataSourceImpl(
       gh<_i606.EvaluationService>(),
     ),
+  );
+  gh.lazySingleton<_i639.EmdadVehicleDataSource>(
+    () => _i808.EmdadVehicleDataSourceImpl(gh<_i2.EmdadVehicleService>()),
   );
   gh.lazySingleton<_i479.AuthRemoteDataSource>(
     () => _i51.AuthRemoteDataSourceImpl(gh<_i626.AuthService>()),
@@ -1162,6 +1209,9 @@ _i174.GetIt $initGetIt(
       gh<_i786.GetEmdadgarInfoUseCase>(),
     ),
   );
+  gh.lazySingleton<_i139.EmdadVehicleRepository>(
+    () => _i77.EmdadVehicleRepositoryImpl(gh<_i639.EmdadVehicleDataSource>()),
+  );
   gh.lazySingleton<_i122.EvaluationRepository>(
     () =>
         _i903.EvaluationRepositoryImpl(gh<_i1023.EvaluationRemoteDataSource>()),
@@ -1356,6 +1406,53 @@ _i174.GetIt $initGetIt(
       gh<_i283.ChangeLeaveStatusUseCase>(),
       gh<_i918.RollbackLeaveRequestUseCase>(),
     ),
+  );
+  gh.lazySingleton<_i147.CreateEmdadVehicleUseCase>(
+    () => _i147.CreateEmdadVehicleUseCase(gh<_i139.EmdadVehicleRepository>()),
+  );
+  gh.lazySingleton<_i996.DeleteEmdadVehicleUseCase>(
+    () => _i996.DeleteEmdadVehicleUseCase(gh<_i139.EmdadVehicleRepository>()),
+  );
+  gh.lazySingleton<_i1054.GetActiveVehicleModelsUseCase>(
+    () => _i1054.GetActiveVehicleModelsUseCase(
+      gh<_i139.EmdadVehicleRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i263.GetEmdadVehicleByIdUseCase>(
+    () => _i263.GetEmdadVehicleByIdUseCase(gh<_i139.EmdadVehicleRepository>()),
+  );
+  gh.lazySingleton<_i943.GetEmdadVehicleListUseCase>(
+    () => _i943.GetEmdadVehicleListUseCase(gh<_i139.EmdadVehicleRepository>()),
+  );
+  gh.lazySingleton<_i341.GetImeiListUseCase>(
+    () => _i341.GetImeiListUseCase(gh<_i139.EmdadVehicleRepository>()),
+  );
+  gh.lazySingleton<_i438.GetVehicleDefectsUseCase>(
+    () => _i438.GetVehicleDefectsUseCase(gh<_i139.EmdadVehicleRepository>()),
+  );
+  gh.lazySingleton<_i871.GetVehicleHistoryUseCase>(
+    () => _i871.GetVehicleHistoryUseCase(gh<_i139.EmdadVehicleRepository>()),
+  );
+  gh.lazySingleton<_i657.GetVehicleServicesUseCase>(
+    () => _i657.GetVehicleServicesUseCase(gh<_i139.EmdadVehicleRepository>()),
+  );
+  gh.lazySingleton<_i1019.GetVehicleToolsUseCase>(
+    () => _i1019.GetVehicleToolsUseCase(gh<_i139.EmdadVehicleRepository>()),
+  );
+  gh.lazySingleton<_i1026.SubmitVehicleDefectLimitationUseCase>(
+    () => _i1026.SubmitVehicleDefectLimitationUseCase(
+      gh<_i139.EmdadVehicleRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i516.SubmitVehicleServicesUseCase>(
+    () =>
+        _i516.SubmitVehicleServicesUseCase(gh<_i139.EmdadVehicleRepository>()),
+  );
+  gh.lazySingleton<_i336.SubmitVehicleToolsUseCase>(
+    () => _i336.SubmitVehicleToolsUseCase(gh<_i139.EmdadVehicleRepository>()),
+  );
+  gh.lazySingleton<_i558.UpdateEmdadVehicleUseCase>(
+    () => _i558.UpdateEmdadVehicleUseCase(gh<_i139.EmdadVehicleRepository>()),
   );
   gh.lazySingleton<_i695.SyncCurrentSessionUseCase>(
     () => _i695.SyncCurrentSessionUseCase(

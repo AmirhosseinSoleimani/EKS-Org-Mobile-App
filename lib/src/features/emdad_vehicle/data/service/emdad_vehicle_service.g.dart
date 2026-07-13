@@ -86,30 +86,34 @@ class _EmdadVehicleService implements EmdadVehicleService {
   }
 
   @override
-  Future<BaseSingleResponse<SubmitVehicleToolsResponseModel>> submitVehicleTools(
-    Map<String, dynamic> body,
-  ) async {
+  Future<BaseSingleResponse<SubmitVehicleToolsResponseModel>>
+  submitVehicleTools(Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body);
-    final _options = _setStreamType<BaseSingleResponse<SubmitVehicleToolsResponseModel>>(
-      Options(method: 'POST', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            '/api/VehicleInfo/SubmitVehicleTools',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
+    final _options =
+        _setStreamType<BaseSingleResponse<SubmitVehicleToolsResponseModel>>(
+          Options(method: 'POST', headers: _headers, extra: _extra)
+              .compose(
+                _dio.options,
+                '/api/VehicleInfo/SubmitVehicleTools',
+                queryParameters: queryParameters,
+                data: _data,
+              )
+              .copyWith(
+                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+              ),
+        );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late BaseSingleResponse<SubmitVehicleToolsResponseModel> _value;
     try {
       _value = BaseSingleResponse<SubmitVehicleToolsResponseModel>.fromJson(
         _result.data!,
-        (json) => SubmitVehicleToolsResponseModel.fromJson(json as Map<String, dynamic>),
+        (json) => SubmitVehicleToolsResponseModel.fromJson(
+          json as Map<String, dynamic>,
+        ),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
@@ -125,9 +129,8 @@ class _EmdadVehicleService implements EmdadVehicleService {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     queryParameters.addAll(query);
-    queryParameters.removeWhere((key, value) => value == null);
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<BaseListResponse<VehicleServiceGroupModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
@@ -143,7 +146,8 @@ class _EmdadVehicleService implements EmdadVehicleService {
     try {
       _value = BaseListResponse<VehicleServiceGroupModel>.fromJson(
         _result.data!,
-        (json) => VehicleServiceGroupModel.fromJson(json as Map<String, dynamic>),
+        (json) =>
+            VehicleServiceGroupModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
@@ -186,9 +190,7 @@ class _EmdadVehicleService implements EmdadVehicleService {
   }
 
   @override
-  Future<void> submitVehicleDefectLimitation(
-    Map<String, dynamic> body,
-  ) async {
+  Future<void> submitVehicleDefectLimitation(Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
@@ -208,30 +210,34 @@ class _EmdadVehicleService implements EmdadVehicleService {
   }
 
   @override
-  Future<BaseSingleResponse<SubmitVehicleServicesResponseModel>> submitVehicleServices(
-    Map<String, dynamic> body,
-  ) async {
+  Future<BaseSingleResponse<SubmitVehicleServicesResponseModel>>
+  submitVehicleServices(Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body);
-    final _options = _setStreamType<BaseSingleResponse<SubmitVehicleServicesResponseModel>>(
-      Options(method: 'POST', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            '/api/VehicleInfo/InsertBatchEmdadServiceCategoriesByVehicleInfoId',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
+    final _options =
+        _setStreamType<BaseSingleResponse<SubmitVehicleServicesResponseModel>>(
+          Options(method: 'POST', headers: _headers, extra: _extra)
+              .compose(
+                _dio.options,
+                '/api/VehicleInfo/InsertBatchEmdadServiceCategoriesByVehicleInfoId',
+                queryParameters: queryParameters,
+                data: _data,
+              )
+              .copyWith(
+                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+              ),
+        );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late BaseSingleResponse<SubmitVehicleServicesResponseModel> _value;
     try {
       _value = BaseSingleResponse<SubmitVehicleServicesResponseModel>.fromJson(
         _result.data!,
-        (json) => SubmitVehicleServicesResponseModel.fromJson(json as Map<String, dynamic>),
+        (json) => SubmitVehicleServicesResponseModel.fromJson(
+          json as Map<String, dynamic>,
+        ),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
@@ -247,9 +253,8 @@ class _EmdadVehicleService implements EmdadVehicleService {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     queryParameters.addAll(query);
-    queryParameters.removeWhere((key, value) => value == null);
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<BaseSingleResponse<VehicleIdResponseModel>>(
       Options(method: 'DELETE', headers: _headers, extra: _extra)
           .compose(
@@ -281,9 +286,8 @@ class _EmdadVehicleService implements EmdadVehicleService {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     queryParameters.addAll(query);
-    queryParameters.removeWhere((key, value) => value == null);
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<BaseListResponse<VehicleHistoryModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
@@ -309,12 +313,11 @@ class _EmdadVehicleService implements EmdadVehicleService {
   }
 
   @override
-  Future<BaseListResponse<ImeiInfoModel>> getImeiList(
-  ) async {
+  Future<BaseListResponse<ImeiInfoModel>> getImeiList() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<BaseListResponse<ImeiInfoModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
@@ -379,9 +382,8 @@ class _EmdadVehicleService implements EmdadVehicleService {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     queryParameters.addAll(query);
-    queryParameters.removeWhere((key, value) => value == null);
     final _headers = <String, dynamic>{};
-    final _data = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
     final _options = _setStreamType<BaseSingleResponse<EmdadVehicleInfoModel>>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(

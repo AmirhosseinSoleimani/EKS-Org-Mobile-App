@@ -35,14 +35,15 @@ class EmdadVehiclePageView extends StatelessWidget {
 
     return BlocConsumer<EmdadVehicleCubit, EmdadVehicleState>(
       listenWhen: (previous, current) {
-        return current.maybeWhen(
+        return true;
+       /* return current.maybeWhen(
           error: (_, __) => true,
           connectionError: (_) => true,
           orElse: () => false,
-        );
+        );*/
       },
       listener: (context, state) {
-        state.whenOrNull(
+       /* state.whenOrNull(
           error: (data, message) {
             BottomSheetMessage.showError(
               context: context,
@@ -68,7 +69,7 @@ class EmdadVehiclePageView extends StatelessWidget {
               enableDrag: false,
             );
           },
-        );
+        );*/
       },
       builder: (context, state) {
         return Scaffold(
