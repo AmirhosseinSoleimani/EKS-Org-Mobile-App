@@ -54,5 +54,6 @@ class ColorLightManager {
   static const onPrimaryFixedVariant = Color(0xff383838);
   static const onSecondaryContainer = Color(0xff008FFF);
   static const surfaceContainer = Color(0xFFE7F6FF);
+  static const secondaryContainer = Color(0xFFF2F2F2);
   static const shadow = Color(0xff000000);
 }

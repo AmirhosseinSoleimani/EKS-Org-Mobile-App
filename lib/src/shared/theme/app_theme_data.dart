@@ -63,6 +63,7 @@ class LightThemeData extends AppThemeData {
         inversePrimary: ColorLightManager.inversePrimary,
         surfaceBright: ColorLightManager.surfaceBright,
         surfaceContainer: ColorLightManager.surfaceContainer,
+        secondaryContainer: ColorLightManager.secondaryContainer ,
 
         brightness: Brightness.light,
       ),
