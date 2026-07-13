@@ -24,4 +24,9 @@ abstract class CartableService {
   @POST('/api/Cartable/DelegateCartableMessage')
   Future<BaseSingleResponse<DelegateCartableMessageResponseModel>> delegateCartableMessage(
       @Body() Map<String, dynamic> body);
+
+  @POST('/api/Cartable/ArchiveMessageByMessageGuid')
+  Future<BaseSingleResponse<String>> archiveCartableMessage(
+      @Body() Map<String, dynamic> body,
+      );
 }

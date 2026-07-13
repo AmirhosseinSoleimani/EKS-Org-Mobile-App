@@ -1,6 +1,8 @@
 import 'package:eks_sana_plus_org/src/features/cartable/data/data_sources/cartable_data_source.dart';
+import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/archive_cartable_message_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/cartable_item_entity.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/delegate_cartable_message_response_entity.dart';
+import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/param/archive_cartable_message_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/param/delegate_cartable_message_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/param/get_cartable_items_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/param/get_subordinated_users_param_entity.dart';
@@ -42,6 +44,18 @@ class CartableRepositoryImpl extends CartableRepository {
       delegateCartableMessage(DelegateCartableMessageParamEntity param) async {
     try {
       final result = await _dataSource.delegateCartableMessage(param.toModel());
+      return result.toApiResult();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<
+      ApiResult<ArchiveCartableMessageResponseEntity>> archiveCartableMessage(
+      ArchiveCartableMessageParamEntity param) async {
+    try {
+      final result = await _dataSource.archiveCartableMessage(param.toModel());
       return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);
