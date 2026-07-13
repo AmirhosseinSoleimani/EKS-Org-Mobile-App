@@ -56,10 +56,6 @@ import '../features/cartable/data/repositories/cartable_repository_impl.dart'
 import '../features/cartable/data/service/cartable_service.dart' as _i1027;
 import '../features/cartable/domain/repositories/cartable_repository.dart'
     as _i133;
-import '../features/cartable/domain/use_cases/archive_cartable_message_use_case.dart'
-    as _i657;
-import '../features/cartable/domain/use_cases/delegate_cartable_message_use_case.dart'
-    as _i301;
 import '../features/cartable/domain/use_cases/get_cartable_item_list_use_case.dart'
     as _i862;
 import '../features/cartable/domain/use_cases/get_subordinated_users_list_use_case.dart'
@@ -146,6 +142,36 @@ import '../features/evaluation/domain/usecase/post_evaluation_use_case.dart'
     as _i296;
 import '../features/evaluation/domain/usecase/submit_evaluation_for_aid_service_use_case.dart'
     as _i571;
+import '../features/grade_pattern/data/data_sources/grade_pattern_data_source.dart'
+    as _i480;
+import '../features/grade_pattern/data/data_sources/grade_pattern_data_source_impl.dart'
+    as _i88;
+import '../features/grade_pattern/data/repositories/grade_pattern_repository_impl.dart'
+    as _i864;
+import '../features/grade_pattern/data/services/grade_pattern_service.dart'
+    as _i300;
+import '../features/grade_pattern/domain/repositories/grade_pattern_repository.dart'
+    as _i577;
+import '../features/grade_pattern/domain/use_cases/assign_grade_pattern_reference_use_case.dart'
+    as _i825;
+import '../features/grade_pattern/domain/use_cases/create_grade_pattern_use_case.dart'
+    as _i833;
+import '../features/grade_pattern/domain/use_cases/delete_grade_pattern_reference_use_case.dart'
+    as _i33;
+import '../features/grade_pattern/domain/use_cases/delete_grade_pattern_use_case.dart'
+    as _i512;
+import '../features/grade_pattern/domain/use_cases/get_grade_pattern_by_id_use_case.dart'
+    as _i33;
+import '../features/grade_pattern/domain/use_cases/get_grade_pattern_list_use_case.dart'
+    as _i614;
+import '../features/grade_pattern/domain/use_cases/get_grade_pattern_references_use_case.dart'
+    as _i102;
+import '../features/grade_pattern/domain/use_cases/update_grade_pattern_use_case.dart'
+    as _i244;
+import '../features/grade_pattern/domain/use_cases/validate_grade_pattern_use_case.dart'
+    as _i928;
+import '../features/grade_pattern/presentation/cubit/grade_pattern_cubit.dart'
+    as _i791;
 import '../features/home_services_evaluation/data/data_source/home_service_evaluation_data_source.dart'
     as _i999;
 import '../features/home_services_evaluation/data/data_source/home_service_evaluation_data_source_impl.dart'
@@ -536,6 +562,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i826.PhoneNumberValidatorUseCase>(
     () => _i826.PhoneNumberValidatorUseCase(),
   );
+  gh.lazySingleton<_i928.ValidateGradePatternUseCase>(
+    () => _i928.ValidateGradePatternUseCase(),
+  );
   gh.lazySingleton<_i823.EvaluationDraftStore>(
     () => _i823.EvaluationDraftStore(),
   );
@@ -645,6 +674,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i54.EmdadUnitService>(
     () => _i54.EmdadUnitService(gh<_i361.Dio>()),
   );
+  gh.lazySingleton<_i300.GradePatternService>(
+    () => _i300.GradePatternService(gh<_i361.Dio>()),
+  );
   gh.lazySingleton<_i691.IndicatorReportDataSource>(
     () =>
         _i87.IndicatorReportDataSourceImpl(gh<_i140.IndicatorReportService>()),
@@ -665,6 +697,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i854.MainRepository>(
     () => _i320.MainRepositoryImpl(gh<_i475.MainRemoteDataSource>()),
+  );
+  gh.lazySingleton<_i480.GradePatternDataSource>(
+    () => _i88.GradePatternDataSourceImpl(gh<_i300.GradePatternService>()),
   );
   gh.lazySingleton<_i602.DashboardRepository>(
     () => _i650.DashboardRepositoryImpl(gh<_i320.DashboardDataSource>()),
@@ -720,6 +755,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i92.MapRepository>(
     () => _i810.MapRepositoryImpl(gh<_i971.MapDataSource>()),
+  );
+  gh.lazySingleton<_i577.GradePatternRepository>(
+    () => _i864.GradePatternRepositoryImpl(gh<_i480.GradePatternDataSource>()),
   );
   gh.lazySingleton<_i565.UrgentRequestUseCase>(
     () => _i565.UrgentRequestUseCase(gh<_i854.MainRepository>()),
@@ -1005,6 +1043,36 @@ _i174.GetIt $initGetIt(
       gh<_i786.GetEmdadgarInfoUseCase>(),
     ),
   );
+  gh.lazySingleton<_i825.AssignGradePatternReferenceUseCase>(
+    () => _i825.AssignGradePatternReferenceUseCase(
+      gh<_i577.GradePatternRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i833.CreateGradePatternUseCase>(
+    () => _i833.CreateGradePatternUseCase(gh<_i577.GradePatternRepository>()),
+  );
+  gh.lazySingleton<_i33.DeleteGradePatternReferenceUseCase>(
+    () => _i33.DeleteGradePatternReferenceUseCase(
+      gh<_i577.GradePatternRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i512.DeleteGradePatternUseCase>(
+    () => _i512.DeleteGradePatternUseCase(gh<_i577.GradePatternRepository>()),
+  );
+  gh.lazySingleton<_i33.GetGradePatternByIdUseCase>(
+    () => _i33.GetGradePatternByIdUseCase(gh<_i577.GradePatternRepository>()),
+  );
+  gh.lazySingleton<_i614.GetGradePatternListUseCase>(
+    () => _i614.GetGradePatternListUseCase(gh<_i577.GradePatternRepository>()),
+  );
+  gh.lazySingleton<_i102.GetGradePatternReferencesUseCase>(
+    () => _i102.GetGradePatternReferencesUseCase(
+      gh<_i577.GradePatternRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i244.UpdateGradePatternUseCase>(
+    () => _i244.UpdateGradePatternUseCase(gh<_i577.GradePatternRepository>()),
+  );
   gh.factory<_i264.FollowUpRegisterCubit>(
     () => _i264.FollowUpRegisterCubit(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
@@ -1129,11 +1197,19 @@ _i174.GetIt $initGetIt(
       gh<_i707.GetNonCooperationListUseCase>(),
     ),
   );
-  gh.lazySingleton<_i657.ArchiveCartableMessageUseCase>(
-    () => _i657.ArchiveCartableMessageUseCase(gh<_i133.CartableRepository>()),
-  );
-  gh.lazySingleton<_i301.DelegateCartableMessageUseCase>(
-    () => _i301.DelegateCartableMessageUseCase(gh<_i133.CartableRepository>()),
+  gh.factory<_i791.GradePatternCubit>(
+    () => _i791.GradePatternCubit(
+      gh<_i614.GetGradePatternListUseCase>(),
+      gh<_i33.GetGradePatternByIdUseCase>(),
+      gh<_i833.CreateGradePatternUseCase>(),
+      gh<_i244.UpdateGradePatternUseCase>(),
+      gh<_i512.DeleteGradePatternUseCase>(),
+      gh<_i102.GetGradePatternReferencesUseCase>(),
+      gh<_i825.AssignGradePatternReferenceUseCase>(),
+      gh<_i33.DeleteGradePatternReferenceUseCase>(),
+      gh<_i928.ValidateGradePatternUseCase>(),
+      gh<_i1058.CurrentSessionManager>(),
+    ),
   );
   gh.lazySingleton<_i862.GetCartableItemListUseCase>(
     () => _i862.GetCartableItemListUseCase(gh<_i133.CartableRepository>()),
@@ -1357,6 +1433,12 @@ _i174.GetIt $initGetIt(
       gh<_i918.RollbackLeaveRequestUseCase>(),
     ),
   );
+  gh.factory<_i330.CartableCubit>(
+    () => _i330.CartableCubit(
+      gh<_i45.GetSubordinatedUsersUseCase>(),
+      gh<_i862.GetCartableItemListUseCase>(),
+    ),
+  );
   gh.lazySingleton<_i695.SyncCurrentSessionUseCase>(
     () => _i695.SyncCurrentSessionUseCase(
       gh<_i424.GetCurrentSessionUseCase>(),
@@ -1369,15 +1451,6 @@ _i174.GetIt $initGetIt(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
       gh<_i672.GetReliefRequestByIdUseCase>(),
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
-    ),
-  );
-  gh.factory<_i330.CartableCubit>(
-    () => _i330.CartableCubit(
-      gh<_i45.GetSubordinatedUsersUseCase>(),
-      gh<_i862.GetCartableItemListUseCase>(),
-      gh<_i301.DelegateCartableMessageUseCase>(),
-      gh<_i369.SetSelectedRequestItemUseCase>(),
-      gh<_i657.ArchiveCartableMessageUseCase>(),
     ),
   );
   gh.factory<_i566.LoginCubit>(
