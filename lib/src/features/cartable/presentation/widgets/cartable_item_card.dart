@@ -4,8 +4,11 @@ import 'package:eks_sana_plus_org/src/features/cartable/presentation/actions/car
 import 'package:eks_sana_plus_org/src/features/cartable/presentation/policies/cartable_action_policy.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/presentation/widgets/cartable_actions_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/presentation/widgets/direct_action_button.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_src.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_widget.dart';
 import 'package:flutter/material.dart';
 
 typedef CartableItemActionTap =
@@ -51,7 +54,7 @@ class CartableItemCard extends StatelessWidget {
               children: [
                 _HeaderSection(item: item),
 
-                const SizedBox(height: AppSize.s32),
+                const SizedBox(height: AppSize.s24),
 
                 Divider(
                   height: 1,
@@ -59,7 +62,7 @@ class CartableItemCard extends StatelessWidget {
                   color: colorScheme.onSurfaceVariant.withAlpha(45),
                 ),
 
-                const SizedBox(height: AppSize.s32),
+                const SizedBox(height: AppSize.s24),
 
                 _SenderReceiverSection(item: item),
               ],
@@ -123,7 +126,7 @@ class _HeaderSection extends StatelessWidget {
               ),
             ),
 
-            const SizedBox(width: AppSize.s12),
+            const SizedBox(width: AppSize.s16),
 
             Text(
               _resolveDateAndTime(item),
@@ -136,7 +139,7 @@ class _HeaderSection extends StatelessWidget {
           ],
         ),
 
-        const SizedBox(height: AppSize.s16),
+        const SizedBox(height: AppSize.s6),
 
         Row(
           crossAxisAlignment: CrossAxisAlignment.center,
@@ -185,24 +188,19 @@ class _SenderReceiverSection extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return Row(
+      mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        Expanded(
-          child: _PersonInformation(
-            title: 'ارسال‌کننده:',
-            name: _resolveSenderName(item),
-          ),
+        _PersonInformation(
+          title: 'ارسال‌کننده:',
+          name: _resolveSenderName(item),
         ),
-
+        Space.w24,
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: AppPadding.p16),
-          child: Icon(
-            Icons.arrow_back_rounded,
-            size: AppSize.s24,
-            color: colorScheme.onSurfaceVariant,
-          ),
+          child: SvgWidget(src: SvgAsset(SvgManager.arrowLeftAlt)),
         ),
-
+        Space.w24,
         Expanded(
           child: _PersonInformation(
             title: 'دریافت‌کننده:',
@@ -245,8 +243,8 @@ class _PersonInformation extends StatelessWidget {
           maxLines: 2,
           overflow: TextOverflow.ellipsis,
           style: theme.textTheme.bodyMedium?.copyWith(
-            color: colorScheme.onSurface,
-            fontWeight: FontWeight.w700,
+            color: colorScheme.onSurfaceVariant,
+            fontWeight: FontWeight.w600,
           ),
         ),
       ],
@@ -267,9 +265,9 @@ class _RequestInformationBox extends StatelessWidget {
       width: double.infinity,
       padding: const EdgeInsets.all(AppPadding.p16),
       decoration: BoxDecoration(
-        color: colorScheme.primary.withAlpha(25),
+        color: colorScheme.surface.withAlpha(25),
         borderRadius: BorderRadius.circular(AppSize.s8),
-        border: Border.all(color: colorScheme.primary.withAlpha(45)),
+        border: Border.all(color: colorScheme.onInverseSurface),
       ),
       child: Column(
         children: [
@@ -326,7 +324,7 @@ class _InformationRow extends StatelessWidget {
             value,
             maxLines: 2,
             overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.end,
+            textAlign: TextAlign.start,
             style: theme.textTheme.bodySmall?.copyWith(
               color: colorScheme.onSurfaceVariant,
               fontWeight: FontWeight.w700,
