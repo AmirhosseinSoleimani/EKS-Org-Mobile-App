@@ -14,7 +14,7 @@ T _$identity<T>(T value) => value;
 /// @nodoc
 mixin _$CartableStateData {
 
- SubordinatedUserEntity? get activeCartableUser; String? get activeCartableUserRoleTitle; SubordinatedUserEntity? get subordinatedUsersRoot; List<SubordinatedUserEntity> get subordinatedUsersTree; List<SubordinatedUserEntity> get filteredSubordinatedUsersTree; List<CartableItemEntity> get cartableItems; List<CartableItemEntity> get filteredCartableItems; String get cartableSearchText; String get subordinatedUserSearchText; bool get isSubordinatedUsersLoading; bool get isCartableItemsLoading; int get pageSize; bool? get includeSnoozedMessages;
+ SubordinatedUserEntity? get activeCartableUser; String? get activeCartableUserRoleTitle; SubordinatedUserEntity? get subordinatedUsersRoot; List<SubordinatedUserEntity> get subordinatedUsersTree; List<SubordinatedUserEntity> get filteredSubordinatedUsersTree; List<CartableItemEntity> get cartableItems; List<CartableItemEntity> get filteredCartableItems; String get cartableSearchText; String get subordinatedUserSearchText; bool get isChangeCartableUsersLoading; bool get isDelegateUsersLoading; bool get isCartableItemsLoading; int get pageSize; bool? get includeSnoozedMessages;
 /// Create a copy of CartableStateData
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
@@ -25,16 +25,16 @@ $CartableStateDataCopyWith<CartableStateData> get copyWith => _$CartableStateDat
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is CartableStateData&&(identical(other.activeCartableUser, activeCartableUser) || other.activeCartableUser == activeCartableUser)&&(identical(other.activeCartableUserRoleTitle, activeCartableUserRoleTitle) || other.activeCartableUserRoleTitle == activeCartableUserRoleTitle)&&(identical(other.subordinatedUsersRoot, subordinatedUsersRoot) || other.subordinatedUsersRoot == subordinatedUsersRoot)&&const DeepCollectionEquality().equals(other.subordinatedUsersTree, subordinatedUsersTree)&&const DeepCollectionEquality().equals(other.filteredSubordinatedUsersTree, filteredSubordinatedUsersTree)&&const DeepCollectionEquality().equals(other.cartableItems, cartableItems)&&const DeepCollectionEquality().equals(other.filteredCartableItems, filteredCartableItems)&&(identical(other.cartableSearchText, cartableSearchText) || other.cartableSearchText == cartableSearchText)&&(identical(other.subordinatedUserSearchText, subordinatedUserSearchText) || other.subordinatedUserSearchText == subordinatedUserSearchText)&&(identical(other.isSubordinatedUsersLoading, isSubordinatedUsersLoading) || other.isSubordinatedUsersLoading == isSubordinatedUsersLoading)&&(identical(other.isCartableItemsLoading, isCartableItemsLoading) || other.isCartableItemsLoading == isCartableItemsLoading)&&(identical(other.pageSize, pageSize) || other.pageSize == pageSize)&&(identical(other.includeSnoozedMessages, includeSnoozedMessages) || other.includeSnoozedMessages == includeSnoozedMessages));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is CartableStateData&&(identical(other.activeCartableUser, activeCartableUser) || other.activeCartableUser == activeCartableUser)&&(identical(other.activeCartableUserRoleTitle, activeCartableUserRoleTitle) || other.activeCartableUserRoleTitle == activeCartableUserRoleTitle)&&(identical(other.subordinatedUsersRoot, subordinatedUsersRoot) || other.subordinatedUsersRoot == subordinatedUsersRoot)&&const DeepCollectionEquality().equals(other.subordinatedUsersTree, subordinatedUsersTree)&&const DeepCollectionEquality().equals(other.filteredSubordinatedUsersTree, filteredSubordinatedUsersTree)&&const DeepCollectionEquality().equals(other.cartableItems, cartableItems)&&const DeepCollectionEquality().equals(other.filteredCartableItems, filteredCartableItems)&&(identical(other.cartableSearchText, cartableSearchText) || other.cartableSearchText == cartableSearchText)&&(identical(other.subordinatedUserSearchText, subordinatedUserSearchText) || other.subordinatedUserSearchText == subordinatedUserSearchText)&&(identical(other.isChangeCartableUsersLoading, isChangeCartableUsersLoading) || other.isChangeCartableUsersLoading == isChangeCartableUsersLoading)&&(identical(other.isDelegateUsersLoading, isDelegateUsersLoading) || other.isDelegateUsersLoading == isDelegateUsersLoading)&&(identical(other.isCartableItemsLoading, isCartableItemsLoading) || other.isCartableItemsLoading == isCartableItemsLoading)&&(identical(other.pageSize, pageSize) || other.pageSize == pageSize)&&(identical(other.includeSnoozedMessages, includeSnoozedMessages) || other.includeSnoozedMessages == includeSnoozedMessages));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,activeCartableUser,activeCartableUserRoleTitle,subordinatedUsersRoot,const DeepCollectionEquality().hash(subordinatedUsersTree),const DeepCollectionEquality().hash(filteredSubordinatedUsersTree),const DeepCollectionEquality().hash(cartableItems),const DeepCollectionEquality().hash(filteredCartableItems),cartableSearchText,subordinatedUserSearchText,isSubordinatedUsersLoading,isCartableItemsLoading,pageSize,includeSnoozedMessages);
+int get hashCode => Object.hash(runtimeType,activeCartableUser,activeCartableUserRoleTitle,subordinatedUsersRoot,const DeepCollectionEquality().hash(subordinatedUsersTree),const DeepCollectionEquality().hash(filteredSubordinatedUsersTree),const DeepCollectionEquality().hash(cartableItems),const DeepCollectionEquality().hash(filteredCartableItems),cartableSearchText,subordinatedUserSearchText,isChangeCartableUsersLoading,isDelegateUsersLoading,isCartableItemsLoading,pageSize,includeSnoozedMessages);
 
 @override
 String toString() {
-  return 'CartableStateData(activeCartableUser: $activeCartableUser, activeCartableUserRoleTitle: $activeCartableUserRoleTitle, subordinatedUsersRoot: $subordinatedUsersRoot, subordinatedUsersTree: $subordinatedUsersTree, filteredSubordinatedUsersTree: $filteredSubordinatedUsersTree, cartableItems: $cartableItems, filteredCartableItems: $filteredCartableItems, cartableSearchText: $cartableSearchText, subordinatedUserSearchText: $subordinatedUserSearchText, isSubordinatedUsersLoading: $isSubordinatedUsersLoading, isCartableItemsLoading: $isCartableItemsLoading, pageSize: $pageSize, includeSnoozedMessages: $includeSnoozedMessages)';
+  return 'CartableStateData(activeCartableUser: $activeCartableUser, activeCartableUserRoleTitle: $activeCartableUserRoleTitle, subordinatedUsersRoot: $subordinatedUsersRoot, subordinatedUsersTree: $subordinatedUsersTree, filteredSubordinatedUsersTree: $filteredSubordinatedUsersTree, cartableItems: $cartableItems, filteredCartableItems: $filteredCartableItems, cartableSearchText: $cartableSearchText, subordinatedUserSearchText: $subordinatedUserSearchText, isChangeCartableUsersLoading: $isChangeCartableUsersLoading, isDelegateUsersLoading: $isDelegateUsersLoading, isCartableItemsLoading: $isCartableItemsLoading, pageSize: $pageSize, includeSnoozedMessages: $includeSnoozedMessages)';
 }
 
 
@@ -45,7 +45,7 @@ abstract mixin class $CartableStateDataCopyWith<$Res>  {
   factory $CartableStateDataCopyWith(CartableStateData value, $Res Function(CartableStateData) _then) = _$CartableStateDataCopyWithImpl;
 @useResult
 $Res call({
- SubordinatedUserEntity? activeCartableUser, String? activeCartableUserRoleTitle, SubordinatedUserEntity? subordinatedUsersRoot, List<SubordinatedUserEntity> subordinatedUsersTree, List<SubordinatedUserEntity> filteredSubordinatedUsersTree, List<CartableItemEntity> cartableItems, List<CartableItemEntity> filteredCartableItems, String cartableSearchText, String subordinatedUserSearchText, bool isSubordinatedUsersLoading, bool isCartableItemsLoading, int pageSize, bool? includeSnoozedMessages
+ SubordinatedUserEntity? activeCartableUser, String? activeCartableUserRoleTitle, SubordinatedUserEntity? subordinatedUsersRoot, List<SubordinatedUserEntity> subordinatedUsersTree, List<SubordinatedUserEntity> filteredSubordinatedUsersTree, List<CartableItemEntity> cartableItems, List<CartableItemEntity> filteredCartableItems, String cartableSearchText, String subordinatedUserSearchText, bool isChangeCartableUsersLoading, bool isDelegateUsersLoading, bool isCartableItemsLoading, int pageSize, bool? includeSnoozedMessages
 });
 
 
@@ -62,7 +62,7 @@ class _$CartableStateDataCopyWithImpl<$Res>
 
 /// Create a copy of CartableStateData
 /// with the given fields replaced by the non-null parameter values.
-@pragma('vm:prefer-inline') @override $Res call({Object? activeCartableUser = freezed,Object? activeCartableUserRoleTitle = freezed,Object? subordinatedUsersRoot = freezed,Object? subordinatedUsersTree = null,Object? filteredSubordinatedUsersTree = null,Object? cartableItems = null,Object? filteredCartableItems = null,Object? cartableSearchText = null,Object? subordinatedUserSearchText = null,Object? isSubordinatedUsersLoading = null,Object? isCartableItemsLoading = null,Object? pageSize = null,Object? includeSnoozedMessages = freezed,}) {
+@pragma('vm:prefer-inline') @override $Res call({Object? activeCartableUser = freezed,Object? activeCartableUserRoleTitle = freezed,Object? subordinatedUsersRoot = freezed,Object? subordinatedUsersTree = null,Object? filteredSubordinatedUsersTree = null,Object? cartableItems = null,Object? filteredCartableItems = null,Object? cartableSearchText = null,Object? subordinatedUserSearchText = null,Object? isChangeCartableUsersLoading = null,Object? isDelegateUsersLoading = null,Object? isCartableItemsLoading = null,Object? pageSize = null,Object? includeSnoozedMessages = freezed,}) {
   return _then(_self.copyWith(
 activeCartableUser: freezed == activeCartableUser ? _self.activeCartableUser : activeCartableUser // ignore: cast_nullable_to_non_nullable
 as SubordinatedUserEntity?,activeCartableUserRoleTitle: freezed == activeCartableUserRoleTitle ? _self.activeCartableUserRoleTitle : activeCartableUserRoleTitle // ignore: cast_nullable_to_non_nullable
@@ -73,7 +73,8 @@ as List<SubordinatedUserEntity>,cartableItems: null == cartableItems ? _self.car
 as List<CartableItemEntity>,filteredCartableItems: null == filteredCartableItems ? _self.filteredCartableItems : filteredCartableItems // ignore: cast_nullable_to_non_nullable
 as List<CartableItemEntity>,cartableSearchText: null == cartableSearchText ? _self.cartableSearchText : cartableSearchText // ignore: cast_nullable_to_non_nullable
 as String,subordinatedUserSearchText: null == subordinatedUserSearchText ? _self.subordinatedUserSearchText : subordinatedUserSearchText // ignore: cast_nullable_to_non_nullable
-as String,isSubordinatedUsersLoading: null == isSubordinatedUsersLoading ? _self.isSubordinatedUsersLoading : isSubordinatedUsersLoading // ignore: cast_nullable_to_non_nullable
+as String,isChangeCartableUsersLoading: null == isChangeCartableUsersLoading ? _self.isChangeCartableUsersLoading : isChangeCartableUsersLoading // ignore: cast_nullable_to_non_nullable
+as bool,isDelegateUsersLoading: null == isDelegateUsersLoading ? _self.isDelegateUsersLoading : isDelegateUsersLoading // ignore: cast_nullable_to_non_nullable
 as bool,isCartableItemsLoading: null == isCartableItemsLoading ? _self.isCartableItemsLoading : isCartableItemsLoading // ignore: cast_nullable_to_non_nullable
 as bool,pageSize: null == pageSize ? _self.pageSize : pageSize // ignore: cast_nullable_to_non_nullable
 as int,includeSnoozedMessages: freezed == includeSnoozedMessages ? _self.includeSnoozedMessages : includeSnoozedMessages // ignore: cast_nullable_to_non_nullable
@@ -162,10 +163,10 @@ return $default(_that);case _:
 /// }
 /// ```
 
-@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SubordinatedUserEntity? activeCartableUser,  String? activeCartableUserRoleTitle,  SubordinatedUserEntity? subordinatedUsersRoot,  List<SubordinatedUserEntity> subordinatedUsersTree,  List<SubordinatedUserEntity> filteredSubordinatedUsersTree,  List<CartableItemEntity> cartableItems,  List<CartableItemEntity> filteredCartableItems,  String cartableSearchText,  String subordinatedUserSearchText,  bool isSubordinatedUsersLoading,  bool isCartableItemsLoading,  int pageSize,  bool? includeSnoozedMessages)?  $default,{required TResult orElse(),}) {final _that = this;
+@optionalTypeArgs TResult maybeWhen<TResult extends Object?>(TResult Function( SubordinatedUserEntity? activeCartableUser,  String? activeCartableUserRoleTitle,  SubordinatedUserEntity? subordinatedUsersRoot,  List<SubordinatedUserEntity> subordinatedUsersTree,  List<SubordinatedUserEntity> filteredSubordinatedUsersTree,  List<CartableItemEntity> cartableItems,  List<CartableItemEntity> filteredCartableItems,  String cartableSearchText,  String subordinatedUserSearchText,  bool isChangeCartableUsersLoading,  bool isDelegateUsersLoading,  bool isCartableItemsLoading,  int pageSize,  bool? includeSnoozedMessages)?  $default,{required TResult orElse(),}) {final _that = this;
 switch (_that) {
 case _CartableStateData() when $default != null:
-return $default(_that.activeCartableUser,_that.activeCartableUserRoleTitle,_that.subordinatedUsersRoot,_that.subordinatedUsersTree,_that.filteredSubordinatedUsersTree,_that.cartableItems,_that.filteredCartableItems,_that.cartableSearchText,_that.subordinatedUserSearchText,_that.isSubordinatedUsersLoading,_that.isCartableItemsLoading,_that.pageSize,_that.includeSnoozedMessages);case _:
+return $default(_that.activeCartableUser,_that.activeCartableUserRoleTitle,_that.subordinatedUsersRoot,_that.subordinatedUsersTree,_that.filteredSubordinatedUsersTree,_that.cartableItems,_that.filteredCartableItems,_that.cartableSearchText,_that.subordinatedUserSearchText,_that.isChangeCartableUsersLoading,_that.isDelegateUsersLoading,_that.isCartableItemsLoading,_that.pageSize,_that.includeSnoozedMessages);case _:
   return orElse();
 
 }
@@ -183,10 +184,10 @@ return $default(_that.activeCartableUser,_that.activeCartableUserRoleTitle,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SubordinatedUserEntity? activeCartableUser,  String? activeCartableUserRoleTitle,  SubordinatedUserEntity? subordinatedUsersRoot,  List<SubordinatedUserEntity> subordinatedUsersTree,  List<SubordinatedUserEntity> filteredSubordinatedUsersTree,  List<CartableItemEntity> cartableItems,  List<CartableItemEntity> filteredCartableItems,  String cartableSearchText,  String subordinatedUserSearchText,  bool isSubordinatedUsersLoading,  bool isCartableItemsLoading,  int pageSize,  bool? includeSnoozedMessages)  $default,) {final _that = this;
+@optionalTypeArgs TResult when<TResult extends Object?>(TResult Function( SubordinatedUserEntity? activeCartableUser,  String? activeCartableUserRoleTitle,  SubordinatedUserEntity? subordinatedUsersRoot,  List<SubordinatedUserEntity> subordinatedUsersTree,  List<SubordinatedUserEntity> filteredSubordinatedUsersTree,  List<CartableItemEntity> cartableItems,  List<CartableItemEntity> filteredCartableItems,  String cartableSearchText,  String subordinatedUserSearchText,  bool isChangeCartableUsersLoading,  bool isDelegateUsersLoading,  bool isCartableItemsLoading,  int pageSize,  bool? includeSnoozedMessages)  $default,) {final _that = this;
 switch (_that) {
 case _CartableStateData():
-return $default(_that.activeCartableUser,_that.activeCartableUserRoleTitle,_that.subordinatedUsersRoot,_that.subordinatedUsersTree,_that.filteredSubordinatedUsersTree,_that.cartableItems,_that.filteredCartableItems,_that.cartableSearchText,_that.subordinatedUserSearchText,_that.isSubordinatedUsersLoading,_that.isCartableItemsLoading,_that.pageSize,_that.includeSnoozedMessages);case _:
+return $default(_that.activeCartableUser,_that.activeCartableUserRoleTitle,_that.subordinatedUsersRoot,_that.subordinatedUsersTree,_that.filteredSubordinatedUsersTree,_that.cartableItems,_that.filteredCartableItems,_that.cartableSearchText,_that.subordinatedUserSearchText,_that.isChangeCartableUsersLoading,_that.isDelegateUsersLoading,_that.isCartableItemsLoading,_that.pageSize,_that.includeSnoozedMessages);case _:
   throw StateError('Unexpected subclass');
 
 }
@@ -203,10 +204,10 @@ return $default(_that.activeCartableUser,_that.activeCartableUserRoleTitle,_that
 /// }
 /// ```
 
-@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SubordinatedUserEntity? activeCartableUser,  String? activeCartableUserRoleTitle,  SubordinatedUserEntity? subordinatedUsersRoot,  List<SubordinatedUserEntity> subordinatedUsersTree,  List<SubordinatedUserEntity> filteredSubordinatedUsersTree,  List<CartableItemEntity> cartableItems,  List<CartableItemEntity> filteredCartableItems,  String cartableSearchText,  String subordinatedUserSearchText,  bool isSubordinatedUsersLoading,  bool isCartableItemsLoading,  int pageSize,  bool? includeSnoozedMessages)?  $default,) {final _that = this;
+@optionalTypeArgs TResult? whenOrNull<TResult extends Object?>(TResult? Function( SubordinatedUserEntity? activeCartableUser,  String? activeCartableUserRoleTitle,  SubordinatedUserEntity? subordinatedUsersRoot,  List<SubordinatedUserEntity> subordinatedUsersTree,  List<SubordinatedUserEntity> filteredSubordinatedUsersTree,  List<CartableItemEntity> cartableItems,  List<CartableItemEntity> filteredCartableItems,  String cartableSearchText,  String subordinatedUserSearchText,  bool isChangeCartableUsersLoading,  bool isDelegateUsersLoading,  bool isCartableItemsLoading,  int pageSize,  bool? includeSnoozedMessages)?  $default,) {final _that = this;
 switch (_that) {
 case _CartableStateData() when $default != null:
-return $default(_that.activeCartableUser,_that.activeCartableUserRoleTitle,_that.subordinatedUsersRoot,_that.subordinatedUsersTree,_that.filteredSubordinatedUsersTree,_that.cartableItems,_that.filteredCartableItems,_that.cartableSearchText,_that.subordinatedUserSearchText,_that.isSubordinatedUsersLoading,_that.isCartableItemsLoading,_that.pageSize,_that.includeSnoozedMessages);case _:
+return $default(_that.activeCartableUser,_that.activeCartableUserRoleTitle,_that.subordinatedUsersRoot,_that.subordinatedUsersTree,_that.filteredSubordinatedUsersTree,_that.cartableItems,_that.filteredCartableItems,_that.cartableSearchText,_that.subordinatedUserSearchText,_that.isChangeCartableUsersLoading,_that.isDelegateUsersLoading,_that.isCartableItemsLoading,_that.pageSize,_that.includeSnoozedMessages);case _:
   return null;
 
 }
@@ -218,7 +219,7 @@ return $default(_that.activeCartableUser,_that.activeCartableUserRoleTitle,_that
 
 
 class _CartableStateData implements CartableStateData {
-  const _CartableStateData({this.activeCartableUser, this.activeCartableUserRoleTitle, this.subordinatedUsersRoot, final  List<SubordinatedUserEntity> subordinatedUsersTree = const [], final  List<SubordinatedUserEntity> filteredSubordinatedUsersTree = const [], final  List<CartableItemEntity> cartableItems = const [], final  List<CartableItemEntity> filteredCartableItems = const [], this.cartableSearchText = '', this.subordinatedUserSearchText = '', this.isSubordinatedUsersLoading = false, this.isCartableItemsLoading = false, this.pageSize = 100, this.includeSnoozedMessages}): _subordinatedUsersTree = subordinatedUsersTree,_filteredSubordinatedUsersTree = filteredSubordinatedUsersTree,_cartableItems = cartableItems,_filteredCartableItems = filteredCartableItems;
+  const _CartableStateData({this.activeCartableUser, this.activeCartableUserRoleTitle, this.subordinatedUsersRoot, final  List<SubordinatedUserEntity> subordinatedUsersTree = const [], final  List<SubordinatedUserEntity> filteredSubordinatedUsersTree = const [], final  List<CartableItemEntity> cartableItems = const [], final  List<CartableItemEntity> filteredCartableItems = const [], this.cartableSearchText = '', this.subordinatedUserSearchText = '', this.isChangeCartableUsersLoading = false, this.isDelegateUsersLoading = false, this.isCartableItemsLoading = false, this.pageSize = 100, this.includeSnoozedMessages}): _subordinatedUsersTree = subordinatedUsersTree,_filteredSubordinatedUsersTree = filteredSubordinatedUsersTree,_cartableItems = cartableItems,_filteredCartableItems = filteredCartableItems;
   
 
 @override final  SubordinatedUserEntity? activeCartableUser;
@@ -254,7 +255,8 @@ class _CartableStateData implements CartableStateData {
 
 @override@JsonKey() final  String cartableSearchText;
 @override@JsonKey() final  String subordinatedUserSearchText;
-@override@JsonKey() final  bool isSubordinatedUsersLoading;
+@override@JsonKey() final  bool isChangeCartableUsersLoading;
+@override@JsonKey() final  bool isDelegateUsersLoading;
 @override@JsonKey() final  bool isCartableItemsLoading;
 @override@JsonKey() final  int pageSize;
 @override final  bool? includeSnoozedMessages;
@@ -269,16 +271,16 @@ _$CartableStateDataCopyWith<_CartableStateData> get copyWith => __$CartableState
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CartableStateData&&(identical(other.activeCartableUser, activeCartableUser) || other.activeCartableUser == activeCartableUser)&&(identical(other.activeCartableUserRoleTitle, activeCartableUserRoleTitle) || other.activeCartableUserRoleTitle == activeCartableUserRoleTitle)&&(identical(other.subordinatedUsersRoot, subordinatedUsersRoot) || other.subordinatedUsersRoot == subordinatedUsersRoot)&&const DeepCollectionEquality().equals(other._subordinatedUsersTree, _subordinatedUsersTree)&&const DeepCollectionEquality().equals(other._filteredSubordinatedUsersTree, _filteredSubordinatedUsersTree)&&const DeepCollectionEquality().equals(other._cartableItems, _cartableItems)&&const DeepCollectionEquality().equals(other._filteredCartableItems, _filteredCartableItems)&&(identical(other.cartableSearchText, cartableSearchText) || other.cartableSearchText == cartableSearchText)&&(identical(other.subordinatedUserSearchText, subordinatedUserSearchText) || other.subordinatedUserSearchText == subordinatedUserSearchText)&&(identical(other.isSubordinatedUsersLoading, isSubordinatedUsersLoading) || other.isSubordinatedUsersLoading == isSubordinatedUsersLoading)&&(identical(other.isCartableItemsLoading, isCartableItemsLoading) || other.isCartableItemsLoading == isCartableItemsLoading)&&(identical(other.pageSize, pageSize) || other.pageSize == pageSize)&&(identical(other.includeSnoozedMessages, includeSnoozedMessages) || other.includeSnoozedMessages == includeSnoozedMessages));
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is _CartableStateData&&(identical(other.activeCartableUser, activeCartableUser) || other.activeCartableUser == activeCartableUser)&&(identical(other.activeCartableUserRoleTitle, activeCartableUserRoleTitle) || other.activeCartableUserRoleTitle == activeCartableUserRoleTitle)&&(identical(other.subordinatedUsersRoot, subordinatedUsersRoot) || other.subordinatedUsersRoot == subordinatedUsersRoot)&&const DeepCollectionEquality().equals(other._subordinatedUsersTree, _subordinatedUsersTree)&&const DeepCollectionEquality().equals(other._filteredSubordinatedUsersTree, _filteredSubordinatedUsersTree)&&const DeepCollectionEquality().equals(other._cartableItems, _cartableItems)&&const DeepCollectionEquality().equals(other._filteredCartableItems, _filteredCartableItems)&&(identical(other.cartableSearchText, cartableSearchText) || other.cartableSearchText == cartableSearchText)&&(identical(other.subordinatedUserSearchText, subordinatedUserSearchText) || other.subordinatedUserSearchText == subordinatedUserSearchText)&&(identical(other.isChangeCartableUsersLoading, isChangeCartableUsersLoading) || other.isChangeCartableUsersLoading == isChangeCartableUsersLoading)&&(identical(other.isDelegateUsersLoading, isDelegateUsersLoading) || other.isDelegateUsersLoading == isDelegateUsersLoading)&&(identical(other.isCartableItemsLoading, isCartableItemsLoading) || other.isCartableItemsLoading == isCartableItemsLoading)&&(identical(other.pageSize, pageSize) || other.pageSize == pageSize)&&(identical(other.includeSnoozedMessages, includeSnoozedMessages) || other.includeSnoozedMessages == includeSnoozedMessages));
 }
 
 
 @override
-int get hashCode => Object.hash(runtimeType,activeCartableUser,activeCartableUserRoleTitle,subordinatedUsersRoot,const DeepCollectionEquality().hash(_subordinatedUsersTree),const DeepCollectionEquality().hash(_filteredSubordinatedUsersTree),const DeepCollectionEquality().hash(_cartableItems),const DeepCollectionEquality().hash(_filteredCartableItems),cartableSearchText,subordinatedUserSearchText,isSubordinatedUsersLoading,isCartableItemsLoading,pageSize,includeSnoozedMessages);
+int get hashCode => Object.hash(runtimeType,activeCartableUser,activeCartableUserRoleTitle,subordinatedUsersRoot,const DeepCollectionEquality().hash(_subordinatedUsersTree),const DeepCollectionEquality().hash(_filteredSubordinatedUsersTree),const DeepCollectionEquality().hash(_cartableItems),const DeepCollectionEquality().hash(_filteredCartableItems),cartableSearchText,subordinatedUserSearchText,isChangeCartableUsersLoading,isDelegateUsersLoading,isCartableItemsLoading,pageSize,includeSnoozedMessages);
 
 @override
 String toString() {
-  return 'CartableStateData(activeCartableUser: $activeCartableUser, activeCartableUserRoleTitle: $activeCartableUserRoleTitle, subordinatedUsersRoot: $subordinatedUsersRoot, subordinatedUsersTree: $subordinatedUsersTree, filteredSubordinatedUsersTree: $filteredSubordinatedUsersTree, cartableItems: $cartableItems, filteredCartableItems: $filteredCartableItems, cartableSearchText: $cartableSearchText, subordinatedUserSearchText: $subordinatedUserSearchText, isSubordinatedUsersLoading: $isSubordinatedUsersLoading, isCartableItemsLoading: $isCartableItemsLoading, pageSize: $pageSize, includeSnoozedMessages: $includeSnoozedMessages)';
+  return 'CartableStateData(activeCartableUser: $activeCartableUser, activeCartableUserRoleTitle: $activeCartableUserRoleTitle, subordinatedUsersRoot: $subordinatedUsersRoot, subordinatedUsersTree: $subordinatedUsersTree, filteredSubordinatedUsersTree: $filteredSubordinatedUsersTree, cartableItems: $cartableItems, filteredCartableItems: $filteredCartableItems, cartableSearchText: $cartableSearchText, subordinatedUserSearchText: $subordinatedUserSearchText, isChangeCartableUsersLoading: $isChangeCartableUsersLoading, isDelegateUsersLoading: $isDelegateUsersLoading, isCartableItemsLoading: $isCartableItemsLoading, pageSize: $pageSize, includeSnoozedMessages: $includeSnoozedMessages)';
 }
 
 
@@ -289,7 +291,7 @@ abstract mixin class _$CartableStateDataCopyWith<$Res> implements $CartableState
   factory _$CartableStateDataCopyWith(_CartableStateData value, $Res Function(_CartableStateData) _then) = __$CartableStateDataCopyWithImpl;
 @override @useResult
 $Res call({
- SubordinatedUserEntity? activeCartableUser, String? activeCartableUserRoleTitle, SubordinatedUserEntity? subordinatedUsersRoot, List<SubordinatedUserEntity> subordinatedUsersTree, List<SubordinatedUserEntity> filteredSubordinatedUsersTree, List<CartableItemEntity> cartableItems, List<CartableItemEntity> filteredCartableItems, String cartableSearchText, String subordinatedUserSearchText, bool isSubordinatedUsersLoading, bool isCartableItemsLoading, int pageSize, bool? includeSnoozedMessages
+ SubordinatedUserEntity? activeCartableUser, String? activeCartableUserRoleTitle, SubordinatedUserEntity? subordinatedUsersRoot, List<SubordinatedUserEntity> subordinatedUsersTree, List<SubordinatedUserEntity> filteredSubordinatedUsersTree, List<CartableItemEntity> cartableItems, List<CartableItemEntity> filteredCartableItems, String cartableSearchText, String subordinatedUserSearchText, bool isChangeCartableUsersLoading, bool isDelegateUsersLoading, bool isCartableItemsLoading, int pageSize, bool? includeSnoozedMessages
 });
 
 
@@ -306,7 +308,7 @@ class __$CartableStateDataCopyWithImpl<$Res>
 
 /// Create a copy of CartableStateData
 /// with the given fields replaced by the non-null parameter values.
-@override @pragma('vm:prefer-inline') $Res call({Object? activeCartableUser = freezed,Object? activeCartableUserRoleTitle = freezed,Object? subordinatedUsersRoot = freezed,Object? subordinatedUsersTree = null,Object? filteredSubordinatedUsersTree = null,Object? cartableItems = null,Object? filteredCartableItems = null,Object? cartableSearchText = null,Object? subordinatedUserSearchText = null,Object? isSubordinatedUsersLoading = null,Object? isCartableItemsLoading = null,Object? pageSize = null,Object? includeSnoozedMessages = freezed,}) {
+@override @pragma('vm:prefer-inline') $Res call({Object? activeCartableUser = freezed,Object? activeCartableUserRoleTitle = freezed,Object? subordinatedUsersRoot = freezed,Object? subordinatedUsersTree = null,Object? filteredSubordinatedUsersTree = null,Object? cartableItems = null,Object? filteredCartableItems = null,Object? cartableSearchText = null,Object? subordinatedUserSearchText = null,Object? isChangeCartableUsersLoading = null,Object? isDelegateUsersLoading = null,Object? isCartableItemsLoading = null,Object? pageSize = null,Object? includeSnoozedMessages = freezed,}) {
   return _then(_CartableStateData(
 activeCartableUser: freezed == activeCartableUser ? _self.activeCartableUser : activeCartableUser // ignore: cast_nullable_to_non_nullable
 as SubordinatedUserEntity?,activeCartableUserRoleTitle: freezed == activeCartableUserRoleTitle ? _self.activeCartableUserRoleTitle : activeCartableUserRoleTitle // ignore: cast_nullable_to_non_nullable
@@ -317,7 +319,8 @@ as List<SubordinatedUserEntity>,cartableItems: null == cartableItems ? _self._ca
 as List<CartableItemEntity>,filteredCartableItems: null == filteredCartableItems ? _self._filteredCartableItems : filteredCartableItems // ignore: cast_nullable_to_non_nullable
 as List<CartableItemEntity>,cartableSearchText: null == cartableSearchText ? _self.cartableSearchText : cartableSearchText // ignore: cast_nullable_to_non_nullable
 as String,subordinatedUserSearchText: null == subordinatedUserSearchText ? _self.subordinatedUserSearchText : subordinatedUserSearchText // ignore: cast_nullable_to_non_nullable
-as String,isSubordinatedUsersLoading: null == isSubordinatedUsersLoading ? _self.isSubordinatedUsersLoading : isSubordinatedUsersLoading // ignore: cast_nullable_to_non_nullable
+as String,isChangeCartableUsersLoading: null == isChangeCartableUsersLoading ? _self.isChangeCartableUsersLoading : isChangeCartableUsersLoading // ignore: cast_nullable_to_non_nullable
+as bool,isDelegateUsersLoading: null == isDelegateUsersLoading ? _self.isDelegateUsersLoading : isDelegateUsersLoading // ignore: cast_nullable_to_non_nullable
 as bool,isCartableItemsLoading: null == isCartableItemsLoading ? _self.isCartableItemsLoading : isCartableItemsLoading // ignore: cast_nullable_to_non_nullable
 as bool,pageSize: null == pageSize ? _self.pageSize : pageSize // ignore: cast_nullable_to_non_nullable
 as int,includeSnoozedMessages: freezed == includeSnoozedMessages ? _self.includeSnoozedMessages : includeSnoozedMessages // ignore: cast_nullable_to_non_nullable

@@ -9,16 +9,24 @@ abstract class CartableStateData with _$CartableStateData {
 
     SubordinatedUserEntity? subordinatedUsersRoot,
 
-    @Default([]) List<SubordinatedUserEntity> subordinatedUsersTree,
-    @Default([]) List<SubordinatedUserEntity> filteredSubordinatedUsersTree,
+    @Default([])
+    List<SubordinatedUserEntity> subordinatedUsersTree,
 
-    @Default([]) List<CartableItemEntity> cartableItems,
-    @Default([]) List<CartableItemEntity> filteredCartableItems,
+    @Default([])
+    List<SubordinatedUserEntity> filteredSubordinatedUsersTree,
+
+    @Default([])
+    List<CartableItemEntity> cartableItems,
+
+    @Default([])
+    List<CartableItemEntity> filteredCartableItems,
 
     @Default('') String cartableSearchText,
     @Default('') String subordinatedUserSearchText,
 
-    @Default(false) bool isSubordinatedUsersLoading,
+    @Default(false) bool isChangeCartableUsersLoading,
+    @Default(false) bool isDelegateUsersLoading,
+
     @Default(false) bool isCartableItemsLoading,
 
     @Default(100) int pageSize,

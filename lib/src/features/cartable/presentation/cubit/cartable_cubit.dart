@@ -1,8 +1,11 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/Cartable_item_action_entity.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/cartable_item_entity.dart';
+import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/delegate_cartable_message_response_entity.dart';
+import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/param/delegate_cartable_message_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/param/get_subordinated_users_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/subordinated_user_entity.dart';
+import 'package:eks_sana_plus_org/src/features/cartable/domain/use_cases/delegate_cartable_message_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/use_cases/get_cartable_item_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/use_cases/get_subordinated_users_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
@@ -17,19 +20,25 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 part 'cartable_cubit.freezed.dart';
-
 part 'cartable_state.dart';
+
+enum SubordinatedUsersLoadingType {
+  changeCartable,
+  delegateMessage,
+}
 
 @injectable
 class CartableCubit extends Cubit<CartableState> {
   CartableCubit(
       this._getSubordinatedUsersUseCase,
       this._getCartableItemListUseCase,
+      this._delegateCartableMessageUseCase,
       this._setSelectedRequestItemUseCase,
       ) : super(const CartableState.idle());
 
   final GetSubordinatedUsersUseCase _getSubordinatedUsersUseCase;
   final GetCartableItemListUseCase _getCartableItemListUseCase;
+  final DelegateCartableMessageUseCase _delegateCartableMessageUseCase;
   final SetSelectedRequestItemUseCase _setSelectedRequestItemUseCase;
 
   final TextEditingController cartableSearchController =
@@ -39,6 +48,14 @@ class CartableCubit extends Cubit<CartableState> {
   TextEditingController();
 
   VoidCallback? _retryAction;
+  String? _delegatingMessageGuid;
+  bool _isDelegateSubmitting = false;
+
+  String? get delegatingMessageGuid => _delegatingMessageGuid;
+
+  bool get isDelegateSubmitting => _isDelegateSubmitting;
+
+  bool get hasRetryAction => _retryAction != null;
 
   void retryLastAction() => _retryAction?.call();
 
@@ -115,23 +132,37 @@ class CartableCubit extends Cubit<CartableState> {
     }
   }
 
-  Future<void> getSubordinatedUsers() async {
-    if (_data.isSubordinatedUsersLoading) {
-      return;
+  Future<bool> getSubordinatedUsers({
+    SubordinatedUsersLoadingType loadingType =
+        SubordinatedUsersLoadingType.changeCartable,
+  }) async {
+    final isAnyUsersLoading =
+        _data.isChangeCartableUsersLoading ||
+            _data.isDelegateUsersLoading;
+
+    if (isAnyUsersLoading) {
+      return false;
     }
 
-    _retryAction = getSubordinatedUsers;
+    _retryAction = () {
+      getSubordinatedUsers(
+        loadingType: loadingType,
+      );
+    };
 
     subordinatedUserSearchController.clear();
 
-
     emit(
       CartableState.loading(
-        data: _data.copyWith(
-          isSubordinatedUsersLoading: true,
+        data: _setSubordinatedUsersLoading(
+          data: _data,
+          loadingType: loadingType,
+          isLoading: true,
         ),
       ),
     );
+
+    var isSuccessful = false;
 
     try {
       final result = await _getSubordinatedUsersUseCase(
@@ -146,57 +177,99 @@ class CartableCubit extends Cubit<CartableState> {
 
       result.whenOrNull(
         success: (items, failures, resultCode) {
-          final tree = items;
+          isSuccessful = true;
 
+          final tree = items;
           final root = _findRootNode(tree);
+
+          final updatedData = _setSubordinatedUsersLoading(
+            data: _data.copyWith(
+              subordinatedUsersRoot: root,
+              subordinatedUsersTree: tree,
+              filteredSubordinatedUsersTree: tree,
+              subordinatedUserSearchText: '',
+            ),
+            loadingType: loadingType,
+            isLoading: false,
+          );
 
           emit(
             CartableState.loaded(
-              data: _data.copyWith(
-                subordinatedUsersRoot: root,
-                subordinatedUsersTree: tree,
-                filteredSubordinatedUsersTree: tree,
-                subordinatedUserSearchText: '',
-                isSubordinatedUsersLoading: false,
-              ),
+              data: updatedData,
             ),
           );
         },
         failure: (error, failures) {
+          final updatedData = _setSubordinatedUsersLoading(
+            data: _data,
+            loadingType: loadingType,
+            isLoading: false,
+          );
+
           emit(
             CartableState.error(
-              data: _data.copyWith(
-                isSubordinatedUsersLoading: false,
-              ),
+              data: updatedData,
               message: _buildErrorMessage(
                 title: 'خطا در دریافت کاربران',
-                message: failures ?? error?.toString() ??  'دریافت لیست کاربران با خطا مواجه شد.',
+                message:
+                failures ??
+                    error?.toString() ??
+                    'دریافت لیست کاربران با خطا مواجه شد.',
               ),
             ),
           );
         },
         connectionError: () {
+          final updatedData = _setSubordinatedUsersLoading(
+            data: _data,
+            loadingType: loadingType,
+            isLoading: false,
+          );
+
           emit(
             CartableState.connectionError(
-              data: _data.copyWith(
-                isSubordinatedUsersLoading: false,
-              ),
+              data: updatedData,
             ),
           );
         },
       );
     } catch (error) {
+      final updatedData = _setSubordinatedUsersLoading(
+        data: _data,
+        loadingType: loadingType,
+        isLoading: false,
+      );
+
       emit(
         CartableState.error(
-          data: _data.copyWith(
-            isSubordinatedUsersLoading: false,
-          ),
+          data: updatedData,
           message: _buildErrorMessage(
             title: 'خطا در دریافت کاربران',
-            message: 'دریافت لیست کاربران زیرمجموعه با خطا مواجه شد.',
+            message:
+            'دریافت لیست کاربران زیرمجموعه با خطا مواجه شد.',
           ),
         ),
       );
+    }
+
+    return isSuccessful;
+  }
+
+  CartableStateData _setSubordinatedUsersLoading({
+    required CartableStateData data,
+    required SubordinatedUsersLoadingType loadingType,
+    required bool isLoading,
+  }) {
+    switch (loadingType) {
+      case SubordinatedUsersLoadingType.changeCartable:
+        return data.copyWith(
+          isChangeCartableUsersLoading: isLoading,
+        );
+
+      case SubordinatedUsersLoadingType.delegateMessage:
+        return data.copyWith(
+          isDelegateUsersLoading: isLoading,
+        );
     }
   }
 /*
@@ -516,6 +589,106 @@ class CartableCubit extends Cubit<CartableState> {
     return null;
   }
 
+  Future<bool> prepareDelegateUsers(String messageGuid,) async {
+    final normalizedGuid = messageGuid.trim();
+
+    if (normalizedGuid.isEmpty ||
+        _delegatingMessageGuid != null) {
+      return false;
+    }
+
+    _delegatingMessageGuid = normalizedGuid;
+
+    emit(
+      CartableState.loading(
+        data: _data,
+      ),
+    );
+
+    final loaded = await getSubordinatedUsers(
+      loadingType:
+      SubordinatedUsersLoadingType.delegateMessage,
+    );
+
+    _delegatingMessageGuid = null;
+
+    emit(
+      CartableState.loaded(
+        data: _data,
+      ),
+    );
+
+    return loaded;
+  }
+
+  Future<DelegateCartableMessageResponseEntity?> delegateCartableMessage({
+    required String messageGuid,
+    required String targetUserGuid,
+  }) async {
+    if (_isDelegateSubmitting) {
+      return null;
+    }
+
+    _retryAction = null;
+    _isDelegateSubmitting = true;
+    emit(CartableState.loading(data: _data));
+
+    DelegateCartableMessageResponseEntity? response;
+
+    try {
+      final result = await _delegateCartableMessageUseCase(
+        DelegateCartableMessageParamEntity(
+          messageGuid: messageGuid,
+          targetUserGuid: targetUserGuid,
+        ),
+      );
+
+      result.whenOrNull(
+        success: (data, failures, resultCode) {
+          response = data;
+        },
+        failure: (error, failures) {
+          _isDelegateSubmitting = false;
+          emit(
+            CartableState.error(
+              data: _data,
+              message: _buildErrorMessage(
+                title: 'خطا در انتقال پیام',
+                message: failures ??
+                    error?.toString() ??
+                    'انتقال پیام به کارتابل کاربر انتخاب‌شده انجام نشد.',
+              ),
+            ),
+          );
+        },
+        connectionError: () {
+          _isDelegateSubmitting = false;
+          emit(CartableState.connectionError(data: _data));
+        },
+      );
+
+      if (response == null) {
+        return null;
+      }
+
+      _isDelegateSubmitting = false;
+      await getCartableItemsByActiveUser();
+      return response;
+    } catch (_) {
+      _isDelegateSubmitting = false;
+      emit(
+        CartableState.error(
+          data: _data,
+          message: _buildErrorMessage(
+            title: 'خطا در انتقال پیام',
+            message: 'انتقال پیام به کارتابل کاربر انتخاب‌شده انجام نشد.',
+          ),
+        ),
+      );
+      return null;
+    }
+  }
+
   BottomSheetMessageModel _buildErrorMessage({
     required String title,
     required String message,
@@ -534,9 +707,9 @@ class CartableCubit extends Cubit<CartableState> {
   }
 
   Future<void> getCartableItemsByActiveUser() async {
-    final activeUser = _data.activeCartableUser;
+    final userGuid = _data.activeCartableUser?.guid?.trim();
 
-    if (activeUser == null) {
+    if (userGuid == null || userGuid.isEmpty) {
       emit(
         CartableState.loaded(
           data: _data.copyWith(

@@ -1077,13 +1077,6 @@ _i174.GetIt $initGetIt(
       gh<_i369.SetSelectedRequestItemUseCase>(),
     ),
   );
-  gh.factory<_i330.CartableCubit>(
-    () => _i330.CartableCubit(
-      gh<_i45.GetSubordinatedUsersUseCase>(),
-      gh<_i862.GetCartableItemListUseCase>(),
-      gh<_i369.SetSelectedRequestItemUseCase>(),
-    ),
-  );
   gh.factory<_i1038.CompleteUrgentRequestCubit>(
     () => _i1038.CompleteUrgentRequestCubit(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
@@ -1108,6 +1101,14 @@ _i174.GetIt $initGetIt(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
       gh<_i672.GetReliefRequestByIdUseCase>(),
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+    ),
+  );
+  gh.factory<_i330.CartableCubit>(
+    () => _i330.CartableCubit(
+      gh<_i45.GetSubordinatedUsersUseCase>(),
+      gh<_i862.GetCartableItemListUseCase>(),
+      gh<_i301.DelegateCartableMessageUseCase>(),
+      gh<_i369.SetSelectedRequestItemUseCase>(),
     ),
   );
   gh.factory<_i709.OnlineMapCubit>(

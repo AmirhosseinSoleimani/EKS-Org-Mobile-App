@@ -10,6 +10,7 @@ class DirectActionButton extends StatelessWidget {
   final IconData? defaultIcon;
   final bool isFilled;
   final bool showIcon;
+  final bool isLoading;
   final VoidCallback? onPressed;
 
   const DirectActionButton({
@@ -20,6 +21,7 @@ class DirectActionButton extends StatelessWidget {
     required this.onPressed,
     this.defaultIcon,
     this.showIcon = true,
+    this.isLoading = false,
   });
 
   bool get isEnabled {
@@ -28,22 +30,29 @@ class DirectActionButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final colorScheme =
+        Theme.of(context).colorScheme;
 
     final actionAppearance = action == null
         ? null
         : CartableActionVisualResolver.resolve(
-            context: context,
-            action: action!,
-          );
+      context: context,
+      action: action!,
+    );
 
-    final actionColor = actionAppearance?.color ?? colorScheme.onSurfaceVariant;
+    final actionColor =
+        actionAppearance?.color ??
+            colorScheme.onSurfaceVariant;
 
-    final disabledColor = colorScheme.onSurface.withAlpha(65);
+    final disabledColor =
+    colorScheme.onSurface.withAlpha(65);
 
-    final buttonMainColor = isEnabled ? actionColor : disabledColor;
+    final buttonMainColor = isEnabled
+        ? actionColor
+        : disabledColor;
 
-    final buttonBackgroundColor = _getBackgroundColor(
+    final buttonBackgroundColor =
+    _getBackgroundColor(
       colorScheme: colorScheme,
       actionColor: actionColor,
     );
@@ -58,39 +67,85 @@ class DirectActionButton extends StatelessWidget {
       actionColor: actionColor,
     );
 
+    final effectiveOnTap = !isEnabled
+        ? null
+        : isLoading
+        ? () {}
+        : onPressed;
+
     return Material(
       color: buttonBackgroundColor,
-      borderRadius: BorderRadius.circular(AppSize.s8),
+      borderRadius:
+      BorderRadius.circular(AppSize.s8),
       child: InkWell(
-        onTap: isEnabled ? onPressed : null,
-        borderRadius: BorderRadius.circular(AppSize.s8),
-        splashColor: buttonMainColor.withAlpha(25),
+        onTap: effectiveOnTap,
+        borderRadius:
+        BorderRadius.circular(AppSize.s8),
+        splashColor:
+        buttonMainColor.withAlpha(25),
         child: Container(
           height: AppSize.s40,
-          padding: const EdgeInsets.symmetric(horizontal: AppPadding.p8),
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppPadding.p8,
+          ),
           decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(AppSize.s8),
+            borderRadius:
+            BorderRadius.circular(AppSize.s8),
             border: buttonBorder,
           ),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              if (showIcon) ...[
-                _buildIcon(appearance: actionAppearance, color: contentColor),
-                const SizedBox(width: AppSize.s6),
-              ],
-              Flexible(
-                child: Text(
-                  text,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: Theme.of(context).textTheme.labelMedium?.copyWith(
+          alignment: Alignment.center,
+          child: AnimatedSwitcher(
+            duration:
+            const Duration(milliseconds: 150),
+            child: isLoading
+                ? SizedBox(
+              key: const ValueKey(
+                'action-loading',
+              ),
+              width: AppSize.s18,
+              height: AppSize.s18,
+              child:
+              CircularProgressIndicator(
+                strokeWidth: 2,
+                color: actionColor,
+              ),
+            )
+                : Row(
+              key: const ValueKey(
+                'action-content',
+              ),
+              mainAxisAlignment:
+              MainAxisAlignment.center,
+              children: [
+                if (showIcon) ...[
+                  _buildIcon(
+                    appearance:
+                    actionAppearance,
                     color: contentColor,
-                    fontWeight: FontWeight.w600,
+                  ),
+                  const SizedBox(
+                    width: AppSize.s6,
+                  ),
+                ],
+                Flexible(
+                  child: Text(
+                    text,
+                    maxLines: 1,
+                    overflow:
+                    TextOverflow.ellipsis,
+                    style: Theme.of(context)
+                        .textTheme
+                        .labelMedium
+                        ?.copyWith(
+                      color:
+                      contentColor,
+                      fontWeight:
+                      FontWeight.w600,
+                    ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
         ),
       ),
@@ -135,30 +190,41 @@ class DirectActionButton extends StatelessWidget {
         ? actionColor
         : colorScheme.onSurface.withAlpha(35);
 
-    return Border.all(color: borderColor);
+    return Border.all(
+      color: borderColor,
+    );
   }
 
   Widget _buildIcon({
     required CartableActionVisual? appearance,
     required Color color,
   }) {
-    final svgAssetPath = appearance?.svgAssetPath;
+    final svgAssetPath =
+        appearance?.svgAssetPath;
 
     if (svgAssetPath != null) {
       return SvgPicture.asset(
         svgAssetPath,
         width: AppSize.s18,
         height: AppSize.s18,
-        colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
+        colorFilter: ColorFilter.mode(
+          color,
+          BlendMode.srcIn,
+        ),
       );
     }
 
-    final icon = appearance?.icon ?? defaultIcon;
+    final icon =
+        appearance?.icon ?? defaultIcon;
 
     if (icon == null) {
       return const SizedBox.shrink();
     }
 
-    return Icon(icon, size: AppSize.s18, color: color);
+    return Icon(
+      icon,
+      size: AppSize.s18,
+      color: color,
+    );
   }
 }

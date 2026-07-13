@@ -9,6 +9,7 @@ class CartableItemsSection extends StatelessWidget {
   final bool isLoading;
   final List<CartableItemEntity> items;
   final CartableItemActionTap onActionTap;
+  final String? delegatingMessageGuid;
 
   const CartableItemsSection({
     super.key,
@@ -16,6 +17,7 @@ class CartableItemsSection extends StatelessWidget {
     required this.isLoading,
     required this.items,
     required this.onActionTap,
+    this.delegatingMessageGuid,
   });
 
   @override
@@ -48,6 +50,8 @@ class CartableItemsSection extends StatelessWidget {
         return CartableItemCard(
           item: items[index],
           onActionTap: onActionTap,
+          isDelegateLoading:
+              items[index].guid == delegatingMessageGuid,
         );
       },
     );

@@ -14,11 +14,13 @@ typedef CartableItemActionTap =
 class CartableItemCard extends StatelessWidget {
   final CartableItemEntity item;
   final CartableItemActionTap onActionTap;
+  final bool isDelegateLoading;
 
   const CartableItemCard({
     super.key,
     required this.item,
     required this.onActionTap,
+    this.isDelegateLoading = false,
   });
 
   @override
@@ -80,7 +82,11 @@ class CartableItemCard extends StatelessWidget {
               AppPadding.p16,
               AppPadding.p16,
             ),
-            child: _ActionSection(item: item, onActionTap: onActionTap),
+            child: _ActionSection(
+              item: item,
+              onActionTap: onActionTap,
+              isDelegateLoading: isDelegateLoading,
+            ),
           ),
         ],
       ),
@@ -335,8 +341,13 @@ class _InformationRow extends StatelessWidget {
 class _ActionSection extends StatelessWidget {
   final CartableItemEntity item;
   final CartableItemActionTap onActionTap;
+  final bool isDelegateLoading;
 
-  const _ActionSection({required this.item, required this.onActionTap});
+  const _ActionSection({
+    required this.item,
+    required this.onActionTap,
+    required this.isDelegateLoading,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -379,6 +390,7 @@ class _ActionSection extends StatelessWidget {
             defaultIcon: null,
             isFilled: false,
             showIcon: true,
+            isLoading: isDelegateLoading,
             onPressed: transferAction == null
                 ? null
                 : () {
