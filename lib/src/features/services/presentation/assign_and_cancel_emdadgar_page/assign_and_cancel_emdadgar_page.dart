@@ -17,7 +17,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/service_assignment_map_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/expandable_section.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/request_detail_section.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/form_section_container.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/form_section_container.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/request_status_section.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';

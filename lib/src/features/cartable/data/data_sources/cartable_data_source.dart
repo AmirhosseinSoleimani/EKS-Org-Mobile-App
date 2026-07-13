@@ -1,9 +1,24 @@
-import 'package:eks_sana_plus_org/src/features/dashboard/data/models/dashboard_model.dart';
-import 'package:eks_sana_plus_org/src/features/dashboard/data/models/dashboard_param_model.dart';
-import 'package:eks_sana_plus_org/src/shared/features/server_date_time/data/models/date_time_model.dart';
+import 'package:eks_sana_plus_org/src/features/cartable/data/models/archive_cartable_message_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/cartable/data/models/cartable_item_model.dart';
+import 'package:eks_sana_plus_org/src/features/cartable/data/models/delegate_cartable_message_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/cartable/data/models/params/archive_cartable_message_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/cartable/data/models/params/delegate_cartable_message_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/cartable/data/models/params/get_cartable_items_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/cartable/data/models/params/get_subordinated_users_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/cartable/data/models/subordinated_user_model.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 
 abstract class CartableDataSource {
+  Future<BaseListResponse<SubordinatedUserModel>> getSubordinatedUsers(GetSubordinatedUsersParamModel param);
 
+  Future<BaseListResponse<CartableItemModel>> getCartableItemList(
+      GetCartableItemParamModel param);
 
+  Future<BaseSingleResponse<DelegateCartableMessageResponseModel>>
+      delegateCartableMessage(DelegateCartableMessageParamModel param);
+
+  Future<BaseSingleResponse<ArchiveCartableMessageResponseModel>>
+  archiveCartableMessage(
+      ArchiveCartableMessageParamModel param,
+      );
 }

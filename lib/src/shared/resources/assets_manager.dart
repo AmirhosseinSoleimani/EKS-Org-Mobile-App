@@ -11,8 +11,6 @@ class ImageManager {
   static const String availableEmpty = '${_basePath}available_empty.png';
   static const String primaryService = '${_basePath}firs_service.png';
   static const String activeIcon = '${_basePath}active_icon.png';
-
-  //not used yet
   static const String error = '${_basePath}error_process.png';
 }
 
@@ -41,7 +39,10 @@ class SvgManager {
   static const String buildIcon = '${_basePath}build_icon.svg';
   static const String assignmentIcon = '${_basePath}assignment_icon.svg';
   static const String listAltIcon = '${_basePath}list_alt_icon.svg';
+  static const String searchIcon = '${_basePath}search_icon.svg';
   static const String emptyMarker = '${_basePath}empty_marker.svg';
+  static const String forwardIcon = '${_basePath}forward_icon.svg';
+  static const String arrowLeftAlt = '${_basePath}arrow_left_alt.svg';
 }
 
 

@@ -1,4 +1,7 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
+import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/pages/emdad_unit_list_page.dart';
+import 'package:eks_sana_plus_org/src/features/leave/presentation/pages/leave_page.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/presentation/plan_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/home_service_request_list_page/home_service_request_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/relief_request_list_page/relief_request_list_page.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/presentation/widgets/current_session_access_builder.dart';
@@ -33,7 +36,6 @@ class ServicesPage extends StatelessWidget {
         },
         builder: (context, access) {
           final colorScheme = Theme.of(context).colorScheme;
-
           final serviceItems = <Widget>[
             if (access.canShowServiceRequestSearchMenu())
               _ServicePageItem(
@@ -53,7 +55,32 @@ class ServicesPage extends StatelessWidget {
                 onTap: () => context.pushNamed(HomeServiceRequestListPage.name),
               ),
           ];
-
+          final sunItems = <Widget>[
+            if (access.canShowHomeServiceRequestsMenu())
+              _SanItemWidget(
+                title: 'برنامه‌ریزی',
+                icon: Icons.calendar_month,
+                onTap: () => context.pushNamed(PlanInfoPage.name),
+              ),
+            if (access.canShowHomeServiceRequestsMenu())
+              _SanItemWidget(
+                title: 'خودروی امدادی',
+                icon: Icons.local_shipping_outlined,
+                onTap: () => context.pushNamed(EmdadUnitListPage.name),
+              ),
+            if (access.canShowHomeServiceRequestsMenu())
+              _SanItemWidget(
+                title: 'واحد امدادی',
+                icon: Icons.groups,
+                onTap: () => context.pushNamed(EmdadUnitListPage.name),
+              ),
+            if (access.canShowHomeServiceRequestsMenu())
+              _SanItemWidget(
+                title: 'مرخصی‌ها',
+                icon: Icons.event_busy,
+                onTap: () => context.pushNamed(LeavePage.name),
+              ),
+          ];
           if (serviceItems.isEmpty) {
             return const Center(
               child: BodyMediumText(
@@ -64,16 +91,38 @@ class ServicesPage extends StatelessWidget {
           }
 
           return Padding(
-            padding: const EdgeInsets.symmetric(
-              vertical: 16.0,
-              horizontal: 8,
-            ),
-            child: GridView.count(
-              crossAxisCount: 2,
-              crossAxisSpacing: AppSize.s18,
-              mainAxisSpacing: AppSize.s18,
-              padding: const EdgeInsets.all(AppPadding.p16),
-              children: serviceItems,
+            padding: const EdgeInsets.all(AppPadding.p16),
+            child: Column(
+              children: [
+                GridView.count(
+                  shrinkWrap: true,
+                  crossAxisCount: 2,
+                  crossAxisSpacing: AppSize.s18,
+                  mainAxisSpacing: AppSize.s18,
+                  padding: const EdgeInsets.all(AppPadding.p16),
+                  children: serviceItems,
+                ),
+                Space.h8,
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    'امور نمایندگی',
+                    textAlign: TextAlign.start,
+                    style: Theme.of(context).textTheme.headlineLarge?.copyWith(
+                      color: Theme.of(context).colorScheme.outline
+                    ),
+                  ),
+                ),
+                Space.h16,
+                GridView.count(
+                  shrinkWrap: true,
+                  crossAxisCount: 3,
+                  crossAxisSpacing: AppSize.s12,
+                  mainAxisSpacing: AppSize.s10,
+                  childAspectRatio: 1.1,
+                  children: sunItems,
+                ),
+              ],
             ),
           );
         },
@@ -119,66 +168,50 @@ class _ServicePageItem extends StatelessWidget {
     );
   }
 }
-/*class ServicesPage extends StatelessWidget {
-  static const path = "/services";
-  static const name = "services";
 
-  const ServicesPage({super.key});
+
+class _SanItemWidget extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final VoidCallback onTap;
+
+  const _SanItemWidget({
+    required this.title,
+    required this.icon,
+    required this.onTap,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Scaffold(
-      appBar: const MainAppBar(title: 'خدمات'),
-      body: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 8),
-        child: GridView.count(
-          crossAxisCount: 2,
-          crossAxisSpacing: AppSize.s18,
-          mainAxisSpacing: AppSize.s18,
-          padding: const EdgeInsets.all(AppPadding.p16),
-          children: [
-            GestureDetector(
-              onTap: () => context.pushNamed(ReliefRequestListPage.name),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  ServiceIconWidget(
-                    backgroundColor: ServiceType.reliefService.serviceColor,
-                    iconColor: colorScheme.onPrimary,
-                    imagePath: ImageManager.emdadServece,
-                  ),
-                  Space.h16,
-                  const BodyMediumText(
-                    text: "درخواست های امدادی",
-                    textAlign: TextAlign.center,
-                  ),
-                ],
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.all(Radius.circular(AppSize.s12)),
+          color: Theme.of(context).colorScheme.onInverseSurface
+        ),
+        child: Padding(
+          padding: const EdgeInsets.symmetric(vertical: AppPadding.p4, horizontal: AppPadding.p8),
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Icon(
+                icon,
+                size: AppSize.s28,
+                color: Theme.of(context).colorScheme.outline,
               ),
-            ),
-
-            GestureDetector(
-              onTap: () => context.pushNamed(HomeServiceRequestListPage.name),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.start,
-                children: [
-                  ServiceIconWidget(
-                    backgroundColor: ServiceType.homeService.serviceColor,
-                    iconColor: colorScheme.onPrimary,
-                    imagePath: ImageManager.locationService,
+              Space.h8,
+              Text(
+                title,
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                      color: Theme.of(context).colorScheme.outline,
+                    fontSize: AppSize.s14
                   ),
-                  Space.h16,
-                  const BodyMediumText(
-                    text: "درخواست های خدمت در محل",
-                    textAlign: TextAlign.center,
-                  ),
-                ],
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
-}*/
+}
