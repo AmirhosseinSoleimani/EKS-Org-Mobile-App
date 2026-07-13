@@ -8,6 +8,7 @@ class FilterButton extends StatefulWidget {
   final bool hasFloatingLabel;
   final TextStyle? labelStyle;
   final bool enabled;
+  final VoidCallback? onTap;
 
   final Widget Function(
       BuildContext context,
@@ -26,6 +27,7 @@ class FilterButton extends StatefulWidget {
     this.overlayBuilder,
     this.labelStyle,
     this.enabled = true,
+    this.onTap,
   });
 
   @override
@@ -79,7 +81,9 @@ class _FilterButtonState extends State<FilterButton> {
 
       return InkWell(
         key: _key,
-        onTap: widget.enabled ? _toggleOverlay: null,
+        onTap: widget.enabled
+            ? (widget.onTap ?? _toggleOverlay)
+            : null,
         borderRadius: BorderRadius.circular(8),
         child: Container(
           padding: const EdgeInsets.all(12),
