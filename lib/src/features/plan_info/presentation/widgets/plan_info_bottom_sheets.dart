@@ -118,14 +118,14 @@ class _PlanFilterSheet extends StatefulWidget {
 }
 
 class _PlanFilterSheetState extends State<_PlanFilterSheet> {
-  bool? isActive;
+
   int? seatType;
 
   @override
   void initState() {
     super.initState();
     final cubit = context.read<PlanInfoCubit>();
-    isActive = cubit.activeFilter;
+
     seatType = cubit.seatTypeFilter;
   }
 
@@ -151,11 +151,6 @@ class _PlanFilterSheetState extends State<_PlanFilterSheet> {
                   Text('جستجو و فیلتر', style: Theme.of(context).textTheme.titleMedium),
                   Space.h16,
                   _TextField(controller: cubit.titleController, label: 'عنوان', maxLength: 20),
-                  _NullableBoolField(
-                    value: isActive,
-                    label: 'وضعیت',
-                    onChanged: (value) => setState(() => isActive = value),
-                  ),
                   _TextField(controller: cubit.emdadUnitController, label: 'واحد امدادی'),
                   _TextField(controller: cubit.shiftController, label: 'شیفت'),
                   _TextField(controller: cubit.specialPlanController, label: 'طرح'),
@@ -186,7 +181,6 @@ class _PlanFilterSheetState extends State<_PlanFilterSheet> {
                         child: FilledButton(
                           onPressed: () {
                             cubit
-                              ..setActiveFilter(isActive)
                               ..setSeatTypeFilter(seatType)
                               ..fetchPlans();
                             Navigator.of(context).pop();
@@ -387,15 +381,15 @@ class _PlanStatusSheet extends StatefulWidget {
 }
 
 class _PlanStatusSheetState extends State<_PlanStatusSheet> {
-  late bool isActive;
   int? reasonId;
+  late bool isActive;
   final descriptionController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    isActive = widget.plan.isActive;
     reasonId = widget.plan.reasonId;
+    isActive = widget.plan.isActive;
     descriptionController.text = widget.plan.description ?? '';
   }
 
@@ -421,16 +415,6 @@ class _PlanStatusSheetState extends State<_PlanStatusSheet> {
                   'تغییر وضعیت ${widget.plan.title ?? ''}',
                   style: Theme.of(context).textTheme.titleMedium,
                   textAlign: TextAlign.center,
-                ),
-                Space.h16,
-                DropdownButtonFormField<bool>(
-                  value: isActive,
-                  decoration: const InputDecoration(labelText: 'وضعیت'),
-                  items: const [
-                    DropdownMenuItem(value: true, child: Text('فعال')),
-                    DropdownMenuItem(value: false, child: Text('غیرفعال')),
-                  ],
-                  onChanged: (value) => setState(() => isActive = value ?? true),
                 ),
                 Space.h12,
                 _LookupField(
@@ -654,38 +638,6 @@ class _LookupField extends StatelessWidget {
                   child: Text(item.displayTitle, overflow: TextOverflow.ellipsis),
                 ),
               ),
-        ],
-        onChanged: onChanged,
-      ),
-    );
-  }
-}
-
-class _NullableBoolField extends StatelessWidget {
-  final bool? value;
-  final String label;
-  final ValueChanged<bool?> onChanged;
-
-  const _NullableBoolField({
-    required this.value,
-    required this.label,
-    required this.onChanged,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppPadding.p12),
-      child: DropdownButtonFormField<bool?>(
-        value: value,
-        decoration: InputDecoration(
-          labelText: label,
-          border: const OutlineInputBorder(),
-        ),
-        items: const [
-          DropdownMenuItem<bool?>(value: null, child: Text('همه')),
-          DropdownMenuItem<bool?>(value: true, child: Text('فعال')),
-          DropdownMenuItem<bool?>(value: false, child: Text('غیرفعال')),
         ],
         onChanged: onChanged,
       ),

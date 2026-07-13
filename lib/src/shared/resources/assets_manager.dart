@@ -43,6 +43,7 @@ class SvgManager {
   static const String emptyMarker = '${_basePath}empty_marker.svg';
   static const String forwardIcon = '${_basePath}forward_icon.svg';
   static const String arrowLeftAlt = '${_basePath}arrow_left_alt.svg';
+  static const String exportNotes = '${_basePath}export_notes.svg';
 }
 
 

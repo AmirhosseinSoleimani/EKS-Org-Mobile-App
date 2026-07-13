@@ -3,12 +3,17 @@ import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_in
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_state.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/widgets/plan_info_bottom_sheets.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_src.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -58,9 +63,19 @@ class _PlanInfoView extends StatelessWidget {
           ),
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(AppPadding.p16),
-                child: _PlanToolbar(cubit: cubit),
+              BlocBuilder<PlanInfoCubit, PlanInfoState>(
+                buildWhen: (previous, current) {
+                  return previous.activeFilter != current.activeFilter;
+                },
+                builder: (context, state) {
+                  return Padding(
+                    padding: const EdgeInsets.all(AppPadding.p16),
+                    child: _PlanToolbar(
+                      cubit: cubit,
+                      activeFilter: state.activeFilter,
+                    ),
+                  );
+                },
               ),
               Expanded(
                 child: BlocBuilder<PlanInfoCubit, PlanInfoState>(
@@ -197,8 +212,108 @@ class _PlanInfoView extends StatelessWidget {
     );
   }
 }
-
 class _PlanToolbar extends StatelessWidget {
+  const _PlanToolbar({
+    required this.cubit,
+    required this.activeFilter,
+  });
+
+  final PlanInfoCubit cubit;
+  final bool? activeFilter;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Column(
+      children: [
+        FiltersRow(
+          filters: [
+            FilterButton(
+              title: 'جستجو و فیلتر',
+              onTap: () => PlanInfoBottomSheets.showFilterSheet(
+                context: context,
+                cubit: cubit,
+              ),
+            ),
+            FilterButton(
+              title: _getStatusTitle(activeFilter),
+              overlayBuilder: (
+                  overlayContext,
+                  position,
+                  width,
+                  dismiss,
+                  ) {
+                return Positioned(
+                  top: position.dy + 52,
+                  left: position.dx,
+                  width: width,
+                  child: Material(
+                    color: Colors.white,
+                    elevation: 6,
+                    borderRadius: BorderRadius.circular(8),
+                    clipBehavior: Clip.antiAlias,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _StatusFilterItem(
+                          title: 'همه',
+                          isSelected: activeFilter == null,
+                          onTap: () {
+                            dismiss();
+                            cubit.changeActiveFilter(null);
+                          },
+                        ),
+                        _StatusFilterItem(
+                          title: 'فعال',
+                          isSelected: activeFilter == true,
+                          onTap: () {
+                            dismiss();
+                            cubit.changeActiveFilter(true);
+                          },
+                        ),
+                        _StatusFilterItem(
+                          title: 'غیرفعال',
+                          isSelected: activeFilter == false,
+                          onTap: () {
+                            dismiss();
+                            cubit.changeActiveFilter(false);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            ),
+          ],
+        ),
+        Space.h16,
+        InkwellButtonWidget(
+          title: 'گزارش گیری',
+          titleColor: colorScheme.onPrimaryFixed,
+          prefixIcon: SvgWidget(
+            src: SvgAsset(SvgManager.exportNotes),
+          ),
+          backgroundColor: colorScheme.secondaryContainer,
+          borderColor: colorScheme.onPrimaryFixed,
+          borderWidth: 2,
+          onTap: cubit.loadPlanReport,
+        ),
+      ],
+    );
+  }
+
+  String _getStatusTitle(bool? status) {
+    return switch (status) {
+      true => 'فعال',
+      false => 'غیرفعال',
+      null => 'همه وضعیت‌ها',
+    };
+  }
+}
+
+/*class _PlanToolbar extends StatelessWidget {
   final PlanInfoCubit cubit;
 
   const _PlanToolbar({required this.cubit});
@@ -209,7 +324,7 @@ class _PlanToolbar extends StatelessWidget {
 
     return Column(
       children: [
-        Row(
+     *//*   Row(
           children: [
             Expanded(
               child: InkwellButtonWidget(
@@ -223,31 +338,139 @@ class _PlanToolbar extends StatelessWidget {
               ),
             ),
           ],
-        ),
+        ),*//*
         Space.h8,
-        Row(
-          children: [
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: () => PlanInfoBottomSheets.showFilterSheet(
-                  context: context,
-                  cubit: cubit,
-                ),
-                icon: const Icon(Icons.filter_alt_outlined),
-                label: const Text('جستجو و فیلتر'),
+        FiltersRow(
+          filters: [
+            FilterButton(
+              title: 'جستجو و فیلتر',
+              onTap: () => PlanInfoBottomSheets.showFilterSheet(
+                context: context,
+                cubit: cubit,
               ),
             ),
-            Space.w8,
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: cubit.loadPlanReport,
-                icon: const Icon(Icons.file_download_outlined),
-                label: const Text('گزارش‌گیری'),
-              ),
+            FilterButton(
+              title: _getStatusTitle(cubit.activeFilter),
+              overlayBuilder: (
+                  overlayContext,
+                  position,
+                  width,
+                  dismiss,
+                  ) {
+                return Positioned(
+                  top: position.dy + 52,
+                  left: position.dx,
+                  width: width,
+                  child: Material(
+                    color: Colors.white,
+                    elevation: 6,
+                    borderRadius: BorderRadius.circular(8),
+                    clipBehavior: Clip.antiAlias,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _StatusFilterItem(
+                          title: 'همه',
+                          isSelected: cubit.activeFilter == null,
+                          onTap: () {
+                            dismiss();
+                            cubit
+                              ..setActiveFilter(null)
+                              ..fetchPlans();
+                          },
+                        ),
+                        _StatusFilterItem(
+                          title: 'فعال',
+                          isSelected: cubit.activeFilter == true,
+                          onTap: () {
+                            dismiss();
+                            cubit
+                              ..setActiveFilter(true)
+                              ..fetchPlans();
+                          },
+                        ),
+                        _StatusFilterItem(
+                          title: 'غیرفعال',
+                          isSelected: cubit.activeFilter == false,
+                          onTap: () {
+                            dismiss();
+                            cubit
+                              ..setActiveFilter(false)
+                              ..fetchPlans();
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
           ],
         ),
+        Space.h16,
+        InkwellButtonWidget(
+          title: 'گزارش گیری',
+          titleColor: colorScheme.onPrimaryFixed,
+          prefixIcon: SvgWidget(src: SvgAsset(SvgManager.exportNotes)),
+          backgroundColor: colorScheme.secondaryContainer,
+          borderColor: colorScheme.onPrimaryFixed,
+          onTap: cubit.loadPlanReport,
+        )
       ],
+    );
+  }
+
+  String _getStatusTitle(bool? status) {
+    return switch (status) {
+      true => 'فعال',
+      false => 'غیرفعال',
+      null => 'وضعیت',
+    };
+  }
+}*/
+
+
+class _StatusFilterItem extends StatelessWidget {
+  const _StatusFilterItem({
+    required this.title,
+    required this.isSelected,
+    required this.onTap,
+  });
+
+  final String title;
+  final bool isSelected;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return InkWell(
+      onTap: onTap,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 14,
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+            if (isSelected)
+              Icon(
+                Icons.check,
+                size: 18,
+                color: colorScheme.primary,
+              ),
+          ],
+        ),
+      ),
     );
   }
 }

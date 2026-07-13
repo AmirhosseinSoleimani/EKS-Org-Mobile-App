@@ -51,7 +51,6 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
   final fromDateController = TextEditingController();
   final toDateController = TextEditingController();
 
-  bool? activeFilter;
   int? seatTypeFilter;
   int _skip = 0;
   final int _pageSize = 3;
@@ -317,9 +316,9 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
 
   Future<bool> changeStatus({
     required int planId,
-    required bool isActive,
     required int? reasonId,
     required String description,
+    required bool isActive,
   }) async {
     if (reasonId == null) {
       emit(state.copyWith(message: 'دلیل تغییر وضعیت اجباری می باشد'));
@@ -510,13 +509,21 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
     locationController.clear();
     fromDateController.clear();
     toDateController.clear();
-    activeFilter = null;
     seatTypeFilter = null;
+
     fetchPlans();
   }
 
-  void setActiveFilter(bool? value) {
-    activeFilter = value;
+  Future<void> changeActiveFilter(bool? value) async {
+    emit(
+      state.copyWith(
+        activeFilter: value,
+        clearActiveFilter: value == null,
+        clearMessage: true,
+      ),
+    );
+
+    await fetchPlans();
   }
 
   void setSeatTypeFilter(int? value) {
@@ -568,7 +575,7 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
       skip: _skip,
       pageSize: pageSize ?? _pageSize,
       title: titleController.text,
-      isActive: activeFilter,
+      isActive: state.activeFilter,
       emdadUnitName: emdadUnitController.text,
       shiftTitle: shiftController.text,
       specialPlanTitle: specialPlanController.text,
