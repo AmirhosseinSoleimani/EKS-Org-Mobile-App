@@ -1,0 +1,728 @@
+import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_info_entity.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_lookup_entity.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_state.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+class PlanInfoBottomSheets {
+  static void showFilterSheet({
+    required BuildContext context,
+    required PlanInfoCubit cubit,
+  }) {
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => BlocProvider.value(
+        value: cubit,
+        child: const _PlanFilterSheet(),
+      ),
+    );
+  }
+
+  static Future<void> showPlanForm({
+    required BuildContext context,
+    required PlanInfoCubit cubit,
+    PlanInfoEntity? plan,
+    bool isCopy = false,
+  }) async {
+    final initialPlan = plan?.resolvedId == null ? plan : await cubit.getPlanById(plan!.resolvedId!);
+    if (plan != null && initialPlan == null) return;
+
+    if (!context.mounted) return;
+
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => BlocProvider.value(
+        value: cubit,
+        child: _PlanFormSheet(plan: initialPlan, isCopy: isCopy),
+      ),
+    );
+  }
+
+  static Future<void> showStatusSheet({
+    required BuildContext context,
+    required PlanInfoCubit cubit,
+    required PlanInfoEntity plan,
+  }) async {
+    await cubit.loadStatusReasons();
+    if (!context.mounted) return;
+
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => BlocProvider.value(
+        value: cubit,
+        child: _PlanStatusSheet(plan: plan),
+      ),
+    );
+  }
+
+  static Future<void> showCancelationSheet({
+    required BuildContext context,
+    required PlanInfoCubit cubit,
+    required PlanInfoEntity plan,
+  }) async {
+    final id = plan.resolvedId;
+    if (id == null) return;
+
+    await cubit.previewCancelation(id);
+    if (!context.mounted) return;
+
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      builder: (_) => BlocProvider.value(
+        value: cubit,
+        child: _PlanCancelationSheet(plan: plan),
+      ),
+    );
+  }
+
+  static void showLocationInfo({
+    required BuildContext context,
+    required PlanInfoEntity plan,
+  }) {
+    showModalBottomSheet<void>(
+      context: context,
+      builder: (context) {
+        return SafeArea(
+          child: Padding(
+            padding: const EdgeInsets.all(AppPadding.p16),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('محل استقرار', style: Theme.of(context).textTheme.titleMedium),
+                Space.h16,
+                _ReadOnlyRow(label: 'عنوان', value: plan.locationTitle),
+                _ReadOnlyRow(label: 'آدرس', value: plan.address),
+                _ReadOnlyRow(label: 'عرض جغرافیایی', value: plan.latitude?.toString()),
+                _ReadOnlyRow(label: 'طول جغرافیایی', value: plan.longitude?.toString()),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+}
+
+class _PlanFilterSheet extends StatefulWidget {
+  const _PlanFilterSheet();
+
+  @override
+  State<_PlanFilterSheet> createState() => _PlanFilterSheetState();
+}
+
+class _PlanFilterSheetState extends State<_PlanFilterSheet> {
+  bool? isActive;
+  int? seatType;
+
+  @override
+  void initState() {
+    super.initState();
+    final cubit = context.read<PlanInfoCubit>();
+    isActive = cubit.activeFilter;
+    seatType = cubit.seatTypeFilter;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.read<PlanInfoCubit>();
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          AppPadding.p16,
+          AppPadding.p16,
+          AppPadding.p16,
+          bottomInset + AppPadding.p16,
+        ),
+        child: SingleChildScrollView(
+          child: BlocBuilder<PlanInfoCubit, PlanInfoState>(
+            builder: (context, state) {
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  Text('جستجو و فیلتر', style: Theme.of(context).textTheme.titleMedium),
+                  Space.h16,
+                  _TextField(controller: cubit.titleController, label: 'عنوان', maxLength: 20),
+                  _NullableBoolField(
+                    value: isActive,
+                    label: 'وضعیت',
+                    onChanged: (value) => setState(() => isActive = value),
+                  ),
+                  _TextField(controller: cubit.emdadUnitController, label: 'واحد امدادی'),
+                  _TextField(controller: cubit.shiftController, label: 'شیفت'),
+                  _TextField(controller: cubit.specialPlanController, label: 'طرح'),
+                  _LookupField(
+                    label: 'نوع مقر',
+                    value: seatType,
+                    items: state.seatTypes,
+                    includeEmpty: true,
+                    onChanged: (value) => setState(() => seatType = value),
+                  ),
+                  _TextField(controller: cubit.locationController, label: 'محل استقرار'),
+                  _TextField(controller: cubit.fromDateController, label: 'تاریخ شروع'),
+                  _TextField(controller: cubit.toDateController, label: 'تاریخ پایان'),
+                  Space.h16,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () {
+                            cubit.clearFilters();
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('پاک کردن فیلتر'),
+                        ),
+                      ),
+                      Space.w12,
+                      Expanded(
+                        child: FilledButton(
+                          onPressed: () {
+                            cubit
+                              ..setActiveFilter(isActive)
+                              ..setSeatTypeFilter(seatType)
+                              ..fetchPlans();
+                            Navigator.of(context).pop();
+                          },
+                          child: const Text('اعمال فیلتر'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _PlanFormSheet extends StatefulWidget {
+  final PlanInfoEntity? plan;
+  final bool isCopy;
+
+  const _PlanFormSheet({
+    this.plan,
+    required this.isCopy,
+  });
+
+  @override
+  State<_PlanFormSheet> createState() => _PlanFormSheetState();
+}
+
+class _PlanFormSheetState extends State<_PlanFormSheet> {
+  int? emdadUnitId;
+  int? shiftId;
+  int? specialPlanId;
+  int? seatType;
+  int? locationId;
+  bool hasSpecialPlan = false;
+  late final TextEditingController fromDateController;
+  late final TextEditingController toDateController;
+
+  @override
+  void initState() {
+    super.initState();
+    final plan = widget.plan;
+    emdadUnitId = plan?.emdadUnitId;
+    shiftId = plan?.shiftId;
+    specialPlanId = plan?.specialPlanId;
+    seatType = plan?.seatType;
+    locationId = plan?.locationId;
+    hasSpecialPlan = plan?.specialPlanId != null;
+    fromDateController = TextEditingController(
+      text: plan?.fromDateJalali ?? plan?.fromDate ?? '',
+    );
+    toDateController = TextEditingController(
+      text: plan?.toDateJalali ?? plan?.toDate ?? '',
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.read<PlanInfoCubit>();
+    final plan = widget.plan;
+    final isEdit = plan != null && !widget.isCopy;
+    final title = widget.isCopy
+        ? 'کپی از برنامه‌ریزی ${plan?.title ?? ''}'
+        : isEdit
+            ? 'ویرایش برنامه‌ریزی'
+            : 'ثبت برنامه‌ریزی جدید';
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          AppPadding.p16,
+          AppPadding.p16,
+          AppPadding.p16,
+          bottomInset + AppPadding.p16,
+        ),
+        child: SingleChildScrollView(
+          child: BlocBuilder<PlanInfoCubit, PlanInfoState>(
+            builder: (context, state) {
+              final selectedLocation = _findLookup(state.locations, locationId);
+
+              return Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(child: Text(title, style: Theme.of(context).textTheme.titleMedium)),
+                  Space.h16,
+                  _LookupField(
+                    label: 'واحد امدادی',
+                    value: emdadUnitId,
+                    items: state.emdadUnits,
+                    onChanged: (value) => setState(() => emdadUnitId = value),
+                  ),
+                  _LookupField(
+                    label: 'شیفت‌ها',
+                    value: shiftId,
+                    items: state.shifts,
+                    onChanged: (value) => setState(() => shiftId = value),
+                  ),
+                  _TextField(controller: fromDateController, label: 'تاریخ شروع'),
+                  _TextField(controller: toDateController, label: 'تاریخ پایان'),
+                  SwitchListTile(
+                    value: hasSpecialPlan,
+                    contentPadding: EdgeInsets.zero,
+                    title: const Text('دارای طرح'),
+                    onChanged: (value) => setState(() => hasSpecialPlan = value),
+                  ),
+                  if (hasSpecialPlan)
+                    _LookupField(
+                      label: 'طرح‌ها',
+                      value: specialPlanId,
+                      items: state.specialPlans,
+                      onChanged: (value) => setState(() => specialPlanId = value),
+                    ),
+                  _LookupField(
+                    label: 'نوع مقر',
+                    value: seatType,
+                    items: state.seatTypes,
+                    onChanged: (value) => setState(() => seatType = value),
+                  ),
+                  _LookupField(
+                    label: 'محل استقرار',
+                    value: locationId,
+                    items: state.locations,
+                    onChanged: (value) => setState(() => locationId = value),
+                  ),
+                  if (selectedLocation != null) ...[
+                    Space.h8,
+                    _ReadOnlyRow(label: 'آدرس محل استقرار', value: selectedLocation.address),
+                    _ReadOnlyRow(label: 'عرض جغرافیایی', value: selectedLocation.latitude?.toString()),
+                    _ReadOnlyRow(label: 'طول جغرافیایی', value: selectedLocation.longitude?.toString()),
+                  ],
+                  Space.h16,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('انصراف'),
+                        ),
+                      ),
+                      Space.w12,
+                      Expanded(
+                        child: FilledButton(
+                          onPressed: state.isSubmitting
+                              ? null
+                              : () async {
+                                  final saved = await cubit.savePlan(
+                                    id: plan?.resolvedId,
+                                    isEdit: isEdit,
+                                    isCopy: widget.isCopy,
+                                    emdadUnitId: emdadUnitId,
+                                    shiftId: shiftId,
+                                    fromDate: fromDateController.text,
+                                    toDate: toDateController.text,
+                                    hasSpecialPlan: hasSpecialPlan,
+                                    specialPlanId: specialPlanId,
+                                    seatType: seatType,
+                                    locationId: locationId,
+                                  );
+                                  if (saved && context.mounted) {
+                                    Navigator.of(context).pop();
+                                  }
+                                },
+                          child: Text(isEdit ? 'ویرایش' : 'ثبت'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              );
+            },
+          ),
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    fromDateController.dispose();
+    toDateController.dispose();
+    super.dispose();
+  }
+}
+
+class _PlanStatusSheet extends StatefulWidget {
+  final PlanInfoEntity plan;
+
+  const _PlanStatusSheet({required this.plan});
+
+  @override
+  State<_PlanStatusSheet> createState() => _PlanStatusSheetState();
+}
+
+class _PlanStatusSheetState extends State<_PlanStatusSheet> {
+  late bool isActive;
+  int? reasonId;
+  final descriptionController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    isActive = widget.plan.isActive;
+    reasonId = widget.plan.reasonId;
+    descriptionController.text = widget.plan.description ?? '';
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.read<PlanInfoCubit>();
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          AppPadding.p16,
+          AppPadding.p16,
+          AppPadding.p16,
+          bottomInset + AppPadding.p16,
+        ),
+        child: BlocBuilder<PlanInfoCubit, PlanInfoState>(
+          builder: (context, state) {
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Text(
+                  'تغییر وضعیت ${widget.plan.title ?? ''}',
+                  style: Theme.of(context).textTheme.titleMedium,
+                  textAlign: TextAlign.center,
+                ),
+                Space.h16,
+                DropdownButtonFormField<bool>(
+                  value: isActive,
+                  decoration: const InputDecoration(labelText: 'وضعیت'),
+                  items: const [
+                    DropdownMenuItem(value: true, child: Text('فعال')),
+                    DropdownMenuItem(value: false, child: Text('غیرفعال')),
+                  ],
+                  onChanged: (value) => setState(() => isActive = value ?? true),
+                ),
+                Space.h12,
+                _LookupField(
+                  label: 'دلیل',
+                  value: reasonId,
+                  items: state.statusReasons,
+                  onChanged: (value) => setState(() => reasonId = value),
+                ),
+                _TextField(
+                  controller: descriptionController,
+                  label: 'توضیحات',
+                  maxLength: 350,
+                  maxLines: 4,
+                ),
+                Space.h16,
+                Row(
+                  children: [
+                    Expanded(
+                      child: OutlinedButton(
+                        onPressed: () => Navigator.of(context).pop(),
+                        child: const Text('انصراف'),
+                      ),
+                    ),
+                    Space.w12,
+                    Expanded(
+                      child: FilledButton(
+                        onPressed: state.isSubmitting
+                            ? null
+                            : () async {
+                                final id = widget.plan.resolvedId;
+                                if (id == null) return;
+                                final saved = await cubit.changeStatus(
+                                  planId: id,
+                                  isActive: isActive,
+                                  reasonId: reasonId,
+                                  description: descriptionController.text,
+                                );
+                                if (saved && context.mounted) {
+                                  Navigator.of(context).pop();
+                                }
+                              },
+                        child: const Text('ثبت'),
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  @override
+  void dispose() {
+    descriptionController.dispose();
+    super.dispose();
+  }
+}
+
+class _PlanCancelationSheet extends StatelessWidget {
+  final PlanInfoEntity plan;
+
+  const _PlanCancelationSheet({required this.plan});
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.read<PlanInfoCubit>();
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+    return SafeArea(
+      child: Padding(
+        padding: EdgeInsets.fromLTRB(
+          AppPadding.p16,
+          AppPadding.p16,
+          AppPadding.p16,
+          bottomInset + AppPadding.p16,
+        ),
+        child: BlocBuilder<PlanInfoCubit, PlanInfoState>(
+          builder: (context, state) {
+            final requests = state.cancelation?.requests ?? const [];
+
+            return SingleChildScrollView(
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Center(
+                    child: Text(
+                      'لغو ماموریت ${plan.title ?? ''}',
+                      style: Theme.of(context).textTheme.titleMedium,
+                      textAlign: TextAlign.center,
+                    ),
+                  ),
+                  Space.h16,
+                  if (requests.isEmpty)
+                    const Center(child: Text('درخواستی برای این برنامه یافت نشد.'))
+                  else ...[
+                    const Text('آیا از لغو ماموریت‌های زیر اطمینان دارید؟'),
+                    Space.h12,
+                    Wrap(
+                      spacing: AppSize.s8,
+                      runSpacing: AppSize.s8,
+                      children: requests
+                          .map(
+                            (item) => Chip(
+                              avatar: const Icon(Icons.confirmation_number_outlined),
+                              label: Text(item.trackCode?.toString() ?? '---'),
+                            ),
+                          )
+                          .toList(),
+                    ),
+                  ],
+                  Space.h16,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: OutlinedButton(
+                          onPressed: () => Navigator.of(context).pop(),
+                          child: const Text('انصراف'),
+                        ),
+                      ),
+                      Space.w12,
+                      Expanded(
+                        child: FilledButton(
+                          onPressed: state.isSubmitting
+                              ? null
+                              : () async {
+                                  final id = plan.resolvedId;
+                                  if (id == null) return;
+                                  final saved = await cubit.confirmCancelation(id);
+                                  if (saved && context.mounted) {
+                                    Navigator.of(context).pop();
+                                  }
+                                },
+                          child: const Text('ثبت'),
+                        ),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _TextField extends StatelessWidget {
+  final TextEditingController controller;
+  final String label;
+  final int? maxLength;
+  final int maxLines;
+
+  const _TextField({
+    required this.controller,
+    required this.label,
+    this.maxLength,
+    this.maxLines = 1,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppPadding.p12),
+      child: TextField(
+        controller: controller,
+        maxLength: maxLength,
+        maxLines: maxLines,
+        decoration: InputDecoration(
+          labelText: label,
+          border: const OutlineInputBorder(),
+          counterText: '',
+        ),
+      ),
+    );
+  }
+}
+
+class _LookupField extends StatelessWidget {
+  final String label;
+  final int? value;
+  final List<PlanLookupEntity> items;
+  final bool includeEmpty;
+  final ValueChanged<int?> onChanged;
+
+  const _LookupField({
+    required this.label,
+    required this.value,
+    required this.items,
+    required this.onChanged,
+    this.includeEmpty = false,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final values = items
+        .where((item) => item.resolvedId != null)
+        .map((item) => item.resolvedId)
+        .toSet();
+    final safeValue = values.contains(value) ? value : null;
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppPadding.p12),
+      child: DropdownButtonFormField<int?>(
+        value: safeValue,
+        isExpanded: true,
+        decoration: InputDecoration(
+          labelText: label,
+          border: const OutlineInputBorder(),
+        ),
+        items: [
+          if (includeEmpty) const DropdownMenuItem<int?>(value: null, child: Text('همه')),
+          ...items
+              .where((item) => item.resolvedId != null)
+              .map(
+                (item) => DropdownMenuItem<int?>(
+                  value: item.resolvedId,
+                  child: Text(item.displayTitle, overflow: TextOverflow.ellipsis),
+                ),
+              ),
+        ],
+        onChanged: onChanged,
+      ),
+    );
+  }
+}
+
+class _NullableBoolField extends StatelessWidget {
+  final bool? value;
+  final String label;
+  final ValueChanged<bool?> onChanged;
+
+  const _NullableBoolField({
+    required this.value,
+    required this.label,
+    required this.onChanged,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppPadding.p12),
+      child: DropdownButtonFormField<bool?>(
+        value: value,
+        decoration: InputDecoration(
+          labelText: label,
+          border: const OutlineInputBorder(),
+        ),
+        items: const [
+          DropdownMenuItem<bool?>(value: null, child: Text('همه')),
+          DropdownMenuItem<bool?>(value: true, child: Text('فعال')),
+          DropdownMenuItem<bool?>(value: false, child: Text('غیرفعال')),
+        ],
+        onChanged: onChanged,
+      ),
+    );
+  }
+}
+
+class _ReadOnlyRow extends StatelessWidget {
+  final String label;
+  final String? value;
+
+  const _ReadOnlyRow({
+    required this.label,
+    this.value,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final displayValue = value?.trim().isNotEmpty == true ? value! : '---';
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppPadding.p8),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('$label: ', style: Theme.of(context).textTheme.labelLarge),
+          Expanded(child: Text(displayValue)),
+        ],
+      ),
+    );
+  }
+}
+
+PlanLookupEntity? _findLookup(List<PlanLookupEntity> items, int? id) {
+  if (id == null) return null;
+  for (final item in items) {
+    if (item.resolvedId == id) return item;
+  }
+  return null;
+}
