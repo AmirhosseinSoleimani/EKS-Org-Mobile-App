@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/app/cubit/app_cubit/app_cubit.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/agency_info_routes.dart';
 import 'package:eks_sana_plus_org/src/features/authentication/presentation/login/login_page.dart';
 import 'package:eks_sana_plus_org/src/features/bottom_navigation_bar/presentation/pages/bottom_nav_page.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/presentation/cartable_page.dart';
@@ -32,6 +33,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/request_det
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_status_history_page/request_status_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/services_page/services_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/update_request_page/update_request_page.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/vehicle_info_routes.dart';
 import 'package:eks_sana_plus_org/src/routes/current_session_sync_navigator_observer.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -358,6 +360,8 @@ class Routes {
         ...LeaveRoutes.routes(getPage),
         ...PlanInfoRoutes.routes(getPage),
         ...GradePatternRoutes.routes(getPage),
+        ...AgencyInfoRoutes.routes(getPage),
+        ...VehicleInfoRoutes.routes(getPage),
       ],
     );
   }
