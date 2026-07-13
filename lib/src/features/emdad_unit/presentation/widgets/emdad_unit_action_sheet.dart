@@ -110,11 +110,11 @@ class _ActionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = isDestructive ? theme.colorScheme.error : theme.colorScheme.onSurface;
+    final color = isDestructive ? theme.colorScheme.error : theme.colorScheme.onPrimaryFixed;
 
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      leading: Icon(icon, color: color, size: AppSize.s28),
+      leading: Icon(icon, color: color, size: AppSize.s24),
       title: Text(
         title,
         style: theme.textTheme.bodyMedium?.copyWith(
