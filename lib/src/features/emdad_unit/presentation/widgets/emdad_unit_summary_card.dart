@@ -81,14 +81,14 @@ class EmdadUnitSummaryCard extends StatelessWidget {
               Expanded(
                 child: _InfoPill(
                   icon: Icons.pin_outlined,
-                  value: _dash(item.locationTitle),
+                  value: _dash(item.vehicleInfoTitle),
                 ),
               ),
               Space.w8,
               Expanded(
                 child: _InfoPill(
-                  icon: Icons.directions_car_filled_outlined,
-                  value: _dash(item.vehicleInfoTitle),
+                  icon: Icons.location_on_outlined,
+                  value: _dash(item.locationTitle),
                 ),
               ),
             ],
