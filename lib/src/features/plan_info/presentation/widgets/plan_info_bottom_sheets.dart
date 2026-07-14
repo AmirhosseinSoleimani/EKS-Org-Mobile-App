@@ -3,9 +3,11 @@ import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_lo
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_state.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/drop_down_map_items_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -55,14 +57,18 @@ class PlanInfoBottomSheets {
     await cubit.loadStatusReasons();
     if (!context.mounted) return;
 
-    showModalBottomSheet<void>(
+    BottomSheetMessage.showCustom(
+        backgroundColor: Colors.white,
+        context: context, content: BlocProvider.value(
+      value: cubit,
+      child: _PlanStatusSheet(plan: plan),
+    ),
+        actionWidget: SizedBox.shrink());
+    /*  showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
-      builder: (_) => BlocProvider.value(
-        value: cubit,
-        child: _PlanStatusSheet(plan: plan),
-      ),
-    );
+      builder: (_) =>,
+    );*/
   }
 
   static Future<void> showCancelationSheet({
@@ -386,7 +392,9 @@ class _PlanFormSheetState extends State<_PlanFormSheet> {
 class _PlanStatusSheet extends StatefulWidget {
   final PlanInfoEntity plan;
 
-  const _PlanStatusSheet({required this.plan});
+  const _PlanStatusSheet({
+    required this.plan,
+  });
 
   @override
   State<_PlanStatusSheet> createState() => _PlanStatusSheetState();
@@ -394,90 +402,136 @@ class _PlanStatusSheet extends StatefulWidget {
 
 class _PlanStatusSheetState extends State<_PlanStatusSheet> {
   int? reasonId;
-  late bool isActive;
+  int? statusId;
+
   final descriptionController = TextEditingController();
+
+  final List<PlanLookupEntity> statusItems = const [
+    PlanLookupEntity(
+      id: 1,
+      value: 1,
+      title: 'فعال',
+    ),
+    PlanLookupEntity(
+      id: 0,
+      value: 2,
+      title: 'غیرفعال',
+    ),
+  ];
 
   @override
   void initState() {
     super.initState();
+
     reasonId = widget.plan.reasonId;
-    isActive = widget.plan.isActive;
+    statusId = widget.plan.isActive ? 1 : 0;
     descriptionController.text = widget.plan.description ?? '';
   }
 
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<PlanInfoCubit>();
-    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+    final colorScheme = Theme.of(context).colorScheme;
 
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-          AppPadding.p16,
-          AppPadding.p16,
-          AppPadding.p16,
-          bottomInset + AppPadding.p16,
-        ),
-        child: BlocBuilder<PlanInfoCubit, PlanInfoState>(
-          builder: (context, state) {
-            return Column(
-              mainAxisSize: MainAxisSize.min,
+    return BlocBuilder<PlanInfoCubit, PlanInfoState>(
+      builder: (context, state) {
+        return Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const TitleLargeText(
+              text: 'تغییر وضعیت',
+              fontSize: 16,
+              textAlign: TextAlign.center,
+            ),
+
+            Space.h24,
+
+            _LookupField(
+              label: 'وضعیت',
+              value: statusId,
+              items: statusItems,
+              onChanged: (value) {
+                setState(() {
+                  statusId = value;
+                });
+              },
+            ),
+
+            Space.h16,
+
+            _LookupField(
+              label: 'دلیل',
+              value: reasonId,
+              items: state.statusReasons,
+              onChanged: (value) {
+                setState(() {
+                  reasonId = value;
+                });
+              },
+            ),
+
+            Space.h16,
+
+            TextFormFieldWidget(
+              labelText: 'توضیحات',
+              hintText: 'توضیحات تکمیلی خود را بنویسید...',
+              controller: descriptionController,
+              autofocus: false,
+              textInputType: TextInputType.text,
+              textAlign: TextAlign.start,
+              textInputAction: TextInputAction.done,
+              maxLines: 3,
+              maxLength: 350,
+              mandatory: true,
+            ),
+
+            Space.h64,
+
+            Row(
               children: [
-                Text(
-                  'تغییر وضعیت ${widget.plan.title ?? ''}',
-                  style: Theme.of(context).textTheme.titleMedium,
-                  textAlign: TextAlign.center,
+                Expanded(
+                  child: InkwellButtonWidget(
+                    title: 'ثبت تغییرات',
+                    onTap: state.isSubmitting
+                        ? null
+                        : () async {
+                      final planId = widget.plan.resolvedId;
+
+                      if (planId == null) {
+                        return;
+                      }
+
+                      final saved = await cubit.changeStatus(
+                        planId: planId,
+                        isActive: statusId == 1,
+                        reasonId: reasonId,
+                        description: descriptionController.text,
+                      );
+
+                      if (context.mounted) {
+                        Navigator.of(context).pop();
+                      }
+                    },
+                  ),
                 ),
-                Space.h12,
-                _LookupField(
-                  label: 'دلیل',
-                  value: reasonId,
-                  items: state.statusReasons,
-                  onChanged: (value) => setState(() => reasonId = value),
-                ),
-                _TextField(
-                  controller: descriptionController,
-                  label: 'توضیحات',
-                  maxLength: 350,
-                  maxLines: 4,
-                ),
-                Space.h16,
-                Row(
-                  children: [
-                    Expanded(
-                      child: OutlinedButton(
-                        onPressed: () => Navigator.of(context).pop(),
-                        child: const Text('انصراف'),
-                      ),
-                    ),
-                    Space.w12,
-                    Expanded(
-                      child: FilledButton(
-                        onPressed: state.isSubmitting
-                            ? null
-                            : () async {
-                                final id = widget.plan.resolvedId;
-                                if (id == null) return;
-                                final saved = await cubit.changeStatus(
-                                  planId: id,
-                                  isActive: isActive,
-                                  reasonId: reasonId,
-                                  description: descriptionController.text,
-                                );
-                                if (saved && context.mounted) {
-                                  Navigator.of(context).pop();
-                                }
-                              },
-                        child: const Text('ثبت'),
-                      ),
-                    ),
-                  ],
+
+                Space.w12,
+
+                Expanded(
+                  child: InkwellButtonWidget(
+                    title: 'انصراف',
+                    titleColor: colorScheme.onPrimaryFixed,
+                    borderColor: colorScheme.onPrimaryFixed,
+                    backgroundColor: Colors.transparent,
+                    onTap: () => Navigator.of(context).pop(),
+                  ),
                 ),
               ],
-            );
-          },
-        ),
-      ),
+            ),
+          ],
+        );
+      },
     );
   }
 

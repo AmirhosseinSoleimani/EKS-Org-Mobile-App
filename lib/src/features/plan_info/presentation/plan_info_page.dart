@@ -46,7 +46,6 @@ class _PlanInfoView extends StatelessWidget {
       listener: (context, state) {
         final message = state.message;
         if (message == null || message.trim().isEmpty) return;
-
         if (state.status == PlanInfoStatus.error) {
           SnakeBarWidget.showError(context: context, message: message);
         } else {

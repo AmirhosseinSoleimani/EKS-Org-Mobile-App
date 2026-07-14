@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_info_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
@@ -227,56 +228,52 @@ class PlanCard extends StatelessWidget {
   }
 
   void _showActionsSheet(BuildContext context) {
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (context) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(AppPadding.p16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'عملیات برنامه‌ریزی',
-                  style: Theme.of(context).textTheme.titleMedium,
-                  textAlign: TextAlign.center,
-                ),
-                Space.h16,
-                _ActionTile(icon: Icons.edit, title: 'ویرایش', onTap: onEdit),
-                _ActionTile(icon: Icons.copy, title: 'کپی', onTap: onCopy),
-                _ActionTile(
-                  icon: Icons.list_alt,
-                  title: 'تغییر وضعیت',
-                  onTap: onStatus,
-                ),
-                _ActionTile(
-                  icon: Icons.location_on,
-                  title: 'تغییر / مشاهده محل استقرار',
-                  onTap: onLocation,
-                ),
-                _ActionTile(
-                  icon: Icons.history,
-                  title: 'تاریخچه',
-                  onTap: onHistory,
-                ),
-                _ActionTile(
-                  icon: Icons.cancel_outlined,
-                  title: 'لغو ماموریت',
-                  onTap: onCancelRequests,
-                ),
-                _ActionTile(
-                  icon: Icons.delete_outline,
-                  title: 'حذف',
-                  onTap: onDelete,
-                  isDestructive: true,
-                ),
-              ],
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
+
+    BottomSheetMessage.showCustom(
+        backgroundColor: Colors.white,
+        context: context,
+        content: Column(
+          mainAxisSize: MainAxisSize.min,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            // _ActionTile(icon: Icons.edit, title: 'ویرایش', onTap: onEdit),
+            //  _ActionTile(icon: Icons.copy, title: 'کپی', onTap: onCopy),
+            /*  _ActionTile(
+                icon: Icons.cancel_outlined,
+                title: 'لغو ماموریت',
+                onTap: onCancelRequests,
+              ),*/
+            _ActionTile(
+              icon: Icons.bus_alert_outlined,
+              title: 'تغییر محل استقرار',
+              onTap: onLocation,
             ),
-          ),
-        );
-      },
-    );
+            Divider(color: colorScheme.onInverseSurface,),
+            _ActionTile(
+              icon: Icons.toggle_off_outlined,
+              title: 'تغییر وضعیت',
+              onTap: onStatus,
+            ),
+            Divider(color: colorScheme.onInverseSurface,),
+            _ActionTile(
+              icon: Icons.history_outlined,
+              title: 'تاریخچه',
+              onTap: onHistory,
+            ),
+            Divider(color: colorScheme.onInverseSurface,),
+            _ActionTile(
+              icon: Icons.delete_forever_outlined,
+              title: 'حذف',
+              onTap: onDelete,
+              isDestructive: true,
+            ),
+          ],
+        ),
+        actionWidget: SizedBox.shrink());
+
   }
 }
 
@@ -297,11 +294,15 @@ class _ActionTile extends StatelessWidget {
   Widget build(BuildContext context) {
     final color = isDestructive
         ? Theme.of(context).colorScheme.error
-        : Theme.of(context).colorScheme.onPrimaryFixed;
+        : Theme
+        .of(context)
+        .colorScheme
+        .onTertiaryFixed;
 
     return ListTile(
       leading: Icon(icon, color: color),
-      title: BodyMediumText(text: title, color: color),
+      title: BodyMediumText(
+        text: title, color: color, fontWeight: FontWeight.w600,),
       onTap: () {
         Navigator.of(context).pop();
         onTap();

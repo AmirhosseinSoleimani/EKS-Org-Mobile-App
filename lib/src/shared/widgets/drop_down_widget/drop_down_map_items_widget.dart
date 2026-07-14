@@ -29,7 +29,7 @@ class DropDownMapItemsWidget extends StatelessWidget {
     final borderRadius = BorderRadius.circular(AppSize.s8);
 
     final borderSide = const BorderSide(
-      color: ColorLightManager.onTertiaryFixed,
+      color: ColorLightManager.onSecondaryFixed,
       width: AppSize.s1,
     );
 
@@ -38,38 +38,31 @@ class DropDownMapItemsWidget extends StatelessWidget {
       child: ValueListenableBuilder<String>(
         valueListenable: selectedValueNotifier,
         builder: (context, selectedValue, child) {
-          return DropdownButtonFormField<String>(
+          return  DropdownButtonFormField<String>(
             initialValue: selectedValue,
             isExpanded: true,
             decoration: InputDecoration(
               filled: true,
               fillColor: Colors.white,
-
               labelText: (mandatory ?? false)
                   ? '$labelText *'
                   : labelText,
-
               hintText: 'یک گزینه را انتخاب کنید',
-
               contentPadding: const EdgeInsets.symmetric(
-                horizontal: AppPadding.p8,
+                horizontal: AppPadding.p16,
                 vertical: AppPadding.p16,
               ),
-
               labelStyle: theme.textTheme.displayMedium?.copyWith(
                 fontSize: AppSize.s16,
               ),
-
               border: OutlineInputBorder(
                 borderRadius: borderRadius,
                 borderSide: borderSide,
               ),
-
               enabledBorder: OutlineInputBorder(
                 borderRadius: borderRadius,
                 borderSide: borderSide,
               ),
-
               focusedBorder: OutlineInputBorder(
                 borderRadius: borderRadius,
                 borderSide: BorderSide(
@@ -77,25 +70,51 @@ class DropDownMapItemsWidget extends StatelessWidget {
                   width: 1.5,
                 ),
               ),
-
               disabledBorder: OutlineInputBorder(
                 borderRadius: borderRadius,
                 borderSide: borderSide,
               ),
             ),
-            icon: Icon(
-              Icons.arrow_drop_down,
-              size: AppSize.s20,
-              color: theme.colorScheme.onTertiary,
+            icon: Padding(
+              padding: const EdgeInsetsDirectional.only(
+                end: AppPadding.p8,
+              ),
+              child: Icon(
+                Icons.arrow_drop_down,
+                size: AppSize.s20,
+                color: theme.colorScheme.onTertiary,
+              ),
             ),
-            style: theme.textTheme.bodyMedium,
+            selectedItemBuilder: (context) {
+              return items.keys.map((key) {
+                return Padding(
+                  padding: const EdgeInsetsDirectional.symmetric(
+                    horizontal: AppPadding.p8,
+                  ),
+                  child: Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: Text(
+                      key,
+                      style: theme.textTheme.displayMedium?.copyWith(
+                        fontSize: AppSize.s14,
+                      ),
+                    ),
+                  ),
+                );
+              }).toList();
+            },
             items: items.keys.map((key) {
               return DropdownMenuItem<String>(
                 value: key,
-                child: Text(
-                  key,
-                  style: theme.textTheme.displayMedium?.copyWith(
-                    fontSize: AppSize.s14,
+                child: Padding(
+                  padding: const EdgeInsetsDirectional.symmetric(
+                    horizontal: AppPadding.p8,
+                  ),
+                  child: Text(
+                    key,
+                    style: theme.textTheme.displayMedium?.copyWith(
+                      fontSize: AppSize.s14,
+                    ),
                   ),
                 ),
               );
