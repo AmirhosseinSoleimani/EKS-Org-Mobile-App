@@ -248,21 +248,45 @@ class _AssignCard extends StatelessWidget {
   final ValueChanged<int?> onServiceChanged;
   final VoidCallback onSave;
 
+  String _getPatternTitle(String? name,
+      int id,) {
+    final title = name?.trim();
+
+    if (title == null || title.isEmpty) {
+      return 'الگوی $id';
+    }
+
+    return title;
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    const defaultPatternTitle = 'انتخاب کنید';
+
     final patternItems = <String, int>{
       for (final pattern in patterns)
         if (pattern.id != null)
-          pattern.name ?? '---': pattern.id!,
+          _getPatternTitle(pattern.name, pattern.id!): pattern.id!,
     };
-    String? selectedPatternTitle;
+
+    if (patternItems.isEmpty) {
+      patternItems[defaultPatternTitle] = -1;
+    }
+
+    String selectedPatternTitle = defaultPatternTitle;
+
     for (final entry in patternItems.entries) {
       if (entry.value == selectedPatternId) {
         selectedPatternTitle = entry.key;
         break;
       }
     }
+
+    if (!patternItems.containsKey(selectedPatternTitle)) {
+      selectedPatternTitle = patternItems.keys.first;
+    }
+
     return Container(
       padding: const EdgeInsets.all(AppPadding.p16),
       decoration: BoxDecoration(
@@ -272,12 +296,17 @@ class _AssignCard extends StatelessWidget {
       child: Column(
         children: [
           DropDownMapItemsWidget(
-            labelText: 'الگوی گرید',
-            initialValue: selectedPatternTitle,
-            mandatory: false,
             items: patternItems,
+            labelText: 'الگو',
+            initialValue: selectedPatternTitle,
+            mandatory: true,
             onChange: (selectedTitle) {
               final selectedId = patternItems[selectedTitle];
+
+              if (selectedId == null || selectedId == -1) {
+                onPatternChanged(null);
+                return;
+              }
 
               onPatternChanged(selectedId);
             },
