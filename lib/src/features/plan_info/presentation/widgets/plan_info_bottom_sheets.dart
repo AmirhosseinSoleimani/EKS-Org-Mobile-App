@@ -3,6 +3,9 @@ import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_lo
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_state.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/drop_down_map_items_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,6 +15,7 @@ class PlanInfoBottomSheets {
     required PlanInfoCubit cubit,
   }) {
     showModalBottomSheet<void>(
+      backgroundColor: Colors.white,
       context: context,
       isScrollControlled: true,
       builder: (_) => BlocProvider.value(
@@ -33,6 +37,7 @@ class PlanInfoBottomSheets {
     if (!context.mounted) return;
 
     showModalBottomSheet<void>(
+      backgroundColor: Colors.white,
       context: context,
       isScrollControlled: true,
       builder: (_) => BlocProvider.value(
@@ -133,6 +138,7 @@ class _PlanFilterSheetState extends State<_PlanFilterSheet> {
   Widget build(BuildContext context) {
     final cubit = context.read<PlanInfoCubit>();
     final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return SafeArea(
       child: Padding(
@@ -147,13 +153,16 @@ class _PlanFilterSheetState extends State<_PlanFilterSheet> {
             builder: (context, state) {
               return Column(
                 mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
+                  Space.h8,
                   Text('جستجو و فیلتر', style: Theme.of(context).textTheme.titleMedium),
-                  Space.h16,
+                  Space.h24,
                   _TextField(controller: cubit.titleController, label: 'عنوان', maxLength: 20),
                   _TextField(controller: cubit.emdadUnitController, label: 'واحد امدادی'),
                   _TextField(controller: cubit.shiftController, label: 'شیفت'),
                   _TextField(controller: cubit.specialPlanController, label: 'طرح'),
+                  Space.h8,
                   _LookupField(
                     label: 'نوع مقر',
                     value: seatType,
@@ -168,26 +177,29 @@ class _PlanFilterSheetState extends State<_PlanFilterSheet> {
                   Row(
                     children: [
                       Expanded(
-                        child: OutlinedButton(
-                          onPressed: () {
-                            cubit.clearFilters();
-                            Navigator.of(context).pop();
-                          },
-                          child: const Text('پاک کردن فیلتر'),
-                        ),
-                      ),
-                      Space.w12,
-                      Expanded(
-                        child: FilledButton(
-                          onPressed: () {
+                        child: InkwellButtonWidget(
+                          title: 'اعمال فیلتر',
+                          onTap: () {
                             cubit
                               ..setSeatTypeFilter(seatType)
                               ..fetchPlans();
                             Navigator.of(context).pop();
                           },
-                          child: const Text('اعمال فیلتر'),
                         ),
                       ),
+                      Space.w12,
+                      Expanded(
+                        child: InkwellButtonWidget(
+                          backgroundColor: Colors.transparent,
+                          title: 'پاک کردن فیلتر',
+                          titleColor: colorScheme.onTertiaryFixed,
+                          onTap: () {
+                            cubit.clearFilters();
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
+
                     ],
                   ),
                 ],
@@ -582,15 +594,11 @@ class _TextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppPadding.p12),
-      child: TextField(
+      child: TextFormFieldWidget(
         controller: controller,
         maxLength: maxLength,
         maxLines: maxLines,
-        decoration: InputDecoration(
-          labelText: label,
-          border: const OutlineInputBorder(),
-          counterText: '',
-        ),
+        labelText: label,
       ),
     );
   }
@@ -613,33 +621,51 @@ class _LookupField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final values = items
+    final validItems = items
         .where((item) => item.resolvedId != null)
-        .map((item) => item.resolvedId)
-        .toSet();
-    final safeValue = values.contains(value) ? value : null;
+        .toList();
+
+    final dropdownItems = <String, int>{
+      if (includeEmpty) 'همه': -1,
+      for (final item in validItems)
+        item.displayTitle: item.resolvedId!,
+    };
+
+    String? selectedTitle;
+
+    if (value == null && includeEmpty) {
+      selectedTitle = 'همه';
+    } else {
+      for (final item in validItems) {
+        if (item.resolvedId == value) {
+          selectedTitle = item.displayTitle;
+          break;
+        }
+      }
+    }
+
+    if (dropdownItems.isEmpty) {
+      return const SizedBox.shrink();
+    }
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppPadding.p12),
-      child: DropdownButtonFormField<int?>(
-        value: safeValue,
-        isExpanded: true,
-        decoration: InputDecoration(
-          labelText: label,
-          border: const OutlineInputBorder(),
-        ),
-        items: [
-          if (includeEmpty) const DropdownMenuItem<int?>(value: null, child: Text('همه')),
-          ...items
-              .where((item) => item.resolvedId != null)
-              .map(
-                (item) => DropdownMenuItem<int?>(
-                  value: item.resolvedId,
-                  child: Text(item.displayTitle, overflow: TextOverflow.ellipsis),
-                ),
-              ),
-        ],
-        onChanged: onChanged,
+      padding: const EdgeInsets.only(
+        bottom: AppPadding.p12,
+      ),
+      child: DropDownMapItemsWidget(
+        labelText: label,
+        items: dropdownItems,
+        initialValue: selectedTitle,
+        onChange: (selectedTitle) {
+          final selectedId = dropdownItems[selectedTitle];
+
+          if (selectedId == null || selectedId == -1) {
+            onChanged(null);
+            return;
+          }
+
+          onChanged(selectedId);
+        },
       ),
     );
   }
