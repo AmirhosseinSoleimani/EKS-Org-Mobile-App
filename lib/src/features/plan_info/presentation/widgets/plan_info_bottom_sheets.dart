@@ -444,9 +444,7 @@ class _PlanStatusSheetState extends State<_PlanStatusSheet> {
               fontSize: 16,
               textAlign: TextAlign.center,
             ),
-
             Space.h24,
-
             _LookupField(
               label: 'وضعیت',
               value: statusId,
@@ -457,9 +455,6 @@ class _PlanStatusSheetState extends State<_PlanStatusSheet> {
                 });
               },
             ),
-
-            Space.h16,
-
             _LookupField(
               label: 'دلیل',
               value: reasonId,
@@ -470,9 +465,6 @@ class _PlanStatusSheetState extends State<_PlanStatusSheet> {
                 });
               },
             ),
-
-            Space.h16,
-
             TextFormFieldWidget(
               labelText: 'توضیحات',
               hintText: 'توضیحات تکمیلی خود را بنویسید...',
