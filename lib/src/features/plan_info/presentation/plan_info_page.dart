@@ -18,6 +18,9 @@ import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_widget.dart'
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+
+import 'plan_info_location_page.dart';
 
 class PlanInfoPage extends StatelessWidget {
   static const path = '/plan-info';
@@ -146,11 +149,13 @@ class _PlanInfoView extends StatelessWidget {
                                   cubit: cubit,
                                   plan: item,
                                 ),
-                            onLocation: () =>
-                                PlanInfoBottomSheets.showLocationInfo(
-                                  context: context,
-                                  plan: item,
-                                ),
+                            onLocation: () async {
+                              final changed = await context.pushNamed<bool>(
+                                PlanInfoLocationPage.name, extra: item,);
+                              if (changed == true && context.mounted) {
+                                await cubit.fetchPlans();
+                              }
+                            },
                             onHistory: () => _showHistoryUnavailable(context),
                           );
                         },

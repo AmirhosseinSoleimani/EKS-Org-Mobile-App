@@ -11,6 +11,8 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presenta
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_first_step/home_service_evaluation_first_step.dart';
 import 'package:eks_sana_plus_org/src/features/indicator_report/presentation/indicator_report_page/indicator_report_page.dart';
 import 'package:eks_sana_plus_org/src/features/leave/presentation/leave_routes.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_info_entity.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/presentation/plan_info_location_page.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/plan_info_routes.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/assign_and_cancel_emdadgar_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/cancel_request_page.dart';
@@ -356,6 +358,21 @@ class Routes {
           },
 
         ),
+
+        GoRoute(
+          path: PlanInfoLocationPage.path,
+          name: PlanInfoLocationPage.name,
+          pageBuilder: (context, state) {
+            final item = state.extra as PlanInfoEntity;
+
+            return getPage(
+              child: PlanInfoLocationPage(item: item),
+              state: state,
+            );
+          },
+        ),
+
+
         ...EmdadUnitRoutes.routes(getPage),
         ...LeaveRoutes.routes(getPage),
         ...PlanInfoRoutes.routes(getPage),

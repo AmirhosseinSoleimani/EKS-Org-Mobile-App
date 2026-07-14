@@ -942,6 +942,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i203.GetPlanLookupsUseCase>(
     () => _i203.GetPlanLookupsUseCase(gh<_i579.PlanInfoRepository>()),
   );
+  gh.lazySingleton<_i203.ChangeLocationUseCase>(
+    () => _i203.ChangeLocationUseCase(gh<_i579.PlanInfoRepository>()),
+  );
   gh.lazySingleton<_i739.FetchAddressToLocationUseCase>(
     () => _i739.FetchAddressToLocationUseCase(gh<_i92.MapRepository>()),
   );
@@ -1445,6 +1448,22 @@ _i174.GetIt $initGetIt(
       gh<_i369.SetSelectedRequestItemUseCase>(),
     ),
   );
+  gh.factory<_i943.PlanInfoCubit>(
+    () => _i943.PlanInfoCubit(
+      gh<_i203.GetPlanListUseCase>(),
+      gh<_i203.GetPlanByIdUseCase>(),
+      gh<_i203.CreatePlanUseCase>(),
+      gh<_i203.EditPlanUseCase>(),
+      gh<_i203.DeletePlanUseCase>(),
+      gh<_i203.GetPlanStatusReasonsUseCase>(),
+      gh<_i203.ChangePlanStatusUseCase>(),
+      gh<_i203.GetPlanReportUseCase>(),
+      gh<_i203.CancelPlanRequestsUseCase>(),
+      gh<_i203.GetPlanLookupsUseCase>(),
+      gh<_i1058.CurrentSessionManager>(),
+      gh<_i203.ChangeLocationUseCase>(),
+    ),
+  );
   gh.factory<_i1038.CompleteUrgentRequestCubit>(
     () => _i1038.CompleteUrgentRequestCubit(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
@@ -1469,21 +1488,6 @@ _i174.GetIt $initGetIt(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
       gh<_i672.GetReliefRequestByIdUseCase>(),
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
-    ),
-  );
-  gh.factory<_i943.PlanInfoCubit>(
-    () => _i943.PlanInfoCubit(
-      gh<_i203.GetPlanListUseCase>(),
-      gh<_i203.GetPlanByIdUseCase>(),
-      gh<_i203.CreatePlanUseCase>(),
-      gh<_i203.EditPlanUseCase>(),
-      gh<_i203.DeletePlanUseCase>(),
-      gh<_i203.GetPlanStatusReasonsUseCase>(),
-      gh<_i203.ChangePlanStatusUseCase>(),
-      gh<_i203.GetPlanReportUseCase>(),
-      gh<_i203.CancelPlanRequestsUseCase>(),
-      gh<_i203.GetPlanLookupsUseCase>(),
-      gh<_i1058.CurrentSessionManager>(),
     ),
   );
   gh.factory<_i709.OnlineMapCubit>(
