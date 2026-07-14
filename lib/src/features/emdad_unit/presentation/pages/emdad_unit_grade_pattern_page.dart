@@ -9,8 +9,11 @@ import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/widget
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/widgets/grade_pattern_details_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/drop_down_map_items_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -69,14 +72,23 @@ class _EmdadUnitGradePatternViewState
       child: Scaffold(
         backgroundColor: theme.colorScheme.surface,
         appBar: const SimpleAppBar(title: 'الگوی گرید'),
-        bottomNavigationBar: SafeArea(
-          minimum: const EdgeInsets.all(AppPadding.p16),
-          child: InkwellButtonWidget(
-            title: 'بستن',
-            backgroundColor: theme.colorScheme.onPrimary,
-            borderColor: theme.colorScheme.outline.withOpacity(0.65),
-            titleColor: theme.colorScheme.onSurface,
-            onTap: () => context.pop(false),
+        bottomNavigationBar: Container(
+          decoration:  BoxDecoration(
+            color: theme.colorScheme.onPrimary,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(16),
+              topRight: Radius.circular(16),
+            ),
+          ),
+          child: SafeArea(
+            minimum: const EdgeInsets.all(AppPadding.p16),
+            child: InkwellButtonWidget(
+              title: 'بستن',
+              backgroundColor: theme.colorScheme.onPrimary,
+              borderColor: theme.colorScheme.outline.withOpacity(0.65),
+              titleColor: theme.colorScheme.onSurface,
+              onTap: () => context.pop(false),
+            ),
           ),
         ),
         body: BlocBuilder<GradePatternCubit, GradePatternState>(
@@ -182,15 +194,14 @@ class _EmdadUnitGradePatternViewState
     await cubit.loadDetail(id);
     final item = cubit.state.whenOrNull(detailLoaded: (item) => item);
     if (item == null || !context.mounted) return;
-    showModalBottomSheet<void>(
-      context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
-      ),
-      builder: (_) => GradePatternDetailsSheet(item: item),
+
+    BottomSheetMessage.showCustom(
+        actionWidget:   InkwellButtonWidget(
+          title: 'بستن',
+          onTap: () => Navigator.of(context).pop(),
+        ),
+        context: context, content:
+    GradePatternDetailsSheet(item: item)
     );
   }
 
@@ -211,7 +222,7 @@ class _EmdadUnitGradePatternViewState
       ),
       builder: (_) => GradePatternConfirmSheet(
         title: 'حذف الگوی گرید',
-        message: 'آیا الگوی گرید ${reference.gradePatternName ?? ''} حذف شود؟',
+        message: 'آیا الگوی گرید ${reference.gradePatternName ?? ''} حذف شود؟ این عمل غیرقابل بازگشت است.',
         onConfirm: () => cubit.deleteReference(id, refId),
       ),
     );
@@ -240,6 +251,18 @@ class _AssignCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final patternItems = <String, int>{
+      for (final pattern in patterns)
+        if (pattern.id != null)
+          pattern.name ?? '---': pattern.id!,
+    };
+    String? selectedPatternTitle;
+    for (final entry in patternItems.entries) {
+      if (entry.value == selectedPatternId) {
+        selectedPatternTitle = entry.key;
+        break;
+      }
+    }
     return Container(
       padding: const EdgeInsets.all(AppPadding.p16),
       decoration: BoxDecoration(
@@ -248,37 +271,38 @@ class _AssignCard extends StatelessWidget {
       ),
       child: Column(
         children: [
-          DropdownButtonFormField<int>(
-            value: selectedPatternId,
-            isExpanded: true,
-            decoration: const InputDecoration(
-              labelText: 'الگوی گرید',
-              hintText: 'انتخاب کنید',
-            ),
-            items: patterns
-                .where((item) => item.id != null)
-                .map(
-                  (item) => DropdownMenuItem(
-                value: item.id,
-                child: Text(item.name ?? '---'),
-              ),
-            )
-                .toList(),
-            onChanged: onPatternChanged,
+          DropDownMapItemsWidget(
+            labelText: 'الگوی گرید',
+            initialValue: selectedPatternTitle,
+            mandatory: false,
+            items: patternItems,
+            onChange: (selectedTitle) {
+              final selectedId = patternItems[selectedTitle];
+
+              onPatternChanged(selectedId);
+            },
           ),
           Space.h12,
-          DropdownButtonFormField<int>(
-            value: selectedServiceType,
-            isExpanded: true,
-            decoration: const InputDecoration(
-              labelText: 'نوع خدمت',
-              hintText: 'انتخاب کنید',
-            ),
-            items: const [
-              DropdownMenuItem(value: 1, child: Text('خدمات امدادی')),
-              DropdownMenuItem(value: 2, child: Text('خدمات در محل')),
-            ],
-            onChanged: onServiceChanged,
+          DropDownMapItemsWidget(
+            labelText: 'نوع خدمت',
+            initialValue: switch (selectedServiceType) {
+              1 => 'خدمات امدادی',
+              2 => 'خدمات در محل',
+              _ => null,
+            },
+            mandatory: false,
+            items: const {
+              'خدمات امدادی': 1,
+              'خدمات در محل': 2,
+            },
+            onChange: (selectedTitle) {
+              const serviceTypes = {
+                'خدمات امدادی': 1,
+                'خدمات در محل': 2,
+              };
+
+              onServiceChanged(serviceTypes[selectedTitle]);
+            },
           ),
           Space.h24,
           InkwellButtonWidget(
@@ -312,51 +336,61 @@ class _ReferenceCard extends StatelessWidget {
       decoration: BoxDecoration(
         color: theme.colorScheme.onPrimary,
         borderRadius: BorderRadius.circular(AppSize.s8),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(25),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ]
       ),
       child: Row(
         children: [
+
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(children: [
+                  BodyMediumText(text:
+                    'کد: ${reference.gradePatternCode ?? '---'}',
+                  ),
+                  Space.w4 ,
+                  BodyMediumText(text:
+                  '•',
+                    color: Color(0xFFDEC1AF),
+                  ),
+                  Space.w4,
+                  BodyMediumText(text:
+                    'عنوان: ${_value(reference.gradePatternName)}',
+                    maxLines: 1,
+                    textOverflow: TextOverflow.ellipsis,
+                    fontWeight: FontWeight.w600,
+                  ),
+                ],),
+
+                Space.h4,
+                BodyMediumText(text:
+                  'نوع خدمت: ${_value(reference.serviceTypeTitle)}',
+                  maxLines: 1,
+                  textOverflow: TextOverflow.ellipsis,
+                ),
+              ],
+            ),
+          ),
+          Space.w12,
+          _RoundIconButton(
+            icon: Icons.visibility_outlined,
+            foreground: Color(0xFF964900),
+            background: Color(0xFF964900).withAlpha(25),
+            onTap: onDetails,
+          ),
+          Space.w8,
           _RoundIconButton(
             icon: Icons.delete_outline_rounded,
             foreground: theme.colorScheme.error,
             background: theme.colorScheme.error.withOpacity(0.10),
             onTap: onDelete,
-          ),
-          Space.w8,
-          _RoundIconButton(
-            icon: Icons.visibility_outlined,
-            foreground: theme.colorScheme.primary,
-            background: theme.colorScheme.primary.withOpacity(0.10),
-            onTap: onDetails,
-          ),
-          Space.w12,
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  'کد: ${reference.gradePatternCode ?? '---'}',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
-                ),
-                Space.h4,
-                Text(
-                  'عنوان: ${_value(reference.gradePatternName)}',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                Space.h4,
-                Text(
-                  'نوع خدمت: ${_value(reference.serviceTypeTitle)}',
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodyMedium,
-                ),
-              ],
-            ),
           ),
         ],
       ),

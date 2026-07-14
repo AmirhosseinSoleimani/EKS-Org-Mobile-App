@@ -24,10 +24,10 @@ class EmdadUnitActionSheet extends StatelessWidget {
     return SafeArea(
       child: Padding(
         padding: const EdgeInsets.fromLTRB(
-          AppPadding.p16,
+          AppPadding.p24,
           AppPadding.p8,
-          AppPadding.p16,
-          AppPadding.p16,
+          AppPadding.p24,
+          AppPadding.p24,
         ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
@@ -42,8 +42,8 @@ class EmdadUnitActionSheet extends StatelessWidget {
             ),
             Space.h20,
             _ActionTile(
-              icon: Icons.group,
-              title: 'مدیریت امدادرسان‌ها',
+              icon: Icons.group_outlined,
+              title: 'امدادرسان‌ها',
               onTap: onPersons,
             ),
             Divider(
@@ -52,7 +52,7 @@ class EmdadUnitActionSheet extends StatelessWidget {
               color: theme.colorScheme.onInverseSurface,
             ),
             _ActionTile(
-              icon: Icons.grading,
+              icon: Icons.grading_outlined,
               title: 'الگوی گرید',
               onTap: onGradePatterns,
             ),
@@ -62,7 +62,7 @@ class EmdadUnitActionSheet extends StatelessWidget {
               color: theme.colorScheme.onInverseSurface,
             ),
             _ActionTile(
-              icon: Icons.bus_alert,
+              icon: Icons.bus_alert_outlined,
               title: 'تغییر محل استقرار',
               onTap: onChangeLocation,
             ),
@@ -71,18 +71,18 @@ class EmdadUnitActionSheet extends StatelessWidget {
               thickness: AppSize.s1,
               color: theme.colorScheme.onInverseSurface,
             ),
-            _ActionTile(
+        /*    _ActionTile(
               icon: Icons.image_outlined,
               title: 'ویرایش تصویر',
               onTap: onEditImage,
-            ),
+            ),*/
             Divider(
               height: AppSize.s1,
               thickness: AppSize.s1,
               color: theme.colorScheme.onInverseSurface,
             ),
             _ActionTile(
-              icon: Icons.delete,
+              icon: Icons.delete_outlined,
               title: 'حذف',
               isDestructive: true,
               onTap: onDelete,

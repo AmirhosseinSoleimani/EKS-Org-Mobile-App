@@ -74,7 +74,7 @@ class EmdadUnitSummaryCard extends StatelessWidget {
             ],
           ),
           Space.h14,
-          Divider(height: AppSize.s1, color: theme.dividerColor.withOpacity(0.6)),
+          Divider(height: AppSize.s1, color: Color(0xFFE9E8E7)),
           Space.h12,
           Row(
             children: [
@@ -146,7 +146,7 @@ class _InfoPill extends StatelessWidget {
         vertical: AppPadding.p8,
       ),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
+        color: Color(0xFFF5F3F3),
         borderRadius: BorderRadius.circular(AppSize.s6),
       ),
       child: Row(
