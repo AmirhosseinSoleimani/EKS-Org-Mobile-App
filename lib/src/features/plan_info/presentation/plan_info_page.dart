@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_state.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/presentation/widgets/plan_card.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/widgets/plan_info_bottom_sheets.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
@@ -14,7 +15,6 @@ import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_src.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -122,7 +122,7 @@ class _PlanInfoView extends StatelessWidget {
 
                           final item = state.items[index];
 
-                          return _PlanCard(
+                          return PlanCard(
                             item: item,
                             onEdit: () => PlanInfoBottomSheets.showPlanForm(
                               context: context,
@@ -360,288 +360,8 @@ class _StatusFilterItem extends StatelessWidget {
   }
 }
 
-class _PlanCard extends StatelessWidget {
-  final PlanInfoEntity item;
-  final VoidCallback onEdit;
-  final VoidCallback onCopy;
-  final VoidCallback onDelete;
-  final VoidCallback onStatus;
-  final VoidCallback onCancelRequests;
-  final VoidCallback onLocation;
-  final VoidCallback onHistory;
 
-  const _PlanCard({
-    required this.item,
-    required this.onEdit,
-    required this.onCopy,
-    required this.onDelete,
-    required this.onStatus,
-    required this.onCancelRequests,
-    required this.onLocation,
-    required this.onHistory,
-  });
 
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final isActive = item.isActive;
-    return Card(
-      margin: EdgeInsets.zero,
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppSize.s8),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppPadding.p14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    item.title ?? 'بدون عنوان',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
-                ),
-                _StatusChip(
-                  title: isActive ? 'فعال' : 'غیرفعال',
-                  color: isActive ? Colors.green : colorScheme.error,
-                ),
-              ],
-            ),
-            Space.h12,
-            _InfoLine(
-              icon: Icons.date_range,
-              text: item.dateRangeText,
-            ),
-            _InfoLine(
-              icon: Icons.home_repair_service_outlined,
-              text: item.emdadUnitName ?? '---',
-            ),
-            _InfoLine(
-              icon: Icons.schedule,
-              text: item.shiftTitle ?? '---',
-            ),
-            _InfoLine(
-              icon: Icons.flag_outlined,
-              text: item.specialPlanTitle ?? '---',
-            ),
-            _InfoLine(
-              icon: Icons.event_seat_outlined,
-              text: item.seatTypeTitle ?? '---',
-            ),
-            _InfoLine(
-              icon: Icons.location_on_outlined,
-              text: item.locationTitle ?? item.address ?? '---',
-            ),
-            _InfoLine(
-              icon: Icons.people_outline,
-              text: item.personsText,
-            ),
-            if ((item.reasonTitle ?? item.description) != null) ...[
-              Space.h8,
-              Text(
-                'دلیل تغییر وضعیت: ${item.reasonTitle ?? '---'}',
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              Text(
-                'توضیحات: ${item.description ?? '---'}',
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ],
-            Space.h8,
-            Align(
-              alignment: Alignment.centerLeft,
-              child: InkwellButtonWidget(
-                title: 'عملیات',
-                height: AppSize.s42,
-                backgroundColor: colorScheme.secondaryContainer,
-                titleColor: colorScheme.onSurface,
-                prefixIcon: Icon(
-                  Icons.settings_outlined,
-                  size: AppSize.s20,
-                  color: colorScheme.onSurfaceVariant,
-                ),
-                suffixIcon: Icon(
-                  Icons.expand_more_outlined,
-                  size: AppSize.s20,
-                  color: colorScheme.onSurfaceVariant,
-                ),
-                onTap: () => _showActionsSheet(context),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  void _showActionsSheet(BuildContext context) {
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (context) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(AppPadding.p16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'عملیات برنامه‌ریزی',
-                  style: Theme.of(context).textTheme.titleMedium,
-                  textAlign: TextAlign.center,
-                ),
-                Space.h16,
-                _ActionTile(
-                  icon: Icons.edit,
-                  title: 'ویرایش',
-                  onTap: onEdit,
-                ),
-                _ActionTile(
-                  icon: Icons.copy,
-                  title: 'کپی',
-                  onTap: onCopy,
-                ),
-                _ActionTile(
-                  icon: Icons.list_alt,
-                  title: 'تغییر وضعیت',
-                  onTap: onStatus,
-                ),
-                _ActionTile(
-                  icon: Icons.location_on,
-                  title: 'تغییر / مشاهده محل استقرار',
-                  onTap: onLocation,
-                ),
-                _ActionTile(
-                  icon: Icons.history,
-                  title: 'تاریخچه',
-                  onTap: onHistory,
-                ),
-                _ActionTile(
-                  icon: Icons.cancel_outlined,
-                  title: 'لغو ماموریت',
-                  onTap: onCancelRequests,
-                ),
-                _ActionTile(
-                  icon: Icons.delete_outline,
-                  title: 'حذف',
-                  onTap: onDelete,
-                  isDestructive: true,
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
-}
-
-class _ActionTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final VoidCallback onTap;
-  final bool isDestructive;
-
-  const _ActionTile({
-    required this.icon,
-    required this.title,
-    required this.onTap,
-    this.isDestructive = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final color = isDestructive
-        ? Theme.of(context).colorScheme.error
-        : Theme
-        .of(context)
-        .colorScheme
-        .onPrimaryFixed;
-
-    return ListTile(
-      leading: Icon(icon, color: color),
-      title: BodyMediumText(text:
-        title,
-        color: color,
-      ),
-      onTap: () {
-        Navigator.of(context).pop();
-        onTap();
-      },
-    );
-  }
-}
-
-class _InfoLine extends StatelessWidget {
-  final IconData icon;
-  final String text;
-
-  const _InfoLine({
-    required this.icon,
-    required this.text,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme
-        .of(context)
-        .colorScheme;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppPadding.p6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(
-            icon,
-            size: AppSize.s18,
-            color: Theme
-                .of(context)
-                .colorScheme
-                .onPrimaryFixed,
-          ),
-          Space.w8,
-          Expanded(
-            child: BodyMediumText(text:
-              text,
-              color: colorScheme.onTertiaryFixed,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _StatusChip extends StatelessWidget {
-  final String title;
-  final Color color;
-
-  const _StatusChip({
-    required this.title,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppPadding.p10,
-        vertical: AppPadding.p4,
-      ),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(AppSize.s8),
-      ),
-      child: Text(
-        title,
-        style: Theme.of(context).textTheme.labelMedium?.copyWith(color: color),
-      ),
-    );
-  }
-}
 
 class _EmptyPlans extends StatelessWidget {
   const _EmptyPlans();

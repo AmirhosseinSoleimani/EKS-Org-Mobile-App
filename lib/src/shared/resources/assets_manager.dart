@@ -44,6 +44,7 @@ class SvgManager {
   static const String forwardIcon = '${_basePath}forward_icon.svg';
   static const String arrowLeftAlt = '${_basePath}arrow_left_alt.svg';
   static const String exportNotes = '${_basePath}export_notes.svg';
+  static const String calendarClock = '${_basePath}calendar_clock.svg';
 }
 
 
