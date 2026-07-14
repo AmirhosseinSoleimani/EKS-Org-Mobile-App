@@ -13,6 +13,8 @@ class LookupModel extends LookupEntity {
   factory LookupModel.fromJson(Map<String, dynamic> json) {
     final id = json['id'] as int? ?? 0;
     final title = json['title'] ??
+        json['firstName']  + json['lastName']??
+        json['lastName'] ??
         json['name'] ??
         json['fullName'] ??
         json['agencyInfoTitle'] ??

@@ -10,6 +10,7 @@ class GetEmdadUnitLookupsUseCase {
   final EmdadUnitRepository _repository;
 
   Future<ApiResult<List<LookupEntity>>> getAgencies() => _repository.getAgencies();
+
   Future<ApiResult<List<LookupEntity>>> getAgencyPersons(int agencyInfoId) {
     return _repository.getAgencyPersons(agencyInfoId);
   }
