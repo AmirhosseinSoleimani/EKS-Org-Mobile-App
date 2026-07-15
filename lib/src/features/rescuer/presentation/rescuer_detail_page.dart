@@ -1,20 +1,19 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/rescuer_entity.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/cubit/detail/rescuer_detail_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/detail/rescuer_contact_info_section.dart';
-import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/detail/rescuer_history_section.dart';
-import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/detail/rescuer_personal_info_section.dart';
-import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/detail/rescuer_profile_header.dart';
-import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/detail/rescuer_skill_certificates_section.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/detail/rescuer_detail_section_card.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/rescuer_avatar.dart';
+import 'package:eks_sana_plus_org/src/shared/extensions/string_extensions.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 class RescuerDetailPage extends StatelessWidget {
   static const path = '/rescuer-details';
@@ -73,7 +72,8 @@ class _RescuerDetailView extends StatelessWidget {
         );
       },
       child: Scaffold(
-        appBar: const SimpleAppBar(title: 'جزئیات امدادرسان'),
+        backgroundColor: const Color(0xFFF4F4F4),
+        appBar: const _RescuerModalAppBar(title: 'جزئیات امدادرسان'),
         body: BlocBuilder<RescuerDetailCubit, RescuerDetailState>(
           builder: (context, state) {
             return state.maybeWhen(
@@ -85,6 +85,35 @@ class _RescuerDetailView extends StatelessWidget {
             );
           },
         ),
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(AppSize.s16),
+                topRight: Radius.circular(AppSize.s16),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withAlpha(45),
+                  blurRadius: 10,
+                  offset: const Offset(-1, 1),
+                ),
+              ]),
+          child: Padding(
+            padding: const EdgeInsets.fromLTRB(28, 12, 28, 16),
+            child: InkwellButtonWidget(
+              title: 'بستن',
+              backgroundColor: Colors.white,
+              titleColor: Theme
+                  .of(context)
+                  .colorScheme
+                  .onSurfaceVariant,
+              borderColor: Theme
+                  .of(context)
+                  .colorScheme
+                  .outline,
+              onTap: () => Navigator.of(context).pop(false),
+            ),
+          ),),
       ),
     );
   }
@@ -98,57 +127,256 @@ class _RescuerDetailView extends StatelessWidget {
         children: [
           Expanded(
             child: SingleChildScrollView(
-              padding: const EdgeInsets.all(16),
+              padding: const EdgeInsets.fromLTRB(28, 18, 28, 24),
               child: Column(
+                crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  RescuerProfileHeader(item: item),
-                  const SizedBox(height: 12),
-                  RescuerPersonalInfoSection(item: item),
-                  RescuerContactInfoSection(item: item),
-                  RescuerSkillCertificatesSection(
-                    items: cubit.skillCertificates,
-                  ),
-                  RescuerHistorySection(items: cubit.histories),
+                  _ProfileHeader(item: item),
+                  const SizedBox(height: 28),
+                  _IdentitySection(item: item),
+                  _ContactSection(item: item),
                 ],
               ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
-            child: InkwellButtonWidget(
-              title: 'حذف امدادرسان',
-              backgroundColor: Theme.of(context).colorScheme.error,
-              showLoading: cubit.isDeleting,
-              prefixIcon: Icon(
-                Icons.delete_outline,
-                color: Theme.of(context).colorScheme.onError,
-              ),
-              onTap: cubit.isDeleting
-                  ? null
-                  : () => _confirmDelete(context, cubit),
             ),
           ),
         ],
       ),
     );
   }
+}
 
-  void _confirmDelete(BuildContext context, RescuerDetailCubit cubit) {
-    BottomSheetMessage.showNoticeWithAction(
-      context: context,
-      data: const BottomSheetMessageModel(
-        title: 'حذف امدادرسان',
-        message: 'آیا از حذف این امدادرسان مطمئن هستید؟',
+class _RescuerModalAppBar extends StatelessWidget
+    implements PreferredSizeWidget {
+  final String title;
+
+  const _RescuerModalAppBar({
+    required this.title,
+  });
+
+  @override
+  Size get preferredSize => const Size.fromHeight(63);
+
+  @override
+  Widget build(BuildContext context) {
+    return AppBar(
+      automaticallyImplyLeading: false,
+      elevation: 0,
+      backgroundColor: Colors.white,
+      surfaceTintColor: Colors.white,
+      titleSpacing: 0,
+      title: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 28),
+        child: Row(
+          children: [
+            BodyMediumText(
+              text: title,
+              color: const Color(0xFF6F6F6F),
+              fontWeight: FontWeight.w700,
+              fontSize: 16,
+            ),
+            const Spacer(),
+            InkWell(
+              onTap: () => Navigator.of(context).pop(false),
+              borderRadius: BorderRadius.circular(20),
+              child: const Padding(
+                padding: EdgeInsets.all(4),
+                child: Icon(Icons.close, color: Color(0xFF6F6F6F)),
+              ),
+            ),
+          ],
+        ),
       ),
-      positiveText: 'حذف',
-      cancelTxt: 'انصراف',
-      buttonColor: Theme.of(context).colorScheme.error,
-      onPositive: () async {
-        context.pop();
-        final deleted = await cubit.deleteRescuer();
-        if (!context.mounted || !deleted) return;
-        Navigator.of(context).pop(true);
-      },
     );
   }
+}
+
+class _ProfileHeader extends StatelessWidget {
+  final RescuerEntity item;
+
+  const _ProfileHeader({
+    required this.item,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Container(
+              padding: const EdgeInsets.all(4),
+              decoration: const BoxDecoration(
+                shape: BoxShape.circle,
+                color: Color(0xFFE7E7E7),
+              ),
+              child: RescuerAvatar(
+                imageBase64: item.imageBase64,
+                size: 86,
+              ),
+            ),
+            Positioned(
+              left: 0,
+              bottom: 4,
+              child: Container(
+                width: 24,
+                height: 24,
+                decoration: BoxDecoration(
+                  color: const Color(0xFF00A878),
+                  shape: BoxShape.circle,
+                  border: Border.all(color: Colors.white, width: 2),
+                ),
+                child: const Icon(
+                  Icons.check,
+                  color: Colors.white,
+                  size: 14,
+                ),
+              ),
+            ),
+          ],
+        ),
+        const SizedBox(height: 14),
+        BodyMediumText(
+          text: item.fullName.isEmpty ? 'بدون نام' : item.fullName,
+          fontWeight: FontWeight.w700,
+          fontSize: 17,
+          textAlign: TextAlign.center,
+        ),
+        const SizedBox(height: 4),
+        BodyMediumText(
+          text: 'کد پرسنلی: ${_value(item.code)}',
+          color: const Color(0xFF5F4A45),
+          fontSize: 15,
+          textAlign: TextAlign.center,
+        ),
+      ],
+    );
+  }
+}
+
+class _IdentitySection extends StatelessWidget {
+  final RescuerEntity item;
+
+  const _IdentitySection({
+    required this.item,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return RescuerDetailSectionCard(
+      title: 'اطلاعات هویتی',
+      icon: SvgManager.identityInformation,
+      children: [
+        RescuerDetailInfoGrid(
+          items: [
+            RescuerDetailInfoItem(
+              label: 'نام و نام خانوادگی',
+              value: item.fullName.isEmpty ? '-' : item.fullName,
+            ),
+            RescuerDetailInfoItem(
+              label: 'نام پدر',
+              value: _value(item.fatherName),
+            ),
+            RescuerDetailInfoItem(
+              label: 'کد ملی',
+              value: _value(item.nationalNumber),
+            ),
+            RescuerDetailInfoItem(
+              label: 'تاریخ تولد',
+              value: _value(item.birthDateJalali ?? item.birthDate),
+            ),
+            RescuerDetailInfoItem(
+              label: 'محل تولد',
+              value: _value(item.cityNamePlaceOfBirth),
+            ),
+            RescuerDetailInfoItem(
+              label: 'وضعیت تاهل',
+              value: _value(item.maritalTitle),
+            ),
+          ],
+        ),
+        const SizedBox(height: 22),
+        Divider(color: Theme
+            .of(context)
+            .dividerColor, height: 1),
+        const SizedBox(height: 22),
+        RescuerDetailInfoGrid(
+          items: [
+            RescuerDetailInfoItem(
+              label: 'مدرک تحصیلی',
+              value: _value(item.degreeTitle),
+            ),
+            RescuerDetailInfoItem(
+              label: 'رشته',
+              value: _value(item.certificatesTitle),
+            ),
+            RescuerDetailInfoItem(
+              label: 'کد گواهینامه',
+              value: _value(item.licenseCode),
+            ),
+          ],
+        ),
+      ],
+    );
+  }
+}
+
+class _ContactSection extends StatelessWidget {
+  final RescuerEntity item;
+
+  const _ContactSection({
+    required this.item,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return RescuerDetailSectionCard(
+      title: 'اطلاعات تماس',
+      icon: SvgManager.contactInformation,
+      children: [
+        RescuerContactTile(
+          title: 'شماره تلفن',
+          value: _value(item.tel),
+          icon: Icons.phone_android_outlined,
+        ),
+        RescuerContactTile(
+          title: 'شماره همراه ایرانسل',
+          value: item.mobile?.toLocalMobile() ?? '-',
+          icon: Icons.settings_input_antenna_outlined,
+        ),
+        RescuerContactTile(
+          title: 'شماره موبایل',
+          value: item.mobile?.toLocalMobile() ?? '-',
+          icon: Icons.phone_outlined,
+        ),
+        const SizedBox(height: 10),
+        Divider(color: Theme
+            .of(context)
+            .dividerColor, height: 1),
+        const SizedBox(height: 22),
+        RescuerDetailInfoGrid(
+          items: [
+            RescuerDetailInfoItem(
+              label: 'استان',
+              value: _value(item.provinceNameIssuingPlace),
+            ),
+            RescuerDetailInfoItem(
+              label: 'شهر',
+              value: _value(item.cityNameIssuingPlace),
+            ),
+          ],
+        ),
+        const SizedBox(height: 22),
+        RescuerDetailInfoItem(
+          label: 'نشانی دقیق',
+          value: _value(item.address),
+        ),
+      ],
+    );
+  }
+}
+
+String _value(String? value) {
+  final result = value?.trim();
+  return result == null || result.isEmpty ? '-' : result;
 }

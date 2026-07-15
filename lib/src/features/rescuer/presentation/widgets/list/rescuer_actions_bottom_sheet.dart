@@ -1,17 +1,60 @@
-import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class RescuerActionsBottomSheet extends StatelessWidget {
-  final VoidCallback onDelete;
-  final bool isDeleting;
+  final Future<bool> Function() onSkillCertificates;
+  final Future<bool> Function() onHistory;
+  final Future<bool> Function() onDelete;
 
   const RescuerActionsBottomSheet({
     super.key,
+    required this.onSkillCertificates,
+    required this.onHistory,
     required this.onDelete,
-    required this.isDeleting,
   });
+
+  @override
+  Widget build(BuildContext context) {
+    return _RescuerActionsContent(
+      onSkillCertificates: onSkillCertificates,
+      onHistory: onHistory,
+      onDelete: onDelete,
+    );
+  }
+}
+
+enum _RescuerActionType { certificates, history, delete }
+
+class _RescuerActionsContent extends StatefulWidget {
+  final Future<bool> Function() onSkillCertificates;
+  final Future<bool> Function() onHistory;
+  final Future<bool> Function() onDelete;
+
+  const _RescuerActionsContent({
+    required this.onSkillCertificates,
+    required this.onHistory,
+    required this.onDelete,
+  });
+
+  @override
+  State<_RescuerActionsContent> createState() => _RescuerActionsContentState();
+}
+
+class _RescuerActionsContentState extends State<_RescuerActionsContent> {
+  _RescuerActionType? _loadingAction;
+
+  bool get _isLoading => _loadingAction != null;
+
+  Future<void> _runAction(_RescuerActionType action,
+      Future<bool> Function() callback,) async {
+    if (_isLoading) return;
+
+    setState(() => _loadingAction = action);
+    await callback();
+
+    if (!mounted) return;
+    setState(() => _loadingAction = null);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -21,35 +64,106 @@ class RescuerActionsBottomSheet extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
-          children: [
-            Icon(Icons.settings_outlined, color: colorScheme.onSurfaceVariant),
-            const SizedBox(width: 8),
-            const Expanded(
-              child: BodyMediumText(
-                text: 'عملیات امدادرسان',
-                fontWeight: FontWeight.w600,
+        _ActionRow(
+          title: 'گواهینامه مهارت‌ها',
+          icon: Icons.card_membership_outlined,
+          isLoading: _loadingAction == _RescuerActionType.certificates,
+          enabled: !_isLoading,
+          onTap: () =>
+              _runAction(
+                _RescuerActionType.certificates,
+                widget.onSkillCertificates,
               ),
-            ),
-          ],
         ),
-        const SizedBox(height: 20),
-        InkwellButtonWidget(
-          title: 'حذف امدادرسان',
-          backgroundColor: colorScheme.error,
-          showLoading: isDeleting,
-          prefixIcon: Icon(
-            Icons.delete_outline,
-            color: colorScheme.onError,
-          ),
-          onTap: isDeleting
-              ? null
-              : () {
-                  context.pop();
-                  onDelete();
-                },
+        Divider(height: 1, color: Theme
+            .of(context)
+            .dividerColor),
+        _ActionRow(
+          title: 'تاریخچه',
+          icon: Icons.history,
+          isLoading: _loadingAction == _RescuerActionType.history,
+          enabled: !_isLoading,
+          onTap: () =>
+              _runAction(
+                _RescuerActionType.history,
+                widget.onHistory,
+              ),
+        ),
+        Divider(height: 1, color: Theme
+            .of(context)
+            .dividerColor),
+        _ActionRow(
+          title: 'حذف',
+          icon: Icons.delete_outline,
+          color: colorScheme.error,
+          isLoading: _loadingAction == _RescuerActionType.delete,
+          enabled: !_isLoading,
+          onTap: () =>
+              _runAction(
+                _RescuerActionType.delete,
+                widget.onDelete,
+              ),
         ),
       ],
+    );
+  }
+}
+
+class _ActionRow extends StatelessWidget {
+  final String title;
+  final IconData icon;
+  final VoidCallback onTap;
+  final bool enabled;
+  final bool isLoading;
+  final Color? color;
+
+  const _ActionRow({
+    required this.title,
+    required this.icon,
+    required this.onTap,
+    required this.enabled,
+    required this.isLoading,
+    this.color,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    final effectiveColor =
+        color ?? Theme
+            .of(context)
+            .colorScheme
+            .onTertiaryFixed;
+
+    return InkWell(
+      onTap: enabled ? onTap : null,
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: 14),
+        child: Row(
+          children: [
+            if (isLoading)
+              SizedBox.square(
+                dimension: 20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: effectiveColor,
+                ),
+              )
+            else
+              Icon(icon, color: effectiveColor, size: 22),
+            const SizedBox(width: 12),
+            Expanded(
+              child: BodyMediumText(
+                text: title,
+                color: effectiveColor,
+                textAlign: TextAlign.right,
+                fontWeight: FontWeight.w500,
+              ),
+            ),
+
+
+          ],
+        ),
+      ),
     );
   }
 }

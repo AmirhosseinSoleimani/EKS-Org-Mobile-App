@@ -1,26 +1,34 @@
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/cubit/list/rescuer_list_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/enums/rescuer_status_filter.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/filter/rescuer_filter_form.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/overlay_drop_down_menu.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_src.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class RescuerFiltersBox extends StatelessWidget {
   final RescuerListCubit cubit;
   final VoidCallback onReportTap;
+  final bool isReportLoading;
 
   const RescuerFiltersBox({
     super.key,
     required this.cubit,
     required this.onReportTap,
+    this.isReportLoading = false,
   });
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
     return Column(
       children: [
         FiltersRow(
@@ -77,10 +85,17 @@ class RescuerFiltersBox extends StatelessWidget {
           ],
         ),
         Space.h12,
-        FilterButton(
+        InkwellButtonWidget(
           title: 'گزارش‌گیری',
-          icon: Icons.summarize_outlined,
-          expand: true,
+          titleColor: colorScheme.onPrimaryFixed,
+          prefixIcon: SvgWidget(
+            src: SvgAsset(SvgManager.exportNotes),
+          ),
+          backgroundColor: colorScheme.secondaryContainer,
+          borderColor: colorScheme.onPrimaryFixed,
+          borderWidth: 2,
+          showLoading: isReportLoading,
+          loadingColor: colorScheme.onPrimaryFixed,
           onTap: onReportTap,
         ),
       ],

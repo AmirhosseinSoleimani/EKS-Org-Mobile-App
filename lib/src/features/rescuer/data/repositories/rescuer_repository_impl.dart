@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/rescuer/data/data_sources/rescuer_data_source.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/delete_rescuer_response_entity.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/params/get_rescuer_report_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/params/get_rescuers_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/rescuer_entity.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/san_history_entity.dart';
@@ -21,6 +22,18 @@ class RescuerRepositoryImpl extends RescuerRepository {
   ) async {
     try {
       final response = await _dataSource.getRescuers(param.toModel());
+      return response.toApiResult();
+    } catch (error, stackTrace) {
+      return error.toApiResult(stackTrace);
+    }
+  }
+
+  @override
+  Future<ApiResult<List<RescuerEntity>>> getRescuerReport(
+    GetRescuerReportParamEntity param,
+  ) async {
+    try {
+      final response = await _dataSource.getRescuerReport(param.toModel());
       return response.toApiResult();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);

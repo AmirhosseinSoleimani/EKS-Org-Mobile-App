@@ -2,19 +2,19 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/rescuer_entity.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/cubit/list/rescuer_list_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/rescuer_detail_page.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/presentation/rescuer_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/filter/rescuer_filters_box.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/list/rescuer_actions_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/list/rescuer_list_viewer.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/list/rescuer_skill_certificates_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 class RescuerListPage extends StatelessWidget {
   static const path = '/rescuers';
@@ -81,9 +81,19 @@ class _RescuerListView extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
-                child: RescuerFiltersBox(
-                  cubit: cubit,
-                  onReportTap: () => _showReportNotice(context),
+                child: BlocBuilder<RescuerListCubit, RescuerListState>(
+                  builder: (context, state) {
+                    final isActionLoading = state.maybeWhen(
+                      actionLoading: (_) => true,
+                      orElse: () => false,
+                    );
+
+                    return RescuerFiltersBox(
+                      cubit: cubit,
+                      isReportLoading: isActionLoading,
+                      onReportTap: () => _loadReport(context, cubit),
+                    );
+                  },
                 ),
               ),
               Expanded(
@@ -145,46 +155,59 @@ class _RescuerListView extends StatelessWidget {
     BottomSheetMessage.showCustom(
       context: context,
       content: RescuerActionsBottomSheet(
-        isDeleting: cubit.deletingRescuerId == id,
-        onDelete: () => _confirmDelete(context, cubit, item),
+        onSkillCertificates: () async {
+          final result = await cubit.loadSkillCertificates(id);
+          if (context.mounted) Navigator.of(context).pop();
+          if (result == null || !context.mounted) return false;
+
+          BottomSheetMessage.showCustom(
+            context: context,
+            content: RescuerSkillCertificatesSheet(items: result),
+            actionWidget: const SizedBox.shrink(),
+          );
+          return true;
+        },
+        onHistory: () async {
+          final result = await cubit.loadHistory(id);
+          if (context.mounted) Navigator.of(context).pop();
+          if (result == null || !context.mounted) return false;
+
+          await Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (_) => RescuerHistoryPage(
+                rescuer: item,
+                histories: result,
+              ),
+            ),
+          );
+          return true;
+        },
+        onDelete: () async {
+          final deleted = await cubit.deleteRescuer(id);
+          if (context.mounted) Navigator.of(context).pop();
+          if (deleted && context.mounted) {
+            SnakeBarWidget.showSuccess(
+              context: context,
+              message: 'امدادرسان با موفقیت حذف شد',
+            );
+          }
+          return deleted;
+        },
       ),
       actionWidget: const SizedBox.shrink(),
     );
   }
 
-  void _confirmDelete(
+  Future<void> _loadReport(
     BuildContext context,
     RescuerListCubit cubit,
-    RescuerEntity item,
-  ) {
-    final id = item.id;
-    if (id == null) return;
+  ) async {
+    final filePath = await cubit.loadReport();
+    if (!context.mounted || filePath == null) return;
 
-    BottomSheetMessage.showNoticeWithAction(
+    SnakeBarWidget.showSuccess(
       context: context,
-      data: BottomSheetMessageModel(
-        title: 'حذف امدادرسان',
-        message:
-            'آیا از حذف ${item.fullName.isEmpty ? 'امدادرسان انتخاب‌شده' : item.fullName} مطمئن هستید؟',
-      ),
-      positiveText: 'حذف',
-      cancelTxt: 'انصراف',
-      buttonColor: Theme.of(context).colorScheme.error,
-      onPositive: () {
-        context.pop();
-        cubit.deleteRescuer(id);
-      },
-    );
-  }
-
-  void _showReportNotice(BuildContext context) {
-    BottomSheetMessage.showNotice(
-      context: context,
-      data: const BottomSheetMessageModel(
-        title: 'گزارش‌گیری',
-        message:
-            'برای گزارش‌گیری API جداگانه‌ای در اطلاعات این فیچر ارائه نشده است.',
-      ),
+      message: 'فایل اکسل گزارش امدادرسان‌ها آماده شد',
     );
   }
 }

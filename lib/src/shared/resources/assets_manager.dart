@@ -58,6 +58,8 @@ class SvgManager {
   static const String workStartHistory = '${_basePath}work_start_history.svg';
   static const String rescuerOperations = '${_basePath}rescuer_operations.svg';
   static const String clothingSize = '${_basePath}clothing_size.svg';
+  static const String contactInformation = '${_basePath}contact_information.svg';
+  static const String identityInformation = '${_basePath}identity_information.svg';
 }
 
 

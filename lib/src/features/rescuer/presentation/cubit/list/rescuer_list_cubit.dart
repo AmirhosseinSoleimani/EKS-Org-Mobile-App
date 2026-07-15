@@ -1,8 +1,15 @@
+import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/params/get_rescuer_report_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/params/get_rescuers_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/rescuer_entity.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/san_history_entity.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/skill_certificate_entity.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/use_cases/delete_rescuer_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/domain/use_cases/get_rescuer_history_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/domain/use_cases/get_rescuer_report_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/domain/use_cases/get_rescuer_skill_certificates_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/use_cases/get_rescuers_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/enums/rescuer_status_filter.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/presentation/utils/rescuer_excel_exporter.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart'
     show ApiResultPatterns;
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
@@ -10,6 +17,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
+import 'package:open_filex/open_filex.dart';
 
 part 'rescuer_list_cubit.freezed.dart';
 part 'rescuer_list_state.dart';
@@ -19,10 +27,16 @@ class RescuerListCubit extends Cubit<RescuerListState> {
   RescuerListCubit(
     this._getRescuersUseCase,
     this._deleteRescuerUseCase,
+    this._getRescuerReportUseCase,
+    this._getSkillCertificatesUseCase,
+    this._getHistoryUseCase,
   ) : super(const RescuerListState.idle());
 
   final GetRescuersUseCase _getRescuersUseCase;
   final DeleteRescuerUseCase _deleteRescuerUseCase;
+  final GetRescuerReportUseCase _getRescuerReportUseCase;
+  final GetRescuerSkillCertificatesUseCase _getSkillCertificatesUseCase;
+  final GetRescuerHistoryUseCase _getHistoryUseCase;
 
   static const int pageSize = 10;
 
@@ -117,15 +131,11 @@ class RescuerListCubit extends Cubit<RescuerListState> {
     result.whenOrNull(
       success: (data, failures, resultCode) {
         isSuccessful = true;
-        final updatedItems = state.data.items
-            .where((item) => item.id != id)
-            .toList(growable: false);
-        final updatedData = state.data.copyWith(
-          items: List<RescuerEntity>.unmodifiable(updatedItems),
-          filteredItems: _filterItems(updatedItems),
-          deletingRescuerId: null,
+        _safeEmit(
+          RescuerListState.loaded(
+            data: state.data.copyWith(deletingRescuerId: null),
+          ),
         );
-        _safeEmit(RescuerListState.loaded(data: updatedData));
       },
       failure: (error, message) {
         _safeEmit(
@@ -147,7 +157,143 @@ class RescuerListCubit extends Cubit<RescuerListState> {
       },
     );
 
+    if (isSuccessful) {
+      await fetchRescuers();
+    }
+
     return isSuccessful;
+  }
+
+  Future<String?> loadReport() async {
+    _retryAction = () {
+      loadReport();
+    };
+    emit(RescuerListState.actionLoading(data: state.data));
+
+    final result = await _getRescuerReportUseCase(
+      const GetRescuerReportParamEntity(pageSize: 0),
+    );
+
+    String? filePath;
+
+    await result.whenOrNull(
+      success: (data, failures, resultCode) async {
+        filePath = await RescuerExcelExporter.export(data);
+        _safeEmit(RescuerListState.loaded(data: state.data));
+
+        final openResult = await OpenFilex.open(
+          filePath!,
+          type: 'application/vnd.ms-excel',
+        );
+
+        if (openResult.type != ResultType.done) {
+          _safeEmit(
+            RescuerListState.actionError(
+              data: state.data,
+              message:
+                  'فایل اکسل ذخیره شد اما برنامه‌ای برای باز کردن آن پیدا نشد',
+            ),
+          );
+          filePath = null;
+        }
+      },
+      failure: (error, message) {
+        _safeEmit(
+          RescuerListState.actionError(
+            data: state.data,
+            message: message ??
+                error?.toString() ??
+                'دریافت گزارش با خطا مواجه شد.',
+          ),
+        );
+      },
+      connectionError: () {
+        _safeEmit(
+          RescuerListState.actionError(
+            data: state.data,
+            message: 'اتصال اینترنت خود را بررسی کنید.',
+          ),
+        );
+      },
+    );
+
+    return filePath;
+  }
+
+  Future<List<SkillCertificateEntity>?> loadSkillCertificates(int id) async {
+    _retryAction = () {
+      loadSkillCertificates(id);
+    };
+    emit(RescuerListState.actionLoading(data: state.data));
+
+    final result = await _getSkillCertificatesUseCase(id);
+
+    List<SkillCertificateEntity>? certificates;
+
+    result.whenOrNull(
+      success: (data, failures, resultCode) {
+        certificates = data;
+        _safeEmit(RescuerListState.loaded(data: state.data));
+      },
+      failure: (error, message) {
+        _safeEmit(
+          RescuerListState.actionError(
+            data: state.data,
+            message: message ??
+                error?.toString() ??
+                'دریافت گواهینامه‌های مهارت با خطا مواجه شد.',
+          ),
+        );
+      },
+      connectionError: () {
+        _safeEmit(
+          RescuerListState.actionError(
+            data: state.data,
+            message: 'اتصال اینترنت خود را بررسی کنید.',
+          ),
+        );
+      },
+    );
+
+    return certificates;
+  }
+
+  Future<List<SanHistoryEntity>?> loadHistory(int id) async {
+    _retryAction = () {
+      loadHistory(id);
+    };
+    emit(RescuerListState.actionLoading(data: state.data));
+
+    final result = await _getHistoryUseCase(id);
+
+    List<SanHistoryEntity>? histories;
+
+    result.whenOrNull(
+      success: (data, failures, resultCode) {
+        histories = data;
+        _safeEmit(RescuerListState.loaded(data: state.data));
+      },
+      failure: (error, message) {
+        _safeEmit(
+          RescuerListState.actionError(
+            data: state.data,
+            message: message ??
+                error?.toString() ??
+                'دریافت تاریخچه امدادرسان با خطا مواجه شد.',
+          ),
+        );
+      },
+      connectionError: () {
+        _safeEmit(
+          RescuerListState.actionError(
+            data: state.data,
+            message: 'اتصال اینترنت خود را بررسی کنید.',
+          ),
+        );
+      },
+    );
+
+    return histories;
   }
 
   void _emitFilteredData({RescuerStatusFilter? selectedStatus}) {

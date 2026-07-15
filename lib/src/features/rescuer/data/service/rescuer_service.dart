@@ -26,6 +26,20 @@ class RescuerService {
     );
   }
 
+  Future<BaseListResponse<RescuerModel>> getRescuerReport(
+    Map<String, dynamic> body,
+  ) async {
+    final response = await _dio.post<dynamic>(
+      '/api/PersonInfo/GetByFilterJson',
+      data: body,
+    );
+
+    return BaseListResponse<RescuerModel>.fromJson(
+      _normalizeListResponse(response.data),
+      (json) => RescuerModel.fromJson(json),
+    );
+  }
+
   Future<BaseSingleResponse<RescuerModel>> getRescuerById(int id) async {
     final response = await _dio.get<dynamic>(
       '/api/personinfo/GetById',

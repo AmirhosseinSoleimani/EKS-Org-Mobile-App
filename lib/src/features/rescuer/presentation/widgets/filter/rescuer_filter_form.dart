@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/cubit/list/rescuer_list_cubit.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/submit_cancel_buttons.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,9 @@ class RescuerFilterForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -57,13 +61,27 @@ class RescuerFilterForm extends StatelessWidget {
             controller: cubit.codeController,
             textInputAction: TextInputAction.done,
           ),
-          SubmitCancelButtons(
-            submitTitle: 'اعمال فیلتر',
-            submitButtonColor: Theme.of(context).colorScheme.primary,
-            cancelTitle: 'پاک کردن',
-            onSubmit: onApply,
-            onCancel: onClear,
-          ),
+          Space.h24,
+          Row(children: [
+            Expanded(
+              child: InkwellButtonWidget(
+                title: "اعمال فیلتر",
+                backgroundColor: colorScheme.primary,
+                onTap: onApply,
+              ),
+            ),
+            Space.w16,
+            Expanded(
+              child: InkwellButtonWidget(
+                title: 'پاک کردن همه',
+                backgroundColor: Colors.transparent,
+                borderColor: colorScheme.onPrimaryFixed,
+                titleColor: colorScheme.onPrimaryFixed,
+                onTap: onClear,
+              ),
+            )
+          ],),
+
         ],
       ),
     );

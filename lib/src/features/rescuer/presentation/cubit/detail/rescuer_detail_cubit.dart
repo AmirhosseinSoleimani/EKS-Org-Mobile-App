@@ -3,8 +3,6 @@ import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/san_histo
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/skill_certificate_entity.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/use_cases/delete_rescuer_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/use_cases/get_rescuer_by_id_use_case.dart';
-import 'package:eks_sana_plus_org/src/features/rescuer/domain/use_cases/get_rescuer_history_use_case.dart';
-import 'package:eks_sana_plus_org/src/features/rescuer/domain/use_cases/get_rescuer_skill_certificates_use_case.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart'
     show ApiResultPatterns;
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
@@ -20,14 +18,10 @@ part 'rescuer_detail_state.dart';
 class RescuerDetailCubit extends Cubit<RescuerDetailState> {
   RescuerDetailCubit(
     this._getRescuerByIdUseCase,
-    this._getSkillCertificatesUseCase,
-    this._getHistoryUseCase,
     this._deleteRescuerUseCase,
   ) : super(const RescuerDetailState.idle());
 
   final GetRescuerByIdUseCase _getRescuerByIdUseCase;
-  final GetRescuerSkillCertificatesUseCase _getSkillCertificatesUseCase;
-  final GetRescuerHistoryUseCase _getHistoryUseCase;
   final DeleteRescuerUseCase _deleteRescuerUseCase;
 
   VoidCallback? _retryAction;
@@ -88,78 +82,11 @@ class RescuerDetailCubit extends Cubit<RescuerDetailState> {
       return;
     }
 
-    var updatedData = state.data.copyWith(rescuer: loadedRescuer);
-
-    final skillsResult = await _getSkillCertificatesUseCase(id);
-    skillsResult.whenOrNull(
-      success: (data, failures, resultCode) {
-        updatedData = updatedData.copyWith(
-          skillCertificates:
-              List<SkillCertificateEntity>.unmodifiable(data),
-        );
-      },
-      failure: (error, message) {
-        failure = _buildErrorMessage(
-          title: 'خطا در دریافت گواهینامه‌ها',
-          message: message ??
-              error?.toString() ??
-              'دریافت گواهینامه‌های مهارت با خطا مواجه شد.',
-        );
-      },
-      connectionError: () {
-        hasConnectionError = true;
-      },
+    _safeEmit(
+      RescuerDetailState.loaded(
+        data: state.data.copyWith(rescuer: loadedRescuer),
+      ),
     );
-
-    if (hasConnectionError) {
-      _safeEmit(RescuerDetailState.connectionError(data: updatedData));
-      return;
-    }
-    if (failure != null) {
-      _safeEmit(
-        RescuerDetailState.error(
-          data: updatedData,
-          message: failure!,
-        ),
-      );
-      return;
-    }
-
-    final historyResult = await _getHistoryUseCase(id);
-    historyResult.whenOrNull(
-      success: (data, failures, resultCode) {
-        updatedData = updatedData.copyWith(
-          histories: List<SanHistoryEntity>.unmodifiable(data),
-        );
-      },
-      failure: (error, message) {
-        failure = _buildErrorMessage(
-          title: 'خطا در دریافت تاریخچه',
-          message: message ??
-              error?.toString() ??
-              'دریافت تاریخچه امدادرسان با خطا مواجه شد.',
-        );
-      },
-      connectionError: () {
-        hasConnectionError = true;
-      },
-    );
-
-    if (hasConnectionError) {
-      _safeEmit(RescuerDetailState.connectionError(data: updatedData));
-      return;
-    }
-    if (failure != null) {
-      _safeEmit(
-        RescuerDetailState.error(
-          data: updatedData,
-          message: failure!,
-        ),
-      );
-      return;
-    }
-
-    _safeEmit(RescuerDetailState.loaded(data: updatedData));
   }
 
   Future<bool> deleteRescuer() async {
