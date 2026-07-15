@@ -7,12 +7,10 @@ class LocalServiceChip extends StatelessWidget {
   const LocalServiceChip({
     super.key,
     required this.category,
-    required this.onTap,
     this.onDefects,
   });
 
   final EmdadServiceCategoryEntity category;
-  final VoidCallback onTap;
   final ValueChanged<int>? onDefects;
 
   @override
@@ -24,44 +22,37 @@ class LocalServiceChip extends StatelessWidget {
     return Material(
       color: Colors.white,
       borderRadius: BorderRadius.circular(10),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(10),
-        child: Container(
-          constraints: const BoxConstraints(minHeight: 44),
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppPadding.p16,
-            vertical: AppPadding.p10,
-          ),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: color, width: selected ? 1.6 : 1),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (selected) ...[
-                Icon(Icons.check_circle_outline_rounded, size: AppSize.s16, color: color),
-                const SizedBox(width: 6),
-              ],
-              Text(
-                category.title,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: selected ? color : const Color(0xFF202020),
-                  fontWeight: FontWeight.w600,
-                ),
-              ),
-              if (selected && onDefects != null) ...[
-                Space.w8,
-                InkWell(
-                  onTap: () => onDefects!(category.id),
-                  customBorder: const CircleBorder(),
-                  child: Icon(Icons.settings_outlined, size: AppSize.s16, color: color),
-                ),
-              ],
+      child: Container(
+        constraints: const BoxConstraints(minHeight: 44),
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppPadding.p16,
+          vertical: AppPadding.p10,
+        ),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(10),
+          border: Border.all(color: color, width: selected ? 1.6 : 1),
+        ),
+        child: Row(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            if (selected) ...[
+              Icon(Icons.check_circle_outline_rounded, size: AppSize.s16, color: color),
+              const SizedBox(width: 6),
             ],
-          ),
+            Text(
+              category.title,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: selected ? color : const Color(0xFF202020),
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+            if (selected && onDefects != null) ...[
+              Space.w8,
+              Icon(Icons.settings_outlined, size: AppSize.s16, color: color),
+              // onTap: () => onDefects!(category.id),
+            ],
+          ],
         ),
       ),
     );

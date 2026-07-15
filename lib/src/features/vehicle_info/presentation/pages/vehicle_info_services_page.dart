@@ -61,7 +61,7 @@ class _VehicleInfoServicesView extends StatelessWidget {
                 child: InkwellButtonWidget(
                   title: 'بستن',
                   showLoading: state.data.isSubmitting,
-                  onTap: item.id == null ? null : () => cubit.submitServiceCategories(item.id!, useBatchEndpoint: true),
+                  onTap: (){context.pop();}/*item.id == null ? null : () => cubit.submitServiceCategories(item.id!, useBatchEndpoint: true)*/,
                 ),
               );
             },
@@ -88,7 +88,8 @@ class _VehicleInfoServicesView extends StatelessWidget {
                   ...data.serviceCategoryGroups.map((group) {
                     return ServiceGroupSection(
                       group: group,
-                      onSelect: (categoryId) => _selectSingleCategory(context, group, categoryId),
+                      // onSelect: (categoryId) => _selectSingleCategory(context, group, categoryId),
+                      onSelect: null,
                       onDefects: item.id == null
                           ? null
                           : (categoryId) => _showDefects(context, item.id!, categoryId),

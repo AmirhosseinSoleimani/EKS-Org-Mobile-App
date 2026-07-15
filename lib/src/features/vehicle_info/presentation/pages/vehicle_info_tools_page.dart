@@ -60,7 +60,7 @@ class _VehicleInfoToolsView extends StatelessWidget {
                 child: InkwellButtonWidget(
                   title: 'بستن',
                   showLoading: state.data.isSubmitting,
-                  onTap: item.id == null ? null : () => cubit.submitTools(item.id!),
+                  onTap: (){context.pop();}//item.id == null ? null : () => cubit.submitTools(item.id!),
                 ),
               );
             },
@@ -93,7 +93,7 @@ class _VehicleInfoToolsView extends StatelessWidget {
                       children: data.filteredTools.map((tool) {
                         return VehicleToolChip(
                           tool: tool,
-                          onTap: () => cubit.toggleTool(tool.emdadToolsId),
+                          // onTap: () => cubit.toggleTool(tool.emdadToolsId),
                         );
                       }).toList(),
                     ),
