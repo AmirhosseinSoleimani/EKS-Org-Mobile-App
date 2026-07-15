@@ -317,6 +317,29 @@ import '../features/representation/domain/repositories/representation_repository
     as _i815;
 import '../features/representation/presentation/cubit/representation_cubit.dart'
     as _i79;
+import '../features/rescuer/data/data_sources/rescuer_data_source.dart'
+    as _i940;
+import '../features/rescuer/data/data_sources/rescuer_data_source_impl.dart'
+    as _i100;
+import '../features/rescuer/data/repositories/rescuer_repository_impl.dart'
+    as _i61;
+import '../features/rescuer/data/service/rescuer_service.dart' as _i298;
+import '../features/rescuer/domain/repositories/rescuer_repository.dart'
+    as _i449;
+import '../features/rescuer/domain/use_cases/delete_rescuer_use_case.dart'
+    as _i708;
+import '../features/rescuer/domain/use_cases/get_rescuer_by_id_use_case.dart'
+    as _i14;
+import '../features/rescuer/domain/use_cases/get_rescuer_history_use_case.dart'
+    as _i339;
+import '../features/rescuer/domain/use_cases/get_rescuer_skill_certificates_use_case.dart'
+    as _i833;
+import '../features/rescuer/domain/use_cases/get_rescuers_use_case.dart'
+    as _i557;
+import '../features/rescuer/presentation/cubit/detail/rescuer_detail_cubit.dart'
+    as _i63;
+import '../features/rescuer/presentation/cubit/list/rescuer_list_cubit.dart'
+    as _i404;
 import '../features/services/data/data_source/request_history_data_source.dart'
     as _i1016;
 import '../features/services/data/data_source/request_history_data_source_impl.dart'
@@ -716,6 +739,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i300.GradePatternService>(
     () => _i300.GradePatternService(gh<_i361.Dio>()),
   );
+  gh.lazySingleton<_i298.RescuerService>(
+    () => _i298.RescuerService(gh<_i361.Dio>()),
+  );
   gh.lazySingleton<_i810.VehicleInfoService>(
     () => _i810.VehicleInfoService(gh<_i361.Dio>()),
   );
@@ -733,6 +759,9 @@ _i174.GetIt $initGetIt(
     () => _i282.IndicatorReportRepositoryImpl(
       gh<_i691.IndicatorReportDataSource>(),
     ),
+  );
+  gh.lazySingleton<_i940.RescuerDataSource>(
+    () => _i100.RescuerDataSourceImpl(gh<_i298.RescuerService>()),
   );
   gh.lazySingleton<_i475.MainRemoteDataSource>(
     () => _i203.MainRemoteDataSourceImpl(gh<_i438.MainService>()),
@@ -801,6 +830,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i133.CartableRepository>(
     () => _i304.CartableRepositoryImpl(gh<_i249.CartableDataSource>()),
   );
+  gh.lazySingleton<_i449.RescuerRepository>(
+    () => _i61.RescuerRepositoryImpl(gh<_i940.RescuerDataSource>()),
+  );
   gh.lazySingleton<_i92.MapRepository>(
     () => _i810.MapRepositoryImpl(gh<_i971.MapDataSource>()),
   );
@@ -863,6 +895,22 @@ _i174.GetIt $initGetIt(
     () => _i1063.HomeServiceEvaluationRepositoryImpl(
       gh<_i999.HomeServiceEvaluationDataSource>(),
     ),
+  );
+  gh.factory<_i708.DeleteRescuerUseCase>(
+    () => _i708.DeleteRescuerUseCase(gh<_i449.RescuerRepository>()),
+  );
+  gh.factory<_i14.GetRescuerByIdUseCase>(
+    () => _i14.GetRescuerByIdUseCase(gh<_i449.RescuerRepository>()),
+  );
+  gh.factory<_i339.GetRescuerHistoryUseCase>(
+    () => _i339.GetRescuerHistoryUseCase(gh<_i449.RescuerRepository>()),
+  );
+  gh.factory<_i833.GetRescuerSkillCertificatesUseCase>(
+    () =>
+        _i833.GetRescuerSkillCertificatesUseCase(gh<_i449.RescuerRepository>()),
+  );
+  gh.factory<_i557.GetRescuersUseCase>(
+    () => _i557.GetRescuersUseCase(gh<_i449.RescuerRepository>()),
   );
   gh.factory<_i125.AssignEmdadUnitPersonUseCase>(
     () => _i125.AssignEmdadUnitPersonUseCase(gh<_i14.EmdadUnitRepository>()),
@@ -1349,6 +1397,14 @@ _i174.GetIt $initGetIt(
       gh<_i786.GetEmdadgarInfoUseCase>(),
     ),
   );
+  gh.factory<_i63.RescuerDetailCubit>(
+    () => _i63.RescuerDetailCubit(
+      gh<_i14.GetRescuerByIdUseCase>(),
+      gh<_i833.GetRescuerSkillCertificatesUseCase>(),
+      gh<_i339.GetRescuerHistoryUseCase>(),
+      gh<_i708.DeleteRescuerUseCase>(),
+    ),
+  );
   gh.lazySingleton<_i122.EvaluationRepository>(
     () =>
         _i903.EvaluationRepositoryImpl(gh<_i1023.EvaluationRemoteDataSource>()),
@@ -1445,6 +1501,12 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i918.RollbackLeaveRequestUseCase>(
     () => _i918.RollbackLeaveRequestUseCase(gh<_i217.LeaveRepository>()),
+  );
+  gh.factory<_i404.RescuerListCubit>(
+    () => _i404.RescuerListCubit(
+      gh<_i557.GetRescuersUseCase>(),
+      gh<_i708.DeleteRescuerUseCase>(),
+    ),
   );
   gh.factory<_i1013.HomeServiceRequestListCubit>(
     () => _i1013.HomeServiceRequestListCubit(

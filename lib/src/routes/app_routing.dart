@@ -14,6 +14,7 @@ import 'package:eks_sana_plus_org/src/features/leave/presentation/leave_routes.d
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/plan_info_location_page.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/plan_info_routes.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/presentation/rescuer_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/assign_and_cancel_emdadgar_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cancel_request_page/cancel_request_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/cartable_cycle_page/cartable_cycle_page.dart';
@@ -367,6 +368,17 @@ class Routes {
 
             return getPage(
               child: PlanInfoLocationPage(item: item),
+              state: state,
+            );
+          },
+        ),
+
+        GoRoute(
+          path: RescuerListPage.path,
+          name: RescuerListPage.name,
+          pageBuilder: (context, state) {
+            return getPage(
+              child: RescuerListPage(),
               state: state,
             );
           },

@@ -111,6 +111,12 @@ class CurrentSessionAccessPolicy {
     return canShowMenu(CurrentSessionMenuKeys.softwareProblems);
   }
 
+  bool canShowSanRescuerInfoMenu() {
+    return canShowMenu(
+      CurrentSessionMenuKeys.sanRescuerInfo,
+    );
+  }
+
   bool canShowInvoicesMenu() {
     return canShowAnyMenu([
       CurrentSessionMenuKeys.invoices,
