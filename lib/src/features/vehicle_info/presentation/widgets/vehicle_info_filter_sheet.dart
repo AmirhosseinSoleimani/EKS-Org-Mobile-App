@@ -1,7 +1,10 @@
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/params/vehicle_info_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_model_entity.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/filter_dropdown_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/car_license_plate_widget/car_license_plate_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 
 class VehicleInfoFilterSheet extends StatefulWidget {
@@ -59,92 +62,238 @@ class _VehicleInfoFilterSheetState extends State<VehicleInfoFilterSheet> {
 
   @override
   Widget build(BuildContext context) {
+
     final theme = Theme.of(context);
+
     return SafeArea(
       child: Padding(
         padding: EdgeInsets.only(
           left: AppPadding.p16,
           right: AppPadding.p16,
           top: AppPadding.p16,
-          bottom: MediaQuery.of(context).viewInsets.bottom + AppPadding.p16,
+          bottom:
+          MediaQuery
+              .of(context)
+              .viewInsets
+              .bottom +
+              AppPadding.p16,
         ),
         child: SingleChildScrollView(
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
+
               Align(
                 alignment: Alignment.centerRight,
-                child: Text('فیلتر خودرو', style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+                child: Text(
+                  'فیلتر خودرو',
+                  style: theme.textTheme.titleMedium?.copyWith(
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
               ),
               Space.h16,
-              DropdownButtonFormField<int>(
+              FilterDropdownWidget<int>(
+                label: 'نوع خودرو',
                 value: _vehicleModelId,
-                isExpanded: true,
-                decoration: const InputDecoration(labelText: 'نوع خودرو'),
-                items: widget.vehicleModels
-                    .map((item) => DropdownMenuItem(value: item.id, child: Text(item.title)))
-                    .toList(),
-                onChanged: (value) => setState(() => _vehicleModelId = value),
-              ),
-              TextField(controller: _chassisController, decoration: const InputDecoration(labelText: 'شماره شاسی')),
-              TextField(controller: _engineController, decoration: const InputDecoration(labelText: 'شماره موتور')),
-              TextField(controller: _imeiController, decoration: const InputDecoration(labelText: 'IMEI')),
-              TextField(controller: _plateController, decoration: const InputDecoration(labelText: 'پلاک')),
-              _BoolDropdown(label: 'انبارک', value: _isDepotEnabled, onChanged: (value) => setState(() => _isDepotEnabled = value)),
-              _BoolDropdown(label: 'عیب یاب', value: _isTroubleShooter, onChanged: (value) => setState(() => _isTroubleShooter = value)),
-              _BoolDropdown(label: 'وضعیت', value: _isActive, onChanged: (value) => setState(() => _isActive = value)),
-              DropdownButtonFormField<int?>(
-                value: _tashimType,
-                decoration: const InputDecoration(labelText: 'مدل تسهیم انبارک'),
-                items: const [
-                  DropdownMenuItem<int?>(value: null, child: Text('همه')),
-                  DropdownMenuItem<int?>(value: 1, child: Text('براساس نمایندگی')),
-                  DropdownMenuItem<int?>(value: 2, child: Text('براساس خودرو')),
+                items: [
+                  const DropdownMenuItem(
+                    value: null,
+                    child: Text('همه'),
+                  ),
+
+                  ...widget.vehicleModels.map(
+                        (item) =>
+                        DropdownMenuItem(
+                          value: item.id,
+                          child: Text(item.title),
+                        ),
+                  ),
+
                 ],
-                onChanged: (value) => setState(() => _tashimType = value),
+                onChanged: (value) {
+                  setState(() {
+                    _vehicleModelId = value;
+                  });
+                },
+              ),
+              Space.h12,
+              TextFormFieldWidget(
+                controller: _chassisController,
+                labelText: 'شماره شاسی',
+              ),
+              Space.h12,
+              TextFormFieldWidget(
+                controller: _engineController,
+                labelText: 'شماره موتور',
+              ),
+              Space.h12,
+              TextFormFieldWidget(
+                controller: _imeiController,
+                labelText: 'IMEI',
+              ),
+              Space.h12,
+              FilterDropdownWidget<bool>(
+                label: 'انبارک',
+                value: _isDepotEnabled,
+                items: const [
+                  DropdownMenuItem(
+                    value: null,
+                    child: Text('همه'),
+                  ),
+                  DropdownMenuItem(
+                    value: true,
+                    child: Text('فعال'),
+                  ),
+                  DropdownMenuItem(
+                    value: false,
+                    child: Text('غیرفعال'),
+                  ),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    _isDepotEnabled = value;
+                  });
+                },
+              ),
+
+
+              Space.h12,
+
+
+              FilterDropdownWidget<bool>(
+                label: 'عیب یاب',
+                value: _isTroubleShooter,
+                items: const [
+                  DropdownMenuItem(
+                    value: null,
+                    child: Text('همه'),
+                  ),
+                  DropdownMenuItem(
+                    value: true,
+                    child: Text('فعال'),
+                  ),
+                  DropdownMenuItem(
+                    value: false,
+                    child: Text('غیرفعال'),
+                  ),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    _isTroubleShooter = value;
+                  });
+                },
+              ),
+
+
+              Space.h12,
+
+
+              FilterDropdownWidget<bool>(
+                label: 'وضعیت',
+                value: _isActive,
+                items: const [
+                  DropdownMenuItem(
+                    value: null,
+                    child: Text('همه'),
+                  ),
+                  DropdownMenuItem(
+                    value: true,
+                    child: Text('فعال'),
+                  ),
+                  DropdownMenuItem(
+                    value: false,
+                    child: Text('غیرفعال'),
+                  ),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    _isActive = value;
+                  });
+                },
+              ),
+              Space.h12,
+              FilterDropdownWidget<int>(
+                label: 'مدل تسهیم انبارک',
+                value: _tashimType,
+                items: const [
+                  DropdownMenuItem(
+                    value: null,
+                    child: Text('همه'),
+                  ),
+                  DropdownMenuItem(
+                    value: 1,
+                    child: Text('براساس نمایندگی'),
+                  ),
+                  DropdownMenuItem(
+                    value: 2,
+                    child: Text('براساس خودرو'),
+                  ),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    _tashimType = value;
+                  });
+                },
               ),
               Space.h24,
+              Padding(
+                padding: const EdgeInsets.only(left: AppPadding.p36,right:
+                AppPadding.p36, bottom: AppPadding.p44),
+                child: LicensePlateTextFormFieldWidget(controller: _plateController,mandatory: false,),
+              ),
               Row(
                 children: [
                   Expanded(
                     child: InkwellButtonWidget(
                       title: 'اعمال فیلتر',
-                      onTap: () {
-                        widget.onApply(VehicleInfoFilterParamEntity(
-                          vehicleModelId: _vehicleModelId,
-                          isDepotEnabled: _isDepotEnabled,
-                          tashimType: _tashimType,
-                          chassisNumber: _chassisController.text,
-                          engineNumber: _engineController.text,
-                          imeiSerial: _imeiController.text,
-                          licensePlate: _plateController.text,
-                          isTroubleShooter: _isTroubleShooter,
-                          isActive: _isActive,
-                        ));
-                        Navigator.of(context).pop();
-                      },
+                      onTap: _applyFilter,
                     ),
                   ),
+
                   Space.w12,
+
                   Expanded(
                     child: InkwellButtonWidget(
                       title: 'پاک کردن',
-                      backgroundColor: theme.colorScheme.onPrimary,
-                      borderColor: theme.colorScheme.outline.withOpacity(0.65),
-                      titleColor: theme.colorScheme.onSurface,
+                      backgroundColor:
+                      theme.colorScheme.onPrimary,
+                      borderColor:
+                      theme.colorScheme.outline.withOpacity(.65),
+                      titleColor:
+                      theme.colorScheme.onSurface,
                       onTap: () {
                         widget.onClear();
-                        Navigator.of(context).pop();
+                        Navigator.pop(context);
                       },
                     ),
                   ),
                 ],
               ),
+              Space.h12,
             ],
           ),
         ),
       ),
     );
+  }
+
+  void _applyFilter() {
+    widget.onApply(
+      VehicleInfoFilterParamEntity(
+        vehicleModelId: _vehicleModelId,
+        isDepotEnabled: _isDepotEnabled,
+        tashimType: _tashimType,
+        chassisNumber: _chassisController.text,
+        engineNumber: _engineController.text,
+        imeiSerial: _imeiController.text,
+        licensePlate: _plateController.text,
+        isTroubleShooter: _isTroubleShooter,
+        isActive: _isActive,
+      ),
+    );
+
+    Navigator.of(context).pop();
   }
 }
 

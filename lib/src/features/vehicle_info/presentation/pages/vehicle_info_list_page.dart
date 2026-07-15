@@ -264,28 +264,38 @@ class _HeaderButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Material(
-      color: theme.colorScheme.onPrimary,
+    final colorScheme = theme.colorScheme;
+
+    return InkWell(
       borderRadius: BorderRadius.circular(AppSize.s8),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppSize.s8),
-        child: SizedBox(
-          height: AppSize.s40,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(icon, size: AppSize.s20, color: theme.colorScheme.onSurfaceVariant),
-              Space.w8,
-              Text(
-                title,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w700,
-                ),
+      onTap: onTap,
+      child: Container(
+        height: AppSize.s48,
+        padding: const EdgeInsets.symmetric(
+          horizontal: AppPadding.p14,
+        ),
+        decoration: BoxDecoration(
+          color: colorScheme.onPrimary,
+          borderRadius: BorderRadius.circular(AppSize.s8),
+        ),
+        child: Row(
+          children: [
+            Text(
+              title,
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: colorScheme.onSurface,
+                fontWeight: FontWeight.w600,
               ),
-            ],
-          ),
+            ),
+
+            const Spacer(),
+
+            Icon(
+              icon,
+              size: AppSize.s22,
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ],
         ),
       ),
     );

@@ -15,6 +15,7 @@ class LightThemeData extends AppThemeData {
   ThemeData get materialThemeData => ThemeData(
       useMaterial3: true,
       brightness: Brightness.light,
+      dividerColor: const Color(0xFFE3E2E2),
       colorScheme: const ColorScheme(
         primary: ColorLightManager.primary,
         onPrimary: ColorLightManager.onPrimary,
@@ -22,7 +23,6 @@ class LightThemeData extends AppThemeData {
         secondary: ColorLightManager.secondary,
         /// Todo add onSecondary color
         onSecondary: ColorLightManager.secondary,
-
         error: ColorLightManager.error,
         onError: ColorLightManager.onError,
 

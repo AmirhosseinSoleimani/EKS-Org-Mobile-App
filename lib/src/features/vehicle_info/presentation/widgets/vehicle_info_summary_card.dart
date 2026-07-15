@@ -68,16 +68,16 @@ class VehicleInfoSummaryCard extends StatelessWidget {
                 VehicleInfoStatusBadge(title: item.vehicleStatusTitle, isActive: item.isActive),
               ],
             ),
-            Space.h12,
+            Space.h16,
             if (item.licensePlate?.trim().isNotEmpty == true) ...[
               Align(
                 alignment: Alignment.centerRight,
                 child: VehicleLicensePlateView(licensePlate: item.licensePlate!),
               ),
-              Space.h14,
+              Space.h16,
             ],
             _DetailLine(
-              icon: Icons.tag_rounded,
+              icon: Icons.tag_outlined,
               label: 'شماره شاسی',
               value: item.chassisNumber,
             ),
@@ -106,9 +106,9 @@ class VehicleInfoSummaryCard extends StatelessWidget {
               label: 'انبارک',
               value: item.isDepotEnabled == true ? 'فعال' : 'غیرفعال',
             ),
-            Space.h14,
-            Divider(height: AppSize.s1, color: theme.dividerColor.withOpacity(0.55)),
-            Space.h12,
+            Space.h16,
+            Divider(height: AppSize.s1, color: theme.dividerColor),
+            Space.h16,
             Row(
               children: [
                 Expanded(
@@ -129,7 +129,7 @@ class VehicleInfoSummaryCard extends StatelessWidget {
                 ),
               ],
             ),
-            Space.h12,
+            Space.h24,
             _OperationButton(onTap: () => _showActions(context)),
           ],
         ),
@@ -173,7 +173,7 @@ class VehicleInfoSummaryCard extends StatelessWidget {
               ),
               _ActionTile(
                 title: 'سرویس ها',
-                icon: Icons.settings_applications_outlined,
+                icon: Icons.settings_outlined,
                 onTap: onServices,
               ),
               _ActionTile(
@@ -213,10 +213,10 @@ class _DetailLine extends StatelessWidget {
     final theme = Theme.of(context);
     final displayValue = value?.trim().isNotEmpty == true ? value!.trim() : '---';
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppPadding.p4),
+      padding: const EdgeInsets.symmetric(vertical: AppPadding.p8),
       child: Row(
         children: [
-          Icon(icon, size: AppSize.s20, color: theme.colorScheme.onSurfaceVariant),
+          Icon(icon, size: AppSize.s20, color: Color(0xFF555555)),
           Space.w8,
           Expanded(
             child: Text(
@@ -225,7 +225,7 @@ class _DetailLine extends StatelessWidget {
               maxLines: 1,
               overflow: TextOverflow.ellipsis,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
+                color: Color(0xFF555555),
                 fontWeight: FontWeight.w600,
               ),
             ),
@@ -306,12 +306,12 @@ class _ActionTile extends StatelessWidget {
         ),
         child: Row(
           children: [
-            Icon(icon, color: color ?? theme.colorScheme.onSurfaceVariant),
+            Icon(icon, color: color ?? theme.colorScheme.onTertiaryFixed),
             Space.w12,
             Text(
               title,
               style: theme.textTheme.bodyMedium?.copyWith(
-                color: color ?? theme.colorScheme.onSurface,
+                color: color ?? theme.colorScheme.onTertiaryFixed,
                 fontWeight: FontWeight.w700,
               ),
             ),
