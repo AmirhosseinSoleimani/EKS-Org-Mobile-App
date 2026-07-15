@@ -133,7 +133,7 @@ class RescuerCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 14),
-          Divider(height: 1, color: colorScheme.outlineVariant),
+          Divider(height: 1),
           const SizedBox(height: 12),
           Row(
             children: [

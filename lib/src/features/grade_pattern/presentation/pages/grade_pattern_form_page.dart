@@ -6,6 +6,7 @@ import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -107,11 +108,9 @@ class _GradePatternFormViewState extends State<_GradePatternFormView> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TextField(
+                      TextFormFieldWidget(
                         controller: _nameController,
-                        decoration: const InputDecoration(
-                          labelText: 'نام الگوی گرید',
-                        ),
+                        labelText: 'نام الگوی گرید',
                       ),
                       Space.h12,
                       DropdownButtonFormField<bool>(
