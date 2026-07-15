@@ -1,8 +1,10 @@
+import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_src.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 
 class RescuerInfoRow extends StatelessWidget {
-  final IconData icon;
+  final String icon;
   final String label;
   final String value;
 
@@ -22,19 +24,17 @@ class RescuerInfoRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            icon,
-            size: 20,
-            color: colorScheme.onSurfaceVariant,
+          SvgWidget(src: SvgAsset(icon),
           ),
           const SizedBox(width: 8),
           Expanded(
             child: BodyMediumText(
               text: '$label: $value',
-              color: colorScheme.onSurfaceVariant,
+              color: colorScheme.onTertiaryFixed,
               fontSize: 13,
               maxLines: 2,
               textOverflow: TextOverflow.ellipsis,
+              fontWeight: FontWeight.w600,
             ),
           ),
         ],

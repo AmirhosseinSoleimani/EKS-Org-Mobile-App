@@ -45,6 +45,19 @@ class SvgManager {
   static const String arrowLeftAlt = '${_basePath}arrow_left_alt.svg';
   static const String exportNotes = '${_basePath}export_notes.svg';
   static const String calendarClock = '${_basePath}calendar_clock.svg';
+  static const String serviceVehicleLocation = '${_basePath}service_vehicle_location.svg';
+  static const String shoeSize = '${_basePath}shoe_size.svg';
+  static const String categoryGrid = '${_basePath}category_grid.svg';
+  static const String history = '${_basePath}history.svg';
+  static const String inactiveStatus = '${_basePath}inactive_status.svg';
+  static const String rescuerPerson = '${_basePath}rescuer_person.svg';
+  static const String rescuerSkills = '${_basePath}rescuer_skills.svg';
+  static const String identityCard = '${_basePath}identity_card.svg';
+  static const String calendar = '${_basePath}calendar.svg';
+  static const String mobilePhone = '${_basePath}mobile_phone.svg';
+  static const String workStartHistory = '${_basePath}work_start_history.svg';
+  static const String rescuerOperations = '${_basePath}rescuer_operations.svg';
+  static const String clothingSize = '${_basePath}clothing_size.svg';
 }
 
 

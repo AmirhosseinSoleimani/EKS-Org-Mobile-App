@@ -1,3 +1,6 @@
+import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_src.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/material.dart';
 
@@ -21,6 +24,7 @@ class RescuerSkillsPreview extends StatelessWidget {
       spacing: 6,
       runSpacing: 6,
       children: [
+        SvgWidget(src: SvgAsset(SvgManager.rescuerOperations)),
         ...visibleTitles.map(
           (title) => Container(
             padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
