@@ -1124,6 +1124,9 @@ _i174.GetIt $initGetIt(
       gh<_i1027.VehicleInfoRepository>(),
     ),
   );
+  gh.factory<_i579.VehicleInfoHistoryUseCase>(
+    () => _i579.VehicleInfoHistoryUseCase(gh<_i1027.VehicleInfoRepository>()),
+  );
   gh.lazySingleton<_i825.AssignGradePatternReferenceUseCase>(
     () => _i825.AssignGradePatternReferenceUseCase(
       gh<_i577.GradePatternRepository>(),
@@ -1153,6 +1156,18 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i244.UpdateGradePatternUseCase>(
     () => _i244.UpdateGradePatternUseCase(gh<_i577.GradePatternRepository>()),
+  );
+  gh.factory<_i772.VehicleInfoCubit>(
+    () => _i772.VehicleInfoCubit(
+      gh<_i579.GetVehicleInfoListUseCase>(),
+      gh<_i579.GetVehicleInfoByIdUseCase>(),
+      gh<_i579.SaveVehicleInfoUseCase>(),
+      gh<_i579.DeleteVehicleInfoUseCase>(),
+      gh<_i579.GetVehicleInfoLookupsUseCase>(),
+      gh<_i579.VehicleInfoToolsUseCase>(),
+      gh<_i579.VehicleInfoServiceCategoriesUseCase>(),
+      gh<_i579.VehicleInfoHistoryUseCase>(),
+    ),
   );
   gh.factory<_i264.FollowUpRegisterCubit>(
     () => _i264.FollowUpRegisterCubit(
@@ -1320,17 +1335,6 @@ _i174.GetIt $initGetIt(
       gh<_i672.GetReliefRequestByIdUseCase>(),
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
       gh<_i786.GetEmdadgarInfoUseCase>(),
-    ),
-  );
-  gh.factory<_i772.VehicleInfoCubit>(
-    () => _i772.VehicleInfoCubit(
-      gh<_i579.GetVehicleInfoListUseCase>(),
-      gh<_i579.GetVehicleInfoByIdUseCase>(),
-      gh<_i579.SaveVehicleInfoUseCase>(),
-      gh<_i579.DeleteVehicleInfoUseCase>(),
-      gh<_i579.GetVehicleInfoLookupsUseCase>(),
-      gh<_i579.VehicleInfoToolsUseCase>(),
-      gh<_i579.VehicleInfoServiceCategoriesUseCase>(),
     ),
   );
   gh.factory<_i317.HomeServiceEvaluationFirstStepCubit>(

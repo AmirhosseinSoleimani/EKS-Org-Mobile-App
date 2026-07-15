@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/cubit/vehicle_info_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/pages/vehicle_info_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/pages/vehicle_info_services_page.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/pages/vehicle_info_tools_page.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/vehicle_info_filter_sheet.dart';
@@ -132,12 +133,7 @@ class _VehicleInfoListViewState extends State<_VehicleInfoListView> {
                     onTools: () => context.pushNamed(VehicleInfoToolsPage.name, extra: item),
                     onServices: () => context.pushNamed(VehicleInfoServicesPage.name, extra: item),
                     onDelete: item.id == null ? null : () => cubit.deleteItem(item.id!),
-                    onHistory: () {
-                      SnakeBarWidget.showError(
-                        context: context,
-                        message: 'مسیر تاریخچه خودرو در قراردادهای فعلی Flutter یافت نشد.',
-                      );
-                    },
+                    onHistory: () => context.pushNamed(VehicleInfoHistoryPage.name, extra: item),
                   );
                 },
               ),

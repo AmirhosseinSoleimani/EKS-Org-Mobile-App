@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/emda
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/params/create_or_edit_vehicle_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/params/vehicle_info_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_defect_limitation_entity.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_history_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_model_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_tool_entity.dart';
@@ -27,6 +28,7 @@ class VehicleInfoCubit extends Cubit<VehicleInfoState> {
     this._lookupsUseCase,
     this._toolsUseCase,
     this._categoriesUseCase,
+    this._historyUseCase,
   ) : super(const VehicleInfoState.idle());
 
   final GetVehicleInfoListUseCase _getListUseCase;
@@ -36,6 +38,7 @@ class VehicleInfoCubit extends Cubit<VehicleInfoState> {
   final GetVehicleInfoLookupsUseCase _lookupsUseCase;
   final VehicleInfoToolsUseCase _toolsUseCase;
   final VehicleInfoServiceCategoriesUseCase _categoriesUseCase;
+  final VehicleInfoHistoryUseCase _historyUseCase;
 
   final chassisController = TextEditingController();
   final engineController = TextEditingController();
@@ -332,6 +335,27 @@ class VehicleInfoCubit extends Cubit<VehicleInfoState> {
     return _handleVoidResult(result, 'محدودیت عیوب خودرو با موفقیت ثبت شد');
   }
 
+  Future<void> loadHistory({
+    required int refId,
+    int type = 2,
+  }) async {
+    if (_data.loadingHistoryRefId == refId) return;
+    emit(VehicleInfoState.loading(data: _data.copyWith(
+      loadingHistoryRefId: refId,
+      errorMessage: null,
+    )));
+    final result = await _historyUseCase.getHistories(refId: refId, type: type);
+    result.when(
+      success: (items, failures, resultCode) => emit(VehicleInfoState.loaded(data: _data.copyWith(
+        histories: items,
+        loadingHistoryRefId: null,
+      ))),
+      failure: (error, failures) => _emitFailure(failures, clearHistoryLoading: true),
+      expireToken: () => _emitFailure('نشست کاربری منقضی شده است.', clearHistoryLoading: true),
+      connectionError: () => emit(VehicleInfoState.connectionError(data: _data.copyWith(loadingHistoryRefId: null))),
+    );
+  }
+
   List<VehicleToolEntity> _filterTools(List<VehicleToolEntity> tools, String query) {
     final normalized = query.trim().toLowerCase();
     if (normalized.isEmpty) return tools;
@@ -379,6 +403,7 @@ class VehicleInfoCubit extends Cubit<VehicleInfoState> {
     bool clearToolsLoading = false,
     bool clearServicesLoading = false,
     bool clearDefectsLoading = false,
+    bool clearHistoryLoading = false,
     bool clearReportLoading = false,
   }) {
     emit(VehicleInfoState.failure(data: _data.copyWith(
@@ -392,6 +417,7 @@ class VehicleInfoCubit extends Cubit<VehicleInfoState> {
       loadingToolsVehicleId: clearToolsLoading ? null : _data.loadingToolsVehicleId,
       loadingServicesVehicleId: clearServicesLoading ? null : _data.loadingServicesVehicleId,
       loadingDefectsServiceCategoryId: clearDefectsLoading ? null : _data.loadingDefectsServiceCategoryId,
+      loadingHistoryRefId: clearHistoryLoading ? null : _data.loadingHistoryRefId,
       isReportLoading: clearReportLoading ? false : _data.isReportLoading,
       errorMessage: message?.trim().isNotEmpty == true ? message : 'عملیات با خطا مواجه شد.',
     )));
