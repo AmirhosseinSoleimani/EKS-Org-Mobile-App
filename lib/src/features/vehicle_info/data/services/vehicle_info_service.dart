@@ -1,6 +1,7 @@
 import 'package:dio/dio.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/data/models/emdad_service_category_model.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/data/models/vehicle_defect_limitation_model.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_info/data/models/vehicle_history_model.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/data/models/vehicle_info_filter_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/data/models/vehicle_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/data/models/vehicle_info_page_model.dart';
@@ -134,5 +135,16 @@ class VehicleInfoService {
       data: body,
     );
     return BaseResponse.fromJson(response.data ?? {});
+  }
+
+  Future<BaseListResponse<VehicleHistoryModel>> getVehicleHistories(Map<String, dynamic> queryParameters) async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      '/api/SanHistory/GetSanLogHistoriesById',
+      queryParameters: queryParameters,
+    );
+    return BaseListResponse<VehicleHistoryModel>.fromJson(
+      response.data ?? {},
+      VehicleHistoryModel.fromJson,
+    );
   }
 }

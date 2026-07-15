@@ -1,9 +1,11 @@
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/emdad_service_category_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/params/create_or_edit_vehicle_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/params/vehicle_history_param.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/params/vehicle_info_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/params/vehicle_service_category_params.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/params/vehicle_tool_params.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_defect_limitation_entity.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_history_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_info_page_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_model_entity.dart';
@@ -121,6 +123,22 @@ class VehicleInfoServiceCategoriesUseCase {
       vehicleId: vehicleId,
       serviceCategoryId: serviceCategoryId,
       defectInfoIds: defectInfoIds,
+    ));
+  }
+}
+
+@injectable
+class VehicleInfoHistoryUseCase {
+  const VehicleInfoHistoryUseCase(this._repository);
+  final VehicleInfoRepository _repository;
+
+  Future<ApiResult<List<VehicleHistoryEntity>>> getHistories({
+    required int refId,
+    int type = 2,
+  }) {
+    return _repository.getVehicleHistories(VehicleHistoryParamEntity(
+      refId: refId,
+      type: type,
     ));
   }
 }

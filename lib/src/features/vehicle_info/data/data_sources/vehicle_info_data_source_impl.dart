@@ -1,6 +1,7 @@
 import 'package:eks_sana_plus_org/src/features/vehicle_info/data/data_sources/vehicle_info_data_source.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/data/models/emdad_service_category_model.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/data/models/vehicle_defect_limitation_model.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_info/data/models/vehicle_history_model.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/data/models/vehicle_info_filter_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/data/models/vehicle_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/data/models/vehicle_info_page_model.dart';
@@ -44,4 +45,6 @@ class VehicleInfoDataSourceImpl extends VehicleInfoDataSource {
   Future<BaseListResponse<VehicleDefectLimitationModel>> getDefects(Map<String, dynamic> body) => _service.getDefects(body);
   @override
   Future<BaseResponse> submitDefectLimitation(Map<String, dynamic> body) => _service.submitDefectLimitation(body);
+  @override
+  Future<BaseListResponse<VehicleHistoryModel>> getVehicleHistories(Map<String, dynamic> queryParameters) => _service.getVehicleHistories(queryParameters);
 }

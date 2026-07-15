@@ -4,10 +4,12 @@ import 'package:eks_sana_plus_org/src/features/vehicle_info/data/data_sources/ve
 import 'package:eks_sana_plus_org/src/features/vehicle_info/data/models/vehicle_info_filter_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/emdad_service_category_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/params/create_or_edit_vehicle_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/params/vehicle_history_param.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/params/vehicle_info_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/params/vehicle_service_category_params.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/params/vehicle_tool_params.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_defect_limitation_entity.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_history_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_info_page_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_model_entity.dart';
@@ -160,6 +162,16 @@ class VehicleInfoRepositoryImpl extends VehicleInfoRepository {
   Future<ApiResult<void>> submitDefectLimitation(SubmitVehicleDefectLimitationParamEntity param) async {
     try {
       return _mapBaseResponse(await _dataSource.submitDefectLimitation(param.toJson()));
+    } catch (error, stackTrace) {
+      return error.toApiResult(stackTrace);
+    }
+  }
+
+  @override
+  Future<ApiResult<List<VehicleHistoryEntity>>> getVehicleHistories(VehicleHistoryParamEntity param) async {
+    try {
+      final result = await _dataSource.getVehicleHistories(param.toQueryParameters());
+      return result.toApiResult<VehicleHistoryEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
