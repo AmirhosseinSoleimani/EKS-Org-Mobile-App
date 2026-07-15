@@ -340,6 +340,7 @@ class VehicleInfoCubit extends Cubit<VehicleInfoState> {
     int type = 2,
   }) async {
     if (_data.loadingHistoryRefId == refId) return;
+    _retryAction = () => loadHistory(refId: refId, type: type);
     emit(VehicleInfoState.loading(data: _data.copyWith(
       loadingHistoryRefId: refId,
       errorMessage: null,

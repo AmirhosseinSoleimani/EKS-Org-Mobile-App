@@ -2,13 +2,16 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_history_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/cubit/vehicle_info_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/vehicle_info_summary_card.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/vehicle_service_info_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class VehicleInfoHistoryPage extends StatelessWidget {
   static const path = '/vehicle-info-history-page';
@@ -41,12 +44,38 @@ class _VehicleInfoHistoryView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cubit = context.read<VehicleInfoCubit>();
+
     return BlocListener<VehicleInfoCubit, VehicleInfoState>(
       listener: (context, state) {
-        final error = state.data.errorMessage;
-        if (error != null && error.isNotEmpty) {
-          SnakeBarWidget.showError(context: context, message: error);
-        }
+        state.whenOrNull(
+          failure: (data) {
+            BottomSheetMessage.showError(
+              context: context,
+              data: BottomSheetMessageModel(
+                title: 'خطا',
+                message: data.errorMessage ?? 'عملیات با خطا مواجه شد.',
+              ),
+              onButtonTap: () {
+                context.pop();
+                if (cubit.hasRetryAction) {
+                  cubit.retryLastAction();
+                }
+              },
+            );
+          },
+          connectionError: (data) {
+            BottomSheetMessage.showCustom(
+              context: context,
+              content: NoInternetBottomSheet(
+                onRetry: cubit.hasRetryAction ? cubit.retryLastAction : () => context.pop(),
+              ),
+              actionWidget: const SizedBox.shrink(),
+              isDismissible: false,
+              enableDrag: false,
+            );
+          },
+        );
       },
       child: Directionality(
         textDirection: TextDirection.rtl,
@@ -57,127 +86,61 @@ class _VehicleInfoHistoryView extends StatelessWidget {
             builder: (context, state) {
               final data = state.data;
               final isLoading = data.loadingHistoryRefId != null;
-              return ListView(
-                padding: const EdgeInsets.all(AppPadding.p16),
-                children: [
-                  _VehicleHistoryHeaderCard(item: item),
-                  Space.h24,
+              return CustomScrollView(
+                slivers: [
+                  SliverPadding(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppPadding.p16,
+                      AppPadding.p16,
+                      AppPadding.p16,
+                      0,
+                    ),
+                    sliver: SliverToBoxAdapter(
+                      child: Column(
+                        children: [
+                          VehicleServiceInfoCard(item:item),
+                          Space.h24,
+                        ],
+                      ),
+                    ),
+                  ),
                   if (isLoading)
-                    const SizedBox(
-                      height: AppSize.s300,
+                    const SliverFillRemaining(
+                      hasScrollBody: false,
                       child: Center(child: CircularProgressIndicator()),
                     )
                   else if (data.histories.isEmpty)
-                    Center(child: const EmptyListWidget())
+                    const SliverFillRemaining(
+                      hasScrollBody: false,
+                      child: Center(child: EmptyListWidget()),
+                    )
                   else
-                    ...data.histories.map((history) => Padding(
-                          padding: const EdgeInsets.only(bottom: AppPadding.p12),
-                          child: _HistoryTile(history: history),
-                        )),
+                    SliverPadding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppPadding.p16,
+                        0,
+                        AppPadding.p16,
+                        AppPadding.p16,
+                      ),
+                      sliver: SliverList(
+                        delegate: SliverChildBuilderDelegate(
+                          (context, index) {
+                            final history = data.histories[index];
+                            return Padding(
+                              padding: const EdgeInsets.only(bottom: AppPadding.p12),
+                              child: _HistoryTile(history: history),
+                            );
+                          },
+                          childCount: data.histories.length,
+                        ),
+                      ),
+                    ),
                 ],
               );
             },
           ),
         ),
       ),
-    );
-  }
-}
-
-class _VehicleHistoryHeaderCard extends StatelessWidget {
-  const _VehicleHistoryHeaderCard({required this.item});
-
-  final VehicleInfoEntity item;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Container(
-      width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(
-        AppPadding.p16,
-        AppPadding.p14,
-        AppPadding.p16,
-        AppPadding.p16,
-      ),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.07),
-            blurRadius: 18,
-            offset: const Offset(0, 8),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            'نوع وسیله نقلیه',
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: const Color(0xFF707070),
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          Text(
-            item.title,
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: const Color(0xFF151515),
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          Space.h12,
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              if (item.licensePlate?.trim().isNotEmpty == true)
-                VehicleLicensePlateView(licensePlate: item.licensePlate!),
-              const Spacer(),
-              _InfoColumn(title: 'شماره شاسی', value: item.chassisNumber),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _InfoColumn extends StatelessWidget {
-  const _InfoColumn({
-    required this.title,
-    required this.value,
-  });
-
-  final String title;
-  final String? value;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final displayValue = value?.trim().isNotEmpty == true ? value!.trim() : '---';
-
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: const Color(0xFF707070),
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-        Text(
-          displayValue,
-          textDirection: TextDirection.ltr,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: const Color(0xFF202020),
-            fontWeight: FontWeight.w500,
-          ),
-        ),
-      ],
     );
   }
 }
@@ -203,7 +166,7 @@ class _HistoryTile extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(Icons.history_rounded, size: AppSize.s20, color: theme.colorScheme.primary),
+
               Space.w8,
               Expanded(
                 child: Text(
