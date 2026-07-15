@@ -2,6 +2,8 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/emdad_service_category_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/cubit/vehicle_info_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/services/service_group_section.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/services/vehicle_service_info_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
@@ -14,21 +16,31 @@ class VehicleInfoServicesPage extends StatelessWidget {
   static const path = '/vehicle-info-services-page';
   static const name = 'vehicle-info-services-page';
 
-  const VehicleInfoServicesPage({super.key, required this.item});
+  /// فعال/غیرفعال کردن حالت فقط خواندنی صفحه
+  static const bool isReadOnly = true;
+
+  const VehicleInfoServicesPage({
+    super.key,
+    required this.item,
+  });
 
   final VehicleInfoEntity item;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) => getIt<VehicleInfoCubit>()..loadServiceCategories(item.id ?? 0, grouped: true),
+      create: (_) =>
+      getIt<VehicleInfoCubit>()
+        ..loadServiceCategories(item.id ?? 0, grouped: true),
       child: _VehicleInfoServicesView(item: item),
     );
   }
 }
 
 class _VehicleInfoServicesView extends StatelessWidget {
-  const _VehicleInfoServicesView({required this.item});
+  const _VehicleInfoServicesView({
+    required this.item,
+  });
 
   final VehicleInfoEntity item;
 
@@ -39,150 +51,259 @@ class _VehicleInfoServicesView extends StatelessWidget {
     return BlocListener<VehicleInfoCubit, VehicleInfoState>(
       listener: (context, state) {
         if (state.data.errorMessage?.isNotEmpty == true) {
-          SnakeBarWidget.showError(context: context, message: state.data.errorMessage!);
+          SnakeBarWidget.showError(
+            context: context,
+            message: state.data.errorMessage!,
+          );
         }
+
         if (state.data.successMessage?.isNotEmpty == true) {
-          SnakeBarWidget.showSuccess(context: context, message: state.data.successMessage!);
+          SnakeBarWidget.showSuccess(
+            context: context,
+            message: state.data.successMessage!,
+          );
           context.pop(true);
         }
       },
-      child: Scaffold(
-        appBar: SimpleAppBar(title: 'سرویس های ${item.title}'),
-        bottomNavigationBar: BlocBuilder<VehicleInfoCubit, VehicleInfoState>(
-          builder: (context, state) {
-            return SafeArea(
-              minimum: const EdgeInsets.all(AppPadding.p16),
-              child: InkwellButtonWidget(
-                title: 'ثبت سرویس ها',
-                showLoading: state.data.isSubmitting,
-                onTap: item.id == null ? null : () => cubit.submitServiceCategories(item.id!, useBatchEndpoint: true),
-              ),
-            );
-          },
-        ),
-        body: BlocBuilder<VehicleInfoCubit, VehicleInfoState>(
-          builder: (context, state) {
-            final data = state.data;
-            if (data.loadingServicesVehicleId != null) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (data.serviceCategoryGroups.isEmpty) {
-              return const Center(child: Text('سرویسی برای این خودرو یافت نشد.'));
-            }
-            return ListView.builder(
-              padding: const EdgeInsets.all(AppPadding.p16),
-              itemCount: data.serviceCategoryGroups.length,
-              itemBuilder: (context, index) {
-                final group = data.serviceCategoryGroups[index];
-                return _ServiceGroupTile(
-                  group: group,
-                  onToggle: cubit.toggleServiceCategory,
-                  onDefects: item.id == null
+      child: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Scaffold(
+          appBar: SimpleAppBar(
+            title: 'سرویس ها',
+          ),
+          backgroundColor: const Color(0xFFF4F4F4),
+
+          bottomNavigationBar:
+          BlocBuilder<VehicleInfoCubit, VehicleInfoState>(
+            builder: (context, state) {
+              return SafeArea(
+                minimum: const EdgeInsets.all(AppPadding.p16),
+                child: InkwellButtonWidget(
+                  title: 'بستن',
+                  showLoading: state.data.isSubmitting,
+
+                  onTap: VehicleInfoServicesPage.isReadOnly
+                      ? () => context.pop()
+                      : item.id == null
                       ? null
-                      : (categoryId) => _showDefects(context, item.id!, categoryId),
+                      : () => cubit.submitServiceCategories(
+                    item.id!,
+                    useBatchEndpoint: true,
+                  ),
+                ),
+              );
+            },
+          ),
+
+          body: BlocBuilder<VehicleInfoCubit, VehicleInfoState>(
+            builder: (context, state) {
+              final data = state.data;
+
+              if (data.loadingServicesVehicleId != null) {
+                return const Center(
+                  child: CircularProgressIndicator(),
                 );
-              },
-            );
-          },
+              }
+
+              if (data.serviceCategoryGroups.isEmpty) {
+                return const Center(
+                  child: Text(
+                    'سرویسی برای این خودرو یافت نشد.',
+                  ),
+                );
+              }
+
+              return ListView(
+                padding: const EdgeInsets.fromLTRB(
+                  AppPadding.p16,
+                  AppPadding.p16,
+                  AppPadding.p16,
+                  AppPadding.p32,
+                ),
+                children: [
+                  VehicleServiceInfoCard(
+                    item: item,
+                  ),
+
+                  Space.h24,
+
+                  ...data.serviceCategoryGroups.map(
+                        (group) {
+                      return ServiceGroupSection(
+                        group: group,
+
+                        // در حالت readonly هیچ interaction ندارد
+                        onSelect: VehicleInfoServicesPage.isReadOnly
+                            ? null
+                            : (categoryId) =>
+                            _selectSingleCategory(
+                              context,
+                              group,
+                              categoryId,
+                            ),
+
+                        onDefects: VehicleInfoServicesPage.isReadOnly
+                            ? null
+                            : item.id == null
+                            ? null
+                            : (categoryId) => _showDefects(
+                          context,
+                          item.id!,
+                          categoryId,
+                        ),
+                      );
+                    },
+                  ),
+                ],
+              );
+            },
+          ),
         ),
       ),
     );
   }
 
-  void _showDefects(BuildContext context, int vehicleId, int categoryId) {
+
+  void _selectSingleCategory(
+      BuildContext context,
+      EmdadServiceCategoryGroupEntity group,
+      int categoryId,
+      ) {
     final cubit = context.read<VehicleInfoCubit>();
-    cubit.loadDefects(vehicleId: vehicleId, serviceCategoryId: categoryId);
+
+    EmdadServiceCategoryEntity? target;
+
+    for (final category in group.categories) {
+      if (category.id == categoryId) {
+        target = category;
+        break;
+      }
+    }
+
+
+
+
+  }
+
+
+  void _showDefects(
+      BuildContext context,
+      int vehicleId,
+      int categoryId,
+      ) {
+    final cubit = context.read<VehicleInfoCubit>();
+
+    cubit.loadDefects(
+      vehicleId: vehicleId,
+      serviceCategoryId: categoryId,
+    );
+
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      backgroundColor:
+      Theme.of(context).colorScheme.onPrimary,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(
+            AppSize.s20,
+          ),
+        ),
       ),
       builder: (_) => BlocProvider.value(
         value: cubit,
-        child: _DefectsSheet(vehicleId: vehicleId),
+        child: _DefectsSheet(
+          vehicleId: vehicleId,
+        ),
       ),
     );
   }
 }
 
-class _ServiceGroupTile extends StatelessWidget {
-  const _ServiceGroupTile({
-    required this.group,
-    required this.onToggle,
-    required this.onDefects,
-  });
-
-  final EmdadServiceCategoryGroupEntity group;
-  final ValueChanged<int> onToggle;
-  final ValueChanged<int>? onDefects;
-
-  @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 0,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s8)),
-      child: ExpansionTile(
-        title: Text(group.name),
-        children: group.categories.map((category) {
-          return CheckboxListTile(
-            value: category.selected ?? category.selectable,
-            title: Text(category.title),
-            onChanged: (_) => onToggle(category.id),
-            secondary: IconButton(
-              icon: const Icon(Icons.report_problem_outlined),
-              onPressed: onDefects == null ? null : () => onDefects!(category.id),
-            ),
-          );
-        }).toList(),
-      ),
-    );
-  }
-}
 
 class _DefectsSheet extends StatelessWidget {
-  const _DefectsSheet({required this.vehicleId});
+  const _DefectsSheet({
+    required this.vehicleId,
+  });
 
   final int vehicleId;
 
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<VehicleInfoCubit>();
+
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(AppPadding.p16),
+        padding: const EdgeInsets.all(
+          AppPadding.p16,
+        ),
         child: BlocBuilder<VehicleInfoCubit, VehicleInfoState>(
           builder: (context, state) {
             final data = state.data;
+
             if (data.loadingDefectsServiceCategoryId != null) {
-              return const SizedBox(height: AppSize.s300, child: Center(child: CircularProgressIndicator()));
+              return const SizedBox(
+                height: AppSize.s300,
+                child: Center(
+                  child: CircularProgressIndicator(),
+                ),
+              );
             }
+
             return SizedBox(
-              height: MediaQuery.of(context).size.height * 0.72,
+              height:
+              MediaQuery.of(context).size.height * 0.72,
               child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
+                crossAxisAlignment:
+                CrossAxisAlignment.start,
                 children: [
-                  Text('محدودیت عیوب', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+                  Text(
+                    'محدودیت عیوب',
+                    style: Theme.of(context)
+                        .textTheme
+                        .titleMedium
+                        ?.copyWith(
+                      fontWeight: FontWeight.w800,
+                    ),
+                  ),
+
                   Space.h12,
+
                   Expanded(
                     child: data.defects.isEmpty
-                        ? const Center(child: Text('عیبی برای این سرویس یافت نشد.'))
+                        ? const Center(
+                      child: Text(
+                        'عیبی برای این سرویس یافت نشد.',
+                      ),
+                    )
                         : ListView(
-                            children: data.defects
-                                .map((defect) => CheckboxListTile(
-                                      value: defect.selected,
-                                      title: Text(defect.title),
-                                      onChanged: (_) => cubit.toggleDefect(defect.id),
-                                    ))
-                                .toList(),
-                          ),
+                      children: data.defects
+                          .map(
+                            (defect) =>
+                            CheckboxListTile(
+                              value: defect.selected,
+                              title: Text(
+                                defect.title,
+                              ),
+                              onChanged: (_) =>
+                                  cubit.toggleDefect(
+                                    defect.id,
+                                  ),
+                            ),
+                      )
+                          .toList(),
+                    ),
                   ),
+
                   InkwellButtonWidget(
                     title: 'ثبت محدودیت عیوب',
-                    showLoading: data.isSubmitting,
-                    onTap: () => cubit.submitDefects(vehicleId),
+                    showLoading:
+                    data.isSubmitting,
+                    onTap: () =>
+                        cubit.submitDefects(
+                          vehicleId,
+                        ),
                   ),
                 ],
               ),
