@@ -76,16 +76,13 @@ class RescuerCard extends StatelessWidget {
                 ),
               ),
               const SizedBox(width: 8),
+
               StatusLabel(
                 text: isActive ? 'فعال' : 'غیرفعال',
-                color: isActive
-                    ? Colors.green
-                    : colorScheme.error,
-                backgroundColor: isActive
-                    ? const Color(0xFFDDF8E8)
-                    : colorScheme.errorContainer,
+                color: isActive ? colorScheme.onError : colorScheme.error,
                 variant: StatusLabelVariant.filledWithoutBorder,
                 fontSize: 11,
+                fontWeight: FontWeight.w500,
               ),
             ],
           ),
