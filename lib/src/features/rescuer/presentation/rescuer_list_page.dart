@@ -81,16 +81,12 @@ class _RescuerListView extends StatelessWidget {
             children: [
               Padding(
                 padding: const EdgeInsets.fromLTRB(16, 24, 16, 16),
-                child: BlocBuilder<RescuerListCubit, RescuerListState>(
-                  builder: (context, state) {
-                    final isActionLoading = state.maybeWhen(
-                      actionLoading: (_) => true,
-                      orElse: () => false,
-                    );
-
+                child: ValueListenableBuilder<bool>(
+                  valueListenable: cubit.reportLoadingNotifier,
+                  builder: (context, isReportLoading, _) {
                     return RescuerFiltersBox(
                       cubit: cubit,
-                      isReportLoading: isActionLoading,
+                      isReportLoading: isReportLoading,
                       onReportTap: () => _loadReport(context, cubit),
                     );
                   },
@@ -133,10 +129,9 @@ class _RescuerListView extends StatelessWidget {
     final id = item.id;
     if (id == null) return;
 
-    final wasDeleted = await Navigator.of(context).push<bool>(
-      MaterialPageRoute(
-        builder: (_) => RescuerDetailPage(rescuerId: id),
-      ),
+    final wasDeleted = await BottomSheetMessage.showFullScreenCustom<bool>(
+      context: context,
+      content: RescuerDetailPage(rescuerId: id),
     );
 
     if (wasDeleted == true) {
@@ -160,10 +155,12 @@ class _RescuerListView extends StatelessWidget {
           if (context.mounted) Navigator.of(context).pop();
           if (result == null || !context.mounted) return false;
 
-          BottomSheetMessage.showCustom(
+          await BottomSheetMessage.showFullScreenCustom<void>(
             context: context,
-            content: RescuerSkillCertificatesSheet(items: result),
-            actionWidget: const SizedBox.shrink(),
+            content: RescuerSkillCertificatesSheet(
+              rescuer: item,
+              items: result,
+            ),
           );
           return true;
         },
@@ -172,12 +169,11 @@ class _RescuerListView extends StatelessWidget {
           if (context.mounted) Navigator.of(context).pop();
           if (result == null || !context.mounted) return false;
 
-          await Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => RescuerHistoryPage(
-                rescuer: item,
-                histories: result,
-              ),
+          await BottomSheetMessage.showFullScreenCustom<void>(
+            context: context,
+            content: RescuerHistoryPage(
+              rescuer: item,
+              histories: result,
             ),
           );
           return true;

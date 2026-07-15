@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/rescuer_entity.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/san_history_entity.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/rescuer_full_screen_sheet_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
@@ -23,7 +24,7 @@ class RescuerHistoryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF4F4F4),
-      appBar: const _HistoryAppBar(),
+      appBar: const RescuerFullScreenSheetAppBar(title: 'تاریخچه'),
       body: SafeArea(
         child: Column(
           children: [
@@ -75,46 +76,6 @@ class RescuerHistoryPage extends StatelessWidget {
             borderWidth: 1,
             onTap: () => Navigator.of(context).pop(),
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _HistoryAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const _HistoryAppBar();
-
-  @override
-  Size get preferredSize => const Size.fromHeight(63);
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      automaticallyImplyLeading: false,
-      elevation: 0,
-      backgroundColor: Colors.white,
-      surfaceTintColor: Colors.white,
-      titleSpacing: 0,
-      title: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 28),
-        child: Row(
-          children: [
-            const BodyMediumText(
-              text: 'تاریخچه',
-              color: Color(0xFF6F6F6F),
-              fontWeight: FontWeight.w700,
-              fontSize: 16,
-            ),
-            const Spacer(),
-            InkWell(
-              onTap: () => Navigator.of(context).pop(),
-              borderRadius: BorderRadius.circular(20),
-              child: const Padding(
-                padding: EdgeInsets.all(4),
-                child: Icon(Icons.close, color: Color(0xFF6F6F6F)),
-              ),
-            ),
-          ],
         ),
       ),
     );

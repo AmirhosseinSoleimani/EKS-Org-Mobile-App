@@ -47,6 +47,9 @@ class RescuerListCubit extends Cubit<RescuerListState> {
 
   final selectedStatusNotifier =
       ValueNotifier<RescuerStatusFilter>(RescuerStatusFilter.all);
+  final reportLoadingNotifier = ValueNotifier<bool>(false);
+  final operationLoadingNotifier =
+      ValueNotifier<RescuerListOperation?>(null);
 
   VoidCallback? _retryAction;
 
@@ -54,6 +57,8 @@ class RescuerListCubit extends Cubit<RescuerListState> {
   List<RescuerEntity> get items => state.data.items;
   List<RescuerEntity> get filteredItems => state.data.filteredItems;
   int? get deletingRescuerId => state.data.deletingRescuerId;
+  bool get isReportLoading => reportLoadingNotifier.value;
+  RescuerListOperation? get operationLoading => operationLoadingNotifier.value;
 
   void retryLastAction() => _retryAction?.call();
 
@@ -119,179 +124,216 @@ class RescuerListCubit extends Cubit<RescuerListState> {
       deleteRescuer(id);
     };
 
-    emit(
-      RescuerListState.actionLoading(
-        data: state.data.copyWith(deletingRescuerId: id),
-      ),
-    );
+    operationLoadingNotifier.value = RescuerListOperation.delete;
+    emit(RescuerListState.loaded(data: state.data));
 
     var isSuccessful = false;
-    final result = await _deleteRescuerUseCase(id);
 
-    result.whenOrNull(
-      success: (data, failures, resultCode) {
-        isSuccessful = true;
-        _safeEmit(
-          RescuerListState.loaded(
-            data: state.data.copyWith(deletingRescuerId: null),
-          ),
-        );
-      },
-      failure: (error, message) {
-        _safeEmit(
-          RescuerListState.actionError(
-            data: state.data.copyWith(deletingRescuerId: null),
-            message: message ??
-                error?.toString() ??
-                'حذف امدادرسان با خطا مواجه شد.',
-          ),
-        );
-      },
-      connectionError: () {
-        _safeEmit(
-          RescuerListState.actionError(
-            data: state.data.copyWith(deletingRescuerId: null),
-            message: 'اتصال اینترنت خود را بررسی کنید.',
-          ),
-        );
-      },
-    );
+    try {
+      final result = await _deleteRescuerUseCase(id);
 
-    if (isSuccessful) {
-      await fetchRescuers();
+      result.whenOrNull(
+        success: (data, failures, resultCode) {
+          isSuccessful = true;
+          _safeEmit(
+            RescuerListState.loaded(
+              data: state.data.copyWith(deletingRescuerId: null),
+            ),
+          );
+        },
+        failure: (error, message) {
+          _safeEmit(
+            RescuerListState.actionError(
+              data: state.data.copyWith(deletingRescuerId: null),
+              message: message ??
+                  error?.toString() ??
+                  'حذف امدادرسان با خطا مواجه شد.',
+            ),
+          );
+        },
+        connectionError: () {
+          _safeEmit(
+            RescuerListState.actionError(
+              data: state.data.copyWith(deletingRescuerId: null),
+              message: 'اتصال اینترنت خود را بررسی کنید.',
+            ),
+          );
+        },
+      );
+
+      if (isSuccessful) {
+        await fetchRescuers();
+      }
+    } catch (_) {
+      _safeEmit(
+        RescuerListState.actionError(
+          data: state.data.copyWith(deletingRescuerId: null),
+          message: 'حذف امدادرسان با خطا مواجه شد.',
+        ),
+      );
+    } finally {
+      operationLoadingNotifier.value = null;
     }
 
     return isSuccessful;
   }
 
   Future<String?> loadReport() async {
+    if (reportLoadingNotifier.value) return null;
+
     _retryAction = () {
       loadReport();
     };
-    emit(RescuerListState.actionLoading(data: state.data));
-
-    final result = await _getRescuerReportUseCase(
-      const GetRescuerReportParamEntity(pageSize: 0),
-    );
+    reportLoadingNotifier.value = true;
+    emit(RescuerListState.loaded(data: state.data));
 
     String? filePath;
 
-    await result.whenOrNull(
-      success: (data, failures, resultCode) async {
-        filePath = await RescuerExcelExporter.export(data);
-        _safeEmit(RescuerListState.loaded(data: state.data));
+    try {
+      final result = await _getRescuerReportUseCase(
+        const GetRescuerReportParamEntity(pageSize: 0),
+      );
 
-        final openResult = await OpenFilex.open(
-          filePath!,
-          type: 'application/vnd.ms-excel',
-        );
+      await result.whenOrNull(
+        success: (data, failures, resultCode) async {
+          filePath = await RescuerExcelExporter.export(data);
+          _safeEmit(RescuerListState.loaded(data: state.data));
 
-        if (openResult.type != ResultType.done) {
+          final openResult = await OpenFilex.open(
+            filePath!,
+            type: 'application/vnd.ms-excel',
+          );
+
+          if (openResult.type != ResultType.done) {
+            _safeEmit(
+              RescuerListState.actionError(
+                data: state.data,
+                message:
+                    'فایل اکسل ذخیره شد اما برنامه‌ای برای باز کردن آن پیدا نشد',
+              ),
+            );
+            filePath = null;
+          }
+        },
+        failure: (error, message) {
           _safeEmit(
             RescuerListState.actionError(
               data: state.data,
-              message:
-                  'فایل اکسل ذخیره شد اما برنامه‌ای برای باز کردن آن پیدا نشد',
+              message: message ??
+                  error?.toString() ??
+                  'دریافت گزارش با خطا مواجه شد.',
             ),
           );
-          filePath = null;
-        }
-      },
-      failure: (error, message) {
-        _safeEmit(
-          RescuerListState.actionError(
-            data: state.data,
-            message: message ??
-                error?.toString() ??
-                'دریافت گزارش با خطا مواجه شد.',
-          ),
-        );
-      },
-      connectionError: () {
-        _safeEmit(
-          RescuerListState.actionError(
-            data: state.data,
-            message: 'اتصال اینترنت خود را بررسی کنید.',
-          ),
-        );
-      },
-    );
+        },
+        connectionError: () {
+          _safeEmit(
+            RescuerListState.actionError(
+              data: state.data,
+              message: 'اتصال اینترنت خود را بررسی کنید.',
+            ),
+          );
+        },
+      );
+    } catch (_) {
+      _safeEmit(
+        RescuerListState.actionError(
+          data: state.data,
+          message: 'دریافت گزارش با خطا مواجه شد.',
+        ),
+      );
+    } finally {
+      reportLoadingNotifier.value = false;
+    }
 
     return filePath;
   }
 
   Future<List<SkillCertificateEntity>?> loadSkillCertificates(int id) async {
+    if (operationLoadingNotifier.value != null) return null;
+
     _retryAction = () {
       loadSkillCertificates(id);
     };
-    emit(RescuerListState.actionLoading(data: state.data));
-
-    final result = await _getSkillCertificatesUseCase(id);
+    operationLoadingNotifier.value = RescuerListOperation.skillCertificates;
+    emit(RescuerListState.loaded(data: state.data));
 
     List<SkillCertificateEntity>? certificates;
 
-    result.whenOrNull(
-      success: (data, failures, resultCode) {
-        certificates = data;
-        _safeEmit(RescuerListState.loaded(data: state.data));
-      },
-      failure: (error, message) {
-        _safeEmit(
-          RescuerListState.actionError(
-            data: state.data,
-            message: message ??
-                error?.toString() ??
-                'دریافت گواهینامه‌های مهارت با خطا مواجه شد.',
-          ),
-        );
-      },
-      connectionError: () {
-        _safeEmit(
-          RescuerListState.actionError(
-            data: state.data,
-            message: 'اتصال اینترنت خود را بررسی کنید.',
-          ),
-        );
-      },
-    );
+    try {
+      final result = await _getSkillCertificatesUseCase(id);
+
+      result.whenOrNull(
+        success: (data, failures, resultCode) {
+          certificates = data;
+          _safeEmit(RescuerListState.loaded(data: state.data));
+        },
+        failure: (error, message) {
+          _safeEmit(
+            RescuerListState.actionError(
+              data: state.data,
+              message: message ??
+                  error?.toString() ??
+                  'دریافت گواهینامه‌های مهارت با خطا مواجه شد.',
+            ),
+          );
+        },
+        connectionError: () {
+          _safeEmit(
+            RescuerListState.actionError(
+              data: state.data,
+              message: 'اتصال اینترنت خود را بررسی کنید.',
+            ),
+          );
+        },
+      );
+    } finally {
+      operationLoadingNotifier.value = null;
+    }
 
     return certificates;
   }
 
   Future<List<SanHistoryEntity>?> loadHistory(int id) async {
+    if (operationLoadingNotifier.value != null) return null;
+
     _retryAction = () {
       loadHistory(id);
     };
-    emit(RescuerListState.actionLoading(data: state.data));
-
-    final result = await _getHistoryUseCase(id);
+    operationLoadingNotifier.value = RescuerListOperation.history;
+    emit(RescuerListState.loaded(data: state.data));
 
     List<SanHistoryEntity>? histories;
 
-    result.whenOrNull(
-      success: (data, failures, resultCode) {
-        histories = data;
-        _safeEmit(RescuerListState.loaded(data: state.data));
-      },
-      failure: (error, message) {
-        _safeEmit(
-          RescuerListState.actionError(
-            data: state.data,
-            message: message ??
-                error?.toString() ??
-                'دریافت تاریخچه امدادرسان با خطا مواجه شد.',
-          ),
-        );
-      },
-      connectionError: () {
-        _safeEmit(
-          RescuerListState.actionError(
-            data: state.data,
-            message: 'اتصال اینترنت خود را بررسی کنید.',
-          ),
-        );
-      },
-    );
+    try {
+      final result = await _getHistoryUseCase(id);
+
+      result.whenOrNull(
+        success: (data, failures, resultCode) {
+          histories = data;
+          _safeEmit(RescuerListState.loaded(data: state.data));
+        },
+        failure: (error, message) {
+          _safeEmit(
+            RescuerListState.actionError(
+              data: state.data,
+              message: message ??
+                  error?.toString() ??
+                  'دریافت تاریخچه امدادرسان با خطا مواجه شد.',
+            ),
+          );
+        },
+        connectionError: () {
+          _safeEmit(
+            RescuerListState.actionError(
+              data: state.data,
+              message: 'اتصال اینترنت خود را بررسی کنید.',
+            ),
+          );
+        },
+      );
+    } finally {
+      operationLoadingNotifier.value = null;
+    }
 
     return histories;
   }
@@ -356,6 +398,14 @@ class RescuerListCubit extends Cubit<RescuerListState> {
     mobileController.dispose();
     codeController.dispose();
     selectedStatusNotifier.dispose();
+    reportLoadingNotifier.dispose();
+    operationLoadingNotifier.dispose();
     return super.close();
   }
+}
+
+enum RescuerListOperation {
+  skillCertificates,
+  history,
+  delete,
 }

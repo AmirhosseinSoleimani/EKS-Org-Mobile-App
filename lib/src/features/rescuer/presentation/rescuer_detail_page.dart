@@ -3,6 +3,7 @@ import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/rescuer_e
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/cubit/detail/rescuer_detail_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/detail/rescuer_detail_section_card.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/rescuer_avatar.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/rescuer_full_screen_sheet_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/extensions/string_extensions.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
@@ -73,7 +74,9 @@ class _RescuerDetailView extends StatelessWidget {
       },
       child: Scaffold(
         backgroundColor: const Color(0xFFF4F4F4),
-        appBar: const _RescuerModalAppBar(title: 'جزئیات امدادرسان'),
+        appBar: const RescuerFullScreenSheetAppBar(
+          title: 'جزئیات امدادرسان',
+        ),
         body: BlocBuilder<RescuerDetailCubit, RescuerDetailState>(
           builder: (context, state) {
             return state.maybeWhen(
@@ -140,51 +143,6 @@ class _RescuerDetailView extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _RescuerModalAppBar extends StatelessWidget
-    implements PreferredSizeWidget {
-  final String title;
-
-  const _RescuerModalAppBar({
-    required this.title,
-  });
-
-  @override
-  Size get preferredSize => const Size.fromHeight(63);
-
-  @override
-  Widget build(BuildContext context) {
-    return AppBar(
-      automaticallyImplyLeading: false,
-      elevation: 0,
-      backgroundColor: Colors.white,
-      surfaceTintColor: Colors.white,
-      titleSpacing: 0,
-      title: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 28),
-        child: Row(
-          children: [
-            BodyMediumText(
-              text: title,
-              color: const Color(0xFF6F6F6F),
-              fontWeight: FontWeight.w700,
-              fontSize: 16,
-            ),
-            const Spacer(),
-            InkWell(
-              onTap: () => Navigator.of(context).pop(false),
-              borderRadius: BorderRadius.circular(20),
-              child: const Padding(
-                padding: EdgeInsets.all(4),
-                child: Icon(Icons.close, color: Color(0xFF6F6F6F)),
-              ),
-            ),
-          ],
-        ),
       ),
     );
   }
