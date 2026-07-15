@@ -12,7 +12,7 @@ class LocalServiceChip extends StatelessWidget {
   });
 
   final EmdadServiceCategoryEntity category;
-  final VoidCallback? onTap;
+  final VoidCallback onTap;
   final ValueChanged<int>? onDefects;
 
   @override
