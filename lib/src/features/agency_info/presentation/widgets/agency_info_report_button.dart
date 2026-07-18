@@ -21,6 +21,7 @@ class AgencyInfoReportButton extends StatelessWidget {
       title: 'گزارش گیری',
       titleColor: colorScheme.onPrimaryFixed,
       showLoading: isLoading,
+      loadingColor: colorScheme.onPrimaryFixed,
       prefixIcon: SvgWidget(src: SvgAsset(SvgManager.exportNotes)),
       backgroundColor: colorScheme.secondaryContainer,
       borderColor: colorScheme.onPrimaryFixed,

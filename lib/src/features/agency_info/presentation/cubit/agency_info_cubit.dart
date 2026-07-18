@@ -257,17 +257,30 @@ class AgencyInfoCubit extends Cubit<AgencyInfoState> {
         );
         result.when(
           success: (data, failures, resultCode) {
+            final updatedAgency = item.copyWith(isActive: nextStatus);
             final updatedItems = _data.items
                 .map((agency) => agency.id == id
                     ? agency.copyWith(isActive: nextStatus)
                     : agency)
                 .toList();
+            final updatedSelectorItems = _data.selectorItems
+                .map((agency) => agency.id == id
+                    ? agency.copyWith(isActive: nextStatus)
+                    : agency)
+                .toList();
+            final updatedSelectedAgency = _data.selectedAgency?.id == id
+                ? _data.selectedAgency!.copyWith(isActive: nextStatus)
+                : _data.selectedAgency;
+
             emit(AgencyInfoState(
               status: AgencyInfoViewStatus.loaded,
               data: _data.copyWith(
                 items: updatedItems,
-                actionAgency: item.copyWith(isActive: nextStatus),
+                selectorItems: updatedSelectorItems,
+                selectedAgency: updatedSelectedAgency,
+                actionAgency: updatedAgency,
                 actionType: actionType,
+                clearActionData: true,
                 clearLoadingDetailId: true,
                 successMessage: nextStatus
                     ? 'نمایندگی با موفقیت فعال شد.'
@@ -386,57 +399,80 @@ class AgencyInfoCubit extends Cubit<AgencyInfoState> {
       ),
     ));
 
-    final result = await _getReportUseCase(_data.filter.copyWith(
-      skip: 0,
-      pageSize: 0,
-    ));
-    await result.when<Future<void>>(
-      success: (data, failures, resultCode) async {
-        final filePath = await AgencyInfoExcelExporter.export(data.items);
+    try {
+      final result = await _getReportUseCase(_data.filter.copyWith(
+        skip: 0,
+        pageSize: 0,
+      ));
 
-        emit(AgencyInfoState(
-          status: AgencyInfoViewStatus.reportSuccess,
-          data: _data.copyWith(
-            isReportLoading: false,
-            reportFilePath: filePath,
-            successMessage: 'فایل اکسل گزارش نمایندگی‌ها آماده شد.',
-            clearErrorMessage: true,
-          ),
-        ));
+      await result.when<Future<void>>(
+        success: (data, failures, resultCode) async {
+          final filePath = await AgencyInfoExcelExporter.export(data.items);
 
-        final openResult = await OpenFilex.open(
-          filePath,
-          type: 'application/vnd.ms-excel',
-        );
-
-        if (openResult.type != ResultType.done) {
           emit(AgencyInfoState(
-            status: AgencyInfoViewStatus.loaded,
+            status: AgencyInfoViewStatus.reportSuccess,
             data: _data.copyWith(
               isReportLoading: false,
               reportFilePath: filePath,
-              successMessage:
-                  'فایل اکسل ذخیره شد اما برنامه‌ای برای باز کردن آن پیدا نشد.',
+              successMessage: 'فایل اکسل گزارش نمایندگی‌ها آماده شد.',
               clearErrorMessage: true,
             ),
           ));
-        }
-      },
-      failure: (error, failures) async => _emitFailure(
-        failures,
+
+          try {
+            final openResult = await OpenFilex.open(
+              filePath,
+              type: 'application/vnd.ms-excel',
+            );
+
+            if (openResult.type != ResultType.done) {
+              _emitReportSavedButNotOpened(filePath);
+            }
+          } catch (_) {
+            _emitReportSavedButNotOpened(filePath);
+          }
+        },
+        failure: (error, failures) async => _emitFailure(
+          failures,
+          status: AgencyInfoViewStatus.pageError,
+          clearReportLoading: true,
+        ),
+        expireToken: () async => _emitFailure(
+          'نشست کاربری منقضی شده است.',
+          status: AgencyInfoViewStatus.pageError,
+          clearReportLoading: true,
+        ),
+        connectionError: () async => emit(AgencyInfoState(
+          status: AgencyInfoViewStatus.connectionError,
+          data: _data.copyWith(isReportLoading: false),
+        )),
+      );
+    } catch (_) {
+      _emitFailure(
+        'دریافت گزارش با خطا مواجه شد.',
         status: AgencyInfoViewStatus.pageError,
         clearReportLoading: true,
+      );
+    } finally {
+      if (!isClosed && _data.isReportLoading) {
+        emit(state.copyWith(
+          data: _data.copyWith(isReportLoading: false),
+        ));
+      }
+    }
+  }
+
+  void _emitReportSavedButNotOpened(String filePath) {
+    emit(AgencyInfoState(
+      status: AgencyInfoViewStatus.loaded,
+      data: _data.copyWith(
+        isReportLoading: false,
+        reportFilePath: filePath,
+        successMessage:
+            'فایل اکسل ذخیره شد اما برنامه‌ای برای باز کردن آن پیدا نشد.',
+        clearErrorMessage: true,
       ),
-      expireToken: () async => _emitFailure(
-        'نشست کاربری منقضی شده است.',
-        status: AgencyInfoViewStatus.pageError,
-        clearReportLoading: true,
-      ),
-      connectionError: () async => emit(AgencyInfoState(
-        status: AgencyInfoViewStatus.connectionError,
-        data: _data.copyWith(isReportLoading: false),
-      )),
-    );
+    ));
   }
 
   Future<void> searchForSelector(String query) async {

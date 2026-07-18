@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agenc
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_person_page_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_service_type_entity.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_vehicle_page_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/agency_info_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_active_relief_workers_action_view.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_active_vehicles_action_view.dart';
@@ -100,7 +101,13 @@ class AgencyInfoActionDetailSheet extends StatelessWidget {
           persons: persons,
         );
       case AgencyInfoActionType.activeVehicles:
-        return AgencyInfoActiveVehiclesActionView(item: item);
+        final vehicles = actionData is AgencyVehiclePageEntity
+            ? actionData! as AgencyVehiclePageEntity
+            : const AgencyVehiclePageEntity(records: [], count: 0);
+        return AgencyInfoActiveVehiclesActionView(
+          item: item,
+          vehicles: vehicles,
+        );
       case AgencyInfoActionType.changeStatus:
         return AgencyInfoChangeStatusActionView(item: item);
       case AgencyInfoActionType.serviceType:

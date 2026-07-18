@@ -298,35 +298,47 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
     );
   }
 
-  void _showActionSheet(BuildContext context,
-      AgencyInfoCubit cubit,
-      AgencyInfoEntity item,) {
+  void _showActionSheet(
+    BuildContext context,
+    AgencyInfoCubit cubit,
+    AgencyInfoEntity item,
+  ) {
     BottomSheetMessage.showCustom(
       context: context,
       content: BlocProvider.value(
         value: cubit,
         child: BlocBuilder<AgencyInfoCubit, AgencyInfoState>(
-          buildWhen: (previous, current) =>
-              previous.status != current.status ||
-              previous.data.actionType != current.data.actionType ||
-              previous.data.loadingDetailId != current.data.loadingDetailId,
           builder: (context, state) {
+            final currentItem = _resolveActionAgency(state, item);
+
             return AgencyInfoActionSheet(
-              loadingActionType:
-                  state.data.loadingDetailId == item.id ? state.data.actionType : null,
-              isActive: item.isActive,
+              loadingActionType: state.data.loadingDetailId == currentItem.id
+                  ? state.data.actionType
+                  : null,
+              isActive: currentItem.isActive,
               onActionSelected: (actionType) =>
-                  cubit.loadActionData(actionType, item),
+                  cubit.loadActionData(actionType, currentItem),
             );
           },
         ),
       ),
       actionWidget: const SizedBox.shrink(),
-      backgroundColor: Theme
-          .of(context)
-          .colorScheme
-          .onPrimary,
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
     );
+  }
+
+  AgencyInfoEntity _resolveActionAgency(
+    AgencyInfoState state,
+    AgencyInfoEntity fallback,
+  ) {
+    for (final agency in state.data.items) {
+      if (agency.id == fallback.id) return agency;
+    }
+
+    final actionAgency = state.data.actionAgency;
+    if (actionAgency?.id == fallback.id) return actionAgency!;
+
+    return fallback;
   }
 
   void _applyStatusFilter(
