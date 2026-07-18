@@ -54,7 +54,7 @@ class AgencyInfoActionDetailSheet extends StatelessWidget {
             ],
           ),
         ),
-        const Divider(height: AppSize.s1),
+         Divider(height: AppSize.s1, color: Theme.of(context).dividerColor,),
         Expanded(
           child: _buildContent(),
         ),
