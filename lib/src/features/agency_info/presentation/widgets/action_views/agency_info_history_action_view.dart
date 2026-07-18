@@ -23,7 +23,7 @@ class AgencyInfoHistoryActionView extends StatelessWidget {
         Space.h16,
         Expanded(
           child: histories.isEmpty
-              ? const _AgencyHistoryEmptyView()
+              ? const EmptyListWidget()
               : ListView.separated(
                   padding: const EdgeInsets.only(
                     top: AppPadding.p8,
@@ -143,26 +143,5 @@ class _AgencyHistoryItem extends StatelessWidget {
 
   static String _valueOrDash(String? value) {
     return value?.trim().isNotEmpty == true ? value!.trim() : '---';
-  }
-}
-
-class _AgencyHistoryEmptyView extends StatelessWidget {
-  const _AgencyHistoryEmptyView();
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          const EmptyListWidget(),
-          Space.h16,
-          Text(
-            'تاریخچه‌ای برای این نمایندگی ثبت نشده است.',
-            style: Theme.of(context).textTheme.bodyMedium,
-          ),
-        ],
-      ),
-    );
   }
 }

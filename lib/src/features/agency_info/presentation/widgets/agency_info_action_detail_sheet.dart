@@ -1,5 +1,8 @@
+import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_additional_information_entity.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_contract_page_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_history_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_entity.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_person_page_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_service_type_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/agency_info_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_active_relief_workers_action_view.dart';
@@ -81,9 +84,21 @@ class AgencyInfoActionDetailSheet extends StatelessWidget {
   Widget _buildContent() {
     switch (actionType) {
       case AgencyInfoActionType.contracts:
-        return AgencyInfoContractsActionView(item: item);
+        final contracts = actionData is AgencyContractPageEntity
+            ? actionData! as AgencyContractPageEntity
+            : const AgencyContractPageEntity(records: [], count: 0);
+        return AgencyInfoContractsActionView(
+          item: item,
+          contracts: contracts,
+        );
       case AgencyInfoActionType.activeReliefWorkers:
-        return AgencyInfoActiveReliefWorkersActionView(item: item);
+        final persons = actionData is AgencyPersonPageEntity
+            ? actionData! as AgencyPersonPageEntity
+            : const AgencyPersonPageEntity(records: [], count: 0);
+        return AgencyInfoActiveReliefWorkersActionView(
+          item: item,
+          persons: persons,
+        );
       case AgencyInfoActionType.activeVehicles:
         return AgencyInfoActiveVehiclesActionView(item: item);
       case AgencyInfoActionType.changeStatus:
@@ -97,7 +112,13 @@ class AgencyInfoActionDetailSheet extends StatelessWidget {
           serviceTypes: serviceTypes,
         );
       case AgencyInfoActionType.complementaryInfo:
-        return AgencyInfoComplementaryInfoActionView(item: item);
+        final information = actionData is AgencyAdditionalInformationEntity
+            ? actionData! as AgencyAdditionalInformationEntity
+            : null;
+        return AgencyInfoComplementaryInfoActionView(
+          item: item,
+          information: information,
+        );
       case AgencyInfoActionType.history:
         final histories = actionData is List<AgencyHistoryEntity>
             ? actionData! as List<AgencyHistoryEntity>

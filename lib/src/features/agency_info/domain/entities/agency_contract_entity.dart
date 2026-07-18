@@ -29,6 +29,30 @@ class AgencyContractEntity {
   final String? expireDate;
   final String? expireDateJalali;
 
+  bool get isActive {
+    final expirationDate = DateTime.tryParse(expireDate?.trim() ?? '');
+
+    if (expirationDate == null) {
+      return false;
+    }
+
+    final now = DateTime.now();
+
+    final today = DateTime(
+      now.year,
+      now.month,
+      now.day,
+    );
+
+    final contractExpirationDate = DateTime(
+      expirationDate.year,
+      expirationDate.month,
+      expirationDate.day,
+    );
+
+    return !contractExpirationDate.isBefore(today);
+  }
+
   AgencyContractModel toModel() {
     return AgencyContractModel(
       id: id,
