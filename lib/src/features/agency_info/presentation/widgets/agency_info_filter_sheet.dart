@@ -1,6 +1,8 @@
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/agency_info_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 
 class AgencyInfoFilterSheet extends StatefulWidget {
@@ -27,6 +29,10 @@ class _AgencyInfoFilterSheetState extends State<AgencyInfoFilterSheet> {
   late final TextEditingController _mobileController;
   bool? _isActive;
 
+  static const _allStatusTitle = 'همه';
+  static const _activeStatusTitle = 'فعال';
+  static const _inactiveStatusTitle = 'غیرفعال';
+
   @override
   void initState() {
     super.initState();
@@ -52,78 +58,121 @@ class _AgencyInfoFilterSheetState extends State<AgencyInfoFilterSheet> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.only(
-          left: AppPadding.p16,
-          right: AppPadding.p16,
-          top: AppPadding.p16,
-          bottom: MediaQuery.of(context).viewInsets.bottom + AppPadding.p16,
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'فیلتر نمایندگی',
-                style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
-              ),
-              Space.h16,
-              TextField(controller: _nameController, decoration: const InputDecoration(labelText: 'نام نمایندگی')),
-              TextField(controller: _codeController, decoration: const InputDecoration(labelText: 'کد نمایندگی')),
-              TextField(controller: _managerController, decoration: const InputDecoration(labelText: 'مدیر')),
-              TextField(controller: _cityController, decoration: const InputDecoration(labelText: 'شهر')),
-              TextField(controller: _mobileController, decoration: const InputDecoration(labelText: 'موبایل')),
-              Space.h12,
-              DropdownButtonFormField<bool?>(
-                value: _isActive,
-                decoration: const InputDecoration(labelText: 'وضعیت'),
-                items: const [
-                  DropdownMenuItem<bool?>(value: null, child: Text('همه')),
-                  DropdownMenuItem<bool?>(value: true, child: Text('فعال')),
-                  DropdownMenuItem<bool?>(value: false, child: Text('غیرفعال')),
-                ],
-                onChanged: (value) => setState(() => _isActive = value),
-              ),
-              Space.h24,
-              Row(
+    return Padding(
+      padding:const EdgeInsets.all(AppPadding.p8
+      ),
+      child: SingleChildScrollView(
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Text(
+              'فیلتر نمایندگی',
+              style: theme.textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
+            ),
+            Space.h16,
+            Padding(
+              padding: const EdgeInsets.all(AppPadding.p8),
+              child: Column(
+                mainAxisSize: MainAxisSize.min,
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Expanded(
-                    child: InkwellButtonWidget(
-                      title: 'اعمال فیلتر',
-                      onTap: () {
-                        widget.onApply(AgencyInfoFilterParamEntity(
-                          name: _nameController.text,
-                          code: _codeController.text,
-                          managerFullName: _managerController.text,
-                          cityTitle: _cityController.text,
-                          mobileNumber: _mobileController.text,
-                          isActive: _isActive,
-                        ));
-                        Navigator.of(context).pop();
-                      },
-                    ),
+
+                  TextFormFieldWidget(
+                    controller: _nameController,
+                    labelText: 'نام نمایندگی',
+                    textInputAction: TextInputAction.next,
                   ),
-                  Space.w12,
-                  Expanded(
-                    child: InkwellButtonWidget(
-                      title: 'پاک کردن',
-                      backgroundColor: theme.colorScheme.onPrimary,
-                      borderColor: theme.colorScheme.outline.withOpacity(0.65),
-                      titleColor: theme.colorScheme.onSurface,
-                      onTap: () {
-                        widget.onClear();
-                        Navigator.of(context).pop();
-                      },
-                    ),
+                  Space.h12,
+                  TextFormFieldWidget(
+                    controller: _codeController,
+                    labelText: 'کد نمایندگی',
+                    textInputType: TextInputType.number,
+                    textInputAction: TextInputAction.next,
+                  ),
+                  Space.h12,
+                  TextFormFieldWidget(
+                    controller: _managerController,
+                    labelText: 'مدیر',
+                    textInputAction: TextInputAction.next,
+                  ),
+                  Space.h12,
+                  TextFormFieldWidget(
+                    controller: _cityController,
+                    labelText: 'شهر',
+                    textInputAction: TextInputAction.next,
+                  ),
+                  Space.h12,
+                  TextFormFieldWidget(
+                    controller: _mobileController,
+                    labelText: 'موبایل',
+                    textInputType: TextInputType.phone,
+                    textInputAction: TextInputAction.done,
+                  ),
+                  Space.h12,
+                  EkDropDown(
+                    const [
+                      _allStatusTitle,
+                      _activeStatusTitle,
+                      _inactiveStatusTitle,
+                    ],
+                    label: 'وضعیت',
+                    selectedItem: _statusTitle(_isActive),
+                    onItemValue: (value) {
+                      setState(() => _isActive = _statusValue(value));
+                    },
+                  ),
+                  Space.h32,
+                  Row(
+                    children: [
+                      Expanded(
+                        child: InkwellButtonWidget(
+                          title: 'اعمال فیلتر',
+                          onTap: () {
+                            widget.onApply(AgencyInfoFilterParamEntity(
+                              name: _nameController.text,
+                              code: _codeController.text,
+                              managerFullName: _managerController.text,
+                              cityTitle: _cityController.text,
+                              mobileNumber: _mobileController.text,
+                              isActive: _isActive,
+                            ));
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
+                      Space.w12,
+                      Expanded(
+                        child: InkwellButtonWidget(
+                          title: 'پاک کردن',
+                          backgroundColor: theme.colorScheme.onPrimary,
+                          borderColor: theme.colorScheme.outline.withOpacity(0.65),
+                          titleColor: theme.colorScheme.onSurface,
+                          onTap: () {
+                            widget.onClear();
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ),
+                    ],
                   ),
                 ],
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
     );
+  }
+
+  String _statusTitle(bool? value) {
+    if (value == true) return _activeStatusTitle;
+    if (value == false) return _inactiveStatusTitle;
+    return _allStatusTitle;
+  }
+
+  bool? _statusValue(String value) {
+    if (value == _activeStatusTitle) return true;
+    if (value == _inactiveStatusTitle) return false;
+    return null;
   }
 }

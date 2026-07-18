@@ -3,6 +3,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agenc
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_history_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_page_entity.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_report_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_person_page_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_service_type_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_vehicle_page_entity.dart';
@@ -60,4 +61,5 @@ abstract class AgencyInfoRepository {
   Future<ApiResult<List<AgencyHistoryEntity>>> getHistory(
     AgencyHistoryParamEntity param,
   );
+  Future<ApiResult<AgencyInfoReportEntity>> getReport(AgencyInfoFilterParamEntity param);
 }

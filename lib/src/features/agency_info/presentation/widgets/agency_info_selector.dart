@@ -3,6 +3,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agenc
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/agency_info_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_summary_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -52,12 +53,10 @@ class _AgencyInfoSelectorView extends StatelessWidget {
           children: [
             Text(title, style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
             Space.h16,
-            TextField(
+            TextFormFieldWidget(
               controller: cubit.selectorSearchController,
-              decoration: const InputDecoration(
-                labelText: 'جستجوی نام نمایندگی',
-                prefixIcon: Icon(Icons.search_rounded),
-              ),
+              labelText: 'جستجوی نام نمایندگی',
+              prefixIcon: const Icon(Icons.search_rounded),
               onChanged: cubit.searchForSelector,
             ),
             Space.h12,

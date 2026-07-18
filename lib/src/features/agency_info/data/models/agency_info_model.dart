@@ -42,7 +42,7 @@ class AgencyInfoModel extends AgencyInfoEntity {
       mobileNumber: _string(json, ['mobileNumber', 'mobile', 'managerMobileNumber']),
       telephone: _string(json, ['telephone', 'tel', 'phoneNumber']),
       postalCode: _string(json, ['postalCode']),
-      nationalNumber: _string(json, ['nationalNumber']),
+      nationalNumber: _string(json, ['nationalNo']),
       economicCode: _string(json, ['economicCode']),
       detailCode: _string(json, ['detailCode', 'detailedCode']),
       trackingNumber: _string(json, ['trackingNumber']),

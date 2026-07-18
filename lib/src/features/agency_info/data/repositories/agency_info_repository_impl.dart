@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agenc
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_history_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_page_entity.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_report_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_person_page_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_service_type_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_vehicle_page_entity.dart';
@@ -155,6 +156,18 @@ class AgencyInfoRepositoryImpl extends AgencyInfoRepository {
     try {
       final result = await _dataSource.getHistory(param.toModel());
       return result.toApiResult<AgencyHistoryEntity>();
+    } catch (error, stackTrace) {
+      return error.toApiResult(stackTrace);
+    }
+  }
+
+  @override
+  Future<ApiResult<AgencyInfoReportEntity>> getReport(
+      AgencyInfoFilterParamEntity param,
+      ) async {
+    try {
+      final result = await _dataSource.getReport(param.toModel());
+      return result.toApiResult<AgencyInfoReportEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }

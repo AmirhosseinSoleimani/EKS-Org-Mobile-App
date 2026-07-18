@@ -1,6 +1,7 @@
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_status_badge.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:flutter/material.dart';
 
 class AgencyInfoSummaryCard extends StatelessWidget {
@@ -8,11 +9,13 @@ class AgencyInfoSummaryCard extends StatelessWidget {
     super.key,
     required this.item,
     this.onTap,
+    this.onAction,
     this.trailing,
   });
 
   final AgencyInfoEntity item;
   final VoidCallback? onTap;
+  final VoidCallback? onAction;
   final Widget? trailing;
 
   @override
@@ -38,120 +41,226 @@ class AgencyInfoSummaryCard extends StatelessWidget {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                _AgencyIcon(color: theme.colorScheme.primary),
-                Space.w12,
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        item.title,
-                        maxLines: 2,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      Space.h4,
-                      Text(
-                        _dash(item.code),
-                        style: theme.textTheme.bodySmall?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                trailing ?? AgencyInfoStatusBadge(isActive: item.isActive),
-              ],
+            _buildHeader(theme),
+            Space.h12,
+            _InfoRow(
+              icon: Icons.badge_outlined,
+              label: 'کد نمایندگی',
+              value: item.code,
+            ),
+            _InfoRow(
+              icon: Icons.person_outline_rounded,
+              label: 'نام مدیر',
+              value: item.managerFullName,
+            ),
+            _InfoRow(
+              icon: Icons.contact_mail_outlined,
+              label: 'کد ملی مدیر',
+              value: item.nationalNumber,
+            ),
+            _InfoRow(
+              icon: Icons.monetization_on_outlined,
+              label: 'کد اقتصادی',
+              value: item.economicCode,
+            ),
+            _InfoRow(
+              icon: Icons.phone_android_outlined,
+              label: 'شماره تماس',
+              value: item.mobileNumber ?? item.telephone,
+            ),
+            _InfoRow(
+              icon: Icons.location_on_outlined,
+              label: 'آدرس',
+              value: _join([item.provinceTitle, item.cityTitle, item.address]),
+              maxLines: 2,
             ),
             Space.h12,
-            Divider(height: AppSize.s1, color: theme.dividerColor.withOpacity(0.6)),
+            Divider(height: AppSize.s1, color: theme.dividerColor.withOpacity(0.55)),
             Space.h12,
-            Row(
-              children: [
-                Expanded(
-                  child: _InfoPill(
-                    icon: Icons.person_outline_rounded,
-                    value: _dash(item.managerFullName),
-                  ),
-                ),
-                Space.w8,
-                Expanded(
-                  child: _InfoPill(
-                    icon: Icons.location_city_outlined,
-                    value: _dash(item.cityTitle ?? item.provinceTitle),
-                  ),
-                ),
-              ],
+            _MetaRow(
+              user: item.updateUserFullName ?? item.insertUserFullName,
+              date: item.updateDateTimeJalali ?? item.insertDateTimeJalali,
             ),
+            if (onAction != null) ...[
+              Space.h16,
+              InkwellButtonWidget(
+                title: 'عملیات',
+                height: AppSize.s48,
+                backgroundColor: theme.colorScheme.secondaryContainer,
+                titleColor: theme.colorScheme.onSurface,
+                prefixIcon: Icon(
+                  Icons.settings_outlined,
+                  size: AppSize.s20,
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+                suffixIcon: Icon(
+                  Icons.keyboard_arrow_down_rounded,
+                  size: AppSize.s20,
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+                onTap: onAction,
+              ),
+            ],
           ],
         ),
       ),
     );
   }
 
+  Widget _buildHeader(ThemeData theme) {
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Expanded(
+          child: Text(
+            item.title,
+            maxLines: 2,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.w800,
+              fontSize: AppSize.s16,
+            ),
+          ),
+        ),
+        Space.w8,
+        trailing ??
+            Wrap(
+              spacing: AppSize.s8,
+              runSpacing: AppSize.s8,
+              children: [
+                AgencyInfoStatusBadge(isActive: item.isActive),
+                if (item.typeTitle?.trim().isNotEmpty == true)
+                  _SoftBadge(title: item.typeTitle!.trim()),
+              ],
+            ),
+      ],
+    );
+  }
+
   static String _dash(String? value) {
     return value?.trim().isNotEmpty == true ? value!.trim() : '---';
   }
-}
 
-class _AgencyIcon extends StatelessWidget {
-  const _AgencyIcon({required this.color});
-
-  final Color color;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: AppSize.s48,
-      height: AppSize.s48,
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
-        shape: BoxShape.circle,
-      ),
-      child: Icon(Icons.storefront_outlined, color: color, size: AppSize.s24),
-    );
+  static String? _join(List<String?> values) {
+    final result = values
+        .where((item) => item?.trim().isNotEmpty == true)
+        .map((item) => item!.trim())
+        .join('، ');
+    return result.isEmpty ? null : result;
   }
 }
 
-class _InfoPill extends StatelessWidget {
-  const _InfoPill({
-    required this.icon,
-    required this.value,
-  });
+class _SoftBadge extends StatelessWidget {
+  const _SoftBadge({required this.title});
 
-  final IconData icon;
-  final String value;
+  final String title;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
     return Container(
-      height: AppSize.s32,
-      padding: const EdgeInsets.symmetric(horizontal: AppPadding.p10),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        borderRadius: BorderRadius.circular(AppSize.s6),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppPadding.p12,
+        vertical: AppPadding.p6,
       ),
+      decoration: BoxDecoration(
+        color: Color(0xFFCBE7F5),
+        borderRadius: BorderRadius.circular(AppSize.s16),
+      ),
+      child: Text(
+        title,
+        style: theme.textTheme.bodySmall?.copyWith(
+          color: theme.colorScheme.onPrimaryFixed,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+    );
+  }
+}
+
+class _InfoRow extends StatelessWidget {
+  const _InfoRow({
+    required this.icon,
+    required this.label,
+    required this.value,
+    this.maxLines = 1,
+  });
+
+  final IconData icon;
+  final String label;
+  final String? value;
+  final int maxLines;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Padding(
+      padding: const EdgeInsets.only(bottom: AppPadding.p10),
       child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: AppSize.s16, color: theme.colorScheme.onSurfaceVariant),
-          Space.w4,
+          Icon(icon, size: AppSize.s20, color: theme.colorScheme.onSurfaceVariant),
+          Space.w8,
+          Text(
+            '$label: ',
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: theme.colorScheme.onTertiaryFixed,
+              fontWeight: FontWeight.w600,
+            ),
+          ),
           Expanded(
             child: Text(
-              value,
-              maxLines: 1,
+              AgencyInfoSummaryCard._dash(value),
+              maxLines: maxLines,
               overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.bodySmall?.copyWith(fontWeight: FontWeight.w600),
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onTertiaryFixed,
+              ),
             ),
           ),
         ],
       ),
+    );
+  }
+}
+
+class _MetaRow extends StatelessWidget {
+  const _MetaRow({
+    required this.user,
+    required this.date,
+  });
+
+  final String? user;
+  final String? date;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Row(
+      children: [
+        Expanded(
+          child: Text(
+            'ثبت‌کننده: ${AgencyInfoSummaryCard._dash(user)}',
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+            ),
+          ),
+        ),
+        Space.w8,
+        Text(
+          AgencyInfoSummaryCard._dash(date),
+          maxLines: 1,
+          overflow: TextOverflow.ellipsis,
+          style: theme.textTheme.bodySmall?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
+      ],
     );
   }
 }

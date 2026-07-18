@@ -8,6 +8,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/data/models/agency_in
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/agency_info_id_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/agency_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/agency_info_page_model.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/data/models/agency_info_report_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/agency_person_page_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/agency_service_type_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/agency_vehicle_page_model.dart';
@@ -55,4 +56,8 @@ abstract class AgencyInfoDataSource {
   Future<BaseListResponse<AgencyHistoryModel>> getHistory(
     AgencyHistoryRequestModel request,
   );
+
+  Future<BaseSingleResponse<AgencyInfoReportModel>> getReport(
+      AgencyInfoFilterRequestModel request,
+      );
 }

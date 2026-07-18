@@ -26,12 +26,32 @@ import '../features/agency_info/data/services/agency_info_service.dart'
     as _i427;
 import '../features/agency_info/domain/repositories/agency_info_repository.dart'
     as _i233;
+import '../features/agency_info/domain/use_cases/change_agency_status_use_case.dart'
+    as _i147;
+import '../features/agency_info/domain/use_cases/get_agency_additional_information_use_case.dart'
+    as _i600;
+import '../features/agency_info/domain/use_cases/get_agency_contracts_use_case.dart'
+    as _i201;
+import '../features/agency_info/domain/use_cases/get_agency_history_use_case.dart'
+    as _i879;
 import '../features/agency_info/domain/use_cases/get_agency_info_by_id_use_case.dart'
     as _i632;
 import '../features/agency_info/domain/use_cases/get_agency_info_list_use_case.dart'
     as _i553;
+import '../features/agency_info/domain/use_cases/get_agency_info_report_use_case.dart'
+    as _i881;
+import '../features/agency_info/domain/use_cases/get_agency_service_types_use_case.dart'
+    as _i898;
+import '../features/agency_info/domain/use_cases/get_current_agency_persons_use_case.dart'
+    as _i282;
+import '../features/agency_info/domain/use_cases/get_current_agency_vehicles_use_case.dart'
+    as _i807;
 import '../features/agency_info/domain/use_cases/search_agency_info_use_case.dart'
     as _i516;
+import '../features/agency_info/domain/use_cases/search_person_info_use_case.dart'
+    as _i699;
+import '../features/agency_info/domain/use_cases/search_vehicle_info_use_case.dart'
+    as _i645;
 import '../features/agency_info/presentation/cubit/agency_info_cubit.dart'
     as _i598;
 import '../features/authentication/data/data_sources/auth_remote_data_source.dart'
@@ -1249,14 +1269,48 @@ _i174.GetIt $initGetIt(
       gh<_i786.GetEmdadgarInfoUseCase>(),
     ),
   );
+  gh.factory<_i147.ChangeAgencyStatusUseCase>(
+    () => _i147.ChangeAgencyStatusUseCase(gh<_i233.AgencyInfoRepository>()),
+  );
+  gh.factory<_i600.GetAgencyAdditionalInformationUseCase>(
+    () => _i600.GetAgencyAdditionalInformationUseCase(
+      gh<_i233.AgencyInfoRepository>(),
+    ),
+  );
+  gh.factory<_i201.GetAgencyContractsUseCase>(
+    () => _i201.GetAgencyContractsUseCase(gh<_i233.AgencyInfoRepository>()),
+  );
+  gh.factory<_i879.GetAgencyHistoryUseCase>(
+    () => _i879.GetAgencyHistoryUseCase(gh<_i233.AgencyInfoRepository>()),
+  );
   gh.factory<_i632.GetAgencyInfoByIdUseCase>(
     () => _i632.GetAgencyInfoByIdUseCase(gh<_i233.AgencyInfoRepository>()),
   );
   gh.factory<_i553.GetAgencyInfoListUseCase>(
     () => _i553.GetAgencyInfoListUseCase(gh<_i233.AgencyInfoRepository>()),
   );
+  gh.factory<_i881.GetAgencyInfoReportUseCase>(
+    () => _i881.GetAgencyInfoReportUseCase(gh<_i233.AgencyInfoRepository>()),
+  );
+  gh.factory<_i898.GetAgencyServiceTypesUseCase>(
+    () => _i898.GetAgencyServiceTypesUseCase(gh<_i233.AgencyInfoRepository>()),
+  );
+  gh.factory<_i282.GetCurrentAgencyPersonsUseCase>(
+    () =>
+        _i282.GetCurrentAgencyPersonsUseCase(gh<_i233.AgencyInfoRepository>()),
+  );
+  gh.factory<_i807.GetCurrentAgencyVehiclesUseCase>(
+    () =>
+        _i807.GetCurrentAgencyVehiclesUseCase(gh<_i233.AgencyInfoRepository>()),
+  );
   gh.factory<_i516.SearchAgencyInfoUseCase>(
     () => _i516.SearchAgencyInfoUseCase(gh<_i233.AgencyInfoRepository>()),
+  );
+  gh.factory<_i699.SearchPersonInfoUseCase>(
+    () => _i699.SearchPersonInfoUseCase(gh<_i233.AgencyInfoRepository>()),
+  );
+  gh.factory<_i645.SearchVehicleInfoUseCase>(
+    () => _i645.SearchVehicleInfoUseCase(gh<_i233.AgencyInfoRepository>()),
   );
   gh.factory<_i815.ChangeHomeServiceRequestTimeCubit>(
     () => _i815.ChangeHomeServiceRequestTimeCubit(
@@ -1483,13 +1537,6 @@ _i174.GetIt $initGetIt(
       gh<_i347.HomeServiceEvaluationRepository>(),
     ),
   );
-  gh.factory<_i598.AgencyInfoCubit>(
-    () => _i598.AgencyInfoCubit(
-      gh<_i553.GetAgencyInfoListUseCase>(),
-      gh<_i632.GetAgencyInfoByIdUseCase>(),
-      gh<_i516.SearchAgencyInfoUseCase>(),
-    ),
-  );
   gh.factory<_i154.EvaluationHistoryCubit>(
     () => _i154.EvaluationHistoryCubit(
       gh<_i467.GetEvaluationHistoryListUseCase>(),
@@ -1618,6 +1665,14 @@ _i174.GetIt $initGetIt(
       gh<_i706.GetLeaveReasonsUseCase>(),
       gh<_i283.ChangeLeaveStatusUseCase>(),
       gh<_i918.RollbackLeaveRequestUseCase>(),
+    ),
+  );
+  gh.factory<_i598.AgencyInfoCubit>(
+    () => _i598.AgencyInfoCubit(
+      gh<_i553.GetAgencyInfoListUseCase>(),
+      gh<_i632.GetAgencyInfoByIdUseCase>(),
+      gh<_i516.SearchAgencyInfoUseCase>(),
+      gh<_i881.GetAgencyInfoReportUseCase>(),
     ),
   );
   gh.lazySingleton<_i695.SyncCurrentSessionUseCase>(

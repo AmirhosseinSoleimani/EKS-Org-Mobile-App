@@ -2,14 +2,13 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agenc
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/agency_info_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/use_cases/get_agency_info_by_id_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/use_cases/get_agency_info_list_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/domain/use_cases/get_agency_info_report_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/use_cases/search_agency_info_use_case.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
-part 'agency_info_cubit.freezed.dart';
 part 'agency_info_state.dart';
 
 @injectable
@@ -18,11 +17,13 @@ class AgencyInfoCubit extends Cubit<AgencyInfoState> {
     this._getListUseCase,
     this._getByIdUseCase,
     this._searchUseCase,
-  ) : super(const AgencyInfoState.idle());
+    this._getReportUseCase,
+  ) : super(const AgencyInfoState());
 
   final GetAgencyInfoListUseCase _getListUseCase;
   final GetAgencyInfoByIdUseCase _getByIdUseCase;
   final SearchAgencyInfoUseCase _searchUseCase;
+  final GetAgencyInfoReportUseCase _getReportUseCase;
 
   final nameController = TextEditingController();
   final codeController = TextEditingController();
@@ -48,13 +49,18 @@ class AgencyInfoCubit extends Cubit<AgencyInfoState> {
     final nextSkip = refresh ? 0 : _data.items.length;
     final filter = _data.filter.copyWith(skip: nextSkip, pageSize: _pageSize);
 
-    emit(AgencyInfoState.loading(
+    final isFirstPage = refresh || _data.items.isEmpty;
+    emit(AgencyInfoState(
+      status: isFirstPage
+          ? AgencyInfoViewStatus.initialLoading
+          : AgencyInfoViewStatus.loadingMore,
       data: _data.copyWith(
         filter: filter,
-        isInitialLoading: _data.items.isEmpty && !refresh,
+        isInitialLoading: isFirstPage,
         isRefreshing: refresh,
         isPaginationLoading: _data.items.isNotEmpty && !refresh,
-        errorMessage: null,
+        clearErrorMessage: true,
+        clearSuccessMessage: true,
       ),
     ));
 
@@ -62,7 +68,10 @@ class AgencyInfoCubit extends Cubit<AgencyInfoState> {
     result.when(
       success: (page, failures, resultCode) {
         final records = refresh ? page.records : [..._data.items, ...page.records];
-        emit(AgencyInfoState.loaded(
+        emit(AgencyInfoState(
+          status: records.isEmpty
+              ? AgencyInfoViewStatus.empty
+              : AgencyInfoViewStatus.loaded,
           data: _data.copyWith(
             items: records,
             totalCount: page.count,
@@ -70,13 +79,14 @@ class AgencyInfoCubit extends Cubit<AgencyInfoState> {
             isInitialLoading: false,
             isRefreshing: false,
             isPaginationLoading: false,
-            errorMessage: null,
+            clearErrorMessage: true,
           ),
         ));
       },
       failure: (error, failures) => _emitFailure(failures),
       expireToken: () => _emitFailure('نشست کاربری منقضی شده است.'),
-      connectionError: () => emit(AgencyInfoState.connectionError(
+      connectionError: () => emit(AgencyInfoState(
+        status: AgencyInfoViewStatus.connectionError,
         data: _data.copyWith(
           isInitialLoading: false,
           isRefreshing: false,
@@ -87,7 +97,8 @@ class AgencyInfoCubit extends Cubit<AgencyInfoState> {
   }
 
   Future<void> applyFilter(AgencyInfoFilterParamEntity filter) async {
-    emit(AgencyInfoState.loaded(
+    emit(AgencyInfoState(
+      status: AgencyInfoViewStatus.filterLoading,
       data: _data.copyWith(filter: filter.copyWith(skip: 0, pageSize: _pageSize)),
     ));
     await fetchList(refresh: true);
@@ -100,7 +111,8 @@ class AgencyInfoCubit extends Cubit<AgencyInfoState> {
     cityController.clear();
     mobileController.clear();
 
-    emit(AgencyInfoState.loaded(
+    emit(AgencyInfoState(
+      status: AgencyInfoViewStatus.filterLoading,
       data: _data.copyWith(
         filter: const AgencyInfoFilterParamEntity(pageSize: _pageSize),
       ),
@@ -114,25 +126,132 @@ class AgencyInfoCubit extends Cubit<AgencyInfoState> {
     }
 
     _retryAction = () => loadDetail(id);
-    emit(AgencyInfoState.loading(
-      data: _data.copyWith(loadingDetailId: id, errorMessage: null),
+    emit(AgencyInfoState(
+      status: AgencyInfoViewStatus.actionLoading,
+      data: _data.copyWith(loadingDetailId: id, clearErrorMessage: true),
     ));
 
     final result = await _getByIdUseCase(id);
     result.when(
       success: (item, failures, resultCode) {
-        emit(AgencyInfoState.loaded(
+        emit(AgencyInfoState(
+          status: AgencyInfoViewStatus.loaded,
           data: _data.copyWith(
             selectedAgency: item,
-            loadingDetailId: null,
-            errorMessage: null,
+            clearLoadingDetailId: true,
+            clearErrorMessage: true,
           ),
         ));
       },
       failure: (error, failures) => _emitFailure(failures, clearDetailLoading: true),
       expireToken: () => _emitFailure('نشست کاربری منقضی شده است.', clearDetailLoading: true),
-      connectionError: () => emit(AgencyInfoState.connectionError(
-        data: _data.copyWith(loadingDetailId: null),
+      connectionError: () => emit(AgencyInfoState(
+        status: AgencyInfoViewStatus.connectionError,
+        data: _data.copyWith(clearLoadingDetailId: true),
+      )),
+    );
+  }
+
+  Future<void> loadActionData(
+    AgencyInfoActionType actionType,
+    AgencyInfoEntity item,
+  ) async {
+    final id = item.id;
+    if (id == null || state.status == AgencyInfoViewStatus.actionLoading) {
+      return;
+    }
+
+    _retryAction = () => loadActionData(actionType, item);
+    emit(AgencyInfoState(
+      status: AgencyInfoViewStatus.actionLoading,
+      data: _data.copyWith(
+        actionType: actionType,
+        actionAgency: item,
+        loadingDetailId: id,
+        clearErrorMessage: true,
+      ),
+    ));
+
+    // TODO: Wire action-specific use cases when their API endpoints are available.
+    final result = await _getByIdUseCase(id);
+    result.when(
+      success: (agency, failures, resultCode) {
+        emit(AgencyInfoState(
+          status: AgencyInfoViewStatus.actionDataLoaded,
+          data: _data.copyWith(
+            actionType: actionType,
+            actionAgency: agency,
+            selectedAgency: agency,
+            clearLoadingDetailId: true,
+            clearErrorMessage: true,
+          ),
+        ));
+      },
+      failure: (error, failures) => _emitFailure(
+        failures,
+        status: AgencyInfoViewStatus.actionError,
+        clearDetailLoading: true,
+      ),
+      expireToken: () => _emitFailure(
+        'نشست کاربری منقضی شده است.',
+        status: AgencyInfoViewStatus.actionError,
+        clearDetailLoading: true,
+      ),
+      connectionError: () => emit(AgencyInfoState(
+        status: AgencyInfoViewStatus.connectionError,
+        data: _data.copyWith(clearLoadingDetailId: true),
+      )),
+    );
+  }
+
+  void clearActionData() {
+    emit(state.copyWith(
+      status: AgencyInfoViewStatus.loaded,
+      data: _data.copyWith(
+        clearActionAgency: true,
+        clearActionType: true,
+        clearLoadingDetailId: true,
+      ),
+    ));
+  }
+
+  Future<void> getReport() async {
+    if (_data.isReportLoading) return;
+
+    emit(AgencyInfoState(
+      status: AgencyInfoViewStatus.reportLoading,
+      data: _data.copyWith(
+        isReportLoading: true,
+        clearErrorMessage: true,
+        clearSuccessMessage: true,
+      ),
+    ));
+
+    final result = await _getReportUseCase(_data.filter.copyWith(skip: 0));
+    result.when(
+      success: (data, failures, resultCode) {
+        emit(AgencyInfoState(
+          status: AgencyInfoViewStatus.reportSuccess,
+          data: _data.copyWith(
+            isReportLoading: false,
+            successMessage: 'گزارش نمایندگی‌ها با موفقیت دریافت شد.',
+            clearErrorMessage: true,
+          ),
+        ));
+      },
+      failure: (error, failures) => _emitFailure(
+        failures,
+        status: AgencyInfoViewStatus.pageError,
+        clearReportLoading: true,
+      ),
+      expireToken: () => _emitFailure(
+        'نشست کاربری منقضی شده است.',
+        status: AgencyInfoViewStatus.pageError,
+        clearReportLoading: true,
+      ),
+      connectionError: () => emit(AgencyInfoState(
+        status: AgencyInfoViewStatus.connectionError,
+        data: _data.copyWith(isReportLoading: false),
       )),
     );
   }
@@ -142,12 +261,13 @@ class AgencyInfoCubit extends Cubit<AgencyInfoState> {
     selectorSearchController.text = query;
 
     if (normalizedQuery.length < 2) {
-      emit(AgencyInfoState.loaded(
+      emit(AgencyInfoState(
+        status: AgencyInfoViewStatus.loaded,
         data: _data.copyWith(
           selectorItems: const [],
           selectorSearchText: normalizedQuery,
           isSelectorLoading: false,
-          errorMessage: null,
+          clearErrorMessage: true,
         ),
       ));
       return;
@@ -157,49 +277,59 @@ class AgencyInfoCubit extends Cubit<AgencyInfoState> {
       return;
     }
 
-    emit(AgencyInfoState.loading(
+    emit(AgencyInfoState(
+      status: AgencyInfoViewStatus.selectorLoading,
       data: _data.copyWith(
         selectorSearchText: normalizedQuery,
         isSelectorLoading: true,
-        errorMessage: null,
+        clearErrorMessage: true,
       ),
     ));
 
     final result = await _searchUseCase(normalizedQuery);
     result.when(
       success: (items, failures, resultCode) {
-        emit(AgencyInfoState.loaded(
+        emit(AgencyInfoState(
+          status: AgencyInfoViewStatus.loaded,
           data: _data.copyWith(
             selectorItems: items,
             isSelectorLoading: false,
-            errorMessage: null,
+            clearErrorMessage: true,
           ),
         ));
       },
       failure: (error, failures) => _emitFailure(failures, clearSelectorLoading: true),
       expireToken: () => _emitFailure('نشست کاربری منقضی شده است.', clearSelectorLoading: true),
-      connectionError: () => emit(AgencyInfoState.connectionError(
+      connectionError: () => emit(AgencyInfoState(
+        status: AgencyInfoViewStatus.connectionError,
         data: _data.copyWith(isSelectorLoading: false),
       )),
     );
   }
 
   void selectAgency(AgencyInfoEntity agency) {
-    emit(AgencyInfoState.loaded(data: _data.copyWith(selectedAgency: agency)));
+    emit(AgencyInfoState(
+      status: AgencyInfoViewStatus.loaded,
+      data: _data.copyWith(selectedAgency: agency),
+    ));
   }
 
   void _emitFailure(
     String? message, {
+    AgencyInfoViewStatus status = AgencyInfoViewStatus.pageError,
     bool clearDetailLoading = false,
     bool clearSelectorLoading = false,
+    bool clearReportLoading = false,
   }) {
-    emit(AgencyInfoState.failure(
+    emit(AgencyInfoState(
+      status: status,
       data: _data.copyWith(
         isInitialLoading: false,
         isRefreshing: false,
         isPaginationLoading: false,
         isSelectorLoading: clearSelectorLoading ? false : _data.isSelectorLoading,
-        loadingDetailId: clearDetailLoading ? null : _data.loadingDetailId,
+        isReportLoading: clearReportLoading ? false : _data.isReportLoading,
+        clearLoadingDetailId: clearDetailLoading,
         errorMessage: message?.trim().isNotEmpty == true
             ? message
             : 'عملیات با خطا مواجه شد.',

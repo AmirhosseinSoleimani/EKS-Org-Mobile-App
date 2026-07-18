@@ -1,60 +1,150 @@
 part of 'agency_info_cubit.dart';
 
-@freezed
-abstract class AgencyInfoStateData with _$AgencyInfoStateData {
-  const factory AgencyInfoStateData({
-    @Default([]) List<AgencyInfoEntity> items,
-    @Default([]) List<AgencyInfoEntity> selectorItems,
+enum AgencyInfoViewStatus {
+  initial,
+  initialLoading,
+  loaded,
+  empty,
+  pageError,
+  connectionError,
+  filterLoading,
+  loadingMore,
+  reportLoading,
+  reportSuccess,
+  actionLoading,
+  actionDataLoaded,
+  actionError,
+  selectorLoading,
+}
+
+enum AgencyInfoActionType {
+  contracts,
+  activeReliefWorkers,
+  activeVehicles,
+  changeStatus,
+  serviceType,
+  complementaryInfo,
+  history,
+  delete,
+}
+
+class AgencyInfoStateData {
+  const AgencyInfoStateData({
+    this.items = const [],
+    this.selectorItems = const [],
+    this.selectedAgency,
+    this.actionAgency,
+    this.actionType,
+    this.filter = const AgencyInfoFilterParamEntity(),
+    this.totalCount = 0,
+    this.hasMore = true,
+    this.isInitialLoading = false,
+    this.isRefreshing = false,
+    this.isPaginationLoading = false,
+    this.isSelectorLoading = false,
+    this.isReportLoading = false,
+    this.loadingDetailId,
+    this.selectorSearchText = '',
+    this.errorMessage,
+    this.successMessage,
+  });
+
+  final List<AgencyInfoEntity> items;
+  final List<AgencyInfoEntity> selectorItems;
+  final AgencyInfoEntity? selectedAgency;
+  final AgencyInfoEntity? actionAgency;
+  final AgencyInfoActionType? actionType;
+  final AgencyInfoFilterParamEntity filter;
+  final int totalCount;
+  final bool hasMore;
+  final bool isInitialLoading;
+  final bool isRefreshing;
+  final bool isPaginationLoading;
+  final bool isSelectorLoading;
+  final bool isReportLoading;
+  final int? loadingDetailId;
+  final String selectorSearchText;
+  final String? errorMessage;
+  final String? successMessage;
+
+  bool get hasActiveFilter {
+    return [
+      filter.name,
+      filter.code,
+      filter.managerFullName,
+      filter.provinceTitle,
+      filter.cityTitle,
+      filter.mobileNumber,
+    ].any((item) => item?.trim().isNotEmpty == true) ||
+        filter.isActive != null;
+  }
+
+  AgencyInfoStateData copyWith({
+    List<AgencyInfoEntity>? items,
+    List<AgencyInfoEntity>? selectorItems,
     AgencyInfoEntity? selectedAgency,
-    @Default(AgencyInfoFilterParamEntity()) AgencyInfoFilterParamEntity filter,
-    @Default(0) int totalCount,
-    @Default(true) bool hasMore,
-    @Default(false) bool isInitialLoading,
-    @Default(false) bool isRefreshing,
-    @Default(false) bool isPaginationLoading,
-    @Default(false) bool isSelectorLoading,
+    bool clearSelectedAgency = false,
+    AgencyInfoEntity? actionAgency,
+    bool clearActionAgency = false,
+    AgencyInfoActionType? actionType,
+    bool clearActionType = false,
+    AgencyInfoFilterParamEntity? filter,
+    int? totalCount,
+    bool? hasMore,
+    bool? isInitialLoading,
+    bool? isRefreshing,
+    bool? isPaginationLoading,
+    bool? isSelectorLoading,
+    bool? isReportLoading,
     int? loadingDetailId,
-    @Default('') String selectorSearchText,
+    bool clearLoadingDetailId = false,
+    String? selectorSearchText,
     String? errorMessage,
-  }) = _AgencyInfoStateData;
+    bool clearErrorMessage = false,
+    String? successMessage,
+    bool clearSuccessMessage = false,
+  }) {
+    return AgencyInfoStateData(
+      items: items ?? this.items,
+      selectorItems: selectorItems ?? this.selectorItems,
+      selectedAgency:
+          clearSelectedAgency ? null : selectedAgency ?? this.selectedAgency,
+      actionAgency: clearActionAgency ? null : actionAgency ?? this.actionAgency,
+      actionType: clearActionType ? null : actionType ?? this.actionType,
+      filter: filter ?? this.filter,
+      totalCount: totalCount ?? this.totalCount,
+      hasMore: hasMore ?? this.hasMore,
+      isInitialLoading: isInitialLoading ?? this.isInitialLoading,
+      isRefreshing: isRefreshing ?? this.isRefreshing,
+      isPaginationLoading: isPaginationLoading ?? this.isPaginationLoading,
+      isSelectorLoading: isSelectorLoading ?? this.isSelectorLoading,
+      isReportLoading: isReportLoading ?? this.isReportLoading,
+      loadingDetailId:
+          clearLoadingDetailId ? null : loadingDetailId ?? this.loadingDetailId,
+      selectorSearchText: selectorSearchText ?? this.selectorSearchText,
+      errorMessage: clearErrorMessage ? null : errorMessage ?? this.errorMessage,
+      successMessage:
+          clearSuccessMessage ? null : successMessage ?? this.successMessage,
+    );
+  }
 }
 
-@freezed
-abstract class AgencyInfoState with _$AgencyInfoState {
-  const factory AgencyInfoState.idle({
-    @Default(AgencyInfoStateData()) AgencyInfoStateData data,
-  }) = _Idle;
+class AgencyInfoState {
+  const AgencyInfoState({
+    this.status = AgencyInfoViewStatus.initial,
+    this.data = const AgencyInfoStateData(),
+  });
 
-  const factory AgencyInfoState.loading({
-    required AgencyInfoStateData data,
-  }) = _Loading;
+  final AgencyInfoViewStatus status;
+  final AgencyInfoStateData data;
 
-  const factory AgencyInfoState.loaded({
-    required AgencyInfoStateData data,
-  }) = _Loaded;
-
-  const factory AgencyInfoState.empty({
-    required AgencyInfoStateData data,
-  }) = _Empty;
-
-  const factory AgencyInfoState.failure({
-    required AgencyInfoStateData data,
-  }) = _Failure;
-
-  const factory AgencyInfoState.connectionError({
-    required AgencyInfoStateData data,
-  }) = _ConnectionError;
-}
-
-extension AgencyInfoStateX on AgencyInfoState {
-  AgencyInfoStateData get data {
-    return when(
-      idle: (data) => data,
-      loading: (data) => data,
-      loaded: (data) => data,
-      empty: (data) => data,
-      failure: (data) => data,
-      connectionError: (data) => data,
+  AgencyInfoState copyWith({
+    AgencyInfoViewStatus? status,
+    AgencyInfoStateData? data,
+  }) {
+    return AgencyInfoState(
+      status: status ?? this.status,
+      data: data ?? this.data,
     );
   }
 }

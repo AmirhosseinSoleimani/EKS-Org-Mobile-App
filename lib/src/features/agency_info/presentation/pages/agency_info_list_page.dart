@@ -1,12 +1,23 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_entity.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/agency_info_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/agency_info_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_info_details_page.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_detail_sheet.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_filter_sheet.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_report_button.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_summary_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -52,76 +63,215 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<AgencyInfoCubit>();
+    final theme = Theme.of(context);
 
     return BlocListener<AgencyInfoCubit, AgencyInfoState>(
       listener: (context, state) {
-        final message = state.data.errorMessage;
-        if (message != null && message.isNotEmpty) {
-          SnakeBarWidget.showError(context: context, message: message);
+        final data = state.data;
+        final errorMessage = data.errorMessage;
+        final successMessage = data.successMessage;
+
+        if (state.status == AgencyInfoViewStatus.connectionError) {
+          BottomSheetMessage.showCustom(
+            context: context,
+            content: NoInternetBottomSheet(onRetry: cubit.retryLastAction),
+            actionWidget: const SizedBox.shrink(),
+            isDismissible: false,
+            enableDrag: false,
+          );
+        } else if (errorMessage != null && errorMessage.isNotEmpty) {
+          SnakeBarWidget.showError(context: context, message: errorMessage);
+        } else if (successMessage != null && successMessage.isNotEmpty) {
+          SnakeBarWidget.showSuccess(context: context, message: successMessage);
+        }
+
+        if (state.status == AgencyInfoViewStatus.actionDataLoaded &&
+            data.actionType != null &&
+            data.actionAgency != null) {
+          final actionType = data.actionType!;
+          final item = data.actionAgency!;
+          cubit.clearActionData();
+          BottomSheetMessage.showFullScreenCustom<void>(
+            context: context,
+            content: AgencyInfoActionDetailSheet(
+              actionType: actionType,
+              item: item,
+            ),
+            backgroundColor: theme.colorScheme.surface,
+          );
         }
       },
       child: Scaffold(
+        backgroundColor: theme.colorScheme.surface,
         appBar: const SimpleAppBar(title: 'نمایندگی ها'),
-        floatingActionButton: FloatingActionButton(
-          onPressed: () => _showFilter(context, cubit),
-          child: const Icon(Icons.filter_alt_outlined),
-        ),
-        body: BlocBuilder<AgencyInfoCubit, AgencyInfoState>(
-          builder: (context, state) {
-            final data = state.data;
-            if (data.isInitialLoading) {
-              return const Center(child: CircularProgressIndicator());
-            }
-            if (data.items.isEmpty) {
-              return RefreshIndicator(
-                onRefresh: () => cubit.fetchList(refresh: true),
-                child: ListView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  children: const [
-                    SizedBox(height: AppSize.s180),
-                    Center(child: EmptyListWidget()),
-                  ],
+        body: ScrollConfiguration(
+          behavior: ScrollConfiguration.of(context).copyWith(
+            dragDevices: {
+              PointerDeviceKind.touch,
+              PointerDeviceKind.mouse,
+            },
+          ),
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.fromLTRB(
+                  AppPadding.p16,
+                  AppPadding.p16,
+                  AppPadding.p16,
+                  AppPadding.p8,
                 ),
-              );
-            }
-
-            return RefreshIndicator(
-              onRefresh: () => cubit.fetchList(refresh: true),
-              child: ListView.separated(
-                controller: _scrollController,
-                padding: const EdgeInsets.all(AppPadding.p16),
-                itemCount: data.items.length + (data.isPaginationLoading ? 1 : 0),
-                separatorBuilder: (_, __) => Space.h12,
-                itemBuilder: (context, index) {
-                  if (index >= data.items.length) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  final item = data.items[index];
-                  return AgencyInfoSummaryCard(
-                    item: item,
-                    onTap: () async {
-                      final changed = await context.pushNamed(
-                        AgencyInfoDetailsPage.name,
-                        extra: item.id,
-                      );
-                      if (changed == true && context.mounted) {
-                        context.read<AgencyInfoCubit>().fetchList(refresh: true);
-                      }
-                    },
-                  );
-                },
+                child: BlocBuilder<AgencyInfoCubit, AgencyInfoState>(
+                  buildWhen: (previous, current) =>
+                  previous.data.filter != current.data.filter,
+                  builder: (context, state) {
+                    return FiltersRow(
+                      filters: [
+                        FilterButton(
+                          title: 'فیلترها',
+                          icon: Icons.filter_alt_outlined,
+                          onTap: () => _showFilter(context, cubit),
+                        ),
+                        FilterButton(
+                          title: _statusTitle(state.data.filter.isActive),
+                          icon: Icons.keyboard_arrow_down_rounded,
+                          onTap: () =>
+                              _showStatusSheet(
+                                context,
+                                cubit,
+                                state.data.filter,
+                              ),
+                        ),
+                      ],
+                    );
+                  },
+                ),
               ),
-            );
-          },
+              Padding(
+                padding: const EdgeInsets.symmetric(
+                  vertical: AppPadding.p18,
+                  horizontal: AppPadding.p16,),
+                child: BlocBuilder<AgencyInfoCubit, AgencyInfoState>(
+                  buildWhen: (previous, current) =>
+                  previous.data.isReportLoading != current.data.isReportLoading,
+                  builder: (context, state) {
+                    return AgencyInfoReportButton(
+                      isLoading: state.data.isReportLoading,
+                      onTap: cubit.getReport,
+                    );
+                  },
+                ),
+              ),
+              Expanded(
+                child: BlocBuilder<AgencyInfoCubit, AgencyInfoState>(
+                  builder: (context, state) {
+                    return Stack(
+                      children: [
+                        _buildContent(context, cubit, state),
+                        if (state.status == AgencyInfoViewStatus.actionLoading)
+                          _ActionLoadingOverlay(
+                            title: _loadingActionTitle(state.data.actionType),
+                          ),
+                      ],
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
   }
 
-  void _onScroll() {
-    if (!_scrollController.hasClients) {
-      return;
+  Widget _buildContent(BuildContext context,
+      AgencyInfoCubit cubit,
+      AgencyInfoState state,) {
+    final data = state.data;
+
+    if (data.isInitialLoading && data.items.isEmpty) {
+      return const Center(child: CircularProgressIndicator());
     }
+
+    if (state.status == AgencyInfoViewStatus.connectionError &&
+        data.items.isEmpty) {
+      return _MessageState(
+        title: 'اتصال به اینترنت برقرار نیست',
+        actionTitle: 'تلاش مجدد',
+        onAction: cubit.retryLastAction,
+      );
+    }
+
+    if ((state.status == AgencyInfoViewStatus.pageError ||
+        state.status == AgencyInfoViewStatus.actionError) &&
+        data.items.isEmpty) {
+      return _MessageState(
+        title: data.errorMessage ?? 'عملیات با خطا مواجه شد.',
+        actionTitle: 'تلاش مجدد',
+        onAction: cubit.retryLastAction,
+      );
+    }
+
+    if (data.items.isEmpty) {
+      return LayoutBuilder(
+        builder: (context, constraints) {
+          return RefreshIndicator(
+            onRefresh: () => cubit.fetchList(refresh: true),
+            child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: [
+                SizedBox(
+                  height: constraints.maxHeight,
+                  child: const Center(child: EmptyListWidget()),
+                ),
+              ],
+            ),
+          );
+        },
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: () => cubit.fetchList(refresh: true),
+      child: ListView.separated(
+        controller: _scrollController,
+        padding: const EdgeInsets.fromLTRB(
+          AppPadding.p16,
+          AppPadding.p8,
+          AppPadding.p16,
+          AppPadding.p100,
+        ),
+        itemCount: data.items.length + (data.isPaginationLoading ? 1 : 0),
+        separatorBuilder: (_, __) => Space.h12,
+        itemBuilder: (context, index) {
+          if (index >= data.items.length) {
+            return const Padding(
+              padding: EdgeInsets.all(AppPadding.p16),
+              child: Center(child: CircularProgressIndicator()),
+            );
+          }
+          final item = data.items[index];
+          return AgencyInfoSummaryCard(
+            item: item,
+            onTap: () {}, //=> _openDetails(context, item),
+            onAction: () => _showActionSheet(context, cubit, item),
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _openDetails(BuildContext context, AgencyInfoEntity item) async {
+    final changed = await context.pushNamed(
+      AgencyInfoDetailsPage.name,
+      extra: item.id,
+    );
+    if (changed == true && context.mounted) {
+      context.read<AgencyInfoCubit>().fetchList(refresh: true);
+    }
+  }
+
+  void _onScroll() {
+    if (!_scrollController.hasClients) return;
 
     final data = context.read<AgencyInfoCubit>().state.data;
     final reachedBottom = _scrollController.position.pixels >=
@@ -133,18 +283,192 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
   }
 
   void _showFilter(BuildContext context, AgencyInfoCubit cubit) {
-    showModalBottomSheet<void>(
+    BottomSheetMessage.showCustom(
       context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
-      ),
-      builder: (_) => AgencyInfoFilterSheet(
+      content: AgencyInfoFilterSheet(
         initialFilter: cubit.state.data.filter,
         onApply: cubit.applyFilter,
         onClear: cubit.clearFilter,
+      ),
+      actionWidget: const SizedBox.shrink(),
+      backgroundColor: Theme
+          .of(context)
+          .colorScheme
+          .onPrimary,
+      maxHeight: 0.9,
+    );
+  }
+
+  void _showStatusSheet(BuildContext context,
+      AgencyInfoCubit cubit,
+      AgencyInfoFilterParamEntity filter,) {
+    BottomSheetMessage.showCustom(
+      context: context,
+      actionWidget: const SizedBox.shrink(),
+      backgroundColor: Theme
+          .of(context)
+          .colorScheme
+          .onPrimary,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          _StatusTile(
+            title: 'همه',
+            onTap: () {
+              Navigator.of(context).pop();
+              cubit.applyFilter(filter.copyWith(clearIsActive: true, skip: 0));
+            },
+          ),
+          _StatusTile(
+            title: 'فعال',
+            onTap: () {
+              Navigator.of(context).pop();
+              cubit.applyFilter(filter.copyWith(isActive: true, skip: 0));
+            },
+          ),
+          _StatusTile(
+            title: 'غیرفعال',
+            onTap: () {
+              Navigator.of(context).pop();
+              cubit.applyFilter(filter.copyWith(isActive: false, skip: 0));
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _showActionSheet(BuildContext context,
+      AgencyInfoCubit cubit,
+      AgencyInfoEntity item,) {
+    BottomSheetMessage.showCustom(
+      context: context,
+      content: AgencyInfoActionSheet(
+        onActionSelected: (actionType) =>
+            cubit.loadActionData(actionType, item),
+      ),
+      actionWidget: const SizedBox.shrink(),
+      backgroundColor: Theme
+          .of(context)
+          .colorScheme
+          .onPrimary,
+    );
+  }
+
+  String _statusTitle(bool? value) {
+    if (value == true) return 'فعال';
+    if (value == false) return 'غیرفعال';
+    return 'وضعیت';
+  }
+
+  String _loadingActionTitle(AgencyInfoActionType? actionType) {
+    if (actionType == null) return 'در حال دریافت اطلاعات';
+    return 'در حال دریافت ${_actionTitle(actionType)}';
+  }
+
+  String _actionTitle(AgencyInfoActionType actionType) {
+    switch (actionType) {
+      case AgencyInfoActionType.contracts:
+        return 'قراردادها';
+      case AgencyInfoActionType.activeReliefWorkers:
+        return 'امدادرسان‌های فعلی';
+      case AgencyInfoActionType.activeVehicles:
+        return 'خودروهای فعلی';
+      case AgencyInfoActionType.changeStatus:
+        return 'تغییر وضعیت';
+      case AgencyInfoActionType.serviceType:
+        return 'نوع خدمات';
+      case AgencyInfoActionType.complementaryInfo:
+        return 'اطلاعات تکمیلی';
+      case AgencyInfoActionType.history:
+        return 'تاریخچه';
+      case AgencyInfoActionType.delete:
+        return 'حذف';
+    }
+  }
+}
+
+class _StatusTile extends StatelessWidget {
+  const _StatusTile({
+    required this.title,
+    required this.onTap,
+  });
+
+  final String title;
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    return ListTile(
+      title: BodyMediumText(text: title),
+      onTap: onTap,
+    );
+  }
+}
+
+class _MessageState extends StatelessWidget {
+  const _MessageState({
+    required this.title,
+    required this.actionTitle,
+    required this.onAction,
+  });
+
+  final String title;
+  final String actionTitle;
+  final VoidCallback? onAction;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppPadding.p24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            const EmptyListWidget(),
+            Space.h16,
+            BodyMediumText(text: title),
+            Space.h16,
+            OutlinedButton(
+              onPressed: onAction,
+              child: BodyMediumText(text: actionTitle),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ActionLoadingOverlay extends StatelessWidget {
+  const _ActionLoadingOverlay({required this.title});
+
+  final String title;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Positioned.fill(
+      child: ColoredBox(
+        color: theme.colorScheme.surface.withOpacity(0.65),
+        child: Center(
+          child: Container(
+            padding: const EdgeInsets.all(AppPadding.p16),
+            decoration: BoxDecoration(
+              color: theme.colorScheme.onPrimary,
+              borderRadius: BorderRadius.circular(AppSize.s8),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const CircularProgressIndicator(),
+                Space.h12,
+                BodyMediumText(text: title),
+              ],
+            ),
+          ),
+        ),
       ),
     );
   }
