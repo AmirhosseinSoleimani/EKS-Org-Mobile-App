@@ -21,4 +21,12 @@ class AgencyInfoPageModel extends AgencyInfoPageEntity {
           : const [],
     );
   }
+
+  Map<String, dynamic> toJson() {
+    return {
+      'records': records.map((item) => item.toModel().toJson()).toList(),
+      'count': count,
+    };
+  }
 }
+

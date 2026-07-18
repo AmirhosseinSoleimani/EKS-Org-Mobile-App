@@ -72,6 +72,60 @@ class AgencyInfoEntity {
         .trim();
   }
 
+  AgencyInfoEntity copyWith({
+    int? id,
+    String? code,
+    String? name,
+    int? type,
+    String? typeTitle,
+    String? managerFirstName,
+    String? managerLastName,
+    String? provinceTitle,
+    String? cityTitle,
+    String? address,
+    String? mobileNumber,
+    String? telephone,
+    String? postalCode,
+    String? nationalNumber,
+    String? economicCode,
+    String? detailCode,
+    String? trackingNumber,
+    String? taxStatusTitle,
+    bool? isActive,
+    String? insertUserFullName,
+    String? updateUserFullName,
+    String? insertDateTimeJalali,
+    String? updateDateTimeJalali,
+  }) {
+    return AgencyInfoEntity(
+      id: id ?? this.id,
+      code: code ?? this.code,
+      name: name ?? this.name,
+      type: type ?? this.type,
+      typeTitle: typeTitle ?? this.typeTitle,
+      managerFirstName: managerFirstName ?? this.managerFirstName,
+      managerLastName: managerLastName ?? this.managerLastName,
+      provinceTitle: provinceTitle ?? this.provinceTitle,
+      cityTitle: cityTitle ?? this.cityTitle,
+      address: address ?? this.address,
+      mobileNumber: mobileNumber ?? this.mobileNumber,
+      telephone: telephone ?? this.telephone,
+      postalCode: postalCode ?? this.postalCode,
+      nationalNumber: nationalNumber ?? this.nationalNumber,
+      economicCode: economicCode ?? this.economicCode,
+      detailCode: detailCode ?? this.detailCode,
+      trackingNumber: trackingNumber ?? this.trackingNumber,
+      taxStatusTitle: taxStatusTitle ?? this.taxStatusTitle,
+      isActive: isActive ?? this.isActive,
+      insertUserFullName: insertUserFullName ?? this.insertUserFullName,
+      updateUserFullName: updateUserFullName ?? this.updateUserFullName,
+      insertDateTimeJalali:
+          insertDateTimeJalali ?? this.insertDateTimeJalali,
+      updateDateTimeJalali:
+          updateDateTimeJalali ?? this.updateDateTimeJalali,
+    );
+  }
+
   AgencyInfoModel toModel() {
     return AgencyInfoModel(
       id: id,

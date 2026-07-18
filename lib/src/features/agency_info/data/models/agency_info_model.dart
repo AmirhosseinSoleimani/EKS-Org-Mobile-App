@@ -55,6 +55,34 @@ class AgencyInfoModel extends AgencyInfoEntity {
     );
   }
 
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'code': code,
+      'name': name,
+      'type': type,
+      'typeTitle': typeTitle,
+      'managerFirstName': managerFirstName,
+      'managerLastName': managerLastName,
+      'provinceTitle': provinceTitle,
+      'cityTitle': cityTitle,
+      'address': address,
+      'mobileNumber': mobileNumber,
+      'telephone': telephone,
+      'postalCode': postalCode,
+      'nationalNumber': nationalNumber,
+      'economicCode': economicCode,
+      'detailCode': detailCode,
+      'trackingNumber': trackingNumber,
+      'taxStatusTitle': taxStatusTitle,
+      'isActive': isActive,
+      'insertUserFullName': insertUserFullName,
+      'updateUserFullName': updateUserFullName,
+      'insertDateTimeJalali': insertDateTimeJalali,
+      'updateDateTimeJalali': updateDateTimeJalali,
+    };
+  }
+
   static String? _string(Map<String, dynamic> json, List<String> keys) {
     for (final key in keys) {
       final value = json[key];

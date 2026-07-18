@@ -5,6 +5,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_summary_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -78,7 +79,7 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
                   physics: const AlwaysScrollableScrollPhysics(),
                   children: const [
                     SizedBox(height: AppSize.s180),
-                    Center(child: Text('نمایندگی ای یافت نشد.')),
+                    Center(child: EmptyListWidget()),
                   ],
                 ),
               );

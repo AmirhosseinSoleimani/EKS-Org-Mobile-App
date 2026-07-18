@@ -9,6 +9,30 @@ class AgencyInfoFilterRequestModel {
   final int pageSize;
   final List<AgencyInfoFilterModel> filters;
 
+  factory AgencyInfoFilterRequestModel.fromJson(Map<String, dynamic> json) {
+    final filter = json['Filter'];
+    final filtersJson = filter is Map ? filter['Filters'] : null;
+
+    return AgencyInfoFilterRequestModel(
+      skip: json['Skip'] is int
+          ? json['Skip'] as int
+          : int.tryParse(json['Skip']?.toString() ?? '') ?? 0,
+      pageSize: json['PageSize'] is int
+          ? json['PageSize'] as int
+          : int.tryParse(json['PageSize']?.toString() ?? '') ?? 10,
+      filters: filtersJson is List
+          ? filtersJson
+              .whereType<Map>()
+              .map(
+                (item) => AgencyInfoFilterModel.fromJson(
+                  Map<String, dynamic>.from(item),
+                ),
+              )
+              .toList()
+          : const [],
+    );
+  }
+
   Map<String, dynamic> toJson() {
     return {
       'Skip': skip,
@@ -31,6 +55,14 @@ class AgencyInfoFilterModel {
   final String field;
   final String value;
   final String operator;
+
+  factory AgencyInfoFilterModel.fromJson(Map<String, dynamic> json) {
+    return AgencyInfoFilterModel(
+      field: json['Field']?.toString() ?? '',
+      value: json['Value']?.toString() ?? '',
+      operator: json['Operator']?.toString() ?? 'contains',
+    );
+  }
 
   Map<String, dynamic> toJson() {
     return {
