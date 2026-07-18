@@ -6,9 +6,11 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agenc
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_service_type_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_vehicle_page_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/agency_info_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_agency_header.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_detail_row.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_details_section.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:flutter/material.dart';
 
@@ -140,22 +142,9 @@ class AgencyInfoActionDetailSheet extends StatelessWidget {
         final records = actionData is List<AgencyServiceTypeEntity>
             ? actionData! as List<AgencyServiceTypeEntity>
             : const <AgencyServiceTypeEntity>[];
-        return _ActionList(
-          emptyTitle: 'نوع خدمتی برای این نمایندگی ثبت نشده است.',
-          itemCount: records.length,
-          itemBuilder: (context, index) {
-            final serviceType = records[index];
-            return _ActionCard(
-              children: [
-                AgencyInfoDetailRow(label: 'کد', value: serviceType.code),
-                AgencyInfoDetailRow(label: 'نام', value: serviceType.name),
-                AgencyInfoDetailRow(
-                  label: 'قابل انتخاب',
-                  value: serviceType.selectable == true ? 'بله' : 'خیر',
-                ),
-              ],
-            );
-          },
+        return _ServiceTypeActionView(
+          item: item,
+          serviceTypes: records,
         );
       case AgencyInfoActionType.complementaryInfo:
         final info = actionData is AgencyAdditionalInformationEntity
@@ -213,7 +202,7 @@ class AgencyInfoActionDetailSheet extends StatelessWidget {
       case AgencyInfoActionType.changeStatus:
         return 'تغییر وضعیت';
       case AgencyInfoActionType.serviceType:
-        return 'نوع خدمات';
+        return 'خدمات';
       case AgencyInfoActionType.complementaryInfo:
         return 'اطلاعات تکمیلی';
       case AgencyInfoActionType.history:
@@ -221,6 +210,155 @@ class AgencyInfoActionDetailSheet extends StatelessWidget {
       case AgencyInfoActionType.delete:
         return 'حذف نمایندگی';
     }
+  }
+}
+
+class _ServiceTypeActionView extends StatelessWidget {
+  const _ServiceTypeActionView({
+    required this.item,
+    required this.serviceTypes,
+  });
+
+  final AgencyInfoEntity item;
+  final List<AgencyServiceTypeEntity> serviceTypes;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Column(
+      children: [
+        Expanded(
+          child: ListView(
+            padding: const EdgeInsets.fromLTRB(
+              AppPadding.p16,
+              AppPadding.p16,
+              AppPadding.p16,
+              AppPadding.p24,
+            ),
+            children: [
+              AgencyInfoActionAgencyHeader(item: item),
+              Space.h24,
+              if (serviceTypes.isEmpty)
+                Padding(
+                  padding: const EdgeInsets.only(top: 32),
+                  child: Column(
+                    children: [
+                      const EmptyListWidget(),
+                      Space.h16,
+                      Text(
+                        'نوع خدمتی برای این نمایندگی ثبت نشده است.',
+                        style: theme.textTheme.bodyMedium,
+                      ),
+                    ],
+                  ),
+                )
+              else
+                Align(
+                  alignment: Alignment.centerRight,
+                  child: Wrap(
+                    alignment: WrapAlignment.end,
+                    spacing: AppSize.s8,
+                    runSpacing: AppSize.s12,
+                    children: serviceTypes
+                        .map((serviceType) => _ServiceTypeChip(
+                              serviceType: serviceType,
+                            ))
+                        .toList(),
+                  ),
+                ),
+            ],
+          ),
+        ),
+        Container(
+          padding: const EdgeInsets.fromLTRB(
+            AppPadding.p16,
+            AppPadding.p12,
+            AppPadding.p16,
+            AppPadding.p16,
+          ),
+          decoration: BoxDecoration(
+            color: theme.colorScheme.onPrimary,
+            boxShadow: [
+              BoxShadow(
+                color: theme.colorScheme.shadow.withOpacity(0.08),
+                blurRadius: 16,
+                offset: const Offset(0, -6),
+              ),
+            ],
+          ),
+          child: SafeArea(
+            top: false,
+            child: InkwellButtonWidget(
+              title: 'بستن',
+              backgroundColor: theme.colorScheme.onPrimary,
+              borderColor: theme.colorScheme.outline,
+              titleColor: theme.colorScheme.onSurface,
+              borderWidth: 1,
+              onTap: () => Navigator.of(context).pop(),
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ServiceTypeChip extends StatelessWidget {
+  const _ServiceTypeChip({required this.serviceType});
+
+  final AgencyServiceTypeEntity serviceType;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final selected = serviceType.selectable == true;
+
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppPadding.p12,
+        vertical: AppPadding.p10,
+      ),
+      decoration: BoxDecoration(
+        color: colorScheme.onPrimary,
+        borderRadius: BorderRadius.circular(AppSize.s8),
+        border: Border.all(
+          color: selected ? colorScheme.primary : colorScheme.outline.withOpacity(0.35),
+          width: selected ? 1.5 : 1,
+        ),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          if (selected) ...[
+            Icon(
+              Icons.check_circle_outline_rounded,
+              color: colorScheme.primary,
+              size: AppSize.s18,
+            ),
+            Space.w8,
+          ],
+          Text(
+            _title,
+            style: theme.textTheme.bodyMedium?.copyWith(
+              color: colorScheme.onSurface,
+              fontWeight: FontWeight.w500,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
+  String get _title {
+    final name = serviceType.name?.trim();
+    if (name != null && name.isNotEmpty) return name;
+
+    final code = serviceType.code?.trim();
+    if (code != null && code.isNotEmpty) return code;
+
+    return '---';
   }
 }
 

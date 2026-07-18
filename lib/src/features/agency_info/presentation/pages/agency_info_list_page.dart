@@ -47,7 +47,6 @@ class _AgencyInfoListView extends StatefulWidget {
 
 class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
   final _scrollController = ScrollController();
-  bool _isActionSheetVisible = false;
 
   @override
   void initState() {
@@ -93,10 +92,6 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
           final actionType = data.actionType!;
           final item = data.actionAgency!;
           final actionData = data.actionData;
-          if (_isActionSheetVisible && Navigator.of(context).canPop()) {
-            Navigator.of(context).pop();
-            _isActionSheetVisible = false;
-          }
           cubit.clearActionData();
           BottomSheetMessage.showFullScreenCustom<void>(
             context: context,
@@ -306,7 +301,6 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
   void _showActionSheet(BuildContext context,
       AgencyInfoCubit cubit,
       AgencyInfoEntity item,) {
-    _isActionSheetVisible = true;
     BottomSheetMessage.showCustom(
       context: context,
       content: BlocProvider.value(
