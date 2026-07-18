@@ -8,6 +8,7 @@ import 'package:eks_sana_plus_org/src/features/plan_info/presentation/plan_info_
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/rescuer_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/home_service_request_list_page/home_service_request_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/relief_request_list_page/relief_request_list_page.dart';
+import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/skills_certificates_page.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/pages/vehicle_info_list_page.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/presentation/widgets/current_session_access_builder.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
@@ -113,6 +114,14 @@ class ServicesPage extends StatelessWidget {
                 icon: Icons.grading_outlined,
                 onTap: () {
                   context.pushNamed(RescuerListPage.name);
+                },
+              ),
+                //todo: add if for show licence
+              _AgencyServiceItemData(
+                title: 'گواهینامه مهارت',
+                icon: Icons.grading_outlined,
+                onTap: () {
+                  context.pushNamed(SkillsCertificatesPage.name);
                 },
               ),
           ];

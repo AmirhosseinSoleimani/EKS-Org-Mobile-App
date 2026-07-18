@@ -479,6 +479,20 @@ import '../features/services/presentation/request_status_history_page/cubit/requ
     as _i563;
 import '../features/services/presentation/update_request_page/cubit/update_request_cubit.dart'
     as _i792;
+import '../features/skills_certificates/data/data_source/skills_certificates_data_source.dart'
+    as _i82;
+import '../features/skills_certificates/data/data_source/skills_certificates_data_source_impl.dart'
+    as _i518;
+import '../features/skills_certificates/data/repository/skills_certificates_repository_impl.dart'
+    as _i526;
+import '../features/skills_certificates/data/service/skills_certificates_service.dart'
+    as _i654;
+import '../features/skills_certificates/domain/repository/skills_certificates_repository.dart'
+    as _i615;
+import '../features/skills_certificates/domain/usecases/skills_certificates_usecases.dart'
+    as _i974;
+import '../features/skills_certificates/presentation/cubit/skills_certificates_cubit.dart'
+    as _i751;
 import '../features/vehicle_info/data/data_sources/vehicle_info_data_source.dart'
     as _i247;
 import '../features/vehicle_info/data/data_sources/vehicle_info_data_source_impl.dart'
@@ -741,6 +755,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i483.RequestService>(
     () => _i483.RequestService(gh<_i361.Dio>()),
   );
+  gh.lazySingleton<_i654.SkillsCertificatesService>(
+    () => _i654.SkillsCertificatesService(gh<_i361.Dio>()),
+  );
   gh.lazySingleton<_i634.InvoiceService>(
     () => _i634.InvoiceService(gh<_i361.Dio>()),
   );
@@ -834,6 +851,11 @@ _i174.GetIt $initGetIt(
     () => _i583.MapDataSourceImpl(
       gh<_i929.MapService>(),
       gh<_i1036.AddressService>(),
+    ),
+  );
+  gh.lazySingleton<_i82.SkillsCertificatesDataSource>(
+    () => _i518.SkillsCertificatesDataSourceImpl(
+      gh<_i654.SkillsCertificatesService>(),
     ),
   );
   gh.lazySingleton<_i123.AgencyInfoDataSource>(
@@ -936,6 +958,11 @@ _i174.GetIt $initGetIt(
   );
   gh.factory<_i557.GetRescuersUseCase>(
     () => _i557.GetRescuersUseCase(gh<_i449.RescuerRepository>()),
+  );
+  gh.lazySingleton<_i615.SkillsCertificatesRepository>(
+    () => _i526.SkillsCertificatesRepositoryImpl(
+      gh<_i82.SkillsCertificatesDataSource>(),
+    ),
   );
   gh.factory<_i125.AssignEmdadUnitPersonUseCase>(
     () => _i125.AssignEmdadUnitPersonUseCase(gh<_i14.EmdadUnitRepository>()),
@@ -1160,6 +1187,46 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i208.GetDashboardDataUseCase>(
     () => _i208.GetDashboardDataUseCase(gh<_i602.DashboardRepository>()),
+  );
+  gh.lazySingleton<_i974.GetSkillsCertificatesUseCase>(
+    () => _i974.GetSkillsCertificatesUseCase(
+      gh<_i615.SkillsCertificatesRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i974.GetSkillCertificateByIdUseCase>(
+    () => _i974.GetSkillCertificateByIdUseCase(
+      gh<_i615.SkillsCertificatesRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i974.CreateSkillCertificateUseCase>(
+    () => _i974.CreateSkillCertificateUseCase(
+      gh<_i615.SkillsCertificatesRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i974.EditSkillCertificateUseCase>(
+    () => _i974.EditSkillCertificateUseCase(
+      gh<_i615.SkillsCertificatesRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i974.DeleteSkillCertificateUseCase>(
+    () => _i974.DeleteSkillCertificateUseCase(
+      gh<_i615.SkillsCertificatesRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i974.GetSkillCertificateServicesUseCase>(
+    () => _i974.GetSkillCertificateServicesUseCase(
+      gh<_i615.SkillsCertificatesRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i974.SubmitSkillCertificateServicesUseCase>(
+    () => _i974.SubmitSkillCertificateServicesUseCase(
+      gh<_i615.SkillsCertificatesRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i974.GetSkillCertificatesReportUseCase>(
+    () => _i974.GetSkillCertificatesReportUseCase(
+      gh<_i615.SkillsCertificatesRepository>(),
+    ),
   );
   gh.lazySingleton<_i138.LogoutUseCase>(
     () => _i138.LogoutUseCase(
@@ -1671,6 +1738,18 @@ _i174.GetIt $initGetIt(
       gh<_i67.GetRequestFollowupHistoryUseCase>(),
       gh<_i786.GetEmdadgarInfoUseCase>(),
       gh<_i955.GetRequestStatusHistoryUseCase>(),
+    ),
+  );
+  gh.factory<_i751.SkillsCertificatesCubit>(
+    () => _i751.SkillsCertificatesCubit(
+      gh<_i974.GetSkillsCertificatesUseCase>(),
+      gh<_i974.GetSkillCertificateByIdUseCase>(),
+      gh<_i974.CreateSkillCertificateUseCase>(),
+      gh<_i974.EditSkillCertificateUseCase>(),
+      gh<_i974.DeleteSkillCertificateUseCase>(),
+      gh<_i974.GetSkillCertificateServicesUseCase>(),
+      gh<_i974.SubmitSkillCertificateServicesUseCase>(),
+      gh<_i974.GetSkillCertificatesReportUseCase>(),
     ),
   );
   gh.factory<_i710.LeaveCubit>(
