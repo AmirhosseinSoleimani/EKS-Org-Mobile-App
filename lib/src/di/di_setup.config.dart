@@ -74,6 +74,10 @@ import '../features/cartable/data/repositories/cartable_repository_impl.dart'
 import '../features/cartable/data/service/cartable_service.dart' as _i1027;
 import '../features/cartable/domain/repositories/cartable_repository.dart'
     as _i133;
+import '../features/cartable/domain/use_cases/archive_cartable_message_use_case.dart'
+    as _i657;
+import '../features/cartable/domain/use_cases/delegate_cartable_message_use_case.dart'
+    as _i301;
 import '../features/cartable/domain/use_cases/get_cartable_item_list_use_case.dart'
     as _i862;
 import '../features/cartable/domain/use_cases/get_subordinated_users_list_use_case.dart'
@@ -430,6 +434,20 @@ import '../features/services/presentation/request_status_history_page/cubit/requ
     as _i563;
 import '../features/services/presentation/update_request_page/cubit/update_request_cubit.dart'
     as _i792;
+import '../features/skills_certificates/data/data_source/skills_certificates_data_source.dart'
+    as _i82;
+import '../features/skills_certificates/data/data_source/skills_certificates_data_source_impl.dart'
+    as _i518;
+import '../features/skills_certificates/data/repository/skills_certificates_repository_impl.dart'
+    as _i526;
+import '../features/skills_certificates/data/service/skills_certificates_service.dart'
+    as _i654;
+import '../features/skills_certificates/domain/repository/skills_certificates_repository.dart'
+    as _i615;
+import '../features/skills_certificates/domain/usecases/skills_certificates_usecases.dart'
+    as _i974;
+import '../features/skills_certificates/presentation/cubit/skills_certificates_cubit.dart'
+    as _i751;
 import '../features/vehicle_info/data/data_sources/vehicle_info_data_source.dart'
     as _i247;
 import '../features/vehicle_info/data/data_sources/vehicle_info_data_source_impl.dart'
@@ -692,6 +710,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i483.RequestService>(
     () => _i483.RequestService(gh<_i361.Dio>()),
   );
+  gh.lazySingleton<_i654.SkillsCertificatesService>(
+    () => _i654.SkillsCertificatesService(gh<_i361.Dio>()),
+  );
   gh.lazySingleton<_i634.InvoiceService>(
     () => _i634.InvoiceService(gh<_i361.Dio>()),
   );
@@ -781,6 +802,11 @@ _i174.GetIt $initGetIt(
       gh<_i1036.AddressService>(),
     ),
   );
+  gh.lazySingleton<_i82.SkillsCertificatesDataSource>(
+    () => _i518.SkillsCertificatesDataSourceImpl(
+      gh<_i654.SkillsCertificatesService>(),
+    ),
+  );
   gh.lazySingleton<_i123.AgencyInfoDataSource>(
     () => _i392.AgencyInfoDataSourceImpl(gh<_i427.AgencyInfoService>()),
   );
@@ -858,6 +884,11 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i347.HomeServiceEvaluationRepository>(
     () => _i1063.HomeServiceEvaluationRepositoryImpl(
       gh<_i999.HomeServiceEvaluationDataSource>(),
+    ),
+  );
+  gh.lazySingleton<_i615.SkillsCertificatesRepository>(
+    () => _i526.SkillsCertificatesRepositoryImpl(
+      gh<_i82.SkillsCertificatesDataSource>(),
     ),
   );
   gh.factory<_i125.AssignEmdadUnitPersonUseCase>(
@@ -1074,6 +1105,46 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i208.GetDashboardDataUseCase>(
     () => _i208.GetDashboardDataUseCase(gh<_i602.DashboardRepository>()),
+  );
+  gh.lazySingleton<_i974.GetSkillsCertificatesUseCase>(
+    () => _i974.GetSkillsCertificatesUseCase(
+      gh<_i615.SkillsCertificatesRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i974.GetSkillCertificateByIdUseCase>(
+    () => _i974.GetSkillCertificateByIdUseCase(
+      gh<_i615.SkillsCertificatesRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i974.CreateSkillCertificateUseCase>(
+    () => _i974.CreateSkillCertificateUseCase(
+      gh<_i615.SkillsCertificatesRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i974.EditSkillCertificateUseCase>(
+    () => _i974.EditSkillCertificateUseCase(
+      gh<_i615.SkillsCertificatesRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i974.DeleteSkillCertificateUseCase>(
+    () => _i974.DeleteSkillCertificateUseCase(
+      gh<_i615.SkillsCertificatesRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i974.GetSkillCertificateServicesUseCase>(
+    () => _i974.GetSkillCertificateServicesUseCase(
+      gh<_i615.SkillsCertificatesRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i974.SubmitSkillCertificateServicesUseCase>(
+    () => _i974.SubmitSkillCertificateServicesUseCase(
+      gh<_i615.SkillsCertificatesRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i974.GetSkillCertificatesReportUseCase>(
+    () => _i974.GetSkillCertificatesReportUseCase(
+      gh<_i615.SkillsCertificatesRepository>(),
+    ),
   );
   gh.lazySingleton<_i138.LogoutUseCase>(
     () => _i138.LogoutUseCase(
@@ -1293,6 +1364,12 @@ _i174.GetIt $initGetIt(
       gh<_i928.ValidateGradePatternUseCase>(),
       gh<_i1058.CurrentSessionManager>(),
     ),
+  );
+  gh.lazySingleton<_i657.ArchiveCartableMessageUseCase>(
+    () => _i657.ArchiveCartableMessageUseCase(gh<_i133.CartableRepository>()),
+  );
+  gh.lazySingleton<_i301.DelegateCartableMessageUseCase>(
+    () => _i301.DelegateCartableMessageUseCase(gh<_i133.CartableRepository>()),
   );
   gh.lazySingleton<_i862.GetCartableItemListUseCase>(
     () => _i862.GetCartableItemListUseCase(gh<_i133.CartableRepository>()),
@@ -1525,6 +1602,18 @@ _i174.GetIt $initGetIt(
       gh<_i955.GetRequestStatusHistoryUseCase>(),
     ),
   );
+  gh.factory<_i751.SkillsCertificatesCubit>(
+    () => _i751.SkillsCertificatesCubit(
+      gh<_i974.GetSkillsCertificatesUseCase>(),
+      gh<_i974.GetSkillCertificateByIdUseCase>(),
+      gh<_i974.CreateSkillCertificateUseCase>(),
+      gh<_i974.EditSkillCertificateUseCase>(),
+      gh<_i974.DeleteSkillCertificateUseCase>(),
+      gh<_i974.GetSkillCertificateServicesUseCase>(),
+      gh<_i974.SubmitSkillCertificateServicesUseCase>(),
+      gh<_i974.GetSkillCertificatesReportUseCase>(),
+    ),
+  );
   gh.factory<_i710.LeaveCubit>(
     () => _i710.LeaveCubit(
       gh<_i75.GetLeaveReportsUseCase>(),
@@ -1532,12 +1621,6 @@ _i174.GetIt $initGetIt(
       gh<_i706.GetLeaveReasonsUseCase>(),
       gh<_i283.ChangeLeaveStatusUseCase>(),
       gh<_i918.RollbackLeaveRequestUseCase>(),
-    ),
-  );
-  gh.factory<_i330.CartableCubit>(
-    () => _i330.CartableCubit(
-      gh<_i45.GetSubordinatedUsersUseCase>(),
-      gh<_i862.GetCartableItemListUseCase>(),
     ),
   );
   gh.lazySingleton<_i695.SyncCurrentSessionUseCase>(
@@ -1552,6 +1635,15 @@ _i174.GetIt $initGetIt(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
       gh<_i672.GetReliefRequestByIdUseCase>(),
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+    ),
+  );
+  gh.factory<_i330.CartableCubit>(
+    () => _i330.CartableCubit(
+      gh<_i45.GetSubordinatedUsersUseCase>(),
+      gh<_i862.GetCartableItemListUseCase>(),
+      gh<_i301.DelegateCartableMessageUseCase>(),
+      gh<_i369.SetSelectedRequestItemUseCase>(),
+      gh<_i657.ArchiveCartableMessageUseCase>(),
     ),
   );
   gh.factory<_i566.LoginCubit>(
