@@ -14,6 +14,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/data/models/agency_pe
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/agency_service_type_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/agency_vehicle_page_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/change_agency_status_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/data/models/delete_agency_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/person_info_search_page_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/person_info_search_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/vehicle_info_search_page_model.dart';
@@ -122,6 +123,36 @@ class AgencyInfoService {
       '/api/AgencyInfo/ChangeStatus',
       queryParameters: request.toQueryParameters(),
       data: request.toJson(),
+    );
+  }
+
+  Future<BaseSingleResponse<void>> deleteAgency(
+    DeleteAgencyRequestModel request,
+  ) async {
+    final response = await _dio.delete<dynamic>(
+      '/api/AgencyInfo/DeleteByID',
+      queryParameters: request.toQueryParameters(),
+    );
+
+    final data = response.data;
+    if (data is Map) {
+      final json = Map<String, dynamic>.from(data);
+      final rawFailures = json['failures'] ?? json['Failures'];
+      final failures = rawFailures is List
+          ? rawFailures.map((item) => item.toString()).toList()
+          : rawFailures?.toString().trim().isNotEmpty == true
+              ? <String>[rawFailures.toString()]
+              : <String>[];
+
+      return BaseSingleResponse<void>(
+        resultCode: _readInt(json['resultCode'] ?? json['ResultCode']) ?? 0,
+        failures: failures,
+      );
+    }
+
+    return BaseSingleResponse<void>(
+      resultCode: 0,
+      failures: const [],
     );
   }
 
@@ -237,6 +268,12 @@ class AgencyInfoService {
       'resultCode': 0,
       'data': null,
     };
+  }
+
+  int? _readInt(dynamic value) {
+    if (value is int) return value;
+    if (value is num) return value.toInt();
+    return int.tryParse(value?.toString() ?? '');
   }
 
   Future<AgencyInfoReportModel> getReport(

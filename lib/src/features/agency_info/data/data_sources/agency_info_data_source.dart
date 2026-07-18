@@ -13,6 +13,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/data/models/agency_pe
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/agency_service_type_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/agency_vehicle_page_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/change_agency_status_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/data/models/delete_agency_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/person_info_search_page_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/person_info_search_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/vehicle_info_search_page_model.dart';
@@ -45,6 +46,10 @@ abstract class AgencyInfoDataSource {
   );
 
   Future<void> changeStatus(ChangeAgencyStatusRequestModel request);
+
+  Future<BaseSingleResponse<void>> deleteAgency(
+    DeleteAgencyRequestModel request,
+  );
 
   Future<BaseListResponse<AgencyServiceTypeModel>> getServiceTypes(
     AgencyIdRequestModel request,

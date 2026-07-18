@@ -5,7 +5,9 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/param
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/agency_info_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/agency_info_id_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/change_agency_status_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/delete_agency_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/use_cases/change_agency_status_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/domain/use_cases/delete_agency_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/use_cases/get_agency_additional_information_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/use_cases/get_agency_contracts_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/use_cases/get_agency_history_use_case.dart';
@@ -36,6 +38,7 @@ class AgencyInfoCubit extends Cubit<AgencyInfoState> {
     this._getCurrentPersonsUseCase,
     this._getCurrentVehiclesUseCase,
     this._changeStatusUseCase,
+    this._deleteAgencyUseCase,
     this._getServiceTypesUseCase,
     this._getAdditionalInformationUseCase,
     this._getHistoryUseCase,
@@ -49,15 +52,11 @@ class AgencyInfoCubit extends Cubit<AgencyInfoState> {
   final GetCurrentAgencyPersonsUseCase _getCurrentPersonsUseCase;
   final GetCurrentAgencyVehiclesUseCase _getCurrentVehiclesUseCase;
   final ChangeAgencyStatusUseCase _changeStatusUseCase;
+  final DeleteAgencyUseCase _deleteAgencyUseCase;
   final GetAgencyServiceTypesUseCase _getServiceTypesUseCase;
   final GetAgencyAdditionalInformationUseCase _getAdditionalInformationUseCase;
   final GetAgencyHistoryUseCase _getHistoryUseCase;
 
-  final nameController = TextEditingController();
-  final codeController = TextEditingController();
-  final managerController = TextEditingController();
-  final cityController = TextEditingController();
-  final mobileController = TextEditingController();
   final selectorSearchController = TextEditingController();
 
   VoidCallback? _retryAction;
@@ -133,12 +132,6 @@ class AgencyInfoCubit extends Cubit<AgencyInfoState> {
   }
 
   Future<void> clearFilter() async {
-    nameController.clear();
-    codeController.clear();
-    managerController.clear();
-    cityController.clear();
-    mobileController.clear();
-
     emit(AgencyInfoState(
       status: AgencyInfoViewStatus.filterLoading,
       data: _data.copyWith(
@@ -185,7 +178,9 @@ class AgencyInfoCubit extends Cubit<AgencyInfoState> {
     AgencyInfoEntity item,
   ) async {
     final id = item.id;
-    if (id == null || state.status == AgencyInfoViewStatus.actionLoading) {
+    if (id == null ||
+        actionType == AgencyInfoActionType.delete ||
+        state.status == AgencyInfoViewStatus.actionLoading) {
       return;
     }
 
@@ -336,9 +331,94 @@ class AgencyInfoCubit extends Cubit<AgencyInfoState> {
         );
         return;
       case AgencyInfoActionType.delete:
-        _emitActionFailure('یوزکیس حذف نمایندگی در این فیچر تعریف نشده است.');
         return;
     }
+  }
+
+  Future<bool> deleteAgency(AgencyInfoEntity item) async {
+    final id = item.id;
+    if (id == null || _data.deletingAgencyId != null) {
+      return false;
+    }
+
+    _retryAction = () {
+      deleteAgency(item);
+    };
+
+    emit(AgencyInfoState(
+      status: AgencyInfoViewStatus.actionLoading,
+      data: _data.copyWith(
+        deletingAgencyId: id,
+        clearActionAgency: true,
+        clearActionType: true,
+        clearActionData: true,
+        clearLoadingDetailId: true,
+        clearErrorMessage: true,
+        clearSuccessMessage: true,
+      ),
+    ));
+
+    final result = await _deleteAgencyUseCase(
+      DeleteAgencyParamEntity(id: id),
+    );
+
+    return result.when(
+      success: (data, failures, resultCode) {
+        final updatedItems = _data.items
+            .where((agency) => agency.id != id)
+            .toList(growable: false);
+        final updatedSelectorItems = _data.selectorItems
+            .where((agency) => agency.id != id)
+            .toList(growable: false);
+        final updatedTotalCount =
+            _data.totalCount > 0 ? _data.totalCount - 1 : 0;
+
+        emit(AgencyInfoState(
+          status: updatedItems.isEmpty
+              ? AgencyInfoViewStatus.empty
+              : AgencyInfoViewStatus.loaded,
+          data: _data.copyWith(
+            items: updatedItems,
+            selectorItems: updatedSelectorItems,
+            totalCount: updatedTotalCount,
+            hasMore: updatedItems.length < updatedTotalCount,
+            clearSelectedAgency: _data.selectedAgency?.id == id,
+            clearActionAgency: true,
+            clearActionType: true,
+            clearActionData: true,
+            clearLoadingDetailId: true,
+            clearDeletingAgencyId: true,
+            successMessage: 'نمایندگی با موفقیت حذف شد.',
+            clearErrorMessage: true,
+          ),
+        ));
+        return true;
+      },
+      failure: (error, failures) {
+        _emitDeleteFailure(failures);
+        return false;
+      },
+      expireToken: () {
+        _emitDeleteFailure('نشست کاربری منقضی شده است.');
+        return false;
+      },
+      connectionError: () {
+        _emitDeleteFailure('اتصال به اینترنت برقرار نیست.');
+        return false;
+      },
+    );
+  }
+
+  void _emitDeleteFailure(String? message) {
+    emit(AgencyInfoState(
+      status: AgencyInfoViewStatus.actionError,
+      data: _data.copyWith(
+        clearDeletingAgencyId: true,
+        errorMessage: message?.trim().isNotEmpty == true
+            ? message
+            : 'حذف نمایندگی با خطا مواجه شد.',
+      ),
+    ));
   }
 
   void _emitActionLoaded({
@@ -558,11 +638,6 @@ class AgencyInfoCubit extends Cubit<AgencyInfoState> {
 
   @override
   Future<void> close() {
-    nameController.dispose();
-    codeController.dispose();
-    managerController.dispose();
-    cityController.dispose();
-    mobileController.dispose();
     selectorSearchController.dispose();
     return super.close();
   }

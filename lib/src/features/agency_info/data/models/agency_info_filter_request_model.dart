@@ -34,14 +34,20 @@ class AgencyInfoFilterRequestModel {
   }
 
   Map<String, dynamic> toJson() {
-    return {
-      'Skip': skip,
-      'PageSize': pageSize,
-      'Filter': {
+    final json = <String, dynamic>{
+      'Sort': <dynamic>[],
+    };
+
+    if (filters.isNotEmpty) {
+      json['Filter'] = {
         'Logic': 'and',
         'Filters': filters.map((item) => item.toJson()).toList(),
-      },
-    };
+      };
+    }
+
+    json['PageSize'] = pageSize;
+    json['Skip'] = skip;
+    return json;
   }
 }
 
@@ -53,13 +59,13 @@ class AgencyInfoFilterModel {
   });
 
   final String field;
-  final String value;
+  final Object? value;
   final String operator;
 
   factory AgencyInfoFilterModel.fromJson(Map<String, dynamic> json) {
     return AgencyInfoFilterModel(
       field: json['Field']?.toString() ?? '',
-      value: json['Value']?.toString() ?? '',
+      value: json['Value'],
       operator: json['Operator']?.toString() ?? 'contains',
     );
   }

@@ -2,23 +2,39 @@ import 'package:eks_sana_plus_org/src/features/agency_info/data/models/agency_in
 
 class AgencyInfoFilterParamEntity {
   const AgencyInfoFilterParamEntity({
-    this.name,
     this.code,
-    this.managerFullName,
-    this.provinceTitle,
-    this.cityTitle,
-    this.mobileNumber,
+    this.name,
+    this.type,
+    this.managerFirstName,
+    this.managerLastName,
+    this.nationalNo,
+    this.economicCode,
+    this.mobile,
+    this.provinceName,
+    this.cityName,
+    this.detailedCode,
+    this.agencyNationalId,
+    this.trackingNumber,
+    this.taxFileCompleted,
     this.isActive,
     this.skip = 0,
     this.pageSize = 10,
   });
 
-  final String? name;
   final String? code;
-  final String? managerFullName;
-  final String? provinceTitle;
-  final String? cityTitle;
-  final String? mobileNumber;
+  final String? name;
+  final int? type;
+  final String? managerFirstName;
+  final String? managerLastName;
+  final String? nationalNo;
+  final String? economicCode;
+  final String? mobile;
+  final String? provinceName;
+  final String? cityName;
+  final String? detailedCode;
+  final String? agencyNationalId;
+  final String? trackingNumber;
+  final bool? taxFileCompleted;
   final bool? isActive;
   final int skip;
   final int pageSize;
@@ -29,24 +45,43 @@ class AgencyInfoFilterParamEntity {
     void addText(String field, String? value) {
       final trimmed = value?.trim();
       if (trimmed != null && trimmed.isNotEmpty) {
-        filters.add(AgencyInfoFilterModel(field: field, value: trimmed));
+        filters.add(
+          AgencyInfoFilterModel(
+            field: field,
+            operator: 'contains',
+            value: trimmed,
+          ),
+        );
+      }
+    }
+
+    void addEqual(String field, Object? value) {
+      if (value != null) {
+        filters.add(
+          AgencyInfoFilterModel(
+            field: field,
+            operator: 'eq',
+            value: value,
+          ),
+        );
       }
     }
 
     addText('name', name);
     addText('code', code);
-    addText('managerFullName', managerFullName);
-    addText('provinceTitle', provinceTitle);
-    addText('cityTitle', cityTitle);
-    addText('mobileNumber', mobileNumber);
-
-    if (isActive != null) {
-      filters.add(AgencyInfoFilterModel(
-        field: 'isActive',
-        operator: 'eq',
-        value: isActive.toString(),
-      ));
-    }
+    addEqual('type', type);
+    addText('detailedCode', detailedCode);
+    addText('agencyNationalId', agencyNationalId);
+    addText('trackingNumber', trackingNumber);
+    addEqual('taxFileCompleted', taxFileCompleted);
+    addEqual('isActive', isActive);
+    addText('managerFirstName', managerFirstName);
+    addText('managerLastName', managerLastName);
+    addText('nationalNo', nationalNo);
+    addText('economicCode', economicCode);
+    addText('mobile', mobile);
+    addText('provinceName', provinceName);
+    addText('cityName', cityName);
 
     return AgencyInfoFilterRequestModel(
       skip: skip,
@@ -56,24 +91,44 @@ class AgencyInfoFilterParamEntity {
   }
 
   AgencyInfoFilterParamEntity copyWith({
-    String? name,
     String? code,
-    String? managerFullName,
-    String? provinceTitle,
-    String? cityTitle,
-    String? mobileNumber,
+    String? name,
+    int? type,
+    bool clearType = false,
+    String? managerFirstName,
+    String? managerLastName,
+    String? nationalNo,
+    String? economicCode,
+    String? mobile,
+    String? provinceName,
+    String? cityName,
+    String? detailedCode,
+    String? agencyNationalId,
+    String? trackingNumber,
+    bool? taxFileCompleted,
+    bool clearTaxFileCompleted = false,
     bool? isActive,
     bool clearIsActive = false,
     int? skip,
     int? pageSize,
   }) {
     return AgencyInfoFilterParamEntity(
-      name: name ?? this.name,
       code: code ?? this.code,
-      managerFullName: managerFullName ?? this.managerFullName,
-      provinceTitle: provinceTitle ?? this.provinceTitle,
-      cityTitle: cityTitle ?? this.cityTitle,
-      mobileNumber: mobileNumber ?? this.mobileNumber,
+      name: name ?? this.name,
+      type: clearType ? null : type ?? this.type,
+      managerFirstName: managerFirstName ?? this.managerFirstName,
+      managerLastName: managerLastName ?? this.managerLastName,
+      nationalNo: nationalNo ?? this.nationalNo,
+      economicCode: economicCode ?? this.economicCode,
+      mobile: mobile ?? this.mobile,
+      provinceName: provinceName ?? this.provinceName,
+      cityName: cityName ?? this.cityName,
+      detailedCode: detailedCode ?? this.detailedCode,
+      agencyNationalId: agencyNationalId ?? this.agencyNationalId,
+      trackingNumber: trackingNumber ?? this.trackingNumber,
+      taxFileCompleted: clearTaxFileCompleted
+          ? null
+          : taxFileCompleted ?? this.taxFileCompleted,
       isActive: clearIsActive ? null : isActive ?? this.isActive,
       skip: skip ?? this.skip,
       pageSize: pageSize ?? this.pageSize,

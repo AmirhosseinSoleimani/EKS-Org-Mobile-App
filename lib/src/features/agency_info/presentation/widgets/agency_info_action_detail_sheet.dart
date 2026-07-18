@@ -8,10 +8,8 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agenc
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/agency_info_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_active_relief_workers_action_view.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_active_vehicles_action_view.dart';
-import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_change_status_action_view.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_complementary_info_action_view.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_contracts_action_view.dart';
-import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_delete_action_view.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_history_action_view.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_service_type_action_view.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
@@ -109,7 +107,7 @@ class AgencyInfoActionDetailSheet extends StatelessWidget {
           vehicles: vehicles,
         );
       case AgencyInfoActionType.changeStatus:
-        return AgencyInfoChangeStatusActionView(item: item);
+        return const SizedBox.shrink();
       case AgencyInfoActionType.serviceType:
         final serviceTypes = actionData is List<AgencyServiceTypeEntity>
             ? actionData! as List<AgencyServiceTypeEntity>
@@ -135,7 +133,7 @@ class AgencyInfoActionDetailSheet extends StatelessWidget {
           histories: histories,
         );
       case AgencyInfoActionType.delete:
-        return AgencyInfoDeleteActionView(item: item);
+        return const SizedBox.shrink();
     }
   }
 

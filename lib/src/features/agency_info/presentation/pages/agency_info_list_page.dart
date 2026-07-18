@@ -3,6 +3,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agenc
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/agency_info_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/agency_info_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_info_details_page.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_delete_action_view.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_detail_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_filter_sheet.dart';
@@ -316,14 +317,54 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
                   ? state.data.actionType
                   : null,
               isActive: currentItem.isActive,
-              onActionSelected: (actionType) =>
-                  cubit.loadActionData(actionType, currentItem),
+              onActionSelected: (actionType) => _handleActionSelected(
+                context,
+                cubit,
+                currentItem,
+                actionType,
+              ),
             );
           },
         ),
       ),
       actionWidget: const SizedBox.shrink(),
       backgroundColor: Theme.of(context).colorScheme.onPrimary,
+    );
+  }
+
+  Future<void> _handleActionSelected(
+    BuildContext context,
+    AgencyInfoCubit cubit,
+    AgencyInfoEntity item,
+    AgencyInfoActionType actionType,
+  ) async {
+    if (actionType == AgencyInfoActionType.delete) {
+      Navigator.of(context).pop();
+      await Future<void>.delayed(Duration.zero);
+      if (!mounted) return;
+      _showDeleteConfirmation(this.context, cubit, item);
+      return;
+    }
+
+    await cubit.loadActionData(actionType, item);
+  }
+
+  void _showDeleteConfirmation(
+    BuildContext context,
+    AgencyInfoCubit cubit,
+    AgencyInfoEntity item,
+  ) {
+    BottomSheetMessage.showCustom(
+      context: context,
+      content: AgencyInfoDeleteActionView(
+        item: item,
+        cubit: cubit,
+      ),
+      actionWidget: const SizedBox.shrink(),
+      isDismissible: false,
+      enableDrag: false,
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      maxHeight: 0.45,
     );
   }
 

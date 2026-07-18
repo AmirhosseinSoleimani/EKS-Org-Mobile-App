@@ -14,6 +14,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/param
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/agency_info_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/agency_info_id_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/change_agency_status_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/delete_agency_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/person_info_search_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/vehicle_info_search_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/person_info_search_page_entity.dart';
@@ -122,6 +123,16 @@ class AgencyInfoRepositoryImpl extends AgencyInfoRepository {
     try {
       await _dataSource.changeStatus(param.toModel());
       return ApiResult.success(data: null, resultCode: 0);
+    } catch (error, stackTrace) {
+      return error.toApiResult(stackTrace);
+    }
+  }
+
+  @override
+  Future<ApiResult<void>> deleteAgency(DeleteAgencyParamEntity param) async {
+    try {
+      final result = await _dataSource.deleteAgency(param.toModel());
+      return result.toApiResult<void>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }

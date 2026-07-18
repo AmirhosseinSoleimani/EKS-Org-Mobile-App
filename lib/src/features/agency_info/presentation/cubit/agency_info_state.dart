@@ -45,6 +45,7 @@ class AgencyInfoStateData {
     this.isSelectorLoading = false,
     this.isReportLoading = false,
     this.loadingDetailId,
+    this.deletingAgencyId,
     this.reportFilePath,
     this.selectorSearchText = '',
     this.errorMessage,
@@ -66,6 +67,7 @@ class AgencyInfoStateData {
   final bool isSelectorLoading;
   final bool isReportLoading;
   final int? loadingDetailId;
+  final int? deletingAgencyId;
   final String? reportFilePath;
   final String selectorSearchText;
   final String? errorMessage;
@@ -73,13 +75,21 @@ class AgencyInfoStateData {
 
   bool get hasActiveFilter {
     return [
-      filter.name,
       filter.code,
-      filter.managerFullName,
-      filter.provinceTitle,
-      filter.cityTitle,
-      filter.mobileNumber,
+      filter.name,
+      filter.managerFirstName,
+      filter.managerLastName,
+      filter.nationalNo,
+      filter.economicCode,
+      filter.mobile,
+      filter.provinceName,
+      filter.cityName,
+      filter.detailedCode,
+      filter.agencyNationalId,
+      filter.trackingNumber,
     ].any((item) => item?.trim().isNotEmpty == true) ||
+        filter.type != null ||
+        filter.taxFileCompleted != null ||
         filter.isActive != null;
   }
 
@@ -104,6 +114,8 @@ class AgencyInfoStateData {
     bool? isReportLoading,
     int? loadingDetailId,
     bool clearLoadingDetailId = false,
+    int? deletingAgencyId,
+    bool clearDeletingAgencyId = false,
     String? reportFilePath,
     bool clearReportFilePath = false,
     String? selectorSearchText,
@@ -130,6 +142,9 @@ class AgencyInfoStateData {
       isReportLoading: isReportLoading ?? this.isReportLoading,
       loadingDetailId:
           clearLoadingDetailId ? null : loadingDetailId ?? this.loadingDetailId,
+      deletingAgencyId: clearDeletingAgencyId
+          ? null
+          : deletingAgencyId ?? this.deletingAgencyId,
       reportFilePath:
           clearReportFilePath ? null : reportFilePath ?? this.reportFilePath,
       selectorSearchText: selectorSearchText ?? this.selectorSearchText,

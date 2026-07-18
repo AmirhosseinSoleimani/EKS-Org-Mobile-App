@@ -13,6 +13,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/param
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/agency_info_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/agency_info_id_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/change_agency_status_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/delete_agency_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/person_info_search_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/vehicle_info_search_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/person_info_search_page_entity.dart';
@@ -49,6 +50,8 @@ abstract class AgencyInfoRepository {
   );
 
   Future<ApiResult<void>> changeStatus(ChangeAgencyStatusParamEntity param);
+
+  Future<ApiResult<void>> deleteAgency(DeleteAgencyParamEntity param);
 
   Future<ApiResult<List<AgencyServiceTypeEntity>>> getServiceTypes(
     AgencyIdParamEntity param,
