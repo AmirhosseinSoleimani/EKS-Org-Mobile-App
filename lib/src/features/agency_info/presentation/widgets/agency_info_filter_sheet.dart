@@ -1,7 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/agency_info_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -27,11 +26,6 @@ class _AgencyInfoFilterSheetState extends State<AgencyInfoFilterSheet> {
   late final TextEditingController _managerController;
   late final TextEditingController _cityController;
   late final TextEditingController _mobileController;
-  bool? _isActive;
-
-  static const _allStatusTitle = 'همه';
-  static const _activeStatusTitle = 'فعال';
-  static const _inactiveStatusTitle = 'غیرفعال';
 
   @override
   void initState() {
@@ -41,7 +35,6 @@ class _AgencyInfoFilterSheetState extends State<AgencyInfoFilterSheet> {
     _managerController = TextEditingController(text: widget.initialFilter.managerFullName);
     _cityController = TextEditingController(text: widget.initialFilter.cityTitle);
     _mobileController = TextEditingController(text: widget.initialFilter.mobileNumber);
-    _isActive = widget.initialFilter.isActive;
   }
 
   @override
@@ -108,19 +101,6 @@ class _AgencyInfoFilterSheetState extends State<AgencyInfoFilterSheet> {
                     textInputType: TextInputType.phone,
                     textInputAction: TextInputAction.done,
                   ),
-                  Space.h12,
-                  EkDropDown(
-                    const [
-                      _allStatusTitle,
-                      _activeStatusTitle,
-                      _inactiveStatusTitle,
-                    ],
-                    label: 'وضعیت',
-                    selectedItem: _statusTitle(_isActive),
-                    onItemValue: (value) {
-                      setState(() => _isActive = _statusValue(value));
-                    },
-                  ),
                   Space.h32,
                   Row(
                     children: [
@@ -134,7 +114,7 @@ class _AgencyInfoFilterSheetState extends State<AgencyInfoFilterSheet> {
                               managerFullName: _managerController.text,
                               cityTitle: _cityController.text,
                               mobileNumber: _mobileController.text,
-                              isActive: _isActive,
+                              isActive: widget.initialFilter.isActive,
                             ));
                             Navigator.of(context).pop();
                           },
@@ -164,15 +144,4 @@ class _AgencyInfoFilterSheetState extends State<AgencyInfoFilterSheet> {
     );
   }
 
-  String _statusTitle(bool? value) {
-    if (value == true) return _activeStatusTitle;
-    if (value == false) return _inactiveStatusTitle;
-    return _allStatusTitle;
-  }
-
-  bool? _statusValue(String value) {
-    if (value == _activeStatusTitle) return true;
-    if (value == _inactiveStatusTitle) return false;
-    return null;
-  }
 }

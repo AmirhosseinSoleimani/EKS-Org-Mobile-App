@@ -57,7 +57,5 @@ abstract class AgencyInfoDataSource {
     AgencyHistoryRequestModel request,
   );
 
-  Future<BaseSingleResponse<AgencyInfoReportModel>> getReport(
-      AgencyInfoFilterRequestModel request,
-      );
+  Future<AgencyInfoReportModel> getReport(AgencyInfoFilterRequestModel request);
 }

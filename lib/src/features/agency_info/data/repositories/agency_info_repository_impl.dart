@@ -167,7 +167,7 @@ class AgencyInfoRepositoryImpl extends AgencyInfoRepository {
       ) async {
     try {
       final result = await _dataSource.getReport(param.toModel());
-      return result.toApiResult<AgencyInfoReportEntity>();
+      return ApiResult.success(data: result, resultCode: 0);
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }

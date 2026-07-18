@@ -1415,6 +1415,21 @@ _i174.GetIt $initGetIt(
       gh<_i707.GetNonCooperationListUseCase>(),
     ),
   );
+  gh.factory<_i598.AgencyInfoCubit>(
+    () => _i598.AgencyInfoCubit(
+      gh<_i553.GetAgencyInfoListUseCase>(),
+      gh<_i632.GetAgencyInfoByIdUseCase>(),
+      gh<_i516.SearchAgencyInfoUseCase>(),
+      gh<_i881.GetAgencyInfoReportUseCase>(),
+      gh<_i201.GetAgencyContractsUseCase>(),
+      gh<_i282.GetCurrentAgencyPersonsUseCase>(),
+      gh<_i807.GetCurrentAgencyVehiclesUseCase>(),
+      gh<_i147.ChangeAgencyStatusUseCase>(),
+      gh<_i898.GetAgencyServiceTypesUseCase>(),
+      gh<_i600.GetAgencyAdditionalInformationUseCase>(),
+      gh<_i879.GetAgencyHistoryUseCase>(),
+    ),
+  );
   gh.factory<_i791.GradePatternCubit>(
     () => _i791.GradePatternCubit(
       gh<_i614.GetGradePatternListUseCase>(),
@@ -1665,14 +1680,6 @@ _i174.GetIt $initGetIt(
       gh<_i706.GetLeaveReasonsUseCase>(),
       gh<_i283.ChangeLeaveStatusUseCase>(),
       gh<_i918.RollbackLeaveRequestUseCase>(),
-    ),
-  );
-  gh.factory<_i598.AgencyInfoCubit>(
-    () => _i598.AgencyInfoCubit(
-      gh<_i553.GetAgencyInfoListUseCase>(),
-      gh<_i632.GetAgencyInfoByIdUseCase>(),
-      gh<_i516.SearchAgencyInfoUseCase>(),
-      gh<_i881.GetAgencyInfoReportUseCase>(),
     ),
   );
   gh.lazySingleton<_i695.SyncCurrentSessionUseCase>(

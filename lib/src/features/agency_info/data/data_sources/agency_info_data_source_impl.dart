@@ -97,9 +97,7 @@ class AgencyInfoDataSourceImpl extends AgencyInfoDataSource {
   }
 
   @override
-  Future<BaseSingleResponse<AgencyInfoReportModel>> getReport(
-      AgencyInfoFilterRequestModel request,
-      ) {
+  Future<AgencyInfoReportModel> getReport(AgencyInfoFilterRequestModel request) {
     return _service.getReport(request);
   }
 }

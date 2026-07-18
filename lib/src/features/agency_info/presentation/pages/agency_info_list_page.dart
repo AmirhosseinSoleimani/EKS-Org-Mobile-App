@@ -11,6 +11,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
@@ -46,6 +47,7 @@ class _AgencyInfoListView extends StatefulWidget {
 
 class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
   final _scrollController = ScrollController();
+  bool _isActionSheetVisible = false;
 
   @override
   void initState() {
@@ -90,12 +92,18 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
             data.actionAgency != null) {
           final actionType = data.actionType!;
           final item = data.actionAgency!;
+          final actionData = data.actionData;
+          if (_isActionSheetVisible && Navigator.of(context).canPop()) {
+            Navigator.of(context).pop();
+            _isActionSheetVisible = false;
+          }
           cubit.clearActionData();
           BottomSheetMessage.showFullScreenCustom<void>(
             context: context,
             content: AgencyInfoActionDetailSheet(
               actionType: actionType,
               item: item,
+              actionData: actionData,
             ),
             backgroundColor: theme.colorScheme.surface,
           );
@@ -131,15 +139,19 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
                           icon: Icons.filter_alt_outlined,
                           onTap: () => _showFilter(context, cubit),
                         ),
-                        FilterButton(
-                          title: _statusTitle(state.data.filter.isActive),
-                          icon: Icons.keyboard_arrow_down_rounded,
-                          onTap: () =>
-                              _showStatusSheet(
-                                context,
-                                cubit,
-                                state.data.filter,
-                              ),
+                        SizedBox(
+                          width: AppSize.s120,
+                          child: EkDropDown(
+                            const ['همه', 'فعال', 'غیرفعال'],
+                            label: 'وضعیت',
+                            selectedItem:
+                                _statusDropDownTitle(state.data.filter.isActive),
+                            onItemValue: (value) => _applyStatusFilter(
+                              cubit,
+                              state.data.filter,
+                              value,
+                            ),
+                          ),
                         ),
                       ],
                     );
@@ -164,15 +176,7 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
               Expanded(
                 child: BlocBuilder<AgencyInfoCubit, AgencyInfoState>(
                   builder: (context, state) {
-                    return Stack(
-                      children: [
-                        _buildContent(context, cubit, state),
-                        if (state.status == AgencyInfoViewStatus.actionLoading)
-                          _ActionLoadingOverlay(
-                            title: _loadingActionTitle(state.data.actionType),
-                          ),
-                      ],
-                    );
+                    return _buildContent(context, cubit, state);
                   },
                 ),
               ),
@@ -299,53 +303,29 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
     );
   }
 
-  void _showStatusSheet(BuildContext context,
-      AgencyInfoCubit cubit,
-      AgencyInfoFilterParamEntity filter,) {
-    BottomSheetMessage.showCustom(
-      context: context,
-      actionWidget: const SizedBox.shrink(),
-      backgroundColor: Theme
-          .of(context)
-          .colorScheme
-          .onPrimary,
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          _StatusTile(
-            title: 'همه',
-            onTap: () {
-              Navigator.of(context).pop();
-              cubit.applyFilter(filter.copyWith(clearIsActive: true, skip: 0));
-            },
-          ),
-          _StatusTile(
-            title: 'فعال',
-            onTap: () {
-              Navigator.of(context).pop();
-              cubit.applyFilter(filter.copyWith(isActive: true, skip: 0));
-            },
-          ),
-          _StatusTile(
-            title: 'غیرفعال',
-            onTap: () {
-              Navigator.of(context).pop();
-              cubit.applyFilter(filter.copyWith(isActive: false, skip: 0));
-            },
-          ),
-        ],
-      ),
-    );
-  }
-
   void _showActionSheet(BuildContext context,
       AgencyInfoCubit cubit,
       AgencyInfoEntity item,) {
+    _isActionSheetVisible = true;
     BottomSheetMessage.showCustom(
       context: context,
-      content: AgencyInfoActionSheet(
-        onActionSelected: (actionType) =>
-            cubit.loadActionData(actionType, item),
+      content: BlocProvider.value(
+        value: cubit,
+        child: BlocBuilder<AgencyInfoCubit, AgencyInfoState>(
+          buildWhen: (previous, current) =>
+              previous.status != current.status ||
+              previous.data.actionType != current.data.actionType ||
+              previous.data.loadingDetailId != current.data.loadingDetailId,
+          builder: (context, state) {
+            return AgencyInfoActionSheet(
+              loadingActionType:
+                  state.data.loadingDetailId == item.id ? state.data.actionType : null,
+              isActive: item.isActive,
+              onActionSelected: (actionType) =>
+                  cubit.loadActionData(actionType, item),
+            );
+          },
+        ),
       ),
       actionWidget: const SizedBox.shrink(),
       backgroundColor: Theme
@@ -355,54 +335,28 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
     );
   }
 
-  String _statusTitle(bool? value) {
+  void _applyStatusFilter(
+    AgencyInfoCubit cubit,
+    AgencyInfoFilterParamEntity filter,
+    String value,
+  ) {
+    if (value == 'فعال') {
+      cubit.applyFilter(filter.copyWith(isActive: true, skip: 0));
+      return;
+    }
+
+    if (value == 'غیرفعال') {
+      cubit.applyFilter(filter.copyWith(isActive: false, skip: 0));
+      return;
+    }
+
+    cubit.applyFilter(filter.copyWith(clearIsActive: true, skip: 0));
+  }
+
+  String _statusDropDownTitle(bool? value) {
     if (value == true) return 'فعال';
     if (value == false) return 'غیرفعال';
-    return 'وضعیت';
-  }
-
-  String _loadingActionTitle(AgencyInfoActionType? actionType) {
-    if (actionType == null) return 'در حال دریافت اطلاعات';
-    return 'در حال دریافت ${_actionTitle(actionType)}';
-  }
-
-  String _actionTitle(AgencyInfoActionType actionType) {
-    switch (actionType) {
-      case AgencyInfoActionType.contracts:
-        return 'قراردادها';
-      case AgencyInfoActionType.activeReliefWorkers:
-        return 'امدادرسان‌های فعلی';
-      case AgencyInfoActionType.activeVehicles:
-        return 'خودروهای فعلی';
-      case AgencyInfoActionType.changeStatus:
-        return 'تغییر وضعیت';
-      case AgencyInfoActionType.serviceType:
-        return 'نوع خدمات';
-      case AgencyInfoActionType.complementaryInfo:
-        return 'اطلاعات تکمیلی';
-      case AgencyInfoActionType.history:
-        return 'تاریخچه';
-      case AgencyInfoActionType.delete:
-        return 'حذف';
-    }
-  }
-}
-
-class _StatusTile extends StatelessWidget {
-  const _StatusTile({
-    required this.title,
-    required this.onTap,
-  });
-
-  final String title;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: BodyMediumText(text: title),
-      onTap: onTap,
-    );
+    return 'همه';
   }
 }
 
@@ -440,36 +394,3 @@ class _MessageState extends StatelessWidget {
   }
 }
 
-class _ActionLoadingOverlay extends StatelessWidget {
-  const _ActionLoadingOverlay({required this.title});
-
-  final String title;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Positioned.fill(
-      child: ColoredBox(
-        color: theme.colorScheme.surface.withOpacity(0.65),
-        child: Center(
-          child: Container(
-            padding: const EdgeInsets.all(AppPadding.p16),
-            decoration: BoxDecoration(
-              color: theme.colorScheme.onPrimary,
-              borderRadius: BorderRadius.circular(AppSize.s8),
-            ),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                const CircularProgressIndicator(),
-                Space.h12,
-                BodyMediumText(text: title),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-}

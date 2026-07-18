@@ -239,24 +239,15 @@ class AgencyInfoService {
     };
   }
 
-  Future<BaseSingleResponse<AgencyInfoReportModel>> getReport(
-      AgencyInfoFilterRequestModel request,
-      ) async {
-    // TODO: Add agency report API endpoint
-    const agencyReportEndpoint = '';
-    if (agencyReportEndpoint.isEmpty) {
-      throw UnimplementedError('Agency report API endpoint is not configured.');
-    }
-
+  Future<AgencyInfoReportModel> getReport(
+    AgencyInfoFilterRequestModel request,
+  ) async {
     final response = await _dio.post<Map<String, dynamic>>(
-      agencyReportEndpoint,
+      '/api/AgencyInfo/GetByFilterJson',
       data: request.toJson(),
     );
 
-    return BaseSingleResponse<AgencyInfoReportModel>.fromJson(
-      response.data ?? {},
-      AgencyInfoReportModel.fromJson,
-    );
+    return AgencyInfoReportModel.fromJson(response.data ?? {});
   }
 
 }

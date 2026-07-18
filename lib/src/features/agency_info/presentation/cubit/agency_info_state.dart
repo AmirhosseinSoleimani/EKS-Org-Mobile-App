@@ -35,6 +35,7 @@ class AgencyInfoStateData {
     this.selectedAgency,
     this.actionAgency,
     this.actionType,
+    this.actionData,
     this.filter = const AgencyInfoFilterParamEntity(),
     this.totalCount = 0,
     this.hasMore = true,
@@ -44,6 +45,7 @@ class AgencyInfoStateData {
     this.isSelectorLoading = false,
     this.isReportLoading = false,
     this.loadingDetailId,
+    this.reportFilePath,
     this.selectorSearchText = '',
     this.errorMessage,
     this.successMessage,
@@ -54,6 +56,7 @@ class AgencyInfoStateData {
   final AgencyInfoEntity? selectedAgency;
   final AgencyInfoEntity? actionAgency;
   final AgencyInfoActionType? actionType;
+  final Object? actionData;
   final AgencyInfoFilterParamEntity filter;
   final int totalCount;
   final bool hasMore;
@@ -63,6 +66,7 @@ class AgencyInfoStateData {
   final bool isSelectorLoading;
   final bool isReportLoading;
   final int? loadingDetailId;
+  final String? reportFilePath;
   final String selectorSearchText;
   final String? errorMessage;
   final String? successMessage;
@@ -88,6 +92,8 @@ class AgencyInfoStateData {
     bool clearActionAgency = false,
     AgencyInfoActionType? actionType,
     bool clearActionType = false,
+    Object? actionData,
+    bool clearActionData = false,
     AgencyInfoFilterParamEntity? filter,
     int? totalCount,
     bool? hasMore,
@@ -98,6 +104,8 @@ class AgencyInfoStateData {
     bool? isReportLoading,
     int? loadingDetailId,
     bool clearLoadingDetailId = false,
+    String? reportFilePath,
+    bool clearReportFilePath = false,
     String? selectorSearchText,
     String? errorMessage,
     bool clearErrorMessage = false,
@@ -111,6 +119,7 @@ class AgencyInfoStateData {
           clearSelectedAgency ? null : selectedAgency ?? this.selectedAgency,
       actionAgency: clearActionAgency ? null : actionAgency ?? this.actionAgency,
       actionType: clearActionType ? null : actionType ?? this.actionType,
+      actionData: clearActionData ? null : actionData ?? this.actionData,
       filter: filter ?? this.filter,
       totalCount: totalCount ?? this.totalCount,
       hasMore: hasMore ?? this.hasMore,
@@ -121,6 +130,8 @@ class AgencyInfoStateData {
       isReportLoading: isReportLoading ?? this.isReportLoading,
       loadingDetailId:
           clearLoadingDetailId ? null : loadingDetailId ?? this.loadingDetailId,
+      reportFilePath:
+          clearReportFilePath ? null : reportFilePath ?? this.reportFilePath,
       selectorSearchText: selectorSearchText ?? this.selectorSearchText,
       errorMessage: clearErrorMessage ? null : errorMessage ?? this.errorMessage,
       successMessage:

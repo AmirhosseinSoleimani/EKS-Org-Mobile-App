@@ -7,9 +7,13 @@ class AgencyInfoActionSheet extends StatelessWidget {
   const AgencyInfoActionSheet({
     super.key,
     required this.onActionSelected,
+    this.loadingActionType,
+    this.isActive,
   });
 
   final ValueChanged<AgencyInfoActionType> onActionSelected;
+  final AgencyInfoActionType? loadingActionType;
+  final bool? isActive;
 
   @override
   Widget build(BuildContext context) {
@@ -23,32 +27,46 @@ class AgencyInfoActionSheet extends StatelessWidget {
           AgencyInfoActionSheetItem(
             icon: Icons.article_outlined,
             title: 'قراردادها',
-            onTap: () => _select(context, AgencyInfoActionType.contracts),
+            isLoading: _isLoading(AgencyInfoActionType.contracts),
+            enabled: !_hasLoading,
+            onTap: () => _select(AgencyInfoActionType.contracts),
           ),
           AgencyInfoActionSheetItem(
             icon: Icons.group_outlined,
             title: 'امدادرسان‌های فعلی',
-            onTap: () => _select(context, AgencyInfoActionType.activeReliefWorkers),
+            isLoading: _isLoading(AgencyInfoActionType.activeReliefWorkers),
+            enabled: !_hasLoading,
+            onTap: () => _select(AgencyInfoActionType.activeReliefWorkers),
           ),
           AgencyInfoActionSheetItem(
             icon: Icons.local_shipping_outlined,
             title: 'خودروهای فعلی',
-            onTap: () => _select(context, AgencyInfoActionType.activeVehicles),
+            isLoading: _isLoading(AgencyInfoActionType.activeVehicles),
+            enabled: !_hasLoading,
+            onTap: () => _select(AgencyInfoActionType.activeVehicles),
           ),
           AgencyInfoActionSheetItem(
             icon: Icons.toggle_on_outlined,
-            title: 'تغییر وضعیت به غیر فعال',
-            onTap: () => _select(context, AgencyInfoActionType.changeStatus),
+            title: isActive == false
+                ? 'تغییر وضعیت به فعال'
+                : 'تغییر وضعیت به غیر فعال',
+            isLoading: _isLoading(AgencyInfoActionType.changeStatus),
+            enabled: !_hasLoading,
+            onTap: () => _select(AgencyInfoActionType.changeStatus),
           ),
           AgencyInfoActionSheetItem(
             icon: Icons.build_circle_outlined,
             title: 'نوع خدمات',
-            onTap: () => _select(context, AgencyInfoActionType.serviceType),
+            isLoading: _isLoading(AgencyInfoActionType.serviceType),
+            enabled: !_hasLoading,
+            onTap: () => _select(AgencyInfoActionType.serviceType),
           ),
           AgencyInfoActionSheetItem(
             icon: Icons.speaker_notes_outlined,
             title: 'اطلاعات تکمیلی',
-            onTap: () => _select(context, AgencyInfoActionType.complementaryInfo),
+            isLoading: _isLoading(AgencyInfoActionType.complementaryInfo),
+            enabled: !_hasLoading,
+            onTap: () => _select(AgencyInfoActionType.complementaryInfo),
           ),
           Divider(
             height: AppSize.s1,
@@ -58,7 +76,9 @@ class AgencyInfoActionSheet extends StatelessWidget {
           AgencyInfoActionSheetItem(
             icon: Icons.history_rounded,
             title: 'تاریخچه',
-            onTap: () => _select(context, AgencyInfoActionType.history),
+            isLoading: _isLoading(AgencyInfoActionType.history),
+            enabled: !_hasLoading,
+            onTap: () => _select(AgencyInfoActionType.history),
           ),
           Divider(
             height: AppSize.s1,
@@ -69,26 +89,22 @@ class AgencyInfoActionSheet extends StatelessWidget {
             icon: Icons.delete_outline_rounded,
             title: 'حذف',
             isDestructive: true,
-            onTap: () => _select(context, AgencyInfoActionType.delete),
+            isLoading: _isLoading(AgencyInfoActionType.delete),
+            enabled: !_hasLoading,
+            onTap: () => _select(AgencyInfoActionType.delete),
           ),
         ],
       ),
     );
   }
 
-  Widget _buildHandle(ThemeData theme) {
-    return Container(
-      width: AppSize.s60,
-      height: AppSize.s4,
-      decoration: BoxDecoration(
-        color: theme.colorScheme.onInverseSurface,
-        borderRadius: BorderRadius.circular(AppSize.s8),
-      ),
-    );
+  bool get _hasLoading => loadingActionType != null;
+
+  bool _isLoading(AgencyInfoActionType actionType) {
+    return loadingActionType == actionType;
   }
 
-  void _select(BuildContext context, AgencyInfoActionType actionType) {
-    Navigator.of(context).pop();
+  void _select(AgencyInfoActionType actionType) {
     onActionSelected(actionType);
   }
 }

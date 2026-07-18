@@ -8,12 +8,16 @@ class AgencyInfoActionSheetItem extends StatelessWidget {
     required this.title,
     required this.onTap,
     this.isDestructive = false,
+    this.isLoading = false,
+    this.enabled = true,
   });
 
   final IconData icon;
   final String title;
   final VoidCallback onTap;
   final bool isDestructive;
+  final bool isLoading;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -21,18 +25,29 @@ class AgencyInfoActionSheetItem extends StatelessWidget {
     final color = isDestructive
         ? theme.colorScheme.error
         : theme.colorScheme.onPrimaryFixed;
+    final effectiveColor =
+        enabled || isLoading ? color : color.withOpacity(0.45);
 
     return ListTile(
       contentPadding: EdgeInsets.zero,
-      leading: Icon(icon, color: color, size: AppSize.s24),
+      leading: SizedBox(
+        width: AppSize.s24,
+        height: AppSize.s24,
+        child: isLoading
+            ? CircularProgressIndicator(
+                strokeWidth: 2,
+                color: effectiveColor,
+              )
+            : Icon(icon, color: effectiveColor, size: AppSize.s24),
+      ),
       title: Text(
         title,
         style: theme.textTheme.bodyMedium?.copyWith(
-          color: color,
+          color: effectiveColor,
           fontWeight: FontWeight.w700,
         ),
       ),
-      onTap: onTap,
+      onTap: enabled && !isLoading ? onTap : null,
     );
   }
 }
