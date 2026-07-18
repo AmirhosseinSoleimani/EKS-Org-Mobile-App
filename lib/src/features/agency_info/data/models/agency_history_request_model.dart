@@ -1,11 +1,12 @@
-class AgencyHistoryRequestModel {
+import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/agency_history_param_entity.dart';
+
+class AgencyHistoryRequestModel  extends AgencyHistoryParamEntity{
   const AgencyHistoryRequestModel({
-    this.refId,
-    this.type,
+    super.refId,
+    super.type = 1,
   });
 
-  final int? refId;
-  final int? type;
+
 
   factory AgencyHistoryRequestModel.fromJson(Map<String, dynamic> json) {
     return AgencyHistoryRequestModel(
@@ -14,7 +15,7 @@ class AgencyHistoryRequestModel {
           : int.tryParse(json['refId']?.toString() ?? ''),
       type: json['type'] is int
           ? json['type'] as int
-          : int.tryParse(json['type']?.toString() ?? ''),
+          : int.tryParse(json['type']?.toString() ?? '') ?? 1,
     );
   }
 

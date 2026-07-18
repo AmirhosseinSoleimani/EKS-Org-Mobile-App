@@ -3,11 +3,11 @@ import 'package:eks_sana_plus_org/src/features/agency_info/data/models/agency_hi
 class AgencyHistoryParamEntity {
   const AgencyHistoryParamEntity({
     this.refId,
-    this.type,
+    this.type = 1,
   });
 
   final int? refId;
-  final int? type;
+  final int type;
 
   AgencyHistoryRequestModel toModel() {
     return AgencyHistoryRequestModel(
