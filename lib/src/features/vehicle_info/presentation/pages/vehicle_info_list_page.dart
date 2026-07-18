@@ -7,6 +7,7 @@ import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/vehicle_info_summary_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -23,7 +24,7 @@ class VehicleInfoListPage extends StatelessWidget {
     return BlocProvider(
       create: (_) => getIt<VehicleInfoCubit>()
         ..loadLookups()
-        ..fetchList(refresh: true),
+        ..fetchList(),
       child: const _VehicleInfoListView(),
     );
   }
@@ -60,83 +61,50 @@ class _VehicleInfoListViewState extends State<_VehicleInfoListView> {
       listener: (context, state) {
         final error = state.data.errorMessage;
         final success = state.data.successMessage;
+
         if (error != null && error.isNotEmpty) {
-          SnakeBarWidget.showError(context: context, message: error);
+          SnakeBarWidget.showError(
+            context: context,
+            message: error,
+          );
         }
+
         if (success != null && success.isNotEmpty) {
-          SnakeBarWidget.showSuccess(context: context, message: success);
+          SnakeBarWidget.showSuccess(
+            context: context,
+            message: success,
+          );
         }
       },
       child: Scaffold(
         appBar: const SimpleAppBar(title: 'خودروها'),
         body: BlocBuilder<VehicleInfoCubit, VehicleInfoState>(
           builder: (context, state) {
-            final data = state.data;
-            if (data.isInitialLoading) {
-              return Column(
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.all(AppPadding.p16),
-                    child: _VehicleInfoTopControls(
-                      state: state,
-                      onFilter: () => _showFilter(context, cubit),
-                      onStatus: () => _showStatusFilter(context, cubit),
-                      onReport: cubit.loadVehicleReport,
-                    ),
+            return Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppPadding.p16,
+                    AppPadding.p16,
+                    AppPadding.p16,
+                    AppPadding.p0,
                   ),
-                  const Expanded(child: Center(child: CircularProgressIndicator())),
-                ],
-              );
-            }
-            if (data.items.isEmpty) {
-              return RefreshIndicator(
-                onRefresh: () => cubit.fetchList(refresh: true),
-                child: ListView(
-                  physics: const AlwaysScrollableScrollPhysics(),
-                  padding: const EdgeInsets.all(AppPadding.p16),
-                  children: [
-                    _VehicleInfoTopControls(
-                      state: state,
-                      onFilter: () => _showFilter(context, cubit),
-                      onStatus: () => _showStatusFilter(context, cubit),
-                      onReport: cubit.loadVehicleReport,
-                    ),
-                    const SizedBox(height: AppSize.s120),
-                    const Center(child: Text('خودرویی یافت نشد.')),
-                  ],
+                  child: _VehicleInfoTopControls(
+                    state: state,
+                    onFilter: () => _showFilter(context, cubit),
+                    onStatus: () => _showStatusFilter(context, cubit),
+                    onReport: cubit.loadVehicleReport,
+                  ),
                 ),
-              );
-            }
-            return RefreshIndicator(
-              onRefresh: () => cubit.fetchList(refresh: true),
-              child: ListView.separated(
-                controller: _scrollController,
-                padding: const EdgeInsets.all(AppPadding.p16),
-                itemCount: data.items.length + 1 + (data.isPaginationLoading ? 1 : 0),
-                separatorBuilder: (_, __) => Space.h16,
-                itemBuilder: (context, index) {
-                  if (index == 0) {
-                    return _VehicleInfoTopControls(
-                      state: state,
-                      onFilter: () => _showFilter(context, cubit),
-                      onStatus: () => _showStatusFilter(context, cubit),
-                      onReport: cubit.loadVehicleReport,
-                    );
-                  }
-                  final itemIndex = index - 1;
-                  if (itemIndex >= data.items.length) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
-                  final item = data.items[itemIndex];
-                  return VehicleInfoSummaryCard(
-                    item: item,
-                    onTools: () => context.pushNamed(VehicleInfoToolsPage.name, extra: item),
-                    onServices: () => context.pushNamed(VehicleInfoServicesPage.name, extra: item),
-                    onDelete: item.id == null ? null : () => cubit.deleteItem(item.id!),
-                    onHistory: () => context.pushNamed(VehicleInfoHistoryPage.name, extra: item),
-                  );
-                },
-              ),
+                Space.h16,
+                Expanded(
+                  child: _buildContent(
+                    context: context,
+                    cubit: cubit,
+                    state: state,
+                  ),
+                ),
+              ],
             );
           },
         ),
@@ -144,52 +112,155 @@ class _VehicleInfoListViewState extends State<_VehicleInfoListView> {
     );
   }
 
+  Widget _buildContent({
+    required BuildContext context,
+    required VehicleInfoCubit cubit,
+    required VehicleInfoState state,
+  }) {
+    final data = state.data;
+
+    if (data.isInitialLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
+
+    if (data.items.isEmpty) {
+      return const Center(
+        child: EmptyListWidget(),
+      );
+    }
+
+    return RefreshIndicator(
+      onRefresh: () => cubit.fetchList(refresh: true),
+      child: ListView.separated(
+        controller: _scrollController,
+        physics: const AlwaysScrollableScrollPhysics(
+          parent: BouncingScrollPhysics(),
+        ),
+        padding: const EdgeInsets.fromLTRB(
+          AppPadding.p16,
+          AppPadding.p0,
+          AppPadding.p16,
+          AppPadding.p16,
+        ),
+        itemCount:
+        data.items.length + (data.isPaginationLoading ? 1 : 0),
+        separatorBuilder: (_, __) => Space.h16,
+        itemBuilder: (context, index) {
+          if (index >= data.items.length) {
+            return const Padding(
+              padding: EdgeInsets.all(AppPadding.p16),
+              child: Center(
+                child: CircularProgressIndicator(),
+              ),
+            );
+          }
+
+          final item = data.items[index];
+
+          return VehicleInfoSummaryCard(
+            item: item,
+            onTools: () {
+              context.pushNamed(
+                VehicleInfoToolsPage.name,
+                extra: item,
+              );
+            },
+            onServices: () {
+              context.pushNamed(
+                VehicleInfoServicesPage.name,
+                extra: item,
+              );
+            },
+            onDelete: item.id == null
+                ? null
+                : () => cubit.deleteItem(item.id!),
+            onHistory: () {
+              context.pushNamed(
+                VehicleInfoHistoryPage.name,
+                extra: item,
+              );
+            },
+          );
+        },
+      ),
+    );
+  }
+
   void _onScroll() {
-    if (!_scrollController.hasClients) return;
-    final data = context.read<VehicleInfoCubit>().state.data;
-    final reachedBottom = _scrollController.position.pixels >= _scrollController.position.maxScrollExtent - AppSize.s120;
-    if (reachedBottom && data.hasMore && !data.isPaginationLoading) {
-      context.read<VehicleInfoCubit>().fetchList();
+    if (!_scrollController.hasClients) {
+      return;
+    }
+
+    final cubit = context.read<VehicleInfoCubit>();
+    final data = cubit.state.data;
+
+    final reachedBottom = _scrollController.position.pixels >=
+        _scrollController.position.maxScrollExtent - AppSize.s120;
+
+    if (reachedBottom &&
+        data.hasMore &&
+        !data.isPaginationLoading &&
+        !data.isInitialLoading) {
+      cubit.fetchList();
     }
   }
 
-  void _showFilter(BuildContext context, VehicleInfoCubit cubit) {
+  void _showFilter(
+      BuildContext context,
+      VehicleInfoCubit cubit,
+      ) {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
       backgroundColor: Theme.of(context).colorScheme.onPrimary,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppSize.s20),
+        ),
       ),
-      builder: (_) => VehicleInfoFilterSheet(
-        initialFilter: cubit.state.data.filter,
-        vehicleModels: cubit.state.data.vehicleModels,
-        onApply: cubit.applyFilter,
-        onClear: cubit.clearFilter,
-      ),
+      builder: (_) {
+        return VehicleInfoFilterSheet(
+          initialFilter: cubit.state.data.filter,
+          vehicleModels: cubit.state.data.vehicleModels,
+          onApply: cubit.applyFilter,
+          onClear: cubit.clearFilter,
+        );
+      },
     );
   }
 
-  void _showStatusFilter(BuildContext context, VehicleInfoCubit cubit) {
+  void _showStatusFilter(
+      BuildContext context,
+      VehicleInfoCubit cubit,
+      ) {
     showModalBottomSheet<void>(
       context: context,
       useSafeArea: true,
       backgroundColor: Theme.of(context).colorScheme.onPrimary,
       shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
+        borderRadius: BorderRadius.vertical(
+          top: Radius.circular(AppSize.s20),
+        ),
       ),
-      builder: (_) => _VehicleStatusSheet(
-        value: cubit.state.data.filter.isActive,
-        onChanged: (value) {
-          final current = cubit.state.data.filter;
-          cubit.applyFilter(current.copyWith(
-            isActive: value,
-            clearIsActive: value == null,
-            skip: 0,
-          ));
-        },
-      ),
+      builder: (_) {
+        return _VehicleStatusSheet(
+          value: cubit.state.data.filter.isActive,
+          onChanged: (value) {
+            final currentFilter = cubit.state.data.filter;
+
+            cubit.applyFilter(
+              currentFilter.copyWith(
+                isActive: value,
+                clearIsActive: value == null,
+                skip: 0,
+              ),
+            );
+          },
+        );
+      },
     );
   }
 }
