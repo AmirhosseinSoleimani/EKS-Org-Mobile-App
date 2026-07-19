@@ -345,6 +345,17 @@ class Routes {
         ),
 
         GoRoute(
+          path: CartablePage.path,
+          name: CartablePage.name,
+          pageBuilder: (context, state) {
+            return getPage(
+              child: CartablePage(),
+              state: state,
+            );
+          },
+        ),
+
+        GoRoute(
           path: RescuerListPage.path,
           name: RescuerListPage.name,
           pageBuilder: (context, state) {
