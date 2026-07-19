@@ -19,7 +19,7 @@ class SkillServiceModel extends SkillServiceEntity {
       id: _asInt(json['id'] ?? json['Id']),
       title: _asString(json['title'] ?? json['Title']),
       type: _asInt(json['type'] ?? json['Type']),
-      selectable: _asInt(json['selectable'] ?? json['Selectable']),
+      selectable: _asBoolOrNull(json['selectable']),
       insertDateTimeJalali: _asString(
         json['insertDateTimeJalali'] ?? json['InsertDateTimeJalali'],
       ),
@@ -34,6 +34,19 @@ class SkillServiceModel extends SkillServiceEntity {
       ),
     );
   }
+}
+
+ bool? _asBoolOrNull(dynamic value) {
+if (value == null) return null;
+if (value is bool) return value;
+if (value is num) return value != 0;
+
+final text = value.toString().toLowerCase().trim();
+
+if (text == 'true' || text == '1') return true;
+if (text == 'false' || text == '0') return false;
+
+return null;
 }
 
 int? _asInt(Object? value) {

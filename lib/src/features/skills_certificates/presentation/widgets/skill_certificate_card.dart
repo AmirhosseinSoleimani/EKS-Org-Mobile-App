@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_medium_text.dart';
 import 'package:flutter/material.dart';
 
 class SkillCertificateCard extends StatelessWidget {
@@ -38,21 +39,16 @@ class SkillCertificateCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Row(
+              mainAxisAlignment: MainAxisAlignment.start,
               children: [
-                StatusLabel(
-                  text: item.isActive ? 'فعال' : 'غیرفعال',
-                  color: item.isActive ? colorScheme.onError : colorScheme.error,
+                TitleMediumText(text: item.displayTitle,
+                  textAlign: TextAlign.left,
                 ),
                 const Spacer(),
-                Expanded(
-                  flex: 5,
-                  child: Text(
-                    item.displayTitle,
-                    textAlign: TextAlign.left,
-                    style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w700,
-                        ),
-                  ),
+                StatusLabel(
+                  text: item.isActive ? 'فعال' : 'غیرفعال',
+                  color: item.isActive ? colorScheme.onError : colorScheme
+                      .error,
                 ),
               ],
             ),
@@ -105,7 +101,7 @@ class SkillCertificateCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           _ActionTile(
-            icon: Icons.settings_applications_outlined,
+            icon: Icons.card_membership,
             title: 'سرویس‌ها',
             onTap: onServices,
           ),

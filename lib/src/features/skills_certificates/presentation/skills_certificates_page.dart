@@ -2,12 +2,15 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/skills_certificates/domain/entities/skill_certificate_entity.dart';
 import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/cubit/skills_certificates_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/widgets/skill_certificate_card.dart';
+import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/widgets/skills_certificates_toolbar.dart';
 import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/widgets/skills_certificates_bottom_sheets.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -75,10 +78,16 @@ class _SkillsCertificatesView extends StatelessWidget {
                   child: BlocBuilder<SkillsCertificatesCubit,
                       SkillsCertificatesState>(
                     builder: (context, state) {
-                      return _Toolbar(
-                        cubit: cubit,
+                      return SkillsCertificatesToolbar(
                         activeFilter: state.data.activeFilter,
                         isReportLoading: state.data.isReportLoading,
+                        onFilterTap: () =>
+                            SkillsCertificatesBottomSheets.showFilterSheet(
+                          context: context,
+                          cubit: cubit,
+                        ),
+                        onStatusChanged: cubit.changeActiveFilter,
+                        onReportTap: cubit.exportReport,
                       );
                     },
                   ),
@@ -103,7 +112,7 @@ class _SkillsCertificatesView extends StatelessWidget {
                       }
 
                       if (data.items.isEmpty) {
-                        return const _EmptyState();
+                        return const Center(child: EmptyListWidget());
                       }
 
                       return RefreshIndicator(
@@ -111,7 +120,7 @@ class _SkillsCertificatesView extends StatelessWidget {
                         child: ListView.separated(
                           padding: const EdgeInsets.fromLTRB(
                             AppPadding.p16,
-                            AppPadding.p0,
+                            AppPadding.p4,
                             AppPadding.p16,
                             AppPadding.p32,
                           ),
@@ -124,7 +133,7 @@ class _SkillsCertificatesView extends StatelessWidget {
                                 child: OutlinedButton.icon(
                                   onPressed: cubit.loadMore,
                                   icon: const Icon(Icons.expand_more),
-                                  label: const Text('نمایش موارد بیشتر'),
+                                  label: const BodyMediumText(text: 'نمایش موارد بیشتر'),
                                 ),
                               );
                             }
@@ -198,155 +207,6 @@ class _SkillsCertificatesView extends StatelessWidget {
             ),
           ),
         ],
-      ),
-    );
-  }
-}
-
-class _Toolbar extends StatelessWidget {
-  final SkillsCertificatesCubit cubit;
-  final bool? activeFilter;
-  final bool isReportLoading;
-
-  const _Toolbar({
-    required this.cubit,
-    required this.activeFilter,
-    required this.isReportLoading,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Column(
-      children: [
-        Row(
-          children: [
-            Expanded(
-              child: _ToolbarButton(
-                title: 'فیلترها',
-                icon: Icons.keyboard_arrow_down,
-                onTap: () => SkillsCertificatesBottomSheets.showFilterSheet(
-                  context: context,
-                  cubit: cubit,
-                ),
-              ),
-            ),
-            Space.w12,
-            Expanded(
-              child: PopupMenuButton<int>(
-                onSelected: (value) {
-                  if (value == -1) {
-                    cubit.changeActiveFilter(null);
-                  } else {
-                    cubit.changeActiveFilter(value == 1);
-                  }
-                },
-                itemBuilder: (context) => const [
-                  PopupMenuItem(value: -1, child: Text('همه')),
-                  PopupMenuItem(value: 1, child: Text('فعال')),
-                  PopupMenuItem(value: 0, child: Text('غیرفعال')),
-                ],
-                child: _ToolbarButtonContent(
-                  title: _statusTitle(activeFilter),
-                  icon: Icons.keyboard_arrow_down,
-                ),
-              ),
-            ),
-          ],
-        ),
-        Space.h16,
-        SizedBox(
-          width: double.infinity,
-          height: AppSize.s42,
-          child: OutlinedButton.icon(
-            onPressed: isReportLoading ? null : cubit.exportReport,
-            icon: Icon(
-            Icons.summarize_outlined,
-            color: colorScheme.onSurfaceVariant,
-          ),
-            label: Text(
-              isReportLoading ? 'در حال گزارش‌گیری...' : 'گزارش‌گیری',
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-
-  String _statusTitle(bool? value) {
-    if (value == true) return 'فعال';
-    if (value == false) return 'غیرفعال';
-    return 'وضعیت';
-  }
-}
-
-class _ToolbarButton extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  const _ToolbarButton({
-    required this.title,
-    required this.icon,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(AppSize.s8),
-      onTap: onTap,
-      child: _ToolbarButtonContent(title: title, icon: icon),
-    );
-  }
-}
-
-class _ToolbarButtonContent extends StatelessWidget {
-  final String title;
-  final IconData icon;
-
-  const _ToolbarButtonContent({
-    required this.title,
-    required this.icon,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Container(
-      height: AppSize.s48,
-      padding: const EdgeInsets.symmetric(horizontal: AppPadding.p12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(AppSize.s8),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, color: colorScheme.onSurfaceVariant),
-          const Spacer(),
-          Text(
-            title,
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w600,
-                ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _EmptyState extends StatelessWidget {
-  const _EmptyState();
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'موردی برای نمایش وجود ندارد',
-        style: Theme.of(context).textTheme.bodyMedium,
       ),
     );
   }

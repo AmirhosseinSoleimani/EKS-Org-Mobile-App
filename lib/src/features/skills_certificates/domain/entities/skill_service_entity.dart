@@ -2,7 +2,7 @@ class SkillServiceEntity {
   final int? id;
   final String? title;
   final int? type;
-  final int? selectable;
+  final bool? selectable;
   final String? insertDateTimeJalali;
   final String? updateDateTimeJalali;
   final String? insertUserFullName;
@@ -19,7 +19,7 @@ class SkillServiceEntity {
     this.updateUserFullName,
   });
 
-  bool get isSelected => selectable == 1;
+  bool get isSelected => selectable  ?? false;
 
   String get displayTitle {
     final normalized = title?.trim();
