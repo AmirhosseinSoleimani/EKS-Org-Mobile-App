@@ -9,6 +9,7 @@ import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -169,8 +170,8 @@ class _EmdadUnitFormViewState extends State<_EmdadUnitFormView> {
                       value: _isActive,
                       decoration: const InputDecoration(labelText: 'وضعیت'),
                       items: const [
-                        DropdownMenuItem(value: true, child: Text('فعال')),
-                        DropdownMenuItem(value: false, child: Text('غیرفعال')),
+                        DropdownMenuItem(value: true, child: BodyMediumText(text: 'فعال')),
+                        DropdownMenuItem(value: false, child: BodyMediumText(text: 'غیرفعال')),
                       ],
                       onChanged: (value) => setState(() => _isActive = value ?? true),
                     ),

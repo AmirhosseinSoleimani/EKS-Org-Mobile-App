@@ -20,6 +20,7 @@ class InkwellButtonWidget extends StatelessWidget {
     this.suffixIcon,
     this.prefixIcon,
     this.borderStyle,
+    this.borderWidth,
   });
 
   final VoidCallback? onTap;
@@ -38,6 +39,7 @@ class InkwellButtonWidget extends StatelessWidget {
   final double? buttonPadding;
   final TextStyle? textStyle;
   final Color? loadingColor;
+  final double? borderWidth;
 
   @override
   Widget build(BuildContext context) {
@@ -65,7 +67,7 @@ class InkwellButtonWidget extends StatelessWidget {
         side: BorderSide(
           style: borderStyle ??  BorderStyle.solid,
           color: borderColor ?? Colors.transparent,
-          width: 1,
+          width: borderWidth ?? 1,
         ),
       ),
       child: _buildInkWell(context, theme, borderRadius),

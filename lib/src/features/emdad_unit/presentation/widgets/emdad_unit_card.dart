@@ -123,21 +123,22 @@ class EmdadUnitCard extends StatelessWidget {
           Space.h16,
           Align(
             alignment: Alignment.centerLeft,
-            child: SizedBox(
-              width: AppSize.s110,
-              child: InkwellButtonWidget(
-                title: 'عملیات',
-                height: AppSize.s42,
-                backgroundColor: theme.colorScheme.onPrimary,
-                borderColor: theme.colorScheme.outline.withOpacity(0.55),
-                titleColor: theme.colorScheme.onSurface,
-                prefixIcon: Icon(
-                  Icons.more_vert_rounded,
-                  size: AppSize.s20,
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-                onTap: onAction,
+            child:  InkwellButtonWidget(
+              title: 'عملیات',
+              height: AppSize.s42,
+              backgroundColor: theme.colorScheme.secondaryContainer,
+              titleColor: theme.colorScheme.onSurface,
+              prefixIcon: Icon(
+                Icons.settings_outlined,
+                size: AppSize.s20,
+                color: theme.colorScheme.onSurfaceVariant,
               ),
+              suffixIcon: Icon(
+                Icons.expand_more_outlined,
+                size: AppSize.s20,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+              onTap: onAction,
             ),
           ),
         ],
@@ -200,12 +201,12 @@ class _InfoRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(icon, size: AppSize.s18, color: theme.colorScheme.onSurfaceVariant),
+          Icon(icon, size: AppSize.s18, color: theme.colorScheme.onPrimaryFixed),
           Space.w8,
           Text(
             '$label: ',
             style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
+              color: theme.colorScheme.onTertiaryFixed,
             ),
           ),
           Expanded(
@@ -215,6 +216,7 @@ class _InfoRow extends StatelessWidget {
               overflow: TextOverflow.ellipsis,
               style: theme.textTheme.bodyMedium?.copyWith(
                 fontWeight: FontWeight.w500,
+                color: theme.colorScheme.onTertiaryFixed,
               ),
             ),
           ),

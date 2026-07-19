@@ -49,6 +49,7 @@ class CurrentSessionMemoryManager implements CurrentSessionManager {
   @override
   void setCurrentSession(CurrentSessionEntity session) {
     _currentSession = session;
+    _lastSyncedAt = DateTime.now();
     _controller.add(_currentSession);
   }
 

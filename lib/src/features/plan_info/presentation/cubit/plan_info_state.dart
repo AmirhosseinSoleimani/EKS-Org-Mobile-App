@@ -13,6 +13,7 @@ enum PlanInfoStatus {
 }
 
 class PlanInfoState {
+  final bool? activeFilter;
   final PlanInfoStatus status;
   final List<PlanInfoEntity> items;
   final int totalCount;
@@ -31,6 +32,7 @@ class PlanInfoState {
 
   const PlanInfoState({
     this.status = PlanInfoStatus.idle,
+    this.activeFilter,
     this.items = const [],
     this.totalCount = 0,
     this.hasMore = false,
@@ -53,6 +55,8 @@ class PlanInfoState {
   bool get isSubmitting => status == PlanInfoStatus.submitting;
 
   PlanInfoState copyWith({
+    bool? activeFilter,
+    bool clearActiveFilter = false,
     PlanInfoStatus? status,
     List<PlanInfoEntity>? items,
     int? totalCount,
@@ -74,6 +78,9 @@ class PlanInfoState {
     bool clearReportFilePath = false,
   }) {
     return PlanInfoState(
+      activeFilter: clearActiveFilter
+          ? null
+          : activeFilter ?? this.activeFilter,
       status: status ?? this.status,
       items: items ?? this.items,
       totalCount: totalCount ?? this.totalCount,

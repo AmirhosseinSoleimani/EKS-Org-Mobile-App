@@ -39,6 +39,48 @@ class BottomSheetMessage {
     );
   }
 
+  static Future<T?> showFullScreenCustom<T>({
+    required BuildContext context,
+    required Widget content,
+    bool isDismissible = true,
+    bool enableDrag = true,
+    bool useRootNavigator = false,
+    Color? barrierColor,
+    Color? backgroundColor,
+    double heightFactor = 1,
+    double topRadius = 0,
+    VoidCallback? onDismiss,
+  }) {
+    return showModalBottomSheet<T>(
+      context: context,
+      isDismissible: isDismissible,
+      enableDrag: enableDrag,
+      isScrollControlled: true,
+      useRootNavigator: useRootNavigator,
+      barrierColor: barrierColor,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) {
+        return PopScope(
+          canPop: isDismissible,
+          child: FractionallySizedBox(
+            heightFactor: heightFactor,
+            child: ClipRRect(
+              borderRadius: BorderRadius.vertical(
+                top: Radius.circular(topRadius),
+              ),
+              child: ColoredBox(
+                color: backgroundColor ?? Theme.of(context).colorScheme.surface,
+                child: content,
+              ),
+            ),
+          ),
+        );
+      },
+    ).whenComplete(() {
+      if (onDismiss != null) onDismiss();
+    });
+  }
+
   static Future<BottomSheetAction?> showNotice({
     required BuildContext context,
     required BottomSheetMessageModel data,

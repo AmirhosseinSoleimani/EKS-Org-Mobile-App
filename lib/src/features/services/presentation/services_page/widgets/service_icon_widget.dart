@@ -15,17 +15,17 @@ class ServiceIconWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: 58,
-      height: 58,
-      padding: const EdgeInsets.all(12),
+      width: 50,
+      height: 50,
+      padding: const EdgeInsets.all(10),
       decoration: BoxDecoration(
         color: backgroundColor.withAlpha(40),
-        borderRadius: BorderRadius.circular(12),
+        shape: BoxShape.circle,
       ),
       child: Image.asset(
         imagePath,
-        width: 48,
-        height: 48,
+        width: 30,
+        height: 30,
         fit: BoxFit.contain,
       ),
     );

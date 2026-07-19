@@ -156,10 +156,10 @@ class EmdadUnitService {
     return BaseResponse.fromJson(response.data ?? {});
   }
 
-  @POST('/api/Shared/ChangeLocationEmdadUnit')
+  @POST('/api/EmdadUnit/ChangeLocation')
   Future<BaseResponse> changeLocation(Map<String, dynamic> body) async {
     final response = await _dio.post<Map<String, dynamic>>(
-      '/api/Shared/ChangeLocationEmdadUnit',
+      '/api/EmdadUnit/ChangeLocation',
       data: body,
     );
     return BaseResponse.fromJson(response.data ?? {});

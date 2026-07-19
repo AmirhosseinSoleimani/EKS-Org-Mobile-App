@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/cancel_plan_requests_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/change_plan_info_location_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/change_plan_status_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/create_plan_info_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/plan_filter_param_entity.dart';
@@ -134,8 +135,8 @@ class GetPlanLookupsUseCase
   @override
   Future<ApiResult<PlanLookupsEntity>> call() async {
     final units = await _repository.getEmdadUnits();
-    final shifts = await _repository.getShifts();
-    final specialPlans = await _repository.getSpecialPlans();
+    //final shifts = await _repository.getShifts();
+    //final specialPlans = await _repository.getSpecialPlans();
     final locations = await _repository.getLocations();
 
     final failures = <String>[];
@@ -158,8 +159,8 @@ class GetPlanLookupsUseCase
 
     final data = PlanLookupsEntity(
       emdadUnits: read(units),
-      shifts: read(shifts),
-      specialPlans: read(specialPlans),
+      shifts: [],//read(shifts),
+      specialPlans: [],//read(specialPlans),
       locations: read(locations),
     );
 
@@ -169,6 +170,20 @@ class GetPlanLookupsUseCase
     }
 
     return ApiResult.success(data: data);
+  }
+}
+
+
+@lazySingleton
+class ChangeLocationUseCase
+    extends BaseUseCase<ApiResult<void>, ChangePlanInfoLocationParamEntity> {
+  final PlanInfoRepository _repository;
+
+  ChangeLocationUseCase(this._repository);
+
+  @override
+  Future<ApiResult<void>> call(ChangePlanInfoLocationParamEntity arg) {
+    return _repository.changeLocation(arg);
   }
 }
 

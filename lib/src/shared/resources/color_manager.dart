@@ -22,7 +22,7 @@ class ColorLightManager {
   static const success = Color(0xFFd7fff3);
   static const surfaceBright = Color(0xFFF3FDFA);
 
-  static const surface = Color(0xFFF5F5F5);
+  static const surface = Color(0xFFFBF9F9);
   static const primaryFixedDim = Color(0xFFEFEFF0);
   static const onSurface = Color(0xFF212121);
 
@@ -54,5 +54,6 @@ class ColorLightManager {
   static const onPrimaryFixedVariant = Color(0xff383838);
   static const onSecondaryContainer = Color(0xff008FFF);
   static const surfaceContainer = Color(0xFFE7F6FF);
+  static const secondaryContainer = Color(0xFFF2F2F2);
   static const shadow = Color(0xff000000);
 }

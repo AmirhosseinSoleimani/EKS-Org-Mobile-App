@@ -9,6 +9,7 @@ import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/e
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/drop_down_map_items_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -68,14 +69,23 @@ class _EmdadUnitPersonsViewState extends State<_EmdadUnitPersonsView> {
         child: Scaffold(
           backgroundColor: theme.colorScheme.surface,
           appBar: const SimpleAppBar(title: 'مدیریت امدادرسان‌ها'),
-          bottomNavigationBar: SafeArea(
-            minimum: const EdgeInsets.all(AppPadding.p16),
-            child: InkwellButtonWidget(
-              title: 'بستن',
-              backgroundColor: theme.colorScheme.onPrimary,
-              borderColor: theme.colorScheme.outline.withOpacity(0.65),
-              titleColor: theme.colorScheme.onSurface,
-              onTap: () => context.pop(_changed),
+          bottomNavigationBar: Container(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(AppSize.s4),
+              bottomLeft: Radius.circular(AppSize.s4),
+            ),),
+            child: SafeArea(
+              minimum: const EdgeInsets.all(AppPadding.p16),
+              child: InkwellButtonWidget(
+                title: 'بستن',
+                backgroundColor: theme.colorScheme.onPrimary,
+                borderColor: theme.colorScheme.outline.withOpacity(0.65),
+                titleColor: theme.colorScheme.onSurface,
+                borderWidth: 2,
+                onTap: () => context.pop(_changed),
+              ),
             ),
           ),
           body: BlocBuilder<EmdadUnitCubit, EmdadUnitState>(
@@ -114,7 +124,7 @@ class _EmdadUnitPersonsViewState extends State<_EmdadUnitPersonsView> {
                     _EmptyCard(message: 'امدادرسانی برای این واحد ثبت نشده است.')
                   else
                     ...state.persons.map(
-                      (person) => _PersonCard(
+                          (person) => _PersonCard(
                         person: person,
                         isSubmitting: state.status == EmdadUnitViewStatus.submitting,
                         onDelete: person.id == null
@@ -130,16 +140,43 @@ class _EmdadUnitPersonsViewState extends State<_EmdadUnitPersonsView> {
       ),
     );
   }
-
   List<LookupEntity> _eligiblePersons(EmdadUnitState state) {
     final assignedIds = state.persons
         .map((person) => person.agencyPersonId)
         .whereType<int>()
         .toSet();
+
     return state.agencyPersons
-        .where((person) => !assignedIds.contains(person.id))
+        .where(
+          (person) => !assignedIds.contains(person.id),
+    )
         .toList();
   }
+
+/*  List<LookupEntity> _eligiblePersons(EmdadUnitState state) {
+    final assignedIds = state.persons
+        .map((person) => person.agencyPersonId)
+        .whereType<int>()
+        .toSet();
+
+    return state.agencyPersons
+        .where((person) => !assignedIds.contains(person.id))
+        .map((lookup) {
+      final matchedPerson = state.persons
+          .where(
+            (person) => person.agencyPersonId == lookup.id,
+      )
+          .firstOrNull;
+
+      return LookupEntity(
+        id: lookup.id,
+        title: matchedPerson?.fullName.trim().isNotEmpty == true
+            ? matchedPerson!.fullName.trim()
+            : lookup.title,
+      );
+    })
+        .toList();
+  }*/
 
   void _assignPerson(BuildContext context, EmdadUnitCubit cubit) {
     final id = _selectedPersonId;
@@ -154,10 +191,10 @@ class _EmdadUnitPersonsViewState extends State<_EmdadUnitPersonsView> {
   }
 
   Future<void> _confirmDelete(
-    BuildContext context,
-    EmdadUnitPersonEntity person,
-    EmdadUnitCubit cubit,
-  ) async {
+      BuildContext context,
+      EmdadUnitPersonEntity person,
+      EmdadUnitCubit cubit,
+      ) async {
     await showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -203,6 +240,24 @@ class _AddPersonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final personItems = <String, int>{
+      if (persons.isNotEmpty)
+        for (final person in persons)
+          person.title: person.id
+      else
+        'انتخاب کنید': -1,
+    };
+
+    String? selectedPersonTitle;
+
+    for (final entry in personItems.entries) {
+      if (entry.value == selectedPersonId) {
+        selectedPersonTitle = entry.key;
+        break;
+      }
+    }
+
+    selectedPersonTitle ??= personItems.keys.first;
     return Container(
       padding: const EdgeInsets.all(AppPadding.p24),
       decoration: BoxDecoration(
@@ -217,28 +272,26 @@ class _AddPersonCard extends StatelessWidget {
             style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
           ),
           Space.h20,
-          DropdownButtonFormField<int>(
-            value: selectedPersonId,
-            isExpanded: true,
-            decoration: const InputDecoration(
-              labelText: 'امدادرسان',
-              hintText: 'انتخاب کنید',
+          IgnorePointer(
+            ignoring: isSubmitting,
+            child: Opacity(
+              opacity: isSubmitting ? 0.6 : 1,
+              child: DropDownMapItemsWidget(
+                labelText: 'امدادرسان',
+                initialValue: selectedPersonTitle,
+                mandatory: false,
+                items: personItems,
+                onChange: (selectedTitle) {
+                  onChanged(personItems[selectedTitle]);
+                },
+              ),
             ),
-            items: persons
-                .map(
-                  (item) => DropdownMenuItem(
-                    value: item.id,
-                    child: Text(item.title, overflow: TextOverflow.ellipsis),
-                  ),
-                )
-                .toList(),
-            onChanged: isSubmitting ? null : onChanged,
           ),
-          Space.h32,
+          Space.h24,
           InkwellButtonWidget(
             title: 'افزودن',
             showLoading: isSubmitting,
-            onTap: selectedPersonId == null || isSubmitting ? null : onSubmit,
+            onTap: selectedPersonId == -1 || isSubmitting ? (){} : onSubmit,
           ),
         ],
       ),
@@ -260,6 +313,7 @@ class _PersonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return Container(
       margin: const EdgeInsets.only(bottom: AppMargin.m12),
       padding: const EdgeInsets.all(AppPadding.p16),
@@ -287,8 +341,6 @@ class _PersonCard extends StatelessWidget {
                   ),
                 ),
               ),
-              EmdadUnitStatusBadge(isActive: person.isActive),
-              Space.w8,
               IconButton(
                 tooltip: 'حذف',
                 onPressed: isSubmitting ? null : onDelete,
@@ -299,8 +351,9 @@ class _PersonCard extends StatelessWidget {
               ),
             ],
           ),
+          EmdadUnitStatusBadge(isActive: person.isActive),
           Space.h12,
-          Divider(height: AppSize.s1, color: theme.dividerColor.withOpacity(0.65)),
+          Divider(height: AppSize.s1, color: Color(0xFFE3E2E2)),
           Space.h12,
           _InfoLine(icon: Icons.badge_outlined, label: 'کد ملی', value: person.nationalNumber),
           _InfoLine(icon: Icons.phone_outlined, label: 'شماره تماس', value: person.mobile),
@@ -361,11 +414,11 @@ class _CountBadge extends StatelessWidget {
     final theme = Theme.of(context);
     return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppPadding.p10,
-        vertical: AppPadding.p4,
+        horizontal: AppPadding.p12,
+        vertical: AppPadding.p6,
       ),
       decoration: BoxDecoration(
-        color: theme.colorScheme.primary.withOpacity(0.10),
+        color: theme.colorScheme.primary.withAlpha(25),
         borderRadius: BorderRadius.circular(AppSize.s20),
       ),
       child: Text(

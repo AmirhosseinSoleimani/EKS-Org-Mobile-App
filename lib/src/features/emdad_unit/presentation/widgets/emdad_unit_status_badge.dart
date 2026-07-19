@@ -13,12 +13,12 @@ class EmdadUnitStatusBadge extends StatelessWidget {
     final background = active
         ? theme.colorScheme.onError.withValues(alpha: 0.10)
         : theme.colorScheme.error.withValues(alpha: 0.10);
-    final foreground = active ? const Color(0xFF00966D) : theme.colorScheme.error;
+    final foreground = active ? const Color(0xFF1B6D24) : theme.colorScheme.error;
 
     return Container(
       padding: const EdgeInsets.symmetric(
-        horizontal: AppPadding.p10,
-        vertical: AppPadding.p4,
+        horizontal: AppPadding.p12,
+        vertical: AppPadding.p6,
       ),
       decoration: BoxDecoration(
         color: background,

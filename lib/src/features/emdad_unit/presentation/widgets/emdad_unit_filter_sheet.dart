@@ -1,6 +1,7 @@
 import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/params/emdad_unit_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 
 class EmdadUnitFilterSheet extends StatefulWidget {
@@ -72,7 +73,7 @@ class _EmdadUnitFilterSheetState extends State<EmdadUnitFilterSheet> {
               Text(
                 'جستجو و فیلتر',
                 style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
+                  fontWeight: FontWeight.w700,
                 ),
               ),
               Space.h24,
@@ -173,16 +174,12 @@ class _TextField extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding: const EdgeInsets.only(bottom: AppPadding.p18),
-      child: TextField(
+      child: TextFormFieldWidget(
         controller: controller,
         textInputAction: TextInputAction.next,
-        decoration: InputDecoration(
-          labelText: label,
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppSize.s8),
-          ),
-        ),
+        labelText: label,
+        floatingLabelBehavior: FloatingLabelBehavior.always,
+        borderRadius: AppSize.s8,
       ),
     );
   }
@@ -203,21 +200,85 @@ class _SelectField<T> extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final textTheme = theme.textTheme;
+
+    final textStyle = textTheme.bodyMedium?.copyWith(
+      color: colorScheme.onSurface,
+    );
+
+    final borderRadius = BorderRadius.circular(
+      AppSize.s8,
+    );
+
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppPadding.p18),
-      child: DropdownButtonFormField<T>(
-        value: value,
-        isExpanded: true,
-        decoration: InputDecoration(
-          labelText: label,
-          hintText: 'انتخاب کنید',
-          floatingLabelBehavior: FloatingLabelBehavior.always,
-          border: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(AppSize.s8),
+      padding: const EdgeInsets.only(
+        bottom: AppPadding.p18,
+      ),
+      child: SizedBox(
+        height: 52,
+        child: DropdownButtonFormField<T>(
+          value: value,
+          isExpanded: true,
+          icon: const Icon(
+            Icons.keyboard_arrow_down,
+            size: 20,
           ),
+          style: textStyle,
+          decoration: InputDecoration(
+            labelText: label,
+            hintText: 'انتخاب کنید',
+
+            floatingLabelBehavior:
+            FloatingLabelBehavior.always,
+
+            contentPadding: const EdgeInsets.symmetric(
+              horizontal: 12,
+              vertical: 14,
+            ),
+
+            labelStyle: textStyle?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
+
+            floatingLabelStyle: textStyle?.copyWith(
+              color: colorScheme.onSurfaceVariant,
+            ),
+
+            hintStyle: textStyle?.copyWith(
+              color: colorScheme.onSurface.withAlpha(140),
+            ),
+
+            border: OutlineInputBorder(
+              borderRadius: borderRadius,
+            ),
+
+            enabledBorder: OutlineInputBorder(
+              borderRadius: borderRadius,
+              borderSide: BorderSide(
+                color: Colors.grey.shade300,
+              ),
+            ),
+
+            disabledBorder: OutlineInputBorder(
+              borderRadius: borderRadius,
+              borderSide: BorderSide(
+                color: Colors.grey.shade300,
+              ),
+            ),
+
+            focusedBorder: OutlineInputBorder(
+              borderRadius: borderRadius,
+              borderSide: BorderSide(
+                color: colorScheme.primary,
+                width: 1.5,
+              ),
+            ),
+          ),
+          items: items,
+          onChanged: onChanged,
         ),
-        items: items,
-        onChanged: onChanged,
       ),
     );
   }
