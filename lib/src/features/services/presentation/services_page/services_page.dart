@@ -116,7 +116,7 @@ class ServicesPage extends StatelessWidget {
                   context.pushNamed(RescuerListPage.name);
                 },
               ),
-                //todo: add if for show licence
+            if (access.canShowSkillsCertificateButton())
               _AgencyServiceItemData(
                 title: 'گواهینامه مهارت',
                 icon: Icons.grading_outlined,
@@ -414,7 +414,7 @@ class _AgencyServicesGrid extends StatelessWidget {
 
   final List<_AgencyServiceItemData> items;
 
-  static const double _maxItemWidth = 150;
+  static const double _maxItemWidth = 160;
   static const double _spacing = AppSize.s12;
 
   int _calculateColumnCount(double width) {
@@ -458,24 +458,26 @@ class _AgencyServicesGrid extends StatelessWidget {
 
         return Align(
           alignment: AlignmentDirectional.centerStart,
-          child: SizedBox(
-            width: gridWidth,
-            child: GridView.builder(
-              itemCount: items.length,
-              shrinkWrap: true,
-              physics: const NeverScrollableScrollPhysics(),
-              gridDelegate:
-              SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: crossAxisCount,
-                crossAxisSpacing: _spacing,
-                mainAxisSpacing: _spacing,
-                mainAxisExtent: 105,
+          child: Center(
+            child: SizedBox(
+              width: gridWidth,
+              child: GridView.builder(
+                itemCount: items.length,
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                gridDelegate:
+                SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: crossAxisCount,
+                  crossAxisSpacing: _spacing,
+                  mainAxisSpacing: _spacing,
+                  mainAxisExtent: 105,
+                ),
+                itemBuilder: (context, index) {
+                  return _AgencyServiceItem(
+                    item: items[index],
+                  );
+                },
               ),
-              itemBuilder: (context, index) {
-                return _AgencyServiceItem(
-                  item: items[index],
-                );
-              },
             ),
           ),
         );

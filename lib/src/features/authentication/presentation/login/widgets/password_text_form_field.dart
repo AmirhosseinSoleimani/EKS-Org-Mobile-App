@@ -29,7 +29,6 @@ class _PasswordTextFormFieldWidgetState
     final cubit = context.read<LoginCubit>();
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final textTheme = Theme.of(context).textTheme;
     return TextFormFieldWidget(
       labelText: "رمز عبور",
       controller: widget.controller,
@@ -52,8 +51,6 @@ class _PasswordTextFormFieldWidgetState
       ),
       validator: (value) => cubit.phoneNumberValidate(value),
       textInputFormatter: [
-        FilteringTextInputFormatter.digitsOnly,
-        LengthLimitingTextInputFormatter(11),
       ],
     );
   }

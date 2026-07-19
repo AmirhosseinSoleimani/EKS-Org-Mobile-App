@@ -391,6 +391,11 @@ class CurrentSessionAccessPolicy {
     );
   }
 
+  bool canShowSkillsCertificateButton() {
+    return isAuthenticated &&
+        canShowMenu(CurrentSessionMenuKeys.sanSkillsCertificate);
+  }
+
   bool canUpdateHomeServiceRequest() {
     return hasAuthorization(
       CurrentSessionAuthorizationKeys.homeServiceRequestUpdate,

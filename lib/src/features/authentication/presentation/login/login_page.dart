@@ -46,18 +46,35 @@ class _LoginBody extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Column(
-      children: [
-        Padding(
-          padding: EdgeInsets.fromLTRB(16, 24, 16, 32),
-          child: LogoWidget(),
-        ),
-        Expanded(
-          child: Center(
-            child: _LoginFormCard(),
+    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
+
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          padding: EdgeInsets.only(bottom: bottomInset),
+          child: ConstrainedBox(
+            constraints: BoxConstraints(
+              minHeight: constraints.maxHeight,
+            ),
+            child: IntrinsicHeight(
+              child: const Column(
+                children: [
+                  Padding(
+                    padding: EdgeInsets.fromLTRB(16, 24, 16, 32),
+                    child: LogoWidget(),
+                  ),
+                  Expanded(
+                    child: Center(
+                      child: _LoginFormCard(),
+                    ),
+                  ),
+                ],
+              ),
+            ),
           ),
-        ),
-      ],
+        );
+      },
     );
   }
 }
