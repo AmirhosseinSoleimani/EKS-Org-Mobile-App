@@ -117,6 +117,11 @@ class CurrentSessionAccessPolicy {
     );
   }
 
+  bool canShowSkillsCertificateButton() {
+    return isAuthenticated &&
+        canShowMenu(CurrentSessionMenuKeys.sanSkillsCertificate);
+  }
+
   bool canShowInvoicesMenu() {
     return canShowAnyMenu([
       CurrentSessionMenuKeys.invoices,
@@ -389,11 +394,6 @@ class CurrentSessionAccessPolicy {
     return hasAuthorization(
       CurrentSessionAuthorizationKeys.homeServiceRequestInsert,
     );
-  }
-
-  bool canShowSkillsCertificateButton() {
-    return isAuthenticated &&
-        canShowMenu(CurrentSessionMenuKeys.sanSkillsCertificate);
   }
 
   bool canUpdateHomeServiceRequest() {

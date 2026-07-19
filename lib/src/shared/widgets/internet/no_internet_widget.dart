@@ -1,3 +1,6 @@
+import 'dart:io' show Platform;
+
+import 'package:app_settings/app_settings.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
@@ -90,7 +93,9 @@ class NoInternetWidget extends StatelessWidget {
             backgroundColor: theme.colorScheme.surface,
             borderColor: theme.primaryColor,
             titleColor: theme.primaryColor,
-            onTap: openInternetSettings,
+            onTap: () {
+              openInternetSettings();
+            },
           ),
         ],
       ),
@@ -99,7 +104,18 @@ class NoInternetWidget extends StatelessWidget {
 
 
   Future<void> openInternetSettings() async {
-  //todo add app_settings and use it for open data setting page
+    try {
+      if (Platform.isAndroid) {
+        await AppSettings.openAppSettingsPanel(
+          AppSettingsPanelType.internetConnectivity,
+        );
+        return;
+      }
+
+      await AppSettings.openAppSettings(type: AppSettingsType.wifi);
+    } catch (_) {
+      await AppSettings.openAppSettings(type: AppSettingsType.wifi);
+    }
   }
 
 

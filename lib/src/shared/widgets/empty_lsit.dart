@@ -22,7 +22,7 @@ class EmptyListWidget extends StatelessWidget {
         TitleMediumText(
           text: 'هیچ موردی جهت نمایش وجود ندارد',
           color: Theme.of(context).colorScheme.onPrimaryFixed,
-          fontSize: AppSize.s14,
+          fontSize: AppSize.s16,
         )
       ],
     );

@@ -56,7 +56,7 @@ class _EmdadUnitListView extends StatelessWidget {
       child: Scaffold(
         backgroundColor: theme.colorScheme.surface,
         appBar: const SimpleAppBar(title: 'واحد امدادی'),
-        floatingActionButton: FloatingActionButton(
+     /*   floatingActionButton: FloatingActionButton(
           onPressed: () async {
             final changed = await context.pushNamed<bool>(EmdadUnitFormPage.name);
             if (changed == true && context.mounted) {
@@ -64,7 +64,7 @@ class _EmdadUnitListView extends StatelessWidget {
             }
           },
           child: const Icon(Icons.add_rounded),
-        ),
+        ),*/
         body: ScrollConfiguration(
           behavior: ScrollConfiguration.of(context).copyWith(
             dragDevices: {PointerDeviceKind.touch, PointerDeviceKind.mouse},
@@ -123,7 +123,7 @@ class _EmdadUnitListView extends StatelessWidget {
                         title: state.filter.isActiveFilter
                             ? 'نتیجه‌ای برای فیلترهای انتخابی یافت نشد'
                             : 'رکوردی یافت نشد',
-                        actionTitle: state.filter.isActiveFilter ? 'پاک کردن فیلترها' : 'بازخوانی',
+                        actionTitle: state.filter.isActiveFilter ? 'پاک کردن فیلترها' : 'تلاش مجدد',
                         onAction: state.filter.isActiveFilter
                             ? cubit.clearFilter
                             : () => cubit.fetchList(refresh: true),
@@ -238,7 +238,7 @@ class _EmdadUnitListView extends StatelessWidget {
   ) {
     showModalBottomSheet<void>(
       context: context,
-      useSafeArea: false,
+      useSafeArea: true,
       backgroundColor: Theme.of(context).colorScheme.onPrimary,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),

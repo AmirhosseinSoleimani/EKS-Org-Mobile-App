@@ -106,7 +106,7 @@ class _GradePatternListView extends StatelessWidget {
                       title: filter.hasActiveFilters
                           ? 'نتیجه‌ای برای فیلترهای انتخابی یافت نشد'
                           : 'رکوردی یافت نشد',
-                      actionTitle: filter.hasActiveFilters ? 'پاک کردن فیلترها' : 'بازخوانی',
+                      actionTitle: filter.hasActiveFilters ? 'پاک کردن فیلترها' : 'تلاش مجدد',
                       onAction: filter.hasActiveFilters
                           ? cubit.clearFilter
                           : () => cubit.fetchList(refresh: true),

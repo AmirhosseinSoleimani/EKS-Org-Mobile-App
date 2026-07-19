@@ -70,6 +70,7 @@ class _SkillCertificateFormSheetState extends State<SkillCertificateFormSheet> {
                   Space.h16,
                   EkDropDown(
                     _statusTitles,
+                    fillColor: Colors.white,
                     label: 'وضعیت',
                     selectedItem: _isActive ? 'فعال' : 'غیرفعال',
                     onItemValue: (value) {
