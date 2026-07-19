@@ -79,8 +79,7 @@ class _EkDropDownState extends State<EkDropDown> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      color: widget.fillColor,
+    return SizedBox(
       height: widget.height,
       child: FormField<String>(
         builder: (FormFieldState<String> state) {
