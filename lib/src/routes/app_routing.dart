@@ -112,21 +112,6 @@ class Routes {
               ],
             ),
 
-            /// 1 - CARTABLE
-            StatefulShellBranch(
-              navigatorKey: cartableNavigatorKey,
-              routes: [
-                GoRoute(
-                  path: CartablePage.path,
-                  name: CartablePage.name,
-                  pageBuilder: (context, state) => getPage(
-                    child: const CartablePage(),
-                    state: state,
-                  ),
-                ),
-              ],
-            ),
-
             /// SERVICES
             StatefulShellBranch(
               navigatorKey: servicesNavigatorKey,
@@ -157,21 +142,6 @@ class Routes {
                 ),
               ],
             ),
-
-            /// 3 - REPRESENTATION
-            /*StatefulShellBranch(
-              navigatorKey: representationNavigatorKey,
-              routes: [
-                GoRoute(
-                  path: RepresentationPage.path,
-                  name: RepresentationPage.name,
-                  pageBuilder: (context, state) => getPage(
-                    child: const RepresentationPage(),
-                    state: state,
-                  ),
-                ),
-              ],
-            ),*/
 
             /// INDICATOR REPORT
             StatefulShellBranch(

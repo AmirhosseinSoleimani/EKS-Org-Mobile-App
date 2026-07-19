@@ -238,7 +238,7 @@ class _EmdadUnitListView extends StatelessWidget {
   ) {
     showModalBottomSheet<void>(
       context: context,
-      useSafeArea: true,
+      useSafeArea: false,
       backgroundColor: Theme.of(context).colorScheme.onPrimary,
       shape: const RoundedRectangleBorder(
         borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),

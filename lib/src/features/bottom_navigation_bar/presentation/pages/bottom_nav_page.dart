@@ -54,34 +54,15 @@ class BottomNavPage extends StatelessWidget {
               color: colorScheme.primary,
             ),
           ),
-         BottomNavigationBarItem(
-            icon: _BottomNavSvgIcon(src: SvgManager.listAltIcon,
-              color: colorScheme.onTertiaryFixed,),
-            label: "کارتابل",
-            activeIcon: _BottomNavSvgIcon(
-              src: SvgManager.listAltIcon,
-              color: colorScheme.primary,
-            ),
-          ),
           BottomNavigationBarItem(
-            icon: _BottomNavSvgIcon(src: SvgManager.buildIcon,
+            icon: _BottomNavSvgIcon(src: SvgManager.dashboardIcon,
               color: colorScheme.onTertiaryFixed,),
             activeIcon: _BottomNavSvgIcon(
-              src: SvgManager.buildIcon,
+              src: SvgManager.dashboardIcon,
               color: colorScheme.primary,
             ),
-            label: "خدمات",
-
+            label: "پیشخوان",
           ),
-       /*   BottomNavigationBarItem(
-            icon: _BottomNavSvgIcon(src: SvgManager.domainIcon,
-              color: colorScheme.onTertiaryFixed,),
-            activeIcon: _BottomNavSvgIcon(
-              src: SvgManager.domainIcon,
-              color: colorScheme.primary,
-            ),
-            label: "نمایندگی",
-          ),*/
           BottomNavigationBarItem(
             icon: _BottomNavSvgIcon(src: SvgManager.assignmentIcon,
               color: colorScheme.onTertiaryFixed,),
@@ -89,7 +70,7 @@ class BottomNavPage extends StatelessWidget {
               src: SvgManager.assignmentIcon,
               color: colorScheme.primary,
             ),
-            label: "گزارش شاخص",
+            label: "گزارش ها",
           ),
         ],
       ),
