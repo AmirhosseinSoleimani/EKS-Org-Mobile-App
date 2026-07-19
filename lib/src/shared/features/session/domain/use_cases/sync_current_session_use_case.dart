@@ -6,8 +6,13 @@ import 'package:injectable/injectable.dart';
 
 @lazySingleton
 class SyncCurrentSessionUseCase {
+  static const Duration defaultMaxAge = Duration(minutes: 5);
+  static const Duration defaultMinRequestInterval = Duration(seconds: 30);
+
   final GetCurrentSessionUseCase _getCurrentSessionUseCase;
   final CurrentSessionManager _currentSessionManager;
+  Future<CurrentSessionSyncResult>? _inFlightSync;
+  DateTime? _lastRequestAt;
 
   SyncCurrentSessionUseCase(
       this._getCurrentSessionUseCase,
@@ -16,6 +21,42 @@ class SyncCurrentSessionUseCase {
 
   Future<CurrentSessionSyncResult> call({
     bool clearOnFailure = true,
+    bool forceRefresh = false,
+    Duration maxAge = const Duration(minutes: 5),
+    Duration minRequestInterval = const Duration(seconds: 30),
+  }) async {
+    final cachedSession = _currentSessionManager.currentSession;
+    if (!forceRefresh &&
+        cachedSession != null &&
+        !_currentSessionManager.isStale(maxAge)) {
+      return CurrentSessionSyncResult.success(cachedSession);
+    }
+
+    final inFlightSync = _inFlightSync;
+    if (inFlightSync != null) {
+      return inFlightSync;
+    }
+
+    if (!forceRefresh && !_canRequest(minRequestInterval)) {
+      if (cachedSession != null) {
+        return CurrentSessionSyncResult.success(cachedSession);
+      }
+
+      return const CurrentSessionSyncResult.empty();
+    }
+
+    _lastRequestAt = DateTime.now();
+    _inFlightSync = _sync(clearOnFailure: clearOnFailure);
+
+    try {
+      return await _inFlightSync!;
+    } finally {
+      _inFlightSync = null;
+    }
+  }
+
+  Future<CurrentSessionSyncResult> _sync({
+    required bool clearOnFailure,
   }) async {
     final result = await _getCurrentSessionUseCase.call();
 
@@ -51,5 +92,12 @@ class SyncCurrentSessionUseCase {
     );
 
     return syncResult;
+  }
+
+  bool _canRequest(Duration minRequestInterval) {
+    final lastRequestAt = _lastRequestAt;
+    if (lastRequestAt == null) return true;
+
+    return DateTime.now().difference(lastRequestAt) >= minRequestInterval;
   }
 }
