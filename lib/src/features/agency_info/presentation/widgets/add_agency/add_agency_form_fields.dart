@@ -79,7 +79,10 @@ class AddAgencyDropDown extends StatelessWidget {
 
     return EkDropDown(
       safeItems,
-      key: ValueKey('$label|$selectedItem|${safeItems.join('|')}'),
+      key: ValueKey(
+        '$label|$selectedItem|${safeItems.length}|'
+        '${safeItems.first}|${safeItems.last}',
+      ),
       label: label,
       mandatory: mandatory,
       selectedItem: selectedItem,

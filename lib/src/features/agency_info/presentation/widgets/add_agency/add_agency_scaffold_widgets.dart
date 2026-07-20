@@ -108,3 +108,47 @@ class AddAgencyBottomActions extends StatelessWidget {
     );
   }
 }
+
+
+class AddAgencyInitialLoadError extends StatelessWidget {
+  const AddAgencyInitialLoadError({
+    super.key,
+    required this.onRetry,
+  });
+
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.all(AppPadding.p24),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            Icon(
+              Icons.error_outline_rounded,
+              color: theme.colorScheme.error,
+              size: AppSize.s40,
+            ),
+            Space.h16,
+            Text(
+              'آماده‌سازی فرم با خطا مواجه شد.',
+              textAlign: TextAlign.center,
+              style: theme.textTheme.bodyMedium,
+            ),
+            Space.h16,
+            InkwellButtonWidget(
+              title: 'تلاش مجدد',
+              width: AppSize.s150,
+              onTap: onRetry,
+              backgroundColor: theme.colorScheme.primary,
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}

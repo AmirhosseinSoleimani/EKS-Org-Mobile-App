@@ -110,19 +110,22 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
       child: Scaffold(
         backgroundColor: theme.colorScheme.surface,
         appBar: const SimpleAppBar(title: 'نمایندگی‌ها'),
-        floatingActionButton: AddAgencyFloatingButton(
-          onPressed: () async {
-            final changed = await context.pushNamed<bool>(
-              AddAgencyInfoPage.name,
-            );
-            if (changed == true && context.mounted) {
-              cubit.fetchList(refresh: true);
-              SnakeBarWidget.showSuccess(
-                context: context,
-                message: 'نمایندگی با موفقیت ثبت شد.',
+        floatingActionButton: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
+          child: AddAgencyFloatingButton(
+            onPressed: () async {
+              final changed = await context.pushNamed<bool>(
+                AddAgencyInfoPage.name,
               );
-            }
-          },
+              if (changed == true && context.mounted) {
+                cubit.fetchList(refresh: true);
+                SnakeBarWidget.showSuccess(
+                  context: context,
+                  message: 'نمایندگی با موفقیت ثبت شد.',
+                );
+              }
+            },
+          ),
         ),
         body: ScrollConfiguration(
           behavior: ScrollConfiguration.of(context).copyWith(

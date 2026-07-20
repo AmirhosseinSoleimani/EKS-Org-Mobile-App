@@ -61,10 +61,16 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
   CurrentSessionEnumItemEntity? _selectedAgencyType;
   ProvinceEntity? _selectedCity;
 
+  List<String> _cityDropDownItems = const ['انتخاب کنید'];
+
   bool _hasTax = false;
   bool _isSubmitting = false;
-  bool _isCityLoading = false;
+  bool _isInitialLoading = true;
+  bool _isInitialLoadFailed = false;
+  bool _didLoadCities = false;
+  bool _didLoadEnums = false;
   bool _didShowMissingEnumsError = false;
+  String? _initialLoadErrorMessage;
 
   @override
   void initState() {
@@ -76,8 +82,7 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
     _sessionSubscription = _currentSessionManager.currentSessionStream.listen(
       _onCurrentSessionChanged,
     );
-    _loadSessionEnums();
-    _loadCities();
+    _initializePageData();
   }
 
   @override
@@ -108,125 +113,195 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
       child: Scaffold(
         backgroundColor: theme.colorScheme.surface,
         appBar: AddAgencyAppBar(onClose: () => context.pop(false)),
-        bottomNavigationBar: AddAgencyBottomActions(
-          isSubmitting: _isSubmitting,
-          onCancel: () => context.pop(false),
-          onSubmit: _submit,
-        ),
+        bottomNavigationBar: _isFormReady
+            ? AddAgencyBottomActions(
+                isSubmitting: _isSubmitting,
+                onCancel: () => context.pop(false),
+                onSubmit: _submit,
+              )
+            : null,
         body: SafeArea(
           top: false,
-          child: Form(
-            key: _formKey,
-            child: ScrollConfiguration(
-              behavior: ScrollConfiguration.of(context).copyWith(
-                dragDevices: {
-                  PointerDeviceKind.touch,
-                  PointerDeviceKind.mouse,
+          child: _buildBodyContent(context),
+        ),
+      ),
+    );
+  }
+
+  bool get _isFormReady {
+    return !_isInitialLoading &&
+        !_isInitialLoadFailed &&
+        _didLoadCities &&
+        _didLoadEnums;
+  }
+
+  Widget _buildBodyContent(BuildContext context) {
+    if (_isInitialLoading) {
+      return const CircularProgressIndicator();
+    }
+
+    if (_isInitialLoadFailed) {
+      return AddAgencyInitialLoadError(onRetry: _initializePageData);
+    }
+
+    return Form(
+      key: _formKey,
+      child: ScrollConfiguration(
+        behavior: ScrollConfiguration.of(context).copyWith(
+          dragDevices: {
+            PointerDeviceKind.touch,
+            PointerDeviceKind.mouse,
+          },
+        ),
+        child: SingleChildScrollView(
+          keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+          padding: const EdgeInsets.fromLTRB(
+            AppPadding.p16,
+            AppPadding.p24,
+            AppPadding.p16,
+            AppPadding.p24,
+          ),
+          child: Column(
+            children: [
+              AddAgencyInfoSection(
+                codeController: _codeController,
+                nameController: _nameController,
+                numberFormatters: _numberFormatters,
+                requiredValidator: _requiredValidator,
+                agencyTypeItems: _enumTitles(
+                  _agencyTypes,
+                  placeholder: 'انتخاب کنید',
+                ),
+                selectedAgencyTypeTitle: addAgencyEnumTitle(
+                  _selectedAgencyType,
+                ),
+                onAgencyTypeChanged: (value) {
+                  setState(() {
+                    _selectedAgencyType = _enumByTitle(_agencyTypes, value);
+                  });
                 },
               ),
-              child: SingleChildScrollView(
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                padding: const EdgeInsets.fromLTRB(
-                  AppPadding.p16,
-                  AppPadding.p24,
-                  AppPadding.p16,
-                  AppPadding.p24,
-                ),
-                child: Column(
-                  children: [
-                    AddAgencyInfoSection(
-                      codeController: _codeController,
-                      nameController: _nameController,
-                      numberFormatters: _numberFormatters,
-                      requiredValidator: _requiredValidator,
-                      agencyTypeItems: _enumTitles(
-                        _agencyTypes,
-                        placeholder: 'انتخاب کنید',
-                      ),
-                      selectedAgencyTypeTitle:
-                          addAgencyEnumTitle(_selectedAgencyType),
-                      onAgencyTypeChanged: (value) {
-                        setState(() {
-                          _selectedAgencyType =
-                              _enumByTitle(_agencyTypes, value);
-                        });
-                      },
-                    ),
-                    Space.h24,
-                    AddAgencyManagerSection(
-                      managerFirstNameController:
-                          _managerFirstNameController,
-                      managerLastNameController:
-                          _managerLastNameController,
-                      nationalNoController: _nationalNoController,
-                      shabaNumberController: _shabaNumberController,
-                      numberFormatters: _numberFormatters,
-                      requiredValidator: _requiredValidator,
-                    ),
-                    Space.h24,
-                    AddAgencyContactSection(
-                      economicCodeController: _economicCodeController,
-                      telController: _telController,
-                      mobileController: _mobileController,
-                      emailController: _emailController,
-                      faxController: _faxController,
-                      numberFormatters: _numberFormatters,
-                      requiredValidator: _requiredValidator,
-                      mobileValidator: _mobileValidator,
-                      emailValidator: _emailValidator,
-                    ),
-                    Space.h24,
-                    AddAgencyAddressSection(
-                      addressController: _addressController,
-                      postalCodeController: _postalCodeController,
-                      cityItems: _cityTitles,
-                      selectedCityTitle: _selectedCityTitle,
-                      onCityChanged: _onCityChanged,
-                      numberFormatters: _numberFormatters,
-                      requiredValidator: _requiredValidator,
-                    ),
-                    Space.h24,
-                    AddAgencySettingsSection(
-                      hasTax: _hasTax,
-                      onHasTaxChanged: (value) {
-                        setState(() {
-                          _hasTax = value;
-                        });
-                      },
-                    ),
-                  ],
-                ),
+              Space.h24,
+              AddAgencyManagerSection(
+                managerFirstNameController: _managerFirstNameController,
+                managerLastNameController: _managerLastNameController,
+                nationalNoController: _nationalNoController,
+                shabaNumberController: _shabaNumberController,
+                numberFormatters: _numberFormatters,
+                requiredValidator: _requiredValidator,
               ),
-            ),
+              Space.h24,
+              AddAgencyContactSection(
+                economicCodeController: _economicCodeController,
+                telController: _telController,
+                mobileController: _mobileController,
+                emailController: _emailController,
+                faxController: _faxController,
+                numberFormatters: _numberFormatters,
+                requiredValidator: _requiredValidator,
+                mobileValidator: _mobileValidator,
+                emailValidator: _emailValidator,
+              ),
+              Space.h24,
+              AddAgencyAddressSection(
+                addressController: _addressController,
+                postalCodeController: _postalCodeController,
+                cityItems: _cityDropDownItems,
+                selectedCityTitle: _selectedCityTitle,
+                onCityChanged: _onCityChanged,
+                numberFormatters: _numberFormatters,
+                requiredValidator: _requiredValidator,
+              ),
+              Space.h24,
+              AddAgencySettingsSection(
+                hasTax: _hasTax,
+                onHasTaxChanged: (value) {
+                  setState(() {
+                    _hasTax = value;
+                  });
+                },
+              ),
+            ],
           ),
         ),
       ),
     );
   }
 
-  Future<void> _loadSessionEnums() async {
-    final hasCachedEnums = _applySessionEnums(
-      _currentSessionManager.currentSession,
-    );
+  Future<void> _initializePageData() async {
+    setState(() {
+      _isInitialLoading = true;
+      _isInitialLoadFailed = false;
+      _didLoadCities = false;
+      _didLoadEnums = false;
+      _didShowMissingEnumsError = false;
+      _initialLoadErrorMessage = null;
+      _selectedCity = null;
+      _cityDropDownItems = const ['انتخاب کنید'];
+    });
 
-    if (hasCachedEnums) return;
-
-    final syncResult = await _syncCurrentSessionUseCase(
-      clearOnFailure: false,
-      forceRefresh: true,
-      maxAge: Duration.zero,
-      minRequestInterval: Duration.zero,
-    );
+    List<bool> results;
+    try {
+      results = await Future.wait<bool>([
+        _loadSessionEnumsForInit(),
+        _loadCitiesForInit(),
+      ]);
+    } catch (_) {
+      results = const [false, false];
+    }
 
     if (!mounted) return;
 
-    final hasEnums = _applySessionEnums(
-      syncResult.session ?? _currentSessionManager.currentSession,
-    );
+    setState(() {
+      _didLoadEnums = results[0] || _agencyTypes.isNotEmpty;
+      _didLoadCities = results[1] || _cities.isNotEmpty;
+      _isInitialLoading = false;
+      _isInitialLoadFailed = !_didLoadEnums || !_didLoadCities;
+    });
 
-    if (!hasEnums) {
-      _showMissingSessionEnumsError();
+    if (_isInitialLoadFailed) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _showError(
+          _initialLoadErrorMessage ?? 'آماده‌سازی فرم با خطا مواجه شد.',
+        );
+      });
+    }
+  }
+
+  Future<bool> _loadSessionEnumsForInit() async {
+    try {
+      final hasCachedEnums = _applySessionEnums(
+        _currentSessionManager.currentSession,
+        notify: false,
+      );
+
+      if (hasCachedEnums) return true;
+
+      final syncResult = await _syncCurrentSessionUseCase(
+        clearOnFailure: false,
+        forceRefresh: true,
+        maxAge: Duration.zero,
+        minRequestInterval: Duration.zero,
+      );
+
+      if (!mounted) return false;
+
+      final hasEnums = _applySessionEnums(
+        syncResult.session ?? _currentSessionManager.currentSession,
+        notify: false,
+      );
+
+      if (!hasEnums) {
+        _initialLoadErrorMessage ??=
+            'مقادیر نوع نمایندگی از سرویس نشست دریافت نشد.';
+      }
+
+      return hasEnums;
+    } catch (_) {
+      _initialLoadErrorMessage ??=
+          'مقادیر نوع نمایندگی از سرویس نشست دریافت نشد.';
+      return false;
     }
   }
 
@@ -236,20 +311,30 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
     _applySessionEnums(session);
   }
 
-  bool _applySessionEnums(CurrentSessionEntity? session) {
+  bool _applySessionEnums(
+    CurrentSessionEntity? session, {
+    bool notify = true,
+  }) {
     final enums = session?.enums;
     final agencyTypes = enums?.agencyInfoType ??
         const <CurrentSessionEnumItemEntity>[];
 
-    if (mounted) {
-      setState(() {
-        _agencyTypes = agencyTypes;
+    void applyEnums() {
+      _agencyTypes = agencyTypes;
+      if (_agencyTypes.isNotEmpty) {
+        _didLoadEnums = true;
+      }
 
-        if (_selectedAgencyType != null &&
-            !_agencyTypes.contains(_selectedAgencyType)) {
-          _selectedAgencyType = null;
-        }
-      });
+      if (_selectedAgencyType != null &&
+          !_agencyTypes.contains(_selectedAgencyType)) {
+        _selectedAgencyType = null;
+      }
+    }
+
+    if (mounted && notify) {
+      setState(applyEnums);
+    } else {
+      applyEnums();
     }
 
     return agencyTypes.isNotEmpty;
@@ -266,42 +351,41 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
     });
   }
 
-  Future<void> _loadCities() async {
-    setState(() {
-      _isCityLoading = true;
-    });
+  Future<bool> _loadCitiesForInit() async {
+    try {
+      final result = await _provinceUseCase();
+      if (!mounted) return false;
 
-    final result = await _provinceUseCase();
-    if (!mounted) return;
+      var didLoad = false;
 
-    result.when(
-      success: (items, failures, resultCode) {
-        setState(() {
+      result.when(
+        success: (items, failures, resultCode) {
           _cities = items
               .where((item) => item.cityId != null)
               .toList(growable: false);
-          _isCityLoading = false;
-        });
-      },
-      failure: (error, failures) {
-        setState(() {
-          _isCityLoading = false;
-        });
-        _showError(failures ?? 'دریافت لیست شهرها با خطا مواجه شد.');
-      },
-      expireToken: () {
-        setState(() {
-          _isCityLoading = false;
-        });
-        _showError('نشست کاربری منقضی شده است.');
-      },
-      connectionError: () {
-        setState(() {
-          _isCityLoading = false;
-        });
-        _showError('اتصال به اینترنت برقرار نیست.');
-      },
-    );
+          _cityDropDownItems = _buildCityDropDownItems(_cities);
+          didLoad = _cities.isNotEmpty;
+          if (!didLoad) {
+            _initialLoadErrorMessage ??= 'لیست شهرها دریافت نشد.';
+          }
+        },
+        failure: (error, failures) {
+          _initialLoadErrorMessage ??=
+              failures ?? 'دریافت لیست شهرها با خطا مواجه شد.';
+        },
+        expireToken: () {
+          _initialLoadErrorMessage ??= 'نشست کاربری منقضی شده است.';
+        },
+        connectionError: () {
+          _initialLoadErrorMessage ??= 'اتصال به اینترنت برقرار نیست.';
+        },
+      );
+
+      return didLoad;
+    } catch (_) {
+      _initialLoadErrorMessage ??= 'دریافت لیست شهرها با خطا مواجه شد.';
+      return false;
+    }
   }
 
   Future<void> _submit() async {
@@ -374,7 +458,7 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
   }
 
   void _onCityChanged(String value) {
-    if (_isCityLoading || value == 'در حال دریافت...') {
+    if (value == 'در حال دریافت...') {
       return;
     }
 
@@ -453,15 +537,13 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
     return null;
   }
 
-  List<String> get _cityTitles {
-    if (_isCityLoading) return const ['در حال دریافت...'];
-    if (_cities.isEmpty) return const ['انتخاب کنید'];
-    return ['انتخاب کنید', ..._cities.map(_cityTitle)];
+  String get _selectedCityTitle {
+    return _selectedCity == null ? 'انتخاب کنید' : _cityTitle(_selectedCity!);
   }
 
-  String get _selectedCityTitle {
-    if (_isCityLoading) return 'در حال دریافت...';
-    return _selectedCity == null ? 'انتخاب کنید' : _cityTitle(_selectedCity!);
+  List<String> _buildCityDropDownItems(List<ProvinceEntity> cities) {
+    if (cities.isEmpty) return const ['انتخاب کنید'];
+    return ['انتخاب کنید', ...cities.map(_cityTitle)];
   }
 
   String _cityTitle(ProvinceEntity city) {
