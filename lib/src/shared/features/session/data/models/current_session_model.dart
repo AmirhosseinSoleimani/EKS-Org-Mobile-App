@@ -24,6 +24,8 @@ class CurrentSessionModel extends CurrentSessionEntity {
   });
 
   factory CurrentSessionModel.fromJson(Map<String, dynamic> json) {
+    final enumsJson = _asMap(_read(json, 'enums'));
+
     return CurrentSessionModel(
       guid: json['guid']?.toString(),
       authenticationType: _toInt(json['authenticationType']),
@@ -51,12 +53,28 @@ class CurrentSessionModel extends CurrentSessionEntity {
               json['misc'] as Map<String, dynamic>,
             )
           : null,
-      enums: json['enums'] is Map<String, dynamic>
-          ? CurrentSessionEnumsModel.fromJson(
-              json['enums'] as Map<String, dynamic>,
-            )
-          : null,
+      enums: enumsJson == null
+          ? null
+          : CurrentSessionEnumsModel.fromJson(enumsJson),
     );
+  }
+
+  static dynamic _read(Map<String, dynamic> json, String key) {
+    if (json.containsKey(key)) return json[key];
+
+    final normalizedKey = key.toLowerCase();
+    for (final entry in json.entries) {
+      if (entry.key.toLowerCase() == normalizedKey) {
+        return entry.value;
+      }
+    }
+
+    return null;
+  }
+
+  static Map<String, dynamic>? _asMap(dynamic value) {
+    if (value is! Map) return null;
+    return Map<String, dynamic>.from(value);
   }
 
   static int? _toInt(dynamic value) {

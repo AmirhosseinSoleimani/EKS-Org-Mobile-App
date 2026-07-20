@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:ui';
 
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
@@ -9,8 +10,10 @@ import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/province_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/usecase/get_province_with_city_list_use_case.dart';
+import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_enum_item_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/manager/current_session_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/features/session/domain/use_cases/sync_current_session_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/input_formatter/persian_arabic_digits_to_english_formatter.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
@@ -38,6 +41,8 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
   late final AddAgencyInfoUseCase _addAgencyUseCase;
   late final GetProvinceWithCityListUseCase _provinceUseCase;
   late final CurrentSessionManager _currentSessionManager;
+  late final SyncCurrentSessionUseCase _syncCurrentSessionUseCase;
+  StreamSubscription<CurrentSessionEntity?>? _sessionSubscription;
 
   final _codeController = TextEditingController();
   final _nameController = TextEditingController();
@@ -64,6 +69,8 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
   bool _hasTax = false;
   bool _isSubmitting = false;
   bool _isCityLoading = false;
+  bool _isSessionEnumsLoading = true;
+  bool _didShowMissingEnumsError = false;
 
   @override
   void initState() {
@@ -71,12 +78,17 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
     _addAgencyUseCase = AddAgencyInfoUseCase(getIt<AgencyInfoRepository>());
     _provinceUseCase = getIt<GetProvinceWithCityListUseCase>();
     _currentSessionManager = getIt<CurrentSessionManager>();
+    _syncCurrentSessionUseCase = getIt<SyncCurrentSessionUseCase>();
+    _sessionSubscription = _currentSessionManager.currentSessionStream.listen(
+      _onCurrentSessionChanged,
+    );
     _loadSessionEnums();
     _loadCities();
   }
 
   @override
   void dispose() {
+    _sessionSubscription?.cancel();
     _codeController.dispose();
     _nameController.dispose();
     _managerFirstNameController.dispose();
@@ -139,7 +151,8 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
           ),
         ),
       ),
-    ));
+      ),
+    );
   }
 
   Widget _buildAgencyInfoSection() {
@@ -167,8 +180,12 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
               child: _dropDown(
                 label: 'نوع',
                 placeholder: 'انتخاب کنید',
-                selectedTitle: _selectedAgencyType?.title ?? 'انتخاب کنید',
-                items: _enumTitles(_agencyTypes, placeholder: 'انتخاب کنید'),
+                selectedTitle:
+                _selectedAgencyType?.title ?? 'انتخاب کنید',
+                items: _enumTitles(
+                  _agencyTypes,
+                  placeholder: 'انتخاب کنید',
+                ),
                 onChanged: (value) {
                   setState(() {
                     _selectedAgencyType = _enumByTitle(_agencyTypes, value);
@@ -180,8 +197,13 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
             Expanded(
               child: _dropDown(
                 label: 'نحوه تسهیم',
-                selectedTitle: _selectedTashimType?.title,
-                items: _enumTitles(_tashimTypes),
+                placeholder: 'انتخاب کنید',
+                selectedTitle:
+                _selectedTashimType?.title ?? 'انتخاب کنید',
+                items: _enumTitles(
+                  _tashimTypes,
+                  placeholder: 'انتخاب کنید',
+                ),
                 onChanged: (value) {
                   setState(() {
                     _selectedTashimType = _enumByTitle(_tashimTypes, value);
@@ -425,15 +447,89 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
     );
   }
 
-  void _loadSessionEnums() {
-    final enums = _currentSessionManager.currentSession?.enums;
-    final agencyTypes = enums?.agencyInfoType ?? const [];
-    final tashimTypes = enums?.agencyTashimType ?? const [];
+  Future<void> _loadSessionEnums() async {
+    final hasCachedEnums = _applySessionEnums(
+      _currentSessionManager.currentSession,
+      isLoading: false,
+    );
 
-    setState(() {
-      _agencyTypes = agencyTypes;
-      _tashimTypes = tashimTypes;
-      _selectedTashimType = tashimTypes.isNotEmpty ? tashimTypes.first : null;
+    if (hasCachedEnums) return;
+
+    if (mounted) {
+      setState(() {
+        _isSessionEnumsLoading = true;
+      });
+    }
+
+    final syncResult = await _syncCurrentSessionUseCase(
+      clearOnFailure: false,
+      forceRefresh: true,
+      maxAge: Duration.zero,
+      minRequestInterval: Duration.zero,
+    );
+
+    if (!mounted) return;
+
+    final hasEnums = _applySessionEnums(
+      syncResult.session ?? _currentSessionManager.currentSession,
+      isLoading: false,
+    );
+
+    if (!hasEnums) {
+      _showMissingSessionEnumsError();
+    }
+  }
+
+  void _onCurrentSessionChanged(CurrentSessionEntity? session) {
+    if (!mounted) return;
+
+    _applySessionEnums(
+      session,
+      isLoading: false,
+    );
+  }
+
+  bool _applySessionEnums(CurrentSessionEntity? session, {
+    required bool isLoading,
+  }) {
+    final enums = session?.enums;
+    final agencyTypes = enums?.agencyInfoType ??
+        const <CurrentSessionEnumItemEntity>[];
+    final tashimTypes = enums?.agencyTashimType ??
+        const <CurrentSessionEnumItemEntity>[];
+
+    if (mounted) {
+      setState(() {
+        _agencyTypes = agencyTypes;
+        _tashimTypes = tashimTypes;
+        _isSessionEnumsLoading = isLoading;
+
+        if (_selectedAgencyType != null &&
+            !_agencyTypes.contains(_selectedAgencyType)) {
+          _selectedAgencyType = null;
+        }
+
+        if (_selectedTashimType == null ||
+            !_tashimTypes.contains(_selectedTashimType)) {
+          _selectedTashimType =
+          tashimTypes.isNotEmpty ? tashimTypes.first : null;
+        }
+      });
+    }
+
+    return agencyTypes.isNotEmpty && tashimTypes.isNotEmpty;
+  }
+
+  void _showMissingSessionEnumsError() {
+    if (_didShowMissingEnumsError) return;
+    _didShowMissingEnumsError = true;
+
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+
+      _showError(
+          'مقادیر نوع نمایندگی و نحوه تسهیم از سرویس نشست دریافت نشد. '
+      );
     });
   }
 
@@ -484,6 +580,11 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
 
     if (_selectedCity?.cityId == null) {
       _showError('استان و شهر را انتخاب کنید.');
+      return;
+    }
+
+    if (_agencyTypes.isEmpty || _tashimTypes.isEmpty) {
+      _showMissingSessionEnumsError();
       return;
     }
 
@@ -609,7 +710,9 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
     List<CurrentSessionEnumItemEntity> items,
     String title,
   ) {
-    if (title == 'انتخاب کنید') return null;
+    if (title == 'انتخاب کنید' || title == 'در حال دریافت...') {
+      return null;
+    }
 
     for (final item in items) {
       final itemTitle = item.title ?? item.name ?? item.value?.toString() ?? '';

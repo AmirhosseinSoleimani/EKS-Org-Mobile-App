@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/features/authentication/data/models/login_
 import 'package:eks_sana_plus_org/src/features/authentication/data/service/auth_service.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 import 'package:injectable/injectable.dart';
+import 'package:retrofit/dio.dart';
 import 'auth_remote_data_source.dart';
 
 @LazySingleton(as: AuthRemoteDataSource)
@@ -14,7 +15,7 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
 
 
   @override
-  Future<BaseSingleResponse<LoginResponseModel?>> login(LoginRequestModel model) async {
+  Future<HttpResponse<BaseSingleResponse<LoginResponseModel?>>> login(LoginRequestModel model) async {
     return await _service.login(model.toJson());
   }
 

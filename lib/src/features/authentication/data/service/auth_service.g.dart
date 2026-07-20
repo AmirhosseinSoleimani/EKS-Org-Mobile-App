@@ -20,7 +20,7 @@ class _AuthService implements AuthService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<BaseSingleResponse<LoginResponseModel?>> login(
+  Future<HttpResponse<BaseSingleResponse<LoginResponseModel?>>> login(
     Map<String, dynamic> body,
   ) async {
     final _extra = <String, dynamic>{};
@@ -28,16 +28,19 @@ class _AuthService implements AuthService {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body);
-    final _options = _setStreamType<BaseSingleResponse<LoginResponseModel?>>(
-      Options(method: 'POST', headers: _headers, extra: _extra)
-          .compose(
-            _dio.options,
-            '/api/User/Login',
-            queryParameters: queryParameters,
-            data: _data,
-          )
-          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
-    );
+    final _options =
+        _setStreamType<HttpResponse<BaseSingleResponse<LoginResponseModel?>>>(
+          Options(method: 'POST', headers: _headers, extra: _extra)
+              .compose(
+                _dio.options,
+                '/api/User/Login',
+                queryParameters: queryParameters,
+                data: _data,
+              )
+              .copyWith(
+                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
+              ),
+        );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late BaseSingleResponse<LoginResponseModel?> _value;
     try {
@@ -51,7 +54,8 @@ class _AuthService implements AuthService {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
-    return _value;
+    final httpResponse = HttpResponse(_value, _result);
+    return httpResponse;
   }
 
   @override

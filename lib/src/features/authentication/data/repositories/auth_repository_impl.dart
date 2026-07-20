@@ -23,11 +23,14 @@ class AuthRepositoryImpl extends AuthRepository {
   Future<ApiResult<LoginResponseEntity?>> login(
       LoginRequestEntity entity) async {
     try {
-      final result = await _dataSource.login(entity.toModel());
+      final response = await _dataSource.login(entity.toModel());
+      final result = response.data;
+      final currentSession = response.response.headers.value('sessionid');
+
       if (result.resultCode == 0 && result.data != null) {
         await _sessionStorage.saveSessionId(
           SessionModel(
-            sessionId: result.data?.token
+            sessionId: currentSession
           )
         );
       }

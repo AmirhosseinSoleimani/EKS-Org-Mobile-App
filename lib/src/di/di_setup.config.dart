@@ -26,6 +26,8 @@ import '../features/agency_info/data/services/agency_info_service.dart'
     as _i427;
 import '../features/agency_info/domain/repositories/agency_info_repository.dart'
     as _i233;
+import '../features/agency_info/domain/use_cases/add_agency_info_use_case.dart'
+    as _i574;
 import '../features/agency_info/domain/use_cases/change_agency_status_use_case.dart'
     as _i147;
 import '../features/agency_info/domain/use_cases/delete_agency_use_case.dart'
@@ -1337,6 +1339,9 @@ _i174.GetIt $initGetIt(
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
       gh<_i786.GetEmdadgarInfoUseCase>(),
     ),
+  );
+  gh.factory<_i574.AddAgencyInfoUseCase>(
+    () => _i574.AddAgencyInfoUseCase(gh<_i233.AgencyInfoRepository>()),
   );
   gh.factory<_i147.ChangeAgencyStatusUseCase>(
     () => _i147.ChangeAgencyStatusUseCase(gh<_i233.AgencyInfoRepository>()),
