@@ -56,11 +56,9 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
   final _postalCodeController = TextEditingController();
 
   List<CurrentSessionEnumItemEntity> _agencyTypes = const [];
-  List<CurrentSessionEnumItemEntity> _tashimTypes = const [];
   List<ProvinceEntity> _cities = const [];
 
   CurrentSessionEnumItemEntity? _selectedAgencyType;
-  CurrentSessionEnumItemEntity? _selectedTashimType;
   ProvinceEntity? _selectedCity;
 
   bool _hasTax = false;
@@ -146,24 +144,12 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
                         _agencyTypes,
                         placeholder: 'انتخاب کنید',
                       ),
-                      tashimTypeItems: _enumTitles(
-                        _tashimTypes,
-                        placeholder: 'انتخاب کنید',
-                      ),
                       selectedAgencyTypeTitle:
                           addAgencyEnumTitle(_selectedAgencyType),
-                      selectedTashimTypeTitle:
-                          addAgencyEnumTitle(_selectedTashimType),
                       onAgencyTypeChanged: (value) {
                         setState(() {
                           _selectedAgencyType =
                               _enumByTitle(_agencyTypes, value);
-                        });
-                      },
-                      onTashimTypeChanged: (value) {
-                        setState(() {
-                          _selectedTashimType =
-                              _enumByTitle(_tashimTypes, value);
                         });
                       },
                     ),
@@ -254,29 +240,19 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
     final enums = session?.enums;
     final agencyTypes = enums?.agencyInfoType ??
         const <CurrentSessionEnumItemEntity>[];
-    final tashimTypes = enums?.agencyTashimType ??
-        const <CurrentSessionEnumItemEntity>[];
 
     if (mounted) {
       setState(() {
         _agencyTypes = agencyTypes;
-        _tashimTypes = tashimTypes;
 
         if (_selectedAgencyType != null &&
             !_agencyTypes.contains(_selectedAgencyType)) {
           _selectedAgencyType = null;
         }
-
-        if (_selectedTashimType == null ||
-            !_tashimTypes.contains(_selectedTashimType)) {
-          _selectedTashimType = tashimTypes.isNotEmpty
-              ? tashimTypes.first
-              : null;
-        }
       });
     }
 
-    return agencyTypes.isNotEmpty && tashimTypes.isNotEmpty;
+    return agencyTypes.isNotEmpty;
   }
 
   void _showMissingSessionEnumsError() {
@@ -286,7 +262,7 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
 
-      _showError('مقادیر نوع نمایندگی و نحوه تسهیم از سرویس نشست دریافت نشد.');
+      _showError('مقادیر نوع نمایندگی از سرویس نشست دریافت نشد.');
     });
   }
 
@@ -340,7 +316,7 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
       return;
     }
 
-    if (_agencyTypes.isEmpty || _tashimTypes.isEmpty) {
+    if (_agencyTypes.isEmpty) {
       _showMissingSessionEnumsError();
       return;
     }
@@ -365,7 +341,6 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
         hasTax: _hasTax,
         cityId: _selectedCity!.cityId!,
         postalCode: _trim(_postalCodeController),
-        tashimType: _selectedTashimType?.value,
         shabaNumber: _optional(_shabaNumberController),
         address: _trim(_addressController),
       ),

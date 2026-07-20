@@ -109,7 +109,7 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
       },
       child: Scaffold(
         backgroundColor: theme.colorScheme.surface,
-        appBar: const SimpleAppBar(title: 'نمasdایندگی ها'),
+        appBar: const SimpleAppBar(title: 'نمایندگی‌ها'),
         floatingActionButton: AddAgencyFloatingButton(
           onPressed: () async {
             final changed = await context.pushNamed<bool>(
@@ -117,6 +117,10 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
             );
             if (changed == true && context.mounted) {
               cubit.fetchList(refresh: true);
+              SnakeBarWidget.showSuccess(
+                context: context,
+                message: 'نمایندگی با موفقیت ثبت شد.',
+              );
             }
           },
         ),

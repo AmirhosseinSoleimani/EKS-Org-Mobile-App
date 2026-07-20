@@ -14,11 +14,8 @@ class AddAgencyInfoSection extends StatelessWidget {
     required this.numberFormatters,
     required this.requiredValidator,
     required this.agencyTypeItems,
-    required this.tashimTypeItems,
     required this.selectedAgencyTypeTitle,
-    required this.selectedTashimTypeTitle,
     required this.onAgencyTypeChanged,
-    required this.onTashimTypeChanged,
   });
 
   final TextEditingController codeController;
@@ -26,11 +23,8 @@ class AddAgencyInfoSection extends StatelessWidget {
   final List<TextInputFormatter> numberFormatters;
   final String? Function(String, String?) requiredValidator;
   final List<String> agencyTypeItems;
-  final List<String> tashimTypeItems;
   final String selectedAgencyTypeTitle;
-  final String selectedTashimTypeTitle;
   final ValueChanged<String> onAgencyTypeChanged;
-  final ValueChanged<String> onTashimTypeChanged;
 
   @override
   Widget build(BuildContext context) {
@@ -54,26 +48,11 @@ class AddAgencyInfoSection extends StatelessWidget {
           validator: (value) => requiredValidator('نام نمایندگی', value),
         ),
         Space.h20,
-        Row(
-          children: [
-            Expanded(
-              child: AddAgencyDropDown(
-                label: 'نوع',
-                selectedTitle: selectedAgencyTypeTitle,
-                items: agencyTypeItems,
-                onChanged: onAgencyTypeChanged,
-              ),
-            ),
-            Space.w8,
-            Expanded(
-              child: AddAgencyDropDown(
-                label: 'نحوه تسهیم',
-                selectedTitle: selectedTashimTypeTitle,
-                items: tashimTypeItems,
-                onChanged: onTashimTypeChanged,
-              ),
-            ),
-          ],
+        AddAgencyDropDown(
+          label: 'نوع',
+          selectedTitle: selectedAgencyTypeTitle,
+          items: agencyTypeItems,
+          onChanged: onAgencyTypeChanged,
         ),
       ],
     );

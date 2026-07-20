@@ -17,7 +17,6 @@ class AddAgencyInfoParamEntity {
     this.fax,
     this.email,
     this.hasTax = false,
-    this.tashimType,
     this.shabaNumber,
     this.isActive = true,
   });
@@ -36,7 +35,6 @@ class AddAgencyInfoParamEntity {
   final bool hasTax;
   final int cityId;
   final String postalCode;
-  final int? tashimType;
   final String? shabaNumber;
   final bool isActive;
   final String address;
@@ -57,7 +55,6 @@ class AddAgencyInfoParamEntity {
       hasTax: hasTax,
       cityId: cityId,
       postalCode: postalCode,
-      tashimType: tashimType,
       shabaNumber: shabaNumber,
       isActive: isActive,
       address: address,
