@@ -2,8 +2,10 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/agency_info_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/agency_info_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/add_agency_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_info_details_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_delete_action_view.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/add_agency/add_agency_floating_button.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_detail_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_filter_sheet.dart';
@@ -107,7 +109,17 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
       },
       child: Scaffold(
         backgroundColor: theme.colorScheme.surface,
-        appBar: const SimpleAppBar(title: 'نمایندگی ها'),
+        appBar: const SimpleAppBar(title: 'نمasdایندگی ها'),
+        floatingActionButton: AddAgencyFloatingButton(
+          onPressed: () async {
+            final changed = await context.pushNamed<bool>(
+              AddAgencyInfoPage.name,
+            );
+            if (changed == true && context.mounted) {
+              cubit.fetchList(refresh: true);
+            }
+          },
+        ),
         body: ScrollConfiguration(
           behavior: ScrollConfiguration.of(context).copyWith(
             dragDevices: {
@@ -440,4 +452,3 @@ class _MessageState extends StatelessWidget {
     );
   }
 }
-

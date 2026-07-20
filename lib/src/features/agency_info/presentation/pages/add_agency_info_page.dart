@@ -1,9 +1,12 @@
+import 'dart:ui';
+
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/add_agency_info_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/repositories/agency_info_repository.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/use_cases/add_agency_info_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/add_agency/add_agency_form_section.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/add_agency/add_agency_tax_option.dart';
+import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/province_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/usecase/get_province_with_city_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_enum_item_entity.dart';
@@ -104,7 +107,14 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
           top: false,
           child: Form(
             key: _formKey,
-            child: SingleChildScrollView(
+            child: ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(
+                dragDevices: {
+                  PointerDeviceKind.touch,
+                  PointerDeviceKind.mouse,
+                },
+              ),
+              child: SingleChildScrollView(
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               padding: const EdgeInsets.fromLTRB(
                 AppPadding.p16,
@@ -129,7 +139,7 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
           ),
         ),
       ),
-    );
+    ));
   }
 
   Widget _buildAgencyInfoSection() {
@@ -211,12 +221,10 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
         _textField(
           controller: _shabaNumberController,
           label: 'شماره شبا',
+          hint: 'شبا IR',
           keyboardType: TextInputType.number,
           inputFormatters: _numberFormatters,
-          prefixIcon: const Padding(
-            padding: EdgeInsets.symmetric(horizontal: AppPadding.p12),
-            child: Center(child: Text('IR')),
-          ),
+          textDirection: TextDirection.ltr
         ),
       ],
     );
@@ -371,6 +379,7 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
   Widget _textField({
     required TextEditingController controller,
     required String label,
+     String? hint,
     bool mandatory = false,
     TextInputType? keyboardType,
     List<TextInputFormatter>? inputFormatters,
@@ -382,8 +391,10 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
     return TextFormFieldWidget(
       controller: controller,
       labelText: label,
+      hintText: hint,
       mandatory: mandatory,
       textInputType: keyboardType,
+      floatingLabelBehavior: FloatingLabelBehavior.always,
       textInputFormatter: inputFormatters,
       maxLines: maxLines,
       prefixIcon: prefixIcon,

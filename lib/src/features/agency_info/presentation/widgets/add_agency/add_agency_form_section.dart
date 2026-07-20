@@ -33,19 +33,20 @@ class AddAgencyFormSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
-            mainAxisAlignment: MainAxisAlignment.end,
+            mainAxisAlignment: MainAxisAlignment.start,
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: [
+              Icon(
+                icon,
+                color: theme.colorScheme.primary,
+                size: AppSize.s22,
+              ),
+              Space.w8,
               Text(
                 title,
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w800,
                 ),
-              ),
-              Space.w8,
-              Icon(
-                icon,
-                color: theme.colorScheme.primary,
-                size: AppSize.s22,
               ),
             ],
           ),

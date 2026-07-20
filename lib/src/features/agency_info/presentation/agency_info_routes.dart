@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_entity.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/add_agency_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_info_details_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_info_list_page.dart';
 import 'package:flutter/material.dart';
@@ -19,6 +20,14 @@ class AgencyInfoRoutes {
         name: AgencyInfoListPage.name,
         pageBuilder: (context, state) => getPage(
           child: const AgencyInfoListPage(),
+          state: state,
+        ),
+      ),
+      GoRoute(
+        path: AddAgencyInfoPage.path,
+        name: AddAgencyInfoPage.name,
+        pageBuilder: (context, state) => getPage(
+          child: const AddAgencyInfoPage(),
           state: state,
         ),
       ),
