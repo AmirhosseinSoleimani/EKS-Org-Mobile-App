@@ -31,8 +31,11 @@ class ChartContainerWrapper extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.center,
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              BodyMediumText(text:
-                title,
+              Flexible(
+                child: BodyMediumText(text:
+                  title,
+                  fontSize: 13,
+                ),
               ),
               Container(
                 padding:
