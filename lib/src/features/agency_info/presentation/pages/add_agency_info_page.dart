@@ -5,8 +5,8 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/add_agency_info_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/repositories/agency_info_repository.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/use_cases/add_agency_info_use_case.dart';
-import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/add_agency/add_agency_form_section.dart';
-import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/add_agency/add_agency_tax_option.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/add_agency/add_agency_info_sections.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/add_agency/add_agency_scaffold_widgets.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/province_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/usecase/get_province_with_city_list_use_case.dart';
@@ -18,9 +18,6 @@ import 'package:eks_sana_plus_org/src/shared/input_formatter/persian_arabic_digi
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -69,7 +66,6 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
   bool _hasTax = false;
   bool _isSubmitting = false;
   bool _isCityLoading = false;
-  bool _isSessionEnumsLoading = true;
   bool _didShowMissingEnumsError = false;
 
   @override
@@ -113,8 +109,12 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor: theme.colorScheme.surface,
-        appBar: _AddAgencyAppBar(onClose: () => context.pop(false)),
-        bottomNavigationBar: _buildBottomActions(theme),
+        appBar: AddAgencyAppBar(onClose: () => context.pop(false)),
+        bottomNavigationBar: AddAgencyBottomActions(
+          isSubmitting: _isSubmitting,
+          onCancel: () => context.pop(false),
+          onSubmit: _submit,
+        ),
         body: SafeArea(
           top: false,
           child: Form(
@@ -127,339 +127,104 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
                 },
               ),
               child: SingleChildScrollView(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              padding: const EdgeInsets.fromLTRB(
-                AppPadding.p16,
-                AppPadding.p24,
-                AppPadding.p16,
-                AppPadding.p24,
-              ),
-              child: Column(
-                children: [
-                  _buildAgencyInfoSection(),
-                  Space.h24,
-                  _buildManagerInfoSection(),
-                  Space.h24,
-                  _buildContactInfoSection(),
-                  Space.h24,
-                  _buildAddressSection(),
-                  Space.h24,
-                  _buildSettingsSection(),
-                ],
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                padding: const EdgeInsets.fromLTRB(
+                  AppPadding.p16,
+                  AppPadding.p24,
+                  AppPadding.p16,
+                  AppPadding.p24,
+                ),
+                child: Column(
+                  children: [
+                    AddAgencyInfoSection(
+                      codeController: _codeController,
+                      nameController: _nameController,
+                      numberFormatters: _numberFormatters,
+                      requiredValidator: _requiredValidator,
+                      agencyTypeItems: _enumTitles(
+                        _agencyTypes,
+                        placeholder: 'انتخاب کنید',
+                      ),
+                      tashimTypeItems: _enumTitles(
+                        _tashimTypes,
+                        placeholder: 'انتخاب کنید',
+                      ),
+                      selectedAgencyTypeTitle:
+                          addAgencyEnumTitle(_selectedAgencyType),
+                      selectedTashimTypeTitle:
+                          addAgencyEnumTitle(_selectedTashimType),
+                      onAgencyTypeChanged: (value) {
+                        setState(() {
+                          _selectedAgencyType =
+                              _enumByTitle(_agencyTypes, value);
+                        });
+                      },
+                      onTashimTypeChanged: (value) {
+                        setState(() {
+                          _selectedTashimType =
+                              _enumByTitle(_tashimTypes, value);
+                        });
+                      },
+                    ),
+                    Space.h24,
+                    AddAgencyManagerSection(
+                      managerFirstNameController:
+                          _managerFirstNameController,
+                      managerLastNameController:
+                          _managerLastNameController,
+                      nationalNoController: _nationalNoController,
+                      shabaNumberController: _shabaNumberController,
+                      numberFormatters: _numberFormatters,
+                      requiredValidator: _requiredValidator,
+                    ),
+                    Space.h24,
+                    AddAgencyContactSection(
+                      economicCodeController: _economicCodeController,
+                      telController: _telController,
+                      mobileController: _mobileController,
+                      emailController: _emailController,
+                      faxController: _faxController,
+                      numberFormatters: _numberFormatters,
+                      requiredValidator: _requiredValidator,
+                      mobileValidator: _mobileValidator,
+                      emailValidator: _emailValidator,
+                    ),
+                    Space.h24,
+                    AddAgencyAddressSection(
+                      addressController: _addressController,
+                      postalCodeController: _postalCodeController,
+                      cityItems: _cityTitles,
+                      selectedCityTitle: _selectedCityTitle,
+                      onCityChanged: _onCityChanged,
+                      numberFormatters: _numberFormatters,
+                      requiredValidator: _requiredValidator,
+                    ),
+                    Space.h24,
+                    AddAgencySettingsSection(
+                      hasTax: _hasTax,
+                      onHasTaxChanged: (value) {
+                        setState(() {
+                          _hasTax = value;
+                        });
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
         ),
       ),
-      ),
-    );
-  }
-
-  Widget _buildAgencyInfoSection() {
-    return AddAgencyFormSection(
-      title: 'اطلاعات نمایندگی',
-      icon: Icons.info_outline_rounded,
-      children: [
-        _textField(
-          controller: _codeController,
-          label: 'کد نمایندگی',
-          mandatory: true,
-          keyboardType: TextInputType.number,
-          inputFormatters: _numberFormatters,
-        ),
-        Space.h20,
-        _textField(
-          controller: _nameController,
-          label: 'نام نمایندگی',
-          mandatory: true,
-        ),
-        Space.h20,
-        Row(
-          children: [
-            Expanded(
-              child: _dropDown(
-                label: 'نوع',
-                placeholder: 'انتخاب کنید',
-                selectedTitle:
-                _selectedAgencyType?.title ?? 'انتخاب کنید',
-                items: _enumTitles(
-                  _agencyTypes,
-                  placeholder: 'انتخاب کنید',
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedAgencyType = _enumByTitle(_agencyTypes, value);
-                  });
-                },
-              ),
-            ),
-            Space.w8,
-            Expanded(
-              child: _dropDown(
-                label: 'نحوه تسهیم',
-                placeholder: 'انتخاب کنید',
-                selectedTitle:
-                _selectedTashimType?.title ?? 'انتخاب کنید',
-                items: _enumTitles(
-                  _tashimTypes,
-                  placeholder: 'انتخاب کنید',
-                ),
-                onChanged: (value) {
-                  setState(() {
-                    _selectedTashimType = _enumByTitle(_tashimTypes, value);
-                  });
-                },
-              ),
-            ),
-          ],
-        ),
-      ],
-    );
-  }
-
-  Widget _buildManagerInfoSection() {
-    return AddAgencyFormSection(
-      title: 'اطلاعات مدیر',
-      icon: Icons.person_outline_rounded,
-      children: [
-        _textField(
-          controller: _managerFirstNameController,
-          label: 'نام مدیر',
-        ),
-        Space.h20,
-        _textField(
-          controller: _managerLastNameController,
-          label: 'نام خانوادگی مدیر',
-        ),
-        Space.h20,
-        _textField(
-          controller: _nationalNoController,
-          label: 'کد ملی مدیر',
-          mandatory: true,
-          keyboardType: TextInputType.number,
-          inputFormatters: _numberFormatters,
-        ),
-        Space.h20,
-        _textField(
-          controller: _shabaNumberController,
-          label: 'شماره شبا',
-          hint: 'شبا IR',
-          keyboardType: TextInputType.number,
-          inputFormatters: _numberFormatters,
-          textDirection: TextDirection.ltr
-        ),
-      ],
-    );
-  }
-
-  Widget _buildContactInfoSection() {
-    return AddAgencyFormSection(
-      title: 'اطلاعات تماس',
-      icon: Icons.contact_phone_outlined,
-      children: [
-        _textField(
-          controller: _economicCodeController,
-          label: 'کد اقتصادی',
-          mandatory: true,
-          keyboardType: TextInputType.number,
-          inputFormatters: _numberFormatters,
-        ),
-        Space.h20,
-        Row(
-          children: [
-            Expanded(
-              child: _textField(
-                controller: _telController,
-                label: 'تلفن',
-                keyboardType: TextInputType.phone,
-                inputFormatters: _numberFormatters,
-              ),
-            ),
-            Space.w8,
-            Expanded(
-              child: _textField(
-                controller: _mobileController,
-                label: 'موبایل',
-                mandatory: true,
-                keyboardType: TextInputType.phone,
-                inputFormatters: _numberFormatters,
-                validator: _mobileValidator,
-              ),
-            ),
-          ],
-        ),
-        Space.h20,
-        _textField(
-          controller: _emailController,
-          label: 'ایمیل',
-          keyboardType: TextInputType.emailAddress,
-          textDirection: TextDirection.ltr,
-          validator: _emailValidator,
-        ),
-        Space.h20,
-        _textField(
-          controller: _faxController,
-          label: 'فکس',
-          keyboardType: TextInputType.phone,
-          inputFormatters: _numberFormatters,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildAddressSection() {
-    return AddAgencyFormSection(
-      title: 'آدرس',
-      icon: Icons.location_on_outlined,
-      children: [
-        _dropDown(
-          label: 'استان و شهر',
-          mandatory: true,
-          selectedTitle: _selectedCityTitle,
-          items: _cityTitles,
-          onChanged: _onCityChanged,
-        ),
-        Space.h20,
-        _textField(
-          controller: _addressController,
-          label: 'آدرس دقیق',
-          mandatory: true,
-          maxLines: 4,
-          keyboardType: TextInputType.streetAddress,
-        ),
-        Space.h20,
-        _textField(
-          controller: _postalCodeController,
-          label: 'کدپستی',
-          mandatory: true,
-          keyboardType: TextInputType.number,
-          inputFormatters: _numberFormatters,
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSettingsSection() {
-    return AddAgencyFormSection(
-      title: 'تنظیمات',
-      icon: Icons.settings_outlined,
-      children: [
-        AddAgencyTaxOption(
-          value: _hasTax,
-          onChanged: (value) {
-            setState(() {
-              _hasTax = value;
-            });
-          },
-        ),
-      ],
-    );
-  }
-
-  Widget _buildBottomActions(ThemeData theme) {
-    return SafeArea(
-      top: false,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          AppPadding.p16,
-          AppPadding.p8,
-          AppPadding.p16,
-          AppPadding.p12,
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              flex: 3,
-              child: TextButton(
-                onPressed: _isSubmitting ? null : () => context.pop(false),
-                child: Text(
-                  'انصراف',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onPrimaryFixed,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ),
-            Space.w12,
-            Expanded(
-              flex: 5,
-              child: InkwellButtonWidget(
-                title: 'افزودن',
-                showLoading: _isSubmitting,
-                onTap: _submit,
-                backgroundColor: theme.colorScheme.primary,
-                borderRadius: AppSize.s8,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _textField({
-    required TextEditingController controller,
-    required String label,
-     String? hint,
-    bool mandatory = false,
-    TextInputType? keyboardType,
-    List<TextInputFormatter>? inputFormatters,
-    int? maxLines,
-    Widget? prefixIcon,
-    TextDirection? textDirection,
-    String? Function(String?)? validator,
-  }) {
-    return TextFormFieldWidget(
-      controller: controller,
-      labelText: label,
-      hintText: hint,
-      mandatory: mandatory,
-      textInputType: keyboardType,
-      floatingLabelBehavior: FloatingLabelBehavior.always,
-      textInputFormatter: inputFormatters,
-      maxLines: maxLines,
-      prefixIcon: prefixIcon,
-      textDirection: textDirection,
-      textInputAction: maxLines == null || maxLines == 1
-          ? TextInputAction.next
-          : TextInputAction.newline,
-      validator: validator ??
-          (mandatory ? (value) => _requiredValidator(label, value) : null),
-    );
-  }
-
-  Widget _dropDown({
-    required String label,
-    required List<String> items,
-    required ValueChanged<String> onChanged,
-    String? selectedTitle,
-    String placeholder = 'انتخاب کنید',
-    bool mandatory = false,
-  }) {
-    final safeItems = items.isEmpty ? [placeholder] : items;
-    return EkDropDown(
-      safeItems,
-      label: label,
-      mandatory: mandatory,
-      selectedItem: selectedTitle ?? safeItems.first,
-      onItemValue: onChanged,
     );
   }
 
   Future<void> _loadSessionEnums() async {
     final hasCachedEnums = _applySessionEnums(
       _currentSessionManager.currentSession,
-      isLoading: false,
     );
 
     if (hasCachedEnums) return;
-
-    if (mounted) {
-      setState(() {
-        _isSessionEnumsLoading = true;
-      });
-    }
 
     final syncResult = await _syncCurrentSessionUseCase(
       clearOnFailure: false,
@@ -472,7 +237,6 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
 
     final hasEnums = _applySessionEnums(
       syncResult.session ?? _currentSessionManager.currentSession,
-      isLoading: false,
     );
 
     if (!hasEnums) {
@@ -483,15 +247,10 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
   void _onCurrentSessionChanged(CurrentSessionEntity? session) {
     if (!mounted) return;
 
-    _applySessionEnums(
-      session,
-      isLoading: false,
-    );
+    _applySessionEnums(session);
   }
 
-  bool _applySessionEnums(CurrentSessionEntity? session, {
-    required bool isLoading,
-  }) {
+  bool _applySessionEnums(CurrentSessionEntity? session) {
     final enums = session?.enums;
     final agencyTypes = enums?.agencyInfoType ??
         const <CurrentSessionEnumItemEntity>[];
@@ -502,7 +261,6 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
       setState(() {
         _agencyTypes = agencyTypes;
         _tashimTypes = tashimTypes;
-        _isSessionEnumsLoading = isLoading;
 
         if (_selectedAgencyType != null &&
             !_agencyTypes.contains(_selectedAgencyType)) {
@@ -511,8 +269,9 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
 
         if (_selectedTashimType == null ||
             !_tashimTypes.contains(_selectedTashimType)) {
-          _selectedTashimType =
-          tashimTypes.isNotEmpty ? tashimTypes.first : null;
+          _selectedTashimType = tashimTypes.isNotEmpty
+              ? tashimTypes.first
+              : null;
         }
       });
     }
@@ -527,9 +286,7 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
     WidgetsBinding.instance.addPostFrameCallback((_) {
       if (!mounted) return;
 
-      _showError(
-          'مقادیر نوع نمایندگی و نحوه تسهیم از سرویس نشست دریافت نشد. '
-      );
+      _showError('مقادیر نوع نمایندگی و نحوه تسهیم از سرویس نشست دریافت نشد.');
     });
   }
 
@@ -642,12 +399,12 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
   }
 
   void _onCityChanged(String value) {
-    if (_isCityLoading || value == 'انتخاب کنید') {
+    if (_isCityLoading || value == 'در حال دریافت...') {
       return;
     }
 
     setState(() {
-      _selectedCity = _findCityByTitle(value);
+      _selectedCity = value == 'انتخاب کنید' ? null : _findCityByTitle(value);
     });
   }
 
@@ -760,53 +517,5 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
       PersianArabicDigitsToEnglishFormatter(),
       FilteringTextInputFormatter.digitsOnly,
     ];
-  }
-}
-
-class _AddAgencyAppBar extends StatelessWidget implements PreferredSizeWidget {
-  const _AddAgencyAppBar({
-    required this.onClose,
-  });
-
-  final VoidCallback onClose;
-
-  @override
-  Size get preferredSize => const Size.fromHeight(kToolbarHeight);
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return AppBar(
-      automaticallyImplyLeading: false,
-      elevation: 0,
-      scrolledUnderElevation: 0,
-      backgroundColor: theme.colorScheme.onPrimary,
-      titleSpacing: 0,
-      title: Directionality(
-        textDirection: TextDirection.ltr,
-        child: Row(
-          children: [
-            IconButton(
-              onPressed: onClose,
-              icon: Icon(
-                Icons.close_rounded,
-                color: theme.colorScheme.onPrimaryFixedVariant,
-              ),
-            ),
-            Expanded(
-              child: Text(
-                'افزودن نمایندگی',
-                textAlign: TextAlign.right,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ),
-            Space.w16,
-          ],
-        ),
-      ),
-    );
   }
 }
