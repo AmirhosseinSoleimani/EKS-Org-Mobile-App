@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/shared/resources/color_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 
 class LeaveActionDialogs {
@@ -54,7 +55,7 @@ class LeaveActionDialogs {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(),
-              child: const Text('انصراف'),
+              child: const BodyMediumText(text: 'انصراف'),
             ),
             FilledButton(
               style: FilledButton.styleFrom(
@@ -93,7 +94,7 @@ class LeaveActionDialogs {
           actions: [
             TextButton(
               onPressed: () => Navigator.of(dialogContext).pop(false),
-              child: const Text('انصراف'),
+              child: const BodyMediumText(text: 'انصراف'),
             ),
             SizedBox(
               width: 132,

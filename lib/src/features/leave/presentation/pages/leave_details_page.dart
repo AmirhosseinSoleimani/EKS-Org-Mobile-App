@@ -9,6 +9,7 @@ import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/main_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -386,7 +387,7 @@ class _BottomActions extends StatelessWidget {
                 const SizedBox(height: 14),
                 TextButton(
                   onPressed: () => context.pop(false),
-                  child: const Text('انصراف'),
+                  child: const BodyMediumText(text: 'انصراف'),
                 ),
               ],
             ),
