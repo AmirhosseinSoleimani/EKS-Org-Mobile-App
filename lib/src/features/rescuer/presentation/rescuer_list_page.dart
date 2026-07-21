@@ -1,7 +1,7 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/rescuer_entity.dart';
-import 'package:eks_sana_plus_org/src/features/rescuer/presentation/cubit/list/rescuer_list_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/add_rescuer_page.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/presentation/cubit/list/rescuer_list_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/rescuer_detail_page.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/rescuer_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/filter/rescuer_filters_box.dart';
@@ -51,17 +51,12 @@ class _RescuerListView extends StatelessWidget {
             );
           },
           actionError: (data, message) {
-            SnakeBarWidget.showError(
-              context: context,
-              message: message,
-            );
+            SnakeBarWidget.showError(context: context, message: message);
           },
           connectionError: (data) {
             BottomSheetMessage.showCustom(
               context: context,
-              content: NoInternetBottomSheet(
-                onRetry: cubit.retryLastAction,
-              ),
+              content: NoInternetBottomSheet(onRetry: cubit.retryLastAction),
               actionWidget: const SizedBox.shrink(),
               isDismissible: false,
               enableDrag: false,
@@ -78,10 +73,7 @@ class _RescuerListView extends StatelessWidget {
         ),
         body: ScrollConfiguration(
           behavior: ScrollConfiguration.of(context).copyWith(
-            dragDevices: {
-              PointerDeviceKind.touch,
-              PointerDeviceKind.mouse,
-            },
+            dragDevices: {PointerDeviceKind.touch, PointerDeviceKind.mouse},
           ),
           child: Column(
             children: [
@@ -118,15 +110,15 @@ class _RescuerListView extends StatelessWidget {
     );
   }
 
-
   Future<void> _openAddRescuer(
     BuildContext context,
     RescuerListCubit cubit,
   ) async {
-    final result = await BottomSheetMessage.showFullScreenCustom<AddRescuerResult>(
-      context: context,
-      content: const AddRescuerPage(),
-    );
+    final result =
+        await BottomSheetMessage.showFullScreenCustom<AddRescuerResult>(
+          context: context,
+          content: const AddRescuerPage(),
+        );
 
     if (result == null || !context.mounted) return;
     await cubit.fetchRescuers();
@@ -204,10 +196,7 @@ class _RescuerListView extends StatelessWidget {
 
           await BottomSheetMessage.showFullScreenCustom<void>(
             context: context,
-            content: RescuerHistoryPage(
-              rescuer: item,
-              histories: result,
-            ),
+            content: RescuerHistoryPage(rescuer: item, histories: result),
           );
           return true;
         },
@@ -227,10 +216,7 @@ class _RescuerListView extends StatelessWidget {
     );
   }
 
-  Future<void> _loadReport(
-    BuildContext context,
-    RescuerListCubit cubit,
-  ) async {
+  Future<void> _loadReport(BuildContext context, RescuerListCubit cubit) async {
     final filePath = await cubit.loadReport();
     if (!context.mounted || filePath == null) return;
 

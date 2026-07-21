@@ -20,9 +20,7 @@ class RescuerFilterForm extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme
-        .of(context)
-        .colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -62,26 +60,27 @@ class RescuerFilterForm extends StatelessWidget {
             textInputAction: TextInputAction.done,
           ),
           Space.h24,
-          Row(children: [
-            Expanded(
-              child: InkwellButtonWidget(
-                title: "اعمال فیلتر",
-                backgroundColor: colorScheme.primary,
-                onTap: onApply,
+          Row(
+            children: [
+              Expanded(
+                child: InkwellButtonWidget(
+                  title: "اعمال فیلتر",
+                  backgroundColor: colorScheme.primary,
+                  onTap: onApply,
+                ),
               ),
-            ),
-            Space.w16,
-            Expanded(
-              child: InkwellButtonWidget(
-                title: 'پاک کردن همه',
-                backgroundColor: Colors.transparent,
-                borderColor: colorScheme.onPrimaryFixed,
-                titleColor: colorScheme.onPrimaryFixed,
-                onTap: onClear,
+              Space.w16,
+              Expanded(
+                child: InkwellButtonWidget(
+                  title: 'پاک کردن همه',
+                  backgroundColor: Colors.transparent,
+                  borderColor: colorScheme.onPrimaryFixed,
+                  titleColor: colorScheme.onPrimaryFixed,
+                  onTap: onClear,
+                ),
               ),
-            )
-          ],),
-
+            ],
+          ),
         ],
       ),
     );

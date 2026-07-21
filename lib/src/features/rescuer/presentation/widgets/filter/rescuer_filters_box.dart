@@ -88,9 +88,7 @@ class RescuerFiltersBox extends StatelessWidget {
         InkwellButtonWidget(
           title: 'گزارش‌گیری',
           titleColor: colorScheme.onPrimaryFixed,
-          prefixIcon: SvgWidget(
-            src: SvgAsset(SvgManager.exportNotes),
-          ),
+          prefixIcon: SvgWidget(src: SvgAsset(SvgManager.exportNotes)),
           backgroundColor: colorScheme.secondaryContainer,
           borderColor: colorScheme.onPrimaryFixed,
           borderWidth: 2,

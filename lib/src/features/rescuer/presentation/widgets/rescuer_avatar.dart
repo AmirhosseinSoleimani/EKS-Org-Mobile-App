@@ -7,11 +7,7 @@ class RescuerAvatar extends StatelessWidget {
   final String? imageBase64;
   final double size;
 
-  const RescuerAvatar({
-    super.key,
-    required this.imageBase64,
-    this.size = 52,
-  });
+  const RescuerAvatar({super.key, required this.imageBase64, this.size = 52});
 
   @override
   Widget build(BuildContext context) {

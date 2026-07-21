@@ -45,8 +45,10 @@ class _RescuerActionsContentState extends State<_RescuerActionsContent> {
 
   bool get _isLoading => _loadingAction != null;
 
-  Future<void> _runAction(_RescuerActionType action,
-      Future<bool> Function() callback,) async {
+  Future<void> _runAction(
+    _RescuerActionType action,
+    Future<bool> Function() callback,
+  ) async {
     if (_isLoading) return;
 
     setState(() => _loadingAction = action);
@@ -69,40 +71,27 @@ class _RescuerActionsContentState extends State<_RescuerActionsContent> {
           icon: Icons.card_membership_outlined,
           isLoading: _loadingAction == _RescuerActionType.certificates,
           enabled: !_isLoading,
-          onTap: () =>
-              _runAction(
-                _RescuerActionType.certificates,
-                widget.onSkillCertificates,
-              ),
+          onTap: () => _runAction(
+            _RescuerActionType.certificates,
+            widget.onSkillCertificates,
+          ),
         ),
-        Divider(height: 1, color: Theme
-            .of(context)
-            .dividerColor),
+        Divider(height: 1, color: Theme.of(context).dividerColor),
         _ActionRow(
           title: 'تاریخچه',
           icon: Icons.history,
           isLoading: _loadingAction == _RescuerActionType.history,
           enabled: !_isLoading,
-          onTap: () =>
-              _runAction(
-                _RescuerActionType.history,
-                widget.onHistory,
-              ),
+          onTap: () => _runAction(_RescuerActionType.history, widget.onHistory),
         ),
-        Divider(height: 1, color: Theme
-            .of(context)
-            .dividerColor),
+        Divider(height: 1, color: Theme.of(context).dividerColor),
         _ActionRow(
           title: 'حذف',
           icon: Icons.delete_outline,
           color: colorScheme.error,
           isLoading: _loadingAction == _RescuerActionType.delete,
           enabled: !_isLoading,
-          onTap: () =>
-              _runAction(
-                _RescuerActionType.delete,
-                widget.onDelete,
-              ),
+          onTap: () => _runAction(_RescuerActionType.delete, widget.onDelete),
         ),
       ],
     );
@@ -129,10 +118,7 @@ class _ActionRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final effectiveColor =
-        color ?? Theme
-            .of(context)
-            .colorScheme
-            .onTertiaryFixed;
+        color ?? Theme.of(context).colorScheme.onTertiaryFixed;
 
     return InkWell(
       onTap: enabled ? onTap : null,
@@ -159,8 +145,6 @@ class _ActionRow extends StatelessWidget {
                 fontWeight: FontWeight.w500,
               ),
             ),
-
-
           ],
         ),
       ),

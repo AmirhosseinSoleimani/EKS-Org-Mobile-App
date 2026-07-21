@@ -24,8 +24,7 @@ class RescuerInfoRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SvgWidget(src: SvgAsset(icon),
-          ),
+          SvgWidget(src: SvgAsset(icon)),
           const SizedBox(width: 8),
           Expanded(
             child: BodyMediumText(

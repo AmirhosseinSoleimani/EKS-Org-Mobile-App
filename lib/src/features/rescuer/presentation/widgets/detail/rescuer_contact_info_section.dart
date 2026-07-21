@@ -8,10 +8,7 @@ import 'package:flutter/material.dart';
 class RescuerContactInfoSection extends StatelessWidget {
   final RescuerEntity item;
 
-  const RescuerContactInfoSection({
-    super.key,
-    required this.item,
-  });
+  const RescuerContactInfoSection({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -29,22 +26,13 @@ class RescuerContactInfoSection extends StatelessWidget {
             label: 'تلفن همراه',
             value: item.mobile?.toLocalMobile() ?? '-',
           ),
-          KeyValueRow(
-            label: 'تلفن ثابت',
-            value: _value(item.tel),
-          ),
-          KeyValueRow(
-            label: 'آدرس',
-            value: _value(item.address),
-          ),
+          KeyValueRow(label: 'تلفن ثابت', value: _value(item.tel)),
+          KeyValueRow(label: 'آدرس', value: _value(item.address)),
           KeyValueRow(
             label: 'اعتبار گواهینامه',
             value: _value(item.licenseCode),
           ),
-          KeyValueRow(
-            label: 'سایز لباس',
-            value: _value(item.clothingSize),
-          ),
+          KeyValueRow(label: 'سایز لباس', value: _value(item.clothingSize)),
           KeyValueRow(
             label: 'سایز کفش',
             value: item.shoesSize?.toString() ?? '-',

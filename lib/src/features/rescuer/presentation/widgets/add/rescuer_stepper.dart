@@ -4,17 +4,9 @@ import 'package:flutter/material.dart';
 class RescuerStepper extends StatelessWidget {
   final int current;
 
-  const RescuerStepper({
-    super.key,
-    required this.current,
-  });
+  const RescuerStepper({super.key, required this.current});
 
-  static const titles = [
-    'اطلاعات هویتی',
-    'تماس',
-    'همکاری',
-    'مدارک',
-  ];
+  static const titles = ['اطلاعات هویتی', 'تماس', 'همکاری', 'مدارک'];
 
   @override
   Widget build(BuildContext context) {
@@ -47,17 +39,14 @@ class RescuerStepper extends StatelessWidget {
                         color: index < current
                             ? const Color(0xFF00A878)
                             : index == current
-                                ? Theme.of(context).colorScheme.primary
-                                : Colors.grey.shade300,
+                            ? Theme.of(context).colorScheme.primary
+                            : Colors.grey.shade300,
                         width: 2,
                       ),
                     ),
                     child: Center(
                       child: index < current
-                          ? const Icon(
-                              Icons.check,
-                              color: Color(0xFF00A878),
-                            )
+                          ? const Icon(Icons.check, color: Color(0xFF00A878))
                           : BodySmallText(
                               text: '${index + 1}',
                               color: index == current
@@ -84,8 +73,8 @@ class RescuerStepper extends StatelessWidget {
                 color: index < current
                     ? const Color(0xFF00A878)
                     : index == current
-                        ? Theme.of(context).colorScheme.primary
-                        : Colors.grey,
+                    ? Theme.of(context).colorScheme.primary
+                    : Colors.grey,
                 fontSize: 12,
                 textAlign: TextAlign.center,
               ),

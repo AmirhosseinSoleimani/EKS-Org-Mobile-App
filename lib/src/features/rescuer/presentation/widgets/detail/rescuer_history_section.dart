@@ -7,10 +7,7 @@ import 'package:flutter/material.dart';
 class RescuerHistorySection extends StatelessWidget {
   final List<SanHistoryEntity> items;
 
-  const RescuerHistorySection({
-    super.key,
-    required this.items,
-  });
+  const RescuerHistorySection({super.key, required this.items});
 
   @override
   Widget build(BuildContext context) {
@@ -21,10 +18,7 @@ class RescuerHistorySection extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          const BodyMediumText(
-            text: 'تاریخچه',
-            fontWeight: FontWeight.w700,
-          ),
+          const BodyMediumText(text: 'تاریخچه', fontWeight: FontWeight.w700),
           const SizedBox(height: 12),
           if (items.isEmpty)
             const Padding(

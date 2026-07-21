@@ -7,10 +7,7 @@ import 'package:flutter/material.dart';
 class RescuerSkillsPreview extends StatelessWidget {
   final String? certificatesTitle;
 
-  const RescuerSkillsPreview({
-    super.key,
-    required this.certificatesTitle,
-  });
+  const RescuerSkillsPreview({super.key, required this.certificatesTitle});
 
   @override
   Widget build(BuildContext context) {

@@ -46,7 +46,6 @@ class RescuerDetailSectionCard extends StatelessWidget {
                 fontWeight: FontWeight.w700,
                 fontSize: 15,
               ),
-
             ],
           ),
           const SizedBox(height: 20),
@@ -60,23 +59,22 @@ class RescuerDetailSectionCard extends StatelessWidget {
 class RescuerDetailInfoGrid extends StatelessWidget {
   final List<RescuerDetailInfoItem> items;
 
-  const RescuerDetailInfoGrid({
-    super.key,
-    required this.items,
-  });
+  const RescuerDetailInfoGrid({super.key, required this.items});
 
   @override
   Widget build(BuildContext context) {
     return Wrap(
       runSpacing: 20,
-      children: items.map((item) {
-        return SizedBox(
-          width: MediaQuery.sizeOf(context).width > 360
-              ? (MediaQuery.sizeOf(context).width - 88) / 2
-              : double.infinity,
-          child: item,
-        );
-      }).toList(growable: false),
+      children: items
+          .map((item) {
+            return SizedBox(
+              width: MediaQuery.sizeOf(context).width > 360
+                  ? (MediaQuery.sizeOf(context).width - 88) / 2
+                  : double.infinity,
+              child: item,
+            );
+          })
+          .toList(growable: false),
     );
   }
 }
@@ -100,7 +98,7 @@ class RescuerDetailInfoItem extends StatelessWidget {
       children: [
         BodyMediumText(
           text: label,
-          color:  Color(0xFF574235),
+          color: Color(0xFF574235),
           textAlign: TextAlign.right,
         ),
         const SizedBox(height: 8),

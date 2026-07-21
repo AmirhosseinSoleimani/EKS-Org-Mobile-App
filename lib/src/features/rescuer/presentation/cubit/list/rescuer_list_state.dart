@@ -16,13 +16,11 @@ abstract class RescuerListState with _$RescuerListState {
     @Default(RescuerListStateData()) RescuerListStateData data,
   }) = _Idle;
 
-  const factory RescuerListState.loading({
-    required RescuerListStateData data,
-  }) = _Loading;
+  const factory RescuerListState.loading({required RescuerListStateData data}) =
+      _Loading;
 
-  const factory RescuerListState.loaded({
-    required RescuerListStateData data,
-  }) = _Loaded;
+  const factory RescuerListState.loaded({required RescuerListStateData data}) =
+      _Loaded;
 
   const factory RescuerListState.actionLoading({
     required RescuerListStateData data,

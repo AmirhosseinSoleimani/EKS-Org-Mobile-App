@@ -16,10 +16,8 @@ part 'rescuer_detail_state.dart';
 
 @injectable
 class RescuerDetailCubit extends Cubit<RescuerDetailState> {
-  RescuerDetailCubit(
-    this._getRescuerByIdUseCase,
-    this._deleteRescuerUseCase,
-  ) : super(const RescuerDetailState.idle());
+  RescuerDetailCubit(this._getRescuerByIdUseCase, this._deleteRescuerUseCase)
+    : super(const RescuerDetailState.idle());
 
   final GetRescuerByIdUseCase _getRescuerByIdUseCase;
   final DeleteRescuerUseCase _deleteRescuerUseCase;
@@ -27,10 +25,14 @@ class RescuerDetailCubit extends Cubit<RescuerDetailState> {
   VoidCallback? _retryAction;
 
   RescuerEntity? get rescuer => state.data.rescuer;
+
   List<SkillCertificateEntity> get skillCertificates =>
       state.data.skillCertificates;
+
   List<SanHistoryEntity> get histories => state.data.histories;
+
   bool get isDeleting => state.data.isDeleting;
+
   bool get hasRetryAction => _retryAction != null;
 
   void retryLastAction() => _retryAction?.call();
@@ -54,7 +56,8 @@ class RescuerDetailCubit extends Cubit<RescuerDetailState> {
       failure: (error, message) {
         failure = _buildErrorMessage(
           title: 'خطا در دریافت جزئیات',
-          message: message ??
+          message:
+              message ??
               error?.toString() ??
               'دریافت اطلاعات امدادرسان با خطا مواجه شد.',
         );
@@ -72,7 +75,8 @@ class RescuerDetailCubit extends Cubit<RescuerDetailState> {
       _safeEmit(
         RescuerDetailState.error(
           data: state.data,
-          message: failure ??
+          message:
+              failure ??
               _buildErrorMessage(
                 title: 'خطا در دریافت جزئیات',
                 message: 'اطلاعات امدادرسان دریافت نشد.',
@@ -119,7 +123,8 @@ class RescuerDetailCubit extends Cubit<RescuerDetailState> {
         _safeEmit(
           RescuerDetailState.actionError(
             data: state.data.copyWith(isDeleting: false),
-            message: message ??
+            message:
+                message ??
                 error?.toString() ??
                 'حذف امدادرسان با خطا مواجه شد.',
           ),
@@ -142,10 +147,7 @@ class RescuerDetailCubit extends Cubit<RescuerDetailState> {
     required String title,
     required String message,
   }) {
-    return BottomSheetMessageModel(
-      title: title,
-      message: message,
-    );
+    return BottomSheetMessageModel(title: title, message: message);
   }
 
   void _safeEmit(RescuerDetailState nextState) {

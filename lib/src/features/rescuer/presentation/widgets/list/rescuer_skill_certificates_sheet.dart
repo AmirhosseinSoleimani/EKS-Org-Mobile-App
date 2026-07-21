@@ -34,9 +34,11 @@ class _RescuerSkillCertificatesSheetState
     final query = _searchText.trim().toLowerCase();
     if (query.isEmpty) return widget.items;
 
-    return widget.items.where((item) {
-      return (item.title ?? '').toLowerCase().contains(query);
-    }).toList(growable: false);
+    return widget.items
+        .where((item) {
+          return (item.title ?? '').toLowerCase().contains(query);
+        })
+        .toList(growable: false);
   }
 
   @override
@@ -49,9 +51,7 @@ class _RescuerSkillCertificatesSheetState
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF4F4F4),
-      appBar: const RescuerFullScreenSheetAppBar(
-        title: 'گواهینامه مهارت‌ها',
-      ),
+      appBar: const RescuerFullScreenSheetAppBar(title: 'گواهینامه مهارت‌ها'),
       body: SafeArea(
         child: Column(
           children: [
@@ -78,17 +78,19 @@ class _RescuerSkillCertificatesSheetState
                         alignment: WrapAlignment.start,
                         spacing: AppSize.s8,
                         runSpacing: AppSize.s10,
-                        children: _filteredItems.map((item) {
-                          final isSelected = item.selectable == true;
+                        children: _filteredItems
+                            .map((item) {
+                              final isSelected = item.selectable == true;
 
-                          return SelectableCheckItem(
-                            title: _value(item.title),
-                            selected: isSelected,
-                            enabled: false,
-                            // enabled: true,
-                            // onTap: () => _onCertificateSelected(item),
-                          );
-                        }).toList(growable: false),
+                              return SelectableCheckItem(
+                                title: _value(item.title),
+                                selected: isSelected,
+                                enabled: false,
+                                // enabled: true,
+                                // onTap: () => _onCertificateSelected(item),
+                              );
+                            })
+                            .toList(growable: false),
                       ),
                   ],
                 ),
@@ -135,9 +137,7 @@ class _RescuerSkillCertificatesSheetState
 class _CertificateProfileCard extends StatelessWidget {
   final RescuerEntity rescuer;
 
-  const _CertificateProfileCard({
-    required this.rescuer,
-  });
+  const _CertificateProfileCard({required this.rescuer});
 
   @override
   Widget build(BuildContext context) {
@@ -166,10 +166,7 @@ class _CertificateProfileCard extends StatelessWidget {
               color: Color(0xFFFFEDE6),
               shape: BoxShape.circle,
             ),
-            child: const Icon(
-              Icons.person_outline,
-              color: Color(0xFFF97316),
-            ),
+            child: const Icon(Icons.person_outline, color: Color(0xFFF97316)),
           ),
           Space.w16,
           Expanded(
@@ -194,7 +191,9 @@ class _CertificateProfileCard extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5),
             decoration: BoxDecoration(
-              color: isActive ? const Color(0xFFE4F8EC) : const Color(0xFFFFECEC),
+              color: isActive
+                  ? const Color(0xFFE4F8EC)
+                  : const Color(0xFFFFECEC),
               borderRadius: BorderRadius.circular(20),
             ),
             child: BodySmallText(

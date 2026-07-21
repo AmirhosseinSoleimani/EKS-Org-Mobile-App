@@ -8,10 +8,7 @@ import 'package:flutter/material.dart';
 class RescuerProfileHeader extends StatelessWidget {
   final RescuerEntity item;
 
-  const RescuerProfileHeader({
-    super.key,
-    required this.item,
-  });
+  const RescuerProfileHeader({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -26,10 +23,7 @@ class RescuerProfileHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
-          RescuerAvatar(
-            imageBase64: item.imageBase64,
-            size: 72,
-          ),
+          RescuerAvatar(imageBase64: item.imageBase64, size: 72),
           const SizedBox(width: 14),
           Expanded(
             child: Column(

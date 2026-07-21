@@ -7,10 +7,7 @@ import 'package:flutter/material.dart';
 class RescuerSkillCertificatesSection extends StatelessWidget {
   final List<SkillCertificateEntity> items;
 
-  const RescuerSkillCertificatesSection({
-    super.key,
-    required this.items,
-  });
+  const RescuerSkillCertificatesSection({super.key, required this.items});
 
   @override
   Widget build(BuildContext context) {
@@ -38,24 +35,26 @@ class RescuerSkillCertificatesSection extends StatelessWidget {
             Wrap(
               spacing: 8,
               runSpacing: 8,
-              children: items.map((item) {
-                return Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 10,
-                    vertical: 7,
-                  ),
-                  decoration: BoxDecoration(
-                    color: colorScheme.surfaceContainerHighest,
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: BodySmallText(
-                    text: item.title?.trim().isNotEmpty == true
-                        ? item.title!.trim()
-                        : '-',
-                    color: colorScheme.onSurfaceVariant,
-                  ),
-                );
-              }).toList(growable: false),
+              children: items
+                  .map((item) {
+                    return Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 7,
+                      ),
+                      decoration: BoxDecoration(
+                        color: colorScheme.surfaceContainerHighest,
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: BodySmallText(
+                        text: item.title?.trim().isNotEmpty == true
+                            ? item.title!.trim()
+                            : '-',
+                        color: colorScheme.onSurfaceVariant,
+                      ),
+                    );
+                  })
+                  .toList(growable: false),
             ),
         ],
       ),

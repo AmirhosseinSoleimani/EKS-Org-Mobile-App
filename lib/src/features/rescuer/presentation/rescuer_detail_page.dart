@@ -22,10 +22,7 @@ class RescuerDetailPage extends StatelessWidget {
 
   final int rescuerId;
 
-  const RescuerDetailPage({
-    super.key,
-    required this.rescuerId,
-  });
+  const RescuerDetailPage({super.key, required this.rescuerId});
 
   @override
   Widget build(BuildContext context) {
@@ -54,17 +51,12 @@ class _RescuerDetailView extends StatelessWidget {
             );
           },
           actionError: (data, message) {
-            SnakeBarWidget.showError(
-              context: context,
-              message: message,
-            );
+            SnakeBarWidget.showError(context: context, message: message);
           },
           connectionError: (data) {
             BottomSheetMessage.showCustom(
               context: context,
-              content: NoInternetBottomSheet(
-                onRetry: cubit.retryLastAction,
-              ),
+              content: NoInternetBottomSheet(onRetry: cubit.retryLastAction),
               actionWidget: const SizedBox.shrink(),
               isDismissible: false,
               enableDrag: false,
@@ -74,9 +66,7 @@ class _RescuerDetailView extends StatelessWidget {
       },
       child: Scaffold(
         backgroundColor: const Color(0xFFF4F4F4),
-        appBar: const RescuerFullScreenSheetAppBar(
-          title: 'جزئیات امدادرسان',
-        ),
+        appBar: const RescuerFullScreenSheetAppBar(title: 'جزئیات امدادرسان'),
         body: BlocBuilder<RescuerDetailCubit, RescuerDetailState>(
           builder: (context, state) {
             return state.maybeWhen(
@@ -89,34 +79,31 @@ class _RescuerDetailView extends StatelessWidget {
           },
         ),
         bottomNavigationBar: Container(
-          decoration: BoxDecoration(color: Colors.white,
-              borderRadius: BorderRadius.only(
-                topLeft: Radius.circular(AppSize.s16),
-                topRight: Radius.circular(AppSize.s16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.only(
+              topLeft: Radius.circular(AppSize.s16),
+              topRight: Radius.circular(AppSize.s16),
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withAlpha(45),
+                blurRadius: 10,
+                offset: const Offset(-1, 1),
               ),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withAlpha(45),
-                  blurRadius: 10,
-                  offset: const Offset(-1, 1),
-                ),
-              ]),
+            ],
+          ),
           child: Padding(
             padding: const EdgeInsets.fromLTRB(28, 12, 28, 16),
             child: InkwellButtonWidget(
               title: 'بستن',
               backgroundColor: Colors.white,
-              titleColor: Theme
-                  .of(context)
-                  .colorScheme
-                  .onSurfaceVariant,
-              borderColor: Theme
-                  .of(context)
-                  .colorScheme
-                  .outline,
+              titleColor: Theme.of(context).colorScheme.onSurfaceVariant,
+              borderColor: Theme.of(context).colorScheme.outline,
               onTap: () => Navigator.of(context).pop(false),
             ),
-          ),),
+          ),
+        ),
       ),
     );
   }
@@ -151,9 +138,7 @@ class _RescuerDetailView extends StatelessWidget {
 class _ProfileHeader extends StatelessWidget {
   final RescuerEntity item;
 
-  const _ProfileHeader({
-    required this.item,
-  });
+  const _ProfileHeader({required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -168,10 +153,7 @@ class _ProfileHeader extends StatelessWidget {
                 shape: BoxShape.circle,
                 color: Color(0xFFE7E7E7),
               ),
-              child: RescuerAvatar(
-                imageBase64: item.imageBase64,
-                size: 86,
-              ),
+              child: RescuerAvatar(imageBase64: item.imageBase64, size: 86),
             ),
             Positioned(
               left: 0,
@@ -184,11 +166,7 @@ class _ProfileHeader extends StatelessWidget {
                   shape: BoxShape.circle,
                   border: Border.all(color: Colors.white, width: 2),
                 ),
-                child: const Icon(
-                  Icons.check,
-                  color: Colors.white,
-                  size: 14,
-                ),
+                child: const Icon(Icons.check, color: Colors.white, size: 14),
               ),
             ),
           ],
@@ -215,9 +193,7 @@ class _ProfileHeader extends StatelessWidget {
 class _IdentitySection extends StatelessWidget {
   final RescuerEntity item;
 
-  const _IdentitySection({
-    required this.item,
-  });
+  const _IdentitySection({required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -254,9 +230,7 @@ class _IdentitySection extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 22),
-        Divider(color: Theme
-            .of(context)
-            .dividerColor, height: 1),
+        Divider(color: Theme.of(context).dividerColor, height: 1),
         const SizedBox(height: 22),
         RescuerDetailInfoGrid(
           items: [
@@ -282,9 +256,7 @@ class _IdentitySection extends StatelessWidget {
 class _ContactSection extends StatelessWidget {
   final RescuerEntity item;
 
-  const _ContactSection({
-    required this.item,
-  });
+  const _ContactSection({required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -308,9 +280,7 @@ class _ContactSection extends StatelessWidget {
           icon: Icons.phone_outlined,
         ),
         const SizedBox(height: 10),
-        Divider(color: Theme
-            .of(context)
-            .dividerColor, height: 1),
+        Divider(color: Theme.of(context).dividerColor, height: 1),
         const SizedBox(height: 22),
         RescuerDetailInfoGrid(
           items: [
@@ -325,10 +295,7 @@ class _ContactSection extends StatelessWidget {
           ],
         ),
         const SizedBox(height: 22),
-        RescuerDetailInfoItem(
-          label: 'نشانی دقیق',
-          value: _value(item.address),
-        ),
+        RescuerDetailInfoItem(label: 'نشانی دقیق', value: _value(item.address)),
       ],
     );
   }

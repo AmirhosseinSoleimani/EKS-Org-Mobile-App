@@ -49,18 +49,14 @@ class RescuerCard extends StatelessWidget {
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              RescuerAvatar(
-                imageBase64: item.imageBase64,
-              ),
+              RescuerAvatar(imageBase64: item.imageBase64),
               const SizedBox(width: 12),
               Expanded(
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     BodyMediumText(
-                      text: item.fullName.isEmpty
-                          ? 'بدون نام'
-                          : item.fullName,
+                      text: item.fullName.isEmpty ? 'بدون نام' : item.fullName,
                       fontWeight: FontWeight.w700,
                       fontSize: 15,
                       maxLines: 1,
@@ -114,10 +110,7 @@ class RescuerCard extends StatelessWidget {
 
           const SizedBox(height: 6),
 
-          RescuerSkillsPreview(
-            certificatesTitle: item.certificatesTitle,
-
-          ),
+          RescuerSkillsPreview(certificatesTitle: item.certificatesTitle),
 
           const SizedBox(height: 10),
 
@@ -146,15 +139,14 @@ class RescuerCard extends StatelessWidget {
           ),
 
           const SizedBox(height: 16),
-           Divider(height: 1, color: Theme.of(context).dividerColor,),
+          Divider(height: 1, color: Theme.of(context).dividerColor),
           const SizedBox(height: 16),
 
           Row(
             children: [
               Expanded(
                 child: BodySmallText(
-                  text:
-                  'ثبت‌کننده: ${_value(item.insertUserFullName)}',
+                  text: 'ثبت‌کننده: ${_value(item.insertUserFullName)}',
                   color: colorScheme.onSurfaceVariant,
                   fontSize: 10,
                   maxLines: 1,
@@ -163,9 +155,7 @@ class RescuerCard extends StatelessWidget {
               ),
               const SizedBox(width: 8),
               BodySmallText(
-                text: _formatDateTime(
-                  item.insertDateTimeJalali,
-                ),
+                text: _formatDateTime(item.insertDateTimeJalali),
                 color: colorScheme.onSurfaceVariant,
                 fontSize: 10,
               ),
@@ -186,9 +176,7 @@ class RescuerCard extends StatelessWidget {
                     size: 20,
                   ),
                   showLoading: isDeleting,
-                  onTap: isDeleting
-                      ? null
-                      : onViewDetails,
+                  onTap: isDeleting ? null : onViewDetails,
                 ),
               ),
               const SizedBox(width: 16),
@@ -196,20 +184,18 @@ class RescuerCard extends StatelessWidget {
                 flex: 44,
                 child: InkwellButtonWidget(
                   title: 'عملیات',
-                  backgroundColor:
-                  colorScheme.surfaceContainerHighest,
-                  titleColor:
-                  colorScheme.onSurfaceVariant,
+                  backgroundColor: colorScheme.surfaceContainerHighest,
+                  titleColor: colorScheme.onSurfaceVariant,
                   suffixIcon: Icon(
                     Icons.keyboard_arrow_down,
                     color: colorScheme.onSurfaceVariant,
                   ),
-                  prefixIcon: Icon(Icons.settings_outlined, color:
-                  colorScheme.onSurfaceVariant,
-                    size: 19,),
-                  onTap: isDeleting
-                      ? null
-                      : onOperations,
+                  prefixIcon: Icon(
+                    Icons.settings_outlined,
+                    color: colorScheme.onSurfaceVariant,
+                    size: 19,
+                  ),
+                  onTap: isDeleting ? null : onOperations,
                 ),
               ),
             ],
@@ -229,19 +215,14 @@ class RescuerCard extends StatelessWidget {
       width: size,
       height: size,
       fit: BoxFit.contain,
-      colorFilter: ColorFilter.mode(
-        color,
-        BlendMode.srcIn,
-      ),
+      colorFilter: ColorFilter.mode(color, BlendMode.srcIn),
     );
   }
 
   String _value(String? value) {
     final result = value?.trim();
 
-    return result == null || result.isEmpty
-        ? '-'
-        : result;
+    return result == null || result.isEmpty ? '-' : result;
   }
 
   String _dateOnly(String? value) {

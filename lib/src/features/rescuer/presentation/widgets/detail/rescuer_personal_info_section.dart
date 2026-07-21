@@ -7,10 +7,7 @@ import 'package:flutter/material.dart';
 class RescuerPersonalInfoSection extends StatelessWidget {
   final RescuerEntity item;
 
-  const RescuerPersonalInfoSection({
-    super.key,
-    required this.item,
-  });
+  const RescuerPersonalInfoSection({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
@@ -24,18 +21,9 @@ class RescuerPersonalInfoSection extends StatelessWidget {
             fontWeight: FontWeight.w700,
           ),
           const SizedBox(height: 12),
-          KeyValueRow(
-            label: 'کد ملی',
-            value: _value(item.nationalNumber),
-          ),
-          KeyValueRow(
-            label: 'نام پدر',
-            value: _value(item.fatherName),
-          ),
-          KeyValueRow(
-            label: 'تاریخ تولد',
-            value: _value(item.birthDateJalali),
-          ),
+          KeyValueRow(label: 'کد ملی', value: _value(item.nationalNumber)),
+          KeyValueRow(label: 'نام پدر', value: _value(item.fatherName)),
+          KeyValueRow(label: 'تاریخ تولد', value: _value(item.birthDateJalali)),
           KeyValueRow(
             label: 'محل تولد',
             value: _joinLocation(
@@ -50,14 +38,8 @@ class RescuerPersonalInfoSection extends StatelessWidget {
               item.cityNameIssuingPlace,
             ),
           ),
-          KeyValueRow(
-            label: 'تحصیلات',
-            value: _value(item.degreeTitle),
-          ),
-          KeyValueRow(
-            label: 'وضعیت تأهل',
-            value: _value(item.maritalTitle),
-          ),
+          KeyValueRow(label: 'تحصیلات', value: _value(item.degreeTitle)),
+          KeyValueRow(label: 'وضعیت تأهل', value: _value(item.maritalTitle)),
         ],
       ),
     );

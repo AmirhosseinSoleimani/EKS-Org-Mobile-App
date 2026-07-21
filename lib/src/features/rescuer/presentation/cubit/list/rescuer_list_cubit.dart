@@ -45,19 +45,24 @@ class RescuerListCubit extends Cubit<RescuerListState> {
   final mobileController = TextEditingController();
   final codeController = TextEditingController();
 
-  final selectedStatusNotifier =
-      ValueNotifier<RescuerStatusFilter>(RescuerStatusFilter.all);
+  final selectedStatusNotifier = ValueNotifier<RescuerStatusFilter>(
+    RescuerStatusFilter.all,
+  );
   final reportLoadingNotifier = ValueNotifier<bool>(false);
-  final operationLoadingNotifier =
-      ValueNotifier<RescuerListOperation?>(null);
+  final operationLoadingNotifier = ValueNotifier<RescuerListOperation?>(null);
 
   VoidCallback? _retryAction;
 
   bool get hasRetryAction => _retryAction != null;
+
   List<RescuerEntity> get items => state.data.items;
+
   List<RescuerEntity> get filteredItems => state.data.filteredItems;
+
   int? get deletingRescuerId => state.data.deletingRescuerId;
+
   bool get isReportLoading => reportLoadingNotifier.value;
+
   RescuerListOperation? get operationLoading => operationLoadingNotifier.value;
 
   void retryLastAction() => _retryAction?.call();
@@ -86,7 +91,8 @@ class RescuerListCubit extends Cubit<RescuerListState> {
             data: state.data,
             message: _buildErrorMessage(
               title: 'خطا در دریافت امدادرسان‌ها',
-              message: message ??
+              message:
+                  message ??
                   error?.toString() ??
                   'دریافت لیست امدادرسان‌ها با خطا مواجه شد.',
             ),
@@ -145,7 +151,8 @@ class RescuerListCubit extends Cubit<RescuerListState> {
           _safeEmit(
             RescuerListState.actionError(
               data: state.data.copyWith(deletingRescuerId: null),
-              message: message ??
+              message:
+                  message ??
                   error?.toString() ??
                   'حذف امدادرسان با خطا مواجه شد.',
             ),
@@ -219,7 +226,8 @@ class RescuerListCubit extends Cubit<RescuerListState> {
           _safeEmit(
             RescuerListState.actionError(
               data: state.data,
-              message: message ??
+              message:
+                  message ??
                   error?.toString() ??
                   'دریافت گزارش با خطا مواجه شد.',
             ),
@@ -271,7 +279,8 @@ class RescuerListCubit extends Cubit<RescuerListState> {
           _safeEmit(
             RescuerListState.actionError(
               data: state.data,
-              message: message ??
+              message:
+                  message ??
                   error?.toString() ??
                   'دریافت گواهینامه‌های مهارت با خطا مواجه شد.',
             ),
@@ -316,7 +325,8 @@ class RescuerListCubit extends Cubit<RescuerListState> {
           _safeEmit(
             RescuerListState.actionError(
               data: state.data,
-              message: message ??
+              message:
+                  message ??
                   error?.toString() ??
                   'دریافت تاریخچه امدادرسان با خطا مواجه شد.',
             ),
@@ -361,7 +371,8 @@ class RescuerListCubit extends Cubit<RescuerListState> {
       source.where((item) {
         final matchesName =
             name.isEmpty || item.fullName.toLowerCase().contains(name);
-        final matchesNationalNumber = nationalNumber.isEmpty ||
+        final matchesNationalNumber =
+            nationalNumber.isEmpty ||
             (item.nationalNumber ?? '').contains(nationalNumber);
         final normalizedMobile = (item.mobile ?? '').replaceFirst('+98', '0');
         final matchesMobile =
@@ -381,10 +392,7 @@ class RescuerListCubit extends Cubit<RescuerListState> {
     required String title,
     required String message,
   }) {
-    return BottomSheetMessageModel(
-      title: title,
-      message: message,
-    );
+    return BottomSheetMessageModel(title: title, message: message);
   }
 
   void _safeEmit(RescuerListState nextState) {
@@ -404,8 +412,4 @@ class RescuerListCubit extends Cubit<RescuerListState> {
   }
 }
 
-enum RescuerListOperation {
-  skillCertificates,
-  history,
-  delete,
-}
+enum RescuerListOperation { skillCertificates, history, delete }

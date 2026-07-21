@@ -6,8 +6,24 @@ class AddRescuerState {
   final bool connectionError;
   final String? createdId;
 
-  const AddRescuerState({this.currentStep = 0, this.isLoading = false, this.isLoadingCities = false, this.errorMessage, this.connectionError = false, this.createdId});
-  AddRescuerState copyWith({int? currentStep, bool? isLoading, bool? isLoadingCities, String? errorMessage, bool clearError = false, bool? connectionError, String? createdId}) => AddRescuerState(
+  const AddRescuerState({
+    this.currentStep = 0,
+    this.isLoading = false,
+    this.isLoadingCities = false,
+    this.errorMessage,
+    this.connectionError = false,
+    this.createdId,
+  });
+
+  AddRescuerState copyWith({
+    int? currentStep,
+    bool? isLoading,
+    bool? isLoadingCities,
+    String? errorMessage,
+    bool clearError = false,
+    bool? connectionError,
+    String? createdId,
+  }) => AddRescuerState(
     currentStep: currentStep ?? this.currentStep,
     isLoading: isLoading ?? this.isLoading,
     isLoadingCities: isLoadingCities ?? this.isLoadingCities,

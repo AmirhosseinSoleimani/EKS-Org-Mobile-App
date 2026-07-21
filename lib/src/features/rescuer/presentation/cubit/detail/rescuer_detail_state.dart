@@ -4,8 +4,7 @@ part of 'rescuer_detail_cubit.dart';
 abstract class RescuerDetailStateData with _$RescuerDetailStateData {
   const factory RescuerDetailStateData({
     RescuerEntity? rescuer,
-    @Default([])
-    List<SkillCertificateEntity> skillCertificates,
+    @Default([]) List<SkillCertificateEntity> skillCertificates,
     @Default([]) List<SanHistoryEntity> histories,
     @Default(false) bool isDeleting,
   }) = _RescuerDetailStateData;
