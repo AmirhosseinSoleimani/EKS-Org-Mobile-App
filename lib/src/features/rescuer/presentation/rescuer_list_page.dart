@@ -1,6 +1,7 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/rescuer_entity.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/cubit/list/rescuer_list_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/presentation/add_rescuer_page.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/rescuer_detail_page.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/rescuer_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/filter/rescuer_filters_box.dart';
@@ -9,6 +10,7 @@ import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/list
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/list/rescuer_skill_certificates_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
@@ -70,6 +72,10 @@ class _RescuerListView extends StatelessWidget {
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
         appBar: const SimpleAppBar(title: 'امدادرسان'),
+        floatingActionButton: FloatingActionButtonWidget(
+          title: 'افزودن امدادرسان',
+          onPressed: () => _openAddRescuer(context, cubit),
+        ),
         body: ScrollConfiguration(
           behavior: ScrollConfiguration.of(context).copyWith(
             dragDevices: {
@@ -110,6 +116,33 @@ class _RescuerListView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+
+  Future<void> _openAddRescuer(
+    BuildContext context,
+    RescuerListCubit cubit,
+  ) async {
+    final result = await BottomSheetMessage.showFullScreenCustom<AddRescuerResult>(
+      context: context,
+      content: const AddRescuerPage(),
+    );
+
+    if (result == null || !context.mounted) return;
+    await cubit.fetchRescuers();
+    if (!context.mounted) return;
+
+    SnakeBarWidget.showSuccess(
+      context: context,
+      message: 'امدادرسان با موفقیت ثبت شد',
+    );
+
+    if (result.viewProfile) {
+      await BottomSheetMessage.showFullScreenCustom<void>(
+        context: context,
+        content: RescuerDetailPage(rescuerId: result.rescuerId),
+      );
+    }
   }
 
   Widget _buildList(BuildContext context, RescuerListCubit cubit) {

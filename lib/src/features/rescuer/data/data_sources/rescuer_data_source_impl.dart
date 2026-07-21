@@ -1,5 +1,7 @@
 import 'package:eks_sana_plus_org/src/features/rescuer/data/data_sources/rescuer_data_source.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/data/models/add_rescuer_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/data/models/delete_rescuer_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/data/models/params/add_rescuer_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/data/models/params/get_rescuer_report_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/data/models/params/get_rescuers_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/data/models/rescuer_model.dart';
@@ -14,6 +16,9 @@ class RescuerDataSourceImpl extends RescuerDataSource {
   final RescuerService _service;
 
   RescuerDataSourceImpl(this._service);
+
+  @override
+  Future<BaseSingleResponse<AddRescuerResponseModel>> addRescuer(AddRescuerParamModel param) => _service.addRescuer(param.toJson());
 
   @override
   Future<BaseListResponse<RescuerModel>> getRescuers(

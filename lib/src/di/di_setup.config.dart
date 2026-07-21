@@ -390,6 +390,8 @@ import '../features/rescuer/data/repositories/rescuer_repository_impl.dart'
 import '../features/rescuer/data/service/rescuer_service.dart' as _i298;
 import '../features/rescuer/domain/repositories/rescuer_repository.dart'
     as _i449;
+import '../features/rescuer/domain/use_cases/add_rescuer_use_case.dart'
+    as _i110;
 import '../features/rescuer/domain/use_cases/delete_rescuer_use_case.dart'
     as _i708;
 import '../features/rescuer/domain/use_cases/get_rescuer_by_id_use_case.dart'
@@ -402,6 +404,8 @@ import '../features/rescuer/domain/use_cases/get_rescuer_skill_certificates_use_
     as _i833;
 import '../features/rescuer/domain/use_cases/get_rescuers_use_case.dart'
     as _i557;
+import '../features/rescuer/presentation/cubit/add/add_rescuer_cubit.dart'
+    as _i21;
 import '../features/rescuer/presentation/cubit/detail/rescuer_detail_cubit.dart'
     as _i63;
 import '../features/rescuer/presentation/cubit/list/rescuer_list_cubit.dart'
@@ -990,6 +994,9 @@ _i174.GetIt $initGetIt(
     () => _i1063.HomeServiceEvaluationRepositoryImpl(
       gh<_i999.HomeServiceEvaluationDataSource>(),
     ),
+  );
+  gh.factory<_i110.AddRescuerUseCase>(
+    () => _i110.AddRescuerUseCase(gh<_i449.RescuerRepository>()),
   );
   gh.factory<_i708.DeleteRescuerUseCase>(
     () => _i708.DeleteRescuerUseCase(gh<_i449.RescuerRepository>()),
@@ -1773,6 +1780,12 @@ _i174.GetIt $initGetIt(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
       gh<_i672.GetReliefRequestByIdUseCase>(),
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+    ),
+  );
+  gh.factory<_i21.AddRescuerCubit>(
+    () => _i21.AddRescuerCubit(
+      gh<_i110.AddRescuerUseCase>(),
+      gh<_i265.GetProvinceWithCityListUseCase>(),
     ),
   );
   gh.factory<_i379.ServiceListCubit>(

@@ -1,4 +1,6 @@
+import 'package:eks_sana_plus_org/src/features/rescuer/data/models/add_rescuer_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/data/models/delete_rescuer_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/data/models/params/add_rescuer_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/data/models/params/get_rescuer_report_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/data/models/params/get_rescuers_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/data/models/rescuer_model.dart';
@@ -7,6 +9,8 @@ import 'package:eks_sana_plus_org/src/features/rescuer/data/models/skill_certifi
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 
 abstract class RescuerDataSource {
+  Future<BaseSingleResponse<AddRescuerResponseModel>> addRescuer(AddRescuerParamModel param);
+
   Future<BaseListResponse<RescuerModel>> getRescuers(
     GetRescuersParamModel param,
   );

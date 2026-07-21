@@ -1,4 +1,6 @@
+import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/add_rescuer_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/delete_rescuer_response_entity.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/params/add_rescuer_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/params/get_rescuer_report_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/params/get_rescuers_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/rescuer_entity.dart';
@@ -7,6 +9,8 @@ import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/skill_cer
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 
 abstract class RescuerRepository {
+  Future<ApiResult<AddRescuerResponseEntity>> addRescuer(AddRescuerParamEntity param);
+
   Future<ApiResult<List<RescuerEntity>>> getRescuers(
     GetRescuersParamEntity param,
   );

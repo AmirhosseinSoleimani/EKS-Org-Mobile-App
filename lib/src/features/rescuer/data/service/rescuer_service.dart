@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/data/models/add_rescuer_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/data/models/delete_rescuer_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/data/models/rescuer_model.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/data/models/san_history_model.dart';
@@ -11,6 +12,21 @@ class RescuerService {
   final Dio _dio;
 
   RescuerService(this._dio);
+
+
+  Future<BaseSingleResponse<AddRescuerResponseModel>> addRescuer(
+    Map<String, dynamic> body,
+  ) async {
+    final response = await _dio.post<dynamic>(
+      '/api/personinfo/post',
+      data: body,
+    );
+
+    return BaseSingleResponse<AddRescuerResponseModel>.fromJson(
+      _normalizeSingleResponse(response.data),
+      AddRescuerResponseModel.fromJson,
+    );
+  }
 
   Future<BaseListResponse<RescuerModel>> getRescuers(
     Map<String, dynamic> body,
