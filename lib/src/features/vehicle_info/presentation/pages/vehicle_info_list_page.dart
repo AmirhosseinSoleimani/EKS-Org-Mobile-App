@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/cubit/vehicle_info_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/pages/add_vehicle_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/pages/vehicle_info_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/pages/vehicle_info_services_page.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/pages/vehicle_info_tools_page.dart';
@@ -7,6 +8,8 @@ import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/vehicle_info_summary_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:flutter/material.dart';
@@ -78,6 +81,10 @@ class _VehicleInfoListViewState extends State<_VehicleInfoListView> {
       },
       child: Scaffold(
         appBar: const SimpleAppBar(title: 'خودروها'),
+        floatingActionButton: FloatingActionButtonWidget(
+          title: 'خودروی جدید',
+          onPressed: () => _showAddVehicleSheet(context, cubit),
+        ),
         body: BlocBuilder<VehicleInfoCubit, VehicleInfoState>(
           builder: (context, state) {
             return Column(
@@ -232,6 +239,26 @@ class _VehicleInfoListViewState extends State<_VehicleInfoListView> {
     );
   }
 
+  Future<void> _showAddVehicleSheet(
+    BuildContext context,
+    VehicleInfoCubit cubit,
+  ) async {
+    final changed = await BottomSheetMessage.showFullScreenCustom<bool>(
+      context: context,
+      content: const AddVehicleInfoPage(),
+      backgroundColor: Theme.of(context).colorScheme.surface,
+    );
+
+    if (changed == true && context.mounted) {
+      await cubit.fetchList(refresh: true);
+      if (!context.mounted) return;
+      SnakeBarWidget.showSuccess(
+        context: context,
+        message: 'خودرو با موفقیت ثبت شد.',
+      );
+    }
+  }
+
   void _showStatusFilter(
       BuildContext context,
       VehicleInfoCubit cubit,
@@ -264,7 +291,6 @@ class _VehicleInfoListViewState extends State<_VehicleInfoListView> {
     );
   }
 }
-
 class _VehicleInfoTopControls extends StatelessWidget {
   const _VehicleInfoTopControls({
     required this.state,

@@ -1,5 +1,4 @@
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_info_entity.dart';
-import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/pages/vehicle_info_form_page.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/pages/vehicle_info_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/pages/vehicle_info_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/pages/vehicle_info_services_page.dart';
@@ -22,14 +21,6 @@ class VehicleInfoRoutes {
         name: VehicleInfoListPage.name,
         pageBuilder: (context, state) => getPage(
           child: const VehicleInfoListPage(),
-          state: state,
-        ),
-      ),
-      GoRoute(
-        path: VehicleInfoFormPage.path,
-        name: VehicleInfoFormPage.name,
-        pageBuilder: (context, state) => getPage(
-          child: VehicleInfoFormPage(id: state.extra as int?),
           state: state,
         ),
       ),

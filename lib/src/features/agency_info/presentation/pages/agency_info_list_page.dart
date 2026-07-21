@@ -113,6 +113,7 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
         floatingActionButton: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
           child: FloatingActionButtonWidget(
+            title: 'نمایندگی جدید',
             onPressed: () async {
               final changed = await context.pushNamed<bool>(
                 AddAgencyInfoPage.name,
