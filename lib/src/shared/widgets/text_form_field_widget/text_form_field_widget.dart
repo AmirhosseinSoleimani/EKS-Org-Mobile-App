@@ -37,7 +37,7 @@ class TextFormFieldWidget extends StatefulWidget {
     this.errorBorder,
     this.onChanged,
     this.validator,
-    this.floatingLabelBehavior = FloatingLabelBehavior.auto,
+    this.floatingLabelBehavior = FloatingLabelBehavior.always,
     this.maxLength,
     this.textDirection,
     this.borderColor,
@@ -144,7 +144,25 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
             contentPadding: widget.contentPadding,
             fillColor: backgroundColor,
             filled: true,
-            labelText: (widget.mandatory ?? false) ? "${widget.labelText} *" : widget.labelText,
+            label: Text.rich(
+              TextSpan(
+                children: [
+                  TextSpan(
+                    text: widget.labelText,
+                    style: textTheme.bodyMedium,
+                  ),
+                  if (widget.mandatory ?? false)
+                    TextSpan(
+                      text: ' *',
+                      style: textTheme.bodyMedium?.copyWith(
+                        color: colorScheme.error,
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                ],
+              ),
+            ),
+
             labelStyle: widget.labelStyle ??
                 textTheme.labelMedium?.copyWith(
                 color: isFocus ?  colorScheme.primary : colorScheme.onSurface,

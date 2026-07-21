@@ -18,4 +18,14 @@ class NumberTextInputFormatter extends TextInputFormatter {
     return value.replaceAllMapped(
         RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'), (match) => '${match[1]},');
   }
+
+  static final decimal = <TextInputFormatter>[
+    FilteringTextInputFormatter.allow(
+      RegExp(r'^\d*\.?\d*$'),
+    ),
+  ];
+
+  static final lettersOnly =  FilteringTextInputFormatter.allow(
+    RegExp(r'[a-zA-Z\u0600-\u06FF\s]'),
+  );
 }

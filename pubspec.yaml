@@ -64,6 +64,7 @@ dependencies:
   open_filex: ^4.7.0
   fl_chart:
     path: packages/fl_chart
+  dotted_border: ^3.1.0
 
 dev_dependencies:
   flutter_test:

@@ -15,38 +15,45 @@ class RescuerFormActions extends StatelessWidget {
   });
 
   @override
-  Widget build(BuildContext context) => SafeArea(
-    top: false,
-    child: Container(
-      padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        boxShadow: [
-          BoxShadow(color: Colors.black.withAlpha(30), blurRadius: 10),
-        ],
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: InkwellButtonWidget(
-              title: step == 3 ? 'ثبت' : 'مرحله بعد',
-              showLoading: loading,
-              backgroundColor: Theme.of(context).colorScheme.primary,
-              onTap: loading ? null : onNext,
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+    return SafeArea(
+      top: false,
+      child: Container(
+        padding: const EdgeInsets.fromLTRB(20, 12, 20, 16),
+        decoration: BoxDecoration(
+          color: Colors.white,
+          boxShadow: [
+            BoxShadow(color: Colors.black.withAlpha(30), blurRadius: 10),
+          ],
+        ),
+        child: Row(
+          children: [
+            Expanded(
+              child: InkwellButtonWidget(
+                title: step == 0 ? 'انصراف' : 'مرحله قبل',
+                backgroundColor: Colors.white,
+                titleColor: colorScheme.onPrimaryFixed,
+                borderColor:colorScheme.onPrimaryFixed,
+                onTap: loading ? null : onPrevious,
+                prefixIcon: Icon(Icons.arrow_back_rounded, color: colorScheme.onPrimaryFixed,),
+              ),
             ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: InkwellButtonWidget(
-              title: step == 0 ? 'انصراف' : 'مرحله قبل',
-              backgroundColor: Colors.white,
-              titleColor: Colors.grey.shade700,
-              borderColor: Colors.grey,
-              onTap: loading ? null : onPrevious,
+
+            const SizedBox(width: 12),
+            Expanded(
+              child: InkwellButtonWidget(
+                title: step == 3 ? 'ثبت' : 'مرحله بعد',
+                showLoading: loading,
+                backgroundColor: Theme.of(context).colorScheme.primary,
+                suffixIcon: Icon(Icons.arrow_forward_rounded, color: colorScheme.onPrimary,),
+                onTap: loading ? null : onNext,
+              ),
             ),
-          ),
-        ],
+
+          ],
+        ),
       ),
-    ),
-  );
+    );
+  }
 }
