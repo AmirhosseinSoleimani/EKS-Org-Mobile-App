@@ -364,7 +364,7 @@ class VehicleInfoCubit extends Cubit<VehicleInfoState> {
   }
 
   bool _handleVoidResult(
-    dynamic result,
+    ApiResult<void> result,
     String successMessage, {
     bool clearDeleting = false,
   }) {
@@ -374,6 +374,7 @@ class VehicleInfoCubit extends Cubit<VehicleInfoState> {
           isSubmitting: false,
           deletingVehicleId: clearDeleting ? null : _data.deletingVehicleId,
           successMessage: successMessage,
+          errorMessage: null,
         )));
         return true;
       },
@@ -389,6 +390,8 @@ class VehicleInfoCubit extends Cubit<VehicleInfoState> {
         emit(VehicleInfoState.connectionError(data: _data.copyWith(
           isSubmitting: false,
           deletingVehicleId: clearDeleting ? null : _data.deletingVehicleId,
+          successMessage: null,
+          errorMessage: 'ارتباط با سرور برقرار نشد.',
         )));
         return false;
       },

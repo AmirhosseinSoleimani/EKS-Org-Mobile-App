@@ -243,18 +243,18 @@ class _VehicleInfoListViewState extends State<_VehicleInfoListView> {
     BuildContext context,
     VehicleInfoCubit cubit,
   ) async {
-    final changed = await BottomSheetMessage.showFullScreenCustom<bool>(
+    final successMessage = await BottomSheetMessage.showFullScreenCustom<String>(
       context: context,
       content: const AddVehicleInfoPage(),
       backgroundColor: Theme.of(context).colorScheme.surface,
     );
 
-    if (changed == true && context.mounted) {
+    if (successMessage != null && successMessage.isNotEmpty && context.mounted) {
       await cubit.fetchList(refresh: true);
       if (!context.mounted) return;
       SnakeBarWidget.showSuccess(
         context: context,
-        message: 'خودرو با موفقیت ثبت شد.',
+        message: successMessage,
       );
     }
   }

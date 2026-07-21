@@ -61,54 +61,60 @@ class _AddVehicleInfoViewState extends State<_AddVehicleInfoView> {
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: BlocConsumer<VehicleInfoCubit, VehicleInfoState>(
-        listener: _listenToState,
-        builder: (context, state) {
-          final data = state.data;
-          final isReady = data.vehicleModels.isNotEmpty;
-          final isInitialIdle = state.when(
-            idle: (_) => true,
-            loading: (_) => false,
-            loaded: (_) => false,
-            success: (_) => false,
-            failure: (_) => false,
-            connectionError: (_) => false,
-          );
-          final isLoading = !isReady && (isInitialIdle || data.isLookupsLoading);
-          final isFailed = !data.isLookupsLoading && !isReady;
+    return WillPopScope(
+      onWillPop: () async {
+        context.pop();
+        return false;
+      },
+      child: Directionality(
+        textDirection: TextDirection.rtl,
+        child: BlocConsumer<VehicleInfoCubit, VehicleInfoState>(
+          listener: _listenToState,
+          builder: (context, state) {
+            final data = state.data;
+            final isReady = data.vehicleModels.isNotEmpty;
+            final isInitialIdle = state.when(
+              idle: (_) => true,
+              loading: (_) => false,
+              loaded: (_) => false,
+              success: (_) => false,
+              failure: (_) => false,
+              connectionError: (_) => false,
+            );
+            final isLoading = !isReady && (isInitialIdle || data.isLookupsLoading);
+            final isFailed = !data.isLookupsLoading && !isReady;
 
-          return Scaffold(
-            backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-            body: SafeArea(
-              child: Column(
-                children: [
-                  VehicleInfoFormHeader(
-                    title: 'افزودن خودروی جدید',
-                    onClose: () => context.pop(false),
-                  ),
-                  Expanded(
-                    child: _buildBody(
-                      context: context,
-                      state: state,
-                      isLoading: isLoading,
-                      isFailed: isFailed,
+            return Scaffold(
+              backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+              body: SafeArea(
+                child: Column(
+                  children: [
+                    VehicleInfoFormHeader(
+                      title: 'افزودن خودروی جدید',
+                      onClose: () => context.pop(),
                     ),
-                  ),
-                ],
+                    Expanded(
+                      child: _buildBody(
+                        context: context,
+                        state: state,
+                        isLoading: isLoading,
+                        isFailed: isFailed,
+                      ),
+                    ),
+                  ],
+                ),
               ),
-            ),
-            bottomNavigationBar: isReady
-                ? VehicleInfoFormActions(
-                    submitTitle: 'افزودن',
-                    isSubmitting: data.isSubmitting,
-                    onCancel: () => context.pop(false),
-                    onSubmit: () => _submit(context.read<VehicleInfoCubit>()),
-                  )
-                : null,
-          );
-        },
+              bottomNavigationBar: isReady
+                  ? VehicleInfoFormActions(
+                      submitTitle: 'افزودن',
+                      isSubmitting: data.isSubmitting,
+                      onCancel: () => context.pop(),
+                      onSubmit: () => _submit(context.read<VehicleInfoCubit>()),
+                    )
+                  : null,
+            );
+          },
+        ),
       ),
     );
   }
@@ -226,7 +232,7 @@ class _AddVehicleInfoViewState extends State<_AddVehicleInfoView> {
 
     final successMessage = data.successMessage;
     if (successMessage?.isNotEmpty == true) {
-      context.pop(true);
+      context.pop(successMessage);
     }
   }
 
