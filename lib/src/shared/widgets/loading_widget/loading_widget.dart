@@ -10,9 +10,8 @@ class LoadingWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: SpinKitFadingCircle(
+      child: CircularProgressIndicator(
         color: color ?? Theme.of(context).colorScheme.primary,
-        size: size ?? AppSize.s28,
       ),
     );
   }

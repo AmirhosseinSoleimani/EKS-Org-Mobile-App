@@ -7,7 +7,7 @@ import 'cartable_tree/cartable_selection_header.dart';
 import 'cartable_tree/cartable_tree_selection_controller.dart';
 import 'cartable_tree/cartable_tree_utils.dart';
 import 'cartable_tree/cartable_tree_view.dart';
-import 'search_input_field.dart';
+import '../../../../shared/widgets/text_form_field_widget/search_input_field.dart';
 
 class SearchableTreeBottomSheetContent extends StatefulWidget {
   final TextEditingController searchController;

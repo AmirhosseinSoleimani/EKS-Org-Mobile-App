@@ -5,10 +5,23 @@ class CurrentSessionEnumItemModel extends CurrentSessionEnumItemEntity {
 
   factory CurrentSessionEnumItemModel.fromJson(Map<String, dynamic> json) {
     return CurrentSessionEnumItemModel(
-      name: json['name']?.toString(),
-      title: json['title']?.toString(),
-      value: _toInt(json['value']),
+      name: _read(json, 'name')?.toString(),
+      title: _read(json, 'title')?.toString(),
+      value: _toInt(_read(json, 'value')),
     );
+  }
+
+  static dynamic _read(Map<String, dynamic> json, String key) {
+    if (json.containsKey(key)) return json[key];
+
+    final normalizedKey = key.toLowerCase();
+    for (final entry in json.entries) {
+      if (entry.key.toLowerCase() == normalizedKey) {
+        return entry.value;
+      }
+    }
+
+    return null;
   }
 
   static int? _toInt(dynamic value) {

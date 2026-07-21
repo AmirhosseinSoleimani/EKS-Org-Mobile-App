@@ -74,21 +74,21 @@ class EmdadUnitSummaryCard extends StatelessWidget {
             ],
           ),
           Space.h14,
-          Divider(height: AppSize.s1, color: theme.dividerColor.withOpacity(0.6)),
+          Divider(height: AppSize.s1, color: Color(0xFFE9E8E7)),
           Space.h12,
           Row(
             children: [
               Expanded(
                 child: _InfoPill(
                   icon: Icons.pin_outlined,
-                  value: _dash(item.locationTitle),
+                  value: _dash(item.vehicleInfoTitle),
                 ),
               ),
               Space.w8,
               Expanded(
                 child: _InfoPill(
-                  icon: Icons.directions_car_filled_outlined,
-                  value: _dash(item.vehicleInfoTitle),
+                  icon: Icons.location_on_outlined,
+                  value: _dash(item.locationTitle),
                 ),
               ),
             ],
@@ -146,7 +146,7 @@ class _InfoPill extends StatelessWidget {
         vertical: AppPadding.p8,
       ),
       decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
+        color: Color(0xFFF5F3F3),
         borderRadius: BorderRadius.circular(AppSize.s6),
       ),
       child: Row(

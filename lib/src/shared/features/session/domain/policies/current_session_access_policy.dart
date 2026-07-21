@@ -111,6 +111,17 @@ class CurrentSessionAccessPolicy {
     return canShowMenu(CurrentSessionMenuKeys.softwareProblems);
   }
 
+  bool canShowSanRescuerInfoMenu() {
+    return canShowMenu(
+      CurrentSessionMenuKeys.sanRescuerInfo,
+    );
+  }
+
+  bool canShowSkillsCertificateButton() {
+    return isAuthenticated &&
+        canShowMenu(CurrentSessionMenuKeys.sanSkillsCertificate);
+  }
+
   bool canShowInvoicesMenu() {
     return canShowAnyMenu([
       CurrentSessionMenuKeys.invoices,

@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/plan_info/data/data_source/plan_info_data_source.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/cancel_plan_requests_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/change_plan_info_location_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/change_plan_status_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/create_plan_info_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/plan_filter_param_entity.dart';
@@ -196,6 +197,28 @@ class PlanInfoRepositoryImpl extends PlanInfoRepository {
             expireToken: () => const ApiResult.expireToken(),
             connectionError: () => const ApiResult.connectionError(),
           );
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<void>> changeLocation(ChangePlanInfoLocationParamEntity arg) async{
+    try {
+      final result = await _dataSource.changeLocation(arg.toModel());
+      return result.toApiResult().when(
+        success: (data, failures, resultCode) => ApiResult.success(
+          data:null,
+          failures: failures,
+          resultCode: resultCode,
+        ),
+        failure: (error, failures) => ApiResult.failure(
+          error: error,
+          failures: failures,
+        ),
+        expireToken: () => const ApiResult.expireToken(),
+        connectionError: () => const ApiResult.connectionError(),
+      );
     } catch (e, s) {
       return e.toApiResult(s);
     }

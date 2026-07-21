@@ -14,7 +14,7 @@ abstract class AuthService {
   factory AuthService(Dio dio) = _AuthService;
 
   @POST('/api/User/Login')
-  Future<BaseSingleResponse<LoginResponseModel?>> login(@Body() Map<String, dynamic> body);
+  Future<HttpResponse<BaseSingleResponse<LoginResponseModel?>>> login(@Body() Map<String, dynamic> body);
 
   @POST('/api/User/CurrentSession')
   Future<BaseSingleResponse<CurrentSessionModel?>> getCurrentSession(

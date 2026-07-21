@@ -1,11 +1,16 @@
-class PlanLookupEntity {
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/interfaces/dropdown_item.dart';
+import 'package:flutter/src/widgets/framework.dart';
+
+class PlanLookupEntity implements DropdownItem {
   final int? id;
-  final int? value;
   final String? title;
   final String? name;
   final double? latitude;
   final double? longitude;
   final String? address;
+
+  @override
+  final int? value;
 
   const PlanLookupEntity({
     this.id,
@@ -32,4 +37,10 @@ class PlanLookupEntity {
 
     return '---';
   }
+
+  @override
+  String get label => title ?? '';
+
+  @override
+  Widget? leading(BuildContext context) => null;
 }

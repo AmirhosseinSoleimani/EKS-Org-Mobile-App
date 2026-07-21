@@ -7,7 +7,9 @@ import 'package:eks_sana_plus_org/src/features/leave/presentation/widgets/leave_
 import 'package:eks_sana_plus_org/src/features/leave/presentation/widgets/leave_list_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/main_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -48,7 +50,7 @@ class LeavePageView extends StatelessWidget {
 
         return Scaffold(
           backgroundColor: const Color(0xFFF6F4F3),
-          appBar: const MainAppBar(title: 'مرخصی ها'),
+          appBar: const SimpleAppBar(title: 'مرخصی ها'),
           body: RefreshIndicator(
             onRefresh: cubit.refresh,
             child: CustomScrollView(
@@ -173,10 +175,7 @@ class _FilterButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Text(
-                'فیلترها',
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
+            BodyMediumText(text: 'فیلترها',),
             Icon(Icons.keyboard_arrow_down_rounded),
 
           ],

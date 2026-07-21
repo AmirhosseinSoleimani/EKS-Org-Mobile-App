@@ -137,8 +137,9 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
           style: widget.textStyle ?? textTheme.bodyMedium,
           decoration: InputDecoration(
             counterText: '',
-            errorStyle: textTheme.labelSmall?.copyWith(
-              color: colorScheme.error
+            errorStyle: textTheme.bodySmall?.copyWith(
+              color: colorScheme.error,
+              fontWeight: FontWeight.w500,
             ),
             contentPadding: widget.contentPadding,
             fillColor: backgroundColor,
@@ -148,6 +149,7 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
                 textTheme.labelMedium?.copyWith(
                 color: isFocus ?  colorScheme.primary : colorScheme.onSurface,
                 ),
+            hintTextDirection: widget.textDirection,
             floatingLabelBehavior: widget.floatingLabelBehavior,
             hintText: widget.hintText,
             hintStyle: widget.hintStyle ?? textTheme.bodyMedium,

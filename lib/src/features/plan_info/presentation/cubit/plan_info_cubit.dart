@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/cancel_plan_requests_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/change_plan_info_location_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/change_plan_status_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/create_plan_info_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/plan_filter_param_entity.dart';
@@ -29,6 +30,7 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
       this._cancelPlanRequestsUseCase,
       this._getPlanLookupsUseCase,
       this._currentSessionManager,
+      this._changeLocationUseCase,
       ) : super(const PlanInfoState());
 
   final GetPlanListUseCase _getPlanListUseCase;
@@ -42,6 +44,7 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
   final CancelPlanRequestsUseCase _cancelPlanRequestsUseCase;
   final GetPlanLookupsUseCase _getPlanLookupsUseCase;
   final CurrentSessionManager _currentSessionManager;
+  final ChangeLocationUseCase _changeLocationUseCase;
 
   final titleController = TextEditingController();
   final emdadUnitController = TextEditingController();
@@ -51,7 +54,6 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
   final fromDateController = TextEditingController();
   final toDateController = TextEditingController();
 
-  bool? activeFilter;
   int? seatTypeFilter;
   int _skip = 0;
   final int _pageSize = 3;
@@ -317,9 +319,9 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
 
   Future<bool> changeStatus({
     required int planId,
-    required bool isActive,
     required int? reasonId,
     required String description,
+    required bool isActive,
   }) async {
     if (reasonId == null) {
       emit(state.copyWith(message: 'دلیل تغییر وضعیت اجباری می باشد'));
@@ -510,13 +512,21 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
     locationController.clear();
     fromDateController.clear();
     toDateController.clear();
-    activeFilter = null;
     seatTypeFilter = null;
+
     fetchPlans();
   }
 
-  void setActiveFilter(bool? value) {
-    activeFilter = value;
+  Future<void> changeActiveFilter(bool? value) async {
+    emit(
+      state.copyWith(
+        activeFilter: value,
+        clearActiveFilter: value == null,
+        clearMessage: true,
+      ),
+    );
+
+    await fetchPlans();
   }
 
   void setSeatTypeFilter(int? value) {
@@ -568,7 +578,7 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
       skip: _skip,
       pageSize: pageSize ?? _pageSize,
       title: titleController.text,
-      isActive: activeFilter,
+      isActive: state.activeFilter,
       emdadUnitName: emdadUnitController.text,
       shiftTitle: shiftController.text,
       specialPlanTitle: specialPlanController.text,
@@ -593,6 +603,137 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
 
     emit(state.copyWith(seatTypes: seatTypes));
   }
+
+
+  Future<void> initLocationPage() async {
+    if (state.locations.isNotEmpty) {
+      return;
+    }
+
+    emit(
+      state.copyWith(
+        status: PlanInfoStatus.loading,
+        clearMessage: true,
+      ),
+    );
+
+    final result = await _getPlanLookupsUseCase();
+
+    result.when(
+      success: (data, _, __) {
+        emit(
+          state.copyWith(
+            status: PlanInfoStatus.loaded,
+            locations: data.locations,
+            clearMessage: true,
+          ),
+        );
+      },
+      failure: (_, message) {
+        emit(
+          state.copyWith(
+            status: PlanInfoStatus.error,
+            message:
+            message ??
+                'دریافت محل‌های استقرار با خطا مواجه شد',
+          ),
+        );
+      },
+      expireToken: () {
+        emit(
+          state.copyWith(
+            status: PlanInfoStatus.error,
+            message: 'نشست کاربری منقضی شده است',
+          ),
+        );
+      },
+      connectionError: () {
+        emit(
+          state.copyWith(
+            status: PlanInfoStatus.connectionError,
+          ),
+        );
+      },
+    );
+  }
+
+
+    Future<bool> changeLocation({
+      required int planId,
+      required int emdadUnitId,
+      required int locationId,
+      required double latitude,
+      required double longitude,
+      required String address,
+    }) async {
+      if (state.status == PlanInfoStatus.submitting) {
+        return false;
+      }
+
+      emit(
+        state.copyWith(
+          status: PlanInfoStatus.submitting,
+          clearMessage: true,
+        ),
+      );
+
+      final result = await _changeLocationUseCase(
+        ChangePlanInfoLocationParamEntity(
+          planId: planId,
+          emdadUnitId: emdadUnitId,
+          locationId: locationId,
+          latitude: latitude,
+          longitude: longitude,
+          address: address.trim(),
+        ),
+      );
+
+      return result.when<Future<bool>>(
+        success: (_, __, ___) async {
+          emit(
+            state.copyWith(
+              status: PlanInfoStatus.loaded,
+              message:
+              'محل استقرار با موفقیت تغییر کرد',
+            ),
+          );
+
+          return true;
+        },
+        failure: (_, message) async {
+          emit(
+            state.copyWith(
+              status: PlanInfoStatus.error,
+              message:
+              message ??
+                  'تغییر محل استقرار با خطا مواجه شد',
+            ),
+          );
+
+          return false;
+        },
+        expireToken: () async {
+          emit(
+            state.copyWith(
+              status: PlanInfoStatus.error,
+              message: 'نشست کاربری منقضی شده است',
+            ),
+          );
+
+          return false;
+        },
+        connectionError: () async {
+          emit(
+            state.copyWith(
+              status: PlanInfoStatus.connectionError,
+            ),
+          );
+
+          return false;
+        },
+      );
+    }
+
 
   @override
   Future<void> close() {

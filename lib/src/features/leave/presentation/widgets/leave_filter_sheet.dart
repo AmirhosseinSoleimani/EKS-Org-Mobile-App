@@ -6,6 +6,7 @@ import 'package:eks_sana_plus_org/src/shared/resources/color_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -18,6 +19,9 @@ class LeaveFilterSheet extends StatelessWidget {
 
     return BlocBuilder<LeaveCubit, LeaveState>(
       builder: (context, state) {
+        final colorScheme = Theme
+            .of(context)
+            .colorScheme;
         return Padding(
           padding: EdgeInsets.only(
             left: 20,
@@ -45,7 +49,7 @@ class LeaveFilterSheet extends StatelessWidget {
                   'جستجو و فیلتر',
                   textAlign: TextAlign.right,
                   style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w700,
+                    fontWeight: FontWeight.w600,
                       ),
                 ),
                 Space.h16,
@@ -69,7 +73,7 @@ class LeaveFilterSheet extends StatelessWidget {
                       .map(
                         (item) => DropdownMenuItem(
                           value: item.type,
-                          child: Text(item.title),
+                          child: BodyMediumText(text: item.title),
                         ),
                       )
                       .toList(),
@@ -82,14 +86,15 @@ class LeaveFilterSheet extends StatelessWidget {
                   label: 'دلیل اصلی',
                   value: state.selectedMainReason,
                   items: [
-                    const DropdownMenuItem<LeaveReasonEntity?>(
+                    DropdownMenuItem<LeaveReasonEntity?>(
                       value: null,
-                      child: Text('همه'),
+                      child: BodyMediumText(
+                        text: 'همه', color: colorScheme.onSurfaceVariant,),
                     ),
                     ...state.reasons.map(
                       (reason) => DropdownMenuItem<LeaveReasonEntity?>(
                         value: reason,
-                        child: Text(reason.title ?? '---'),
+                        child: BodyMediumText(text: reason.title ?? '---'),
                       ),
                     ),
                   ],
@@ -101,40 +106,48 @@ class LeaveFilterSheet extends StatelessWidget {
                     label: 'دلیل فرعی',
                     value: state.selectedSecondaryReason,
                     items: [
-                      const DropdownMenuItem<LeaveReasonEntity?>(
+                      DropdownMenuItem<LeaveReasonEntity?>(
                         value: null,
-                        child: Text('همه'),
+                        child: BodyMediumText(text: 'همه', color: colorScheme
+                            .onSurfaceVariant),
                       ),
                       ...state.secondaryReasons.map(
                         (reason) => DropdownMenuItem<LeaveReasonEntity?>(
                           value: reason,
-                          child: Text(reason.title ?? '---'),
+                          child: BodyMediumText(text: reason.title ?? '---'),
                         ),
                       ),
                     ],
                     onChanged: cubit.onSecondaryReasonChanged,
                   ),
                 ],
-                const SizedBox(height: 20),
-                InkwellButtonWidget(
-                  title: 'اعمال فیلتر',
-                  backgroundColor: ColorLightManager.primary,
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    cubit.applyFilters();
-                  },
-                ),
-                const SizedBox(height: 12),
-                InkwellButtonWidget(
-                  title: 'پاک کردن فیلتر',
-                  backgroundColor: Colors.white,
-                  titleColor: const Color(0xFF555555),
-                  borderColor: const Color(0xFFE0E0E0),
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    cubit.clearFilters();
-                  },
-                ),
+                const SizedBox(height: 120),
+                Row(children: [
+                  Expanded(
+                    child: InkwellButtonWidget(
+                      title: 'اعمال فیلتر',
+                      backgroundColor: ColorLightManager.primary,
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        cubit.applyFilters();
+                      },
+                    ),
+                  ),
+                  const SizedBox(width: 24),
+                  Expanded(
+                    child: InkwellButtonWidget(
+                      title: 'پاک کردن فیلتر',
+                      backgroundColor: Colors.white,
+                      titleColor: const Color(0xFF717171),
+                      borderColor: const Color(0xFF717171),
+                      onTap: () {
+                        Navigator.of(context).pop();
+                        cubit.clearFilters();
+                      },
+                    ),
+                  ),
+                ],),
+
               ],
             ),
           ),
@@ -158,25 +171,61 @@ class _Dropdown<T> extends StatelessWidget {
   final List<DropdownMenuItem<T>> items;
   final ValueChanged<T?> onChanged;
   final String? hint;
+
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
+
+    final textColor = colorScheme.onSurfaceVariant;
+
     return DropdownButtonFormField<T>(
       initialValue: value,
       isExpanded: true,
       items: items,
       onChanged: onChanged,
       alignment: AlignmentDirectional.centerEnd,
+      style: Theme
+          .of(context)
+          .textTheme
+          .bodyMedium
+          ?.copyWith(
+        color: textColor,
+      ),
+
       decoration: InputDecoration(
         label: Text(
-            label,
-          style: Theme.of(context).textTheme.titleSmall,
+          label,
+          style: Theme
+              .of(context)
+              .textTheme
+              .labelMedium
+              ?.copyWith(
+            color: textColor,
+          ),
         ),
+
         hintText: hint,
-        border: OutlineInputBorder(borderRadius: BorderRadius.circular(8)),
-        enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey.shade400),
+        hintStyle: Theme
+            .of(context)
+            .textTheme
+            .bodyMedium
+            ?.copyWith(
+          color: textColor,
+        ),
+
+        border: OutlineInputBorder(
           borderRadius: BorderRadius.circular(8),
         ),
+
+        enabledBorder: OutlineInputBorder(
+          borderSide: BorderSide(
+            color: Colors.grey.shade400,
+          ),
+          borderRadius: BorderRadius.circular(8),
+        ),
+
         contentPadding: const EdgeInsets.symmetric(
           horizontal: 12,
           vertical: 12,
@@ -185,4 +234,3 @@ class _Dropdown<T> extends StatelessWidget {
     );
   }
 }
-

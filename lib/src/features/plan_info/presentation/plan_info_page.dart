@@ -2,16 +2,25 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_state.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/presentation/widgets/plan_card.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/widgets/plan_info_bottom_sheets.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_src.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+
+import 'plan_info_location_page.dart';
 
 class PlanInfoPage extends StatelessWidget {
   static const path = '/plan-info';
@@ -40,7 +49,6 @@ class _PlanInfoView extends StatelessWidget {
       listener: (context, state) {
         final message = state.message;
         if (message == null || message.trim().isEmpty) return;
-
         if (state.status == PlanInfoStatus.error) {
           SnakeBarWidget.showError(context: context, message: message);
         } else {
@@ -58,9 +66,19 @@ class _PlanInfoView extends StatelessWidget {
           ),
           child: Column(
             children: [
-              Padding(
-                padding: const EdgeInsets.all(AppPadding.p16),
-                child: _PlanToolbar(cubit: cubit),
+              BlocBuilder<PlanInfoCubit, PlanInfoState>(
+                buildWhen: (previous, current) {
+                  return previous.activeFilter != current.activeFilter;
+                },
+                builder: (context, state) {
+                  return Padding(
+                    padding: const EdgeInsets.all(AppPadding.p16),
+                    child: _PlanToolbar(
+                      cubit: cubit,
+                      activeFilter: state.activeFilter,
+                    ),
+                  );
+                },
               ),
               Expanded(
                 child: BlocBuilder<PlanInfoCubit, PlanInfoState>(
@@ -106,7 +124,7 @@ class _PlanInfoView extends StatelessWidget {
 
                           final item = state.items[index];
 
-                          return _PlanCard(
+                          return PlanCard(
                             item: item,
                             onEdit: () => PlanInfoBottomSheets.showPlanForm(
                               context: context,
@@ -131,11 +149,13 @@ class _PlanInfoView extends StatelessWidget {
                                   cubit: cubit,
                                   plan: item,
                                 ),
-                            onLocation: () =>
-                                PlanInfoBottomSheets.showLocationInfo(
-                                  context: context,
-                                  plan: item,
-                                ),
+                            onLocation: () async {
+                              final changed = await context.pushNamed<bool>(
+                                PlanInfoLocationPage.name, extra: item,);
+                              if (changed == true && context.mounted) {
+                                await cubit.fetchPlans();
+                              }
+                            },
                             onHistory: () => _showHistoryUnavailable(context),
                           );
                         },
@@ -197,11 +217,14 @@ class _PlanInfoView extends StatelessWidget {
     );
   }
 }
-
 class _PlanToolbar extends StatelessWidget {
-  final PlanInfoCubit cubit;
+  const _PlanToolbar({
+    required this.cubit,
+    required this.activeFilter,
+  });
 
-  const _PlanToolbar({required this.cubit});
+  final PlanInfoCubit cubit;
+  final bool? activeFilter;
 
   @override
   Widget build(BuildContext context) {
@@ -209,310 +232,140 @@ class _PlanToolbar extends StatelessWidget {
 
     return Column(
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: InkwellButtonWidget(
-                title: 'افزودن برنامه‌ریزی',
-                prefixIcon: const Icon(Icons.add, color: Colors.white),
-                backgroundColor: colorScheme.primary,
-                onTap: () => PlanInfoBottomSheets.showPlanForm(
-                  context: context,
-                  cubit: cubit,
-                ),
+        FiltersRow(
+          filters: [
+            FilterButton(
+              title: 'جستجو و فیلتر',
+              onTap: () => PlanInfoBottomSheets.showFilterSheet(
+                context: context,
+                cubit: cubit,
               ),
+            ),
+            FilterButton(
+              title: _getStatusTitle(activeFilter),
+              overlayBuilder: (
+                  overlayContext,
+                  position,
+                  width,
+                  dismiss,
+                  ) {
+                return Positioned(
+                  top: position.dy + 52,
+                  left: position.dx,
+                  width: width,
+                  child: Material(
+                    color: Colors.white,
+                    elevation: 6,
+                    borderRadius: BorderRadius.circular(8),
+                    clipBehavior: Clip.antiAlias,
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _StatusFilterItem(
+                          title: 'همه',
+                          isSelected: activeFilter == null,
+                          onTap: () {
+                            dismiss();
+                            cubit.changeActiveFilter(null);
+                          },
+                        ),
+                        _StatusFilterItem(
+                          title: 'فعال',
+                          isSelected: activeFilter == true,
+                          onTap: () {
+                            dismiss();
+                            cubit.changeActiveFilter(true);
+                          },
+                        ),
+                        _StatusFilterItem(
+                          title: 'غیرفعال',
+                          isSelected: activeFilter == false,
+                          onTap: () {
+                            dismiss();
+                            cubit.changeActiveFilter(false);
+                          },
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
             ),
           ],
         ),
-        Space.h8,
-        Row(
-          children: [
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: () => PlanInfoBottomSheets.showFilterSheet(
-                  context: context,
-                  cubit: cubit,
-                ),
-                icon: const Icon(Icons.filter_alt_outlined),
-                label: const Text('جستجو و فیلتر'),
-              ),
-            ),
-            Space.w8,
-            Expanded(
-              child: OutlinedButton.icon(
-                onPressed: cubit.loadPlanReport,
-                icon: const Icon(Icons.file_download_outlined),
-                label: const Text('گزارش‌گیری'),
-              ),
-            ),
-          ],
+        Space.h16,
+        InkwellButtonWidget(
+          title: 'گزارش گیری',
+          titleColor: colorScheme.onPrimaryFixed,
+          prefixIcon: SvgWidget(
+            src: SvgAsset(SvgManager.exportNotes),
+          ),
+          backgroundColor: colorScheme.secondaryContainer,
+          borderColor: colorScheme.onPrimaryFixed,
+          borderWidth: 2,
+          onTap: cubit.loadPlanReport,
         ),
       ],
     );
   }
+
+  String _getStatusTitle(bool? status) {
+    return switch (status) {
+      true => 'فعال',
+      false => 'غیرفعال',
+      null => 'همه وضعیت‌ها',
+    };
+  }
 }
 
-class _PlanCard extends StatelessWidget {
-  final PlanInfoEntity item;
-  final VoidCallback onEdit;
-  final VoidCallback onCopy;
-  final VoidCallback onDelete;
-  final VoidCallback onStatus;
-  final VoidCallback onCancelRequests;
-  final VoidCallback onLocation;
-  final VoidCallback onHistory;
 
-  const _PlanCard({
-    required this.item,
-    required this.onEdit,
-    required this.onCopy,
-    required this.onDelete,
-    required this.onStatus,
-    required this.onCancelRequests,
-    required this.onLocation,
-    required this.onHistory,
+class _StatusFilterItem extends StatelessWidget {
+  const _StatusFilterItem({
+    required this.title,
+    required this.isSelected,
+    required this.onTap,
   });
+
+  final String title;
+  final bool isSelected;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final isActive = item.isActive;
 
-    return Card(
-      margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppSize.s8),
-      ),
+    return InkWell(
+      onTap: onTap,
       child: Padding(
-        padding: const EdgeInsets.all(AppPadding.p14),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+        padding: const EdgeInsets.symmetric(
+          horizontal: 12,
+          vertical: 14,
+        ),
+        child: Row(
           children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Text(
-                    item.title ?? 'بدون عنوان',
-                    style: Theme.of(context).textTheme.titleMedium,
-                  ),
+            Expanded(
+              child: Text(
+                title,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: colorScheme.onSurfaceVariant,
                 ),
-                _StatusChip(
-                  title: isActive ? 'فعال' : 'غیرفعال',
-                  color: isActive ? Colors.green : colorScheme.error,
-                ),
-              ],
-            ),
-            Space.h12,
-            _InfoLine(
-              icon: Icons.date_range,
-              text: item.dateRangeText,
-            ),
-            _InfoLine(
-              icon: Icons.home_repair_service_outlined,
-              text: item.emdadUnitName ?? '---',
-            ),
-            _InfoLine(
-              icon: Icons.schedule,
-              text: item.shiftTitle ?? '---',
-            ),
-            _InfoLine(
-              icon: Icons.flag_outlined,
-              text: item.specialPlanTitle ?? '---',
-            ),
-            _InfoLine(
-              icon: Icons.event_seat_outlined,
-              text: item.seatTypeTitle ?? '---',
-            ),
-            _InfoLine(
-              icon: Icons.location_on_outlined,
-              text: item.locationTitle ?? item.address ?? '---',
-            ),
-            _InfoLine(
-              icon: Icons.people_outline,
-              text: item.personsText,
-            ),
-            if ((item.reasonTitle ?? item.description) != null) ...[
-              Space.h8,
-              Text(
-                'دلیل تغییر وضعیت: ${item.reasonTitle ?? '---'}',
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-              Text(
-                'توضیحات: ${item.description ?? '---'}',
-                style: Theme.of(context).textTheme.bodySmall,
-              ),
-            ],
-            Space.h8,
-            Align(
-              alignment: Alignment.centerLeft,
-              child: IconButton(
-                icon: const Icon(Icons.more_vert),
-                tooltip: 'عملیات',
-                onPressed: () => _showActionsSheet(context),
               ),
             ),
+            if (isSelected)
+              Icon(
+                Icons.check,
+                size: 18,
+                color: colorScheme.primary,
+              ),
           ],
         ),
       ),
     );
   }
-
-  void _showActionsSheet(BuildContext context) {
-    showModalBottomSheet<void>(
-      context: context,
-      builder: (context) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.all(AppPadding.p16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Text(
-                  'عملیات برنامه‌ریزی',
-                  style: Theme.of(context).textTheme.titleMedium,
-                  textAlign: TextAlign.center,
-                ),
-                Space.h16,
-                _ActionTile(
-                  icon: Icons.edit,
-                  title: 'ویرایش',
-                  onTap: onEdit,
-                ),
-                _ActionTile(
-                  icon: Icons.copy,
-                  title: 'کپی',
-                  onTap: onCopy,
-                ),
-                _ActionTile(
-                  icon: Icons.list_alt,
-                  title: 'تغییر وضعیت',
-                  onTap: onStatus,
-                ),
-                _ActionTile(
-                  icon: Icons.location_on,
-                  title: 'تغییر / مشاهده محل استقرار',
-                  onTap: onLocation,
-                ),
-                _ActionTile(
-                  icon: Icons.history,
-                  title: 'تاریخچه',
-                  onTap: onHistory,
-                ),
-                _ActionTile(
-                  icon: Icons.cancel_outlined,
-                  title: 'لغو ماموریت',
-                  onTap: onCancelRequests,
-                ),
-                _ActionTile(
-                  icon: Icons.delete_outline,
-                  title: 'حذف',
-                  onTap: onDelete,
-                  isDestructive: true,
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
 }
 
-class _ActionTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final VoidCallback onTap;
-  final bool isDestructive;
 
-  const _ActionTile({
-    required this.icon,
-    required this.title,
-    required this.onTap,
-    this.isDestructive = false,
-  });
 
-  @override
-  Widget build(BuildContext context) {
-    final color = isDestructive
-        ? Theme.of(context).colorScheme.error
-        : Theme.of(context).colorScheme.onSurface;
-
-    return ListTile(
-      leading: Icon(icon, color: color),
-      title: Text(
-        title,
-        style: TextStyle(color: color),
-      ),
-      onTap: () {
-        Navigator.of(context).pop();
-        onTap();
-      },
-    );
-  }
-}
-
-class _InfoLine extends StatelessWidget {
-  final IconData icon;
-  final String text;
-
-  const _InfoLine({
-    required this.icon,
-    required this.text,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppPadding.p6),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(
-            icon,
-            size: AppSize.s18,
-            color: Theme.of(context).colorScheme.primary,
-          ),
-          Space.w8,
-          Expanded(
-            child: Text(
-              text,
-              style: Theme.of(context).textTheme.bodyMedium,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _StatusChip extends StatelessWidget {
-  final String title;
-  final Color color;
-
-  const _StatusChip({
-    required this.title,
-    required this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppPadding.p10,
-        vertical: AppPadding.p4,
-      ),
-      decoration: BoxDecoration(
-        color: color.withOpacity(0.12),
-        borderRadius: BorderRadius.circular(AppSize.s8),
-      ),
-      child: Text(
-        title,
-        style: Theme.of(context).textTheme.labelMedium?.copyWith(color: color),
-      ),
-    );
-  }
-}
 
 class _EmptyPlans extends StatelessWidget {
   const _EmptyPlans();

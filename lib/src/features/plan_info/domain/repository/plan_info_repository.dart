@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/cancel_plan_requests_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/change_plan_info_location_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/change_plan_status_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/create_plan_info_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/plan_filter_param_entity.dart';
@@ -37,4 +38,6 @@ abstract class PlanInfoRepository {
   Future<ApiResult<List<PlanLookupEntity>>> getSpecialPlans();
 
   Future<ApiResult<List<PlanLookupEntity>>> getLocations();
+  Future<ApiResult<void>> changeLocation(ChangePlanInfoLocationParamEntity arg);
+
 }

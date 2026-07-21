@@ -13,7 +13,9 @@ import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/e
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/emdad_unit_filter_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -54,7 +56,7 @@ class _EmdadUnitListView extends StatelessWidget {
       child: Scaffold(
         backgroundColor: theme.colorScheme.surface,
         appBar: const SimpleAppBar(title: 'واحد امدادی'),
-        floatingActionButton: FloatingActionButton(
+     /*   floatingActionButton: FloatingActionButton(
           onPressed: () async {
             final changed = await context.pushNamed<bool>(EmdadUnitFormPage.name);
             if (changed == true && context.mounted) {
@@ -62,7 +64,7 @@ class _EmdadUnitListView extends StatelessWidget {
             }
           },
           child: const Icon(Icons.add_rounded),
-        ),
+        ),*/
         body: ScrollConfiguration(
           behavior: ScrollConfiguration.of(context).copyWith(
             dragDevices: {PointerDeviceKind.touch, PointerDeviceKind.mouse},
@@ -121,7 +123,7 @@ class _EmdadUnitListView extends StatelessWidget {
                         title: state.filter.isActiveFilter
                             ? 'نتیجه‌ای برای فیلترهای انتخابی یافت نشد'
                             : 'رکوردی یافت نشد',
-                        actionTitle: state.filter.isActiveFilter ? 'پاک کردن فیلترها' : 'بازخوانی',
+                        actionTitle: state.filter.isActiveFilter ? 'پاک کردن فیلترها' : 'تلاش مجدد',
                         onAction: state.filter.isActiveFilter
                             ? cubit.clearFilter
                             : () => cubit.fetchList(refresh: true),
@@ -410,7 +412,7 @@ class _StatusTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListTile(
-      title: Text(title),
+      title: BodyMediumText(text: title),
       onTap: onTap,
     );
   }
@@ -431,20 +433,17 @@ class _MessageState extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     return Center(
       child: Padding(
         padding: const EdgeInsets.all(AppPadding.p24),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(icon, size: AppSize.s48, color: theme.colorScheme.primary),
-            Space.h16,
-            Text(title, textAlign: TextAlign.center, style: theme.textTheme.titleSmall),
+            EmptyListWidget(),
             Space.h16,
             OutlinedButton(
               onPressed: onAction,
-              child: Text(actionTitle),
+              child: BodyMediumText(text: actionTitle),
             ),
           ],
         ),

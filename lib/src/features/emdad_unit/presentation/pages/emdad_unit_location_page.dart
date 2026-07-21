@@ -4,10 +4,17 @@ import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/lookup
 import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/params/change_emdad_unit_location_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/cubit/emdad_unit_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/emdad_unit_summary_card.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/marker_style.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/single_location_map_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/overlay_drop_down_menu.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';
@@ -74,14 +81,23 @@ class _EmdadUnitLocationViewState extends State<_EmdadUnitLocationView> {
       child: Scaffold(
         backgroundColor: theme.colorScheme.surface,
         appBar: const SimpleAppBar(title: 'تغییر محل استقرار'),
-        bottomNavigationBar: SafeArea(
-          minimum: const EdgeInsets.all(AppPadding.p16),
-          child: InkwellButtonWidget(
-            title: 'بستن',
-            backgroundColor: theme.colorScheme.onPrimary,
-            borderColor: theme.colorScheme.outline.withOpacity(0.65),
-            titleColor: theme.colorScheme.onSurface,
-            onTap: () => context.pop(false),
+        bottomNavigationBar: Container(
+          decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(AppSize.s16),
+                bottomLeft: Radius.circular(AppSize.s16),
+              )),
+          child: Padding(
+            padding: const EdgeInsets.all(AppPadding.p16),
+            child: InkwellButtonWidget(
+              title: 'بستن',
+              backgroundColor: theme.colorScheme.onPrimary,
+              borderWidth: 2,
+              borderColor: theme.colorScheme.outline.withOpacity(0.65),
+              titleColor: theme.colorScheme.onSurface,
+              onTap: () => context.pop(false),
+            ),
           ),
         ),
         body: BlocBuilder<EmdadUnitCubit, EmdadUnitState>(
@@ -206,39 +222,62 @@ class _LocationCard extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            'موقعیت و آدرس',
-            style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
-          ),
+          TitleLargeText(text: 'موقعیت و آدرس', fontSize: 16),
           Space.h20,
-          _LocationMap(
-            controller: mapController,
+          SingleLocationMapWidget(
             latitude: latitude,
             longitude: longitude,
-            onTap: onMapTap,
+            markerStyle: MarkerStyle(iconPath: SvgManager.location),
+            height: AppSize.s300,
+            initialZoom: 14,
+            onMapTap: onMapTap,
           ),
           Space.h24,
-          DropdownButtonFormField<int>(
-            value: locationId,
-            isExpanded: true,
-            decoration: const InputDecoration(labelText: 'محل استقرار'),
-            items: locations
-                .map(
-                  (item) => DropdownMenuItem<int>(
-                    value: item.id,
-                    child: Text(item.title, overflow: TextOverflow.ellipsis),
-                  ),
-                )
-                .toList(),
-            onChanged: isSubmitting ? null : onLocationChanged,
+          AbsorbPointer(
+            absorbing: isSubmitting,
+            child: Opacity(
+              opacity: isSubmitting ? 0.6 : 1,
+              child: FilterButton(
+                title: _getSelectedLocationTitle(
+                  locations: locations,
+                  locationId: locationId,
+                ),
+                label: 'محل استقرار',
+                hasFloatingLabel: true,
+                expand: true,
+                overlayBuilder: (context,
+                    position,
+                    width,
+                    dismiss,) {
+                  return OverlayDropdownMenu<LookupEntity>(
+                    position: position,
+                    width: width,
+                    items: locations,
+                    onDismiss: dismiss,
+                    onSelect: (item) {
+                      onLocationChanged(item.id);
+                      dismiss();
+                    },
+                  );
+                },
+              ),
+            ),
           ),
           Space.h16,
-          TextFormField(
-            controller: addressController,
-            decoration: const InputDecoration(labelText: 'آدرس'),
-            minLines: 2,
-            maxLines: 4,
-            enabled: !isSubmitting,
+          AbsorbPointer(
+            absorbing: isSubmitting,
+            child: Opacity(
+              opacity: isSubmitting ? 0.6 : 1,
+              child: TextFormFieldWidget(
+                labelText: 'آدرس',
+                controller: addressController,
+                autofocus: false,
+                textInputType: TextInputType.streetAddress,
+                textAlign: TextAlign.start,
+                textInputAction: TextInputAction.done,
+                maxLines: 3,
+              ),
+            ),
           ),
           Space.h24,
           InkwellButtonWidget(
@@ -250,138 +289,25 @@ class _LocationCard extends StatelessWidget {
       ),
     );
   }
-}
 
-class _LocationMap extends StatelessWidget {
-  const _LocationMap({
-    required this.controller,
-    required this.latitude,
-    required this.longitude,
-    required this.onTap,
-  });
+  String _getSelectedLocationTitle({
+    required List<LookupEntity> locations,
+    required int? locationId,
+  }) {
+    if (locationId == null) {
+      return 'انتخاب محل استقرار';
+    }
 
-  final MapController controller;
-  final double? latitude;
-  final double? longitude;
-  final ValueChanged<LatLng> onTap;
+    final selectedLocation = locations
+        .where((item) => item.id == locationId)
+        .firstOrNull;
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final hasPoint = latitude != null && longitude != null;
-    final point = LatLng(latitude ?? 35.6892, longitude ?? 51.3890);
-
-    return SizedBox(
-      height: AppSize.s300,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppSize.s8),
-        child: Stack(
-          children: [
-            FlutterMap(
-              mapController: controller,
-              options: MapOptions(
-                initialCenter: point,
-                initialZoom: hasPoint ? 14 : 10,
-                onTap: (_, point) => onTap(point),
-              ),
-              children: [
-                TileLayer(
-                  urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  userAgentPackageName: 'eks_sana_plus_org',
-                ),
-                MarkerLayer(
-                  markers: [
-                    Marker(
-                      point: point,
-                      width: AppSize.s64,
-                      height: AppSize.s64,
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Container(
-                            width: AppSize.s42,
-                            height: AppSize.s42,
-                            decoration: BoxDecoration(
-                              color: theme.colorScheme.primary,
-                              shape: BoxShape.circle,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: theme.colorScheme.primary.withOpacity(0.22),
-                                  blurRadius: AppSize.s16,
-                                  spreadRadius: AppSize.s10,
-                                ),
-                              ],
-                            ),
-                            child: Icon(
-                              Icons.circle,
-                              color: theme.colorScheme.onPrimary,
-                              size: AppSize.s12,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
-              ],
-            ),
-            Positioned(
-              top: AppPadding.p16,
-              left: AppPadding.p16,
-              child: Column(
-                children: [
-                  _MapButton(
-                    icon: Icons.add_rounded,
-                    onTap: () => controller.move(point, controller.camera.zoom + 1),
-                  ),
-                  Space.h8,
-                  _MapButton(
-                    icon: Icons.remove_rounded,
-                    onTap: () => controller.move(point, controller.camera.zoom - 1),
-                  ),
-                  Space.h8,
-                  _MapButton(
-                    icon: Icons.my_location_rounded,
-                    onTap: () => controller.move(point, 15),
-                  ),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
+    return selectedLocation?.title ?? 'انتخاب محل استقرار';
   }
 }
 
-class _MapButton extends StatelessWidget {
-  const _MapButton({
-    required this.icon,
-    required this.onTap,
-  });
 
-  final IconData icon;
-  final VoidCallback onTap;
 
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Material(
-      color: theme.colorScheme.onPrimary,
-      shape: const CircleBorder(),
-      elevation: 2,
-      child: InkWell(
-        customBorder: const CircleBorder(),
-        onTap: onTap,
-        child: SizedBox(
-          width: AppSize.s32,
-          height: AppSize.s32,
-          child: Icon(icon, size: AppSize.s20),
-        ),
-      ),
-    );
-  }
-}
 
 extension _FirstWhereOrNull<T> on Iterable<T> {
   T? firstWhereOrNull(bool Function(T item) test) {

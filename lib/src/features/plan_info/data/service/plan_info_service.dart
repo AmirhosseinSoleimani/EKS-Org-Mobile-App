@@ -78,4 +78,10 @@ abstract class PlanInfoService {
   Future<BaseSingleResponse<PlanLookupListModel>> getLocations(
     @Body() Map<String, dynamic> body,
   );
+
+
+  @POST('/api/Plan/ChangeLocation')
+  Future<BaseSingleResponse<void>> changeLocation(
+    @Body() Map<String, dynamic> body,
+  );
 }

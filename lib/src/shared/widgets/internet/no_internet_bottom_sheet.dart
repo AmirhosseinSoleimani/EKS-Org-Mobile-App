@@ -1,7 +1,9 @@
+import 'dart:io' show Platform;
+
+import 'package:app_settings/app_settings.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 
 class NoInternetBottomSheet extends StatelessWidget {
@@ -43,9 +45,24 @@ class NoInternetBottomSheet extends StatelessWidget {
   }
 
   Widget _buildSubtitle(BuildContext context) {
-    return const BodyMediumText(
-      text:
-          'اتصال به اینترنت را بررسی و دوباره تلاش کنید.\nدر صورت دسترسی نداشتن به اینترنت، ',
+    final theme = Theme.of(context).textTheme.bodyMedium;
+
+    return RichText(
+      textAlign: TextAlign.start,
+      text: TextSpan(
+        style: theme,
+        children: [
+          const TextSpan(
+            text:
+                'اتصال به اینترنت را بررسی و دوباره تلاش کنید.\nدر صورت دسترسی نداشتن به اینترنت، ',
+          ),
+          TextSpan(
+            text: 'برای درخواست تلفنی امداد با 096550',
+            style: theme?.copyWith(fontWeight: FontWeight.bold),
+          ),
+          const TextSpan(text: ' تماس بگیرید.'),
+        ],
+      ),
     );
   }
 
@@ -74,14 +91,27 @@ class NoInternetBottomSheet extends StatelessWidget {
           backgroundColor: theme.colorScheme.surface,
           borderColor: theme.primaryColor,
           titleColor: theme.primaryColor,
-          onTap: openInternetSettings,
+          onTap: () {
+            openInternetSettings();
+          },
         ),
       ],
     );
   }
 
   Future<void> openInternetSettings() async {
-    //todo add app_settings and use it for open data setting page
+    try {
+      if (Platform.isAndroid) {
+        await AppSettings.openAppSettingsPanel(
+          AppSettingsPanelType.internetConnectivity,
+        );
+        return;
+      }
+
+      await AppSettings.openAppSettings(type: AppSettingsType.wifi);
+    } catch (_) {
+      await AppSettings.openAppSettings(type: AppSettingsType.wifi);
+    }
   }
 
   Widget _buildButton({

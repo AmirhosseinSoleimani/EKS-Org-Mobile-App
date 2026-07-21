@@ -10,6 +10,18 @@ pluginManagement {
 
     includeBuild("$flutterSdkPath/packages/flutter_tools/gradle")
 
+    resolutionStrategy {
+        eachPlugin {
+            if (requested.id.id == "com.android.application") {
+                useModule("com.android.tools.build:gradle:${requested.version}")
+            }
+
+            if (requested.id.id == "org.jetbrains.kotlin.android") {
+                useModule("org.jetbrains.kotlin:kotlin-gradle-plugin:${requested.version}")
+            }
+        }
+    }
+
     repositories {
         google()
         mavenCentral()
@@ -28,7 +40,7 @@ dependencyResolutionManagement {
     repositories {
         google()
         mavenCentral()
-        maven("https://storage.googleapis.com/download.flutter.io")
+        maven("https://storage.flutter-io.cn/download.flutter.io")
     }
 }
 
