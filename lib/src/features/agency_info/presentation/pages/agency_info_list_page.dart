@@ -5,7 +5,6 @@ import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/ag
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/add_agency_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_info_details_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_delete_action_view.dart';
-import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/add_agency/add_agency_floating_button.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_detail_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_filter_sheet.dart';
@@ -14,6 +13,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
@@ -112,7 +112,7 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
         appBar: const SimpleAppBar(title: 'نمایندگی‌ها'),
         floatingActionButton: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4),
-          child: AddAgencyFloatingButton(
+          child: FloatingActionButtonWidget(
             onPressed: () async {
               final changed = await context.pushNamed<bool>(
                 AddAgencyInfoPage.name,
