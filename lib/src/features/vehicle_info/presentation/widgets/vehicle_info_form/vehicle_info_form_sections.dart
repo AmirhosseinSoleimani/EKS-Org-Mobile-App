@@ -1,9 +1,15 @@
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_model_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/vehicle_info_form/vehicle_info_form_fields.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/vehicle_info_form/vehicle_info_form_section.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/car_license_plate_widget/car_license_plate_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/selection_widgets/selectable_check_item.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/date_picker_widget/date_picker_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/date_picker_widget/jalali_year_picker_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/selection_widgets/app_checkbox_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_src.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -19,7 +25,6 @@ class VehicleMainInfoSection extends StatelessWidget {
     required this.statusTitle,
     required this.onStatusChanged,
     required this.requiredValidator,
-    required this.numberFormatters,
   });
 
   final List<VehicleModelEntity> vehicleModels;
@@ -31,13 +36,13 @@ class VehicleMainInfoSection extends StatelessWidget {
   final String statusTitle;
   final ValueChanged<String> onStatusChanged;
   final String? Function(String, String?) requiredValidator;
-  final List<TextInputFormatter> numberFormatters;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     return VehicleInfoFormSection(
       title: 'اطلاعات اصلی خودرو',
-      icon: Icons.directions_car_outlined,
+      icon: SvgWidget(src: SvgAsset(SvgManager.carIcon)),
       children: [
         VehicleInfoFormDropDown(
           label: 'نوع خودرو',
@@ -61,14 +66,14 @@ class VehicleMainInfoSection extends StatelessWidget {
           validator: (value) => requiredValidator('شماره موتور', value),
         ),
         Space.h20,
-        VehicleInfoFormTextField(
+        JalaliYearPickerWidget(
           controller: productYearController,
-          label: 'سال ساخت',
+          labelText: 'سال ساخت',
+          hintText: 'انتخاب سال',
           mandatory: true,
-          keyboardType: TextInputType.number,
-          inputFormatters: numberFormatters,
-          textDirection: TextDirection.ltr,
           validator: (value) => requiredValidator('سال ساخت', value),
+          suffixIcon: const Icon(
+            Icons.calendar_month_outlined, color: Color(0xFFA4A4A4),),
         ),
         Space.h20,
         VehicleInfoFormDropDown(
@@ -100,7 +105,7 @@ class VehicleSimCardSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return VehicleInfoFormSection(
       title: 'اطلاعات سیمکارت',
-      icon: Icons.settings_input_antenna_rounded,
+      icon: SvgWidget(src: SvgAsset(SvgManager.simCardIcon)),
       children: [
         VehicleInfoFormTextField(
           controller: imeiController,
@@ -112,13 +117,13 @@ class VehicleSimCardSection extends StatelessWidget {
           validator: (value) => requiredValidator('IMEI', value),
         ),
         Space.h20,
-        VehicleInfoFormTextField(
+        DatePickerWidget(
           controller: installDateController,
-          label: 'تاریخ نصب',
-          hint: 'مثال: 1403/01/01',
+          labelText: 'تاریخ نصب',
+          hintText: 'انتخاب تاریخ',
           mandatory: true,
-          textDirection: TextDirection.ltr,
           validator: (value) => requiredValidator('تاریخ نصب', value),
+          suffixIcon: const Icon(Icons.calendar_month_outlined,  color: Color(0xFFA4A4A4)),
         ),
       ],
     );
@@ -151,28 +156,29 @@ class VehiclePlateOptionsSection extends StatelessWidget {
   Widget build(BuildContext context) {
     return VehicleInfoFormSection(
       title: 'پلاک و امکانات',
-      icon: Icons.car_repair_outlined,
+      icon: SvgWidget(src: SvgAsset(SvgManager.alertCarIcon)),
       children: [
         Align(
           alignment: Alignment.centerRight,
-          child: Text(
-            'شماره پلاک خودرو',
-            style: Theme.of(context).textTheme.bodyMedium,
+          child: BodyMediumText(text: 'شماره پلاک خودرو'),
+        ),
+        Space.h16,
+        Padding(
+          padding: const EdgeInsets.only(left:48.0, top: 8,bottom: 8),
+          child: LicensePlateTextFormFieldWidget(
+            controller: plateController,
+            mandatory: true,
           ),
         ),
-        Space.h8,
-        LicensePlateTextFormFieldWidget(
-          controller: plateController,
-          mandatory: true,
-        ),
         Space.h20,
-        VehicleInfoFormCheckBox(
+        AppCheckboxWidget(
           title: 'دستگاه عیب یاب دارد',
           value: hasTroubleShooter,
           onChanged: onTroubleShooterChanged,
         ),
         if (hasDepot) ...[
-          VehicleInfoFormCheckBox(
+          Space.h4,
+          AppCheckboxWidget(
             title: 'انبارک فعال است',
             value: isDepotEnabled,
             onChanged: onDepotEnabledChanged,

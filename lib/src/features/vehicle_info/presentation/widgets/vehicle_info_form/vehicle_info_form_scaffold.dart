@@ -66,70 +66,44 @@ class VehicleInfoFormActions extends StatelessWidget {
 
     return SafeArea(
       top: false,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          AppPadding.p16,
-          AppPadding.p8,
-          AppPadding.p16,
-          AppPadding.p12,
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              flex: 3,
-              child: TextButton(
-                onPressed: isSubmitting ? null : onCancel,
-                child: Text(
-                  'انصراف',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onPrimaryFixed,
-                    fontWeight: FontWeight.w700,
+      child: Container(
+        color: Color(0xFFFBF9F9),
+        child: Padding(
+          padding: const EdgeInsets.all(16),
+          child: Row(
+            children: [
+              Expanded(
+                flex: 5,
+                child: InkwellButtonWidget(
+                  title: submitTitle,
+                  showLoading: isSubmitting,
+                  onTap: onSubmit,
+                  backgroundColor: theme.colorScheme.primary,
+                  borderRadius: AppSize.s8,
+                ),
+              ),
+              Space.w12,
+              Expanded(
+                flex: 3,
+                child: TextButton(
+                  onPressed: isSubmitting ? null : onCancel,
+                  child: Text(
+                    'انصراف',
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: theme.colorScheme.onPrimaryFixed,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
               ),
-            ),
-            Space.w12,
-            Expanded(
-              flex: 5,
-              child: InkwellButtonWidget(
-                title: submitTitle,
-                showLoading: isSubmitting,
-                onTap: onSubmit,
-                backgroundColor: theme.colorScheme.primary,
-                borderRadius: AppSize.s8,
-              ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
   }
 }
 
-class VehicleInfoFormLoading extends StatelessWidget {
-  const VehicleInfoFormLoading({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Center(
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          CircularProgressIndicator(
-            color: theme.colorScheme.primary,
-          ),
-          Space.h16,
-          Text(
-            'در حال آماده سازی فرم...',
-            style: theme.textTheme.bodyMedium,
-          ),
-        ],
-      ),
-    );
-  }
-}
 
 class VehicleInfoFormLoadError extends StatelessWidget {
   const VehicleInfoFormLoadError({

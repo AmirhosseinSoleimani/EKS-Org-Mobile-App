@@ -80,7 +80,7 @@ class _AddVehicleInfoViewState extends State<_AddVehicleInfoView> {
           final isFailed = !data.isLookupsLoading && !isReady;
 
           return Scaffold(
-            backgroundColor: Theme.of(context).colorScheme.surface,
+            backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
             body: SafeArea(
               child: Column(
                 children: [
@@ -119,7 +119,11 @@ class _AddVehicleInfoViewState extends State<_AddVehicleInfoView> {
     required bool isLoading,
     required bool isFailed,
   }) {
-    if (isLoading) return const VehicleInfoFormLoading();
+    if (isLoading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    }
 
     if (isFailed) {
       return VehicleInfoFormLoadError(
@@ -176,16 +180,15 @@ class _AddVehicleInfoViewState extends State<_AddVehicleInfoView> {
                   });
                 },
                 requiredValidator: _requiredValidator,
-                numberFormatters: _numberFormatters,
               ),
-              Space.h16,
+              Space.h8,
               VehicleSimCardSection(
                 imeiController: _imeiIdController,
                 installDateController: _installDateController,
                 requiredValidator: _requiredValidator,
                 numberFormatters: _numberFormatters,
               ),
-              Space.h16,
+              Space.h8,
               VehiclePlateOptionsSection(
                 plateController: _plateController,
                 hasTroubleShooter: _isTroubleShooter,

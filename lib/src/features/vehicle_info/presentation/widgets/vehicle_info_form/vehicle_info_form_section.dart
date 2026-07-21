@@ -11,7 +11,7 @@ class VehicleInfoFormSection extends StatelessWidget {
   });
 
   final String title;
-  final IconData icon;
+  final Widget icon;
   final List<Widget> children;
 
   @override
@@ -25,19 +25,7 @@ class VehicleInfoFormSection extends StatelessWidget {
         children: [
           Row(
             children: [
-              Container(
-                width: AppSize.s32,
-                height: AppSize.s32,
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primary.withOpacity(0.12),
-                  borderRadius: BorderRadius.circular(AppSize.s8),
-                ),
-                child: Icon(
-                  icon,
-                  size: AppSize.s20,
-                  color: theme.colorScheme.primary,
-                ),
-              ),
+              icon,
               Space.w8,
               Text(
                 title,

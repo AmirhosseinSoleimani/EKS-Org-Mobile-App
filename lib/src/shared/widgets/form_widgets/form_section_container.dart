@@ -25,6 +25,13 @@ class FormSectionContainer extends StatelessWidget {
         color: colorScheme.onPrimary,
         borderRadius: BorderRadius.circular(12),
         border: hasBorder ? Border.all(width: 1, color: Colors.grey.shade300) : null,
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(25),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
       child: child,
     );

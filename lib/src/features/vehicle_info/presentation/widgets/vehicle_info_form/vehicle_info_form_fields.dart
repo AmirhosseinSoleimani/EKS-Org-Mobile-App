@@ -1,4 +1,3 @@
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
@@ -87,48 +86,6 @@ class VehicleInfoFormDropDown extends StatelessWidget {
       mandatory: mandatory,
       selectedItem: selectedItem,
       onItemValue: onChanged,
-    );
-  }
-}
-
-class VehicleInfoFormCheckBox extends StatelessWidget {
-  const VehicleInfoFormCheckBox({
-    super.key,
-    required this.title,
-    required this.value,
-    required this.onChanged,
-  });
-
-  final String title;
-  final bool value;
-  final ValueChanged<bool> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return InkWell(
-      borderRadius: BorderRadius.circular(AppSize.s8),
-      onTap: () => onChanged(!value),
-      child: Row(
-        children: [
-          Checkbox(
-            value: value,
-            activeColor: theme.colorScheme.primary,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(AppSize.s4),
-            ),
-            onChanged: (checked) => onChanged(checked ?? false),
-          ),
-          Space.w8,
-          Expanded(
-            child: Text(
-              title,
-              style: theme.textTheme.bodyMedium,
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
