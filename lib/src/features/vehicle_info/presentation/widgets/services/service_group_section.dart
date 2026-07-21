@@ -60,7 +60,7 @@ class ServiceGroupSection extends StatelessWidget {
                 final category = group.categories[index];
                 return EmergencyServiceButton(
                   category: category,
-                  // onTap: () => onSelect(category.id),
+                  onTap: onSelect == null ? null : () => onSelect!(category.id),
                   onDefects: onDefects,
                 );
               },
@@ -73,7 +73,7 @@ class ServiceGroupSection extends StatelessWidget {
               children: group.categories.map((category) {
                 return LocalServiceChip(
                   category: category,
-                  // onTap: () => onSelect(category.id),
+                  onTap: onSelect == null ? null : () => onSelect!(category.id),
                   onDefects: onDefects,
                 );
               }).toList(),

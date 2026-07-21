@@ -7,10 +7,12 @@ class EmergencyServiceButton extends StatelessWidget {
   const EmergencyServiceButton({
     super.key,
     required this.category,
+    this.onTap,
     this.onDefects,
   });
 
   final EmdadServiceCategoryEntity category;
+  final VoidCallback? onTap;
   final ValueChanged<int>? onDefects;
 
   @override
@@ -24,63 +26,69 @@ class EmergencyServiceButton extends StatelessWidget {
     return Material(
       color: Colors.white,
       borderRadius: BorderRadius.circular(AppSize.s8),
-      child: Container(
-        height: AppSize.s48,
-        padding: const EdgeInsets.symmetric(horizontal: AppPadding.p12),
-        decoration: BoxDecoration(
-          borderRadius: BorderRadius.circular(AppSize.s8),
-          border: Border.all(
-            color: borderColor,
-            width: selected ? 2 : 1,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(AppSize.s8),
+        child: Container(
+          height: AppSize.s48,
+          padding: const EdgeInsets.symmetric(horizontal: AppPadding.p12),
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(AppSize.s8),
+            border: Border.all(
+              color: borderColor,
+              width: selected ? 2 : 1,
+            ),
           ),
-        ),
-        child: selected
-            ? Row(
-                children: [
-                  Icon(
-                    Icons.check_circle_outline_rounded,
-                    size: 18,
-                    color: foregroundColor,
-                  ),
-                  Space.w8,
-                  Expanded(
-                    child: Text(
-                      category.title,
-                      textAlign: TextAlign.start,
-                      maxLines: 1,
-                      overflow: TextOverflow.ellipsis,
-                      style: theme.textTheme.bodyMedium?.copyWith(
-                        color: foregroundColor,
-                        fontWeight: FontWeight.w700,
-                      ),
+          child: selected
+              ? Row(
+                  children: [
+                    Icon(
+                      Icons.check_circle_outline_rounded,
+                      size: 18,
+                      color: foregroundColor,
                     ),
-                  ),
-                  if (onDefects != null) ...[
                     Space.w8,
-                    Padding(
-                      padding: const EdgeInsets.all(2),
-                      child: Icon(
-                        Icons.settings_outlined,
-                        size: 18,
-                        color: foregroundColor,
+                    Expanded(
+                      child: Text(
+                        category.title,
+                        textAlign: TextAlign.start,
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: foregroundColor,
+                          fontWeight: FontWeight.w700,
+                        ),
                       ),
                     ),
-                    // onTap: () => onDefects!(category.id),
+                    if (onDefects != null) ...[
+                      Space.w8,
+                      GestureDetector(
+                        onTap: () => onDefects!(category.id),
+                        child: Padding(
+                          padding: const EdgeInsets.all(2),
+                          child: Icon(
+                            Icons.settings_outlined,
+                            size: 18,
+                            color: foregroundColor,
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
-                ],
-              )
-            : Center(
-                child: Text(
-                  category.title,
-                  textAlign: TextAlign.center,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: foregroundColor,
-                    fontWeight: FontWeight.w700,
+                )
+              : Center(
+                  child: Text(
+                    category.title,
+                    textAlign: TextAlign.center,
+                    maxLines: 1,
+                    overflow: TextOverflow.ellipsis,
+                    style: theme.textTheme.bodyMedium?.copyWith(
+                      color: foregroundColor,
+                      fontWeight: FontWeight.w700,
+                    ),
                   ),
                 ),
-              ),
+        ),
       ),
     );
   }

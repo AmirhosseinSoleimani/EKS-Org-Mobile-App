@@ -53,9 +53,11 @@ class VehicleInfoFormActions extends StatelessWidget {
     required this.isSubmitting,
     required this.onCancel,
     required this.onSubmit,
+    this.cancelTitle = 'انصراف',
   });
 
   final String submitTitle;
+  final String cancelTitle;
   final bool isSubmitting;
   final VoidCallback onCancel;
   final VoidCallback onSubmit;
@@ -88,7 +90,7 @@ class VehicleInfoFormActions extends StatelessWidget {
                 child: TextButton(
                   onPressed: isSubmitting ? null : onCancel,
                   child: Text(
-                    'انصراف',
+                    cancelTitle,
                     style: theme.textTheme.bodyMedium?.copyWith(
                       color: theme.colorScheme.onPrimaryFixed,
                       fontWeight: FontWeight.w700,

@@ -1,11 +1,12 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/cubit/vehicle_info_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/vehicle_info_form/vehicle_info_form_scaffold.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/vehicle_service_info_card.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/tools/vehicle_tool_chip.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/selection_widgets/app_checkbox_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/search_input_field.dart';
 import 'package:flutter/material.dart';
@@ -44,8 +45,7 @@ class _VehicleInfoToolsView extends StatelessWidget {
           SnakeBarWidget.showError(context: context, message: state.data.errorMessage!);
         }
         if (state.data.successMessage?.isNotEmpty == true) {
-          SnakeBarWidget.showSuccess(context: context, message: state.data.successMessage!);
-          context.pop(true);
+          context.pop(state.data.successMessage);
         }
       },
       child: Directionality(
@@ -55,13 +55,12 @@ class _VehicleInfoToolsView extends StatelessWidget {
           backgroundColor: const Color(0xFFF4F4F4),
           bottomNavigationBar: BlocBuilder<VehicleInfoCubit, VehicleInfoState>(
             builder: (context, state) {
-              return SafeArea(
-                minimum: const EdgeInsets.all(AppPadding.p16),
-                child: InkwellButtonWidget(
-                  title: 'بستن',
-                  showLoading: state.data.isSubmitting,
-                  onTap: (){context.pop();}//item.id == null ? null : () => cubit.submitTools(item.id!),
-                ),
+              return VehicleInfoFormActions(
+                submitTitle: 'ثبت',
+                cancelTitle: 'بستن',
+                isSubmitting: state.data.isSubmitting,
+                onCancel: () => context.pop(),
+                onSubmit: item.id == null ? () {} : () => cubit.submitTools(item.id!),
               );
             },
           ),
@@ -82,6 +81,12 @@ class _VehicleInfoToolsView extends StatelessWidget {
                   VehicleServiceInfoCard(item: item),
                   Space.h24,
                   _ToolsSearchField(cubit: cubit),
+                  Space.h16,
+                  AppCheckboxWidget(
+                    title: 'همه',
+                    value: data.tools.isNotEmpty && data.tools.every((tool) => tool.isSelectable),
+                    onChanged: cubit.setAllTools,
+                  ),
                   Space.h24,
                   if (data.filteredTools.isEmpty)
                     const Center(child: Text('ابزاری برای این خودرو یافت نشد.'))
@@ -93,7 +98,7 @@ class _VehicleInfoToolsView extends StatelessWidget {
                       children: data.filteredTools.map((tool) {
                         return VehicleToolChip(
                           tool: tool,
-                          // onTap: () => cubit.toggleTool(tool.emdadToolsId),
+                          onTap: () => cubit.toggleTool(tool.emdadToolsId),
                         );
                       }).toList(),
                     ),

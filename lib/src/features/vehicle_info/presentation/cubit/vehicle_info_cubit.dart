@@ -263,7 +263,12 @@ class VehicleInfoCubit extends Cubit<VehicleInfoState> {
   void toggleServiceCategory(int categoryId) {
     final groups = _data.serviceCategoryGroups.map((group) {
       final categories = group.categories.map((category) {
-        return category.id == categoryId ? category.copyWith(selectable: !category.selectable, selected: !(category.selected ?? category.selectable)) : category;
+        if (category.id != categoryId) return category;
+        final selected = !(category.selected ?? category.selectable);
+        return category.copyWith(
+          selectable: selected,
+          selected: selected,
+        );
       }).toList();
       return EmdadServiceCategoryGroupEntity(
         id: group.id,
@@ -271,6 +276,26 @@ class VehicleInfoCubit extends Cubit<VehicleInfoState> {
         name: group.name,
         indeterminate: group.indeterminate,
         selectable: group.selectable,
+        categories: categories,
+      );
+    }).toList();
+    emit(VehicleInfoState.loaded(data: _data.copyWith(serviceCategoryGroups: groups)));
+  }
+
+  void setAllServiceCategories(bool selected) {
+    final groups = _data.serviceCategoryGroups.map((group) {
+      final categories = group.categories.map((category) {
+        return category.copyWith(
+          selectable: selected,
+          selected: selected,
+        );
+      }).toList();
+      return EmdadServiceCategoryGroupEntity(
+        id: group.id,
+        code: group.code,
+        name: group.name,
+        indeterminate: group.indeterminate,
+        selectable: selected,
         categories: categories,
       );
     }).toList();

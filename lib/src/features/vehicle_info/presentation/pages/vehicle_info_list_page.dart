@@ -151,8 +151,7 @@ class _VehicleInfoListViewState extends State<_VehicleInfoListView> {
           AppPadding.p16,
           AppPadding.p16,
         ),
-        itemCount:
-        data.items.length + (data.isPaginationLoading ? 1 : 0),
+        itemCount: data.items.length + (data.isPaginationLoading ? 1 : 0),
         separatorBuilder: (_, __) => Space.h16,
         itemBuilder: (context, index) {
           if (index >= data.items.length) {
@@ -168,17 +167,23 @@ class _VehicleInfoListViewState extends State<_VehicleInfoListView> {
 
           return VehicleInfoSummaryCard(
             item: item,
-            onTools: () {
-              context.pushNamed(
+            onTools: () async {
+              final successMessage = await context.pushNamed<String>(
                 VehicleInfoToolsPage.name,
                 extra: item,
               );
+              if (successMessage?.isNotEmpty == true && context.mounted) {
+                SnakeBarWidget.showSuccess(context: context, message: successMessage!);
+              }
             },
-            onServices: () {
-              context.pushNamed(
+            onServices: () async {
+              final successMessage = await context.pushNamed<String>(
                 VehicleInfoServicesPage.name,
                 extra: item,
               );
+              if (successMessage?.isNotEmpty == true && context.mounted) {
+                SnakeBarWidget.showSuccess(context: context, message: successMessage!);
+              }
             },
             onDelete: item.id == null
                 ? null

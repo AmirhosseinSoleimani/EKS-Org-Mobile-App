@@ -1,13 +1,14 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
-import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/emdad_service_category_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/cubit/vehicle_info_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/vehicle_info_form/vehicle_info_form_scaffold.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/vehicle_service_info_card.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/services/service_category_selection_x.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/services/service_group_section.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/selection_widgets/app_checkbox_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -45,8 +46,7 @@ class _VehicleInfoServicesView extends StatelessWidget {
           SnakeBarWidget.showError(context: context, message: state.data.errorMessage!);
         }
         if (state.data.successMessage?.isNotEmpty == true) {
-          SnakeBarWidget.showSuccess(context: context, message: state.data.successMessage!);
-          context.pop(true);
+          context.pop(state.data.successMessage);
         }
       },
       child: Directionality(
@@ -56,19 +56,19 @@ class _VehicleInfoServicesView extends StatelessWidget {
           backgroundColor: const Color(0xFFF4F4F4),
           bottomNavigationBar: BlocBuilder<VehicleInfoCubit, VehicleInfoState>(
             builder: (context, state) {
-              return SafeArea(
-                minimum: const EdgeInsets.all(AppPadding.p16),
-                child: InkwellButtonWidget(
-                  title: 'بستن',
-                  showLoading: state.data.isSubmitting,
-                  onTap: (){context.pop();}/*item.id == null ? null : () => cubit.submitServiceCategories(item.id!, useBatchEndpoint: true)*/,
-                ),
+              return VehicleInfoFormActions(
+                submitTitle: 'ثبت',
+                cancelTitle: 'بستن',
+                isSubmitting: state.data.isSubmitting,
+                onCancel: () => context.pop(),
+                onSubmit: item.id == null ? () {} : () => cubit.submitServiceCategories(item.id!, useBatchEndpoint: true),
               );
             },
           ),
           body: BlocBuilder<VehicleInfoCubit, VehicleInfoState>(
             builder: (context, state) {
               final data = state.data;
+              final categories = data.serviceCategoryGroups.expand((group) => group.categories).toList();
               if (data.loadingServicesVehicleId != null) {
                 return const Center(child: CircularProgressIndicator());
               }
@@ -85,11 +85,16 @@ class _VehicleInfoServicesView extends StatelessWidget {
                 children: [
                   VehicleServiceInfoCard(item: item),
                   Space.h24,
+                  AppCheckboxWidget(
+                    title: 'همه',
+                    value: categories.isNotEmpty && categories.every((category) => category.isSelectedForVehicle),
+                    onChanged: cubit.setAllServiceCategories,
+                  ),
+                  Space.h24,
                   ...data.serviceCategoryGroups.map((group) {
                     return ServiceGroupSection(
                       group: group,
-                      // onSelect: (categoryId) => _selectSingleCategory(context, group, categoryId),
-                      onSelect: null,
+                      onSelect: cubit.toggleServiceCategory,
                       onDefects: item.id == null
                           ? null
                           : (categoryId) => _showDefects(context, item.id!, categoryId),
@@ -102,32 +107,6 @@ class _VehicleInfoServicesView extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  void _selectSingleCategory(
-    BuildContext context,
-    EmdadServiceCategoryGroupEntity group,
-    int categoryId,
-  ) {
-    final cubit = context.read<VehicleInfoCubit>();
-    EmdadServiceCategoryEntity? target;
-    for (final category in group.categories) {
-      if (category.id == categoryId) {
-        target = category;
-        break;
-      }
-    }
-    final targetIsSelected = target?.isSelectedForVehicle == true;
-
-    for (final category in group.categories) {
-      if (category.id != categoryId && category.isSelectedForVehicle) {
-        cubit.toggleServiceCategory(category.id);
-      }
-    }
-
-    if (!targetIsSelected) {
-      cubit.toggleServiceCategory(categoryId);
-    }
   }
 
   void _showDefects(BuildContext context, int vehicleId, int categoryId) {
