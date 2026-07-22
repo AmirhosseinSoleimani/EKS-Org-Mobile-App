@@ -120,4 +120,31 @@ class JalaliDateHelper {
 
     return '$year-$month-${day}T$hour:$minute:$second';
   }
+
+  static String formatStringJalaliDateTime(String? value) {
+    final raw = value?.trim();
+    if (raw == null || raw.isEmpty) return '---';
+
+    final parts = raw.split(' ');
+    if (parts.length < 2) return raw;
+
+    final date = parts[0].replaceAll('-', '/');
+    final timeParts = parts[1].split(':');
+
+    final hour = timeParts.isNotEmpty ? timeParts[0].padLeft(2, '0') : '00';
+    final minute = timeParts.length > 1 ? timeParts[1].padLeft(2, '0') : '00';
+
+    return '${_toPersianDigits('$hour:$minute')} - ${_toPersianDigits(date)}';
+  }
+
+  static String _toPersianDigits(String value) {
+    const english = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
+    const persian = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹'];
+
+    var result = value;
+    for (var i = 0; i < english.length; i++) {
+      result = result.replaceAll(english[i], persian[i]);
+    }
+    return result;
+  }
 }

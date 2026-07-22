@@ -41,8 +41,6 @@ class EmdadUnitPersonModel extends EmdadUnitPersonEntity {
   });
 
   factory EmdadUnitPersonModel.fromJson(Map<String, dynamic> json) {
-    print('asdasddsaddsasadsdasdasadsdasad');
-    print(json);
     return EmdadUnitPersonModel(
       id: _toInt(json['id']),
       emdadUnitId: _toInt(json['emdadUnitId']),
