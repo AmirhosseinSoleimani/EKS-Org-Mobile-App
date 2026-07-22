@@ -137,7 +137,7 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
 
   Widget _buildBodyContent(BuildContext context) {
     if (_isInitialLoading) {
-      return const CircularProgressIndicator();
+      return Center(child: const CircularProgressIndicator());
     }
 
     if (_isInitialLoadFailed) {
