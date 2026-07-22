@@ -20,16 +20,18 @@ class SkillCertificateFormSheet extends StatefulWidget {
 }
 
 class _SkillCertificateFormSheetState extends State<SkillCertificateFormSheet> {
-  static const _statusTitles = ['فعال', 'غیرفعال'];
+  static const _statusPlaceholder = 'انتخاب کنید';
+  static const _statusTitles = [_statusPlaceholder, 'فعال', 'غیرفعال'];
 
+  final _formKey = GlobalKey<FormState>();
   late final TextEditingController _titleController;
-  late bool _isActive;
+  late bool? _isActive;
 
   @override
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.skill?.title ?? '');
-    _isActive = widget.skill?.isActive ?? false;
+    _isActive = widget.skill?.id == null ? null : widget.skill?.isActive;
   }
 
   @override
@@ -58,30 +60,75 @@ class _SkillCertificateFormSheetState extends State<SkillCertificateFormSheet> {
           Space.h24,
 
           Expanded(
-            child: SingleChildScrollView(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              physics: const BouncingScrollPhysics(),
-              padding: const EdgeInsets.symmetric(horizontal: AppPadding.p8),
-              child: Column(
-                children: [
-                  TextFormFieldWidget(
-                    controller: _titleController,
-                    labelText: 'عنوان',
-                    mandatory: true,
-                    maxLength: 100,
-                    textInputAction: TextInputAction.next,
-                  ),
-                  Space.h16,
-                  EkDropDown(
-                    _statusTitles,
-                    fillColor: Colors.white,
-                    label: 'وضعیت',
-                    selectedItem: _isActive ? 'فعال' : 'غیرفعال',
-                    onItemValue: (value) {
-                      setState(() => _isActive = value == 'فعال');
-                    },
-                  ),
-                ],
+            child: Form(
+              key: _formKey,
+              child: SingleChildScrollView(
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
+                physics: const BouncingScrollPhysics(),
+                padding: const EdgeInsets.symmetric(horizontal: AppPadding.p8),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    TextFormFieldWidget(
+                      controller: _titleController,
+                      labelText: 'عنوان',
+                      mandatory: true,
+                      maxLength: 100,
+                      textInputAction: TextInputAction.next,
+                      validator: (value) {
+                        if (value == null || value.trim().isEmpty) {
+                          return 'عنوان را وارد کنید';
+                        }
+                        return null;
+                      },
+                    ),
+                    Space.h16,
+                    FormField<bool>(
+                      initialValue: _isActive,
+                      validator: (value) {
+                        if (value == null) {
+                          return 'وضعیت را انتخاب کنید';
+                        }
+                        return null;
+                      },
+                      builder: (field) {
+                        return Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            EkDropDown(
+                              _statusTitles,
+                              fillColor: Colors.white,
+                              label: 'وضعیت',
+                              mandatory: true,
+                              selectedItem: _statusTitle(field.value),
+                              onItemValue: (value) {
+                                final status = _statusValue(value);
+                                setState(() => _isActive = status);
+                                field.didChange(status);
+                              },
+                            ),
+                            if (field.hasError) ...[
+                              Space.h8,
+                              Padding(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: AppPadding.p12,
+                                ),
+                                child: Text(
+                                  field.errorText!,
+                                  style: theme.textTheme.bodySmall?.copyWith(
+                                    color: theme.colorScheme.error,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ],
+                        );
+                      },
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -99,15 +146,30 @@ class _SkillCertificateFormSheetState extends State<SkillCertificateFormSheet> {
   Future<void> _submit() async {
     FocusScope.of(context).unfocus();
 
+    final isFormValid = _formKey.currentState?.validate() ?? false;
+    if (!isFormValid) return;
+
     final saved = await context.read<SkillsCertificatesCubit>().saveSkill(
       id: widget.skill?.id,
       title: _titleController.text,
-      isActive: _isActive,
+      isActive: _isActive!,
     );
 
     if (saved && context.mounted) {
       Navigator.of(context).pop();
     }
+  }
+
+  String _statusTitle(bool? value) {
+    if (value == true) return 'فعال';
+    if (value == false) return 'غیرفعال';
+    return _statusPlaceholder;
+  }
+
+  bool? _statusValue(String value) {
+    if (value == 'فعال') return true;
+    if (value == 'غیرفعال') return false;
+    return null;
   }
 
   @override
