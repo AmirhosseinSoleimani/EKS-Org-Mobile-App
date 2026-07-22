@@ -7,16 +7,30 @@ class GradePatternModel extends GradePatternEntity {
     super.code,
     super.name,
     super.details,
+    super.insertDateTimeJalali,
+    super.insertUserFullName,
+    super.updateDateTimeJalali,
+    super.updateUserFullName,
     super.isActive,
   });
 
   factory GradePatternModel.fromJson(Map<String, dynamic> json) {
     final rawDetails = json['details'];
     return GradePatternModel(
-      id: _toInt(json['id']),
-      code: _toInt(json['code']),
-      name: json['name']?.toString(),
-      isActive: json['isActive'] is bool ? json['isActive'] as bool : true,
+      id: _toInt(_read(json, 'id', 'Id')),
+      code: _toInt(_read(json, 'code', 'Code')),
+      name: _read(json, 'name', 'Name')?.toString(),
+      insertDateTimeJalali:
+          _read(json, 'insertDateTimeJalali', 'InsertDateTimeJalali')
+              ?.toString(),
+      insertUserFullName:
+          _read(json, 'insertUserFullName', 'InsertUserFullName')?.toString(),
+      updateDateTimeJalali:
+          _read(json, 'updateDateTimeJalali', 'UpdateDateTimeJalali')
+              ?.toString(),
+      updateUserFullName:
+          _read(json, 'updateUserFullName', 'UpdateUserFullName')?.toString(),
+      isActive: _toBool(_read(json, 'isActive', 'IsActive')),
       details: rawDetails is List
           ? rawDetails
               .whereType<Map>()
@@ -34,6 +48,10 @@ class GradePatternModel extends GradePatternEntity {
       'code': code,
       'name': name,
       'details': details.map((item) => item.toModel().toJson()).toList(),
+      'insertDateTimeJalali': insertDateTimeJalali,
+      'insertUserFullName': insertUserFullName,
+      'updateDateTimeJalali': updateDateTimeJalali,
+      'updateUserFullName': updateUserFullName,
       'isActive': isActive,
     };
   }
@@ -42,5 +60,19 @@ class GradePatternModel extends GradePatternEntity {
     if (value == null) return null;
     if (value is int) return value;
     return int.tryParse(value.toString());
+  }
+
+  static bool _toBool(dynamic value) {
+    if (value is bool) return value;
+    if (value == null) return true;
+    return value.toString().toLowerCase() == 'true';
+  }
+
+  static dynamic _read(
+    Map<String, dynamic> json,
+    String camelCaseKey,
+    String pascalCaseKey,
+  ) {
+    return json[camelCaseKey] ?? json[pascalCaseKey];
   }
 }

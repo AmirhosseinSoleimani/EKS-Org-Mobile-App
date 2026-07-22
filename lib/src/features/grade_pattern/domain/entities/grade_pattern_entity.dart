@@ -7,6 +7,10 @@ class GradePatternEntity {
     this.code,
     this.name,
     this.details = const [],
+    this.insertDateTimeJalali,
+    this.insertUserFullName,
+    this.updateDateTimeJalali,
+    this.updateUserFullName,
     this.isActive = true,
   });
 
@@ -14,6 +18,10 @@ class GradePatternEntity {
   final int? code;
   final String? name;
   final List<GradePatternDetailEntity> details;
+  final String? insertDateTimeJalali;
+  final String? insertUserFullName;
+  final String? updateDateTimeJalali;
+  final String? updateUserFullName;
   final bool isActive;
 
   GradePatternEntity copyWith({
@@ -21,6 +29,10 @@ class GradePatternEntity {
     int? code,
     String? name,
     List<GradePatternDetailEntity>? details,
+    String? insertDateTimeJalali,
+    String? insertUserFullName,
+    String? updateDateTimeJalali,
+    String? updateUserFullName,
     bool? isActive,
   }) {
     return GradePatternEntity(
@@ -28,6 +40,12 @@ class GradePatternEntity {
       code: code ?? this.code,
       name: name ?? this.name,
       details: details ?? this.details,
+      insertDateTimeJalali:
+          insertDateTimeJalali ?? this.insertDateTimeJalali,
+      insertUserFullName: insertUserFullName ?? this.insertUserFullName,
+      updateDateTimeJalali:
+          updateDateTimeJalali ?? this.updateDateTimeJalali,
+      updateUserFullName: updateUserFullName ?? this.updateUserFullName,
       isActive: isActive ?? this.isActive,
     );
   }
@@ -38,6 +56,10 @@ class GradePatternEntity {
       code: code,
       name: name,
       details: details.map((item) => item.toModel()).toList(),
+      insertDateTimeJalali: insertDateTimeJalali,
+      insertUserFullName: insertUserFullName,
+      updateDateTimeJalali: updateDateTimeJalali,
+      updateUserFullName: updateUserFullName,
       isActive: isActive,
     );
   }

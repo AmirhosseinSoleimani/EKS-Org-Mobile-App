@@ -26,7 +26,7 @@ class StatusLabel extends StatelessWidget {
     required this.text,
     required this.color,
     this.backgroundColor,
-    this.fontSize = 10,
+    this.fontSize = 12,
     this.variant = StatusLabelVariant.filled,
     this.width,
     this.borderRadius = 50,
@@ -52,7 +52,7 @@ class StatusLabel extends StatelessWidget {
         text: text,
         color: resolvedTextColor,
         fontSize: fontSize,
-        textAlign: textAlign,fontWeight: fontWeight,
+        textAlign: textAlign,fontWeight: fontWeight ?? FontWeight.w500,
       ),
     );
   }

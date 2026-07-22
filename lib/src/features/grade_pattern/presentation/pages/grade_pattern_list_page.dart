@@ -8,6 +8,7 @@ import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/widget
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/widgets/grade_pattern_details_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/gestures.dart';
@@ -50,16 +51,16 @@ class _GradePatternListView extends StatelessWidget {
         );
       },
       child: Scaffold(
-        backgroundColor: theme.colorScheme.surface,
+        backgroundColor: const Color(0xFFF6F6F6),
         appBar: const SimpleAppBar(title: 'الگوی گرید'),
-        floatingActionButton: FloatingActionButton(
+        floatingActionButton: FloatingActionButtonWidget(
+          title: 'امداد‌رسان جدید',
           onPressed: () async {
             final changed = await context.pushNamed<bool>(GradePatternFormPage.name);
             if (changed == true && context.mounted) {
               cubit.fetchList(refresh: true);
             }
           },
-          child: const Icon(Icons.add_rounded),
         ),
         body: Column(
           children: [
@@ -74,22 +75,36 @@ class _GradePatternListView extends StatelessWidget {
                 children: [
                   Expanded(
                     child: _TopFilterButton(
-                      title: 'جستجو',
+                      title: 'فیلترها',
                       isActive: cubit.filter.name?.trim().isNotEmpty == true,
+                      icon: Icons.tune_rounded,
                       onTap: () => _showSearchSheet(context, cubit),
                     ),
                   ),
                   Space.w12,
                   Expanded(
                     child: _TopFilterButton(
-                      title: _statusTitle(cubit.filter.isActive),
+                      title: 'وضعیت',
                       isActive: cubit.filter.isActive != null,
+                      icon: Icons.keyboard_arrow_down_rounded,
                       onTap: () => _showStatusSheet(context, cubit),
                     ),
                   ),
                 ],
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.symmetric(horizontal: AppPadding.p16),
+              child: _ReportButton(
+                onTap: () {
+                  SnakeBarWidget.showError(
+                    context: context,
+                    message: 'API گزارش‌گیری الگوی گرید هنوز تعریف نشده است',
+                  );
+                },
+              ),
+            ),
+            Space.h12,
             Expanded(
               child: BlocBuilder<GradePatternCubit, GradePatternState>(
                 builder: (context, state) {
@@ -356,11 +371,13 @@ class _TopFilterButton extends StatelessWidget {
   const _TopFilterButton({
     required this.title,
     required this.isActive,
+    required this.icon,
     required this.onTap,
   });
 
   final String title;
   final bool isActive;
+  final IconData icon;
   final VoidCallback onTap;
 
   @override
@@ -383,7 +400,7 @@ class _TopFilterButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.filter_alt_outlined, size: AppSize.s18, color: color),
+            Icon(icon, size: AppSize.s18, color: color),
             Space.w8,
             Flexible(
               child: Text(
@@ -394,6 +411,47 @@ class _TopFilterButton extends StatelessWidget {
                   fontWeight: FontWeight.w700,
                 ),
               ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
+
+class _ReportButton extends StatelessWidget {
+  const _ReportButton({required this.onTap});
+
+  final VoidCallback onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return InkWell(
+      onTap: onTap,
+      borderRadius: BorderRadius.circular(AppSize.s8),
+      child: Container(
+        height: 40,
+        decoration: BoxDecoration(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(AppSize.s8),
+          border: Border.all(color: theme.colorScheme.onSurfaceVariant),
+        ),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              'گزارش‌گیری',
+              style: theme.textTheme.bodyMedium?.copyWith(
+                color: theme.colorScheme.onSurfaceVariant,
+                fontWeight: FontWeight.w800,
+              ),
+            ),
+            Space.w8,
+            Icon(
+              Icons.summarize_outlined,
+              size: AppSize.s22,
+              color: theme.colorScheme.onSurfaceVariant,
             ),
           ],
         ),
@@ -489,10 +547,4 @@ class _MessageState extends StatelessWidget {
       ),
     );
   }
-}
-
-String _statusTitle(bool? isActive) {
-  if (isActive == true) return 'فعال';
-  if (isActive == false) return 'غیرفعال';
-  return 'همه';
 }

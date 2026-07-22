@@ -38,7 +38,6 @@ class BodySmallText extends StatelessWidget {
         fontWeight: fontWeight,
         overflow: textOverflow,
         height: lineHeight,
-
       ),
     );
   }

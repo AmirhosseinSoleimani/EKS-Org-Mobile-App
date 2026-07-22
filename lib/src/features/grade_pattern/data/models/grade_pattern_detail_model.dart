@@ -11,12 +11,18 @@ class GradePatternDetailModel extends GradePatternDetailEntity {
 
   factory GradePatternDetailModel.fromJson(Map<String, dynamic> json) {
     return GradePatternDetailModel(
-      gradeId: _toInt(json['gradeId']) ?? 0,
-      gradeCode: json['gradeCode']?.toString() ?? '',
-      gradeTitle: json['gradeTitle']?.toString() ?? '',
-      gradeCoefficient: _toNum(json['gradeCoefficient']) ?? 0,
+      gradeId: _toInt(_read(json, 'gradeId', 'GradeId')) ?? 0,
+      gradeCode: _read(json, 'gradeCode', 'GradeCode')?.toString() ?? '',
+      gradeTitle: _read(json, 'gradeTitle', 'GradeTitle')?.toString() ?? '',
+      gradeCoefficient:
+          _toNum(_read(json, 'gradeCoefficient', 'GradeCoefficient')) ?? 0,
       managmentCommisionPercent:
-          _toNum(json['managmentCommisionPercent']) ?? 0,
+          _toNum(_read(
+                json,
+                'managmentCommisionPercent',
+                'ManagmentCommisionPercent',
+              )) ??
+              0,
     );
   }
 
@@ -40,5 +46,13 @@ class GradePatternDetailModel extends GradePatternDetailEntity {
     if (value == null) return null;
     if (value is num) return value;
     return num.tryParse(value.toString());
+  }
+
+  static dynamic _read(
+    Map<String, dynamic> json,
+    String camelCaseKey,
+    String pascalCaseKey,
+  ) {
+    return json[camelCaseKey] ?? json[pascalCaseKey];
   }
 }

@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/domain/entities/grade_pattern_detail_entity.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/domain/entities/grade_pattern_entity.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/cubit/grade_pattern_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/widgets/grade_pattern_level_form_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
@@ -78,20 +79,53 @@ class _GradePatternFormViewState extends State<_GradePatternFormView> {
             orElse: () => false,
           );
           final item = _item;
+          final isNew = item?.id == null || item?.id == 0;
           return Scaffold(
+            backgroundColor: const Color(0xFFF8F7F7),
             appBar: SimpleAppBar(
-              title: item?.id == null || item?.id == 0
-                  ? 'ثبت الگوی گرید'
-                  : 'ویرایش الگوی گرید',
+              title: isNew ? 'افزودن الگوی گرید' : 'ویرایش الگوی گرید',
             ),
             bottomNavigationBar: item == null
                 ? null
                 : SafeArea(
-                    minimum: const EdgeInsets.all(AppPadding.p16),
-                    child: InkwellButtonWidget(
-                      title: 'ثبت',
-                      showLoading: isSubmitting,
-                      onTap: () => _submit(cubit),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: Theme.of(context).colorScheme.onPrimary,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withAlpha(14),
+                            blurRadius: 12,
+                            offset: const Offset(0, -4),
+                          ),
+                        ],
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(AppPadding.p16),
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: InkwellButtonWidget(
+                                title: isNew ? 'افزودن' : 'ثبت تغییرات',
+                                showLoading: isSubmitting,
+                                borderRadius: AppSize.s8,
+                                onTap: () => _submit(cubit),
+                              ),
+                            ),
+                            Space.w12,
+                            Expanded(
+                              child: InkwellButtonWidget(
+                                title: 'انصراف',
+                                backgroundColor:
+                                    Theme.of(context).colorScheme.onPrimary,
+                                titleColor:
+                                    Theme.of(context).colorScheme.onSurfaceVariant,
+                                borderRadius: AppSize.s8,
+                                onTap: () => context.pop(false),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ),
             body: state.maybeWhen(
@@ -104,35 +138,33 @@ class _GradePatternFormViewState extends State<_GradePatternFormView> {
                   return const Center(child: CircularProgressIndicator());
                 }
                 return SingleChildScrollView(
-                  padding: const EdgeInsets.all(AppPadding.p16),
+                  padding: const EdgeInsets.fromLTRB(
+                    AppPadding.p16,
+                    AppPadding.p24,
+                    AppPadding.p16,
+                    AppPadding.p24,
+                  ),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
                       TextFormFieldWidget(
                         controller: _nameController,
-                        labelText: 'نام الگوی گرید',
-                      ),
-                      Space.h12,
-                      DropdownButtonFormField<bool>(
-                        value: _isActive,
-                        decoration: const InputDecoration(labelText: 'وضعیت'),
-                        items: const [
-                          DropdownMenuItem(value: true, child: Text('فعال')),
-                          DropdownMenuItem(value: false, child: Text('غیرفعال')),
-                        ],
-                        onChanged: (value) {
-                          if (value != null) setState(() => _isActive = value);
-                        },
+                        labelText: 'عنوان',
                       ),
                       Space.h24,
                       Text(
-                        'جزئیات گرید',
+                        'تعیین مقادیر سطوح',
+                        textAlign: TextAlign.right,
                         style: Theme.of(context).textTheme.titleSmall?.copyWith(
                               fontWeight: FontWeight.w800,
+                              color: const Color(0xFF574235),
                             ),
                       ),
-                      Space.h12,
-                      ...item.details.map(_buildDetailEditor),
+                      Space.h16,
+                      if (item.details.isEmpty)
+                        const _EmptyGradeLevels()
+                      else
+                        ...item.details.map(_buildDetailEditor),
                     ],
                   ),
                 );
@@ -163,37 +195,23 @@ class _GradePatternFormViewState extends State<_GradePatternFormView> {
   }
 
   Widget _buildDetailEditor(GradePatternDetailEntity detail) {
-    final theme = Theme.of(context);
-    return Container(
-      margin: const EdgeInsets.only(bottom: AppPadding.p12),
-      padding: const EdgeInsets.all(AppPadding.p16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.onPrimary,
-        borderRadius: BorderRadius.circular(AppSize.s8),
+    final coefficientController = _coefficientControllers.putIfAbsent(
+      detail.gradeId,
+      () => TextEditingController(
+        text: detail.gradeCoefficient.toString(),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            detail.gradeTitle,
-            style: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-          Space.h12,
-          TextField(
-            controller: _coefficientControllers[detail.gradeId],
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: const InputDecoration(labelText: 'ضریب گرید'),
-          ),
-          Space.h12,
-          TextField(
-            controller: _commissionControllers[detail.gradeId],
-            keyboardType: const TextInputType.numberWithOptions(decimal: true),
-            decoration: const InputDecoration(labelText: 'درصد کمیسیون مدیریت'),
-          ),
-        ],
+    );
+    final commissionController = _commissionControllers.putIfAbsent(
+      detail.gradeId,
+      () => TextEditingController(
+        text: detail.managmentCommisionPercent.toString(),
       ),
+    );
+
+    return GradePatternLevelFormCard(
+      detail: detail,
+      coefficientController: coefficientController,
+      commissionController: commissionController,
     );
   }
 
@@ -218,5 +236,24 @@ class _GradePatternFormViewState extends State<_GradePatternFormView> {
       isActive: _isActive,
       details: details,
     ));
+  }
+}
+
+class _EmptyGradeLevels extends StatelessWidget {
+  const _EmptyGradeLevels();
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: AppPadding.p24),
+      child: Text(
+        'سطحی برای این الگو تعریف نشده است',
+        textAlign: TextAlign.center,
+        style: theme.textTheme.bodyMedium?.copyWith(
+          color: theme.colorScheme.onSurfaceVariant,
+        ),
+      ),
+    );
   }
 }
