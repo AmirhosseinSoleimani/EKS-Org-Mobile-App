@@ -225,7 +225,6 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> {
                 : 'مهارت با موفقیت ویرایش شد',
           ),
         ));
-        await fetchSkills();
         return true;
       },
       failure: (_, message) async {

@@ -24,7 +24,7 @@ abstract class SkillsCertificatesService {
   );
 
   @POST('/api/SkillCertificate/post')
-  Future<BaseSingleResponse<void>> createSkill(
+  Future<Map<String, dynamic>> createSkill(
     @Body() Map<String, dynamic> body,
   );
 

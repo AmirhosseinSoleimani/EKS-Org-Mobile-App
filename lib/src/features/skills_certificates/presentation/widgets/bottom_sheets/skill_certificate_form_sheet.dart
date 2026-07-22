@@ -1,11 +1,13 @@
 import 'package:eks_sana_plus_org/src/features/skills_certificates/domain/entities/skill_certificate_entity.dart';
 import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/cubit/skills_certificates_cubit.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/full_screen_bottom_sheet_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class SkillCertificateFormSheet extends StatefulWidget {
   const SkillCertificateFormSheet({super.key, this.skill});
@@ -41,18 +43,20 @@ class _SkillCertificateFormSheetState extends State<SkillCertificateFormSheet> {
     final isEdit = widget.skill?.id != null;
 
     return Container(
-      padding: EdgeInsetsGeometry.symmetric(horizontal: AppPadding.p8),
+      padding: EdgeInsetsGeometry.all(AppPadding.p16),
       height: availableHeight * 0.34,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text(
-            isEdit ? 'ویرایش گواهینامه' : 'ثبت گواهینامه جدید',
-            style: theme.textTheme.titleMedium?.copyWith(
-              fontWeight: FontWeight.w800,
-            ),
+          FullScreenBottomSheetAppBar(
+            title: isEdit ? 'ویرایش گواهینامه' : 'ثبت گواهینامه جدید',
+            onClose: () {
+              context.pop();
+            },
           ),
+          Divider(height: 1,color: theme.dividerColor),
           Space.h24,
+
           Expanded(
             child: SingleChildScrollView(
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
@@ -86,6 +90,7 @@ class _SkillCertificateFormSheetState extends State<SkillCertificateFormSheet> {
             onSubmit: _submit,
             onCancel: () => Navigator.of(context).pop(),
           ),
+          Space.h16,
         ],
       ),
     );

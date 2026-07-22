@@ -27,8 +27,21 @@ class SkillsCertificatesDataSourceImpl extends SkillsCertificatesDataSource {
   @override
   Future<BaseSingleResponse<void>> createSkill(
     CreateOrEditSkillCertificateParamModel param,
-  ) =>
-      _service.createSkill(param.toJson());
+  ) async {
+    final rawResponse = await _service.createSkill(param.toJson());
+    final normalizedResponse = Map<String, dynamic>.from(rawResponse);
+
+    // The create endpoint returns the created id as a string, for example
+    // data: "202". BaseSingleResponse<void> expects object-shaped data.
+    if (normalizedResponse['data'] is! Map<String, dynamic>) {
+      normalizedResponse['data'] = <String, dynamic>{};
+    }
+
+    return BaseSingleResponse<void>.fromJson(
+      normalizedResponse,
+      (_) {},
+    );
+  }
 
   @override
   Future<BaseSingleResponse<void>> editSkill(

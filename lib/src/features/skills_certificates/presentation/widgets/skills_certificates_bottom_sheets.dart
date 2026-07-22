@@ -34,15 +34,14 @@ class SkillsCertificatesBottomSheets {
     if (skill != null && initialSkill == null) return;
     if (!context.mounted) return;
 
-    BottomSheetMessage.showCustom(
+    BottomSheetMessage.showFullScreenCustom(
       context: context,
       content: BlocProvider.value(
         value: cubit,
         child: SkillCertificateFormSheet(skill: initialSkill),
       ),
-      actionWidget: const SizedBox.shrink(),
       backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      maxHeight: 0.72,
+
     );
   }
 
