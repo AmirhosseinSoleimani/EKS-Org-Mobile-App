@@ -189,16 +189,7 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> {
     required bool isActive,
   }) async {
     final normalizedTitle = title.trim();
-    if (normalizedTitle.isEmpty) {
-      emit(SkillsCertificatesState.error(
-        data: _data,
-        message: _message(
-          title: 'خطا',
-          message: 'پر کردن فیلدهای ستاره‌دار الزامی است',
-        ),
-      ));
-      return false;
-    }
+    if (normalizedTitle.isEmpty) return false;
 
     emit(SkillsCertificatesState.loading(data: _data.copyWith(
       isSubmitting: true,
@@ -225,6 +216,7 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> {
                 : 'مهارت با موفقیت ویرایش شد',
           ),
         ));
+        await fetchSkills();
         return true;
       },
       failure: (_, message) async {

@@ -47,8 +47,10 @@ class SkillCertificateCard extends StatelessWidget {
                 const Spacer(),
                 StatusLabel(
                   text: item.isActive ? 'فعال' : 'غیرفعال',
-                  color: item.isActive ? colorScheme.onError : colorScheme
-                      .error,
+                  color: item.isActive
+                      ? colorScheme.onError
+                      : colorScheme.error,
+                  variant: StatusLabelVariant.filledWithoutBorder,
                 ),
               ],
             ),
