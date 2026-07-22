@@ -29,18 +29,7 @@ class SkillsCertificatesDataSourceImpl extends SkillsCertificatesDataSource {
     CreateOrEditSkillCertificateParamModel param,
   ) async {
     final rawResponse = await _service.createSkill(param.toJson());
-    final normalizedResponse = Map<String, dynamic>.from(rawResponse);
-
-    // The create endpoint returns the created id as a string, for example
-    // data: "202". BaseSingleResponse<void> expects object-shaped data.
-    if (normalizedResponse['data'] is! Map<String, dynamic>) {
-      normalizedResponse['data'] = <String, dynamic>{};
-    }
-
-    return BaseSingleResponse<void>.fromJson(
-      normalizedResponse,
-      (_) {},
-    );
+    return _normalizeVoidResponse(rawResponse);
   }
 
   @override
@@ -60,8 +49,27 @@ class SkillsCertificatesDataSourceImpl extends SkillsCertificatesDataSource {
   @override
   Future<BaseSingleResponse<void>> submitServices(
     SubmitSkillServicesParamModel param,
-  ) =>
-      _service.submitServices(param.toJson());
+  ) async {
+    final rawResponse = await _service.submitServices(param.toJson());
+    return _normalizeVoidResponse(rawResponse);
+  }
+
+  BaseSingleResponse<void> _normalizeVoidResponse(
+    Map<String, dynamic> rawResponse,
+  ) {
+    final normalizedResponse = Map<String, dynamic>.from(rawResponse);
+
+    // Some write endpoints return a string in data, such as a created id or
+    // success message. BaseSingleResponse<void> expects object-shaped data.
+    if (normalizedResponse['data'] is! Map<String, dynamic>) {
+      normalizedResponse['data'] = <String, dynamic>{};
+    }
+
+    return BaseSingleResponse<void>.fromJson(
+      normalizedResponse,
+      (_) {},
+    );
+  }
 
   @override
   Future<BaseSingleResponse<SkillCertificateListModel>> getReport(

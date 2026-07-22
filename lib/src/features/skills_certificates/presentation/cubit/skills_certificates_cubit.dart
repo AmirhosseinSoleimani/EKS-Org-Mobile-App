@@ -287,32 +287,36 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> {
     );
   }
 
-  Future<void> loadServices(SkillCertificateEntity skill) async {
+  Future<bool> loadServices(SkillCertificateEntity skill) async {
     final id = skill.id;
-    if (id == null) return;
+    if (id == null) return false;
 
     emit(SkillsCertificatesState.loading(data: _data.copyWith(
       selectedSkill: skill,
       services: const [],
       selectedServiceIds: const <int>{},
+      serviceSearchText: '',
       isServicesLoading: true,
       message: null,
     )));
 
     final result = await _getSkillCertificateServicesUseCase(id);
 
-    result.when(
+    return result.when(
       success: (items, _, __) {
+        final selectedIds = items
+            .where((item) => item.isSelected && item.id != null)
+            .map((item) => item.id!)
+            .toSet();
+
         emit(SkillsCertificatesState.loaded(
           data: _data.copyWith(
             services: items,
-            selectedServiceIds: items
-                .where((item) => item.isSelected && item.id != null)
-                .map((item) => item.id!)
-                .toSet(),
+            selectedServiceIds: selectedIds,
             isServicesLoading: false,
           ),
         ));
+        return true;
       },
       failure: (_, message) {
         emit(SkillsCertificatesState.error(
@@ -322,26 +326,44 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> {
             message: message ?? 'دریافت سرویس‌ها با خطا مواجه شد',
           ),
         ));
+        return false;
       },
       expireToken: () {
         emit(SkillsCertificatesState.loaded(
           data: _data.copyWith(isServicesLoading: false),
         ));
+        return false;
       },
       connectionError: () {
         emit(SkillsCertificatesState.connectionError(
           data: _data.copyWith(isServicesLoading: false),
         ));
+        return false;
       },
     );
   }
 
   void toggleService(SkillServiceEntity service) {
     final id = service.id;
-    if (id == null) return;
+    if (id == null || _data.isServicesSubmitting) return;
 
     final selectedIds = Set<int>.from(_data.selectedServiceIds);
     selectedIds.contains(id) ? selectedIds.remove(id) : selectedIds.add(id);
+
+    emit(SkillsCertificatesState.loaded(
+      data: _data.copyWith(selectedServiceIds: selectedIds),
+    ));
+  }
+
+  void setAllServices(bool selected) {
+    if (_data.isServicesSubmitting) return;
+
+    final selectedIds = selected
+        ? _data.services
+            .where((service) => service.id != null)
+            .map((service) => service.id!)
+            .toSet()
+        : <int>{};
 
     emit(SkillsCertificatesState.loaded(
       data: _data.copyWith(selectedServiceIds: selectedIds),
@@ -356,17 +378,18 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> {
 
   Future<bool> submitServices() async {
     final skillId = _data.selectedSkill?.id;
-    if (skillId == null) return false;
+    if (skillId == null || _data.isServicesSubmitting) return false;
 
     emit(SkillsCertificatesState.loading(data: _data.copyWith(
       isServicesSubmitting: true,
       message: null,
     )));
 
+    final selectedIds = _data.selectedServiceIds.toList()..sort();
     final result = await _submitSkillCertificateServicesUseCase(
       SubmitSkillServicesParamEntity(
         skillCertificateId: skillId,
-        emdadServiceIds: _data.selectedServiceIds.toList(),
+        emdadServiceIds: selectedIds,
       ),
     );
 
@@ -375,10 +398,9 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> {
         emit(SkillsCertificatesState.loaded(
           data: _data.copyWith(
             isServicesSubmitting: false,
-            message: 'سرویس‌ها با موفقیت ثبت شد',
+            message: 'سرویس‌های گواهینامه با موفقیت ثبت شد',
           ),
         ));
-        await fetchSkills();
         return true;
       },
       failure: (_, message) async {
@@ -463,6 +485,17 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> {
         ));
       },
     );
+  }
+
+
+  bool get areAllServicesSelected {
+    final selectableIds = _data.services
+        .where((service) => service.id != null)
+        .map((service) => service.id!)
+        .toSet();
+
+    return selectableIds.isNotEmpty &&
+        _data.selectedServiceIds.containsAll(selectableIds);
   }
 
   List<SkillServiceEntity> get filteredServices {

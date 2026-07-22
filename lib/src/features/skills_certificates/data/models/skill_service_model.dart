@@ -5,6 +5,7 @@ class SkillServiceModel extends SkillServiceEntity {
     super.id,
     super.title,
     super.type,
+    super.selected,
     super.selectable,
     super.insertDateTimeJalali,
     super.updateDateTimeJalali,
@@ -19,7 +20,18 @@ class SkillServiceModel extends SkillServiceEntity {
       id: _asInt(json['id'] ?? json['Id']),
       title: _asString(json['title'] ?? json['Title']),
       type: _asInt(json['type'] ?? json['Type']),
-      selectable: _asBoolOrNull(json['selectable']),
+      selected: _asBoolOrNull(
+        json['selected'] ??
+            json['Selected'] ??
+            json['isSelected'] ??
+            json['IsSelected'],
+      ),
+      selectable: _asBoolOrNull(
+        json['selectable'] ??
+            json['Selectable'] ??
+            json['isSelectable'] ??
+            json['IsSelectable'],
+      ),
       insertDateTimeJalali: _asString(
         json['insertDateTimeJalali'] ?? json['InsertDateTimeJalali'],
       ),
@@ -36,17 +48,17 @@ class SkillServiceModel extends SkillServiceEntity {
   }
 }
 
- bool? _asBoolOrNull(dynamic value) {
-if (value == null) return null;
-if (value is bool) return value;
-if (value is num) return value != 0;
+bool? _asBoolOrNull(dynamic value) {
+  if (value == null) return null;
+  if (value is bool) return value;
+  if (value is num) return value != 0;
 
-final text = value.toString().toLowerCase().trim();
+  final text = value.toString().toLowerCase().trim();
 
-if (text == 'true' || text == '1') return true;
-if (text == 'false' || text == '0') return false;
+  if (text == 'true' || text == '1') return true;
+  if (text == 'false' || text == '0') return false;
 
-return null;
+  return null;
 }
 
 int? _asInt(Object? value) {

@@ -50,10 +50,10 @@ class SkillsCertificatesBottomSheets {
     required SkillsCertificatesCubit cubit,
     required SkillCertificateEntity skill,
   }) async {
-    await cubit.loadServices(skill);
-    if (!context.mounted) return;
+    final loaded = await cubit.loadServices(skill);
+    if (!loaded || !context.mounted) return;
 
-    BottomSheetMessage.showFullScreenCustom<void>(
+    final submitted = await BottomSheetMessage.showFullScreenCustom<bool>(
       context: context,
       content: BlocProvider.value(
         value: cubit,
@@ -61,5 +61,9 @@ class SkillsCertificatesBottomSheets {
       ),
       backgroundColor: Theme.of(context).colorScheme.surface,
     );
+
+    if (submitted == true && context.mounted) {
+      await cubit.fetchSkills();
+    }
   }
 }
