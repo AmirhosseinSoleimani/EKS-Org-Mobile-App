@@ -4,8 +4,8 @@ import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/selection_widgets/app_checkbox_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -20,154 +20,105 @@ class SkillsCertificatesServicesSheet extends StatelessWidget {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: SafeArea(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppPadding.p16,
-                AppPadding.p12,
-                AppPadding.p16,
-                AppPadding.p8,
+        child: ColoredBox(
+          color: theme.colorScheme.onInverseSurface,
+          child: Column(
+            children: [
+              _ServicesSheetHeader(
+                onClose: () => Navigator.of(context).pop<bool>(false),
               ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: Text(
-                      'سرویس‌های گواهینامه',
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w800,
-                      ),
-                    ),
-                  ),
-                  IconButton(
-                    onPressed: () => Navigator.of(context).pop<bool>(false),
-                    tooltip: 'بستن',
-                    icon: const Icon(Icons.close_rounded),
-                  ),
-                ],
-              ),
-            ),
-            Divider(
-              height: AppSize.s1,
-              color: theme.dividerColor,
-            ),
-            Expanded(
-              child: BlocBuilder<SkillsCertificatesCubit,
-                  SkillsCertificatesState>(
-                builder: (context, state) {
-                  final data = state.data;
-                  final skill = data.selectedSkill;
+              Expanded(
+                child: BlocBuilder<SkillsCertificatesCubit,
+                    SkillsCertificatesState>(
+                  builder: (context, state) {
+                    final data = state.data;
+                    final skill = data.selectedSkill;
 
-                  if (data.isServicesLoading) {
-                    return const Center(child: CircularProgressIndicator());
-                  }
+                    if (data.isServicesLoading) {
+                      return const Center(child: CircularProgressIndicator());
+                    }
 
-                  final filteredServices = cubit.filteredServices;
-                  final selectedServices = filteredServices.where((service) {
-                    final id = service.id;
-                    return id != null && data.selectedServiceIds.contains(id);
-                  }).toList();
-                  final unselectedServices = filteredServices.where((service) {
-                    final id = service.id;
-                    return id == null || !data.selectedServiceIds.contains(id);
-                  }).toList();
+                    final filteredServices = cubit.filteredServices;
 
-                  return ListView(
-                    keyboardDismissBehavior:
-                        ScrollViewKeyboardDismissBehavior.onDrag,
-                    physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.fromLTRB(
-                      AppPadding.p16,
-                      AppPadding.p16,
-                      AppPadding.p16,
-                      AppPadding.p24,
-                    ),
-                    children: [
-                      if (skill != null) SkillCertificateServicesHeader(skill),
-                      Space.h24,
-                      TextFormFieldWidget(
-                        onChanged: cubit.filterServices,
-                        hintText: 'جستجوی سرویس',
-                        prefixIcon: const Icon(Icons.search),
-                        textInputAction: TextInputAction.search,
+                    return ListView(
+                      keyboardDismissBehavior:
+                          ScrollViewKeyboardDismissBehavior.onDrag,
+                      physics: const BouncingScrollPhysics(),
+                      padding: const EdgeInsets.fromLTRB(
+                        AppPadding.p16,
+                        AppPadding.p16,
+                        AppPadding.p16,
+                        AppPadding.p24,
                       ),
-                      Space.h16,
-                      AppCheckboxWidget(
-                        title: 'انتخاب همه',
-                        value: cubit.areAllServicesSelected,
-                        enabled: !data.isServicesSubmitting,
-                        onChanged: cubit.setAllServices,
-                      ),
-                      Space.h24,
-                      if (data.services.isEmpty)
-                        const Center(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: AppPadding.p24,
-                            ),
-                            child: Text('سرویسی برای این گواهینامه یافت نشد.'),
-                          ),
-                        )
-                      else if (filteredServices.isEmpty)
-                        const Center(
-                          child: Padding(
-                            padding: EdgeInsets.symmetric(
-                              vertical: AppPadding.p24,
-                            ),
-                            child: Text('سرویسی با این عنوان پیدا نشد.'),
-                          ),
-                        )
-                      else ...[
-                        _ServicesSectionTitle(
-                          title: 'سرویس‌های انتخاب‌شده',
-                          count: selectedServices.length,
+                      children: [
+                        if (skill != null) ...[
+                          SkillCertificateServicesHeader(skill),
+                          Space.h16,
+                        ],
+                        TextFormFieldWidget(
+                          onChanged: cubit.filterServices,
+                          hintText: 'جستجوی سرویس',
+                          suffixIcon: const Icon(Icons.search),
+                          textInputAction: TextInputAction.search,
                         ),
-                        Space.h12,
-                        if (selectedServices.isEmpty)
-                          Text(
-                            'هنوز سرویسی انتخاب نشده است.',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
-                          )
-                        else
-                          Wrap(
-                            spacing: AppSize.s8,
-                            runSpacing: AppSize.s8,
-                            children: selectedServices
-                                .map(SkillServiceSelectableItem.new)
-                                .toList(),
-                          ),
                         Space.h24,
-                        _ServicesSectionTitle(
-                          title: 'سایر سرویس‌ها',
-                          count: unselectedServices.length,
-                        ),
-                        Space.h12,
-                        if (unselectedServices.isEmpty)
-                          Text(
-                            'همه سرویس‌ها انتخاب شده‌اند.',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
+                        if (data.services.isEmpty)
+                          const _ServicesEmptyMessage(
+                            message: 'سرویس یافت نشد.',
+                          )
+                        else if (filteredServices.isEmpty)
+                          const _ServicesEmptyMessage(
+                            message: 'سرویسی با این عنوان پیدا نشد.',
                           )
                         else
-                          Wrap(
-                            spacing: AppSize.s8,
-                            runSpacing: AppSize.s8,
-                            children: unselectedServices
-                                .map(SkillServiceSelectableItem.new)
-                                .toList(),
-                          ),
+                          _ServicesWrap(services: filteredServices),
                       ],
-                    ],
-                  );
-                },
+                    );
+                  },
+                ),
+              ),
+              _ServicesActions(cubit: cubit),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class _ServicesSheetHeader extends StatelessWidget {
+  const _ServicesSheetHeader({required this.onClose});
+
+  final VoidCallback onClose;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Container(
+      color: theme.colorScheme.onPrimary,
+      padding: const EdgeInsets.fromLTRB(
+        AppPadding.p16,
+        AppPadding.p12,
+        AppPadding.p16,
+        AppPadding.p10,
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: Text(
+              'سرویس‌ها',
+              style: theme.textTheme.titleMedium?.copyWith(
+                fontWeight: FontWeight.w800,
               ),
             ),
-            _ServicesActions(cubit: cubit),
-          ],
-        ),
+          ),
+          IconButton(
+            onPressed: onClose,
+            tooltip: 'بستن',
+            icon: const Icon(Icons.close_rounded),
+          ),
+        ],
       ),
     );
   }
@@ -198,11 +149,25 @@ class SkillCertificateServicesHeader extends StatelessWidget {
       ),
       child: Row(
         children: [
+          Container(
+            width: AppSize.s54,
+            height: AppSize.s54,
+            decoration: BoxDecoration(
+              color: colorScheme.primary.withAlpha(18),
+              shape: BoxShape.circle,
+            ),
+            child: Icon(
+              Icons.desktop_windows_outlined,
+              color: colorScheme.primary,
+              size: AppSize.s28,
+            ),
+          ),
+          Space.w12,
           Expanded(
             child: Text(
               skill.displayTitle,
               style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w700,
+                fontWeight: FontWeight.w800,
               ),
             ),
           ),
@@ -218,140 +183,160 @@ class SkillCertificateServicesHeader extends StatelessWidget {
   }
 }
 
-class _ServicesSectionTitle extends StatelessWidget {
-  const _ServicesSectionTitle({
-    required this.title,
-    required this.count,
-  });
+class _ServicesWrap extends StatelessWidget {
+  const _ServicesWrap({required this.services});
 
-  final String title;
-  final int count;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            title,
-            style: theme.textTheme.titleSmall?.copyWith(
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppPadding.p8,
-            vertical: AppPadding.p4,
-          ),
-          decoration: BoxDecoration(
-            color: theme.colorScheme.primary.withAlpha(18),
-            borderRadius: BorderRadius.circular(AppSize.s12),
-          ),
-          child: Text(
-            count.toString(),
-            style: theme.textTheme.labelMedium?.copyWith(
-              color: theme.colorScheme.primary,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-class SkillServiceSelectableItem extends StatelessWidget {
-  const SkillServiceSelectableItem(this.service, {super.key});
-
-  final SkillServiceEntity service;
+  final List<SkillServiceEntity> services;
 
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<SkillsCertificatesCubit>();
 
-    return BlocBuilder<SkillsCertificatesCubit, SkillsCertificatesState>(
-      buildWhen: (previous, current) =>
-          previous.data.selectedServiceIds != current.data.selectedServiceIds ||
-          previous.data.isServicesSubmitting !=
-              current.data.isServicesSubmitting,
-      builder: (context, state) {
-        final selected = service.id != null &&
-            state.data.selectedServiceIds.contains(service.id);
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        return BlocBuilder<SkillsCertificatesCubit, SkillsCertificatesState>(
+          buildWhen: (previous, current) =>
+              previous.data.selectedServiceIds !=
+                  current.data.selectedServiceIds ||
+              previous.data.isServicesSubmitting !=
+                  current.data.isServicesSubmitting,
+          builder: (context, state) {
+            return Wrap(
+              spacing: AppSize.s8,
+              runSpacing: AppSize.s8,
+              alignment: WrapAlignment.start,
+              children: services.map((service) {
+                final selected = service.id != null &&
+                    state.data.selectedServiceIds.contains(service.id);
 
-        return Material(
-          color: Colors.transparent,
-          child: InkWell(
-            borderRadius: BorderRadius.circular(AppSize.s8),
-            onTap: state.data.isServicesSubmitting
-                ? null
-                : () => cubit.toggleService(service),
-            child: _ServiceItemContent(
-              title: service.displayTitle,
-              selected: selected,
-            ),
-          ),
+                return _ServiceCheckItem(
+                  title: service.displayTitle,
+                  selected: selected,
+                  maxWidth: constraints.maxWidth,
+                  onTap: () {
+                    if (state.data.isServicesSubmitting) return;
+                    cubit.toggleService(service);
+                  },
+                );
+              }).toList(),
+            );
+          },
         );
       },
     );
   }
 }
 
-class _ServiceItemContent extends StatelessWidget {
-  const _ServiceItemContent({
+class _ServiceCheckItem extends StatelessWidget {
+  const _ServiceCheckItem({
     required this.title,
     required this.selected,
+    required this.maxWidth,
+    required this.onTap,
   });
 
   final String title;
   final bool selected;
+  final double maxWidth;
+  final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
+    final primary = colorScheme.primary;
+    final borderColor = selected ? primary : colorScheme.onInverseSurface;
+    final textColor = selected ? primary : colorScheme.onSurface;
+    final textStyle = Theme.of(context).textTheme.bodyMedium?.copyWith(
+          color: textColor,
+        );
 
-    return Container(
-      constraints: const BoxConstraints(minHeight: AppSize.s42),
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppPadding.p12,
-        vertical: AppPadding.p10,
-      ),
+    const horizontalPadding = 28.0;
+    final iconWidth = selected ? 26.0 : AppSize.s0;
+    final availableTextWidth =
+        (maxWidth - horizontalPadding - iconWidth)
+            .clamp(80.0, maxWidth)
+            .toDouble();
+    final itemWidth = _calculateWidth(
+      context: context,
+      textStyle: textStyle,
+      availableTextWidth: availableTextWidth,
+      iconWidth: iconWidth,
+    ).clamp(0.0, maxWidth).toDouble();
+
+    final child = AnimatedContainer(
+      duration: const Duration(milliseconds: 180),
+      width: itemWidth,
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: colorScheme.onPrimary,
-        borderRadius: BorderRadius.circular(AppSize.s8),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(10),
         border: Border.all(
-          color: selected ? colorScheme.primary : colorScheme.onInverseSurface,
-          width: selected ? AppSize.s2 : AppSize.s1,
+          color: borderColor,
+          width: selected ? 1.5 : 1,
         ),
       ),
       child: Row(
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           if (selected) ...[
-            Icon(
-              Icons.check_circle_outline_rounded,
-              color: colorScheme.primary,
-              size: AppSize.s18,
-            ),
-            Space.w8,
+            Icon(Icons.check_circle_outline, color: primary, size: 18),
+            const SizedBox(width: 8),
           ],
           Flexible(
-            child: Text(
-              title,
-              maxLines: 2,
-              overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: selected
-                    ? colorScheme.primary
-                    : colorScheme.onSurface,
-                fontWeight: selected ? FontWeight.w700 : FontWeight.w500,
-              ),
+            child: BodyMediumText(
+              text: title,
+              color: textColor,
             ),
           ),
         ],
+      ),
+    );
+
+    return Material(
+      color: Colors.transparent,
+      child: InkWell(
+        onTap: onTap,
+        borderRadius: BorderRadius.circular(10),
+        child: child,
+      ),
+    );
+  }
+
+  double _calculateWidth({
+    required BuildContext context,
+    required TextStyle? textStyle,
+    required double availableTextWidth,
+    required double iconWidth,
+  }) {
+    final textPainter = TextPainter(
+      text: TextSpan(text: title, style: textStyle),
+      textDirection: Directionality.of(context),
+    )..layout(maxWidth: availableTextWidth);
+
+    return textPainter.width + 28 + iconWidth;
+  }
+}
+
+
+class _ServicesEmptyMessage extends StatelessWidget {
+  const _ServicesEmptyMessage({required this.message});
+
+  final String message;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+
+    return Center(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(vertical: AppPadding.p24),
+        child: Text(
+          message,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: theme.colorScheme.onSurfaceVariant,
+          ),
+        ),
       ),
     );
   }
@@ -396,32 +381,33 @@ class _ServicesActions extends StatelessWidget {
               children: [
                 Expanded(
                   child: InkwellButtonWidget(
-                    title: 'بستن',
-                    backgroundColor: theme.colorScheme.onPrimary,
-                    borderColor: theme.colorScheme.outline,
-                    titleColor: theme.colorScheme.onSurface,
-                    borderWidth: AppSize.s1,
-                    onTap: isSubmitting
-                        ? null
-                        : () => Navigator.of(context).pop<bool>(false),
-                  ),
-                ),
-                Space.w12,
-                Expanded(
-                  child: InkwellButtonWidget(
                     title: isSubmitting ? 'در حال ثبت...' : 'ثبت',
                     backgroundColor: theme.colorScheme.primary,
                     borderColor: theme.colorScheme.primary,
                     titleColor: theme.colorScheme.onPrimary,
                     showLoading: isSubmitting,
-                    onTap: isSubmitting
-                        ? null
-                        : () async {
-                            final submitted = await cubit.submitServices();
-                            if (submitted && context.mounted) {
-                              Navigator.of(context).pop<bool>(true);
-                            }
-                          },
+                    onTap: () async {
+                      if (isSubmitting) return;
+
+                      final submitted = await cubit.submitServices();
+                      if (submitted && context.mounted) {
+                        Navigator.of(context).pop<bool>(true);
+                      }
+                    },
+                  ),
+                ),
+                Space.w12,
+                Expanded(
+                  child: InkwellButtonWidget(
+                    title: 'بستن',
+                    backgroundColor: theme.colorScheme.onPrimary,
+                    borderColor: theme.colorScheme.outline,
+                    titleColor: theme.colorScheme.onSurface,
+                    borderWidth: AppSize.s1,
+                    onTap: () {
+                      if (isSubmitting) return;
+                      Navigator.of(context).pop<bool>(false);
+                    },
                   ),
                 ),
               ],

@@ -53,6 +53,16 @@ class SkillsCertificatesBottomSheets {
     final loaded = await cubit.loadServices(skill);
     if (!loaded || !context.mounted) return;
 
+    await showLoadedServicesSheet(
+      context: context,
+      cubit: cubit,
+    );
+  }
+
+  static Future<void> showLoadedServicesSheet({
+    required BuildContext context,
+    required SkillsCertificatesCubit cubit,
+  }) async {
     final submitted = await BottomSheetMessage.showFullScreenCustom<bool>(
       context: context,
       content: BlocProvider.value(

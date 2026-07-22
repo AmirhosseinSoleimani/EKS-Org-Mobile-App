@@ -142,11 +142,12 @@ class _SkillsCertificatesView extends StatelessWidget {
                             final item = data.items[index];
                             return SkillCertificateCard(
                               item: item,
-                              onServices: () =>
-                                  SkillsCertificatesBottomSheets.showServicesSheet(
+                              onLoadServices: () => cubit.loadServices(item),
+                              onServicesLoaded: () =>
+                                  SkillsCertificatesBottomSheets
+                                      .showLoadedServicesSheet(
                                 context: context,
                                 cubit: cubit,
-                                skill: item,
                               ),
                               onEdit: () =>
                                   SkillsCertificatesBottomSheets.showFormSheet(

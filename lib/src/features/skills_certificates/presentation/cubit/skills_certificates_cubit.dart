@@ -500,22 +500,17 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> {
 
   List<SkillServiceEntity> get filteredServices {
     final query = _data.serviceSearchText.trim().toLowerCase();
-    final filteredServices = query.isEmpty
-        ? _data.services
-        : _data.services.where((item) {
-            return item.displayTitle.toLowerCase().contains(query);
-          }).toList();
 
-    return [
-      ...filteredServices.where(_isSelectedService),
-      ...filteredServices.where((item) => !_isSelectedService(item)),
-    ];
+    if (query.isEmpty) {
+      return _data.services;
+    }
+
+    return _data.services.where((item) {
+      return item.displayTitle.toLowerCase().contains(query);
+    }).toList();
   }
 
-  bool _isSelectedService(SkillServiceEntity service) {
-    final id = service.id;
-    return id != null && _data.selectedServiceIds.contains(id);
-  }
+
 
   SkillCertificateFilterParamEntity _buildFilterParam({int? pageSize}) {
     return SkillCertificateFilterParamEntity(
