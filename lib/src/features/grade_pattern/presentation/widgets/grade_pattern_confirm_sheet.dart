@@ -12,30 +12,25 @@ class GradePatternConfirmSheet extends StatelessWidget {
     required this.message,
     required this.onConfirm,
     this.confirmTitle = 'حذف',
+    this.isLoading = false,
   });
 
   final String title;
   final String message;
   final String confirmTitle;
   final Future<void> Function() onConfirm;
+  final bool isLoading;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.all(AppPadding.p24),
+        padding: const EdgeInsets.symmetric(horizontal: 8),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              width: 45,
-              height: 6,
-              decoration: BoxDecoration(color: Color(0xFFDEC1AF),
-              borderRadius: BorderRadius.circular(16)),
-            ),
-            Space.h24,
             CircleAvatar(
               radius: AppSize.s32,
               backgroundColor: Color(0xFFFFDAD6),
@@ -54,26 +49,35 @@ class GradePatternConfirmSheet extends StatelessWidget {
                 textAlign: TextAlign.center,
                 text: message,fontSize: 16,color: Color(0xFF574235),),
             ),
-            Space.h32,
-            Column(
+            Space.h24,
+            Row(
               children: [
 
-                InkwellButtonWidget(
-                  title: confirmTitle,
-                  backgroundColor: theme.colorScheme.error,
-                  onTap: () async {
-                    await onConfirm();
-                    if (context.mounted) Navigator.of(context).pop();
-                  },
+                Expanded(
+                  child: InkwellButtonWidget(
+                    title: 'حذف',
+                    backgroundColor: theme.colorScheme.error,
+                    titleColor: Colors.white,
+                    loadingColor: Colors.white,
+                    showLoading: isLoading,
+                    onTap: () async {
+                      if (isLoading) return;
+                      if (context.mounted) Navigator.of(context).pop();
+                      await onConfirm();
+                    },
+                  ),
                 ),
-                Space.h12,
-                InkwellButtonWidget(
-                  title: 'انصراف',
-                  backgroundColor: theme.colorScheme.onPrimary,
-                  borderColor: Color(0x48626E33),
-                  borderWidth: 2,
-                  titleColor: Color(0xFF48626E),
-                  onTap: () => Navigator.of(context).pop(),
+                Space.w12,
+                Expanded(
+                  child: InkwellButtonWidget(
+                    title: 'بستن',
+                    backgroundColor: theme.colorScheme.surface,
+                    borderColor: theme.colorScheme.outline,
+                    titleColor: theme.colorScheme.onSurface,
+                    onTap: isLoading
+                        ? null
+                        : () => Navigator.of(context).pop(),
+                  ),
                 ),
               ],
             ),

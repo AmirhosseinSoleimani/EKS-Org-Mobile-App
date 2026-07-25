@@ -13,14 +13,14 @@ class GradePatternCard extends StatelessWidget {
     super.key,
     required this.item,
     required this.onDetails,
-    required this.onEdit,
-    required this.onDelete,
+    required this.onOperations,
+    this.isDetailsLoading = false,
   });
 
   final GradePatternEntity item;
   final VoidCallback onDetails;
-  final VoidCallback onEdit;
-  final VoidCallback onDelete;
+  final VoidCallback onOperations;
+  final bool isDetailsLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -92,6 +92,7 @@ class GradePatternCard extends StatelessWidget {
               Expanded(
                 child: InkwellButtonWidget(
                   title: 'مشاهده جزئیات',
+                  showLoading: isDetailsLoading,
                   onTap: onDetails,
                   prefixIcon: Icon(
                     Icons.visibility_outlined,
@@ -114,7 +115,7 @@ class GradePatternCard extends StatelessWidget {
                     Icons.keyboard_arrow_down_rounded,
                     color: theme.colorScheme.onTertiaryFixed,
                   ),
-                  onTap: () {},
+                  onTap: onOperations,
                 ),
               ),
             ],
@@ -124,9 +125,6 @@ class GradePatternCard extends StatelessWidget {
     );
   }
 }
-
-
-enum _GradePatternOperation { edit, delete }
 
 String _value(String? value) {
   return value?.trim().isNotEmpty == true ? value!.trim() : '---';

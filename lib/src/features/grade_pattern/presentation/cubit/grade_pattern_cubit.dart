@@ -65,6 +65,8 @@ class GradePatternCubit extends Cubit<GradePatternState> {
       const GradePatternFilterParamEntity(pageSize: _pageSize);
   int totalCount = 0;
   bool hasMore = true;
+  int? loadingDetailId;
+  int? deletingItemId;
 
   Future<void> fetchList({bool refresh = false}) async {
     final nextSkip = refresh ? 0 : items.length;
@@ -118,19 +120,32 @@ class GradePatternCubit extends Cubit<GradePatternState> {
   }
 
   Future<void> loadDetail(int id) async {
+    if (loadingDetailId == id) return;
+
+    loadingDetailId = id;
     _safeEmit(GradePatternState.detailLoading(items: items));
     final result = await _getByIdUseCase(id);
     result.when(
       success: (data, failures, resultCode) {
+        loadingDetailId = null;
         final normalized = _withSessionGrades(data);
         _safeEmit(GradePatternState.detailLoaded(item: normalized));
       },
-      failure: (error, failures) => _emitFailure(failures),
-      expireToken: () => _emitFailure('نشست کاربری منقضی شده است.'),
-      connectionError: () => _safeEmit(GradePatternState.connectionError(
-        filter: filter,
-        items: items,
-      )),
+      failure: (error, failures) {
+        loadingDetailId = null;
+        _emitFailure(failures);
+      },
+      expireToken: () {
+        loadingDetailId = null;
+        _emitFailure('نشست کاربری منقضی شده است.');
+      },
+      connectionError: () {
+        loadingDetailId = null;
+        _safeEmit(GradePatternState.connectionError(
+          filter: filter,
+          items: items,
+        ));
+      },
     );
   }
 
@@ -178,10 +193,14 @@ class GradePatternCubit extends Cubit<GradePatternState> {
   }
 
   Future<bool> deleteItem(int id) async {
+    if (deletingItemId != null) return false;
+
+    deletingItemId = id;
     _safeEmit(GradePatternState.submitting(items: items));
     final result = await _deleteUseCase(id);
     return result.when(
       success: (data, failures, resultCode) async {
+        deletingItemId = null;
         _safeEmit(GradePatternState.success(
           action: GradePatternAction.delete,
           message: 'الگوی گرید با موفقیت حذف شد',
@@ -191,14 +210,17 @@ class GradePatternCubit extends Cubit<GradePatternState> {
         return true;
       },
       failure: (error, failures) {
+        deletingItemId = null;
         _emitFailure(failures);
         return false;
       },
       expireToken: () {
+        deletingItemId = null;
         _emitFailure('نشست کاربری منقضی شده است.');
         return false;
       },
       connectionError: () {
+        deletingItemId = null;
         _safeEmit(GradePatternState.connectionError(
           filter: filter,
           items: items,

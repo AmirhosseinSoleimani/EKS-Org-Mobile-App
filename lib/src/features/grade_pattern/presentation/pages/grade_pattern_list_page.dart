@@ -3,11 +3,13 @@ import 'package:eks_sana_plus_org/src/features/grade_pattern/domain/entities/gra
 import 'package:eks_sana_plus_org/src/features/grade_pattern/domain/entities/params/grade_pattern_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/cubit/grade_pattern_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/pages/grade_pattern_form_page.dart';
+import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/widgets/grade_pattern_action_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/widgets/grade_pattern_card.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/widgets/grade_pattern_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/widgets/grade_pattern_details_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
@@ -54,7 +56,7 @@ class _GradePatternListView extends StatelessWidget {
         backgroundColor: const Color(0xFFF6F6F6),
         appBar: const SimpleAppBar(title: 'الگوی گرید'),
         floatingActionButton: FloatingActionButtonWidget(
-          title: 'امداد‌رسان جدید',
+          title: 'افزودن الگوی گرید',
           onPressed: () async {
             final changed = await context.pushNamed<bool>(GradePatternFormPage.name);
             if (changed == true && context.mounted) {
@@ -181,17 +183,13 @@ class _GradePatternListView extends StatelessWidget {
                                 final item = items[index];
                                 return GradePatternCard(
                                   item: item,
+                                  isDetailsLoading: cubit.loadingDetailId == item.id,
                                   onDetails: () => _showDetails(context, cubit, item),
-                                  onEdit: () async {
-                                    final changed = await context.pushNamed<bool>(
-                                      GradePatternFormPage.name,
-                                      extra: item.id,
-                                    );
-                                    if (changed == true && context.mounted) {
-                                      cubit.fetchList(refresh: true);
-                                    }
-                                  },
-                                  onDelete: () => _showDeleteSheet(context, cubit, item),
+                                  onOperations: () => _showOperationSheet(
+                                    context,
+                                    cubit,
+                                    item,
+                                  ),
                                 );
                               },
                             ),
@@ -207,6 +205,70 @@ class _GradePatternListView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  void _showOperationSheet(
+    BuildContext context,
+    GradePatternCubit cubit,
+    GradePatternEntity item,
+  ) {
+    final pageContext = context;
+
+    BottomSheetMessage.showCustom(
+      context: context,
+      content: BlocProvider.value(
+        value: cubit,
+        child: BlocBuilder<GradePatternCubit, GradePatternState>(
+          builder: (sheetContext, state) {
+            final currentItem = _resolveItem(cubit, item);
+
+            return GradePatternActionSheet(
+              loadingAction: cubit.deletingItemId == currentItem.id
+                  ? GradePatternOperation.delete
+                  : null,
+              onActionSelected: (operation) => _handleOperationSelected(
+                pageContext,
+                sheetContext,
+                cubit,
+                currentItem,
+                operation,
+              ),
+            );
+          },
+        ),
+      ),
+      actionWidget: const SizedBox.shrink(),
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+    );
+  }
+
+  Future<void> _handleOperationSelected(
+    BuildContext pageContext,
+    BuildContext sheetContext,
+    GradePatternCubit cubit,
+    GradePatternEntity item,
+    GradePatternOperation operation,
+  ) async {
+    switch (operation) {
+      case GradePatternOperation.edit:
+        Navigator.of(sheetContext).pop();
+        await Future<void>.delayed(Duration.zero);
+        if (!pageContext.mounted) return;
+        final changed = await pageContext.pushNamed<bool>(
+          GradePatternFormPage.name,
+          extra: item.id,
+        );
+        if (changed == true && pageContext.mounted) {
+          cubit.fetchList(refresh: true);
+        }
+        return;
+      case GradePatternOperation.delete:
+        Navigator.of(sheetContext).pop();
+        await Future<void>.delayed(Duration.zero);
+        if (!pageContext.mounted) return;
+        _showDeleteSheet(pageContext, cubit, item);
+        return;
+    }
   }
 
   void _showSearchSheet(BuildContext context, GradePatternCubit cubit) {
@@ -326,10 +388,14 @@ class _GradePatternListView extends StatelessWidget {
     GradePatternEntity item,
   ) async {
     final id = item.id;
+    var loaded = item;
     if (id != null) {
       await cubit.loadDetail(id);
+      final detail = cubit.state.whenOrNull(detailLoaded: (item) => item);
+      if (detail?.id != id) return;
+      loaded = detail!;
     }
-    final loaded = cubit.state.whenOrNull(detailLoaded: (item) => item) ?? item;
+
     if (!context.mounted) return;
     showModalBottomSheet<void>(
       context: context,
@@ -350,20 +416,37 @@ class _GradePatternListView extends StatelessWidget {
   ) {
     final id = item.id;
     if (id == null) return;
-    showModalBottomSheet<void>(
+    BottomSheetMessage.showCustom(
       context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
+      content: BlocProvider.value(
+        value: cubit,
+        child: BlocBuilder<GradePatternCubit, GradePatternState>(
+          builder: (context, state) {
+            return GradePatternConfirmSheet(
+              title: 'حذف الگوی گرید',
+              message: 'آیا الگوی گرید ${item.name ?? ''} حذف شود؟',
+              isLoading: cubit.deletingItemId == id,
+              onConfirm: () => cubit.deleteItem(id),
+            );
+          },
+        ),
+      ),
+      actionWidget: const SizedBox.shrink(),
+      isDismissible: false,
+      enableDrag: false,
       backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
-      ),
-      builder: (_) => GradePatternConfirmSheet(
-        title: 'حذف الگوی گرید',
-        message: 'آیا الگوی گرید ${item.name ?? ''} حذف شود؟',
-        onConfirm: () => cubit.deleteItem(id),
-      ),
+      maxHeight: 0.45,
     );
+  }
+
+  GradePatternEntity _resolveItem(
+    GradePatternCubit cubit,
+    GradePatternEntity fallback,
+  ) {
+    for (final item in cubit.items) {
+      if (item.id == fallback.id) return item;
+    }
+    return fallback;
   }
 }
 
