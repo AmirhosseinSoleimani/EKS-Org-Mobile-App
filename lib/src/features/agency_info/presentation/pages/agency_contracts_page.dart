@@ -1,0 +1,276 @@
+import 'package:eks_sana_plus_org/src/di/di_setup.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_contract_entity.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_contract_page_entity.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_entity.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/agency_info_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/add_agency_contract_page.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_contract_image_viewer.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_agency_header.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_content_widgets.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_status_badge.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_medium_text.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+
+class AgencyContractsPage extends StatelessWidget {
+  static const path = '/agency-contracts-page';
+  static const name = 'agency-contracts-page';
+
+  const AgencyContractsPage({super.key, required this.agency});
+
+  final AgencyInfoEntity agency;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => getIt<AgencyInfoCubit>()
+        ..loadActionData(AgencyInfoActionType.contracts, agency),
+      child: _AgencyContractsView(agency: agency),
+    );
+  }
+}
+
+class _AgencyContractsView extends StatelessWidget {
+  const _AgencyContractsView({required this.agency});
+
+  final AgencyInfoEntity agency;
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.read<AgencyInfoCubit>();
+
+    return Scaffold(
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      appBar: const SimpleActionBar(title: 'قراردادها'),
+      floatingActionButton: FloatingActionButtonWidget(
+        title: 'قرار داد جدید',
+        onPressed: () => _openAddContract(context, cubit),
+      ),
+      body: BlocConsumer<AgencyInfoCubit, AgencyInfoState>(
+        listener: (context, state) {
+          final message = state.data.errorMessage;
+          if (message?.isNotEmpty == true) {
+            SnakeBarWidget.showError(context: context, message: message!);
+          }
+        },
+        builder: (context, state) {
+          final loading = state.status == AgencyInfoViewStatus.actionLoading &&
+              state.data.actionType == AgencyInfoActionType.contracts;
+          final contracts = state.data.actionData is AgencyContractPageEntity
+              ? state.data.actionData! as AgencyContractPageEntity
+              : const AgencyContractPageEntity(records: [], count: 0);
+
+          if (loading && (contracts.records ?? const []).isEmpty) {
+            return const Center(child: CircularProgressIndicator());
+          }
+
+          return RefreshIndicator(
+            onRefresh: () => _reload(cubit),
+            child: ListView(
+              padding: const EdgeInsets.fromLTRB(
+                AppPadding.p16,
+                AppPadding.p16,
+                AppPadding.p16,
+                AppPadding.p100,
+              ),
+              children: [
+                AgencyInfoActionAgencyHeader(item: agency),
+                Space.h24,
+                _ContractsTitle(count: _count(contracts)),
+                Space.h16,
+                _ContractsList(contracts: contracts),
+              ],
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Future<void> _openAddContract(
+    BuildContext context,
+    AgencyInfoCubit cubit,
+  ) async {
+    final changed = await context.pushNamed<bool>(
+      AddAgencyContractPage.name,
+      extra: agency,
+    );
+    if (changed == true) {
+      await _reload(cubit);
+      if (context.mounted) {
+        SnakeBarWidget.showSuccess(
+          context: context,
+          message: 'قرارداد با موفقیت ثبت شد.',
+        );
+      }
+    }
+  }
+
+  Future<void> _reload(AgencyInfoCubit cubit) {
+    return cubit.loadActionData(AgencyInfoActionType.contracts, agency);
+  }
+
+  int _count(AgencyContractPageEntity contracts) {
+    final records = contracts.records;
+    final count = contracts.count;
+    return count != null && count > 0 ? count : (records ?? const []).length;
+  }
+}
+
+class _ContractsTitle extends StatelessWidget {
+  const _ContractsTitle({required this.count});
+
+  final int count;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Row(
+      children: [
+        const Expanded(
+          child: TitleMediumText(text: 'قراردادهای ثبت‌شده'),
+        ),
+        Container(
+          padding: const EdgeInsets.symmetric(
+            horizontal: AppPadding.p10,
+            vertical: AppPadding.p4,
+          ),
+          decoration: BoxDecoration(
+            color: colorScheme.primary.withOpacity(0.08),
+            borderRadius: BorderRadius.circular(AppSize.s8),
+          ),
+          child: BodyMediumText(
+            text: '$count مورد',
+            color: colorScheme.primary,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _ContractsList extends StatelessWidget {
+  const _ContractsList({required this.contracts});
+
+  final AgencyContractPageEntity contracts;
+
+  @override
+  Widget build(BuildContext context) {
+    final records = contracts.records ?? const <AgencyContractEntity>[];
+    if (records.isEmpty) {
+      return const Padding(
+        padding: EdgeInsets.only(top: AppPadding.p32),
+        child: EmptyListWidget(),
+      );
+    }
+
+    return Column(
+      children: [
+        for (final contract in records) ...[
+          _AgencyContractCard(contract: contract),
+          Space.h12,
+        ],
+      ],
+    );
+  }
+}
+
+class _AgencyContractCard extends StatelessWidget {
+  const _AgencyContractCard({required this.contract});
+
+  final AgencyContractEntity contract;
+
+  @override
+  Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final fileBase64 = contract.fileBase64?.trim();
+    final hasFile = fileBase64?.isNotEmpty == true;
+
+    return AgencyInfoActionCard(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: [
+          Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Expanded(
+                child: TitleMediumText(
+                  text: AgencyInfoActionFormatter.valueOrDash(contract.title),
+                ),
+              ),
+              Space.w8,
+              AgencyInfoStatusBadge(isActive: contract.isActive),
+            ],
+          ),
+          Space.h12,
+          Divider(
+            height: AppSize.s1,
+            color: theme.dividerColor.withOpacity(0.55),
+          ),
+          Space.h8,
+          AgencyInfoActionLabelValueRow(
+            label: 'شماره قرارداد:',
+            value: contract.contractNo,
+          ),
+          AgencyInfoActionLabelValueRow(
+            label: 'تاریخ شروع:',
+            value: contract.startDateJalali ?? contract.startDate,
+          ),
+          AgencyInfoActionLabelValueRow(
+            label: 'تاریخ پایان:',
+            value: contract.expireDateJalali ?? contract.expireDate,
+          ),
+          Space.h12,
+          Align(
+            alignment: Alignment.centerRight,
+            child: InkWell(
+              onTap: hasFile
+                  ? () => AgencyContractImageViewer.show(
+                        context,
+                        fileBase64: fileBase64!,
+                      )
+                  : null,
+              borderRadius: BorderRadius.circular(AppSize.s6),
+              child: Padding(
+                padding: const EdgeInsets.symmetric(
+                  horizontal: AppPadding.p4,
+                  vertical: AppPadding.p8,
+                ),
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Icon(
+                      Icons.link_rounded,
+                      size: AppSize.s18,
+                      color: hasFile
+                          ? colorScheme.primary
+                          : colorScheme.onTertiaryFixed.withOpacity(0.55),
+                    ),
+                    Space.w8,
+                    BodyMediumText(
+                      text: 'مشاهده فایل قرارداد',
+                      color: hasFile
+                          ? colorScheme.primary
+                          : colorScheme.onTertiaryFixed.withOpacity(0.55),
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}

@@ -13,6 +13,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/param
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/agency_info_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/agency_info_id_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/add_agency_info_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/add_agency_contract_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/change_agency_status_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/delete_agency_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/person_info_search_param_entity.dart';
@@ -31,6 +32,8 @@ abstract class AgencyInfoRepository {
   Future<ApiResult<List<AgencyInfoEntity>>> getByName(String title);
 
   Future<ApiResult<String>> addAgency(AddAgencyInfoParamEntity param);
+
+  Future<ApiResult<String>> addContract(AddAgencyContractParamEntity param);
 
   Future<ApiResult<AgencyContractPageEntity>> getContracts(
     AgencyContractParamEntity param,

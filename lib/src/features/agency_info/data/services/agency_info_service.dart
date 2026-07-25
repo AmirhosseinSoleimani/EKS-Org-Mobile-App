@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/data/models/add_agency_contract_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/add_agency_info_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/agency_additional_information_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/agency_contract_filter_request_model.dart';
@@ -94,6 +95,17 @@ class AgencyInfoService {
       data: data?.toString() ?? '',
       failures: const [],
     );
+  }
+
+  Future<BaseSingleResponse<String>> addContract(
+    AddAgencyContractRequestModel request,
+  ) async {
+    final response = await _dio.post<dynamic>(
+      '/api/AgencyContract/post',
+      data: request.toJson(),
+    );
+
+    return _stringMutationResponse(response.data);
   }
 
   Future<AgencyContractPageModel> getContracts(
@@ -258,6 +270,30 @@ class AgencyInfoService {
     }
 
     return const <String, dynamic>{};
+  }
+
+  BaseSingleResponse<String> _stringMutationResponse(dynamic data) {
+    if (data is Map) {
+      final json = Map<String, dynamic>.from(data);
+      final rawFailures = json['failures'] ?? json['Failures'];
+      final failures = rawFailures is List
+          ? rawFailures.map((item) => item.toString()).toList()
+          : rawFailures?.toString().trim().isNotEmpty == true
+              ? <String>[rawFailures.toString()]
+              : <String>[];
+
+      return BaseSingleResponse<String>(
+        resultCode: _readInt(json['resultCode'] ?? json['ResultCode']) ?? 0,
+        data: (json['data'] ?? json['Data'])?.toString() ?? '',
+        failures: failures,
+      );
+    }
+
+    return BaseSingleResponse<String>(
+      resultCode: 0,
+      data: data?.toString() ?? '',
+      failures: const [],
+    );
   }
 
   Map<String, dynamic> _normalizeListResponse(dynamic data) {

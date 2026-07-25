@@ -80,7 +80,7 @@ class InkwellButtonWidget extends StatelessWidget {
       borderRadius: borderRadius,
       splashColor:  splashColor ??theme.colorScheme.onPrimary.withOpacity(0.1),
       highlightColor: theme.colorScheme.onPrimary.withOpacity(0.05),
-      onTap: (showLoading ?? false) ? null : onTap,
+      onTap: (showLoading ?? false) ? (){} : onTap,
       child: _buildButtonContent(context),
     );
   }

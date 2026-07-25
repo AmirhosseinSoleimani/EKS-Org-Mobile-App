@@ -1,5 +1,7 @@
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_entity.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/add_agency_contract_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/add_agency_info_page.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_contracts_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_info_details_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_info_list_page.dart';
 import 'package:flutter/material.dart';
@@ -40,6 +42,36 @@ class AgencyInfoRoutes {
             child: AgencyInfoDetailsPage(
               id: extra is int ? extra : null,
               item: extra is AgencyInfoEntity ? extra : null,
+            ),
+            state: state,
+          );
+        },
+      ),
+      GoRoute(
+        path: AgencyContractsPage.path,
+        name: AgencyContractsPage.name,
+        pageBuilder: (context, state) {
+          final agency = state.extra;
+          return getPage(
+            child: AgencyContractsPage(
+              agency: agency is AgencyInfoEntity
+                  ? agency
+                  : const AgencyInfoEntity(),
+            ),
+            state: state,
+          );
+        },
+      ),
+      GoRoute(
+        path: AddAgencyContractPage.path,
+        name: AddAgencyContractPage.name,
+        pageBuilder: (context, state) {
+          final agency = state.extra;
+          return getPage(
+            child: AddAgencyContractPage(
+              agency: agency is AgencyInfoEntity
+                  ? agency
+                  : const AgencyInfoEntity(),
             ),
             state: state,
           );

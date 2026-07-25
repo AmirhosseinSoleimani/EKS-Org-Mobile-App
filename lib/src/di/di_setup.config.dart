@@ -26,6 +26,8 @@ import '../features/agency_info/data/services/agency_info_service.dart'
     as _i427;
 import '../features/agency_info/domain/repositories/agency_info_repository.dart'
     as _i233;
+import '../features/agency_info/domain/use_cases/add_agency_contract_use_case.dart'
+    as _i853;
 import '../features/agency_info/domain/use_cases/add_agency_info_use_case.dart'
     as _i574;
 import '../features/agency_info/domain/use_cases/change_agency_status_use_case.dart'
@@ -56,6 +58,8 @@ import '../features/agency_info/domain/use_cases/search_person_info_use_case.dar
     as _i699;
 import '../features/agency_info/domain/use_cases/search_vehicle_info_use_case.dart'
     as _i645;
+import '../features/agency_info/presentation/cubit/add_contract/add_agency_contract_cubit.dart'
+    as _i705;
 import '../features/agency_info/presentation/cubit/agency_info_cubit.dart'
     as _i598;
 import '../features/authentication/data/data_sources/auth_remote_data_source.dart'
@@ -1394,6 +1398,9 @@ _i174.GetIt $initGetIt(
       gh<_i786.GetEmdadgarInfoUseCase>(),
     ),
   );
+  gh.factory<_i853.AddAgencyContractUseCase>(
+    () => _i853.AddAgencyContractUseCase(gh<_i233.AgencyInfoRepository>()),
+  );
   gh.factory<_i574.AddAgencyInfoUseCase>(
     () => _i574.AddAgencyInfoUseCase(gh<_i233.AgencyInfoRepository>()),
   );
@@ -1716,6 +1723,9 @@ _i174.GetIt $initGetIt(
       gh<_i809.GetHomeServiceRequestListUseCase>(),
       gh<_i369.SetSelectedRequestItemUseCase>(),
     ),
+  );
+  gh.factory<_i705.AddAgencyContractCubit>(
+    () => _i705.AddAgencyContractCubit(gh<_i853.AddAgencyContractUseCase>()),
   );
   gh.factory<_i943.PlanInfoCubit>(
     () => _i943.PlanInfoCubit(

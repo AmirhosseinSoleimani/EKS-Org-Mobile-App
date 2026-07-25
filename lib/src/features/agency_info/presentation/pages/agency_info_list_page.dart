@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/agency_info_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/agency_info_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_contracts_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/add_agency_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_info_details_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_delete_action_view.dart';
@@ -358,6 +359,17 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
     AgencyInfoEntity item,
     AgencyInfoActionType actionType,
   ) async {
+    if (actionType == AgencyInfoActionType.contracts) {
+      Navigator.of(context).pop();
+      await Future<void>.delayed(Duration.zero);
+      if (!mounted) return;
+      await this.context.pushNamed<void>(
+        AgencyContractsPage.name,
+        extra: item,
+      );
+      return;
+    }
+
     if (actionType == AgencyInfoActionType.delete) {
       Navigator.of(context).pop();
       await Future<void>.delayed(Duration.zero);

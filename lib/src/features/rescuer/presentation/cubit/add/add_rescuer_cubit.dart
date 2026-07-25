@@ -98,6 +98,11 @@ class AddRescuerCubit extends Cubit<AddRescuerState> {
     emit(state.copyWith(imageVersion: state.imageVersion + 1, clearError: true));
   }
 
+  void clearImage() {
+    imageBase64 = null;
+    emit(state.copyWith(imageVersion: state.imageVersion + 1, clearError: true));
+  }
+
   void setBirthDate(Jalali? value) {
     if (value == null) return;
     _birthDateApi = value.toDateTime().toUtc().toIso8601String();
