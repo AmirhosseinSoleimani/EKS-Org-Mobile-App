@@ -3,6 +3,7 @@ import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/widget
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 
 class GradePatternLevelFormCard extends StatelessWidget {
   const GradePatternLevelFormCard({
@@ -15,6 +16,10 @@ class GradePatternLevelFormCard extends StatelessWidget {
   final GradePatternDetailEntity detail;
   final TextEditingController coefficientController;
   final TextEditingController commissionController;
+
+  static final List<TextInputFormatter> _percentInputFormatters = [
+    _MaxHundredDecimalInputFormatter(),
+  ];
 
   @override
   Widget build(BuildContext context) {
@@ -66,6 +71,7 @@ class GradePatternLevelFormCard extends StatelessWidget {
                     labelText: 'ضریب',
                     textInputType: const TextInputType.numberWithOptions(decimal: true),
                     textAlign: TextAlign.center,
+                    textInputFormatter: _percentInputFormatters,
                   ),
                 ),
                 Space.w16,
@@ -75,6 +81,7 @@ class GradePatternLevelFormCard extends StatelessWidget {
                     labelText: 'درصد حق مدیریت',
                     textInputType: const TextInputType.numberWithOptions(decimal: true),
                     textAlign: TextAlign.center,
+                    textInputFormatter: _percentInputFormatters,
                   ),
                 ),
               ],
@@ -83,5 +90,24 @@ class GradePatternLevelFormCard extends StatelessWidget {
         ),
       ),
     );
+  }
+}
+
+class _MaxHundredDecimalInputFormatter extends TextInputFormatter {
+  final _validNumberPattern = RegExp(r'^\d{0,3}(\.\d*)?$');
+
+  @override
+  TextEditingValue formatEditUpdate(
+    TextEditingValue oldValue,
+    TextEditingValue newValue,
+  ) {
+    final text = newValue.text.trim();
+    if (text.isEmpty) return newValue;
+    if (!_validNumberPattern.hasMatch(text)) return oldValue;
+
+    final value = num.tryParse(text);
+    if (value == null || value > 100) return oldValue;
+
+    return newValue;
   }
 }

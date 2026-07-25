@@ -106,14 +106,15 @@ class _GradePatternFormState extends State<GradePatternForm> {
   Widget _buildDetailEditor(GradePatternDetailEntity detail) {
     final coefficientController = _coefficientControllers.putIfAbsent(
       detail.gradeId,
-      () => TextEditingController(
-        text: detail.gradeCoefficient.toString(),
+          () => TextEditingController(
+        text: _initialNumberText(detail.gradeCoefficient),
       ),
     );
+
     final commissionController = _commissionControllers.putIfAbsent(
       detail.gradeId,
-      () => TextEditingController(
-        text: detail.managmentCommisionPercent.toString(),
+          () => TextEditingController(
+        text: _initialNumberText(detail.managmentCommisionPercent),
       ),
     );
 
@@ -122,6 +123,11 @@ class _GradePatternFormState extends State<GradePatternForm> {
       coefficientController: coefficientController,
       commissionController: commissionController,
     );
+  }
+
+  String _initialNumberText(num value) {
+    if (!_isNew) return value.toString();
+    return value == 0 ? '' : value.toString();
   }
 
   void _submit() {
@@ -157,12 +163,13 @@ class _GradePatternFormState extends State<GradePatternForm> {
       _setControllerText(
         _coefficientControllers,
         detail.gradeId,
-        detail.gradeCoefficient.toString(),
+        _initialNumberText(detail.gradeCoefficient),
       );
+
       _setControllerText(
         _commissionControllers,
         detail.gradeId,
-        detail.managmentCommisionPercent.toString(),
+        _initialNumberText(detail.managmentCommisionPercent),
       );
     }
   }

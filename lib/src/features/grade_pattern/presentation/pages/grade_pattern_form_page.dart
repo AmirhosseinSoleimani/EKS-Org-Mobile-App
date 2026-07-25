@@ -12,16 +12,23 @@ class GradePatternFormPage extends StatelessWidget {
   static const path = '/grade-pattern-form-page';
   static const name = 'grade-pattern-form-page';
 
-  const GradePatternFormPage({super.key, this.id});
+  const GradePatternFormPage({
+    super.key,
+    this.id,
+    this.draftTemplate,
+  });
 
   final int? id;
+  final GradePatternEntity? draftTemplate;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) {
         final cubit = getIt<GradePatternCubit>();
-        Future<void>.microtask(() => cubit.loadForm(id: id));
+        Future<void>.microtask(
+          () => cubit.loadForm(id: id, draftTemplate: draftTemplate),
+        );
         return cubit;
       },
       child: const _GradePatternFormView(),

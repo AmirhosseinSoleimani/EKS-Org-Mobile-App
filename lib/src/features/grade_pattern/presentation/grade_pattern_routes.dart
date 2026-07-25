@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/features/grade_pattern/domain/entities/grade_pattern_entity.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/pages/grade_pattern_form_page.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/pages/grade_pattern_list_page.dart';
 import 'package:flutter/material.dart';
@@ -25,9 +26,14 @@ class GradePatternRoutes {
         path: GradePatternFormPage.path,
         name: GradePatternFormPage.name,
         pageBuilder: (context, state) {
-          final id = state.extra as int?;
+          final extra = state.extra;
+          final id = extra is int ? extra : null;
+          final draftTemplate = extra is GradePatternEntity ? extra : null;
           return getPage(
-            child: GradePatternFormPage(id: id),
+            child: GradePatternFormPage(
+              id: id,
+              draftTemplate: draftTemplate,
+            ),
             state: state,
           );
         },

@@ -58,7 +58,10 @@ class _GradePatternListView extends StatelessWidget {
         floatingActionButton: FloatingActionButtonWidget(
           title: 'افزودن الگوی گرید',
           onPressed: () async {
-            final changed = await context.pushNamed<bool>(GradePatternFormPage.name);
+            final changed = await context.pushNamed<bool>(
+              GradePatternFormPage.name,
+              extra: _draftTemplate(cubit),
+            );
             if (changed == true && context.mounted) {
               cubit.fetchList(refresh: true);
             }
@@ -205,6 +208,15 @@ class _GradePatternListView extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  GradePatternEntity? _draftTemplate(GradePatternCubit cubit) {
+    for (final item in cubit.items) {
+      if (item.details.isNotEmpty) {
+        return item;
+      }
+    }
+    return null;
   }
 
   void _showOperationSheet(

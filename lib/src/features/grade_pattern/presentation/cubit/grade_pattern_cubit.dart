@@ -149,15 +149,22 @@ class GradePatternCubit extends Cubit<GradePatternState> {
     );
   }
 
-  GradePatternEntity createDraft() {
-    final draft = GradePatternEntity(details: _sessionGradeDetails());
+  GradePatternEntity createDraft({GradePatternEntity? template}) {
+    final templateDetails = template?.details ?? const <GradePatternDetailEntity>[];
+    final details = templateDetails.isNotEmpty
+        ? templateDetails.map(_emptyDetailValue).toList()
+        : _sessionGradeDetails();
+    final draft = GradePatternEntity(details: details);
     _safeEmit(GradePatternState.formReady(item: draft));
     return draft;
   }
 
-  Future<void> loadForm({int? id}) async {
+  Future<void> loadForm({
+    int? id,
+    GradePatternEntity? draftTemplate,
+  }) async {
     if (id == null) {
-      createDraft();
+      createDraft(template: draftTemplate);
       return;
     }
 
@@ -405,6 +412,13 @@ class GradePatternCubit extends Cubit<GradePatternState> {
               managmentCommisionPercent: 0,
             ))
         .toList();
+  }
+
+  GradePatternDetailEntity _emptyDetailValue(GradePatternDetailEntity detail) {
+    return detail.copyWith(
+      gradeCoefficient: 0,
+      managmentCommisionPercent: 0,
+    );
   }
 
   GradePatternDetailEntity? _findByGradeId(
