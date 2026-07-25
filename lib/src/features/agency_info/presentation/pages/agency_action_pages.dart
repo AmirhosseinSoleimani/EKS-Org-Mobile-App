@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_additional_information_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_history_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_person_page_entity.dart';
@@ -7,6 +8,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agenc
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/agency_info_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_active_relief_workers_action_view.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_active_vehicles_action_view.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_complementary_info_action_view.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_history_action_view.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_service_type_action_view.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
@@ -92,6 +94,34 @@ class AgencyServiceTypesPage extends StatelessWidget {
         return AgencyInfoServiceTypeActionView(
           item: agency,
           serviceTypes: serviceTypes,
+        );
+      },
+    );
+  }
+}
+
+class AgencyComplementaryInfoPage extends StatelessWidget {
+  static const path = '/agency-complementary-info-page';
+  static const name = 'agency-complementary-info-page';
+
+  const AgencyComplementaryInfoPage({super.key, required this.agency});
+
+  final AgencyInfoEntity agency;
+
+  @override
+  Widget build(BuildContext context) {
+    return _AgencyActionDataPage(
+      title: 'اطلاعات تکمیلی',
+      agency: agency,
+      actionType: AgencyInfoActionType.complementaryInfo,
+      builder: (context, data) {
+        final information = data is AgencyAdditionalInformationEntity
+            ? data
+            : null;
+
+        return AgencyInfoComplementaryInfoActionView(
+          item: agency,
+          information: information,
         );
       },
     );

@@ -397,6 +397,7 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
         return AgencyHistoryPage.name;
       case AgencyInfoActionType.changeStatus:
       case AgencyInfoActionType.complementaryInfo:
+        return AgencyComplementaryInfoPage.name;
       case AgencyInfoActionType.delete:
         return null;
     }
