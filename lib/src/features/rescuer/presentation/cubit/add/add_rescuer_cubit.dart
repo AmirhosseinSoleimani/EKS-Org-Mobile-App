@@ -61,6 +61,7 @@ class AddRescuerCubit extends Cubit<AddRescuerState> {
   int? marital;
   bool isActive = true;
   String? imageBase64;
+  Uint8List? imageBytes;
   String? _birthDateApi;
   String? _cooperationStartDateApi;
   String? _licenseCodeApi;
@@ -94,11 +95,13 @@ class AddRescuerCubit extends Cubit<AddRescuerState> {
   }
 
   void setImage(Uint8List bytes, String mime) {
+    imageBytes = bytes;
     imageBase64 = 'data:$mime;base64,${base64Encode(bytes)}';
     emit(state.copyWith(imageVersion: state.imageVersion + 1, clearError: true));
   }
 
   void clearImage() {
+    imageBytes = null;
     imageBase64 = null;
     emit(state.copyWith(imageVersion: state.imageVersion + 1, clearError: true));
   }

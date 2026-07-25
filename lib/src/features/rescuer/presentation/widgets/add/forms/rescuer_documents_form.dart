@@ -5,7 +5,6 @@ import 'package:eks_sana_plus_org/src/features/rescuer/presentation/cubit/add/ad
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/add/rescuer_form_section.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/date_picker_widget/date_picker_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/file_upload/dotted_file_picker_box.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/file_upload/selected_file_tile.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -47,21 +46,13 @@ class RescuerDocumentsForm extends StatelessWidget {
               selector: (state) => state.imageVersion,
               builder: (context, _) {
                 final hasImage = cubit.imageBase64 != null;
-                if (hasImage) {
-                  return SelectedFileTile(
-                    title: 'تصویر پرسنلی انتخاب شد',
-                    subtitle: 'PNG یا JPG',
-                    icon: Icon(
-                      Icons.image_outlined,
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    onRemove: cubit.clearImage,
-                  );
-                }
-
                 return DottedFilePickerBox(
                   title: 'انتخاب تصویر',
                   description: 'فرمت‌های مجاز: PNG و JPG (حداکثر 2 مگابایت)',
+                  selected: hasImage,
+                  previewBytes: cubit.imageBytes,
+                  isImage: true,
+                  onRemove: cubit.clearImage,
                   onTap: _pickImage,
                 );
               },
