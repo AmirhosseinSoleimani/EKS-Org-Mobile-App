@@ -36,12 +36,12 @@ class GradePatternService {
   Future<BaseSingleResponse<GradePatternModel>> create(
     Map<String, dynamic> body,
   ) async {
-    final response = await _dio.post<Map<String, dynamic>>(
+    final response = await _dio.post<dynamic>(
       '/api/GradePattern/post',
       data: body,
     );
     return BaseSingleResponse<GradePatternModel>.fromJson(
-      response.data ?? {},
+      _normalizePatternMutationResponse(response.data, body),
       GradePatternModel.fromJson,
     );
   }
@@ -49,12 +49,12 @@ class GradePatternService {
   Future<BaseSingleResponse<GradePatternModel>> update(
     Map<String, dynamic> body,
   ) async {
-    final response = await _dio.put<Map<String, dynamic>>(
+    final response = await _dio.put<dynamic>(
       '/api/GradePattern/put',
       data: body,
     );
     return BaseSingleResponse<GradePatternModel>.fromJson(
-      response.data ?? {},
+      _normalizePatternMutationResponse(response.data, body),
       GradePatternModel.fromJson,
     );
   }
@@ -94,5 +94,58 @@ class GradePatternService {
       queryParameters: {'id': id},
     );
     return BaseResponse.fromJson(response.data ?? {});
+  }
+
+  Map<String, dynamic> _normalizePatternMutationResponse(
+    dynamic rawResponse,
+    Map<String, dynamic> requestBody,
+  ) {
+    final response = rawResponse is Map
+        ? Map<String, dynamic>.from(rawResponse)
+        : <String, dynamic>{};
+    final rawData = _read(response, 'data', 'Data') ?? rawResponse;
+
+    final resultCode = _toInt(_read(response, 'resultCode', 'ResultCode')) ?? 0;
+
+    if (rawData is Map) {
+      final data = Map<String, dynamic>.from(rawData);
+      return {
+        ...response,
+        'resultCode': resultCode,
+        'ResultCode': resultCode,
+        'data': data,
+        'Data': data,
+      };
+    }
+
+    final id = _toInt(rawData);
+    if (id == null) {
+      return response;
+    }
+
+    final data = Map<String, dynamic>.from(requestBody);
+    data['id'] = id;
+
+    return {
+      ...response,
+      'resultCode': resultCode,
+      'ResultCode': resultCode,
+      'data': data,
+      'Data': data,
+    };
+  }
+
+  dynamic _read(
+    Map<String, dynamic> json,
+    String camelCaseKey,
+    String pascalCaseKey,
+  ) {
+    return json[camelCaseKey] ?? json[pascalCaseKey];
+  }
+
+  int? _toInt(dynamic value) {
+    if (value == null) return null;
+    if (value is int) return value;
+    return int.tryParse(value.toString().replaceAll(RegExp(r'[^0-9-]'), ''));
   }
 }

@@ -96,10 +96,7 @@ class _GradePatternFormState extends State<GradePatternForm> {
                   ),
             ),
             Space.h16,
-            if (widget.item.details.isEmpty)
-              const _EmptyGradeLevels()
-            else
-              ...widget.item.details.map(_buildDetailEditor),
+            ...widget.item.details.map(_buildDetailEditor),
           ],
         ),
       ),
@@ -253,25 +250,6 @@ class _GradePatternFormActions extends StatelessWidget {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _EmptyGradeLevels extends StatelessWidget {
-  const _EmptyGradeLevels();
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppPadding.p24),
-      child: Text(
-        'سطحی برای این الگو تعریف نشده است',
-        textAlign: TextAlign.center,
-        style: theme.textTheme.bodyMedium?.copyWith(
-          color: theme.colorScheme.onSurfaceVariant,
         ),
       ),
     );
