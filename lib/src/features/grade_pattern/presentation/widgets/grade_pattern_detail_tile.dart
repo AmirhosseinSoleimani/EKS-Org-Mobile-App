@@ -21,7 +21,7 @@ class GradePatternDetailTile extends StatelessWidget {
         borderRadius: BorderRadius.circular(10),
         border: Border.all(
           color: style.title == 'بحرانی'
-              ? style.color.withOpacity(0.35)
+              ? style.color.withAlpha(50)
               : Colors.transparent,
         ),
         boxShadow: [
@@ -34,6 +34,43 @@ class GradePatternDetailTile extends StatelessWidget {
       ),
       child: Row(
         children: [
+
+          Container(
+            width: 8,
+            height: 42,
+            decoration: BoxDecoration(
+              color: style.color,
+              borderRadius: BorderRadius.circular(8),
+            ),
+          ),
+          Space.w12,
+
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  style.title,
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    color:  style.title == 'بحرانی'
+                  ? style.color
+                  : null,
+                    fontWeight: FontWeight.w800,
+                  ),
+                ),
+                Space.h8,
+                Text(
+                  style.description,
+                  textAlign: TextAlign.right,
+                  maxLines: 2,
+                  overflow: TextOverflow.ellipsis,
+                  style: theme.textTheme.bodySmall?.copyWith(color: style.color),
+                ),
+              ],
+            ),
+          ),
           SizedBox(
             width: 96,
             child: Column(
@@ -52,39 +89,7 @@ class GradePatternDetailTile extends StatelessWidget {
               ],
             ),
           ),
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.end,
-              children: [
-                Text(
-                  style.title,
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    color: style.color,
-                    fontWeight: FontWeight.w800,
-                  ),
-                ),
-                Space.h8,
-                Text(
-                  style.description,
-                  textAlign: TextAlign.right,
-                  maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodySmall?.copyWith(color: style.color),
-                ),
-              ],
-            ),
-          ),
-          Space.w12,
-          Container(
-            width: 8,
-            height: 36,
-            decoration: BoxDecoration(
-              color: style.color,
-              borderRadius: BorderRadius.circular(8),
-            ),
-          ),
+
         ],
       ),
     );
