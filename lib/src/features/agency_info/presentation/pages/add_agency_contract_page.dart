@@ -2,19 +2,15 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/add_contract/add_agency_contract_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/add_contract/add_agency_contract_state.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/date_picker_widget/date_picker_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/file_upload/dotted_file_picker_box.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/file_upload/selected_file_tile.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/form_section_container.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/sticky_form_action_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_src.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
@@ -83,9 +79,12 @@ class _AddAgencyContractView extends StatelessWidget {
               ),
             ),
           ),
-          bottomNavigationBar: _SubmitContractBar(
+          bottomNavigationBar: StickyFormActionBar(
+            submitTitle: 'ثبت',
+            cancelTitle: 'انصراف',
             isSubmitting: state.isSubmitting,
             onSubmit: () => cubit.submit(agency),
+            onCancel: () => context.pop(false),
           ),
         );
       },
@@ -133,13 +132,20 @@ class _AgencySummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
+
     return Row(
       children: [
-        SvgWidget(src: SvgAsset(SvgManager.contractIcon)),
+        Icon(
+          Icons.store_mall_directory_outlined,
+          color: colorScheme.primary,
+        ),
         Space.w12,
         Expanded(
           child: BodyMediumText(
-            text: 'اطلاعات قرارداد',
+            text: agency.title,
             fontWeight: FontWeight.w800,
             maxLines: 2,
             textOverflow: TextOverflow.ellipsis,
@@ -162,14 +168,12 @@ class _ContractFormFields extends StatelessWidget {
         TextFormFieldWidget(
           controller: cubit.titleController,
           labelText: 'عنوان',
-          mandatory: false,
           validator: cubit.validateRequired,
         ),
         Space.h16,
         TextFormFieldWidget(
           controller: cubit.contractNoController,
           labelText: 'شماره قرارداد',
-          mandatory: false,
           validator: cubit.validateRequired,
           textInputType: TextInputType.text,
         ),
@@ -178,28 +182,22 @@ class _ContractFormFields extends StatelessWidget {
           controller: cubit.startDateController,
           labelText: 'تاریخ شروع',
           hintText: '',
-          mandatory: false,
           validator: cubit.validateRequired,
           lastDate: Jalali(1500, 12, 29),
           onTap: cubit.setStartDate,
           suffixIcon: const Icon(
-            Icons.calendar_month_outlined,
-            color: Color(0xFFA4A4A4),
-          ),
+              Icons.calendar_month_outlined, color: Color(0xFFA4A4A4)),
         ),
         Space.h16,
         DatePickerWidget(
           controller: cubit.expireDateController,
           labelText: 'تاریخ پایان',
           hintText: '',
-          mandatory: false,
           validator: cubit.validateRequired,
           lastDate: Jalali(1500, 12, 29),
           onTap: cubit.setExpireDate,
           suffixIcon: const Icon(
-            Icons.calendar_month_outlined,
-            color: Color(0xFFA4A4A4),
-          ),
+              Icons.calendar_month_outlined, color: Color(0xFFA4A4A4)),
         ),
       ],
     );
@@ -216,11 +214,9 @@ class _ContractFileField extends StatelessWidget {
     return FormField<bool>(
       validator: (_) => cubit.validateFile(),
       builder: (field) {
-        return BlocSelector<
-          AddAgencyContractCubit,
-          AddAgencyContractState,
-          int
-        >(
+        return BlocSelector<AddAgencyContractCubit,
+            AddAgencyContractState,
+            int>(
           selector: (state) => state.fileVersion,
           builder: (context, _) {
             final hasFile = cubit.fileBase64 != null;
@@ -235,28 +231,23 @@ class _ContractFileField extends StatelessWidget {
                   color: colorScheme.onPrimaryFixed,
                 ),
                 Space.h16,
-                if (hasFile)
-                  SelectedFileTile(
-                    title: cubit.fileName ?? 'فایل قرارداد',
-                    subtitle: cubit.fileSizeText(),
-                    icon: Icon(
-                      _fileIcon(cubit.fileExtension),
-                      color: Theme.of(context).colorScheme.primary,
-                    ),
-                    onRemove: () {
-                      cubit.clearFile();
-                      field.didChange(false);
-                    },
-                  )
-                else
-                  DottedFilePickerBox(
-                    title: 'انتخاب فایل',
-                    description: 'فرمت‌های مجاز: PNG, JPG, PDF و ZIP',
-                    onTap: () async {
-                      await cubit.pickFile();
-                      field.didChange(cubit.fileBase64 != null);
-                    },
-                  ),
+                DottedFilePickerBox(
+                  title: 'انتخاب فایل',
+                  description: 'فرمت‌های مجاز: PNG, JPG, PDF و ZIP',
+                  selected: hasFile,
+                  fileName: cubit.fileName,
+                  previewBytes: cubit.fileBytes,
+                  isImage: _isImage(cubit.fileExtension),
+                  icon: _fileIcon(cubit.fileExtension),
+                  onRemove: () {
+                    cubit.clearFile();
+                    field.didChange(false);
+                  },
+                  onTap: () async {
+                    await cubit.pickFile();
+                    field.didChange(cubit.fileBase64 != null);
+                  },
+                ),
                 if (field.hasError) ...[
                   Space.h6,
                   BodySmallText(
@@ -280,40 +271,11 @@ class _ContractFileField extends StatelessWidget {
       _ => Icons.insert_drive_file_outlined,
     };
   }
-}
 
-class _SubmitContractBar extends StatelessWidget {
-  const _SubmitContractBar({
-    required this.isSubmitting,
-    required this.onSubmit,
-  });
-
-  final bool isSubmitting;
-  final VoidCallback onSubmit;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return SafeArea(
-      child: Container(
-        padding: const EdgeInsets.all(AppPadding.p16),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.onPrimary,
-          boxShadow: [
-            BoxShadow(
-              color: theme.colorScheme.shadow.withOpacity(0.08),
-              blurRadius: AppSize.s16,
-              offset: const Offset(0, -6),
-            ),
-          ],
-        ),
-        child: InkwellButtonWidget(
-          title: 'ثبت قرارداد',
-          showLoading: isSubmitting,
-          onTap: isSubmitting ? null : onSubmit,
-        ),
-      ),
-    );
+  bool _isImage(String? extension) {
+    return switch (extension) {
+      'png' || 'jpg' || 'jpeg' => true,
+      _ => false,
+    };
   }
 }

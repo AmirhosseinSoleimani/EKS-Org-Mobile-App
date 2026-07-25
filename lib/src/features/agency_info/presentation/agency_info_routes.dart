@@ -118,17 +118,6 @@ class AgencyInfoRoutes {
           state: state,
         ),
       ),
-
-     /* GoRoute(
-        path: ComplementaryInfoPage.path,
-        name: ComplementaryInfoPage.name,
-        pageBuilder: (context, state) => getPage(
-          child: ComplementaryInfoPage(
-            agency: _agencyFromExtra(state.extra),
-          ),
-          state: state,
-        ),
-      ),*/
     ];
   }
 

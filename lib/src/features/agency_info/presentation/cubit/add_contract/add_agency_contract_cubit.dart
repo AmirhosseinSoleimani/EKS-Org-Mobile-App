@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/add_agency_contract_param_entity.dart';
@@ -30,6 +31,7 @@ class AddAgencyContractCubit extends Cubit<AddAgencyContractState> {
   String? fileExtension;
   String? fileBase64;
   int? fileSize;
+  Uint8List? fileBytes;
 
   Future<void> pickFile() async {
     final result = await FilePicker.pickFiles(
@@ -37,19 +39,17 @@ class AddAgencyContractCubit extends Cubit<AddAgencyContractState> {
       type: FileType.custom,
       allowedExtensions: const ['png', 'jpg', 'jpeg', 'pdf', 'zip'],
     );
-
     final file = result?.files.single;
     if (file == null) return;
 
     final bytes = file.bytes ?? await file.xFile.readAsBytes();
 
     final extension = _normalizeExtension(file.extension);
-
     fileName = file.name;
     fileExtension = extension;
     fileSize = file.size;
+    fileBytes = bytes;
     fileBase64 = 'data:${_mimeType(extension)};base64,${base64Encode(bytes)}';
-
     emit(state.copyWith(
       fileVersion: state.fileVersion + 1,
       clearError: true,
@@ -61,6 +61,7 @@ class AddAgencyContractCubit extends Cubit<AddAgencyContractState> {
     fileName = null;
     fileExtension = null;
     fileSize = null;
+    fileBytes = null;
     fileBase64 = null;
     emit(state.copyWith(fileVersion: state.fileVersion + 1, clearError: true));
   }
