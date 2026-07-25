@@ -14,10 +14,12 @@ class AgencyInfoActiveVehiclesActionView extends StatelessWidget {
     super.key,
     required this.item,
     required this.vehicles,
+    this.showSectionHeader = true,
   });
 
   final AgencyInfoEntity item;
   final AgencyVehiclePageEntity vehicles;
+  final bool showSectionHeader;
 
   @override
   Widget build(BuildContext context) {
@@ -28,11 +30,13 @@ class AgencyInfoActiveVehiclesActionView extends StatelessWidget {
       children: [
         AgencyInfoActionAgencyHeader(item: item),
         Space.h24,
-        AgencyInfoActionSectionHeader(
-          title: 'خودروهای فعلی',
-          count: count,
-        ),
-        Space.h16,
+        if (showSectionHeader) ...[
+          AgencyInfoActionSectionHeader(
+            title: 'خودروهای فعلی',
+            count: count,
+          ),
+          Space.h16,
+        ],
         Expanded(
           child: records.isEmpty
               ? const EmptyListWidget()

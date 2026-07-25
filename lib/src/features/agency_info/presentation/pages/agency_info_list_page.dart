@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/agency_info_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/agency_info_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_action_pages.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_contracts_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/add_agency_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_info_details_page.dart';
@@ -359,12 +360,13 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
     AgencyInfoEntity item,
     AgencyInfoActionType actionType,
   ) async {
-    if (actionType == AgencyInfoActionType.contracts) {
+    final pageName = _actionPageName(actionType);
+    if (pageName != null) {
       Navigator.of(context).pop();
       await Future<void>.delayed(Duration.zero);
       if (!mounted) return;
       await this.context.pushNamed<void>(
-        AgencyContractsPage.name,
+        pageName,
         extra: item,
       );
       return;
@@ -379,6 +381,25 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
     }
 
     await cubit.loadActionData(actionType, item);
+  }
+
+  String? _actionPageName(AgencyInfoActionType actionType) {
+    switch (actionType) {
+      case AgencyInfoActionType.contracts:
+        return AgencyContractsPage.name;
+      case AgencyInfoActionType.activeReliefWorkers:
+        return AgencyActiveReliefWorkersPage.name;
+      case AgencyInfoActionType.activeVehicles:
+        return AgencyActiveVehiclesPage.name;
+      case AgencyInfoActionType.serviceType:
+        return AgencyServiceTypesPage.name;
+      case AgencyInfoActionType.history:
+        return AgencyHistoryPage.name;
+      case AgencyInfoActionType.changeStatus:
+      case AgencyInfoActionType.complementaryInfo:
+      case AgencyInfoActionType.delete:
+        return null;
+    }
   }
 
   void _showDeleteConfirmation(

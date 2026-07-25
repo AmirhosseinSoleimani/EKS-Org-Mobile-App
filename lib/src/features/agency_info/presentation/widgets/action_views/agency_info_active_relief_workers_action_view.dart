@@ -13,10 +13,12 @@ class AgencyInfoActiveReliefWorkersActionView extends StatelessWidget {
     super.key,
     required this.item,
     required this.persons,
+    this.showSectionHeader = true,
   });
 
   final AgencyInfoEntity item;
   final AgencyPersonPageEntity persons;
+  final bool showSectionHeader;
 
   @override
   Widget build(BuildContext context) {
@@ -29,11 +31,13 @@ class AgencyInfoActiveReliefWorkersActionView extends StatelessWidget {
       children: [
         AgencyInfoActionAgencyHeader(item: item),
         Space.h24,
-        AgencyInfoActionSectionHeader(
-          title: 'امدادرسان‌های فعلی',
-          count: count,
-        ),
-        Space.h16,
+        if (showSectionHeader) ...[
+          AgencyInfoActionSectionHeader(
+            title: 'امدادرسان‌های فعلی',
+            count: count,
+          ),
+          Space.h16,
+        ],
         Expanded(
           child: records.isEmpty
               ? EmptyListWidget()
