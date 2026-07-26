@@ -8,6 +8,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/add_person/add_agency_person_search_results.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:flutter/material.dart';
@@ -59,8 +60,7 @@ class _AgencyAddPersonView extends StatelessWidget {
             appBar: const SimpleActionBar(title: 'ثبت امدادرسان جدید'),
             body: SafeArea(
               top: false,
-              child: SingleChildScrollView(
-                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              child: Padding(
                 padding: const EdgeInsets.fromLTRB(
                   AppPadding.p16,
                   AppPadding.p24,
@@ -75,12 +75,14 @@ class _AgencyAddPersonView extends StatelessWidget {
                       state: state,
                     ),
                     Space.h24,
-                    AddAgencyPersonSearchResults(
-                      state: state,
-                      onAdd: (person) => _openFormSheet(
-                        context,
-                        cubit,
-                        person,
+                    Expanded(
+                      child: AddAgencyPersonSearchResults(
+                        state: state,
+                        onAdd: (person) => _openFormSheet(
+                          context,
+                          cubit,
+                          person,
+                        ),
                       ),
                     ),
                   ],
@@ -88,9 +90,9 @@ class _AgencyAddPersonView extends StatelessWidget {
               ),
             ),
             bottomNavigationBar: Container(
-              decoration:  BoxDecoration(
+              decoration: BoxDecoration(
                 color: theme.colorScheme.onPrimary,
-                borderRadius: BorderRadius.only(
+                borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(16),
                   topRight: Radius.circular(16),
                 ),
@@ -106,7 +108,6 @@ class _AgencyAddPersonView extends StatelessWidget {
                 ),
               ),
             ),
-
           );
         },
       ),
@@ -120,17 +121,13 @@ class _AgencyAddPersonView extends StatelessWidget {
   ) async {
     cubit.selectPerson(person);
 
-    final result = await showModalBottomSheet<bool>(
+    final result = await BottomSheetMessage.showFullScreenCustom<bool>(
       context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
+      content: BlocProvider.value(
+        value: cubit,
+        child: AddAgencyPersonFormSheet(agency: agency),
+      ),
       backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-      builder: (_) {
-        return BlocProvider.value(
-          value: cubit,
-          child: AddAgencyPersonFormSheet(agency: agency),
-        );
-      },
     );
 
     if (result == true && context.mounted) {

@@ -16,7 +16,9 @@ class AddAgencyPersonCubit extends Cubit<AddAgencyPersonState> {
   AddAgencyPersonCubit(
     this._searchPersonInfoUseCase,
     this._addAgencyPersonUseCase,
-  ) : super(const AddAgencyPersonState());
+  ) : super(const AddAgencyPersonState()) {
+    searchController.addListener(_keepSearchSingleLine);
+  }
 
   final SearchPersonInfoUseCase _searchPersonInfoUseCase;
   final AddAgencyPersonUseCase _addAgencyPersonUseCase;
@@ -31,6 +33,17 @@ class AddAgencyPersonCubit extends Cubit<AddAgencyPersonState> {
 
   String? contractStartDateApi;
   String? contractEndDateApi;
+
+  void _keepSearchSingleLine() {
+    final text = searchController.text;
+    if (!text.contains('\n')) return;
+
+    final normalized = text.replaceAll('\n', ' ').trimLeft();
+    searchController.value = TextEditingValue(
+      text: normalized,
+      selection: TextSelection.collapsed(offset: normalized.length),
+    );
+  }
 
   Future<void> search() async {
     final query = searchController.text.trim();
@@ -173,6 +186,7 @@ class AddAgencyPersonCubit extends Cubit<AddAgencyPersonState> {
 
   @override
   Future<void> close() {
+    searchController.removeListener(_keepSearchSingleLine);
     searchController.dispose();
     contractStartDateController.dispose();
     contractEndDateController.dispose();

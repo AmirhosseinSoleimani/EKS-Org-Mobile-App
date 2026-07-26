@@ -29,13 +29,6 @@ class AddAgencyPersonSearchResults extends StatelessWidget {
   }
 
   Widget _child(BuildContext context) {
-    if (state.status == AddAgencyPersonStatus.searching) {
-      return const Center(
-        key: ValueKey('search-loading'),
-        child: CircularProgressIndicator(),
-      );
-    }
-
     if (state.status == AddAgencyPersonStatus.searchEmpty) {
       return const Center(
         key: ValueKey('search-empty'),
@@ -70,18 +63,18 @@ class AddAgencyPersonSearchResults extends StatelessWidget {
           ],
         ),
         Space.h12,
-        ListView.separated(
-          shrinkWrap: true,
-          physics: const NeverScrollableScrollPhysics(),
-          itemCount: state.persons.length,
-          separatorBuilder: (_, __) => Space.h12,
-          itemBuilder: (context, index) {
-            final person = state.persons[index];
-            return AgencyPersonSummaryCard(
-              person: person,
-              onAdd: () => onAdd(person),
-            );
-          },
+        Expanded(
+          child: ListView.separated(
+            itemCount: state.persons.length,
+            separatorBuilder: (_, __) => Space.h12,
+            itemBuilder: (context, index) {
+              final person = state.persons[index];
+              return AgencyPersonSummaryCard(
+                person: person,
+                onAdd: () => onAdd(person),
+              );
+            },
+          ),
         ),
       ],
     );
