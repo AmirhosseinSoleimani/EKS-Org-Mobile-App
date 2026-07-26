@@ -3,7 +3,7 @@ import 'package:eks_sana_plus_org/src/features/imei/presentation/cubit/imei_cubi
 import 'package:eks_sana_plus_org/src/features/imei/presentation/cubit/imei_state.dart';
 import 'package:eks_sana_plus_org/src/shared/input_formatter/persian_arabic_digits_to_english_formatter.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/full_screen_bottom_sheet_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/overlay_dropdown_form_field.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/form_section_container.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/sticky_form_action_bar.dart';
@@ -13,8 +13,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class ImeiFormSheet extends StatelessWidget {
-  const ImeiFormSheet({
+class ImeiFormView extends StatelessWidget {
+  const ImeiFormView({
     super.key,
     required this.isEdit,
   });
@@ -27,27 +27,14 @@ class ImeiFormSheet extends StatelessWidget {
 
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: BlocConsumer<ImeiCubit, ImeiState>(
-        listenWhen: (previous, current) =>
-            previous.isSubmitting != current.isSubmitting ||
-            previous.successMessage != current.successMessage,
-        listener: (context, state) {
-          if (!state.isSubmitting &&
-              state.successMessage?.trim().isNotEmpty == true) {
-            Navigator.of(context).pop(true);
-          }
-        },
+      child: BlocBuilder<ImeiCubit, ImeiState>(
         builder: (context, state) {
           final theme = Theme.of(context);
 
           return Scaffold(
             backgroundColor: theme.colorScheme.surface,
-            appBar: PreferredSize(
-              preferredSize: const Size.fromHeight(kToolbarHeight),
-              child: FullScreenBottomSheetAppBar(
-                title: isEdit ? 'ویرایش IMEI' : 'ثبت IMEI جدید',
-                onClose: () => Navigator.of(context).pop(false),
-              ),
+            appBar: SimpleActionBar(
+              title: isEdit ? 'ویرایش IMEI' : 'ثبت IMEI جدید',
             ),
             body: SafeArea(
               top: false,
@@ -80,12 +67,16 @@ class ImeiFormSheet extends StatelessWidget {
                         Space.h20,
                         OverlayDropdownFormField<DeviceInfoEntity>(
                           key: ValueKey(
-                            'form-device-${cubit.selectedFormDevice?.id}',
+                            'form-device-${state.selectedFormDevice?.id}-${state.deviceTypes.length}',
                           ),
                           labelText: 'نوع دستگاه',
                           mandatory: true,
                           items: state.deviceTypes,
-                          value: cubit.selectedFormDevice,
+                          value: state.selectedFormDevice,
+                          enabled: state.deviceTypes.isNotEmpty,
+                          hintText: state.deviceTypes.isEmpty
+                              ? 'در حال دریافت...'
+                              : 'انتخاب کنید',
                           validator: (item) =>
                               item == null ? 'این فیلد اجباری است' : null,
                           onChanged: cubit.setFormDevice,
@@ -124,12 +115,12 @@ class ImeiFormSheet extends StatelessWidget {
                         Space.h16,
                         OverlayDropdownFormField<SimpleDropdownItem<bool>>(
                           key: ValueKey(
-                            'form-status-${cubit.selectedFormStatus}',
+                            'form-status-${state.selectedFormStatus}',
                           ),
                           labelText: 'وضعیت',
                           mandatory: true,
                           items: _statusItems,
-                          value: _selectedStatusItem(cubit.selectedFormStatus),
+                          value: _selectedStatusItem(state.selectedFormStatus),
                           onChanged: (item) {
                             if (item != null) {
                               cubit.setFormStatus(item.value);
@@ -147,7 +138,10 @@ class ImeiFormSheet extends StatelessWidget {
               cancelTitle: 'انصراف',
               isSubmitting: state.isSubmitting,
               onCancel: () => Navigator.of(context).pop(false),
-              onSubmit: () => cubit.submitForm(isEdit: isEdit),
+              onSubmit: () => cubit.submitForm(
+                isEdit: isEdit,
+                refreshAfterSuccess: false,
+              ),
             ),
           );
         },

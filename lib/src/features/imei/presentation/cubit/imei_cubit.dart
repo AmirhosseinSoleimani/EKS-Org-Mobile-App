@@ -47,14 +47,22 @@ class ImeiCubit extends Cubit<ImeiState> {
 
   DeviceInfoEntity? selectedFilterDevice;
   bool? selectedFilterStatus;
-  DeviceInfoEntity? selectedFormDevice;
-  bool selectedFormStatus = true;
 
   Future<void> init() async {
     await Future.wait([
       fetchDeviceTypes(),
       fetchList(refresh: true),
     ]);
+  }
+
+  Future<void> initForm({ImeiInfoEntity? item}) async {
+    await fetchDeviceTypes();
+    if (item == null) {
+      prepareAddForm();
+      return;
+    }
+
+    await fetchDetailForEdit(item);
   }
 
   Future<void> fetchDeviceTypes() async {
@@ -222,22 +230,22 @@ class ImeiCubit extends Cubit<ImeiState> {
     simNumberController.clear();
     avlSerialController.clear();
     imeiController.clear();
-    selectedFormDevice = null;
-    selectedFormStatus = true;
 
     emit(state.copyWith(
       clearSelectedItem: true,
+      clearSelectedFormDevice: true,
+      selectedFormStatus: true,
       clearErrorMessage: true,
       clearSuccessMessage: true,
     ));
   }
 
   void setFormDevice(DeviceInfoEntity? value) {
-    selectedFormDevice = value;
+    emit(state.copyWith(selectedFormDevice: value));
   }
 
   void setFormStatus(bool value) {
-    selectedFormStatus = value;
+    emit(state.copyWith(selectedFormStatus: value));
   }
 
   void setFilterDevice(DeviceInfoEntity? value) {
@@ -248,11 +256,14 @@ class ImeiCubit extends Cubit<ImeiState> {
     selectedFilterStatus = value;
   }
 
-  Future<bool> submitForm({required bool isEdit}) async {
+  Future<bool> submitForm({
+    required bool isEdit,
+    bool refreshAfterSuccess = true,
+  }) async {
     if (state.isSubmitting) return false;
     if (formKey.currentState?.validate() != true) return false;
 
-    final deviceId = selectedFormDevice?.id;
+    final deviceId = state.selectedFormDevice?.id;
     if (deviceId == null) {
       emit(state.copyWith(errorMessage: 'نوع دستگاه را انتخاب کنید.'));
       return false;
@@ -276,7 +287,7 @@ class ImeiCubit extends Cubit<ImeiState> {
       deviceId: deviceId,
       imei: imeiController.text.trim(),
       avlSerial: avlSerialController.text.trim(),
-      isActive: selectedFormStatus,
+      isActive: state.selectedFormStatus,
     );
 
     final result = isEdit ? await _updateUseCase(param) : await _addUseCase(param);
@@ -306,7 +317,9 @@ class ImeiCubit extends Cubit<ImeiState> {
       )),
     );
 
-    if (success) await fetchList(refresh: true);
+    if (success && refreshAfterSuccess) {
+      await fetchList(refresh: true);
+    }
     return success;
   }
 
@@ -404,8 +417,6 @@ class ImeiCubit extends Cubit<ImeiState> {
     simNumberController.text = item.simNumber ?? '';
     avlSerialController.text = item.avlSerial ?? '';
     imeiController.text = item.imei ?? '';
-    selectedFormStatus = item.isActive ?? true;
-
     DeviceInfoEntity? device;
     for (final itemDevice in state.deviceTypes) {
       if (itemDevice.id == item.deviceId) {
@@ -413,7 +424,10 @@ class ImeiCubit extends Cubit<ImeiState> {
         break;
       }
     }
-    selectedFormDevice = device;
+    emit(state.copyWith(
+      selectedFormDevice: device,
+      selectedFormStatus: item.isActive ?? true,
+    ));
   }
 
   @override

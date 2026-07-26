@@ -30,6 +30,7 @@ class ImeiFiltersRow extends StatelessWidget {
                 context: context,
                 content: ImeiFilterSheet(cubit: cubit),
                 actionWidget: const SizedBox.shrink(),
+                backgroundColor: Theme.of(context).colorScheme.onPrimary,
                 isDismissible: true,
                 enableDrag: true,
               );

@@ -21,6 +21,8 @@ class ImeiState {
     this.pageStatusFilter,
     this.deviceTypes = const [],
     this.selectedItem,
+    this.selectedFormDevice,
+    this.selectedFormStatus = true,
     this.errorMessage,
     this.successMessage,
     this.reportPath,
@@ -38,6 +40,8 @@ class ImeiState {
   final bool? pageStatusFilter;
   final List<DeviceInfoEntity> deviceTypes;
   final ImeiInfoEntity? selectedItem;
+  final DeviceInfoEntity? selectedFormDevice;
+  final bool selectedFormStatus;
   final String? errorMessage;
   final String? successMessage;
   final String? reportPath;
@@ -67,6 +71,9 @@ class ImeiState {
     List<DeviceInfoEntity>? deviceTypes,
     ImeiInfoEntity? selectedItem,
     bool clearSelectedItem = false,
+    DeviceInfoEntity? selectedFormDevice,
+    bool clearSelectedFormDevice = false,
+    bool? selectedFormStatus,
     String? errorMessage,
     bool clearErrorMessage = false,
     String? successMessage,
@@ -88,6 +95,10 @@ class ImeiState {
           clearPageStatusFilter ? null : pageStatusFilter ?? this.pageStatusFilter,
       deviceTypes: deviceTypes ?? this.deviceTypes,
       selectedItem: clearSelectedItem ? null : selectedItem ?? this.selectedItem,
+      selectedFormDevice: clearSelectedFormDevice
+          ? null
+          : selectedFormDevice ?? this.selectedFormDevice,
+      selectedFormStatus: selectedFormStatus ?? this.selectedFormStatus,
       errorMessage:
           clearErrorMessage ? null : errorMessage ?? this.errorMessage,
       successMessage:

@@ -4,8 +4,8 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/imei/domain/entities/imei_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/imei/presentation/cubit/imei_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/imei/presentation/cubit/imei_state.dart';
+import 'package:eks_sana_plus_org/src/features/imei/presentation/pages/imei_form_page.dart';
 import 'package:eks_sana_plus_org/src/features/imei/presentation/widgets/imei_filters_row.dart';
-import 'package:eks_sana_plus_org/src/features/imei/presentation/widgets/imei_form_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/imei/presentation/widgets/imei_info_card.dart';
 import 'package:eks_sana_plus_org/src/features/imei/presentation/widgets/imei_report_button.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
@@ -65,11 +65,9 @@ class _ImeiView extends StatelessWidget {
           return Scaffold(
             backgroundColor: theme.colorScheme.surface,
             appBar: const SimpleActionBar(title: 'IMEI'),
-            floatingActionButtonLocation:
-                FloatingActionButtonLocation.startFloat,
             floatingActionButton: FloatingActionButtonWidget(
               title: 'IMEI جدید',
-              onPressed: () => _openAddSheet(context, cubit),
+              onPressed: () => _openAddPage(context, cubit),
             ),
             body: SafeArea(
               top: false,
@@ -97,7 +95,7 @@ class _ImeiView extends StatelessWidget {
                           state: state,
                           onRetry: () => cubit.fetchList(refresh: true),
                           onLoadMore: cubit.loadMore,
-                          onEdit: (item) => _openEditSheet(
+                          onEdit: (item) => _openEditPage(
                             context,
                             cubit,
                             item,
@@ -120,34 +118,25 @@ class _ImeiView extends StatelessWidget {
     );
   }
 
-  Future<void> _openAddSheet(BuildContext context, ImeiCubit cubit) async {
-    cubit.prepareAddForm();
-    await BottomSheetMessage.showFullScreenCustom<bool>(
-      context: context,
-      content: BlocProvider.value(
-        value: cubit,
-        child: const ImeiFormSheet(isEdit: false),
-      ),
-      backgroundColor: Theme.of(context).colorScheme.surface,
-    );
+  Future<void> _openAddPage(BuildContext context, ImeiCubit cubit) async {
+    final result = await context.pushNamed<bool>(ImeiFormPage.addName);
+    if (result == true) {
+      await cubit.fetchList(refresh: true);
+    }
   }
 
-  Future<void> _openEditSheet(
+  Future<void> _openEditPage(
     BuildContext context,
     ImeiCubit cubit,
     ImeiInfoEntity item,
   ) async {
-    final detail = await cubit.fetchDetailForEdit(item);
-    if (detail == null || !context.mounted) return;
-
-    await BottomSheetMessage.showFullScreenCustom<bool>(
-      context: context,
-      content: BlocProvider.value(
-        value: cubit,
-        child: const ImeiFormSheet(isEdit: true),
-      ),
-      backgroundColor: Theme.of(context).colorScheme.surface,
+    final result = await context.pushNamed<bool>(
+      ImeiFormPage.editName,
+      extra: item,
     );
+    if (result == true) {
+      await cubit.fetchList(refresh: true);
+    }
   }
 
   void _confirmDelete(
