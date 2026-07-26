@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/vehicle_info_search_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_enum_item_entity.dart';
 
 enum AddAgencyVehicleStatus {
   initial,
@@ -19,7 +20,8 @@ class AddAgencyVehicleState {
     this.createdId,
     this.errorMessage,
     this.searchCount = 0,
-    this.contractType = 1,
+    this.contractTypeItems = const [],
+    this.contractType,
     this.isActive = true,
   });
 
@@ -29,7 +31,8 @@ class AddAgencyVehicleState {
   final String? createdId;
   final String? errorMessage;
   final int searchCount;
-  final int contractType;
+  final List<CurrentSessionEnumItemEntity> contractTypeItems;
+  final int? contractType;
   final bool isActive;
 
   bool get isSearching => status == AddAgencyVehicleStatus.searching;
@@ -44,6 +47,7 @@ class AddAgencyVehicleState {
     String? errorMessage,
     bool clearErrorMessage = false,
     int? searchCount,
+    List<CurrentSessionEnumItemEntity>? contractTypeItems,
     int? contractType,
     bool? isActive,
   }) {
@@ -57,6 +61,7 @@ class AddAgencyVehicleState {
       errorMessage:
           clearErrorMessage ? null : errorMessage ?? this.errorMessage,
       searchCount: searchCount ?? this.searchCount,
+      contractTypeItems: contractTypeItems ?? this.contractTypeItems,
       contractType: contractType ?? this.contractType,
       isActive: isActive ?? this.isActive,
     );

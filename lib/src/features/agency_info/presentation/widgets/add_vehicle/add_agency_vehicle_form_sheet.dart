@@ -70,6 +70,7 @@ class AddAgencyVehicleFormSheet extends StatelessWidget {
                         ),
                       Space.h24,
                       _VehicleCooperationForm(cubit: cubit, state: state),
+                      Space.h24,
                     ],
                   ),
                 ),
@@ -189,11 +190,11 @@ class _VehicleCooperationForm extends StatelessWidget {
           ),
           Space.h16,
           DatePickerWidget(
-            controller: cubit.installTypeDateController,
+            controller: cubit.replacementDateController,
             labelText: 'تاریخ جایگزینی',
             hintText: '',
             lastDate: Jalali(1500, 12, 29),
-            onTap: cubit.setInstallTypeDate,
+            onTap: cubit.setReplacementDate,
             suffixIcon: Icon(
               Icons.calendar_month_outlined,
               color: colorScheme.onSurfaceVariant,
@@ -211,13 +212,20 @@ class _VehicleCooperationForm extends StatelessWidget {
             children: [
               Expanded(
                 child: OverlayDropdownFormField<SimpleDropdownItem<int>>(
+                  key: ValueKey(
+                    'vehicle-contract-type-'
+                    '${state.contractTypeItems.length}-${state.contractType}',
+                  ),
                   labelText: 'نوع همکاری',
                   mandatory: true,
-                  items: _contractTypeItems,
-                  value: _contractTypeItems.firstWhere(
-                    (item) => item.value == state.contractType,
-                    orElse: () => _contractTypeItems.first,
-                  ),
+                  enabled: state.contractTypeItems.isNotEmpty,
+                  hintText: state.contractTypeItems.isEmpty
+                      ? 'در حال دریافت...'
+                      : 'انتخاب کنید',
+                  items: _contractTypeItems(state),
+                  value: _selectedContractTypeItem(state),
+                  validator: (item) =>
+                      item == null ? 'این فیلد اجباری است' : null,
                   onChanged: (item) {
                     if (item != null) cubit.setContractType(item.value);
                   },
@@ -245,10 +253,33 @@ class _VehicleCooperationForm extends StatelessWidget {
     );
   }
 
-  static const _contractTypeItems = [
-    SimpleDropdownItem<int>(value: 1, label: 'تمام وقت'),
-    SimpleDropdownItem<int>(value: 2, label: 'پاره وقت'),
-  ];
+  List<SimpleDropdownItem<int>> _contractTypeItems(
+    AddAgencyVehicleState state,
+  ) {
+    return state.contractTypeItems
+        .where((item) => item.value != null)
+        .map(
+          (item) => SimpleDropdownItem<int>(
+            value: item.value!,
+            label: item.title ?? item.name ?? item.value.toString(),
+          ),
+        )
+        .toList();
+  }
+
+  SimpleDropdownItem<int>? _selectedContractTypeItem(
+    AddAgencyVehicleState state,
+  ) {
+    final items = _contractTypeItems(state);
+    final contractType = state.contractType;
+    if (contractType == null) return null;
+
+    for (final item in items) {
+      if (item.value == contractType) return item;
+    }
+
+    return null;
+  }
 
   static const _statusItems = [
     SimpleDropdownItem<bool>(value: true, label: 'فعال'),

@@ -1781,12 +1781,6 @@ _i174.GetIt $initGetIt(
       gh<_i998.ChangeHomeServiceRequestAddressUseCase>(),
     ),
   );
-  gh.factory<_i680.AddAgencyVehicleCubit>(
-    () => _i680.AddAgencyVehicleCubit(
-      gh<_i645.SearchVehicleInfoUseCase>(),
-      gh<_i657.AddAgencyVehicleUseCase>(),
-    ),
-  );
   gh.factory<_i809.PreInvoiceCubit>(
     () => _i809.PreInvoiceCubit(
       gh<_i116.GetPreInvoiceUseCase>(),
@@ -2030,6 +2024,14 @@ _i174.GetIt $initGetIt(
       gh<_i226.GetActiveServiceRequestUseCase>(),
       gh<_i535.GetLastEvaluationUseCase>(),
       gh<_i684.PostEvaluationUseCase>(),
+    ),
+  );
+  gh.factory<_i680.AddAgencyVehicleCubit>(
+    () => _i680.AddAgencyVehicleCubit(
+      gh<_i645.SearchVehicleInfoUseCase>(),
+      gh<_i657.AddAgencyVehicleUseCase>(),
+      gh<_i1058.CurrentSessionManager>(),
+      gh<_i695.SyncCurrentSessionUseCase>(),
     ),
   );
   gh.factory<_i792.UpdateRequestCubit>(
