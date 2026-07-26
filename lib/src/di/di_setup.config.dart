@@ -338,6 +338,23 @@ import '../features/home_services_evaluation/presentation/labors_and_parts/cubit
     as _i664;
 import '../features/home_services_evaluation/presentation/service_list/cubit/service_list_cubit.dart'
     as _i379;
+import '../features/imei/data/data_source/imei_data_source.dart' as _i1065;
+import '../features/imei/data/data_source/imei_data_source_impl.dart' as _i572;
+import '../features/imei/data/repository/imei_repository_impl.dart' as _i311;
+import '../features/imei/data/service/imei_service.dart' as _i587;
+import '../features/imei/domain/repository/imei_repository.dart' as _i14;
+import '../features/imei/domain/usecases/add_imei_info_use_case.dart' as _i357;
+import '../features/imei/domain/usecases/delete_imei_info_use_case.dart'
+    as _i911;
+import '../features/imei/domain/usecases/get_device_info_list_use_case.dart'
+    as _i277;
+import '../features/imei/domain/usecases/get_imei_info_by_id_use_case.dart'
+    as _i1055;
+import '../features/imei/domain/usecases/get_imei_info_list_use_case.dart'
+    as _i518;
+import '../features/imei/domain/usecases/update_imei_info_use_case.dart'
+    as _i859;
+import '../features/imei/presentation/cubit/imei_cubit.dart' as _i70;
 import '../features/indicator_report/data/data_sources/indicator_report_data_source.dart'
     as _i691;
 import '../features/indicator_report/data/data_sources/indicator_report_data_source_impl.dart'
@@ -865,6 +882,7 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i300.GradePatternService>(
     () => _i300.GradePatternService(gh<_i361.Dio>()),
   );
+  gh.lazySingleton<_i587.ImeiService>(() => _i587.ImeiService(gh<_i361.Dio>()));
   gh.lazySingleton<_i298.RescuerService>(
     () => _i298.RescuerService(gh<_i361.Dio>()),
   );
@@ -1004,6 +1022,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i1039.UserDataSource>(
     () => _i793.UserDataSourceImpl(gh<_i313.UserService>()),
+  );
+  gh.lazySingleton<_i1065.ImeiDataSource>(
+    () => _i572.ImeiDataSourceImpl(gh<_i587.ImeiService>()),
   );
   gh.lazySingleton<_i603.RequestRepository>(
     () => _i794.RequestRepositoryImpl(gh<_i1016.RequestDataSource>()),
@@ -1536,6 +1557,9 @@ _i174.GetIt $initGetIt(
   gh.factory<_i951.IndicatorReportCubit>(
     () => _i951.IndicatorReportCubit(gh<_i375.FetchIndicatorReportUseCase>()),
   );
+  gh.lazySingleton<_i14.ImeiRepository>(
+    () => _i311.ImeiRepositoryImpl(gh<_i1065.ImeiDataSource>()),
+  );
   gh.lazySingleton<_i716.AuthRepository>(
     () => _i781.AuthRepositoryImpl(
       gh<_i479.AuthRemoteDataSource>(),
@@ -1711,6 +1735,24 @@ _i174.GetIt $initGetIt(
       gh<_i833.GetRescuerSkillCertificatesUseCase>(),
       gh<_i339.GetRescuerHistoryUseCase>(),
     ),
+  );
+  gh.lazySingleton<_i357.AddImeiInfoUseCase>(
+    () => _i357.AddImeiInfoUseCase(gh<_i14.ImeiRepository>()),
+  );
+  gh.lazySingleton<_i911.DeleteImeiInfoUseCase>(
+    () => _i911.DeleteImeiInfoUseCase(gh<_i14.ImeiRepository>()),
+  );
+  gh.lazySingleton<_i277.GetDeviceInfoListUseCase>(
+    () => _i277.GetDeviceInfoListUseCase(gh<_i14.ImeiRepository>()),
+  );
+  gh.lazySingleton<_i1055.GetImeiInfoByIdUseCase>(
+    () => _i1055.GetImeiInfoByIdUseCase(gh<_i14.ImeiRepository>()),
+  );
+  gh.lazySingleton<_i518.GetImeiInfoListUseCase>(
+    () => _i518.GetImeiInfoListUseCase(gh<_i14.ImeiRepository>()),
+  );
+  gh.lazySingleton<_i859.UpdateImeiInfoUseCase>(
+    () => _i859.UpdateImeiInfoUseCase(gh<_i14.ImeiRepository>()),
   );
   gh.lazySingleton<_i274.GetThemeUseCase>(
     () => _i274.GetThemeUseCase(gh<_i74.UserRepository>()),
@@ -1971,6 +2013,16 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i558.UpdateEmdadVehicleUseCase>(
     () => _i558.UpdateEmdadVehicleUseCase(gh<_i139.EmdadVehicleRepository>()),
+  );
+  gh.factory<_i70.ImeiCubit>(
+    () => _i70.ImeiCubit(
+      gh<_i518.GetImeiInfoListUseCase>(),
+      gh<_i277.GetDeviceInfoListUseCase>(),
+      gh<_i1055.GetImeiInfoByIdUseCase>(),
+      gh<_i357.AddImeiInfoUseCase>(),
+      gh<_i859.UpdateImeiInfoUseCase>(),
+      gh<_i911.DeleteImeiInfoUseCase>(),
+    ),
   );
   gh.lazySingleton<_i695.SyncCurrentSessionUseCase>(
     () => _i695.SyncCurrentSessionUseCase(

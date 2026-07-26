@@ -638,6 +638,13 @@ class CurrentSessionAccessPolicy {
     );
   }
 
+  bool canShowIMEI() {
+    return canShowMenu(CurrentSessionMenuKeys.sanImei);
+  }
+  bool canShowShift() {
+    return canShowMenu(CurrentSessionMenuKeys.sanShift);
+  }
+
   bool canViewReports() {
     return hasAnyAuthorization([
       CurrentSessionAuthorizationKeys.reports,

@@ -3,6 +3,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/ag
 import 'package:eks_sana_plus_org/src/features/cartable/presentation/cartable_page.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/pages/emdad_unit_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/pages/grade_pattern_list_page.dart';
+import 'package:eks_sana_plus_org/src/features/imei/presentation/pages/imei_page.dart';
 import 'package:eks_sana_plus_org/src/features/leave/presentation/pages/leave_page.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/plan_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/rescuer_list_page.dart';
@@ -125,12 +126,22 @@ class ServicesPage extends StatelessWidget {
                   context.pushNamed(SkillsCertificatesPage.name);
                 },
               ),
-            if (access.canShowSkillsCertificateButton())
+
+            if (access.canShowShift())
               _AgencyServiceItemData(
                 title: 'شیفت',
                 icon: Icons.grading_outlined,
                 onTap: () {
                   context.pushNamed(ShiftListPage.name);
+                },
+              ),
+
+            if (access.canShowIMEI())
+              _AgencyServiceItemData(
+                title: 'IMEI',
+                icon: Icons.grading_outlined,
+                onTap: () {
+                  context.pushNamed(ImeiPage.name);
                 },
               ),
           ];

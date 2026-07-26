@@ -10,6 +10,7 @@ import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/grade_
 import 'package:eks_sana_plus_org/src/features/emdad_vehicle/emdad_vehicle_page.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/evaluation_invoice_page/evaluation_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_first_step/home_service_evaluation_first_step.dart';
+import 'package:eks_sana_plus_org/src/features/imei/presentation/imei_routes.dart';
 import 'package:eks_sana_plus_org/src/features/indicator_report/presentation/indicator_report_page/indicator_report_page.dart';
 import 'package:eks_sana_plus_org/src/features/leave/presentation/leave_routes.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_info_entity.dart';
@@ -387,6 +388,7 @@ class Routes {
         ...VehicleInfoRoutes.routes(getPage),
         ...SkillsCertificatesRoutes.routes(getPage),
         ...ShiftRoutes.routes(getPage),
+        ...ImeiRoutes.routes(getPage),
       ],
     );
   }
