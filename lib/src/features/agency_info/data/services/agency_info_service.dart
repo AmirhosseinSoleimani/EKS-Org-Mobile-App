@@ -305,7 +305,13 @@ class AgencyInfoService {
       final hasEnvelope = mappedData.containsKey('data') ||
           mappedData.containsKey('Data') ||
           mappedData.containsKey('records') ||
-          mappedData.containsKey('Records');
+          mappedData.containsKey('Records') ||
+          mappedData.containsKey('resultCode') ||
+          mappedData.containsKey('ResultCode') ||
+          mappedData.containsKey('message') ||
+          mappedData.containsKey('Message') ||
+          mappedData.containsKey('failures') ||
+          mappedData.containsKey('Failures');
 
       if (hasEnvelope) {
         return mappedData;
