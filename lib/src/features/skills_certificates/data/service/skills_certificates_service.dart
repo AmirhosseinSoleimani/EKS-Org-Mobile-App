@@ -24,7 +24,7 @@ abstract class SkillsCertificatesService {
   );
 
   @POST('/api/SkillCertificate/post')
-  Future<Map<String, dynamic>> createSkill(
+  Future<dynamic> createSkill(
     @Body() Map<String, dynamic> body,
   );
 
@@ -44,7 +44,7 @@ abstract class SkillsCertificatesService {
   );
 
   @POST('/api/SkillCertificate/SubmitServices')
-  Future<Map<String, dynamic>> submitServices(
+  Future<dynamic> submitServices(
     @Body() Map<String, dynamic> body,
   );
 

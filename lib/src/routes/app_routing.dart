@@ -37,6 +37,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/request_det
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_status_history_page/request_status_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/services_page/services_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/update_request_page/update_request_page.dart';
+import 'package:eks_sana_plus_org/src/features/shift/presentation/shift_routes.dart';
 import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/skills_certificates_routes.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/vehicle_info_routes.dart';
 import 'package:eks_sana_plus_org/src/routes/current_session_sync_navigator_observer.dart';
@@ -385,6 +386,7 @@ class Routes {
         ...AgencyInfoRoutes.routes(getPage),
         ...VehicleInfoRoutes.routes(getPage),
         ...SkillsCertificatesRoutes.routes(getPage),
+        ...ShiftRoutes.routes(getPage),
       ],
     );
   }

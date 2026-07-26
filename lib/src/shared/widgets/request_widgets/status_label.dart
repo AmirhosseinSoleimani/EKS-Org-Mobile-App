@@ -62,7 +62,7 @@ class StatusLabel extends StatelessWidget {
 
     switch (variant) {
       case StatusLabelVariant.filled:
-        return color.withOpacity(0.2);
+        return color.withValues(alpha: 0.1);
 
       case StatusLabelVariant.outlined:
         return Colors.transparent;
@@ -70,7 +70,7 @@ class StatusLabel extends StatelessWidget {
       case StatusLabelVariant.filledWhiteText:
         return color;
       case StatusLabelVariant.filledWithoutBorder:
-        return color.withOpacity(0.2);
+        return color.withValues(alpha: 0.1);
     }
   }
 

@@ -539,6 +539,23 @@ import '../features/services/presentation/request_status_history_page/cubit/requ
     as _i563;
 import '../features/services/presentation/update_request_page/cubit/update_request_cubit.dart'
     as _i792;
+import '../features/shift/data/data_sources/shift_data_source.dart' as _i970;
+import '../features/shift/data/data_sources/shift_data_source_impl.dart' as _i5;
+import '../features/shift/data/repositories/shift_repository_impl.dart'
+    as _i520;
+import '../features/shift/data/services/shift_service.dart' as _i401;
+import '../features/shift/domain/repositories/shift_repository.dart' as _i399;
+import '../features/shift/domain/use_cases/create_shift_use_case.dart' as _i904;
+import '../features/shift/domain/use_cases/delete_shift_use_case.dart' as _i585;
+import '../features/shift/domain/use_cases/get_shift_by_id_use_case.dart'
+    as _i76;
+import '../features/shift/domain/use_cases/get_shift_list_use_case.dart'
+    as _i113;
+import '../features/shift/domain/use_cases/update_shift_use_case.dart' as _i25;
+import '../features/shift/domain/use_cases/validate_shift_use_case.dart'
+    as _i325;
+import '../features/shift/presentation/cubit/shift_form_cubit.dart' as _i309;
+import '../features/shift/presentation/cubit/shift_list_cubit.dart' as _i727;
 import '../features/skills_certificates/data/data_source/skills_certificates_data_source.dart'
     as _i82;
 import '../features/skills_certificates/data/data_source/skills_certificates_data_source_impl.dart'
@@ -724,6 +741,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i823.EvaluationDraftStore>(
     () => _i823.EvaluationDraftStore(),
   );
+  gh.lazySingleton<_i325.ValidateShiftUseCase>(
+    () => _i325.ValidateShiftUseCase(),
+  );
   gh.lazySingleton<_i838.RequestRepositoryShareData>(
     () => _i318.RequestRepositoryShareDataImpl(),
   );
@@ -818,6 +838,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i483.RequestService>(
     () => _i483.RequestService(gh<_i361.Dio>()),
+  );
+  gh.lazySingleton<_i401.ShiftService>(
+    () => _i401.ShiftService(gh<_i361.Dio>()),
   );
   gh.lazySingleton<_i654.SkillsCertificatesService>(
     () => _i654.SkillsCertificatesService(gh<_i361.Dio>()),
@@ -950,6 +973,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i565.UrgentRequestUseCase>(
     () => _i565.UrgentRequestUseCase(gh<_i854.MainRepository>()),
   );
+  gh.lazySingleton<_i970.ShiftDataSource>(
+    () => _i5.ShiftDataSourceImpl(gh<_i401.ShiftService>()),
+  );
   gh.lazySingleton<_i233.AgencyInfoRepository>(
     () => _i29.AgencyInfoRepositoryImpl(gh<_i123.AgencyInfoDataSource>()),
   );
@@ -1002,6 +1028,9 @@ _i174.GetIt $initGetIt(
     () =>
         _i16.ObserveNetworkRepositoryImpl(gh<_i333.ObserveNetworkDataSource>()),
   );
+  gh.lazySingleton<_i399.ShiftRepository>(
+    () => _i520.ShiftRepositoryImpl(gh<_i970.ShiftDataSource>()),
+  );
   gh.lazySingleton<_i347.HomeServiceEvaluationRepository>(
     () => _i1063.HomeServiceEvaluationRepositoryImpl(
       gh<_i999.HomeServiceEvaluationDataSource>(),
@@ -1028,6 +1057,21 @@ _i174.GetIt $initGetIt(
   );
   gh.factory<_i557.GetRescuersUseCase>(
     () => _i557.GetRescuersUseCase(gh<_i449.RescuerRepository>()),
+  );
+  gh.lazySingleton<_i904.CreateShiftUseCase>(
+    () => _i904.CreateShiftUseCase(gh<_i399.ShiftRepository>()),
+  );
+  gh.lazySingleton<_i585.DeleteShiftUseCase>(
+    () => _i585.DeleteShiftUseCase(gh<_i399.ShiftRepository>()),
+  );
+  gh.lazySingleton<_i76.GetShiftByIdUseCase>(
+    () => _i76.GetShiftByIdUseCase(gh<_i399.ShiftRepository>()),
+  );
+  gh.lazySingleton<_i113.GetShiftListUseCase>(
+    () => _i113.GetShiftListUseCase(gh<_i399.ShiftRepository>()),
+  );
+  gh.lazySingleton<_i25.UpdateShiftUseCase>(
+    () => _i25.UpdateShiftUseCase(gh<_i399.ShiftRepository>()),
   );
   gh.lazySingleton<_i615.SkillsCertificatesRepository>(
     () => _i526.SkillsCertificatesRepositoryImpl(
@@ -1599,6 +1643,13 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i45.GetSubordinatedUsersUseCase>(
     () => _i45.GetSubordinatedUsersUseCase(gh<_i133.CartableRepository>()),
   );
+  gh.factory<_i727.ShiftListCubit>(
+    () => _i727.ShiftListCubit(
+      gh<_i113.GetShiftListUseCase>(),
+      gh<_i585.DeleteShiftUseCase>(),
+      gh<_i1058.CurrentSessionManager>(),
+    ),
+  );
   gh.factory<_i563.RequestStatusHistoryCubit>(
     () => _i563.RequestStatusHistoryCubit(
       gh<_i955.GetRequestStatusHistoryUseCase>(),
@@ -1770,6 +1821,15 @@ _i174.GetIt $initGetIt(
       gh<_i639.GetReferenceCarUseCase>(),
       gh<_i812.GetMinimalCustomerInfoUseCase>(),
       gh<_i364.CompleteAidUrgentRequestUseCase>(),
+    ),
+  );
+  gh.factory<_i309.ShiftFormCubit>(
+    () => _i309.ShiftFormCubit(
+      gh<_i76.GetShiftByIdUseCase>(),
+      gh<_i904.CreateShiftUseCase>(),
+      gh<_i25.UpdateShiftUseCase>(),
+      gh<_i325.ValidateShiftUseCase>(),
+      gh<_i1058.CurrentSessionManager>(),
     ),
   );
   gh.factory<_i806.ChangeHomeServiceRequestAddressCubit>(
