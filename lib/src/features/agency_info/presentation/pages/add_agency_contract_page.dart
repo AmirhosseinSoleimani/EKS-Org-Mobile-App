@@ -145,7 +145,7 @@ class _AgencySummary extends StatelessWidget {
         Space.w12,
         Expanded(
           child: BodyMediumText(
-            text: agency.title,
+            text: 'اطلاعات قرارداد',
             fontWeight: FontWeight.w800,
             maxLines: 2,
             textOverflow: TextOverflow.ellipsis,
