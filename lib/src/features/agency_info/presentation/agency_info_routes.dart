@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agenc
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/add_agency_contract_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/add_agency_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_action_pages.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_add_person_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_contracts_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_info_details_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_info_list_page.dart';
@@ -83,6 +84,16 @@ class AgencyInfoRoutes {
         name: AgencyActiveReliefWorkersPage.name,
         pageBuilder: (context, state) => getPage(
           child: AgencyActiveReliefWorkersPage(
+            agency: _agencyFromExtra(state.extra),
+          ),
+          state: state,
+        ),
+      ),
+      GoRoute(
+        path: AgencyAddPersonPage.path,
+        name: AgencyAddPersonPage.name,
+        pageBuilder: (context, state) => getPage(
+          child: AgencyAddPersonPage(
             agency: _agencyFromExtra(state.extra),
           ),
           state: state,

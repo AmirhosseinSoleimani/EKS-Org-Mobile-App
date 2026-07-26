@@ -15,6 +15,7 @@ class TextFormFieldWidget extends StatefulWidget {
     this.prefixIcon,
     this.textInputFormatter,
     this.hintStyle,
+    this.hintColor,
     this.textInputType,
     this.textStyle,
     this.onTap,
@@ -27,6 +28,7 @@ class TextFormFieldWidget extends StatefulWidget {
     this.borderRadius,
     this.cursorColor,
     this.labelStyle,
+    this.labelColor,
     this.maxLines,
     this.contentPadding,
     this.autofocus,
@@ -55,6 +57,7 @@ class TextFormFieldWidget extends StatefulWidget {
   final InputBorder? errorBorder;
   final String? hintText;
   final TextStyle? hintStyle;
+  final Color? hintColor;
   final String? labelText;
   final TextStyle? textStyle;
   final Widget? prefixIcon;
@@ -69,6 +72,7 @@ class TextFormFieldWidget extends StatefulWidget {
   final double? borderRadius;
   final Color? cursorColor;
   final TextStyle? labelStyle;
+  final Color? labelColor;
   final bool? mandatory;
   final int? maxLines;
   final EdgeInsetsGeometry? contentPadding;
@@ -87,34 +91,61 @@ class TextFormFieldWidget extends StatefulWidget {
 
 class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
   final ValueNotifier<bool> _isFocused = ValueNotifier(false);
+
   late final FocusNode _focusNode;
   late final TextEditingController _controller;
+
+  late final bool _ownsFocusNode;
+  late final bool _ownsController;
 
   @override
   void initState() {
     super.initState();
+
+    _ownsFocusNode = widget.focusNode == null;
+    _ownsController = widget.controller == null;
+
     _focusNode = widget.focusNode ?? FocusNode();
     _controller = widget.controller ?? TextEditingController();
-    _isFocused.addListener(_onFocusChange);
+
+    _focusNode.addListener(_onFocusChange);
   }
 
   void _onFocusChange() {
     _isFocused.value = _focusNode.hasFocus;
   }
 
+  @override
+  void dispose() {
+    _focusNode.removeListener(_onFocusChange);
+    _isFocused.dispose();
+
+    if (_ownsFocusNode) {
+      _focusNode.dispose();
+    }
+
+    if (_ownsController) {
+      _controller.dispose();
+    }
+
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-    final textTheme = Theme.of(context).textTheme;
-    final backgroundColor =
-        widget.backgroundColor ?? Theme.of(context).colorScheme.onPrimary;
+    final textTheme = theme.textTheme;
+    final backgroundColor = widget.backgroundColor ?? colorScheme.onPrimary;
+
     return ValueListenableBuilder2<bool, TextEditingValue>(
       first: _isFocused,
       second: _controller,
       builder: (context, isFocus, textValue, _) {
         final hasText = textValue.text.isNotEmpty;
+        final effectiveLabelColor =
+            widget.labelColor ?? (isFocus ? colorScheme.primary : colorScheme.onSurface);
+
         return TextFormField(
           onTap: widget.onTap,
           controller: _controller,
@@ -133,7 +164,8 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
           maxLength: widget.maxLength,
           keyboardType: widget.textInputType,
           textInputAction: widget.textInputAction,
-          textCapitalization: widget.textCapitalization ?? TextCapitalization.none,
+          textCapitalization:
+          widget.textCapitalization ?? TextCapitalization.none,
           style: widget.textStyle ?? textTheme.bodyMedium,
           decoration: InputDecoration(
             counterText: '',
@@ -144,12 +176,16 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
             contentPadding: widget.contentPadding,
             fillColor: backgroundColor,
             filled: true,
-            label: Text.rich(
+            label: widget.labelText == null
+                ? null
+                : Text.rich(
               TextSpan(
                 children: [
                   TextSpan(
                     text: widget.labelText,
-                    style: textTheme.bodyMedium,
+                    style: textTheme.bodyMedium?.copyWith(
+                      color: effectiveLabelColor,
+                    ),
                   ),
                   if (widget.mandatory ?? false)
                     TextSpan(
@@ -162,45 +198,57 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
                 ],
               ),
             ),
-
             labelStyle: widget.labelStyle ??
                 textTheme.labelMedium?.copyWith(
-                color: isFocus ?  colorScheme.primary : colorScheme.onSurface,
+                  color: effectiveLabelColor,
                 ),
             hintTextDirection: widget.textDirection,
             floatingLabelBehavior: widget.floatingLabelBehavior,
             hintText: widget.hintText,
-            hintStyle: widget.hintStyle ?? textTheme.bodyMedium,
+            hintStyle: widget.hintStyle ??
+                textTheme.bodyMedium?.copyWith(
+                  color: widget.hintColor,
+                ),
             prefixIcon: widget.prefixIcon,
             suffixIcon: widget.suffixIcon,
-            enabledBorder: widget.border ?? OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(widget.borderRadius ?? AppSize.s8),
-                    borderSide: BorderSide(
-                        width: AppSize.s1,
-                        color: hasText ? colorScheme.onSecondaryFixed : colorScheme.inverseSurface,
-                    ),
+            enabledBorder: widget.border ??
+                OutlineInputBorder(
+                  borderRadius:
+                  BorderRadius.circular(widget.borderRadius ?? AppSize.s8),
+                  borderSide: BorderSide(
+                    width: AppSize.s1,
+                    color: hasText
+                        ? colorScheme.onSecondaryFixed
+                        : colorScheme.inverseSurface,
+                  ),
                 ),
-            focusedBorder: widget.focusBorder ?? OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(widget.borderRadius ?? AppSize.s8),
-                    borderSide: BorderSide(
-                        width: AppSize.s1,
-                        color: (widget.borderColor ?? colorScheme.primary),
-                    ),
-            ),
-            errorBorder: widget.errorBorder ?? OutlineInputBorder(
-              borderRadius: BorderRadius.circular(widget.borderRadius ?? AppSize.s8),
-              borderSide: BorderSide(
-                width: AppSize.s1,
-                color: colorScheme.error,
-              ),
-            ),
-            focusedErrorBorder: widget.errorBorder ?? OutlineInputBorder(
-              borderRadius: BorderRadius.circular(widget.borderRadius ?? AppSize.s8),
-              borderSide: BorderSide(
-                width: AppSize.s1,
-                color: colorScheme.error,
-              ),
-            ),
+            focusedBorder: widget.focusBorder ??
+                OutlineInputBorder(
+                  borderRadius:
+                  BorderRadius.circular(widget.borderRadius ?? AppSize.s8),
+                  borderSide: BorderSide(
+                    width: AppSize.s1,
+                    color: widget.borderColor ?? colorScheme.primary,
+                  ),
+                ),
+            errorBorder: widget.errorBorder ??
+                OutlineInputBorder(
+                  borderRadius:
+                  BorderRadius.circular(widget.borderRadius ?? AppSize.s8),
+                  borderSide: BorderSide(
+                    width: AppSize.s1,
+                    color: colorScheme.error,
+                  ),
+                ),
+            focusedErrorBorder: widget.errorBorder ??
+                OutlineInputBorder(
+                  borderRadius:
+                  BorderRadius.circular(widget.borderRadius ?? AppSize.s8),
+                  borderSide: BorderSide(
+                    width: AppSize.s1,
+                    color: colorScheme.error,
+                  ),
+                ),
           ),
           inputFormatters: widget.textInputFormatter,
           validator: widget.validator,

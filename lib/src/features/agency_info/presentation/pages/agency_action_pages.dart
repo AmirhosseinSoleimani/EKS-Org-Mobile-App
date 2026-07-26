@@ -6,6 +6,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agenc
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_service_type_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_vehicle_page_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/agency_info_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_add_person_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_active_relief_workers_action_view.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_active_vehicles_action_view.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_complementary_info_action_view.dart';
@@ -13,9 +14,11 @@ import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_service_type_action_view.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class AgencyActiveReliefWorkersPage extends StatelessWidget {
   static const path = '/agency-active-relief-workers-page';
@@ -39,6 +42,23 @@ class AgencyActiveReliefWorkersPage extends StatelessWidget {
           item: agency,
           persons: persons,
           showSectionHeader: false,
+        );
+      },
+      floatingActionButtonBuilder: (context, cubit) {
+        return FloatingActionButtonWidget(
+          title: 'امداد رسان جدید',
+          onPressed: () async {
+            final result = await context.pushNamed<bool>(
+              AgencyAddPersonPage.name,
+              extra: agency,
+            );
+            if (result == true && context.mounted) {
+              await cubit.loadActionData(
+                AgencyInfoActionType.activeReliefWorkers,
+                agency,
+              );
+            }
+          },
         );
       },
     );
@@ -160,18 +180,25 @@ typedef _AgencyActionDataBuilder = Widget Function(
   Object? data,
 );
 
+typedef _AgencyActionFloatingButtonBuilder = Widget? Function(
+  BuildContext context,
+  AgencyInfoCubit cubit,
+);
+
 class _AgencyActionDataPage extends StatelessWidget {
   const _AgencyActionDataPage({
     required this.title,
     required this.agency,
     required this.actionType,
     required this.builder,
+    this.floatingActionButtonBuilder,
   });
 
   final String title;
   final AgencyInfoEntity agency;
   final AgencyInfoActionType actionType;
   final _AgencyActionDataBuilder builder;
+  final _AgencyActionFloatingButtonBuilder? floatingActionButtonBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -182,6 +209,7 @@ class _AgencyActionDataPage extends StatelessWidget {
         agency: agency,
         actionType: actionType,
         builder: builder,
+        floatingActionButtonBuilder: floatingActionButtonBuilder,
       ),
     );
   }
@@ -193,12 +221,14 @@ class _AgencyActionDataView extends StatelessWidget {
     required this.agency,
     required this.actionType,
     required this.builder,
+    this.floatingActionButtonBuilder,
   });
 
   final String title;
   final AgencyInfoEntity agency;
   final AgencyInfoActionType actionType;
   final _AgencyActionDataBuilder builder;
+  final _AgencyActionFloatingButtonBuilder? floatingActionButtonBuilder;
 
   @override
   Widget build(BuildContext context) {
@@ -207,6 +237,7 @@ class _AgencyActionDataView extends StatelessWidget {
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
       appBar: SimpleAppBar(title: title),
+      floatingActionButton: floatingActionButtonBuilder?.call(context, cubit),
       body: BlocConsumer<AgencyInfoCubit, AgencyInfoState>(
         listener: (context, state) {
           final message = state.data.errorMessage;

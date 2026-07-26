@@ -1,5 +1,7 @@
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/add_agency_info_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/add_agency_contract_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/data/models/add_agency_person_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/data/models/add_agency_person_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/agency_additional_information_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/agency_contract_filter_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/agency_contract_page_model.dart';
@@ -32,6 +34,10 @@ abstract class AgencyInfoDataSource {
 
   Future<BaseSingleResponse<String>> addContract(
     AddAgencyContractRequestModel request,
+  );
+
+  Future<BaseSingleResponse<AddAgencyPersonResponseModel>> addPerson(
+    AddAgencyPersonRequestModel request,
   );
 
   Future<AgencyContractPageModel> getContracts(

@@ -30,6 +30,8 @@ import '../features/agency_info/domain/use_cases/add_agency_contract_use_case.da
     as _i853;
 import '../features/agency_info/domain/use_cases/add_agency_info_use_case.dart'
     as _i574;
+import '../features/agency_info/domain/use_cases/add_agency_person_use_case.dart'
+    as _i427;
 import '../features/agency_info/domain/use_cases/change_agency_status_use_case.dart'
     as _i147;
 import '../features/agency_info/domain/use_cases/delete_agency_use_case.dart'
@@ -60,6 +62,8 @@ import '../features/agency_info/domain/use_cases/search_vehicle_info_use_case.da
     as _i645;
 import '../features/agency_info/presentation/cubit/add_contract/add_agency_contract_cubit.dart'
     as _i705;
+import '../features/agency_info/presentation/cubit/add_person/add_agency_person_cubit.dart'
+    as _i735;
 import '../features/agency_info/presentation/cubit/agency_info_cubit.dart'
     as _i598;
 import '../features/authentication/data/data_sources/auth_remote_data_source.dart'
@@ -1404,6 +1408,9 @@ _i174.GetIt $initGetIt(
   gh.factory<_i574.AddAgencyInfoUseCase>(
     () => _i574.AddAgencyInfoUseCase(gh<_i233.AgencyInfoRepository>()),
   );
+  gh.factory<_i427.AddAgencyPersonUseCase>(
+    () => _i427.AddAgencyPersonUseCase(gh<_i233.AgencyInfoRepository>()),
+  );
   gh.factory<_i147.ChangeAgencyStatusUseCase>(
     () => _i147.ChangeAgencyStatusUseCase(gh<_i233.AgencyInfoRepository>()),
   );
@@ -1468,6 +1475,12 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i116.GetPreInvoiceUseCase>(
     () => _i116.GetPreInvoiceUseCase(gh<_i829.InvoiceRepository>()),
+  );
+  gh.factory<_i735.AddAgencyPersonCubit>(
+    () => _i735.AddAgencyPersonCubit(
+      gh<_i699.SearchPersonInfoUseCase>(),
+      gh<_i427.AddAgencyPersonUseCase>(),
+    ),
   );
   gh.factory<_i951.IndicatorReportCubit>(
     () => _i951.IndicatorReportCubit(gh<_i375.FetchIndicatorReportUseCase>()),

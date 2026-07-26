@@ -51,65 +51,6 @@ class AddAgencyAppBar extends StatelessWidget implements PreferredSizeWidget {
   }
 }
 
-class AddAgencyBottomActions extends StatelessWidget {
-  const AddAgencyBottomActions({
-    super.key,
-    required this.isSubmitting,
-    required this.onCancel,
-    required this.onSubmit,
-  });
-
-  final bool isSubmitting;
-  final VoidCallback onCancel;
-  final VoidCallback onSubmit;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return SafeArea(
-      top: false,
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          AppPadding.p16,
-          AppPadding.p8,
-          AppPadding.p16,
-          AppPadding.p12,
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              flex: 3,
-              child: TextButton(
-                onPressed: isSubmitting ? null : onCancel,
-                child: Text(
-                  'انصراف',
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: theme.colorScheme.onPrimaryFixed,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
-            ),
-            Space.w12,
-            Expanded(
-              flex: 5,
-              child: InkwellButtonWidget(
-                title: 'افزودن',
-                showLoading: isSubmitting,
-                onTap: onSubmit,
-                backgroundColor: theme.colorScheme.primary,
-                borderRadius: AppSize.s8,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-
 class AddAgencyInitialLoadError extends StatelessWidget {
   const AddAgencyInitialLoadError({
     super.key,

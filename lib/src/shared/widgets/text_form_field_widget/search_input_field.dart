@@ -6,24 +6,38 @@ import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text
 import 'package:flutter/material.dart';
 
 class SearchInputField extends StatelessWidget {
-  final TextEditingController controller;
-  final String hintText;
-  final ValueChanged<String>? onChanged;
-
   const SearchInputField({
     super.key,
     required this.controller,
     required this.hintText,
+    this.labelText,
     this.onChanged,
+    this.floatingLabelBehavior,
+    this.hintColor,
+    this.labelColor,
   });
+
+  final TextEditingController controller;
+  final String hintText;
+  final String? labelText;
+  final ValueChanged<String>? onChanged;
+  final FloatingLabelBehavior? floatingLabelBehavior;
+  final Color? hintColor;
+  final Color? labelColor;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
+
     return TextFormFieldWidget(
-      hintText: hintText,
       controller: controller,
+      hintText: hintText,
+      labelText: labelText,
       onChanged: onChanged,
+      floatingLabelBehavior:
+      floatingLabelBehavior ?? FloatingLabelBehavior.always,
+      hintColor: hintColor,
+      labelColor: labelColor,
       borderColor: colorScheme.onInverseSurface,
       prefixIcon: Padding(
         padding: const EdgeInsets.only(

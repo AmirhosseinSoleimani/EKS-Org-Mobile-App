@@ -105,7 +105,7 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
               item: item,
               actionData: actionData,
             ),
-            backgroundColor: theme.colorScheme.surface,
+            backgroundColor: theme.colorScheme.secondaryContainer,
           );
         }
       },
