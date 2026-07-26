@@ -370,6 +370,32 @@ import '../features/leave/domain/use_cases/get_leave_reports_use_case.dart'
 import '../features/leave/domain/use_cases/rollback_leave_request_use_case.dart'
     as _i918;
 import '../features/leave/presentation/cubit/leave_cubit.dart' as _i710;
+import '../features/navgan/data/data_source/navgan_data_source.dart' as _i87;
+import '../features/navgan/data/data_source/navgan_data_source_impl.dart'
+    as _i209;
+import '../features/navgan/data/repository/navgan_repository_impl.dart'
+    as _i475;
+import '../features/navgan/data/service/navgan_service.dart' as _i584;
+import '../features/navgan/domain/repository/navgan_repository.dart' as _i1025;
+import '../features/navgan/domain/usecases/add_navgan_grade_reference_use_case.dart'
+    as _i529;
+import '../features/navgan/domain/usecases/delete_navgan_grade_reference_use_case.dart'
+    as _i467;
+import '../features/navgan/domain/usecases/get_grade_pattern_detail_use_case.dart'
+    as _i1031;
+import '../features/navgan/domain/usecases/get_grade_pattern_list_use_case.dart'
+    as _i745;
+import '../features/navgan/domain/usecases/get_navgan_defects_use_case.dart'
+    as _i193;
+import '../features/navgan/domain/usecases/get_navgan_list_use_case.dart'
+    as _i570;
+import '../features/navgan/domain/usecases/get_navgan_service_groups_use_case.dart'
+    as _i85;
+import '../features/navgan/domain/usecases/submit_navgan_defects_use_case.dart'
+    as _i71;
+import '../features/navgan/domain/usecases/submit_navgan_service_categories_use_case.dart'
+    as _i940;
+import '../features/navgan/presentation/cubit/navgan_cubit.dart' as _i93;
 import '../features/plan_info/data/data_source/plan_info_data_source.dart'
     as _i49;
 import '../features/plan_info/data/data_source/plan_info_data_source_impl.dart'
@@ -865,6 +891,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i300.GradePatternService>(
     () => _i300.GradePatternService(gh<_i361.Dio>()),
   );
+  gh.lazySingleton<_i584.NavganService>(
+    () => _i584.NavganService(gh<_i361.Dio>()),
+  );
   gh.lazySingleton<_i298.RescuerService>(
     () => _i298.RescuerService(gh<_i361.Dio>()),
   );
@@ -1030,6 +1059,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i399.ShiftRepository>(
     () => _i520.ShiftRepositoryImpl(gh<_i970.ShiftDataSource>()),
+  );
+  gh.lazySingleton<_i87.NavganDataSource>(
+    () => _i209.NavganDataSourceImpl(gh<_i584.NavganService>()),
   );
   gh.lazySingleton<_i347.HomeServiceEvaluationRepository>(
     () => _i1063.HomeServiceEvaluationRepositoryImpl(
@@ -1659,6 +1691,9 @@ _i174.GetIt $initGetIt(
       gh<_i786.GetEmdadgarInfoUseCase>(),
     ),
   );
+  gh.lazySingleton<_i1025.NavganRepository>(
+    () => _i475.NavganRepositoryImpl(gh<_i87.NavganDataSource>()),
+  );
   gh.factory<_i317.HomeServiceEvaluationFirstStepCubit>(
     () => _i317.HomeServiceEvaluationFirstStepCubit(
       gh<_i1059.GetLastEvaluationHomeServiceUseCase>(),
@@ -2031,6 +2066,36 @@ _i174.GetIt $initGetIt(
       gh<_i1058.CurrentSessionManager>(),
     ),
   );
+  gh.lazySingleton<_i529.AddNavganGradeReferenceUseCase>(
+    () => _i529.AddNavganGradeReferenceUseCase(gh<_i1025.NavganRepository>()),
+  );
+  gh.lazySingleton<_i467.DeleteNavganGradeReferenceUseCase>(
+    () =>
+        _i467.DeleteNavganGradeReferenceUseCase(gh<_i1025.NavganRepository>()),
+  );
+  gh.lazySingleton<_i1031.GetGradePatternDetailUseCase>(
+    () => _i1031.GetGradePatternDetailUseCase(gh<_i1025.NavganRepository>()),
+  );
+  gh.lazySingleton<_i745.GetGradePatternListUseCase>(
+    () => _i745.GetGradePatternListUseCase(gh<_i1025.NavganRepository>()),
+  );
+  gh.lazySingleton<_i193.GetNavganDefectsUseCase>(
+    () => _i193.GetNavganDefectsUseCase(gh<_i1025.NavganRepository>()),
+  );
+  gh.lazySingleton<_i570.GetNavganListUseCase>(
+    () => _i570.GetNavganListUseCase(gh<_i1025.NavganRepository>()),
+  );
+  gh.lazySingleton<_i85.GetNavganServiceGroupsUseCase>(
+    () => _i85.GetNavganServiceGroupsUseCase(gh<_i1025.NavganRepository>()),
+  );
+  gh.lazySingleton<_i71.SubmitNavganDefectsUseCase>(
+    () => _i71.SubmitNavganDefectsUseCase(gh<_i1025.NavganRepository>()),
+  );
+  gh.lazySingleton<_i940.SubmitNavganServiceCategoriesUseCase>(
+    () => _i940.SubmitNavganServiceCategoriesUseCase(
+      gh<_i1025.NavganRepository>(),
+    ),
+  );
   gh.lazySingleton<_i531.AcceptEvaluationUseCase>(
     () => _i531.AcceptEvaluationUseCase(gh<_i122.EvaluationRepository>()),
   );
@@ -2129,6 +2194,19 @@ _i174.GetIt $initGetIt(
       gh<_i672.GetReliefRequestByIdUseCase>(),
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
       gh<_i531.AcceptEvaluationUseCase>(),
+    ),
+  );
+  gh.factory<_i93.NavganCubit>(
+    () => _i93.NavganCubit(
+      gh<_i570.GetNavganListUseCase>(),
+      gh<_i745.GetGradePatternListUseCase>(),
+      gh<_i1031.GetGradePatternDetailUseCase>(),
+      gh<_i529.AddNavganGradeReferenceUseCase>(),
+      gh<_i467.DeleteNavganGradeReferenceUseCase>(),
+      gh<_i85.GetNavganServiceGroupsUseCase>(),
+      gh<_i193.GetNavganDefectsUseCase>(),
+      gh<_i940.SubmitNavganServiceCategoriesUseCase>(),
+      gh<_i71.SubmitNavganDefectsUseCase>(),
     ),
   );
   gh.factory<_i319.EvaluationAidServiceRequestCubit>(
