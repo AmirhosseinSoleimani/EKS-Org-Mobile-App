@@ -1,8 +1,8 @@
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_entity.dart';
-import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/add_person/add_agency_person_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/add_person/add_agency_person_state.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/add_vehicle/add_agency_vehicle_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/add_vehicle/add_agency_vehicle_state.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/add_agency/add_agency_bottom_actions.dart';
-import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/add_person/agency_person_summary_card.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/add_vehicle/agency_vehicle_summary_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/full_screen_bottom_sheet_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/date_picker_widget/date_picker_widget.dart';
@@ -15,40 +15,41 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
-class AddAgencyPersonFormSheet extends StatelessWidget {
-  const AddAgencyPersonFormSheet({super.key, required this.agency});
+class AddAgencyVehicleFormSheet extends StatelessWidget {
+  const AddAgencyVehicleFormSheet({super.key, required this.agency});
 
   final AgencyInfoEntity agency;
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<AddAgencyPersonCubit>();
+    final cubit = context.read<AddAgencyVehicleCubit>();
 
     return Directionality(
       textDirection: TextDirection.rtl,
-      child: BlocConsumer<AddAgencyPersonCubit, AddAgencyPersonState>(
+      child: BlocConsumer<AddAgencyVehicleCubit, AddAgencyVehicleState>(
         listenWhen: (previous, current) =>
             previous.status != current.status ||
             previous.errorMessage != current.errorMessage,
         listener: (context, state) {
-          if (state.status == AddAgencyPersonStatus.submitSuccess) {
+          if (state.status == AddAgencyVehicleStatus.submitSuccess) {
             Navigator.of(context).pop(true);
           }
         },
         builder: (context, state) {
           return Scaffold(
-            backgroundColor: Theme.of(context).colorScheme.surface,
+            backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
             appBar: PreferredSize(
               preferredSize: const Size.fromHeight(kToolbarHeight),
               child: FullScreenBottomSheetAppBar(
-                title: 'ثبت امدادرسان جدید',
+                title: 'ثبت خودرو جدید',
                 onClose: () => Navigator.of(context).pop(false),
               ),
             ),
             body: SafeArea(
               top: false,
               child: SingleChildScrollView(
-                keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
                 padding: const EdgeInsets.fromLTRB(
                   AppPadding.p16,
                   AppPadding.p24,
@@ -60,22 +61,22 @@ class AddAgencyPersonFormSheet extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.stretch,
                     children: [
-                      const _SelectedPersonSectionTitle(),
+                      const _SelectedVehicleSectionTitle(),
                       Space.h12,
-                      if (state.selectedPerson != null)
-                        AgencyPersonSummaryCard(
-                          person: state.selectedPerson!,
+                      if (state.selectedVehicle != null)
+                        AgencyVehicleSummaryCard(
+                          vehicle: state.selectedVehicle!,
                           compact: true,
                         ),
                       Space.h24,
-                      _CooperationForm(cubit: cubit, state: state),
+                      _VehicleCooperationForm(cubit: cubit, state: state),
                     ],
                   ),
                 ),
               ),
             ),
-            bottomNavigationBar: AddAgencyBottomActions(
-              isSubmitting: state.isSubmitting,
+            bottomNavigationBar: AgencyFormBottomActions(
+              isLoading: state.isSubmitting,
               submitTitle: 'ثبت',
               onCancel: () => Navigator.of(context).pop(false),
               onSubmit: () => cubit.submit(agency),
@@ -87,27 +88,24 @@ class AddAgencyPersonFormSheet extends StatelessWidget {
   }
 }
 
-class _SelectedPersonSectionTitle extends StatelessWidget {
-  const _SelectedPersonSectionTitle();
+class _SelectedVehicleSectionTitle extends StatelessWidget {
+  const _SelectedVehicleSectionTitle();
 
   @override
   Widget build(BuildContext context) {
     return TitleLargeText(
-      text: 'امدادرسان انتخاب شده',
+      text: 'خودرو انتخاب شده',
       color: Theme.of(context).colorScheme.onTertiaryFixed,
       fontSize: AppSize.s16,
     );
   }
 }
 
-class _CooperationForm extends StatelessWidget {
-  const _CooperationForm({
-    required this.cubit,
-    required this.state,
-  });
+class _VehicleCooperationForm extends StatelessWidget {
+  const _VehicleCooperationForm({required this.cubit, required this.state});
 
-  final AddAgencyPersonCubit cubit;
-  final AddAgencyPersonState state;
+  final AddAgencyVehicleCubit cubit;
+  final AddAgencyVehicleState state;
 
   @override
   Widget build(BuildContext context) {
@@ -120,10 +118,7 @@ class _CooperationForm extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(
-                Icons.info_outline_rounded,
-                color: colorScheme.primary,
-              ),
+              Icon(Icons.info_outline_rounded, color: colorScheme.primary),
               Space.w8,
               Expanded(
                 child: BodyMediumText(
@@ -137,8 +132,8 @@ class _CooperationForm extends StatelessWidget {
           ),
           Space.h20,
           TextFormFieldWidget(
-            controller: cubit.jobPositionController,
-            labelText: 'عنوان شغل',
+            controller: cubit.contractCodeController,
+            labelText: 'شماره قرارداد',
             mandatory: true,
             validator: cubit.validateRequired,
           ),
@@ -151,9 +146,9 @@ class _CooperationForm extends StatelessWidget {
             validator: cubit.validateRequired,
             lastDate: Jalali(1500, 12, 29),
             onTap: cubit.setContractStartDate,
-            suffixIcon: const Icon(
+            suffixIcon: Icon(
               Icons.calendar_month_outlined,
-              color: Color(0xFFA4A4A4),
+              color: colorScheme.onSurfaceVariant,
             ),
           ),
           Space.h16,
@@ -163,32 +158,68 @@ class _CooperationForm extends StatelessWidget {
             hintText: '',
             lastDate: Jalali(1500, 12, 29),
             onTap: cubit.setContractEndDate,
-            suffixIcon: const Icon(
+            suffixIcon: Icon(
               Icons.calendar_month_outlined,
-              color: Color(0xFFA4A4A4),
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+          Space.h16,
+          DatePickerWidget(
+            controller: cubit.startBimeDateController,
+            labelText: 'شروع گارانتی بدنه',
+            hintText: '',
+            lastDate: Jalali(1500, 12, 29),
+            onTap: cubit.setStartBimeDate,
+            suffixIcon: Icon(
+              Icons.calendar_month_outlined,
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+          Space.h16,
+          DatePickerWidget(
+            controller: cubit.endBimeDateController,
+            labelText: 'اتمام گارانتی بدنه',
+            hintText: '',
+            lastDate: Jalali(1500, 12, 29),
+            onTap: cubit.setEndBimeDate,
+            suffixIcon: Icon(
+              Icons.calendar_month_outlined,
+              color: colorScheme.onSurfaceVariant,
+            ),
+          ),
+          Space.h16,
+          DatePickerWidget(
+            controller: cubit.installTypeDateController,
+            labelText: 'تاریخ جایگزینی',
+            hintText: '',
+            lastDate: Jalali(1500, 12, 29),
+            onTap: cubit.setInstallTypeDate,
+            suffixIcon: Icon(
+              Icons.calendar_month_outlined,
+              color: colorScheme.onSurfaceVariant,
             ),
           ),
           Space.h16,
           TextFormFieldWidget(
-            controller: cubit.aidPersonMobileController,
-            labelText: 'شماره موبایل واحد امدادی',
-            textInputType: TextInputType.phone,
-            validator: cubit.validateMobile,
+            controller: cubit.labelAgencyCodeController,
+            labelText: 'برچسب شناسه نمایندگی',
+            mandatory: true,
+            validator: cubit.validateRequired,
           ),
           Space.h16,
           Row(
             children: [
               Expanded(
-                child: OverlayDropdownFormField<SimpleDropdownItem<String>>(
-                  labelText: 'نوع فعالیت',
+                child: OverlayDropdownFormField<SimpleDropdownItem<int>>(
+                  labelText: 'نوع همکاری',
                   mandatory: true,
-                  items: _activityItems,
-                  value: _activityItems.firstWhere(
-                    (item) => item.value == state.activityType,
-                    orElse: () => _activityItems.first,
+                  items: _contractTypeItems,
+                  value: _contractTypeItems.firstWhere(
+                    (item) => item.value == state.contractType,
+                    orElse: () => _contractTypeItems.first,
                   ),
                   onChanged: (item) {
-                    if (item != null) cubit.setActivityType(item.value);
+                    if (item != null) cubit.setContractType(item.value);
                   },
                 ),
               ),
@@ -209,20 +240,14 @@ class _CooperationForm extends StatelessWidget {
               ),
             ],
           ),
-          Space.h12,
-          TextFormFieldWidget(
-            controller: cubit.descriptionController,
-            labelText: 'توضیحات',
-            maxLines: 4,
-          ),
         ],
       ),
     );
   }
 
-  static const _activityItems = [
-    SimpleDropdownItem<String>(value: '1', label: 'تمام وقت'),
-    SimpleDropdownItem<String>(value: '2', label: 'پاره وقت'),
+  static const _contractTypeItems = [
+    SimpleDropdownItem<int>(value: 1, label: 'تمام وقت'),
+    SimpleDropdownItem<int>(value: 2, label: 'پاره وقت'),
   ];
 
   static const _statusItems = [

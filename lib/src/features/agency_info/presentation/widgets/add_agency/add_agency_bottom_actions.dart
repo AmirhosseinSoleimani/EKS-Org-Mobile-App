@@ -3,21 +3,23 @@ import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_butt
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 
-class AddAgencyBottomActions extends StatelessWidget {
-  const AddAgencyBottomActions({
+class AgencyFormBottomActions extends StatelessWidget {
+  const AgencyFormBottomActions({
     super.key,
-    required this.isSubmitting,
+    required this.isLoading,
     required this.onCancel,
     required this.onSubmit,
     this.submitTitle = 'افزودن',
     this.cancelTitle = 'انصراف',
+    this.isSubmitEnabled = true,
   });
 
-  final bool isSubmitting;
+  final bool isLoading;
   final VoidCallback onCancel;
   final VoidCallback onSubmit;
   final String submitTitle;
   final String cancelTitle;
+  final bool isSubmitEnabled;
 
   @override
   Widget build(BuildContext context) {
@@ -40,18 +42,18 @@ class AddAgencyBottomActions extends StatelessWidget {
                 flex: 5,
                 child: InkwellButtonWidget(
                   title: submitTitle,
-                  showLoading: isSubmitting,
-                  onTap: onSubmit,
+                  showLoading: isLoading,
+                  onTap: isSubmitEnabled ? onSubmit : null,
                   backgroundColor: theme.colorScheme.primary,
                   borderRadius: AppSize.s8,
                 ),
               ),
               Space.w12,
               Expanded(
-                flex: 3,
-                child: TextButton(
-                  onPressed: isSubmitting ? null : onCancel,
-                  child: BodyMediumText(
+              flex: 3,
+              child: TextButton(
+                onPressed: isLoading ? null : onCancel,
+                child: BodyMediumText(
                     text: cancelTitle,
                     color: theme.colorScheme.onPrimaryFixed,
                     fontWeight: FontWeight.w700,
@@ -62,6 +64,34 @@ class AddAgencyBottomActions extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class AddAgencyBottomActions extends StatelessWidget {
+  const AddAgencyBottomActions({
+    super.key,
+    required this.isSubmitting,
+    required this.onCancel,
+    required this.onSubmit,
+    this.submitTitle = 'افزودن',
+    this.cancelTitle = 'انصراف',
+  });
+
+  final bool isSubmitting;
+  final VoidCallback onCancel;
+  final VoidCallback onSubmit;
+  final String submitTitle;
+  final String cancelTitle;
+
+  @override
+  Widget build(BuildContext context) {
+    return AgencyFormBottomActions(
+      isLoading: isSubmitting,
+      onCancel: onCancel,
+      onSubmit: onSubmit,
+      submitTitle: submitTitle,
+      cancelTitle: cancelTitle,
     );
   }
 }

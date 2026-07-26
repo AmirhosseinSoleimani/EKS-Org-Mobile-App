@@ -3,6 +3,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/ad
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/add_agency_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_action_pages.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_add_person_page.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_add_vehicle_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_contracts_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_info_details_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_info_list_page.dart';
@@ -104,6 +105,16 @@ class AgencyInfoRoutes {
         name: AgencyActiveVehiclesPage.name,
         pageBuilder: (context, state) => getPage(
           child: AgencyActiveVehiclesPage(
+            agency: _agencyFromExtra(state.extra),
+          ),
+          state: state,
+        ),
+      ),
+      GoRoute(
+        path: AgencyAddVehiclePage.path,
+        name: AgencyAddVehiclePage.name,
+        pageBuilder: (context, state) => getPage(
+          child: AgencyAddVehiclePage(
             agency: _agencyFromExtra(state.extra),
           ),
           state: state,

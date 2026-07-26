@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/agency_info/data/data_sources/agency_info_data_source.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/add_agency_person_entity.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/add_agency_vehicle_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_additional_information_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_contract_page_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_history_entity.dart';
@@ -17,6 +18,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/param
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/add_agency_contract_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/add_agency_info_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/add_agency_person_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/add_agency_vehicle_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/change_agency_status_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/delete_agency_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/person_info_search_param_entity.dart';
@@ -95,6 +97,18 @@ class AgencyInfoRepositoryImpl extends AgencyInfoRepository {
     try {
       final result = await _dataSource.addPerson(param.toModel());
       return result.toApiResult<AddAgencyPersonEntity>();
+    } catch (error, stackTrace) {
+      return error.toApiResult(stackTrace);
+    }
+  }
+
+  @override
+  Future<ApiResult<AddAgencyVehicleEntity>> addVehicle(
+    AddAgencyVehicleParamEntity param,
+  ) async {
+    try {
+      final result = await _dataSource.addVehicle(param.toModel());
+      return result.toApiResult<AddAgencyVehicleEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }

@@ -64,6 +64,7 @@ class LightThemeData extends AppThemeData {
         surfaceBright: ColorLightManager.surfaceBright,
         surfaceContainer: ColorLightManager.surfaceContainer,
         secondaryContainer: ColorLightManager.secondaryContainer ,
+        onSurfaceVariant:Color(0xFFA4A4A4),
 
         brightness: Brightness.light,
       ),

@@ -7,6 +7,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agenc
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_vehicle_page_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/agency_info_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_add_person_page.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_add_vehicle_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_active_relief_workers_action_view.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_active_vehicles_action_view.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_complementary_info_action_view.dart';
@@ -87,6 +88,23 @@ class AgencyActiveVehiclesPage extends StatelessWidget {
           item: agency,
           vehicles: vehicles,
           showSectionHeader: false,
+        );
+      },
+      floatingActionButtonBuilder: (context, cubit) {
+        return FloatingActionButtonWidget(
+          title: 'خودرو جدید',
+          onPressed: () async {
+            final result = await context.pushNamed<bool>(
+              AgencyAddVehiclePage.name,
+              extra: agency,
+            );
+            if (result == true && context.mounted) {
+              await cubit.loadActionData(
+                AgencyInfoActionType.activeVehicles,
+                agency,
+              );
+            }
+          },
         );
       },
     );

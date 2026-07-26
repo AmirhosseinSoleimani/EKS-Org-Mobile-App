@@ -3,6 +3,8 @@ import 'package:eks_sana_plus_org/src/features/agency_info/data/models/add_agenc
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/add_agency_info_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/add_agency_person_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/add_agency_person_response_model.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/data/models/add_agency_vehicle_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/data/models/add_agency_vehicle_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/agency_additional_information_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/agency_contract_filter_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/data/models/agency_contract_page_model.dart';
@@ -67,6 +69,13 @@ class AgencyInfoDataSourceImpl extends AgencyInfoDataSource {
     AddAgencyPersonRequestModel request,
   ) {
     return _service.addPerson(request);
+  }
+
+  @override
+  Future<BaseSingleResponse<AddAgencyVehicleResponseModel>> addVehicle(
+    AddAgencyVehicleRequestModel request,
+  ) {
+    return _service.addVehicle(request);
   }
 
   @override

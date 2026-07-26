@@ -28,16 +28,17 @@ class SearchInputField extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-
     return TextFormFieldWidget(
-      controller: controller,
       hintText: hintText,
       labelText: labelText,
+      controller: controller,
       onChanged: onChanged,
       floatingLabelBehavior:
-      floatingLabelBehavior ?? FloatingLabelBehavior.always,
+          floatingLabelBehavior ?? FloatingLabelBehavior.always,
       hintColor: hintColor,
       labelColor: labelColor,
+      maxLines: 1,
+      textInputAction: TextInputAction.search,
       borderColor: colorScheme.onInverseSurface,
       prefixIcon: Padding(
         padding: const EdgeInsets.only(
