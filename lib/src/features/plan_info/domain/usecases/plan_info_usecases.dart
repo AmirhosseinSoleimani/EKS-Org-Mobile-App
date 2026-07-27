@@ -3,7 +3,9 @@ import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/change_plan_status_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/create_plan_info_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/plan_filter_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/plan_history_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_cancelation_entity.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_history_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_lookup_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/repository/plan_info_repository.dart';
@@ -109,6 +111,21 @@ class GetPlanReportUseCase
   @override
   Future<ApiResult<List<PlanInfoEntity>>> call(PlanFilterParamEntity arg) {
     return _repository.getPlanReport(arg);
+  }
+}
+
+@lazySingleton
+class GetPlanHistoriesUseCase extends BaseUseCase<
+    ApiResult<List<PlanHistoryEntity>>, PlanHistoryParamEntity> {
+  final PlanInfoRepository _repository;
+
+  GetPlanHistoriesUseCase(this._repository);
+
+  @override
+  Future<ApiResult<List<PlanHistoryEntity>>> call(
+    PlanHistoryParamEntity arg,
+  ) {
+    return _repository.getPlanHistories(arg);
   }
 }
 

@@ -1171,6 +1171,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i203.GetPlanReportUseCase>(
     () => _i203.GetPlanReportUseCase(gh<_i579.PlanInfoRepository>()),
   );
+  gh.lazySingleton<_i203.GetPlanHistoriesUseCase>(
+    () => _i203.GetPlanHistoriesUseCase(gh<_i579.PlanInfoRepository>()),
+  );
   gh.lazySingleton<_i203.CancelPlanRequestsUseCase>(
     () => _i203.CancelPlanRequestsUseCase(gh<_i579.PlanInfoRepository>()),
   );
@@ -1714,6 +1717,23 @@ _i174.GetIt $initGetIt(
       gh<_i879.GetAgencyHistoryUseCase>(),
     ),
   );
+  gh.factory<_i943.PlanInfoCubit>(
+    () => _i943.PlanInfoCubit(
+      gh<_i203.GetPlanListUseCase>(),
+      gh<_i203.GetPlanByIdUseCase>(),
+      gh<_i203.CreatePlanUseCase>(),
+      gh<_i203.EditPlanUseCase>(),
+      gh<_i203.DeletePlanUseCase>(),
+      gh<_i203.GetPlanStatusReasonsUseCase>(),
+      gh<_i203.ChangePlanStatusUseCase>(),
+      gh<_i203.GetPlanReportUseCase>(),
+      gh<_i203.CancelPlanRequestsUseCase>(),
+      gh<_i203.GetPlanLookupsUseCase>(),
+      gh<_i1058.CurrentSessionManager>(),
+      gh<_i203.ChangeLocationUseCase>(),
+      gh<_i203.GetPlanHistoriesUseCase>(),
+    ),
+  );
   gh.lazySingleton<_i122.EvaluationRepository>(
     () =>
         _i903.EvaluationRepositoryImpl(gh<_i1023.EvaluationRemoteDataSource>()),
@@ -1839,22 +1859,6 @@ _i174.GetIt $initGetIt(
   );
   gh.factory<_i705.AddAgencyContractCubit>(
     () => _i705.AddAgencyContractCubit(gh<_i853.AddAgencyContractUseCase>()),
-  );
-  gh.factory<_i943.PlanInfoCubit>(
-    () => _i943.PlanInfoCubit(
-      gh<_i203.GetPlanListUseCase>(),
-      gh<_i203.GetPlanByIdUseCase>(),
-      gh<_i203.CreatePlanUseCase>(),
-      gh<_i203.EditPlanUseCase>(),
-      gh<_i203.DeletePlanUseCase>(),
-      gh<_i203.GetPlanStatusReasonsUseCase>(),
-      gh<_i203.ChangePlanStatusUseCase>(),
-      gh<_i203.GetPlanReportUseCase>(),
-      gh<_i203.CancelPlanRequestsUseCase>(),
-      gh<_i203.GetPlanLookupsUseCase>(),
-      gh<_i1058.CurrentSessionManager>(),
-      gh<_i203.ChangeLocationUseCase>(),
-    ),
   );
   gh.factory<_i1038.CompleteUrgentRequestCubit>(
     () => _i1038.CompleteUrgentRequestCubit(

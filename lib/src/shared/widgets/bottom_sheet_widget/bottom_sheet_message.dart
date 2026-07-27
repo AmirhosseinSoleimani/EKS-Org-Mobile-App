@@ -22,20 +22,20 @@ class BottomSheetMessage {
     double? maxHeight,
   }) {
     return _showSheet(
-        context: context,
-        isDismissible: isDismissible,
-        enableDrag: enableDrag,
-        useRootNavigator: useRootNavigator,
-        barrierColor: barrierColor,
-        onDismiss: onDismiss,
-        builder: (_) => BottomSheetWidget(
-          dismissible: false,
-          contentWidget: content,
-          actionWidget: actionWidget,
-          backgroundColor: backgroundColor,
-          borderRadius: topRadius,
-          maxHeight: maxHeight,
-        )
+      context: context,
+      isDismissible: isDismissible,
+      enableDrag: enableDrag,
+      useRootNavigator: useRootNavigator,
+      barrierColor: barrierColor,
+      onDismiss: onDismiss,
+      builder: (_) => BottomSheetWidget(
+        dismissible: false,
+        contentWidget: content,
+        actionWidget: actionWidget,
+        backgroundColor: backgroundColor,
+        borderRadius: topRadius,
+        maxHeight: maxHeight,
+      ),
     );
   }
 
@@ -91,6 +91,7 @@ class BottomSheetMessage {
     VoidCallback? onPositive,
   }) {
     final theme = Theme.of(context);
+
     return _showSheet(
       context: context,
       isDismissible: isDismissible,
@@ -100,15 +101,11 @@ class BottomSheetMessage {
         title: data.title,
         message: data.message,
         positiveTxt: positiveText,
-
         buttonColor: buttonColor ?? theme.colorScheme.primary,
         positiveFunc: () {
           context.pop();
-          if (onPositive != null) {
-            onPositive();
-          }
+          onPositive?.call();
         },
-
       ),
     );
   }
@@ -125,6 +122,7 @@ class BottomSheetMessage {
     Color? buttonColor,
   }) {
     final theme = Theme.of(context);
+
     return _showSheet(
       context: context,
       isDismissible: isDismissible,
@@ -148,20 +146,22 @@ class BottomSheetMessage {
     bool isDismissible = false,
     bool enableDrag = false,
     String positiveText = 'تایید',
-    onButtonTap,
+    VoidCallback? onButtonTap,
   }) {
     final theme = Theme.of(context);
+    final safeData = _safeErrorData(data);
+
     return _showSheet(
       context: context,
       isDismissible: isDismissible,
       enableDrag: enableDrag,
       builder: (_) => BottomSheetWidget(
         dismissible: isDismissible,
-        title: data.title,
-        message: data.message,
+        title: safeData.title,
+        message: safeData.message,
         positiveTxt: positiveText,
         buttonColor: theme.colorScheme.error,
-        positiveFunc: onButtonTap,contentWidget: const SizedBox(),
+        positiveFunc: onButtonTap,
       ),
     );
   }
@@ -177,14 +177,16 @@ class BottomSheetMessage {
     Color? buttonColor,
   }) {
     final theme = Theme.of(context);
+    final safeData = _safeErrorData(data);
+
     return _showSheet(
       context: context,
       isDismissible: isDismissible,
       enableDrag: enableDrag,
       builder: (_) => BottomSheetWidget(
         dismissible: isDismissible,
-        title: data.title,
-        message: data.message,
+        title: safeData.title,
+        message: safeData.message,
         positiveTxt: positiveText,
         positiveFunc: onPositive,
         cancelFunc: onCancel,
@@ -222,7 +224,47 @@ class BottomSheetMessage {
         );
       },
     ).whenComplete(() {
-      if (onDismiss != null) onDismiss();
+      onDismiss?.call();
     });
+  }
+
+  static BottomSheetMessageModel _safeErrorData(BottomSheetMessageModel data) {
+    return BottomSheetMessageModel(
+      title: data.title,
+      message: _safeErrorMessage(data.message),
+    );
+  }
+
+  static String _safeErrorMessage(String message) {
+    final normalized = message.trim();
+    if (normalized.isEmpty) {
+      return 'عملیات با خطا مواجه شد.';
+    }
+
+    if (_looksLikeTechnicalException(normalized)) {
+      return 'سرویس مورد نظر در دسترس نیست. لطفاً دوباره تلاش کنید یا با پشتیبانی تماس بگیرید.';
+    }
+
+    const maxLength = 280;
+    if (normalized.length <= maxLength) {
+      return normalized;
+    }
+
+    return '${normalized.substring(0, maxLength).trim()}...';
+  }
+
+  static bool _looksLikeTechnicalException(String message) {
+    final lower = message.toLowerCase();
+
+    return message.length > 600 ||
+        lower.contains('exception') ||
+        lower.contains('stack trace') ||
+        lower.contains('system.') ||
+        lower.contains('microsoft.') ||
+        lower.contains('entityframework') ||
+        lower.contains(' at ') ||
+        lower.contains('line ') ||
+        lower.contains('https://') ||
+        lower.contains('http://');
   }
 }

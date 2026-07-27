@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_in
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_state.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/plan_info_create_page.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/presentation/plan_info_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/widgets/plan_card.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/widgets/plan_info_bottom_sheets.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
@@ -170,7 +171,12 @@ class _PlanInfoView extends StatelessWidget {
                                 await cubit.fetchPlans();
                               }
                             },
-                            onHistory: () => _showHistoryUnavailable(context),
+                            onHistory: () {
+                              context.pushNamed(
+                                PlanInfoHistoryPage.name,
+                                extra: item,
+                              );
+                            },
                           );
                         },
                       ),
@@ -228,12 +234,6 @@ class _PlanInfoView extends StatelessWidget {
     );
   }
 
-  void _showHistoryUnavailable(BuildContext context) {
-    SnakeBarWidget.showNotice(
-      context: context,
-      message: 'تاریخچه این موجودیت بعد از اتصال مسیر تاریخچه نمایش داده می‌شود',
-    );
-  }
 }
 class _PlanToolbar extends StatelessWidget {
   const _PlanToolbar({

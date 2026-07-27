@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart' hide Headers;
 import 'package:eks_sana_plus_org/src/features/plan_info/data/models/plan_cancelation_model.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/data/models/plan_history_model.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/data/models/plan_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/data/models/plan_lookup_model.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
@@ -83,5 +84,10 @@ abstract class PlanInfoService {
   @POST('/api/Plan/ChangeLocation')
   Future<BaseSingleResponse<void>> changeLocation(
     @Body() Map<String, dynamic> body,
+  );
+
+  @GET('/api/SanHistory/GetSanLogHistoriesById')
+  Future<BaseListResponse<PlanHistoryModel>> getPlanHistories(
+    @Queries() Map<String, dynamic> query,
   );
 }

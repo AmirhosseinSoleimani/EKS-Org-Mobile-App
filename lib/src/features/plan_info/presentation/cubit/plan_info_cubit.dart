@@ -3,6 +3,7 @@ import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/change_plan_status_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/create_plan_info_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/plan_filter_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/plan_history_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_lookup_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/usecases/plan_info_usecases.dart';
@@ -31,6 +32,7 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
       this._getPlanLookupsUseCase,
       this._currentSessionManager,
       this._changeLocationUseCase,
+      this._getPlanHistoriesUseCase,
       ) : super(const PlanInfoState());
 
   final GetPlanListUseCase _getPlanListUseCase;
@@ -45,6 +47,7 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
   final GetPlanLookupsUseCase _getPlanLookupsUseCase;
   final CurrentSessionManager _currentSessionManager;
   final ChangeLocationUseCase _changeLocationUseCase;
+  final GetPlanHistoriesUseCase _getPlanHistoriesUseCase;
 
   final titleController = TextEditingController();
   final emdadUnitController = TextEditingController();
@@ -140,6 +143,63 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
     await fetchPlans(reset: false);
 
     _isLoadingMore = false;
+  }
+
+  Future<void> loadHistory({required int refId}) async {
+    if (state.loadingHistoryRefId == refId) return;
+
+    emit(
+      state.copyWith(
+        status: PlanInfoStatus.loading,
+        loadingHistoryRefId: refId,
+        histories: const [],
+        clearMessage: true,
+      ),
+    );
+
+    final result = await _getPlanHistoriesUseCase(
+      PlanHistoryParamEntity(refId: refId),
+    );
+
+    result.when(
+      success: (items, _, __) {
+        emit(
+          state.copyWith(
+            status: PlanInfoStatus.loaded,
+            histories: items,
+            clearLoadingHistoryRefId: true,
+            clearMessage: true,
+          ),
+        );
+      },
+      failure: (_, message) {
+        emit(
+          state.copyWith(
+            status: PlanInfoStatus.error,
+            message: message ?? 'دریافت تاریخچه برنامه‌ریزی با خطا مواجه شد',
+            clearLoadingHistoryRefId: true,
+          ),
+        );
+      },
+      expireToken: () {
+        emit(
+          state.copyWith(
+            status: PlanInfoStatus.error,
+            message: 'نشست کاربری منقضی شده است',
+            clearLoadingHistoryRefId: true,
+          ),
+        );
+      },
+      connectionError: () {
+        emit(
+          state.copyWith(
+            status: PlanInfoStatus.connectionError,
+            message: 'خطا در برقراری ارتباط با سرور',
+            clearLoadingHistoryRefId: true,
+          ),
+        );
+      },
+    );
   }
 
   Future<bool> loadLookups() async {

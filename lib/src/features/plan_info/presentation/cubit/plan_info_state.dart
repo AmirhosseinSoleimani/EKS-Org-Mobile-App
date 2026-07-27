@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_cancelation_entity.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_history_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_lookup_entity.dart';
 
@@ -29,6 +30,8 @@ class PlanInfoState {
   final List<PlanLookupEntity> statusReasons;
   final List<PlanInfoEntity> reportItems;
   final String? reportFilePath;
+  final List<PlanHistoryEntity> histories;
+  final int? loadingHistoryRefId;
 
   const PlanInfoState({
     this.status = PlanInfoStatus.idle,
@@ -47,6 +50,8 @@ class PlanInfoState {
     this.statusReasons = const [],
     this.reportItems = const [],
     this.reportFilePath,
+    this.histories = const [],
+    this.loadingHistoryRefId,
   });
 
   bool get isFirstLoading =>
@@ -76,6 +81,9 @@ class PlanInfoState {
     List<PlanInfoEntity>? reportItems,
     String? reportFilePath,
     bool clearReportFilePath = false,
+    List<PlanHistoryEntity>? histories,
+    int? loadingHistoryRefId,
+    bool clearLoadingHistoryRefId = false,
   }) {
     return PlanInfoState(
       activeFilter: clearActiveFilter
@@ -97,6 +105,10 @@ class PlanInfoState {
       reportItems: reportItems ?? this.reportItems,
       reportFilePath:
           clearReportFilePath ? null : reportFilePath ?? this.reportFilePath,
+      histories: histories ?? this.histories,
+      loadingHistoryRefId: clearLoadingHistoryRefId
+          ? null
+          : loadingHistoryRefId ?? this.loadingHistoryRefId,
     );
   }
 }

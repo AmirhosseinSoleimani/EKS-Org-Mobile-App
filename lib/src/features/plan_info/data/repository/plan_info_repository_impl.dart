@@ -4,7 +4,9 @@ import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/change_plan_status_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/create_plan_info_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/plan_filter_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/plan_history_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_cancelation_entity.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_history_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_lookup_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/repository/plan_info_repository.dart';
@@ -219,6 +221,20 @@ class PlanInfoRepositoryImpl extends PlanInfoRepository {
         expireToken: () => const ApiResult.expireToken(),
         connectionError: () => const ApiResult.connectionError(),
       );
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<List<PlanHistoryEntity>>> getPlanHistories(
+    PlanHistoryParamEntity param,
+  ) async {
+    try {
+      final result = await _dataSource.getPlanHistories(
+        param.toQueryParameters(),
+      );
+      return result.toApiResult<PlanHistoryEntity>();
     } catch (e, s) {
       return e.toApiResult(s);
     }

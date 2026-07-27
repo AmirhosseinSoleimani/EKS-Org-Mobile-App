@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/features/plan_info/data/models/params/chan
 import 'package:eks_sana_plus_org/src/features/plan_info/data/models/params/create_plan_info_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/data/models/params/plan_filter_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/data/models/plan_cancelation_model.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/data/models/plan_history_model.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/data/models/plan_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/data/models/plan_lookup_model.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
@@ -44,4 +45,8 @@ abstract class PlanInfoDataSource {
   Future<BaseSingleResponse<PlanLookupListModel>> getLocations();
 
   Future<BaseSingleResponse<void>> changeLocation(ChangePlanInfoLocationParamModel param);
+
+  Future<BaseListResponse<PlanHistoryModel>> getPlanHistories(
+    Map<String, dynamic> queryParameters,
+  );
 }
