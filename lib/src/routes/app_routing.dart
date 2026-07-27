@@ -342,21 +342,6 @@ class Routes {
             );
           },
         ),
-
-
-        GoRoute(
-          path: PlanInfoLocationPage.path,
-          name: PlanInfoLocationPage.name,
-          pageBuilder: (context, state) {
-            final item = state.extra as PlanInfoEntity;
-
-            return getPage(
-              child: PlanInfoLocationPage(item: item),
-              state: state,
-            );
-          },
-        ),
-
         GoRoute(
           path: CartablePage.path,
           name: CartablePage.name,

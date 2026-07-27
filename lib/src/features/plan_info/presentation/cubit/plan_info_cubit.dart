@@ -64,6 +64,19 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
     await fetchPlans();
   }
 
+  Future<void> initCreatePage() async {
+    _loadSeatTypesFromSession();
+    emit(state.copyWith(status: PlanInfoStatus.loading, clearMessage: true));
+    await ensureLookupsLoaded();
+    emit(
+      state.copyWith(
+        status: state.message == null
+            ? PlanInfoStatus.loaded
+            : PlanInfoStatus.error,
+      ),
+    );
+  }
+
   Future<void> ensureLookupsLoaded() async {
     if (state.emdadUnits.isNotEmpty &&
         state.shifts.isNotEmpty &&
@@ -200,6 +213,7 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
     required int? specialPlanId,
     required int? seatType,
     required int? locationId,
+    bool refreshAfterSuccess = true,
   }) async {
     final validationMessage = _validatePlanForm(
       emdadUnitId: emdadUnitId,
@@ -213,7 +227,12 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
     );
 
     if (validationMessage != null) {
-      emit(state.copyWith(message: validationMessage));
+      emit(
+        state.copyWith(
+          status: PlanInfoStatus.error,
+          message: validationMessage,
+        ),
+      );
       return false;
     }
 
@@ -251,7 +270,9 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
           ),
         );
 
-        await fetchPlans();
+        if (refreshAfterSuccess) {
+          await fetchPlans();
+        }
 
         return true;
       },

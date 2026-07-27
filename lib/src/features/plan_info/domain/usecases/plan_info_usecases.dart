@@ -135,8 +135,8 @@ class GetPlanLookupsUseCase
   @override
   Future<ApiResult<PlanLookupsEntity>> call() async {
     final units = await _repository.getEmdadUnits();
-    //final shifts = await _repository.getShifts();
-    //final specialPlans = await _repository.getSpecialPlans();
+    final shifts = await _repository.getShifts();
+    final specialPlans = await _repository.getSpecialPlans();
     final locations = await _repository.getLocations();
 
     final failures = <String>[];
@@ -159,8 +159,8 @@ class GetPlanLookupsUseCase
 
     final data = PlanLookupsEntity(
       emdadUnits: read(units),
-      shifts: [],//read(shifts),
-      specialPlans: [],//read(specialPlans),
+      shifts: read(shifts),
+      specialPlans: read(specialPlans),
       locations: read(locations),
     );
 
