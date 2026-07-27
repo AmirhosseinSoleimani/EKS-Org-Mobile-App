@@ -1,9 +1,12 @@
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/navgan_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_medium_text.dart';
 import 'package:flutter/material.dart';
 
 class NavganCard extends StatelessWidget {
@@ -38,83 +41,99 @@ class NavganCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              StatusLabel(
-                text: item.isActive == true ? 'فعال' : 'غیرفعال',
-                backgroundColor: item.isActive == true
-                    ? theme.colorScheme.primary.withOpacity(0.14)
-                    : theme.colorScheme.error.withOpacity(0.12),
-                color: item.isActive == true
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.error,
-                variant: StatusLabelVariant.filledWithoutBorder,
-              ),
-              const Spacer(),
-              Expanded(
-                flex: 3,
-                child: TitleLargeText(
-                  text: item.title ?? '---',
-                  color: theme.colorScheme.onSurface,
-                  fontSize: AppSize.s18,
-                  textAlign: TextAlign.end,
-                ),
-              ),
-              Space.w12,
               CircleAvatar(
-                radius: AppSize.s24,
-                backgroundColor: theme.colorScheme.secondaryContainer,
+                radius: AppSize.s28,
+                backgroundColor: theme.colorScheme.primary.withAlpha(25),
                 child: Icon(
-                  Icons.local_shipping_outlined,
+                  Icons.commute,
                   color: theme.colorScheme.primary,
                 ),
               ),
+              Space.w12,
+              Expanded(
+                flex: 3,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                  TitleLargeText(
+                    text: item.title ?? '---',
+                    color: theme.colorScheme.onSurface,
+                    fontSize: AppSize.s18,
+                    textAlign: TextAlign.start,
+                  ),
+                  Space.h8,
+                  TitleMediumText(
+                    text: 'کد ناوگان: ${item.code}',
+                    color: theme.colorScheme.onTertiaryFixed,
+                    fontSize: AppSize.s14,
+                    textAlign: TextAlign.start,
+                  )
+                ],),
+              ),
+
+              const Spacer(),
+              StatusLabel(
+                text: item.isActive == true ? 'فعال' : 'غیرفعال',
+
+                color: item.isActive == true
+                    ? theme.colorScheme.onError
+                    : theme.colorScheme.error,
+                variant: StatusLabelVariant.filledWithoutBorder,
+              ),
             ],
           ),
-          Space.h16,
-          _InfoRow(
-            icon: Icons.qr_code_2_outlined,
-            title: 'کد',
-            value: item.code,
-          ),
-          Space.h12,
-          _InfoRow(
-            icon: Icons.category_outlined,
-            title: 'نوع ناوگان',
-            value: item.emdadgarNavganType?.toString(),
-          ),
-          Space.h14,
-          Divider(color: theme.colorScheme.outlineVariant),
+          Space.h8,
+          Divider(color: theme.dividerColor),
           Space.h8,
           Row(
             children: [
               Expanded(
                 child: BodySmallText(
                   text: 'ثبت کننده: ${item.insertUserFullName ?? '---'}',
-                  color: theme.colorScheme.onSurfaceVariant,
+                  color: theme.colorScheme.onTertiaryFixed,
+                  fontSize: 15,
                 ),
               ),
               BodySmallText(
-                text: item.insertDateTimeJalali ?? '---',
-                color: theme.colorScheme.onSurfaceVariant,
+                text: JalaliDateHelper.formatStringJalaliDateTime(item.insertDateTimeJalali),
+                color: theme.colorScheme.onTertiaryFixed,
+                fontSize: 15,
+              ),
+            ],
+          ),
+          Space.h8,
+          Row(
+            children: [
+              Expanded(
+                child: BodySmallText(
+                  text: 'آخرین ویرایش: ${item.updateUserFullName ?? '---'}',
+                  color: theme.colorScheme.onTertiaryFixed,
+                  fontSize: 15,
+                ),
+              ),
+              BodySmallText(
+                text: JalaliDateHelper.formatStringJalaliDateTime(item.updateDateTimeJalali),
+                color: theme.colorScheme.onTertiaryFixed,
+                fontSize: 15,
               ),
             ],
           ),
           Space.h14,
-          Align(
-            alignment: Alignment.centerLeft,
-            child: DecoratedBox(
-              decoration: BoxDecoration(
-                color: theme.colorScheme.secondaryContainer,
-                borderRadius: BorderRadius.circular(AppSize.s8),
-              ),
-              child: IconButton(
-                onPressed: onActions,
-                icon: Icon(
-                  Icons.more_horiz_rounded,
-                  color: theme.colorScheme.primary,
-                ),
-                tooltip: 'عملیات',
-              ),
+
+          InkwellButtonWidget(
+            title: 'عملیات',
+            backgroundColor: theme.colorScheme.surfaceContainerHighest,
+            titleColor: theme.colorScheme.onTertiaryFixed,
+            suffixIcon: Icon(
+              Icons.keyboard_arrow_down,
+              color: theme.colorScheme.onTertiaryFixed,
             ),
+            prefixIcon: Icon(
+              Icons.settings_outlined,
+              color: theme.colorScheme.onTertiaryFixed,
+              size: 19,
+            ),
+            onTap: onActions,
           ),
         ],
       ),

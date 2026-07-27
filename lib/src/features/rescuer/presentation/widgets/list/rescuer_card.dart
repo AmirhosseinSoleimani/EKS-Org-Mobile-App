@@ -195,7 +195,7 @@ class RescuerCard extends StatelessWidget {
                     color: colorScheme.onSurfaceVariant,
                     size: 19,
                   ),
-                  onTap: isDeleting ? null : onOperations,
+                  onTap: onOperations,
                 ),
               ),
             ],
