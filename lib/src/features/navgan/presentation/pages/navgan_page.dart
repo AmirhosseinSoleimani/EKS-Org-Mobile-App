@@ -12,7 +12,6 @@ import 'package:eks_sana_plus_org/src/features/navgan/presentation/widgets/navga
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
@@ -65,13 +64,6 @@ class _NavganView extends StatelessWidget {
           return Scaffold(
             backgroundColor: theme.colorScheme.surface,
             appBar: const SimpleActionBar(title: 'ناوگان'),
-            floatingActionButton: FloatingActionButtonWidget(
-              title: 'ناوگان جدید',
-              onPressed: () => SnakeBarWidget.showError(
-                context: context,
-                message: 'API ثبت ناوگان جدید ارسال نشده است.',
-              ),
-            ),
             body: SafeArea(
               top: false,
               child: ScrollConfiguration(
@@ -242,22 +234,15 @@ class _ErrorView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Center(
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Icon(
-            Icons.error_outline_rounded,
-            color: theme.colorScheme.error,
-            size: AppSize.s48,
-          ),
+          EmptyListWidget(),
           Space.h12,
-          TextButton.icon(
+          TextButton(
             onPressed: onRetry,
-            icon: const Icon(Icons.refresh_rounded),
-            label: const BodyMediumText(text: 'تلاش مجدد'),
+            child: BodyMediumText(text: 'تلاش مجدد'),
           ),
         ],
       ),
