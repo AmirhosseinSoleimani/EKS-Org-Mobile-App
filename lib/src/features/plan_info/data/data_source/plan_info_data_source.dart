@@ -16,9 +16,9 @@ abstract class PlanInfoDataSource {
 
   Future<BaseSingleResponse<PlanInfoModel>> getPlanById(int id);
 
-  Future<BaseSingleResponse<void>> createPlan(CreatePlanInfoParamModel param);
+  Future<BaseSingleResponse<String>> createPlan(CreatePlanInfoParamModel param);
 
-  Future<BaseSingleResponse<void>> editPlan(CreatePlanInfoParamModel param);
+  Future<BaseSingleResponse<String>> editPlan(CreatePlanInfoParamModel param);
 
   Future<BaseSingleResponse<void>> deletePlan(int id);
 

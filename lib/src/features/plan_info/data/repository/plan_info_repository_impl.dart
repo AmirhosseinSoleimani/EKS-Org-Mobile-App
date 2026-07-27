@@ -43,7 +43,7 @@ class PlanInfoRepositoryImpl extends PlanInfoRepository {
   }
 
   @override
-  Future<ApiResult<void>> createPlan(CreatePlanInfoParamEntity param) async {
+  Future<ApiResult<String>> createPlan(CreatePlanInfoParamEntity param) async {
     try {
       final result = await _dataSource.createPlan(param.toModel());
       return result.toApiResult();
@@ -53,7 +53,7 @@ class PlanInfoRepositoryImpl extends PlanInfoRepository {
   }
 
   @override
-  Future<ApiResult<void>> editPlan(CreatePlanInfoParamEntity param) async {
+  Future<ApiResult<String>> editPlan(CreatePlanInfoParamEntity param) async {
     try {
       final result = await _dataSource.editPlan(param.toModel());
       return result.toApiResult();

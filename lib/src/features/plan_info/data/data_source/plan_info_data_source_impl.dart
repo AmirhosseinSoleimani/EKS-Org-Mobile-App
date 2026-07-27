@@ -29,13 +29,13 @@ class PlanInfoDataSourceImpl extends PlanInfoDataSource {
       _service.getPlanById({'Id': id});
 
   @override
-  Future<BaseSingleResponse<void>> createPlan(
+  Future<BaseSingleResponse<String>> createPlan(
     CreatePlanInfoParamModel param,
   ) =>
       _service.createPlan(param.toJson());
 
   @override
-  Future<BaseSingleResponse<void>> editPlan(CreatePlanInfoParamModel param) =>
+  Future<BaseSingleResponse<String>> editPlan(CreatePlanInfoParamModel param) =>
       _service.editPlan(param.toJson());
 
   @override

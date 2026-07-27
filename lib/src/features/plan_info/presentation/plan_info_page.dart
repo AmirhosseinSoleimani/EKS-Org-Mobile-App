@@ -12,6 +12,7 @@ import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
@@ -69,6 +70,12 @@ class _PlanInfoView extends StatelessWidget {
             );
             if (created == true && context.mounted) {
               await cubit.fetchPlans();
+              if (context.mounted) {
+                SnakeBarWidget.showSuccess(
+                  context: context,
+                  message: 'برنامه‌ریزی با موفقیت ثبت شد',
+                );
+              }
             }
           },
         ),
@@ -107,7 +114,7 @@ class _PlanInfoView extends StatelessWidget {
                     }
 
                     if (state.items.isEmpty) {
-                      return const _EmptyPlans();
+                      return const EmptyListWidget();
                     }
 
                     return RefreshIndicator(
@@ -208,7 +215,21 @@ class _PlanInfoView extends StatelessWidget {
 
     if (saved == true && context.mounted) {
       await cubit.fetchPlans();
+      if (context.mounted) {
+        SnakeBarWidget.showSuccess(
+          context: context,
+          message: _successMessage(mode),
+        );
+      }
     }
+  }
+
+  String _successMessage(PlanInfoCreateMode mode) {
+    return switch (mode) {
+      PlanInfoCreateMode.create => 'برنامه‌ریزی با موفقیت ثبت شد',
+      PlanInfoCreateMode.edit => 'برنامه‌ریزی با موفقیت ویرایش شد',
+      PlanInfoCreateMode.copy => 'کپی برنامه‌ریزی با موفقیت ثبت شد',
+    };
   }
 
 
@@ -394,27 +415,6 @@ class _StatusFilterItem extends StatelessWidget {
                 color: colorScheme.primary,
               ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-
-
-
-class _EmptyPlans extends StatelessWidget {
-  const _EmptyPlans();
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppPadding.p24),
-        child: Text(
-          'برنامه‌ریزی‌ای برای نمایش وجود ندارد.',
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleMedium,
         ),
       ),
     );

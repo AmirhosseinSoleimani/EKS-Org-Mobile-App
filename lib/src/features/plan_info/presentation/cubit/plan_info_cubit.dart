@@ -347,7 +347,7 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
 
     emit(state.copyWith(status: PlanInfoStatus.submitting, clearMessage: true));
 
-    final ApiResult<void> result = isEdit && !isCopy
+    final ApiResult<String> result = isEdit && !isCopy
         ? await _editPlanUseCase(param)
         : await _createPlanUseCase(param);
 

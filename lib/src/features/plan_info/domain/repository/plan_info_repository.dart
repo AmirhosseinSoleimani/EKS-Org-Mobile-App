@@ -15,9 +15,9 @@ abstract class PlanInfoRepository {
 
   Future<ApiResult<PlanInfoEntity?>> getPlanById(int id);
 
-  Future<ApiResult<void>> createPlan(CreatePlanInfoParamEntity param);
+  Future<ApiResult<String>> createPlan(CreatePlanInfoParamEntity param);
 
-  Future<ApiResult<void>> editPlan(CreatePlanInfoParamEntity param);
+  Future<ApiResult<String>> editPlan(CreatePlanInfoParamEntity param);
 
   Future<ApiResult<void>> deletePlan(int id);
 

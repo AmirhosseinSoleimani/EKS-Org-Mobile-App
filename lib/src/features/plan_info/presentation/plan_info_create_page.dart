@@ -215,9 +215,7 @@ class _PlanInfoCreateViewState extends State<_PlanInfoCreateView> {
       return;
     }
 
-    if (state.status == PlanInfoStatus.loaded) {
-      SnakeBarWidget.showSuccess(context: context, message: message);
-    }
+    return;
   }
 
   bool _isInitialLoading(PlanInfoState state) {

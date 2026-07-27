@@ -40,25 +40,25 @@ class GetPlanByIdUseCase
 }
 
 @lazySingleton
-class CreatePlanUseCase extends BaseUseCase<ApiResult<void>, CreatePlanInfoParamEntity> {
+class CreatePlanUseCase extends BaseUseCase<ApiResult<String>, CreatePlanInfoParamEntity> {
   final PlanInfoRepository _repository;
 
   CreatePlanUseCase(this._repository);
 
   @override
-  Future<ApiResult<void>> call(CreatePlanInfoParamEntity arg) {
+  Future<ApiResult<String>> call(CreatePlanInfoParamEntity arg) {
     return _repository.createPlan(arg);
   }
 }
 
 @lazySingleton
-class EditPlanUseCase extends BaseUseCase<ApiResult<void>, CreatePlanInfoParamEntity> {
+class EditPlanUseCase extends BaseUseCase<ApiResult<String>, CreatePlanInfoParamEntity> {
   final PlanInfoRepository _repository;
 
   EditPlanUseCase(this._repository);
 
   @override
-  Future<ApiResult<void>> call(CreatePlanInfoParamEntity arg) {
+  Future<ApiResult<String>> call(CreatePlanInfoParamEntity arg) {
     return _repository.editPlan(arg);
   }
 }
