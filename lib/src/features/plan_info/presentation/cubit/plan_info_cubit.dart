@@ -67,10 +67,15 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
     await fetchPlans();
   }
 
-  Future<void> initCreatePage() async {
+  Future<void> initCreatePage({int? planId}) async {
     _loadSeatTypesFromSession();
     emit(state.copyWith(status: PlanInfoStatus.loading, clearMessage: true));
     final loaded = await ensureLookupsLoaded();
+    if (loaded && planId != null) {
+      await getPlanById(planId);
+      return;
+    }
+
     if (loaded) {
       emit(state.copyWith(status: PlanInfoStatus.loaded, clearMessage: true));
     }

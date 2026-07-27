@@ -141,16 +141,17 @@ class _PlanInfoView extends StatelessWidget {
 
                           return PlanCard(
                             item: item,
-                            onEdit: () => PlanInfoBottomSheets.showPlanForm(
+                            onEdit: () => _openPlanForm(
                               context: context,
                               cubit: cubit,
-                              plan: item,
+                              item: item,
+                              mode: PlanInfoCreateMode.edit,
                             ),
-                            onCopy: () => PlanInfoBottomSheets.showPlanForm(
+                            onCopy: () => _openPlanForm(
                               context: context,
                               cubit: cubit,
-                              plan: item,
-                              isCopy: true,
+                              item: item,
+                              mode: PlanInfoCreateMode.copy,
                             ),
                             onDelete: () => _confirmDelete(context, cubit, item),
                             onStatus: () => PlanInfoBottomSheets.showStatusSheet(
@@ -191,6 +192,25 @@ class _PlanInfoView extends StatelessWidget {
     );
   }
 
+  Future<void> _openPlanForm({
+    required BuildContext context,
+    required PlanInfoCubit cubit,
+    required PlanInfoEntity item,
+    required PlanInfoCreateMode mode,
+  }) async {
+    final saved = await context.pushNamed<bool>(
+      PlanInfoCreatePage.name,
+      extra: PlanInfoCreateArgs(
+        mode: mode,
+        plan: item,
+      ),
+    );
+
+    if (saved == true && context.mounted) {
+      await cubit.fetchPlans();
+    }
+  }
+
 
   Future<void> _confirmDelete(
       BuildContext context,
@@ -215,8 +235,6 @@ class _PlanInfoView extends StatelessWidget {
                 child: BlocBuilder<PlanInfoCubit, PlanInfoState>(
 
                   builder: (context, state) {
-                    final isSubmitting = state.status ==
-                        PlanInfoStatus.submitting;
                     return DeleteConfirmSheet(
                       title: 'حذف برنامه ریزی',
                       message: 'آیا از حذف این مورد مطمئن هستید؟ این عمل غیرقابل بازگشت است.',

@@ -9,6 +9,9 @@ class DeleteConfirmSheet extends StatelessWidget {
     required this.message,
     required this.confirmTitle,
     required this.onConfirm,
+    this.icon = Icons.delete_forever_outlined,
+    this.iconColor,
+    this.iconBackgroundColor,
     this.isSubmitting = false,
   });
 
@@ -16,6 +19,9 @@ class DeleteConfirmSheet extends StatelessWidget {
   final String message;
   final String confirmTitle;
   final Future<void> Function() onConfirm;
+  final IconData icon;
+  final Color? iconColor;
+  final Color? iconBackgroundColor;
   final bool isSubmitting;
 
   @override
@@ -46,12 +52,13 @@ class DeleteConfirmSheet extends StatelessWidget {
               width: AppSize.s64,
               height: AppSize.s64,
               decoration: BoxDecoration(
-                color: theme.colorScheme.error.withOpacity(0.16),
+                color: iconBackgroundColor ??
+                    theme.colorScheme.error.withOpacity(0.16),
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                Icons.delete_forever_outlined,
-                color: theme.colorScheme.error,
+                icon,
+                color: iconColor ?? theme.colorScheme.error,
                 size: AppSize.s34,
               ),
             ),

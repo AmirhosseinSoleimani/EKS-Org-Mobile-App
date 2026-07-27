@@ -241,13 +241,30 @@ class PlanCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            // _ActionTile(icon: Icons.edit, title: 'ویرایش', onTap: onEdit),
-            //  _ActionTile(icon: Icons.copy, title: 'کپی', onTap: onCopy),
-            /*  _ActionTile(
+            BottomSheetActionTile(
+              icon: Icons.edit,
+              title: 'ویرایش',
+              onTap: () {
+                context.pop();
+                onEdit();
+              },
+            ),
+            BottomSheetActionTile(
+              icon: Icons.copy,
+              title: 'کپی',
+              onTap: () {
+                context.pop();
+                onCopy();
+              },
+            ),
+            BottomSheetActionTile(
                 icon: Icons.cancel_outlined,
                 title: 'لغو ماموریت',
-                onTap: onCancelRequests,
-              ),*/
+                onTap: () {
+                  context.pop();
+                  onCancelRequests();
+                },
+              ),
             BottomSheetActionTile(
               icon: Icons.bus_alert_outlined,
               title: 'تغییر محل استقرار',

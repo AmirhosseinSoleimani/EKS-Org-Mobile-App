@@ -23,10 +23,19 @@ class PlanInfoRoutes {
       GoRoute(
         path: PlanInfoCreatePage.path,
         name: PlanInfoCreatePage.name,
-        pageBuilder: (context, state) => getPage(
-          child: const PlanInfoCreatePage(),
-          state: state,
-        ),
+        pageBuilder: (context, state) {
+          final args = state.extra;
+
+          return getPage(
+            child: args is PlanInfoCreateArgs
+                ? PlanInfoCreatePage(
+                    mode: args.mode,
+                    initialPlan: args.plan,
+                  )
+                : const PlanInfoCreatePage(),
+            state: state,
+          );
+        },
       ),
       GoRoute(
         path: PlanInfoLocationPage.path,

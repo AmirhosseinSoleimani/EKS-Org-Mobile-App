@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_state.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/drop_down_map_items_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
@@ -23,28 +24,6 @@ class PlanInfoBottomSheets {
       builder: (_) => BlocProvider.value(
         value: cubit,
         child: const _PlanFilterSheet(),
-      ),
-    );
-  }
-
-  static Future<void> showPlanForm({
-    required BuildContext context,
-    required PlanInfoCubit cubit,
-    PlanInfoEntity? plan,
-    bool isCopy = false,
-  }) async {
-    final initialPlan = plan?.resolvedId == null ? plan : await cubit.getPlanById(plan!.resolvedId!);
-    if (plan != null && initialPlan == null) return;
-
-    if (!context.mounted) return;
-
-    showModalBottomSheet<void>(
-      backgroundColor: Colors.white,
-      context: context,
-      isScrollControlled: true,
-      builder: (_) => BlocProvider.value(
-        value: cubit,
-        child: _PlanFormSheet(plan: initialPlan, isCopy: isCopy),
       ),
     );
   }
@@ -85,6 +64,11 @@ class PlanInfoBottomSheets {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
+      ),
       builder: (_) => BlocProvider.value(
         value: cubit,
         child: _PlanCancelationSheet(plan: plan),
@@ -215,177 +199,6 @@ class _PlanFilterSheetState extends State<_PlanFilterSheet> {
         ),
       ),
     );
-  }
-}
-
-class _PlanFormSheet extends StatefulWidget {
-  final PlanInfoEntity? plan;
-  final bool isCopy;
-
-  const _PlanFormSheet({
-    this.plan,
-    required this.isCopy,
-  });
-
-  @override
-  State<_PlanFormSheet> createState() => _PlanFormSheetState();
-}
-
-class _PlanFormSheetState extends State<_PlanFormSheet> {
-  int? emdadUnitId;
-  int? shiftId;
-  int? specialPlanId;
-  int? seatType;
-  int? locationId;
-  bool hasSpecialPlan = false;
-  late final TextEditingController fromDateController;
-  late final TextEditingController toDateController;
-
-  @override
-  void initState() {
-    super.initState();
-    final plan = widget.plan;
-    emdadUnitId = plan?.emdadUnitId;
-    shiftId = plan?.shiftId;
-    specialPlanId = plan?.specialPlanId;
-    seatType = plan?.seatType;
-    locationId = plan?.locationId;
-    hasSpecialPlan = plan?.specialPlanId != null;
-    fromDateController = TextEditingController(
-      text: plan?.fromDateJalali ?? plan?.fromDate ?? '',
-    );
-    toDateController = TextEditingController(
-      text: plan?.toDateJalali ?? plan?.toDate ?? '',
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    final cubit = context.read<PlanInfoCubit>();
-    final plan = widget.plan;
-    final isEdit = plan != null && !widget.isCopy;
-    final title = widget.isCopy
-        ? 'کپی از برنامه‌ریزی ${plan?.title ?? ''}'
-        : isEdit
-            ? 'ویرایش برنامه‌ریزی'
-            : 'ثبت برنامه‌ریزی جدید';
-    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
-
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-          AppPadding.p16,
-          AppPadding.p16,
-          AppPadding.p16,
-          bottomInset + AppPadding.p16,
-        ),
-        child: SingleChildScrollView(
-          child: BlocBuilder<PlanInfoCubit, PlanInfoState>(
-            builder: (context, state) {
-              final selectedLocation = _findLookup(state.locations, locationId);
-
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(child: Text(title, style: Theme.of(context).textTheme.titleMedium)),
-                  Space.h16,
-                  _LookupField(
-                    label: 'واحد امدادی',
-                    value: emdadUnitId,
-                    items: state.emdadUnits,
-                    onChanged: (value) => setState(() => emdadUnitId = value),
-                  ),
-                  _LookupField(
-                    label: 'شیفت‌ها',
-                    value: shiftId,
-                    items: state.shifts,
-                    onChanged: (value) => setState(() => shiftId = value),
-                  ),
-                  _TextField(controller: fromDateController, label: 'تاریخ شروع'),
-                  _TextField(controller: toDateController, label: 'تاریخ پایان'),
-                  SwitchListTile(
-                    value: hasSpecialPlan,
-                    contentPadding: EdgeInsets.zero,
-                    title: const Text('دارای طرح'),
-                    onChanged: (value) => setState(() => hasSpecialPlan = value),
-                  ),
-                  if (hasSpecialPlan)
-                    _LookupField(
-                      label: 'طرح‌ها',
-                      value: specialPlanId,
-                      items: state.specialPlans,
-                      onChanged: (value) => setState(() => specialPlanId = value),
-                    ),
-                  _LookupField(
-                    label: 'نوع مقر',
-                    value: seatType,
-                    items: state.seatTypes,
-                    onChanged: (value) => setState(() => seatType = value),
-                  ),
-                  _LookupField(
-                    label: 'محل استقرار',
-                    value: locationId,
-                    items: state.locations,
-                    onChanged: (value) => setState(() => locationId = value),
-                  ),
-                  if (selectedLocation != null) ...[
-                    Space.h8,
-                    _ReadOnlyRow(label: 'آدرس محل استقرار', value: selectedLocation.address),
-                    _ReadOnlyRow(label: 'عرض جغرافیایی', value: selectedLocation.latitude?.toString()),
-                    _ReadOnlyRow(label: 'طول جغرافیایی', value: selectedLocation.longitude?.toString()),
-                  ],
-                  Space.h16,
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('انصراف'),
-                        ),
-                      ),
-                      Space.w12,
-                      Expanded(
-                        child: FilledButton(
-                          onPressed: state.isSubmitting
-                              ? null
-                              : () async {
-                                  final saved = await cubit.savePlan(
-                                    id: plan?.resolvedId,
-                                    isEdit: isEdit,
-                                    isCopy: widget.isCopy,
-                                    emdadUnitId: emdadUnitId,
-                                    shiftId: shiftId,
-                                    fromDate: fromDateController.text,
-                                    toDate: toDateController.text,
-                                    hasSpecialPlan: hasSpecialPlan,
-                                    specialPlanId: specialPlanId,
-                                    seatType: seatType,
-                                    locationId: locationId,
-                                  );
-                                  if (saved && context.mounted) {
-                                    Navigator.of(context).pop();
-                                  }
-                                },
-                          child: Text(isEdit ? 'ویرایش' : 'ثبت'),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              );
-            },
-          ),
-        ),
-      ),
-    );
-  }
-
-  @override
-  void dispose() {
-    fromDateController.dispose();
-    toDateController.dispose();
-    super.dispose();
   }
 }
 
@@ -542,84 +355,46 @@ class _PlanCancelationSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<PlanInfoCubit>();
-    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-          AppPadding.p16,
-          AppPadding.p16,
-          AppPadding.p16,
-          bottomInset + AppPadding.p16,
-        ),
-        child: BlocBuilder<PlanInfoCubit, PlanInfoState>(
-          builder: (context, state) {
-            final requests = state.cancelation?.requests ?? const [];
 
-            return SingleChildScrollView(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Center(
-                    child: Text(
-                      'لغو ماموریت ${plan.title ?? ''}',
-                      style: Theme.of(context).textTheme.titleMedium,
-                      textAlign: TextAlign.center,
-                    ),
-                  ),
-                  Space.h16,
-                  if (requests.isEmpty)
-                    const Center(child: Text('درخواستی برای این برنامه یافت نشد.'))
-                  else ...[
-                    const Text('آیا از لغو ماموریت‌های زیر اطمینان دارید؟'),
-                    Space.h12,
-                    Wrap(
-                      spacing: AppSize.s8,
-                      runSpacing: AppSize.s8,
-                      children: requests
-                          .map(
-                            (item) => Chip(
-                              avatar: const Icon(Icons.confirmation_number_outlined),
-                              label: Text(item.trackCode?.toString() ?? '---'),
-                            ),
-                          )
-                          .toList(),
-                    ),
-                  ],
-                  Space.h16,
-                  Row(
-                    children: [
-                      Expanded(
-                        child: OutlinedButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          child: const Text('انصراف'),
-                        ),
-                      ),
-                      Space.w12,
-                      Expanded(
-                        child: FilledButton(
-                          onPressed: state.isSubmitting
-                              ? null
-                              : () async {
-                                  final id = plan.resolvedId;
-                                  if (id == null) return;
-                                  final saved = await cubit.confirmCancelation(id);
-                                  if (saved && context.mounted) {
-                                    Navigator.of(context).pop();
-                                  }
-                                },
-                          child: const Text('ثبت'),
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-            );
+    return BlocBuilder<PlanInfoCubit, PlanInfoState>(
+      builder: (context, state) {
+        return DeleteConfirmSheet(
+          title: 'لغو ماموریت',
+          message: _buildCancelationMessage(state),
+          confirmTitle: 'لغو ماموریت',
+          icon: Icons.cancel_outlined,
+          isSubmitting: state.isSubmitting,
+          onConfirm: () async {
+            final id = plan.resolvedId;
+            if (id == null) return;
+
+            final saved = await cubit.confirmCancelation(id);
+            if (saved && context.mounted) {
+              Navigator.of(context).pop();
+            }
           },
-        ),
-      ),
+        );
+      },
     );
+  }
+
+  String _buildCancelationMessage(PlanInfoState state) {
+    final requests = state.cancelation?.requests ?? const [];
+    if (requests.isEmpty) {
+      return 'درخواستی برای این برنامه یافت نشد. آیا از لغو ماموریت این برنامه‌ریزی مطمئن هستید؟';
+    }
+
+    final trackCodes = requests
+        .map((item) => item.trackCode?.toString().trim())
+        .whereType<String>()
+        .where((item) => item.isNotEmpty)
+        .join('، ');
+
+    if (trackCodes.isEmpty) {
+      return 'آیا از لغو ماموریت‌های این برنامه‌ریزی مطمئن هستید؟';
+    }
+
+    return 'آیا از لغو ماموریت‌های این برنامه‌ریزی مطمئن هستید؟\nکد پیگیری: $trackCodes';
   }
 }
 
@@ -743,10 +518,3 @@ class _ReadOnlyRow extends StatelessWidget {
   }
 }
 
-PlanLookupEntity? _findLookup(List<PlanLookupEntity> items, int? id) {
-  if (id == null) return null;
-  for (final item in items) {
-    if (item.resolvedId == id) return item;
-  }
-  return null;
-}

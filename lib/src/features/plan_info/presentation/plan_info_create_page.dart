@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_lookup_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_state.dart';
@@ -27,19 +28,57 @@ class PlanInfoCreatePage extends StatelessWidget {
   static const path = '/plan-info-create';
   static const name = 'plan-info-create';
 
-  const PlanInfoCreatePage({super.key});
+  final PlanInfoCreateMode mode;
+  final PlanInfoEntity? initialPlan;
+
+  const PlanInfoCreatePage({
+    super.key,
+    this.mode = PlanInfoCreateMode.create,
+    this.initialPlan,
+  });
 
   @override
   Widget build(BuildContext context) {
+    final planId = initialPlan?.resolvedId;
+
     return BlocProvider(
-      create: (_) => getIt<PlanInfoCubit>()..initCreatePage(),
-      child: const _PlanInfoCreateView(),
+      create: (_) => getIt<PlanInfoCubit>()..initCreatePage(planId: planId),
+      child: _PlanInfoCreateView(
+        mode: mode,
+        initialPlan: initialPlan,
+      ),
     );
   }
 }
 
+enum PlanInfoCreateMode {
+  create,
+  edit,
+  copy;
+
+  bool get isEdit => this == PlanInfoCreateMode.edit;
+
+  bool get isCopy => this == PlanInfoCreateMode.copy;
+}
+
+class PlanInfoCreateArgs {
+  final PlanInfoCreateMode mode;
+  final PlanInfoEntity plan;
+
+  const PlanInfoCreateArgs({
+    required this.mode,
+    required this.plan,
+  });
+}
+
 class _PlanInfoCreateView extends StatefulWidget {
-  const _PlanInfoCreateView();
+  const _PlanInfoCreateView({
+    required this.mode,
+    this.initialPlan,
+  });
+
+  final PlanInfoCreateMode mode;
+  final PlanInfoEntity? initialPlan;
 
   @override
   State<_PlanInfoCreateView> createState() => _PlanInfoCreateViewState();
@@ -57,6 +96,7 @@ class _PlanInfoCreateViewState extends State<_PlanInfoCreateView> {
   PlanLookupEntity? _specialPlan;
   PlanLookupEntity? _location;
   bool _hasSpecialPlan = false;
+  bool _didApplyInitialPlan = false;
 
   @override
   Widget build(BuildContext context) {
@@ -68,9 +108,11 @@ class _PlanInfoCreateViewState extends State<_PlanInfoCreateView> {
         listenWhen: (previous, current) => previous.message != current.message,
         listener: _listenToState,
         builder: (context, state) {
+          _applyInitialPlan(state);
+
           return Scaffold(
             backgroundColor: colorScheme.surface,
-            appBar: const SimpleActionBar(title: 'ثبت برنامه ریزی جدید'),
+            appBar: SimpleActionBar(title: _pageTitle),
             body: _isInitialLoading(state)
                 ? const Center(child: LoadingWidget())
                 : SafeArea(
@@ -148,7 +190,7 @@ class _PlanInfoCreateViewState extends State<_PlanInfoCreateView> {
                     ),
                   ),
             bottomNavigationBar: StickyFormActionBar(
-              submitTitle: 'ثبت',
+              submitTitle: _submitTitle,
               cancelTitle: 'انصراف',
               isSubmitting: state.isSubmitting,
               onCancel: () => context.pop(false),
@@ -185,11 +227,56 @@ class _PlanInfoCreateViewState extends State<_PlanInfoCreateView> {
         state.locations.isEmpty;
   }
 
+  String get _pageTitle {
+    return switch (widget.mode) {
+      PlanInfoCreateMode.create => 'ثبت برنامه ریزی جدید',
+      PlanInfoCreateMode.edit => 'ویرایش برنامه ریزی',
+      PlanInfoCreateMode.copy => 'کپی برنامه ریزی',
+    };
+  }
+
+  String get _submitTitle {
+    return switch (widget.mode) {
+      PlanInfoCreateMode.create => 'ثبت',
+      PlanInfoCreateMode.edit => 'ویرایش',
+      PlanInfoCreateMode.copy => 'ثبت کپی',
+    };
+  }
+
   void _onLocationChanged(PlanLookupEntity? value) {
     setState(() {
       _location = value;
       _addressController.text = value?.address?.trim() ?? '';
     });
+  }
+
+  void _applyInitialPlan(PlanInfoState state) {
+    if (_didApplyInitialPlan || widget.mode == PlanInfoCreateMode.create) {
+      return;
+    }
+
+    if (state.emdadUnits.isEmpty ||
+        state.shifts.isEmpty ||
+        state.locations.isEmpty) {
+      return;
+    }
+
+    final plan = state.selectedPlan ?? widget.initialPlan;
+    if (plan == null) {
+      return;
+    }
+
+    _didApplyInitialPlan = true;
+    _emdadUnit = _findLookup(state.emdadUnits, plan.emdadUnitId);
+    _shift = _findLookup(state.shifts, plan.shiftId);
+    _seatType = _findLookup(state.seatTypes, plan.seatType);
+    _specialPlan = _findLookup(state.specialPlans, plan.specialPlanId);
+    _location = _findLookup(state.locations, plan.locationId);
+    _hasSpecialPlan = plan.specialPlanId != null;
+    _fromDateController.text = plan.fromDateJalali ?? plan.fromDate ?? '';
+    _toDateController.text = plan.toDateJalali ?? plan.toDate ?? '';
+    _addressController.text =
+        _location?.address?.trim() ?? plan.address?.trim() ?? '';
   }
 
   Future<void> _submit() async {
@@ -198,9 +285,16 @@ class _PlanInfoCreateViewState extends State<_PlanInfoCreateView> {
       return;
     }
 
+    final isEdit = widget.mode.isEdit;
+    final isCopy = widget.mode.isCopy;
+    final planId =
+        context.read<PlanInfoCubit>().state.selectedPlan?.resolvedId ??
+            widget.initialPlan?.resolvedId;
+
     final saved = await context.read<PlanInfoCubit>().savePlan(
-          isEdit: false,
-          isCopy: false,
+          id: planId,
+          isEdit: isEdit,
+          isCopy: isCopy,
           emdadUnitId: _emdadUnit?.resolvedId,
           shiftId: _shift?.resolvedId,
           fromDate: _fromDateController.text,
@@ -539,4 +633,12 @@ String? _requiredText(String? value) {
 
 String? _requiredLookup(PlanLookupEntity? value) {
   return value?.resolvedId != null ? null : 'این فیلد اجباری است';
+}
+
+PlanLookupEntity? _findLookup(List<PlanLookupEntity> items, int? id) {
+  if (id == null) return null;
+  for (final item in items) {
+    if (item.resolvedId == id) return item;
+  }
+  return null;
 }
