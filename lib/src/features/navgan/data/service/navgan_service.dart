@@ -18,97 +18,113 @@ class NavganService {
 
   final Dio _dio;
 
+  static const Map<String, dynamic> _emptyJsonBody = <String, dynamic>{};
+
+  Options get _jsonOptions => Options(
+    contentType: Headers.jsonContentType,
+  );
+
   Future<BaseSingleResponse<NavganPageModel>> getByFilter() async {
     final response = await _dio.post<dynamic>(
       '/api/EmdadgarNavgan/GetByFilterJson',
+      data: _emptyJsonBody,
+      options: _jsonOptions,
     );
 
     return _pageResponse(response.data);
   }
 
   Future<BaseSingleResponse<List<GradePatternModel>>> getGradePatterns(
-    GradePatternFilterRequestModel request,
-  ) async {
+      GradePatternFilterRequestModel request,
+      ) async {
     final response = await _dio.post<dynamic>(
       '/api/GradePattern/GetByFilterJson',
       data: request.toJson(),
+      options: _jsonOptions,
     );
 
     return _gradePatternListResponse(response.data);
   }
 
   Future<BaseSingleResponse<GradePatternModel>> getGradePatternById(
-    NavganIdRequestModel request,
-  ) async {
+      NavganIdRequestModel request,
+      ) async {
     final response = await _dio.get<dynamic>(
       '/api/GradePattern/GetById',
       queryParameters: request.toJson(),
+      options: _jsonOptions,
     );
 
     return _singleGradePatternResponse(response.data);
   }
 
   Future<BaseSingleResponse<String>> addGradeReference(
-    NavganGradeReferenceRequestModel request,
-  ) async {
+      NavganGradeReferenceRequestModel request,
+      ) async {
     final response = await _dio.post<dynamic>(
       '/api/GradePatternReference/Post',
       data: request.toJson(),
+      options: _jsonOptions,
     );
 
     return _stringMutationResponse(response.data);
   }
 
   Future<BaseSingleResponse<String>> deleteGradeReference(
-    NavganIdRequestModel request,
-  ) async {
+      NavganIdRequestModel request,
+      ) async {
     final response = await _dio.delete<dynamic>(
       '/api/GradePatternReference/DeleteByID',
       queryParameters: request.toDeleteJson(),
+      options: _jsonOptions,
     );
 
     return _stringMutationResponse(response.data);
   }
 
   Future<BaseSingleResponse<List<NavganServiceGroupModel>>> getServiceGroups(
-    NavganIdRequestModel request,
-  ) async {
+      NavganIdRequestModel request,
+      ) async {
     final response = await _dio.get<dynamic>(
       '/api/EmdadgarNavgan/GetEmdadServiceCategoryGroupingByServiceTypeTitleSelctedForNavganlId',
       queryParameters: {'navganId': request.id},
+      options: _jsonOptions,
     );
 
     return _serviceGroupListResponse(response.data);
   }
 
   Future<BaseSingleResponse<List<NavganDefectModel>>> getDefects(
-    NavganServiceCategoryRequestModel request,
-  ) async {
+      NavganServiceCategoryRequestModel request,
+      ) async {
     final response = await _dio.post<dynamic>(
       '/api/EmdadgarNavgan/GetDefectsByNavganIdAndServiceCategoryId',
       data: request.toJson(),
+      options: _jsonOptions,
     );
 
     return _defectListResponse(response.data);
   }
 
   Future<BaseSingleResponse<String>> submitServiceCategories(
-    NavganIdsPayloadRequestModel request,
-  ) async {
+      NavganIdsPayloadRequestModel request,
+      ) async {
     final response = await _dio.post<dynamic>(
       '/api/EmdadgarNavgan/InsertBatchEmdadServiceCategoriesByNavganId',
       data: request.toJson(),
+      options: _jsonOptions,
     );
 
     return _voidMutationResponse(response.data);
   }
 
   Future<BaseSingleResponse<String>> submitDefects(
-    NavganIdsPayloadRequestModel request,
-  ) async {
+      NavganIdsPayloadRequestModel request,
+      ) async {
     final response = await _dio.post<dynamic>(
       '/api/EmdadgarNavgan/SubmitNavganDefectLimitation',
       data: request.toJson(),
+      options: _jsonOptions,
     );
 
     return _voidMutationResponse(response.data);
@@ -124,8 +140,8 @@ class NavganService {
   }
 
   BaseSingleResponse<List<GradePatternModel>> _gradePatternListResponse(
-    dynamic data,
-  ) {
+      dynamic data,
+      ) {
     final json = _normalizeListResponse(data);
     final items = _readItemList(json).map(GradePatternModel.fromJson).toList();
     return BaseSingleResponse<List<GradePatternModel>>(
@@ -136,8 +152,8 @@ class NavganService {
   }
 
   BaseSingleResponse<GradePatternModel> _singleGradePatternResponse(
-    dynamic data,
-  ) {
+      dynamic data,
+      ) {
     final json = _normalizeSingleResponse(data);
     final rawData = NavganJsonHelper.responseData(json);
     final itemJson = rawData is Map
@@ -152,11 +168,12 @@ class NavganService {
   }
 
   BaseSingleResponse<List<NavganServiceGroupModel>> _serviceGroupListResponse(
-    dynamic data,
-  ) {
+      dynamic data,
+      ) {
     final json = _normalizeListResponse(data);
     final items =
-        _readItemList(json).map(NavganServiceGroupModel.fromJson).toList();
+    _readItemList(json).map(NavganServiceGroupModel.fromJson).toList();
+
     return BaseSingleResponse<List<NavganServiceGroupModel>>(
       resultCode: _readResultCode(json),
       data: items,
@@ -167,6 +184,7 @@ class NavganService {
   BaseSingleResponse<List<NavganDefectModel>> _defectListResponse(dynamic data) {
     final json = _normalizeListResponse(data);
     final items = _readItemList(json).map(NavganDefectModel.fromJson).toList();
+
     return BaseSingleResponse<List<NavganDefectModel>>(
       resultCode: _readResultCode(json),
       data: items,
@@ -232,6 +250,7 @@ class NavganService {
           mappedData.containsKey('Message') ||
           mappedData.containsKey('failures') ||
           mappedData.containsKey('Failures');
+
       if (hasEnvelope) return mappedData;
 
       return {
