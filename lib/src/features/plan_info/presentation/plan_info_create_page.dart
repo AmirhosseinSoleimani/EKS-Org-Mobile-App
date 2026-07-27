@@ -167,12 +167,15 @@ class _PlanInfoCreateViewState extends State<_PlanInfoCreateView> {
     }
 
     if (state.status == PlanInfoStatus.error ||
-        state.status == PlanInfoStatus.connectionError) {
+        state.status == PlanInfoStatus.connectionError ||
+        state.status == PlanInfoStatus.loading) {
       SnakeBarWidget.showError(context: context, message: message);
       return;
     }
 
-    SnakeBarWidget.showSuccess(context: context, message: message);
+    if (state.status == PlanInfoStatus.loaded) {
+      SnakeBarWidget.showSuccess(context: context, message: message);
+    }
   }
 
   bool _isInitialLoading(PlanInfoState state) {

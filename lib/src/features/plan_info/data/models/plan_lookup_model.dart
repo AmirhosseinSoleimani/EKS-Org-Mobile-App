@@ -40,15 +40,29 @@ class PlanLookupListModel {
       return const PlanLookupListModel(records: [], count: 0);
     }
 
-    final rawRecords = json['records'];
+    final rawData = json['data'] ?? json['Data'];
+    final mappedData = rawData is Map<String, dynamic> ? rawData : json;
+    final rawRecords = mappedData['records'] ??
+        mappedData['Records'] ??
+        mappedData['items'] ??
+        mappedData['Items'] ??
+        (rawData is List ? rawData : null);
     return PlanLookupListModel(
       records: rawRecords is List
           ? rawRecords
-              .whereType<Map<String, dynamic>>()
-              .map((item) => PlanLookupModel.fromJson(item))
+              .whereType<Map>()
+              .map((item) => PlanLookupModel.fromJson(
+                    Map<String, dynamic>.from(item),
+                  ))
               .toList()
           : const [],
-      count: _asInt(json['count']) ?? 0,
+      count: _asInt(
+            mappedData['count'] ??
+                mappedData['Count'] ??
+                mappedData['totalCount'] ??
+                mappedData['TotalCount'],
+          ) ??
+          (rawRecords is List ? rawRecords.length : 0),
     );
   }
 }

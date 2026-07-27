@@ -67,24 +67,20 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
   Future<void> initCreatePage() async {
     _loadSeatTypesFromSession();
     emit(state.copyWith(status: PlanInfoStatus.loading, clearMessage: true));
-    await ensureLookupsLoaded();
-    emit(
-      state.copyWith(
-        status: state.message == null
-            ? PlanInfoStatus.loaded
-            : PlanInfoStatus.error,
-      ),
-    );
+    final loaded = await ensureLookupsLoaded();
+    if (loaded) {
+      emit(state.copyWith(status: PlanInfoStatus.loaded, clearMessage: true));
+    }
   }
 
-  Future<void> ensureLookupsLoaded() async {
+  Future<bool> ensureLookupsLoaded() async {
     if (state.emdadUnits.isNotEmpty &&
         state.shifts.isNotEmpty &&
         state.locations.isNotEmpty) {
-      return;
+      return true;
     }
 
-    await loadLookups();
+    return loadLookups();
   }
 
   Future<void> fetchPlans({bool reset = true}) async {
@@ -146,24 +142,55 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
     _isLoadingMore = false;
   }
 
-  Future<void> loadLookups() async {
+  Future<bool> loadLookups() async {
     final result = await _getPlanLookupsUseCase();
+    var loaded = false;
 
-    result.whenOrNull(
+    result.when(
       success: (data, _, __) {
+        loaded = true;
+        final warningMessage = data.warningMessage?.trim();
         emit(
           state.copyWith(
+            status: warningMessage?.isNotEmpty == true
+                ? PlanInfoStatus.error
+                : PlanInfoStatus.loaded,
             emdadUnits: data.emdadUnits,
             shifts: data.shifts,
             specialPlans: data.specialPlans,
             locations: data.locations,
+            message: warningMessage,
+            clearMessage: warningMessage?.isNotEmpty != true,
           ),
         );
       },
       failure: (_, message) {
-        emit(state.copyWith(message: message));
+        emit(
+          state.copyWith(
+            status: PlanInfoStatus.error,
+            message: message ?? 'دریافت اطلاعات اولیه فرم با خطا مواجه شد',
+          ),
+        );
+      },
+      expireToken: () {
+        emit(
+          state.copyWith(
+            status: PlanInfoStatus.error,
+            message: 'نشست کاربری منقضی شده است',
+          ),
+        );
+      },
+      connectionError: () {
+        emit(
+          state.copyWith(
+            status: PlanInfoStatus.connectionError,
+            message: 'خطا در دریافت اطلاعات اولیه فرم برنامه‌ریزی',
+          ),
+        );
       },
     );
+
+    return loaded;
   }
 
   Future<PlanInfoEntity?> getPlanById(int id) async {
@@ -328,12 +355,38 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
   Future<void> loadStatusReasons() async {
     final result = await _getPlanStatusReasonsUseCase();
 
-    result.whenOrNull(
+    result.when(
       success: (data, _, __) {
-        emit(state.copyWith(statusReasons: data));
+        emit(state.copyWith(
+          statusReasons: data,
+          clearMessage: true,
+        ));
       },
       failure: (_, message) {
-        emit(state.copyWith(message: message));
+        emit(
+          state.copyWith(
+            status: PlanInfoStatus.error,
+            message:
+                'دلایل تغییر وضعیت /api/Plan/GetReasonsForChangeStatus: ${message ?? 'دریافت اطلاعات با خطا مواجه شد'}',
+          ),
+        );
+      },
+      expireToken: () {
+        emit(
+          state.copyWith(
+            status: PlanInfoStatus.error,
+            message: 'نشست کاربری منقضی شده است',
+          ),
+        );
+      },
+      connectionError: () {
+        emit(
+          state.copyWith(
+            status: PlanInfoStatus.connectionError,
+            message:
+                'دلایل تغییر وضعیت /api/Plan/GetReasonsForChangeStatus: خطا در برقراری ارتباط با سرور',
+          ),
+        );
       },
     );
   }
@@ -345,12 +398,22 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
     required bool isActive,
   }) async {
     if (reasonId == null) {
-      emit(state.copyWith(message: 'دلیل تغییر وضعیت اجباری می باشد'));
+      emit(
+        state.copyWith(
+          status: PlanInfoStatus.error,
+          message: 'دلیل تغییر وضعیت اجباری می باشد',
+        ),
+      );
       return false;
     }
 
     if (description.trim().isEmpty) {
-      emit(state.copyWith(message: 'توضیحات اجباری می باشد'));
+      emit(
+        state.copyWith(
+          status: PlanInfoStatus.error,
+          message: 'توضیحات اجباری می باشد',
+        ),
+      );
       return false;
     }
 

@@ -83,12 +83,20 @@ class PlanInfoDataSourceImpl extends PlanInfoDataSource {
 
   @override
   Future<BaseSingleResponse<PlanLookupListModel>> getShifts() {
-    return _service.getShifts({'Filter': {'Logic': 'and', 'Filters': []}});
+    return _service.getShifts({
+      'Filter': {'Logic': 'and', 'Filters': []},
+      'PageSize': 0,
+      'Skip': 0,
+    });
   }
 
   @override
   Future<BaseSingleResponse<PlanLookupListModel>> getSpecialPlans() {
-    return _service.getSpecialPlans({'Filter': {'Logic': 'and', 'Filters': []}});
+    return _service.getSpecialPlans({
+      'Filter': {'Logic': 'and', 'Filters': []},
+      'PageSize': 0,
+      'Skip': 0,
+    });
   }
 
   @override

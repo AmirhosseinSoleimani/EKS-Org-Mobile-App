@@ -140,34 +140,43 @@ class GetPlanLookupsUseCase
     final locations = await _repository.getLocations();
 
     final failures = <String>[];
-    var hasConnectionError = false;
 
-    List<PlanLookupEntity> read(ApiResult<List<PlanLookupEntity>> result) {
+    List<PlanLookupEntity> read(
+      String source,
+      ApiResult<List<PlanLookupEntity>> result,
+    ) {
       return result.when(
         success: (data, _, __) => data,
         failure: (_, message) {
-          if (message != null) failures.add(message);
+          failures.add(
+            '$source: ${message?.trim().isNotEmpty == true ? message : 'دریافت اطلاعات با خطا مواجه شد'}',
+          );
           return const <PlanLookupEntity>[];
         },
-        expireToken: () => const <PlanLookupEntity>[],
+        expireToken: () {
+          failures.add('$source: نشست کاربری منقضی شده است');
+          return const <PlanLookupEntity>[];
+        },
         connectionError: () {
-          hasConnectionError = true;
+          failures.add('$source: خطا در برقراری ارتباط با سرور');
           return const <PlanLookupEntity>[];
         },
       );
     }
 
     final data = PlanLookupsEntity(
-      emdadUnits: read(units),
-      shifts: read(shifts),
-      specialPlans: read(specialPlans),
-      locations: read(locations),
+      emdadUnits: read('واحدهای امدادی /api/EmdadUnit/GetByFilterJson', units),
+      shifts: read('شیفت‌ها /api/Shift/GetByFilterJson', shifts),
+      specialPlans: read(
+        'طرح‌های ویژه /api/SpecialPlan/GetByFilterJson',
+        specialPlans,
+      ),
+      locations: read(
+        'محل‌های استقرار /api/Location/GetByFilterJson',
+        locations,
+      ),
+      warningMessage: failures.isEmpty ? null : failures.join('\n'),
     );
-
-    if (hasConnectionError) return const ApiResult.connectionError();
-    if (failures.isNotEmpty) {
-      return ApiResult.failure(failures: failures.join('\n'));
-    }
 
     return ApiResult.success(data: data);
   }
@@ -192,11 +201,13 @@ class PlanLookupsEntity {
   final List<PlanLookupEntity> shifts;
   final List<PlanLookupEntity> specialPlans;
   final List<PlanLookupEntity> locations;
+  final String? warningMessage;
 
   const PlanLookupsEntity({
     required this.emdadUnits,
     required this.shifts,
     required this.specialPlans,
     required this.locations,
+    this.warningMessage,
   });
 }
