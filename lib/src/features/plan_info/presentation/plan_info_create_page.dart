@@ -3,8 +3,8 @@ import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_lo
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_state.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/cubit/map_cubit.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/marker_style.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/map_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/marker_style.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/single_location_map_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
@@ -17,7 +17,6 @@ import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widg
 import 'package:eks_sana_plus_org/src/shared/widgets/selection_widgets/app_checkbox_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -54,42 +53,37 @@ class _PlanInfoCreateViewState extends State<_PlanInfoCreateView> {
 
   PlanLookupEntity? _emdadUnit;
   PlanLookupEntity? _shift;
-  PlanLookupEntity? _specialPlan;
   PlanLookupEntity? _seatType;
+  PlanLookupEntity? _specialPlan;
   PlanLookupEntity? _location;
   bool _hasSpecialPlan = false;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Directionality(
       textDirection: TextDirection.rtl,
       child: BlocConsumer<PlanInfoCubit, PlanInfoState>(
         listenWhen: (previous, current) => previous.message != current.message,
-        listener: (context, state) {
-          final message = state.message;
-          if (message?.trim().isNotEmpty != true) return;
-          if (state.status == PlanInfoStatus.error) {
-            SnakeBarWidget.showError(context: context, message: message!);
-          } else {
-            SnakeBarWidget.showSuccess(context: context, message: message!);
-          }
-        },
+        listener: _listenToState,
         builder: (context, state) {
           return Scaffold(
-            backgroundColor: theme.colorScheme.surface,
+            backgroundColor: colorScheme.surface,
             appBar: const SimpleActionBar(title: 'ثبت برنامه ریزی جدید'),
-            body: state.status == PlanInfoStatus.loading &&
-                    state.emdadUnits.isEmpty &&
-                    state.locations.isEmpty
+            body: _isInitialLoading(state)
                 ? const Center(child: LoadingWidget())
                 : SafeArea(
                     top: false,
                     child: SingleChildScrollView(
                       keyboardDismissBehavior:
                           ScrollViewKeyboardDismissBehavior.onDrag,
-                      padding: const EdgeInsets.all(AppPadding.p16),
+                      padding: const EdgeInsets.fromLTRB(
+                        AppPadding.p16,
+                        AppPadding.p16,
+                        AppPadding.p16,
+                        AppPadding.p24,
+                      ),
                       child: Form(
                         key: _formKey,
                         child: Column(
@@ -97,7 +91,7 @@ class _PlanInfoCreateViewState extends State<_PlanInfoCreateView> {
                           children: [
                             _PlanFormSection(
                               title: 'اطلاعات برنامه ریزی',
-                              icon: Icons.calendar_month_outlined,
+                              icon: Icons.assignment_outlined,
                               child: _PlanBaseFields(
                                 state: state,
                                 emdadUnit: _emdadUnit,
@@ -114,42 +108,38 @@ class _PlanInfoCreateViewState extends State<_PlanInfoCreateView> {
                             ),
                             Space.h16,
                             _PlanFormSection(
-                              title: 'طرح و نوع مقر',
-                              icon: Icons.assignment_outlined,
+                              title: 'نوع مقر',
+                              icon: Icons.grid_on_outlined,
                               child: _PlanTypeFields(
                                 state: state,
-                                hasSpecialPlan: _hasSpecialPlan,
-                                specialPlan: _specialPlan,
                                 seatType: _seatType,
-                                onSpecialPlanSwitchChanged: (value) {
-                                  setState(() {
-                                    _hasSpecialPlan = value;
-                                    if (!value) _specialPlan = null;
-                                  });
+                                specialPlan: _specialPlan,
+                                hasSpecialPlan: _hasSpecialPlan,
+                                onSeatTypeChanged: (value) {
+                                  setState(() => _seatType = value);
                                 },
                                 onSpecialPlanChanged: (value) {
                                   setState(() => _specialPlan = value);
                                 },
-                                onSeatTypeChanged: (value) {
-                                  setState(() => _seatType = value);
+                                onHasSpecialPlanChanged: (value) {
+                                  setState(() {
+                                    _hasSpecialPlan = value;
+                                    if (!value) {
+                                      _specialPlan = null;
+                                    }
+                                  });
                                 },
                               ),
                             ),
                             Space.h16,
                             _PlanFormSection(
-                              title: 'موقعیت و آدرس',
+                              title: 'محل استقرار',
                               icon: Icons.location_on_outlined,
                               child: _PlanLocationFields(
                                 locations: state.locations,
                                 location: _location,
                                 addressController: _addressController,
-                                onLocationChanged: (value) {
-                                  setState(() {
-                                    _location = value;
-                                    _addressController.text =
-                                        value?.address ?? '';
-                                  });
-                                },
+                                onLocationChanged: _onLocationChanged,
                               ),
                             ),
                           ],
@@ -170,9 +160,40 @@ class _PlanInfoCreateViewState extends State<_PlanInfoCreateView> {
     );
   }
 
+  void _listenToState(BuildContext context, PlanInfoState state) {
+    final message = state.message?.trim();
+    if (message == null || message.isEmpty) {
+      return;
+    }
+
+    if (state.status == PlanInfoStatus.error ||
+        state.status == PlanInfoStatus.connectionError) {
+      SnakeBarWidget.showError(context: context, message: message);
+      return;
+    }
+
+    SnakeBarWidget.showSuccess(context: context, message: message);
+  }
+
+  bool _isInitialLoading(PlanInfoState state) {
+    return state.status == PlanInfoStatus.loading &&
+        state.emdadUnits.isEmpty &&
+        state.shifts.isEmpty &&
+        state.locations.isEmpty;
+  }
+
+  void _onLocationChanged(PlanLookupEntity? value) {
+    setState(() {
+      _location = value;
+      _addressController.text = value?.address?.trim() ?? '';
+    });
+  }
+
   Future<void> _submit() async {
     FocusScope.of(context).unfocus();
-    if (_formKey.currentState?.validate() != true) return;
+    if (_formKey.currentState?.validate() != true) {
+      return;
+    }
 
     final saved = await context.read<PlanInfoCubit>().savePlan(
           isEdit: false,
@@ -215,7 +236,7 @@ class _PlanFormSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
+    final colorScheme = Theme.of(context).colorScheme;
 
     return FormSectionContainer(
       padding: const EdgeInsets.all(AppPadding.p16),
@@ -224,12 +245,18 @@ class _PlanFormSection extends StatelessWidget {
         children: [
           Row(
             children: [
-              Icon(icon, color: theme.colorScheme.primary),
+              Icon(
+                icon,
+                size: AppSize.s22,
+                color: colorScheme.primary,
+              ),
               Space.w8,
-              TitleLargeText(
-                text: title,
-                color: theme.colorScheme.onSurface,
-                fontSize: AppSize.s16,
+              Expanded(
+                child: TitleLargeText(
+                  text: title,
+                  color: colorScheme.onSurface,
+                  fontSize: AppSize.s16,
+                ),
               ),
             ],
           ),
@@ -264,46 +291,51 @@ class _PlanBaseFields extends StatelessWidget {
   Widget build(BuildContext context) {
     return Column(
       children: [
-        OverlayDropdownFormField<PlanLookupEntity>(
+        _PlanLookupDropdown(
           key: ValueKey(
             'emdad-unit-${emdadUnit?.resolvedId}-${state.emdadUnits.length}',
           ),
           labelText: 'واحد امدادی',
-          mandatory: true,
           items: state.emdadUnits,
           value: emdadUnit,
-          itemTitleBuilder: (item) => item.displayTitle,
-          validator: _requiredLookup,
           onChanged: onEmdadUnitChanged,
         ),
         Space.h16,
-        OverlayDropdownFormField<PlanLookupEntity>(
-          key: ValueKey('shift-${shift?.resolvedId}-${state.shifts.length}'),
+        _PlanLookupDropdown(
+          key: ValueKey(
+            'shift-${shift?.resolvedId}-${state.shifts.length}',
+          ),
           labelText: 'شیفت',
-          mandatory: true,
           items: state.shifts,
           value: shift,
-          itemTitleBuilder: (item) => item.displayTitle,
-          validator: _requiredLookup,
           onChanged: onShiftChanged,
         ),
         Space.h16,
-        DatePickerWidget(
-          controller: fromDateController,
-          labelText: 'تاریخ شروع',
-          hintText: 'انتخاب تاریخ',
-          mandatory: true,
-          lastDate: Jalali(1500, 12, 29),
-          validator: _requiredText,
-        ),
-        Space.h16,
-        DatePickerWidget(
-          controller: toDateController,
-          labelText: 'تاریخ پایان',
-          hintText: 'انتخاب تاریخ',
-          mandatory: true,
-          lastDate: Jalali(1500, 12, 29),
-          validator: _requiredText,
+        Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Expanded(
+              child: DatePickerWidget(
+                controller: fromDateController,
+                labelText: 'تاریخ شروع',
+                hintText: 'انتخاب تاریخ',
+                mandatory: true,
+                lastDate: Jalali(1500, 12, 29),
+                validator: _requiredText,
+              ),
+            ),
+            Space.w8,
+            Expanded(
+              child: DatePickerWidget(
+                controller: toDateController,
+                labelText: 'تاریخ پایان',
+                hintText: 'انتخاب تاریخ',
+                mandatory: true,
+                lastDate: Jalali(1500, 12, 29),
+                validator: _requiredText,
+              ),
+            ),
+          ],
         ),
       ],
     );
@@ -313,60 +345,54 @@ class _PlanBaseFields extends StatelessWidget {
 class _PlanTypeFields extends StatelessWidget {
   const _PlanTypeFields({
     required this.state,
-    required this.hasSpecialPlan,
-    required this.specialPlan,
     required this.seatType,
-    required this.onSpecialPlanSwitchChanged,
-    required this.onSpecialPlanChanged,
+    required this.specialPlan,
+    required this.hasSpecialPlan,
     required this.onSeatTypeChanged,
+    required this.onSpecialPlanChanged,
+    required this.onHasSpecialPlanChanged,
   });
 
   final PlanInfoState state;
-  final bool hasSpecialPlan;
-  final PlanLookupEntity? specialPlan;
   final PlanLookupEntity? seatType;
-  final ValueChanged<bool> onSpecialPlanSwitchChanged;
-  final ValueChanged<PlanLookupEntity?> onSpecialPlanChanged;
+  final PlanLookupEntity? specialPlan;
+  final bool hasSpecialPlan;
   final ValueChanged<PlanLookupEntity?> onSeatTypeChanged;
+  final ValueChanged<PlanLookupEntity?> onSpecialPlanChanged;
+  final ValueChanged<bool> onHasSpecialPlanChanged;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
-        AppCheckboxWidget(
-          title: 'دارای طرح ویژه',
-          value: hasSpecialPlan,
-          onChanged: onSpecialPlanSwitchChanged,
-          padding: EdgeInsets.zero,
-        ),
-        if (hasSpecialPlan) ...[
-          Space.h16,
-          OverlayDropdownFormField<PlanLookupEntity>(
-            key: ValueKey(
-              'special-plan-${specialPlan?.resolvedId}-${state.specialPlans.length}',
-            ),
-            labelText: 'طرح',
-            mandatory: true,
-            items: state.specialPlans,
-            value: specialPlan,
-            itemTitleBuilder: (item) => item.displayTitle,
-            validator: _requiredLookup,
-            onChanged: onSpecialPlanChanged,
-          ),
-        ],
-        Space.h16,
-        OverlayDropdownFormField<PlanLookupEntity>(
+        _PlanLookupDropdown(
           key: ValueKey(
             'seat-type-${seatType?.resolvedId}-${state.seatTypes.length}',
           ),
           labelText: 'نوع مقر',
-          mandatory: true,
           items: state.seatTypes,
           value: seatType,
-          itemTitleBuilder: (item) => item.displayTitle,
-          validator: _requiredLookup,
           onChanged: onSeatTypeChanged,
         ),
+        Space.h12,
+        AppCheckboxWidget(
+          title: 'دارای طرح',
+          value: hasSpecialPlan,
+          padding: EdgeInsets.zero,
+          onChanged: onHasSpecialPlanChanged,
+        ),
+        if (hasSpecialPlan) ...[
+          Space.h16,
+          _PlanLookupDropdown(
+            key: ValueKey(
+              'special-plan-${specialPlan?.resolvedId}-${state.specialPlans.length}',
+            ),
+            labelText: 'طرح ویژه',
+            items: state.specialPlans,
+            value: specialPlan,
+            onChanged: onSpecialPlanChanged,
+          ),
+        ],
       ],
     );
   }
@@ -388,47 +414,67 @@ class _PlanLocationFields extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final latitude = location?.latitude;
-    final longitude = location?.longitude;
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        OverlayDropdownFormField<PlanLookupEntity>(
-          key: ValueKey('location-${location?.resolvedId}-${locations.length}'),
+        _PlanLookupDropdown(
+          key: ValueKey(
+            'location-${location?.resolvedId}-${locations.length}',
+          ),
           labelText: 'محل استقرار',
-          mandatory: true,
           items: locations,
           value: location,
-          itemTitleBuilder: (item) => item.displayTitle,
-          validator: _requiredLookup,
           onChanged: onLocationChanged,
         ),
         Space.h16,
         AbsorbPointer(
           child: TextFormFieldWidget(
             controller: addressController,
-            labelText: 'آدرس',
+            labelText: 'آدرس محل استقرار',
+            hintText: 'پس از انتخاب محل استقرار نمایش داده می شود',
             readOnly: true,
-            maxLines: 2,
-            hintText: 'پس از انتخاب محل استقرار نمایش داده می‌شود',
+            maxLines: 3,
             backgroundColor: colorScheme.surfaceContainerHighest,
             borderColor: colorScheme.outlineVariant,
           ),
         ),
         Space.h16,
         _PlanLocationMap(
-          latitude: latitude,
-          longitude: longitude,
+          latitude: location?.latitude,
+          longitude: location?.longitude,
         ),
-        if (latitude != null && longitude != null) ...[
-          Space.h12,
-          BodySmallText(
-            text: 'عرض: $latitude   طول: $longitude',
-            color: colorScheme.onSurfaceVariant,
-          ),
-        ],
       ],
+    );
+  }
+}
+
+class _PlanLookupDropdown extends StatelessWidget {
+  const _PlanLookupDropdown({
+    super.key,
+    required this.labelText,
+    required this.items,
+    required this.value,
+    required this.onChanged,
+  });
+
+  final String labelText;
+  final List<PlanLookupEntity> items;
+  final PlanLookupEntity? value;
+  final ValueChanged<PlanLookupEntity?> onChanged;
+
+  @override
+  Widget build(BuildContext context) {
+    return OverlayDropdownFormField<PlanLookupEntity>(
+      labelText: labelText,
+      mandatory: true,
+      items: items,
+      value: value,
+      enabled: items.isNotEmpty,
+      hintText: items.isEmpty ? 'در حال دریافت...' : 'انتخاب کنید',
+      itemTitleBuilder: (item) => item.displayTitle,
+      validator: _requiredLookup,
+      onChanged: onChanged,
     );
   }
 }
@@ -444,8 +490,9 @@ class _PlanLocationMap extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    if (_hasValidLocation) {
+    if (_hasValidCoordinates) {
       return SingleLocationMapWidget(
+        key: ValueKey('plan-location-map-$latitude-$longitude'),
         latitude: latitude,
         longitude: longitude,
         markerStyle: MarkerStyle(iconPath: SvgManager.location),
@@ -460,15 +507,18 @@ class _PlanLocationMap extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSize.s8),
         child: BlocProvider(
           create: (_) => getIt<MapCubit>()..init(),
-          child: const MapWidget(),
+          child: const MapWidget(
+            key: ValueKey('plan-default-tehran-map'),
+          ),
         ),
       ),
     );
   }
 
-  bool get _hasValidLocation {
+  bool get _hasValidCoordinates {
     final lat = latitude;
     final lng = longitude;
+
     return lat != null &&
         lng != null &&
         lat.isFinite &&
