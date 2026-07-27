@@ -107,6 +107,17 @@ class JalaliDateHelper {
     return '$year-$month-$day $hour:$minute';
   }
 
+  static String? formatServerDate(String? jalaliDate) {
+    final gregorianDate = _parseJalali(jalaliDate)?.toGregorian();
+    if (gregorianDate == null) return null;
+
+    final year = gregorianDate.year.toString().padLeft(4, '0');
+    final month = gregorianDate.month.toString().padLeft(2, '0');
+    final day = gregorianDate.day.toString().padLeft(2, '0');
+
+    return '$year-$month-$day';
+  }
+
   static String? formatServerIsoDateTime(DateTime? dateTime) {
     final gregorianDateTime = jalaliDateTimeToGregorianDateTime(dateTime);
     if (gregorianDateTime == null) return null;

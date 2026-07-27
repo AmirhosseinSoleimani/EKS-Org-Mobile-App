@@ -5,6 +5,7 @@ import 'package:eks_sana_plus_org/src/features/plan_info/data/models/params/chan
 import 'package:eks_sana_plus_org/src/features/plan_info/data/models/params/create_plan_info_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/data/models/params/plan_filter_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/data/models/plan_cancelation_model.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/data/models/plan_history_model.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/data/models/plan_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/data/models/plan_lookup_model.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/data/service/plan_info_service.dart';
@@ -28,13 +29,13 @@ class PlanInfoDataSourceImpl extends PlanInfoDataSource {
       _service.getPlanById({'Id': id});
 
   @override
-  Future<BaseSingleResponse<void>> createPlan(
+  Future<BaseSingleResponse<String>> createPlan(
     CreatePlanInfoParamModel param,
   ) =>
       _service.createPlan(param.toJson());
 
   @override
-  Future<BaseSingleResponse<void>> editPlan(CreatePlanInfoParamModel param) =>
+  Future<BaseSingleResponse<String>> editPlan(CreatePlanInfoParamModel param) =>
       _service.editPlan(param.toJson());
 
   @override
@@ -83,12 +84,20 @@ class PlanInfoDataSourceImpl extends PlanInfoDataSource {
 
   @override
   Future<BaseSingleResponse<PlanLookupListModel>> getShifts() {
-    return _service.getShifts({'Filter': {'Logic': 'and', 'Filters': []}});
+    return _service.getShifts({
+      'Filter': {'Logic': 'and', 'Filters': []},
+      'PageSize': 0,
+      'Skip': 0,
+    });
   }
 
   @override
   Future<BaseSingleResponse<PlanLookupListModel>> getSpecialPlans() {
-    return _service.getSpecialPlans({'Filter': {'Logic': 'and', 'Filters': []}});
+    return _service.getSpecialPlans({
+      'Filter': {'Logic': 'and', 'Filters': []},
+      'PageSize': 0,
+      'Skip': 0,
+    });
   }
 
   @override
@@ -108,5 +117,12 @@ class PlanInfoDataSourceImpl extends PlanInfoDataSource {
   @override
   Future<BaseSingleResponse<void>> changeLocation(ChangePlanInfoLocationParamModel param) {
     return _service.changeLocation(param.toJson());
+  }
+
+  @override
+  Future<BaseListResponse<PlanHistoryModel>> getPlanHistories(
+    Map<String, dynamic> queryParameters,
+  ) {
+    return _service.getPlanHistories(queryParameters);
   }
 }

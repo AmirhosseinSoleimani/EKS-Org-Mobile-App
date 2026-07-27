@@ -1,3 +1,5 @@
+import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
+
 class CreatePlanInfoParamModel {
   final int? id;
   final String title;
@@ -37,8 +39,8 @@ class CreatePlanInfoParamModel {
       'shiftId': shiftId,
       'latitude': latitude,
       'longitude': longitude,
-      'fromDate': fromDate,
-      'toDate': toDate,
+      'fromDate': JalaliDateHelper.formatServerDate(fromDate) ?? fromDate,
+      'toDate': JalaliDateHelper.formatServerDate(toDate) ?? toDate,
       'address': address,
       'specialPlanId': specialPlanId,
       'seatType': seatType,

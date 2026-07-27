@@ -11,10 +11,8 @@ import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_b
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/overlay_drop_down_menu.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -75,7 +73,10 @@ class _PlanInfoLocationViewState extends State<_PlanInfoLocationView> {
       child: Scaffold(
         backgroundColor: theme.colorScheme.surface,
         appBar: const SimpleAppBar(title: 'تغییر محل استقرار'),
-        bottomNavigationBar: Container(
+        bottomNavigationBar: BlocBuilder<PlanInfoCubit, PlanInfoState>(
+  builder: (context, state) {
+    final isSubmitting = state.status == PlanInfoStatus.submitting;
+    return Container(
           decoration: const BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.only(
@@ -86,15 +87,14 @@ class _PlanInfoLocationViewState extends State<_PlanInfoLocationView> {
           child: Padding(
             padding: const EdgeInsets.all(AppPadding.p16),
             child: InkwellButtonWidget(
-              title: 'بستن',
-              backgroundColor: theme.colorScheme.onPrimary,
-              borderWidth: 2,
-              borderColor: theme.colorScheme.outline.withOpacity(0.65),
-              titleColor: theme.colorScheme.onSurface,
-              onTap: () => context.pop(false),
+              title: 'ثبت تغییرات',
+              showLoading: isSubmitting,
+              onTap: isSubmitting ? (){} :()=>  _submit(cubit: context.read<PlanInfoCubit>()),
             ),
           ),
-        ),
+        );
+  },
+),
         body: BlocBuilder<PlanInfoCubit, PlanInfoState>(
           builder: (context, state) {
             if (state.status == PlanInfoStatus.loading &&
@@ -135,9 +135,6 @@ class _PlanInfoLocationViewState extends State<_PlanInfoLocationView> {
                   onMapTap: _setPoint,
                   onLocationChanged: (value) {
                     _selectLocation(locations: state.locations, value: value);
-                  },
-                  onSubmit: () {
-                    _submit(cubit: context.read<PlanInfoCubit>());
                   },
                 ),
               ],
@@ -465,7 +462,6 @@ class _LocationCard extends StatelessWidget {
     required this.isSubmitting,
     required this.onMapTap,
     required this.onLocationChanged,
-    required this.onSubmit,
   });
 
   final double? latitude;
@@ -476,7 +472,6 @@ class _LocationCard extends StatelessWidget {
   final bool isSubmitting;
   final ValueChanged<LatLng> onMapTap;
   final ValueChanged<int?> onLocationChanged;
-  final VoidCallback onSubmit;
 
   @override
   Widget build(BuildContext context) {
@@ -541,12 +536,7 @@ class _LocationCard extends StatelessWidget {
               ),
             ),
           ),
-          Space.h24,
-          InkwellButtonWidget(
-            title: 'ثبت تغییرات',
-            showLoading: isSubmitting,
-            onTap: isSubmitting ? null : onSubmit,
-          ),
+          Space.h16,
         ],
       ),
     );

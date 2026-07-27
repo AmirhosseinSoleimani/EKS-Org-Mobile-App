@@ -5,8 +5,8 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presenta
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_part/page/home_service_search_part_page.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/widgets/edit_and_registration_part_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_src.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_widget.dart';

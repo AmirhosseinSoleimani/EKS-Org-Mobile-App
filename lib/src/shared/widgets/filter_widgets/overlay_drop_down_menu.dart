@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 
@@ -29,12 +30,12 @@ class OverlayDropdownMenu<T extends DropdownItem> extends StatefulWidget {
 class _OverlayDropdownMenuState<T extends DropdownItem>
     extends State<OverlayDropdownMenu<T>> {
   static const double _menuMaxHeight = 260;
-  static const double _itemHeight = 44;
+  static const double _estimatedItemHeight = 56;
 
   late final ScrollController _scrollController;
 
   bool get _shouldShowScrollbar {
-    return widget.items.length * _itemHeight > _menuMaxHeight;
+    return widget.items.length * _estimatedItemHeight > _menuMaxHeight;
   }
 
   @override
@@ -106,7 +107,6 @@ class _OverlayDropdownMenuState<T extends DropdownItem>
                   padding: EdgeInsets.zero,
                   shrinkWrap: true,
                   primary: false,
-                  itemExtent: _itemHeight,
                   itemCount: widget.items.length,
                   itemBuilder: (context, index) {
                     final item = widget.items[index];
@@ -114,22 +114,32 @@ class _OverlayDropdownMenuState<T extends DropdownItem>
 
                     return InkWell(
                       onTap: () => widget.onSelect(item),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(
-                          horizontal: 12,
+                      child: ConstrainedBox(
+                        constraints: const BoxConstraints(
+                          minHeight: _estimatedItemHeight,
                         ),
-                        child: Row(
-                          children: [
-                            if (leading != null) ...[
-                              leading,
-                              const SizedBox(width: 8),
-                            ],
-                            Expanded(
-                              child: BodyMediumText(
-                                text: _itemTitle(item),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                            horizontal: AppPadding.p12,
+                            vertical: AppPadding.p8,
+                          ),
+                          child: Row(
+                            children: [
+                              if (leading != null) ...[
+                                leading,
+                                Space.w8,
+                              ],
+                              Expanded(
+                                child: BodyMediumText(
+                                  text: _itemTitle(item),
+                                  maxLines: 2,
+                                  textOverflow: TextOverflow.ellipsis,
+                                  lineHeight: 1.35,
+                                  textAlign: TextAlign.start,
+                                ),
                               ),
-                            ),
-                          ],
+                            ],
+                          ),
                         ),
                       ),
                     );

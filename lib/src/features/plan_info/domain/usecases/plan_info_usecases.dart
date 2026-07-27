@@ -3,7 +3,9 @@ import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/change_plan_status_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/create_plan_info_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/plan_filter_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/plan_history_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_cancelation_entity.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_history_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_lookup_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/repository/plan_info_repository.dart';
@@ -38,25 +40,25 @@ class GetPlanByIdUseCase
 }
 
 @lazySingleton
-class CreatePlanUseCase extends BaseUseCase<ApiResult<void>, CreatePlanInfoParamEntity> {
+class CreatePlanUseCase extends BaseUseCase<ApiResult<String>, CreatePlanInfoParamEntity> {
   final PlanInfoRepository _repository;
 
   CreatePlanUseCase(this._repository);
 
   @override
-  Future<ApiResult<void>> call(CreatePlanInfoParamEntity arg) {
+  Future<ApiResult<String>> call(CreatePlanInfoParamEntity arg) {
     return _repository.createPlan(arg);
   }
 }
 
 @lazySingleton
-class EditPlanUseCase extends BaseUseCase<ApiResult<void>, CreatePlanInfoParamEntity> {
+class EditPlanUseCase extends BaseUseCase<ApiResult<String>, CreatePlanInfoParamEntity> {
   final PlanInfoRepository _repository;
 
   EditPlanUseCase(this._repository);
 
   @override
-  Future<ApiResult<void>> call(CreatePlanInfoParamEntity arg) {
+  Future<ApiResult<String>> call(CreatePlanInfoParamEntity arg) {
     return _repository.editPlan(arg);
   }
 }
@@ -113,6 +115,21 @@ class GetPlanReportUseCase
 }
 
 @lazySingleton
+class GetPlanHistoriesUseCase extends BaseUseCase<
+    ApiResult<List<PlanHistoryEntity>>, PlanHistoryParamEntity> {
+  final PlanInfoRepository _repository;
+
+  GetPlanHistoriesUseCase(this._repository);
+
+  @override
+  Future<ApiResult<List<PlanHistoryEntity>>> call(
+    PlanHistoryParamEntity arg,
+  ) {
+    return _repository.getPlanHistories(arg);
+  }
+}
+
+@lazySingleton
 class CancelPlanRequestsUseCase extends BaseUseCase<ApiResult<PlanCancelationEntity>,
     CancelPlanRequestsParamEntity> {
   final PlanInfoRepository _repository;
@@ -135,41 +152,46 @@ class GetPlanLookupsUseCase
   @override
   Future<ApiResult<PlanLookupsEntity>> call() async {
     final units = await _repository.getEmdadUnits();
-    //final shifts = await _repository.getShifts();
-    //final specialPlans = await _repository.getSpecialPlans();
+    final shifts = await _repository.getShifts();
+    final specialPlans = await _repository.getSpecialPlans();
     final locations = await _repository.getLocations();
 
     final failures = <String>[];
-    var hasConnectionError = false;
 
-    List<PlanLookupEntity> read(ApiResult<List<PlanLookupEntity>> result) {
+    List<PlanLookupEntity> read(
+      String serviceTitle,
+      ApiResult<List<PlanLookupEntity>> result,
+    ) {
       return result.when(
         success: (data, _, __) => data,
-        failure: (_, message) {
-          if (message != null) failures.add(message);
+        failure: (_, __) {
+          failures.add(_lookupFailureMessage(serviceTitle));
           return const <PlanLookupEntity>[];
         },
-        expireToken: () => const <PlanLookupEntity>[],
+        expireToken: () {
+          failures.add('سرویس $serviceTitle در دسترس نیست');
+          return const <PlanLookupEntity>[];
+        },
         connectionError: () {
-          hasConnectionError = true;
+          failures.add('سرویس $serviceTitle در دسترس نیست');
           return const <PlanLookupEntity>[];
         },
       );
     }
 
     final data = PlanLookupsEntity(
-      emdadUnits: read(units),
-      shifts: [],//read(shifts),
-      specialPlans: [],//read(specialPlans),
-      locations: read(locations),
+      emdadUnits: read('واحدهای امدادی', units),
+      shifts: read('شیفت‌ها', shifts),
+      specialPlans: read('طرح‌های ویژه', specialPlans),
+      locations: read('محل‌های استقرار', locations),
+      warningMessage: failures.isEmpty ? null : failures.join('\n'),
     );
 
-    if (hasConnectionError) return const ApiResult.connectionError();
-    if (failures.isNotEmpty) {
-      return ApiResult.failure(failures: failures.join('\n'));
-    }
-
     return ApiResult.success(data: data);
+  }
+
+  String _lookupFailureMessage(String serviceTitle) {
+    return 'سرویس $serviceTitle در دسترس نیست';
   }
 }
 
@@ -192,11 +214,13 @@ class PlanLookupsEntity {
   final List<PlanLookupEntity> shifts;
   final List<PlanLookupEntity> specialPlans;
   final List<PlanLookupEntity> locations;
+  final String? warningMessage;
 
   const PlanLookupsEntity({
     required this.emdadUnits,
     required this.shifts,
     required this.specialPlans,
     required this.locations,
+    this.warningMessage,
   });
 }

@@ -1,87 +1,242 @@
-import 'package:dio/dio.dart' hide Headers;
+import 'package:dio/dio.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/data/models/plan_cancelation_model.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/data/models/plan_history_model.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/data/models/plan_info_model.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/data/models/plan_lookup_model.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 import 'package:injectable/injectable.dart';
-import 'package:retrofit/retrofit.dart';
 
-part 'plan_info_service.g.dart';
-
-@RestApi()
 @lazySingleton
-abstract class PlanInfoService {
-  @factoryMethod
-  factory PlanInfoService(Dio dio) = _PlanInfoService;
+class PlanInfoService {
+  PlanInfoService(this._dio);
 
-  @POST('/api/Plan/GetByFilterJson')
+  final Dio _dio;
+
   Future<BaseSingleResponse<PlanInfoListModel>> getPlans(
-    @Body() Map<String, dynamic> body,
-  );
+    Map<String, dynamic> body,
+  ) async {
+    final response = await _dio.post<Map<String, dynamic>>(
+      '/api/Plan/GetByFilterJson',
+      data: body,
+    );
 
-  @GET('/api/Plan/GetById')
+    return BaseSingleResponse<PlanInfoListModel>.fromJson(
+      response.data ?? {},
+      (json) => PlanInfoListModel.fromJson(json as Map<String, dynamic>),
+    );
+  }
+
   Future<BaseSingleResponse<PlanInfoModel>> getPlanById(
-    @Queries() Map<String, dynamic> query,
-  );
+    Map<String, dynamic> query,
+  ) async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      '/api/Plan/GetById',
+      queryParameters: query,
+    );
 
-  @POST('/api/Plan/post')
-  Future<BaseSingleResponse<void>> createPlan(
-    @Body() Map<String, dynamic> body,
-  );
+    return BaseSingleResponse<PlanInfoModel>.fromJson(
+      response.data ?? {},
+      (json) => PlanInfoModel.fromJson(json as Map<String, dynamic>),
+    );
+  }
 
-  @PUT('/api/Plan/put')
-  Future<BaseSingleResponse<void>> editPlan(
-    @Body() Map<String, dynamic> body,
-  );
+  Future<BaseSingleResponse<String>> createPlan(
+    Map<String, dynamic> body,
+  ) async {
+    final response = await _dio.post<dynamic>(
+      '/api/Plan/post',
+      data: body,
+    );
 
-  @DELETE('/api/Plan/DeleteByID')
+    return _stringMutationResponse(response.data);
+  }
+
+  Future<BaseSingleResponse<String>> editPlan(Map<String, dynamic> body) async {
+    final response = await _dio.put<dynamic>(
+      '/api/Plan/put',
+      data: body,
+    );
+
+    return _stringMutationResponse(response.data);
+  }
+
   Future<BaseSingleResponse<void>> deletePlan(
-    @Queries() Map<String, dynamic> query,
-  );
+    Map<String, dynamic> query,
+  ) async {
+    final response = await _dio.delete<Map<String, dynamic>>(
+      '/api/Plan/DeleteByID',
+      queryParameters: query,
+    );
 
-  @GET('/api/Plan/GetReasonsForChangeStatus')
+    return BaseSingleResponse<void>.fromJson(
+      response.data ?? {},
+      (_) {},
+    );
+  }
+
   Future<BaseListResponse<PlanLookupModel>> getStatusReasons(
-    @Queries() Map<String, dynamic> query,
-  );
+    Map<String, dynamic> query,
+  ) async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      '/api/Plan/GetReasonsForChangeStatus',
+      queryParameters: query,
+    );
 
-  @POST('/api/Plan/ChangeStatus')
+    return BaseListResponse<PlanLookupModel>.fromJson(
+      response.data ?? {},
+      (json) => PlanLookupModel.fromJson(json as Map<String, dynamic>),
+    );
+  }
+
   Future<BaseSingleResponse<void>> changeStatus(
-    @Body() Map<String, dynamic> body,
-  );
+    Map<String, dynamic> body,
+  ) async {
+    final response = await _dio.post<Map<String, dynamic>>(
+      '/api/Plan/ChangeStatus',
+      data: body,
+    );
 
-  @POST('/api/Plan/GetPlanInfoReport')
+    return BaseSingleResponse<void>.fromJson(
+      response.data ?? {},
+      (_) {},
+    );
+  }
+
   Future<BaseListResponse<PlanInfoModel>> getPlanReport(
-    @Body() Map<String, dynamic> body,
-  );
+    Map<String, dynamic> body,
+  ) async {
+    final response = await _dio.post<Map<String, dynamic>>(
+      '/api/Plan/GetPlanInfoReport',
+      data: body,
+    );
 
-  @POST('/api/Plan/CancelAllAssignedRequest')
+    return BaseListResponse<PlanInfoModel>.fromJson(
+      response.data ?? {},
+      (json) => PlanInfoModel.fromJson(json as Map<String, dynamic>),
+    );
+  }
+
   Future<BaseSingleResponse<PlanCancelationModel>> cancelAllAssignedRequest(
-    @Body() Map<String, dynamic> body,
-  );
+    Map<String, dynamic> body,
+  ) async {
+    final response = await _dio.post<Map<String, dynamic>>(
+      '/api/Plan/CancelAllAssignedRequest',
+      data: body,
+    );
 
-  @POST('/api/EmdadUnit/GetByFilterJson')
+    return BaseSingleResponse<PlanCancelationModel>.fromJson(
+      response.data ?? {},
+      (json) => PlanCancelationModel.fromJson(json as Map<String, dynamic>),
+    );
+  }
+
   Future<BaseSingleResponse<PlanLookupListModel>> getEmdadUnits(
-    @Body() Map<String, dynamic> body,
-  );
+    Map<String, dynamic> body,
+  ) async {
+    final response = await _dio.post<Map<String, dynamic>>(
+      '/api/EmdadUnit/GetByFilterJson',
+      data: body,
+    );
 
-  @POST('/api/Shift/GetByFilterJson')
+    return _lookupListResponse(response.data);
+  }
+
   Future<BaseSingleResponse<PlanLookupListModel>> getShifts(
-    @Body() Map<String, dynamic> body,
-  );
+    Map<String, dynamic> body,
+  ) async {
+    final response = await _dio.post<Map<String, dynamic>>(
+      '/api/Shift/GetByFilterJson',
+      data: body,
+    );
 
-  @POST('/api/SpecialPlan/GetByFilterJson')
+    return _lookupListResponse(response.data);
+  }
+
   Future<BaseSingleResponse<PlanLookupListModel>> getSpecialPlans(
-    @Body() Map<String, dynamic> body,
-  );
+    Map<String, dynamic> body,
+  ) async {
+    final response = await _dio.post<Map<String, dynamic>>(
+      '/api/SpecialPlan/GetByFilterJson',
+      data: body,
+    );
 
-  @POST('/api/Location/GetByFilterJson')
+    return _lookupListResponse(response.data);
+  }
+
   Future<BaseSingleResponse<PlanLookupListModel>> getLocations(
-    @Body() Map<String, dynamic> body,
-  );
+    Map<String, dynamic> body,
+  ) async {
+    final response = await _dio.post<Map<String, dynamic>>(
+      '/api/Location/GetByFilterJson',
+      data: body,
+    );
 
+    return _lookupListResponse(response.data);
+  }
 
-  @POST('/api/Plan/ChangeLocation')
   Future<BaseSingleResponse<void>> changeLocation(
-    @Body() Map<String, dynamic> body,
-  );
+    Map<String, dynamic> body,
+  ) async {
+    final response = await _dio.post<Map<String, dynamic>>(
+      '/api/Plan/ChangeLocation',
+      data: body,
+    );
+
+    return BaseSingleResponse<void>.fromJson(
+      response.data ?? {},
+      (_) {},
+    );
+  }
+
+  Future<BaseListResponse<PlanHistoryModel>> getPlanHistories(
+    Map<String, dynamic> query,
+  ) async {
+    final response = await _dio.get<Map<String, dynamic>>(
+      '/api/SanHistory/GetSanLogHistoriesById',
+      queryParameters: query,
+    );
+
+    return BaseListResponse<PlanHistoryModel>.fromJson(
+      response.data ?? {},
+      (json) => PlanHistoryModel.fromJson(json as Map<String, dynamic>),
+    );
+  }
+
+  BaseSingleResponse<PlanLookupListModel> _lookupListResponse(
+    Map<String, dynamic>? data,
+  ) {
+    return BaseSingleResponse<PlanLookupListModel>.fromJson(
+      data ?? {},
+      (json) => PlanLookupListModel.fromJson(json as Map<String, dynamic>),
+    );
+  }
+
+  BaseSingleResponse<String> _stringMutationResponse(dynamic data) {
+    if (data is Map) {
+      final json = Map<String, dynamic>.from(data);
+      final rawFailures = json['failures'] ?? json['Failures'];
+      final failures = rawFailures is List
+          ? rawFailures.map((item) => item.toString()).toList()
+          : rawFailures?.toString().trim().isNotEmpty == true
+              ? <String>[rawFailures.toString()]
+              : <String>[];
+
+      return BaseSingleResponse<String>(
+        resultCode: _readInt(json['resultCode'] ?? json['ResultCode']) ?? 0,
+        data: (json['data'] ?? json['Data'])?.toString() ?? '',
+        failures: failures,
+      );
+    }
+
+    return BaseSingleResponse<String>(
+      resultCode: 0,
+      data: data?.toString() ?? '',
+      failures: const [],
+    );
+  }
+
+  int? _readInt(dynamic value) {
+    if (value is int) return value;
+    return int.tryParse(value?.toString() ?? '');
+  }
 }

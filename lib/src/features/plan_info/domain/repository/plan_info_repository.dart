@@ -2,8 +2,10 @@ import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/change_plan_info_location_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/change_plan_status_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/create_plan_info_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/plan_history_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/plan_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_cancelation_entity.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_history_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_lookup_entity.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
@@ -13,9 +15,9 @@ abstract class PlanInfoRepository {
 
   Future<ApiResult<PlanInfoEntity?>> getPlanById(int id);
 
-  Future<ApiResult<void>> createPlan(CreatePlanInfoParamEntity param);
+  Future<ApiResult<String>> createPlan(CreatePlanInfoParamEntity param);
 
-  Future<ApiResult<void>> editPlan(CreatePlanInfoParamEntity param);
+  Future<ApiResult<String>> editPlan(CreatePlanInfoParamEntity param);
 
   Future<ApiResult<void>> deletePlan(int id);
 
@@ -39,5 +41,9 @@ abstract class PlanInfoRepository {
 
   Future<ApiResult<List<PlanLookupEntity>>> getLocations();
   Future<ApiResult<void>> changeLocation(ChangePlanInfoLocationParamEntity arg);
+
+  Future<ApiResult<List<PlanHistoryEntity>>> getPlanHistories(
+    PlanHistoryParamEntity param,
+  );
 
 }

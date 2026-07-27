@@ -9,7 +9,7 @@ import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/pages/emd
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/pages/emdad_unit_persons_page.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/emdad_unit_action_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/emdad_unit_card.dart';
-import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/emdad_unit_confirm_sheet.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/emdad_unit_filter_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
@@ -314,7 +314,7 @@ class _EmdadUnitListView extends StatelessWidget {
       builder: (_) => BlocProvider.value(
         value: cubit,
         child: BlocBuilder<EmdadUnitCubit, EmdadUnitState>(
-          builder: (context, state) => EmdadUnitConfirmSheet(
+          builder: (context, state) => DeleteConfirmSheet(
             title: 'حذف واحد امدادی',
             message: 'آیا از حذف این مورد مطمئن هستید؟ این عمل غیرقابل بازگشت است.',
             confirmTitle: 'حذف',

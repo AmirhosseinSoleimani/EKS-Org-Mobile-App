@@ -338,6 +338,23 @@ import '../features/home_services_evaluation/presentation/labors_and_parts/cubit
     as _i664;
 import '../features/home_services_evaluation/presentation/service_list/cubit/service_list_cubit.dart'
     as _i379;
+import '../features/imei/data/data_source/imei_data_source.dart' as _i1065;
+import '../features/imei/data/data_source/imei_data_source_impl.dart' as _i572;
+import '../features/imei/data/repository/imei_repository_impl.dart' as _i311;
+import '../features/imei/data/service/imei_service.dart' as _i587;
+import '../features/imei/domain/repository/imei_repository.dart' as _i14;
+import '../features/imei/domain/usecases/add_imei_info_use_case.dart' as _i357;
+import '../features/imei/domain/usecases/delete_imei_info_use_case.dart'
+    as _i911;
+import '../features/imei/domain/usecases/get_device_info_list_use_case.dart'
+    as _i277;
+import '../features/imei/domain/usecases/get_imei_info_by_id_use_case.dart'
+    as _i1055;
+import '../features/imei/domain/usecases/get_imei_info_list_use_case.dart'
+    as _i518;
+import '../features/imei/domain/usecases/update_imei_info_use_case.dart'
+    as _i859;
+import '../features/imei/presentation/cubit/imei_cubit.dart' as _i70;
 import '../features/indicator_report/data/data_sources/indicator_report_data_source.dart'
     as _i691;
 import '../features/indicator_report/data/data_sources/indicator_report_data_source_impl.dart'
@@ -370,32 +387,6 @@ import '../features/leave/domain/use_cases/get_leave_reports_use_case.dart'
 import '../features/leave/domain/use_cases/rollback_leave_request_use_case.dart'
     as _i918;
 import '../features/leave/presentation/cubit/leave_cubit.dart' as _i710;
-import '../features/navgan/data/data_source/navgan_data_source.dart' as _i87;
-import '../features/navgan/data/data_source/navgan_data_source_impl.dart'
-    as _i209;
-import '../features/navgan/data/repository/navgan_repository_impl.dart'
-    as _i475;
-import '../features/navgan/data/service/navgan_service.dart' as _i584;
-import '../features/navgan/domain/repository/navgan_repository.dart' as _i1025;
-import '../features/navgan/domain/usecases/add_navgan_grade_reference_use_case.dart'
-    as _i529;
-import '../features/navgan/domain/usecases/delete_navgan_grade_reference_use_case.dart'
-    as _i467;
-import '../features/navgan/domain/usecases/get_grade_pattern_detail_use_case.dart'
-    as _i1031;
-import '../features/navgan/domain/usecases/get_grade_pattern_list_use_case.dart'
-    as _i745;
-import '../features/navgan/domain/usecases/get_navgan_defects_use_case.dart'
-    as _i193;
-import '../features/navgan/domain/usecases/get_navgan_list_use_case.dart'
-    as _i570;
-import '../features/navgan/domain/usecases/get_navgan_service_groups_use_case.dart'
-    as _i85;
-import '../features/navgan/domain/usecases/submit_navgan_defects_use_case.dart'
-    as _i71;
-import '../features/navgan/domain/usecases/submit_navgan_service_categories_use_case.dart'
-    as _i940;
-import '../features/navgan/presentation/cubit/navgan_cubit.dart' as _i93;
 import '../features/plan_info/data/data_source/plan_info_data_source.dart'
     as _i49;
 import '../features/plan_info/data/data_source/plan_info_data_source_impl.dart'
@@ -891,9 +882,7 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i300.GradePatternService>(
     () => _i300.GradePatternService(gh<_i361.Dio>()),
   );
-  gh.lazySingleton<_i584.NavganService>(
-    () => _i584.NavganService(gh<_i361.Dio>()),
-  );
+  gh.lazySingleton<_i587.ImeiService>(() => _i587.ImeiService(gh<_i361.Dio>()));
   gh.lazySingleton<_i298.RescuerService>(
     () => _i298.RescuerService(gh<_i361.Dio>()),
   );
@@ -1034,6 +1023,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i1039.UserDataSource>(
     () => _i793.UserDataSourceImpl(gh<_i313.UserService>()),
   );
+  gh.lazySingleton<_i1065.ImeiDataSource>(
+    () => _i572.ImeiDataSourceImpl(gh<_i587.ImeiService>()),
+  );
   gh.lazySingleton<_i603.RequestRepository>(
     () => _i794.RequestRepositoryImpl(gh<_i1016.RequestDataSource>()),
   );
@@ -1059,9 +1051,6 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i399.ShiftRepository>(
     () => _i520.ShiftRepositoryImpl(gh<_i970.ShiftDataSource>()),
-  );
-  gh.lazySingleton<_i87.NavganDataSource>(
-    () => _i209.NavganDataSourceImpl(gh<_i584.NavganService>()),
   );
   gh.lazySingleton<_i347.HomeServiceEvaluationRepository>(
     () => _i1063.HomeServiceEvaluationRepositoryImpl(
@@ -1181,6 +1170,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i203.GetPlanReportUseCase>(
     () => _i203.GetPlanReportUseCase(gh<_i579.PlanInfoRepository>()),
+  );
+  gh.lazySingleton<_i203.GetPlanHistoriesUseCase>(
+    () => _i203.GetPlanHistoriesUseCase(gh<_i579.PlanInfoRepository>()),
   );
   gh.lazySingleton<_i203.CancelPlanRequestsUseCase>(
     () => _i203.CancelPlanRequestsUseCase(gh<_i579.PlanInfoRepository>()),
@@ -1568,6 +1560,9 @@ _i174.GetIt $initGetIt(
   gh.factory<_i951.IndicatorReportCubit>(
     () => _i951.IndicatorReportCubit(gh<_i375.FetchIndicatorReportUseCase>()),
   );
+  gh.lazySingleton<_i14.ImeiRepository>(
+    () => _i311.ImeiRepositoryImpl(gh<_i1065.ImeiDataSource>()),
+  );
   gh.lazySingleton<_i716.AuthRepository>(
     () => _i781.AuthRepositoryImpl(
       gh<_i479.AuthRemoteDataSource>(),
@@ -1691,9 +1686,6 @@ _i174.GetIt $initGetIt(
       gh<_i786.GetEmdadgarInfoUseCase>(),
     ),
   );
-  gh.lazySingleton<_i1025.NavganRepository>(
-    () => _i475.NavganRepositoryImpl(gh<_i87.NavganDataSource>()),
-  );
   gh.factory<_i317.HomeServiceEvaluationFirstStepCubit>(
     () => _i317.HomeServiceEvaluationFirstStepCubit(
       gh<_i1059.GetLastEvaluationHomeServiceUseCase>(),
@@ -1725,6 +1717,23 @@ _i174.GetIt $initGetIt(
       gh<_i879.GetAgencyHistoryUseCase>(),
     ),
   );
+  gh.factory<_i943.PlanInfoCubit>(
+    () => _i943.PlanInfoCubit(
+      gh<_i203.GetPlanListUseCase>(),
+      gh<_i203.GetPlanByIdUseCase>(),
+      gh<_i203.CreatePlanUseCase>(),
+      gh<_i203.EditPlanUseCase>(),
+      gh<_i203.DeletePlanUseCase>(),
+      gh<_i203.GetPlanStatusReasonsUseCase>(),
+      gh<_i203.ChangePlanStatusUseCase>(),
+      gh<_i203.GetPlanReportUseCase>(),
+      gh<_i203.CancelPlanRequestsUseCase>(),
+      gh<_i203.GetPlanLookupsUseCase>(),
+      gh<_i1058.CurrentSessionManager>(),
+      gh<_i203.ChangeLocationUseCase>(),
+      gh<_i203.GetPlanHistoriesUseCase>(),
+    ),
+  );
   gh.lazySingleton<_i122.EvaluationRepository>(
     () =>
         _i903.EvaluationRepositoryImpl(gh<_i1023.EvaluationRemoteDataSource>()),
@@ -1746,6 +1755,24 @@ _i174.GetIt $initGetIt(
       gh<_i833.GetRescuerSkillCertificatesUseCase>(),
       gh<_i339.GetRescuerHistoryUseCase>(),
     ),
+  );
+  gh.lazySingleton<_i357.AddImeiInfoUseCase>(
+    () => _i357.AddImeiInfoUseCase(gh<_i14.ImeiRepository>()),
+  );
+  gh.lazySingleton<_i911.DeleteImeiInfoUseCase>(
+    () => _i911.DeleteImeiInfoUseCase(gh<_i14.ImeiRepository>()),
+  );
+  gh.lazySingleton<_i277.GetDeviceInfoListUseCase>(
+    () => _i277.GetDeviceInfoListUseCase(gh<_i14.ImeiRepository>()),
+  );
+  gh.lazySingleton<_i1055.GetImeiInfoByIdUseCase>(
+    () => _i1055.GetImeiInfoByIdUseCase(gh<_i14.ImeiRepository>()),
+  );
+  gh.lazySingleton<_i518.GetImeiInfoListUseCase>(
+    () => _i518.GetImeiInfoListUseCase(gh<_i14.ImeiRepository>()),
+  );
+  gh.lazySingleton<_i859.UpdateImeiInfoUseCase>(
+    () => _i859.UpdateImeiInfoUseCase(gh<_i14.ImeiRepository>()),
   );
   gh.lazySingleton<_i274.GetThemeUseCase>(
     () => _i274.GetThemeUseCase(gh<_i74.UserRepository>()),
@@ -1832,22 +1859,6 @@ _i174.GetIt $initGetIt(
   );
   gh.factory<_i705.AddAgencyContractCubit>(
     () => _i705.AddAgencyContractCubit(gh<_i853.AddAgencyContractUseCase>()),
-  );
-  gh.factory<_i943.PlanInfoCubit>(
-    () => _i943.PlanInfoCubit(
-      gh<_i203.GetPlanListUseCase>(),
-      gh<_i203.GetPlanByIdUseCase>(),
-      gh<_i203.CreatePlanUseCase>(),
-      gh<_i203.EditPlanUseCase>(),
-      gh<_i203.DeletePlanUseCase>(),
-      gh<_i203.GetPlanStatusReasonsUseCase>(),
-      gh<_i203.ChangePlanStatusUseCase>(),
-      gh<_i203.GetPlanReportUseCase>(),
-      gh<_i203.CancelPlanRequestsUseCase>(),
-      gh<_i203.GetPlanLookupsUseCase>(),
-      gh<_i1058.CurrentSessionManager>(),
-      gh<_i203.ChangeLocationUseCase>(),
-    ),
   );
   gh.factory<_i1038.CompleteUrgentRequestCubit>(
     () => _i1038.CompleteUrgentRequestCubit(
@@ -2007,6 +2018,16 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i558.UpdateEmdadVehicleUseCase>(
     () => _i558.UpdateEmdadVehicleUseCase(gh<_i139.EmdadVehicleRepository>()),
   );
+  gh.factory<_i70.ImeiCubit>(
+    () => _i70.ImeiCubit(
+      gh<_i518.GetImeiInfoListUseCase>(),
+      gh<_i277.GetDeviceInfoListUseCase>(),
+      gh<_i1055.GetImeiInfoByIdUseCase>(),
+      gh<_i357.AddImeiInfoUseCase>(),
+      gh<_i859.UpdateImeiInfoUseCase>(),
+      gh<_i911.DeleteImeiInfoUseCase>(),
+    ),
+  );
   gh.lazySingleton<_i695.SyncCurrentSessionUseCase>(
     () => _i695.SyncCurrentSessionUseCase(
       gh<_i424.GetCurrentSessionUseCase>(),
@@ -2064,36 +2085,6 @@ _i174.GetIt $initGetIt(
     () => _i757.AppCubit(
       gh<_i695.SyncCurrentSessionUseCase>(),
       gh<_i1058.CurrentSessionManager>(),
-    ),
-  );
-  gh.lazySingleton<_i529.AddNavganGradeReferenceUseCase>(
-    () => _i529.AddNavganGradeReferenceUseCase(gh<_i1025.NavganRepository>()),
-  );
-  gh.lazySingleton<_i467.DeleteNavganGradeReferenceUseCase>(
-    () =>
-        _i467.DeleteNavganGradeReferenceUseCase(gh<_i1025.NavganRepository>()),
-  );
-  gh.lazySingleton<_i1031.GetGradePatternDetailUseCase>(
-    () => _i1031.GetGradePatternDetailUseCase(gh<_i1025.NavganRepository>()),
-  );
-  gh.lazySingleton<_i745.GetGradePatternListUseCase>(
-    () => _i745.GetGradePatternListUseCase(gh<_i1025.NavganRepository>()),
-  );
-  gh.lazySingleton<_i193.GetNavganDefectsUseCase>(
-    () => _i193.GetNavganDefectsUseCase(gh<_i1025.NavganRepository>()),
-  );
-  gh.lazySingleton<_i570.GetNavganListUseCase>(
-    () => _i570.GetNavganListUseCase(gh<_i1025.NavganRepository>()),
-  );
-  gh.lazySingleton<_i85.GetNavganServiceGroupsUseCase>(
-    () => _i85.GetNavganServiceGroupsUseCase(gh<_i1025.NavganRepository>()),
-  );
-  gh.lazySingleton<_i71.SubmitNavganDefectsUseCase>(
-    () => _i71.SubmitNavganDefectsUseCase(gh<_i1025.NavganRepository>()),
-  );
-  gh.lazySingleton<_i940.SubmitNavganServiceCategoriesUseCase>(
-    () => _i940.SubmitNavganServiceCategoriesUseCase(
-      gh<_i1025.NavganRepository>(),
     ),
   );
   gh.lazySingleton<_i531.AcceptEvaluationUseCase>(
@@ -2194,19 +2185,6 @@ _i174.GetIt $initGetIt(
       gh<_i672.GetReliefRequestByIdUseCase>(),
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
       gh<_i531.AcceptEvaluationUseCase>(),
-    ),
-  );
-  gh.factory<_i93.NavganCubit>(
-    () => _i93.NavganCubit(
-      gh<_i570.GetNavganListUseCase>(),
-      gh<_i745.GetGradePatternListUseCase>(),
-      gh<_i1031.GetGradePatternDetailUseCase>(),
-      gh<_i529.AddNavganGradeReferenceUseCase>(),
-      gh<_i467.DeleteNavganGradeReferenceUseCase>(),
-      gh<_i85.GetNavganServiceGroupsUseCase>(),
-      gh<_i193.GetNavganDefectsUseCase>(),
-      gh<_i940.SubmitNavganServiceCategoriesUseCase>(),
-      gh<_i71.SubmitNavganDefectsUseCase>(),
     ),
   );
   gh.factory<_i319.EvaluationAidServiceRequestCubit>(

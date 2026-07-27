@@ -1,4 +1,4 @@
-import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'service_list_state.freezed.dart';

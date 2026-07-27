@@ -3,7 +3,7 @@ import 'package:eks_sana_plus_org/src/features/leave/domain/entities/leave_list_
 import 'package:eks_sana_plus_org/src/features/leave/domain/entities/leave_reason_entity.dart';
 import 'package:eks_sana_plus_org/src/features/leave/domain/entities/leave_status.dart';
 import 'package:eks_sana_plus_org/src/features/leave/domain/entities/leave_type.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 
 class LeaveState {
   const LeaveState({

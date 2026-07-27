@@ -2,13 +2,16 @@ import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:flutter/material.dart';
 
-class EmdadUnitConfirmSheet extends StatelessWidget {
-  const EmdadUnitConfirmSheet({
+class DeleteConfirmSheet extends StatelessWidget {
+  const DeleteConfirmSheet({
     super.key,
     required this.title,
     required this.message,
     required this.confirmTitle,
     required this.onConfirm,
+    this.icon = Icons.delete_forever_outlined,
+    this.iconColor,
+    this.iconBackgroundColor,
     this.isSubmitting = false,
   });
 
@@ -16,6 +19,9 @@ class EmdadUnitConfirmSheet extends StatelessWidget {
   final String message;
   final String confirmTitle;
   final Future<void> Function() onConfirm;
+  final IconData icon;
+  final Color? iconColor;
+  final Color? iconBackgroundColor;
   final bool isSubmitting;
 
   @override
@@ -46,12 +52,13 @@ class EmdadUnitConfirmSheet extends StatelessWidget {
               width: AppSize.s64,
               height: AppSize.s64,
               decoration: BoxDecoration(
-                color: theme.colorScheme.error.withOpacity(0.16),
+                color: iconBackgroundColor ??
+                    theme.colorScheme.error.withOpacity(0.16),
                 shape: BoxShape.circle,
               ),
               child: Icon(
-                Icons.delete_forever_outlined,
-                color: theme.colorScheme.error,
+                icon,
+                color: iconColor ?? theme.colorScheme.error,
                 size: AppSize.s34,
               ),
             ),

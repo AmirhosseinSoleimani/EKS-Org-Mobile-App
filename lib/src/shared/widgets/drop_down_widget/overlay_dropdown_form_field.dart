@@ -1,6 +1,8 @@
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/interfaces/dropdown_item.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/overlay_drop_down_menu.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/material.dart';
 
 class SimpleDropdownItem<T> implements DropdownItem<T> {
@@ -107,6 +109,7 @@ class _OverlayDropdownFormFieldState<T extends DropdownItem>
               child: InputDecorator(
                 isEmpty: selected == null,
                 decoration: InputDecoration(
+                  isDense: true,
                   label: Text.rich(
                     TextSpan(
                       children: [
@@ -146,17 +149,23 @@ class _OverlayDropdownFormFieldState<T extends DropdownItem>
                   ),
                   contentPadding: const EdgeInsets.symmetric(
                     horizontal: AppPadding.p12,
-                    vertical: AppPadding.p16,
+                    vertical: AppPadding.p14,
                   ),
                 ),
-                child: Text(
-                  selected == null ? widget.hintText : _title(selected),
-                  maxLines: 1,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.bodyMedium?.copyWith(
-                    color: selected == null
-                        ? theme.colorScheme.onSurfaceVariant
-                        : theme.colorScheme.onSurface,
+                child: SizedBox(
+                  height: AppSize.s24,
+                  child: Align(
+                    alignment: AlignmentDirectional.centerStart,
+                    child: BodyMediumText(
+                      text: selected == null ? widget.hintText : _title(selected),
+                      maxLines: 1,
+                      textOverflow: TextOverflow.ellipsis,
+                      color: selected == null
+                          ? theme.colorScheme.onSurfaceVariant
+                          : theme.colorScheme.onSurface,
+                      lineHeight: 1.2,
+                      textAlign: TextAlign.start,
+                    ),
                   ),
                 ),
               ),
@@ -165,11 +174,11 @@ class _OverlayDropdownFormFieldState<T extends DropdownItem>
               const SizedBox(height: 6),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppPadding.p12),
-                child: Text(
-                  fieldState.errorText!,
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.error,
-                  ),
+                child: BodySmallText(
+                  text: fieldState.errorText!,
+                  color: theme.colorScheme.error,
+                  maxLines: 2,
+                  textOverflow: TextOverflow.ellipsis,
                 ),
               ),
             ],

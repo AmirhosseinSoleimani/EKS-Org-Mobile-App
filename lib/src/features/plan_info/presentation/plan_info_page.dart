@@ -1,14 +1,18 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_state.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/presentation/plan_info_create_page.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/presentation/plan_info_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/widgets/plan_card.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/widgets/plan_info_bottom_sheets.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
@@ -49,14 +53,32 @@ class _PlanInfoView extends StatelessWidget {
       listener: (context, state) {
         final message = state.message;
         if (message == null || message.trim().isEmpty) return;
-        if (state.status == PlanInfoStatus.error) {
+        if (state.status == PlanInfoStatus.error ||
+            state.status == PlanInfoStatus.connectionError) {
           SnakeBarWidget.showError(context: context, message: message);
-        } else {
+        } else if (state.status == PlanInfoStatus.loaded) {
           SnakeBarWidget.showSuccess(context: context, message: message);
         }
       },
       child: Scaffold(
         appBar: const SimpleAppBar(title: 'مدیریت برنامه‌ریزی'),
+        floatingActionButton: FloatingActionButtonWidget(
+          title: 'برنامه ریزی جدید',
+          onPressed: () async {
+            final created = await context.pushNamed<bool>(
+              PlanInfoCreatePage.name,
+            );
+            if (created == true && context.mounted) {
+              await cubit.fetchPlans();
+              if (context.mounted) {
+                SnakeBarWidget.showSuccess(
+                  context: context,
+                  message: 'برنامه‌ریزی با موفقیت ثبت شد',
+                );
+              }
+            }
+          },
+        ),
         body: ScrollConfiguration(
           behavior: ScrollConfiguration.of(context).copyWith(
             dragDevices: {
@@ -92,7 +114,7 @@ class _PlanInfoView extends StatelessWidget {
                     }
 
                     if (state.items.isEmpty) {
-                      return const _EmptyPlans();
+                      return const EmptyListWidget();
                     }
 
                     return RefreshIndicator(
@@ -126,16 +148,17 @@ class _PlanInfoView extends StatelessWidget {
 
                           return PlanCard(
                             item: item,
-                            onEdit: () => PlanInfoBottomSheets.showPlanForm(
+                            onEdit: () => _openPlanForm(
                               context: context,
                               cubit: cubit,
-                              plan: item,
+                              item: item,
+                              mode: PlanInfoCreateMode.edit,
                             ),
-                            onCopy: () => PlanInfoBottomSheets.showPlanForm(
+                            onCopy: () => _openPlanForm(
                               context: context,
                               cubit: cubit,
-                              plan: item,
-                              isCopy: true,
+                              item: item,
+                              mode: PlanInfoCreateMode.copy,
                             ),
                             onDelete: () => _confirmDelete(context, cubit, item),
                             onStatus: () => PlanInfoBottomSheets.showStatusSheet(
@@ -156,7 +179,12 @@ class _PlanInfoView extends StatelessWidget {
                                 await cubit.fetchPlans();
                               }
                             },
-                            onHistory: () => _showHistoryUnavailable(context),
+                            onHistory: () {
+                              context.pushNamed(
+                                PlanInfoHistoryPage.name,
+                                extra: item,
+                              );
+                            },
                           );
                         },
                       ),
@@ -171,51 +199,80 @@ class _PlanInfoView extends StatelessWidget {
     );
   }
 
-  void _confirmDelete(
+  Future<void> _openPlanForm({
+    required BuildContext context,
+    required PlanInfoCubit cubit,
+    required PlanInfoEntity item,
+    required PlanInfoCreateMode mode,
+  }) async {
+    final saved = await context.pushNamed<bool>(
+      PlanInfoCreatePage.name,
+      extra: PlanInfoCreateArgs(
+        mode: mode,
+        plan: item,
+      ),
+    );
+
+    if (saved == true && context.mounted) {
+      await cubit.fetchPlans();
+      if (context.mounted) {
+        SnakeBarWidget.showSuccess(
+          context: context,
+          message: _successMessage(mode),
+        );
+      }
+    }
+  }
+
+  String _successMessage(PlanInfoCreateMode mode) {
+    return switch (mode) {
+      PlanInfoCreateMode.create => 'برنامه‌ریزی با موفقیت ثبت شد',
+      PlanInfoCreateMode.edit => 'برنامه‌ریزی با موفقیت ویرایش شد',
+      PlanInfoCreateMode.copy => 'کپی برنامه‌ریزی با موفقیت ثبت شد',
+    };
+  }
+
+
+  Future<void> _confirmDelete(
       BuildContext context,
       PlanInfoCubit cubit,
-      PlanInfoEntity plan,
-      ) {
-    BottomSheetMessage.showCustom(
+      PlanInfoEntity plan,) async {
+    if (plan.id == null) return;
+    await showModalBottomSheet<bool>(
       context: context,
-      content: Padding(
-        padding: const EdgeInsets.all(AppPadding.p16),
-        child: Text(
-          'آیا برنامه‌ریزی ${plan.title ?? '---'} حذف شود؟',
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
+        isScrollControlled: true,
+        useSafeArea: true,
+        backgroundColor: Theme
+            .of(context)
+            .colorScheme
+            .onPrimary,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+              top: Radius.circular(AppSize.s20)),
       ),
-      actionWidget: Row(
-        children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('انصراف'),
-            ),
-          ),
-          Space.w12,
-          Expanded(
-            child: FilledButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                final id = plan.resolvedId;
-                if (id != null) cubit.deletePlan(id);
-              },
-              child: const Text('حذف'),
-            ),
-          ),
-        ],
-      ),
+        builder: (_) =>
+            BlocProvider.value(
+                value: cubit,
+                child: BlocBuilder<PlanInfoCubit, PlanInfoState>(
+
+                  builder: (context, state) {
+                    return DeleteConfirmSheet(
+                      title: 'حذف برنامه ریزی',
+                      message: 'آیا از حذف این مورد مطمئن هستید؟ این عمل غیرقابل بازگشت است.',
+                      confirmTitle: 'حذف',
+                      isSubmitting: state.status == PlanInfoStatus.submitting,
+                      onConfirm: () async {
+                        Navigator.of(context).pop();
+                        final id = plan.resolvedId;
+                        if (id != null) cubit.deletePlan(id);
+                      },
+                    );
+                  },
+                )
+            )
     );
   }
 
-  void _showHistoryUnavailable(BuildContext context) {
-    SnakeBarWidget.showNotice(
-      context: context,
-      message: 'تاریخچه این موجودیت بعد از اتصال مسیر تاریخچه نمایش داده می‌شود',
-    );
-  }
 }
 class _PlanToolbar extends StatelessWidget {
   const _PlanToolbar({
@@ -358,27 +415,6 @@ class _StatusFilterItem extends StatelessWidget {
                 color: colorScheme.primary,
               ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-
-
-
-class _EmptyPlans extends StatelessWidget {
-  const _EmptyPlans();
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Padding(
-        padding: const EdgeInsets.all(AppPadding.p24),
-        child: Text(
-          'برنامه‌ریزی‌ای برای نمایش وجود ندارد.',
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleMedium,
         ),
       ),
     );
