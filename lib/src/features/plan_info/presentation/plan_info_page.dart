@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_state.dart';
@@ -8,7 +9,6 @@ import 'package:eks_sana_plus_org/src/features/plan_info/presentation/widgets/pl
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
@@ -185,42 +185,46 @@ class _PlanInfoView extends StatelessWidget {
     );
   }
 
-  void _confirmDelete(
+
+  Future<void> _confirmDelete(
       BuildContext context,
       PlanInfoCubit cubit,
-      PlanInfoEntity plan,
-      ) {
-    BottomSheetMessage.showCustom(
+      PlanInfoEntity plan,) async {
+    if (plan.id == null) return;
+    await showModalBottomSheet<bool>(
       context: context,
-      content: Padding(
-        padding: const EdgeInsets.all(AppPadding.p16),
-        child: Text(
-          'آیا برنامه‌ریزی ${plan.title ?? '---'} حذف شود؟',
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
+        isScrollControlled: true,
+        useSafeArea: true,
+        backgroundColor: Theme
+            .of(context)
+            .colorScheme
+            .onPrimary,
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.vertical(
+              top: Radius.circular(AppSize.s20)),
       ),
-      actionWidget: Row(
-        children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('انصراف'),
-            ),
-          ),
-          Space.w12,
-          Expanded(
-            child: FilledButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                final id = plan.resolvedId;
-                if (id != null) cubit.deletePlan(id);
-              },
-              child: const Text('حذف'),
-            ),
-          ),
-        ],
-      ),
+        builder: (_) =>
+            BlocProvider.value(
+                value: cubit,
+                child: BlocBuilder<PlanInfoCubit, PlanInfoState>(
+
+                  builder: (context, state) {
+                    final isSubmitting = state.status ==
+                        PlanInfoStatus.submitting;
+                    return DeleteConfirmSheet(
+                      title: 'حذف برنامه ریزی',
+                      message: 'آیا از حذف این مورد مطمئن هستید؟ این عمل غیرقابل بازگشت است.',
+                      confirmTitle: 'حذف',
+                      isSubmitting: state.status == PlanInfoStatus.submitting,
+                      onConfirm: () async {
+                        Navigator.of(context).pop();
+                        final id = plan.resolvedId;
+                        if (id != null) cubit.deletePlan(id);
+                      },
+                    );
+                  },
+                )
+            )
     );
   }
 

@@ -3,7 +3,7 @@ import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/emdad_
 import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/emdad_unit_person_entity.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/lookup_entity.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/cubit/emdad_unit_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/emdad_unit_confirm_sheet.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/emdad_unit_status_badge.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/emdad_unit_summary_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
@@ -206,7 +206,7 @@ class _EmdadUnitPersonsViewState extends State<_EmdadUnitPersonsView> {
       builder: (_) => BlocProvider.value(
         value: cubit,
         child: BlocBuilder<EmdadUnitCubit, EmdadUnitState>(
-          builder: (context, state) => EmdadUnitConfirmSheet(
+          builder: (context, state) => DeleteConfirmSheet(
             title: 'حذف امدادرسان',
             message: 'آیا از حذف این مورد مطمئن هستید؟ این عمل غیرقابل بازگشت است.',
             confirmTitle: 'حذف',

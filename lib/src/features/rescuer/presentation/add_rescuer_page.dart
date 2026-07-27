@@ -9,8 +9,8 @@ import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/add/
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/add/rescuer_stepper.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/add/views/add_rescuer_success_view.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/rescuer_full_screen_sheet_app_bar.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
 import 'package:flutter/material.dart';

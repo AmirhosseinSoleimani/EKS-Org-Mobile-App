@@ -1,11 +1,12 @@
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_info_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_action_tile.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_action_tile.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 
 class PlanCard extends StatelessWidget {
   final PlanInfoEntity item;
@@ -250,26 +251,38 @@ class PlanCard extends StatelessWidget {
             BottomSheetActionTile(
               icon: Icons.bus_alert_outlined,
               title: 'تغییر محل استقرار',
-              onTap: onLocation,
+              onTap: (){
+                context.pop();
+                onLocation();
+              },
             ),
             Divider(color: colorScheme.onInverseSurface,),
             BottomSheetActionTile(
               icon: Icons.toggle_off_outlined,
               title: 'تغییر وضعیت',
-              onTap: onStatus,
+              onTap: (){
+                context.pop();
+                onStatus();
+              },
             ),
             Divider(color: colorScheme.onInverseSurface,),
             BottomSheetActionTile(
               icon: Icons.history_outlined,
               title: 'تاریخچه',
-              onTap: onHistory,
+              onTap: (){
+                context.pop();
+                onHistory();
+              },
             ),
             Divider(color: colorScheme.onInverseSurface,),
             BottomSheetActionTile(
               icon: Icons.delete_forever_outlined,
               title: 'حذف',
-              onTap: onDelete,
               isDestructive: true,
+              onTap: (){
+                context.pop();
+                onDelete();
+              },
             ),
           ],
         ),

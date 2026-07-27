@@ -13,7 +13,7 @@ import 'package:eks_sana_plus_org/src/shared/features/map/domain/usecase/fetch_a
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/usecase/fetch_location_to_address_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/usecase/get_current_location_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/usecase/set_address_info_use_case.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message_model.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_map/flutter_map.dart';

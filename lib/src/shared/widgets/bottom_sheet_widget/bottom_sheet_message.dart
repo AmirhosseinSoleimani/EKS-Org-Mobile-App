@@ -1,9 +1,9 @@
 import 'package:eks_sana_plus_org/src/common/constants/app_constants.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 import 'bottom_sheet_message_model.dart';
+import 'bottom_sheet_widget.dart';
 
 class BottomSheetMessage {
   BottomSheetMessage._();
