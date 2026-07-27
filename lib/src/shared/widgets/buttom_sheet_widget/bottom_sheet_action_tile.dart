@@ -1,37 +1,54 @@
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:flutter/material.dart';
 
-class BottomSheetActionTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final VoidCallback onTap;
-  final bool isDestructive;
 
+class BottomSheetActionTile extends StatelessWidget {
   const BottomSheetActionTile({
     super.key,
     required this.icon,
     required this.title,
     required this.onTap,
     this.isDestructive = false,
+    this.isLoading = false,
+    this.enabled = true,
   });
+
+  final IconData icon;
+  final String title;
+  final VoidCallback onTap;
+  final bool isDestructive;
+  final bool isLoading;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
     final color = isDestructive
-        ? Theme.of(context).colorScheme.error
-        : Theme.of(context).colorScheme.onTertiaryFixed;
+        ? theme.colorScheme.error
+        : theme.colorScheme.onPrimaryFixed;
+    final effectiveColor = enabled || isLoading ? color : color.withOpacity(
+        0.45);
 
     return ListTile(
-      leading: Icon(icon, color: color),
-      title: BodyMediumText(
-        text: title,
-        color: color,
-        fontWeight: FontWeight.w600,
+      contentPadding: EdgeInsets.zero,
+      leading: SizedBox(
+        width: AppSize.s24,
+        height: AppSize.s24,
+        child: isLoading
+            ? CircularProgressIndicator(
+          strokeWidth: 2,
+          color: effectiveColor,
+        )
+            : Icon(icon, color: effectiveColor, size: AppSize.s24),
       ),
-      onTap: () {
-        Navigator.of(context).pop();
-        onTap();
-      },
+      title: Text(
+        title,
+        style: theme.textTheme.bodyMedium?.copyWith(
+          color: effectiveColor,
+          fontWeight: FontWeight.w700,
+        ),
+      ),
+      onTap: enabled && !isLoading ? onTap : null,
     );
   }
 }
