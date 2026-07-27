@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_info_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_action_tile.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/buttom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
@@ -61,7 +62,7 @@ class PlanCard extends StatelessWidget {
 
                 Expanded(
                   child: BodyMediumText(
-                    text: item.personsText ?? 'بدون عنوان',
+                    text: item.personsText,
                     fontWeight: FontWeight.w600,
                     fontSize: 16,
                   ),
@@ -83,12 +84,12 @@ class PlanCard extends StatelessWidget {
                 children: [
                   _InfoLine(
                     icon: Icons.engineering_outlined,
-                    text: 'واحد امدادی: ${item.emdadUnitName}' ?? '---',
+                    text: 'واحد امدادی: ${item.emdadUnitName}',
                   ),
 
                   _InfoLine(
                     icon: Icons.timer_outlined,
-                    text: 'شیفت: ${item.shiftTitle}' ?? '---',
+                    text: 'شیفت: ${item.shiftTitle}',
                   ),
                   _InfoLine(
                     icon: Icons.bus_alert_outlined,
@@ -246,25 +247,25 @@ class PlanCard extends StatelessWidget {
                 title: 'لغو ماموریت',
                 onTap: onCancelRequests,
               ),*/
-            _ActionTile(
+            BottomSheetActionTile(
               icon: Icons.bus_alert_outlined,
               title: 'تغییر محل استقرار',
               onTap: onLocation,
             ),
             Divider(color: colorScheme.onInverseSurface,),
-            _ActionTile(
+            BottomSheetActionTile(
               icon: Icons.toggle_off_outlined,
               title: 'تغییر وضعیت',
               onTap: onStatus,
             ),
             Divider(color: colorScheme.onInverseSurface,),
-            _ActionTile(
+            BottomSheetActionTile(
               icon: Icons.history_outlined,
               title: 'تاریخچه',
               onTap: onHistory,
             ),
             Divider(color: colorScheme.onInverseSurface,),
-            _ActionTile(
+            BottomSheetActionTile(
               icon: Icons.delete_forever_outlined,
               title: 'حذف',
               onTap: onDelete,
@@ -274,40 +275,6 @@ class PlanCard extends StatelessWidget {
         ),
         actionWidget: SizedBox.shrink());
 
-  }
-}
-
-class _ActionTile extends StatelessWidget {
-  final IconData icon;
-  final String title;
-  final VoidCallback onTap;
-  final bool isDestructive;
-
-  const _ActionTile({
-    required this.icon,
-    required this.title,
-    required this.onTap,
-    this.isDestructive = false,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final color = isDestructive
-        ? Theme.of(context).colorScheme.error
-        : Theme
-        .of(context)
-        .colorScheme
-        .onTertiaryFixed;
-
-    return ListTile(
-      leading: Icon(icon, color: color),
-      title: BodyMediumText(
-        text: title, color: color, fontWeight: FontWeight.w600,),
-      onTap: () {
-        Navigator.of(context).pop();
-        onTap();
-      },
-    );
   }
 }
 
