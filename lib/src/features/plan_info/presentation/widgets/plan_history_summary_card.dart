@@ -1,8 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_info_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_medium_text.dart';
 import 'package:flutter/material.dart';
 
 class PlanHistorySummaryCard extends StatelessWidget {
@@ -15,16 +13,12 @@ class PlanHistorySummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
 
     return Container(
       width: double.infinity,
-      padding: const EdgeInsets.fromLTRB(
-        AppPadding.p16,
-        AppPadding.p14,
-        AppPadding.p16,
-        AppPadding.p16,
-      ),
+      padding: const EdgeInsets.all(AppPadding.p16),
       decoration: BoxDecoration(
         color: colorScheme.onPrimary,
         borderRadius: BorderRadius.circular(AppSize.s10),
@@ -37,102 +31,170 @@ class PlanHistorySummaryCard extends StatelessWidget {
         ],
       ),
       child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
         children: [
-          BodySmallText(
-            text: 'عنوان برنامه‌ریزی',
-            color: colorScheme.onSurfaceVariant,
-            fontWeight: FontWeight.w500,
+          _SummaryHeader(title: _headerTitle),
+          Space.h12,
+          Divider(
+            height: AppSize.s1,
+            thickness: AppSize.s1,
+            color: theme.dividerColor,
           ),
-          TitleMediumText(
-            text: _dash(item.title),
-            color: colorScheme.onSurface,
+          Space.h8,
+          _SummaryRow(
+            icon: Icons.calendar_month_outlined,
+            text: _shiftAndSeatType,
           ),
-          Space.h14,
-          Wrap(
-            runSpacing: AppSize.s12,
-            spacing: AppSize.s24,
-            children: [
-              _InfoColumn(
-                title: 'واحد امدادی',
-                value: item.emdadUnitName,
-              ),
-              _InfoColumn(
-                title: 'شیفت',
-                value: item.shiftTitle,
-              ),
-              _InfoColumn(
-                title: 'نوع مقر',
-                value: item.seatTypeTitle,
-              ),
-              _InfoColumn(
-                title: 'محل استقرار',
-                value: item.locationTitle,
-              ),
-              _InfoColumn(
-                title: 'بازه زمانی',
-                value: item.dateRangeText,
-                ltr: true,
-              ),
-              _InfoColumn(
-                title: 'وضعیت',
-                value: item.statusTitle,
-              ),
-              _InfoColumn(
-                title: 'طرح ویژه',
-                value: item.specialPlanTitle,
-              ),
-              _InfoColumn(
-                title: 'امدادرسان‌ها',
-                value: item.personsText,
-              ),
-            ],
+          Space.h8,
+          _SummaryRow(
+            icon: Icons.location_on_outlined,
+            text: _locationTitle,
           ),
         ],
       ),
     );
   }
 
-  String _dash(String? value) {
-    final text = value?.trim();
-    return text == null || text.isEmpty ? '---' : text;
+  String get _headerTitle {
+    return _firstAvailable([
+      item.personsText,
+      item.emdadUnitName,
+      item.title,
+    ]);
+  }
+
+  String get _shiftAndSeatType {
+    final shift = _normalize(item.shiftTitle);
+    final seatType = _normalize(item.seatTypeTitle);
+
+    final formattedShift = shift == null
+        ? null
+        : shift.contains('شیفت')
+        ? shift
+        : 'شیفت $shift';
+
+    final values = [
+      formattedShift,
+      seatType,
+    ].whereType<String>().toList();
+
+    return values.isEmpty ? '---' : values.join('، ');
+  }
+
+  String get _locationTitle {
+    return _firstAvailable([
+      item.locationTitle,
+      item.address,
+    ]);
+  }
+
+  String _firstAvailable(List<String?> values) {
+    for (final value in values) {
+      final normalized = _normalize(value);
+
+      if (normalized != null) {
+        return normalized;
+      }
+    }
+
+    return '---';
+  }
+
+  String? _normalize(String? value) {
+    final normalized = value?.trim();
+
+    if (normalized == null ||
+        normalized.isEmpty ||
+        normalized == '---') {
+      return null;
+    }
+
+    return normalized;
   }
 }
 
-class _InfoColumn extends StatelessWidget {
-  const _InfoColumn({
+class _SummaryHeader extends StatelessWidget {
+  const _SummaryHeader({
     required this.title,
-    required this.value,
-    this.ltr = false,
   });
 
   final String title;
-  final String? value;
-  final bool ltr;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-    final displayValue = value?.trim().isNotEmpty == true ? value!.trim() : '---';
 
-    return ConstrainedBox(
-      constraints: const BoxConstraints(minWidth: AppSize.s120),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          BodySmallText(
-            text: title,
-            color: colorScheme.onSurfaceVariant,
-            fontWeight: FontWeight.w500,
+    return Row(
+      children: [
+        Container(
+          width: AppSize.s48,
+          height: AppSize.s48,
+          alignment: Alignment.center,
+          decoration: BoxDecoration(
+            shape: BoxShape.circle,
+            color: colorScheme.primary.withOpacity(0.08),
           ),
-          Space.h4,
-          BodyMediumText(
-            text: displayValue,
-            textDirection: ltr ? TextDirection.ltr : TextDirection.rtl,
+          child: Icon(
+            Icons.person_outline_rounded,
+            size: AppSize.s22,
+            color: colorScheme.primary,
+          ),
+        ),
+        Space.w12,
+        Expanded(
+          child: BodyMediumText(
+            text: title,
             color: colorScheme.onSurface,
-            fontWeight: FontWeight.w600,
+            fontSize: AppSize.s16,
+            fontWeight: FontWeight.w700,
             maxLines: 2,
             textOverflow: TextOverflow.ellipsis,
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+class _SummaryRow extends StatelessWidget {
+  const _SummaryRow({
+    required this.icon,
+    required this.text,
+  });
+
+  final IconData icon;
+  final String text;
+
+  @override
+  Widget build(BuildContext context) {
+    final colorScheme = Theme.of(context).colorScheme;
+
+    return Container(
+      width: double.infinity,
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppPadding.p10,
+        vertical: AppPadding.p8,
+      ),
+      decoration: BoxDecoration(
+        color: colorScheme.surface,
+        borderRadius: BorderRadius.circular(AppSize.s6),
+      ),
+      child: Row(
+        children: [
+          Icon(
+            icon,
+            size: AppSize.s20,
+            color: colorScheme.onSurfaceVariant,
+          ),
+          Space.w8,
+          Expanded(
+            child: BodyMediumText(
+              text: text,
+              color: colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.w500,
+              maxLines: 1,
+              textOverflow: TextOverflow.ellipsis,
+            ),
           ),
         ],
       ),
