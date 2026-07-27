@@ -142,43 +142,39 @@ class GetPlanLookupsUseCase
     final failures = <String>[];
 
     List<PlanLookupEntity> read(
-      String source,
+      String serviceTitle,
       ApiResult<List<PlanLookupEntity>> result,
     ) {
       return result.when(
         success: (data, _, __) => data,
-        failure: (_, message) {
-          failures.add(
-            '$source: ${message?.trim().isNotEmpty == true ? message : 'دریافت اطلاعات با خطا مواجه شد'}',
-          );
+        failure: (_, __) {
+          failures.add(_lookupFailureMessage(serviceTitle));
           return const <PlanLookupEntity>[];
         },
         expireToken: () {
-          failures.add('$source: نشست کاربری منقضی شده است');
+          failures.add('سرویس $serviceTitle در دسترس نیست');
           return const <PlanLookupEntity>[];
         },
         connectionError: () {
-          failures.add('$source: خطا در برقراری ارتباط با سرور');
+          failures.add('سرویس $serviceTitle در دسترس نیست');
           return const <PlanLookupEntity>[];
         },
       );
     }
 
     final data = PlanLookupsEntity(
-      emdadUnits: read('واحدهای امدادی /api/EmdadUnit/GetByFilterJson', units),
-      shifts: read('شیفت‌ها /api/Shift/GetByFilterJson', shifts),
-      specialPlans: read(
-        'طرح‌های ویژه /api/SpecialPlan/GetByFilterJson',
-        specialPlans,
-      ),
-      locations: read(
-        'محل‌های استقرار /api/Location/GetByFilterJson',
-        locations,
-      ),
+      emdadUnits: read('واحدهای امدادی', units),
+      shifts: read('شیفت‌ها', shifts),
+      specialPlans: read('طرح‌های ویژه', specialPlans),
+      locations: read('محل‌های استقرار', locations),
       warningMessage: failures.isEmpty ? null : failures.join('\n'),
     );
 
     return ApiResult.success(data: data);
+  }
+
+  String _lookupFailureMessage(String serviceTitle) {
+    return 'سرویس $serviceTitle در دسترس نیست';
   }
 }
 

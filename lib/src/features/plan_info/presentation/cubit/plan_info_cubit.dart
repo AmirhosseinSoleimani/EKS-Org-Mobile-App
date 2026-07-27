@@ -362,12 +362,11 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
           clearMessage: true,
         ));
       },
-      failure: (_, message) {
+      failure: (_, __) {
         emit(
           state.copyWith(
             status: PlanInfoStatus.error,
-            message:
-                'دلایل تغییر وضعیت /api/Plan/GetReasonsForChangeStatus: ${message ?? 'دریافت اطلاعات با خطا مواجه شد'}',
+            message: 'سرویس دلایل تغییر وضعیت در دسترس نیست',
           ),
         );
       },
@@ -383,8 +382,7 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
         emit(
           state.copyWith(
             status: PlanInfoStatus.connectionError,
-            message:
-                'دلایل تغییر وضعیت /api/Plan/GetReasonsForChangeStatus: خطا در برقراری ارتباط با سرور',
+            message: 'سرویس دلایل تغییر وضعیت در دسترس نیست',
           ),
         );
       },
