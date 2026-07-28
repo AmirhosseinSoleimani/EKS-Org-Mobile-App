@@ -34,8 +34,8 @@ class NavganDefectSheet extends StatelessWidget {
           final categories = state.serviceGroups
               .expand((group) => group.emdadCategories)
               .toList();
-
-          return Scaffold(
+              return SizedBox();
+        /*  return Scaffold(
             backgroundColor: theme.colorScheme.onPrimary,
             body: Column(
               children: [
@@ -96,7 +96,7 @@ class NavganDefectSheet extends StatelessWidget {
               onSubmit: onSubmit,
               onCancel: onCancel,
             ),
-          );
+          );*/
         },
       ),
     );

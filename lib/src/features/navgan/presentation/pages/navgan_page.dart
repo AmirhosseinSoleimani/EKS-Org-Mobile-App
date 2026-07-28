@@ -4,11 +4,10 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/navgan_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/presentation/cubit/navgan_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/presentation/cubit/navgan_state.dart';
+import 'package:eks_sana_plus_org/src/features/navgan/presentation/pages/navgan_grade_pattern_page.dart';
+import 'package:eks_sana_plus_org/src/features/navgan/presentation/pages/navgan_services_page.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/presentation/widgets/navgan_action_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/presentation/widgets/navgan_card.dart';
-import 'package:eks_sana_plus_org/src/features/navgan/presentation/widgets/navgan_defect_sheet.dart';
-import 'package:eks_sana_plus_org/src/features/navgan/presentation/widgets/navgan_grade_sheet.dart';
-import 'package:eks_sana_plus_org/src/features/navgan/presentation/widgets/navgan_service_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
@@ -78,7 +77,7 @@ class _NavganView extends StatelessWidget {
                   child: _NavganList(
                     state: state,
                     onRetry: cubit.fetchList,
-                    onActions: (item) => _openActions(context, cubit, item),
+                    onActions: (item) => _openActions(context, item),
                   ),
                 ),
               ),
@@ -91,7 +90,6 @@ class _NavganView extends StatelessWidget {
 
   void _openActions(
     BuildContext context,
-    NavganCubit cubit,
     NavganEntity item,
   ) {
     final theme = Theme.of(context);
@@ -101,82 +99,20 @@ class _NavganView extends StatelessWidget {
       content: NavganActionSheet(
         onAddGrade: () {
           context.pop();
-          _openGradeSheet(context, cubit, item);
+          context.pushNamed(
+            NavganGradePatternPage.name,
+            extra: item,
+          );
         },
-        onAssignServices: () {
+        onServices: () {
           context.pop();
-          _openServicesSheet(context, cubit, item);
-        },
-        onVehicleServices: () {
-          context.pop();
-          _openDefectsSheet(context, cubit, item);
+          context.pushNamed(
+            NavganServicesPage.name,
+            extra: item,
+          );
         },
       ),
       actionWidget: const SizedBox.shrink(),
-    );
-  }
-
-  Future<void> _openGradeSheet(
-    BuildContext context,
-    NavganCubit cubit,
-    NavganEntity item,
-  ) async {
-    await cubit.prepareGradeSheet(item);
-    if (!context.mounted) return;
-
-    await BottomSheetMessage.showFullScreenCustom<void>(
-      context: context,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      content: NavganGradeSheet(
-        onSubmit: () async {
-          final success = await cubit.submitGradeReference();
-          if (success && context.mounted) context.pop();
-        },
-        onCancel: () => context.pop(),
-      ),
-    );
-  }
-
-  Future<void> _openServicesSheet(
-    BuildContext context,
-    NavganCubit cubit,
-    NavganEntity item,
-  ) async {
-    await cubit.prepareServiceSheet(item);
-    if (!context.mounted) return;
-
-    await BottomSheetMessage.showFullScreenCustom<void>(
-      context: context,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      content: NavganServiceSheet(
-        title: 'اختصاص سرویس‌ها',
-        onSubmit: () async {
-          final success = await cubit.submitServiceCategories();
-          if (success && context.mounted) context.pop();
-        },
-        onCancel: () => context.pop(),
-      ),
-    );
-  }
-
-  Future<void> _openDefectsSheet(
-    BuildContext context,
-    NavganCubit cubit,
-    NavganEntity item,
-  ) async {
-    await cubit.prepareDefectSheet(item);
-    if (!context.mounted) return;
-
-    await BottomSheetMessage.showFullScreenCustom<void>(
-      context: context,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      content: NavganDefectSheet(
-        onSubmit: () async {
-          final success = await cubit.submitDefects();
-          if (success && context.mounted) context.pop();
-        },
-        onCancel: () => context.pop(),
-      ),
     );
   }
 }

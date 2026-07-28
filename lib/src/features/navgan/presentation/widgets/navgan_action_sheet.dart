@@ -5,23 +5,18 @@ class NavganActionSheet extends StatelessWidget {
   const NavganActionSheet({
     super.key,
     required this.onAddGrade,
-    required this.onAssignServices,
-    required this.onVehicleServices,
+    required this.onServices,
   });
 
   final VoidCallback onAddGrade;
-  final VoidCallback onAssignServices;
-  final VoidCallback onVehicleServices;
+  final VoidCallback onServices;
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -33,13 +28,8 @@ class NavganActionSheet extends StatelessWidget {
             ),
             BottomSheetActionTile(
               icon: Icons.miscellaneous_services_outlined,
-              title: 'اختصاص سرویس‌ها',
-              onTap: onAssignServices,
-            ),
-            BottomSheetActionTile(
-              icon: Icons.car_repair_outlined,
-              title: 'ایرادات سرویس خودرو',
-              onTap: onVehicleServices,
+              title: 'سرویس‌ها',
+              onTap: onServices,
             ),
           ],
         ),

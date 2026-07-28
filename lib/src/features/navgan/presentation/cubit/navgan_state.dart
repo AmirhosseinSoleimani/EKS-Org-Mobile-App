@@ -1,6 +1,4 @@
-import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/emdad_service_category_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/grade_pattern_entity.dart';
-import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/navgan_defect_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/navgan_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/navgan_service_group_entity.dart';
 
@@ -22,8 +20,6 @@ class NavganState {
     this.selectedGradePattern,
     this.gradePatternDetail,
     this.serviceGroups = const [],
-    this.defects = const [],
-    this.selectedServiceCategory,
     this.errorMessage,
     this.successMessage,
     this.isGradePatternsLoading = false,
@@ -32,8 +28,6 @@ class NavganState {
     this.isGradeDeleting = false,
     this.isServiceGroupsLoading = false,
     this.isServicesSubmitting = false,
-    this.isDefectsLoading = false,
-    this.isDefectsSubmitting = false,
   });
 
   final NavganViewStatus status;
@@ -43,8 +37,6 @@ class NavganState {
   final GradePatternEntity? selectedGradePattern;
   final GradePatternEntity? gradePatternDetail;
   final List<NavganServiceGroupEntity> serviceGroups;
-  final List<NavganDefectEntity> defects;
-  final EmdadServiceCategoryEntity? selectedServiceCategory;
   final String? errorMessage;
   final String? successMessage;
   final bool isGradePatternsLoading;
@@ -53,8 +45,6 @@ class NavganState {
   final bool isGradeDeleting;
   final bool isServiceGroupsLoading;
   final bool isServicesSubmitting;
-  final bool isDefectsLoading;
-  final bool isDefectsSubmitting;
 
   bool get isInitialLoading =>
       status == NavganViewStatus.loading && records.isEmpty;
@@ -70,9 +60,6 @@ class NavganState {
     GradePatternEntity? gradePatternDetail,
     bool clearGradePatternDetail = false,
     List<NavganServiceGroupEntity>? serviceGroups,
-    List<NavganDefectEntity>? defects,
-    EmdadServiceCategoryEntity? selectedServiceCategory,
-    bool clearSelectedServiceCategory = false,
     String? errorMessage,
     bool clearErrorMessage = false,
     String? successMessage,
@@ -83,8 +70,6 @@ class NavganState {
     bool? isGradeDeleting,
     bool? isServiceGroupsLoading,
     bool? isServicesSubmitting,
-    bool? isDefectsLoading,
-    bool? isDefectsSubmitting,
   }) {
     return NavganState(
       status: status ?? this.status,
@@ -100,10 +85,6 @@ class NavganState {
           ? null
           : gradePatternDetail ?? this.gradePatternDetail,
       serviceGroups: serviceGroups ?? this.serviceGroups,
-      defects: defects ?? this.defects,
-      selectedServiceCategory: clearSelectedServiceCategory
-          ? null
-          : selectedServiceCategory ?? this.selectedServiceCategory,
       errorMessage:
           clearErrorMessage ? null : errorMessage ?? this.errorMessage,
       successMessage:
@@ -116,8 +97,6 @@ class NavganState {
       isServiceGroupsLoading:
           isServiceGroupsLoading ?? this.isServiceGroupsLoading,
       isServicesSubmitting: isServicesSubmitting ?? this.isServicesSubmitting,
-      isDefectsLoading: isDefectsLoading ?? this.isDefectsLoading,
-      isDefectsSubmitting: isDefectsSubmitting ?? this.isDefectsSubmitting,
     );
   }
 }
