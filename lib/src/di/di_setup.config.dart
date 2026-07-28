@@ -402,6 +402,8 @@ import '../features/navgan/domain/usecases/get_grade_pattern_detail_use_case.dar
     as _i1031;
 import '../features/navgan/domain/usecases/get_grade_pattern_list_use_case.dart'
     as _i745;
+import '../features/navgan/domain/usecases/get_grade_pattern_references_use_case.dart'
+    as _i958;
 import '../features/navgan/domain/usecases/get_navgan_defects_use_case.dart'
     as _i193;
 import '../features/navgan/domain/usecases/get_navgan_list_use_case.dart'
@@ -2135,6 +2137,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i745.GetGradePatternListUseCase>(
     () => _i745.GetGradePatternListUseCase(gh<_i1025.NavganRepository>()),
   );
+  gh.lazySingleton<_i958.GetGradePatternReferencesUseCase>(
+    () => _i958.GetGradePatternReferencesUseCase(gh<_i1025.NavganRepository>()),
+  );
   gh.lazySingleton<_i193.GetNavganDefectsUseCase>(
     () => _i193.GetNavganDefectsUseCase(gh<_i1025.NavganRepository>()),
   );
@@ -2256,6 +2261,7 @@ _i174.GetIt $initGetIt(
     () => _i93.NavganCubit(
       gh<_i570.GetNavganListUseCase>(),
       gh<_i745.GetGradePatternListUseCase>(),
+      gh<_i958.GetGradePatternReferencesUseCase>(),
       gh<_i1031.GetGradePatternDetailUseCase>(),
       gh<_i529.AddNavganGradeReferenceUseCase>(),
       gh<_i467.DeleteNavganGradeReferenceUseCase>(),

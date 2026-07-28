@@ -1,11 +1,17 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
-import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/grade_pattern_entity.dart';
+import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/grade_pattern_reference_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/navgan_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/presentation/cubit/navgan_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/presentation/cubit/navgan_state.dart';
+import 'package:eks_sana_plus_org/src/features/navgan/presentation/pages/navgan_grade_pattern_form_page.dart';
+import 'package:eks_sana_plus_org/src/features/navgan/presentation/widgets/navgan_grade_pattern_action_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/presentation/widgets/navgan_grade_pattern_ui_mapper.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/grade_pattern/grade_pattern_details_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/grade_pattern/grade_pattern_list_card.dart';
@@ -63,15 +69,24 @@ class _NavganGradePatternView extends StatelessWidget {
           return Scaffold(
             backgroundColor: const Color(0xFFF6F6F6),
             appBar: const SimpleActionBar(title: 'الگوی گرید'),
+            floatingActionButton: FloatingActionButtonWidget(
+              title: 'ثبت الگوی جدید',
+              onPressed: () {
+                _openForm(
+                  context,
+                  cubit,
+                  state.selectedNavgan,
+                );
+              },
+            ),
             body: SafeArea(
               top: false,
               child: _GradePatternList(
                 state: state,
-                onDetails: (item) => _showDetails(context, cubit, item),
-                onAssign: (item) async {
-                  final success = await cubit.assignGradePattern(item);
-                  if (success && context.mounted) context.pop(true);
-                },
+                onDetails: (reference) =>
+                    _showDetails(context, cubit, reference),
+                onOperations: (reference) =>
+                    _showOperationSheet(context, cubit, state, reference),
               ),
             ),
           );
@@ -83,10 +98,19 @@ class _NavganGradePatternView extends StatelessWidget {
   Future<void> _showDetails(
     BuildContext context,
     NavganCubit cubit,
-    GradePatternEntity item,
+    GradePatternReferenceEntity reference,
   ) async {
-    var detail = item;
-    await cubit.loadGradePatternDetail(item);
+    final pattern = cubit.patternForReference(reference);
+    if (pattern == null) {
+      SnakeBarWidget.showError(
+        context: context,
+        message: 'الگوی گرید مرتبط با این رفرنس یافت نشد.',
+      );
+      return;
+    }
+
+    var detail = pattern;
+    await cubit.loadGradePatternDetail(pattern);
     final loaded = cubit.state.gradePatternDetail;
     if (loaded != null) detail = loaded;
 
@@ -102,32 +126,126 @@ class _NavganGradePatternView extends StatelessWidget {
       builder: (_) => GradePatternDetailsSheet(item: detail.toUiModel()),
     );
   }
+
+  void _showOperationSheet(
+    BuildContext context,
+    NavganCubit cubit,
+    NavganState state,
+    GradePatternReferenceEntity reference,
+  ) {
+    BottomSheetMessage.showCustom(
+      context: context,
+      content: Builder(
+        builder: (sheetContext) {
+          return NavganGradePatternActionSheet(
+            loadingAction: state.isGradeDeleting
+                ? NavganGradePatternOperation.delete
+                : null,
+            onActionSelected: (operation) async {
+              Navigator.of(sheetContext).pop();
+              await Future<void>.delayed(Duration.zero);
+              if (!context.mounted) return;
+
+              switch (operation) {
+                case NavganGradePatternOperation.delete:
+                  _showDeleteSheet(context, cubit, reference);
+                  return;
+              }
+            },
+          );
+        },
+      ),
+      actionWidget: const SizedBox.shrink(),
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+    );
+  }
+
+  void _showDeleteSheet(
+    BuildContext context,
+    NavganCubit cubit,
+    GradePatternReferenceEntity reference,
+  ) {
+    final referenceId = reference.id;
+    if (referenceId == null) {
+      SnakeBarWidget.showError(
+        context: context,
+        message: 'شناسه الگوی گرید برای حذف یافت نشد.',
+      );
+      return;
+    }
+
+    BottomSheetMessage.showCustom(
+      context: context,
+      content: Builder(
+        builder: (sheetContext) {
+          return DeleteConfirmSheet(
+            title: 'حذف الگوی گرید',
+            message: 'آیا الگوی گرید ${reference.gradePatternName ?? '---'} حذف شود؟',
+            confirmTitle: 'حذف',
+            isSubmitting: cubit.state.isGradeDeleting,
+            onConfirm: () async {
+              final success = await cubit.deleteGradeReference(referenceId);
+              if (success && sheetContext.mounted) {
+                Navigator.of(sheetContext).pop();
+              }
+            },
+          );
+        },
+      ),
+      actionWidget: const SizedBox.shrink(),
+      isDismissible: false,
+      enableDrag: false,
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      maxHeight: 0.5,
+    );
+  }
+
+  Future<void> _openForm(
+    BuildContext context,
+    NavganCubit cubit,
+    NavganEntity? navgan,
+  ) async {
+    if (navgan == null) {
+      SnakeBarWidget.showError(
+        context: context,
+        message: 'اطلاعات ناوگان یافت نشد.',
+      );
+      return;
+    }
+
+    final changed = await context.pushNamed<bool>(
+      NavganGradePatternFormPage.name,
+      extra: NavganGradePatternFormPageArgs(
+        navgan: navgan,
+      ),
+    );
+    if (changed == true) {
+      await cubit.fetchGradePatternReferences(navgan);
+    }
+  }
 }
 
 class _GradePatternList extends StatelessWidget {
   const _GradePatternList({
     required this.state,
     required this.onDetails,
-    required this.onAssign,
+    required this.onOperations,
   });
 
   final NavganState state;
-  final ValueChanged<GradePatternEntity> onDetails;
-  final ValueChanged<GradePatternEntity> onAssign;
+  final ValueChanged<GradePatternReferenceEntity> onDetails;
+  final ValueChanged<GradePatternReferenceEntity> onOperations;
 
   @override
   Widget build(BuildContext context) {
-    if (state.isGradePatternsLoading) {
+    if (state.isGradeReferencesLoading) {
       return const Center(child: LoadingWidget());
     }
 
-    final items = state.gradePatterns;
+    final items = state.gradeReferences;
     if (items.isEmpty) {
       return const Center(child: EmptyListWidget());
     }
-
-    final selectedId =
-        state.selectedGradePattern?.id ?? state.selectedGradePattern?.gradeId;
 
     return ListView.builder(
       padding: const EdgeInsets.fromLTRB(
@@ -148,17 +266,18 @@ class _GradePatternList extends StatelessWidget {
           );
         }
 
-        final item = items[index - 1];
-        final itemId = item.id ?? item.gradeId;
+        final reference = items[index - 1];
+        final serviceType = ServiceType.fromValue(
+          reference.serviceTypeId ?? state.selectedNavgan?.emdadgarNavganType,
+        );
         return GradePatternListCard(
-          item: item.toUiModel(),
-          isDetailsLoading: state.isGradeDetailLoading && selectedId == itemId,
-          isActionLoading: state.isGradeSubmitting && selectedId == itemId,
-          actionTitle: 'ثبت الگو',
-          actionIcon: Icons.add_task_outlined,
-          actionSuffixIcon: null,
-          onDetails: () => onDetails(item),
-          onAction: () => onAssign(item),
+          item: reference.toUiModel(),
+          showSummary: false,
+          isDetailsLoading: state.isGradeDetailLoading,
+          statusLabelText: reference.serviceTypeTitle ?? serviceType.label,
+          statusLabelColor: serviceType.serviceColor,
+          onDetails: () => onDetails(reference),
+          onAction: () => onOperations(reference),
         );
       },
     );

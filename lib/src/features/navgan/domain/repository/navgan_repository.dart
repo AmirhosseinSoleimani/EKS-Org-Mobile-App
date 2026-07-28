@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/grade_pattern_entity.dart';
+import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/grade_pattern_reference_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/navgan_defect_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/navgan_page_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/navgan_service_group_entity.dart';
@@ -12,6 +13,10 @@ abstract class NavganRepository {
   Future<ApiResult<NavganPageEntity>> getByFilter();
 
   Future<ApiResult<List<GradePatternEntity>>> getGradePatterns();
+
+  Future<ApiResult<List<GradePatternReferenceEntity>>> getGradePatternReferences(
+    NavganIdParamEntity param,
+  );
 
   Future<ApiResult<GradePatternEntity>> getGradePatternById(
     NavganIdParamEntity param,

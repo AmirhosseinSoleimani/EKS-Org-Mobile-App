@@ -14,6 +14,9 @@ class GradePatternModel extends GradePatternEntity {
     super.details,
     super.detailsJson,
     super.isActive,
+    super.serviceTypeId,
+    super.serviceTypeTitle,
+    super.referenceId,
   });
 
   factory GradePatternModel.fromJson(Map<String, dynamic> json) {
@@ -40,6 +43,18 @@ class GradePatternModel extends GradePatternEntity {
       detailsJson:
           NavganJsonHelper.string(json['detailsJson'] ?? json['DetailsJson']),
       isActive: NavganJsonHelper.boolean(json['isActive'] ?? json['IsActive']),
+      serviceTypeId: NavganJsonHelper.integer(
+        json['serviceTypeId'] ?? json['ServiceTypeId'],
+      ),
+      serviceTypeTitle: NavganJsonHelper.string(
+        json['serviceTypeTitle'] ?? json['ServiceTypeTitle'],
+      ),
+      referenceId: NavganJsonHelper.integer(
+        json['referenceId'] ??
+            json['ReferenceId'] ??
+            json['gradePatternReferenceId'] ??
+            json['GradePatternReferenceId'],
+      ),
     );
   }
 }

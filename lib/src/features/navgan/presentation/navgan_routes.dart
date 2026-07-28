@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/navgan_entity.dart';
+import 'package:eks_sana_plus_org/src/features/navgan/presentation/pages/navgan_grade_pattern_form_page.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/presentation/pages/navgan_grade_pattern_page.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/presentation/pages/navgan_page.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/presentation/pages/navgan_services_page.dart';
@@ -44,6 +45,21 @@ class NavganRoutes {
           return getPage(
             child: navgan is NavganEntity
                 ? NavganServicesPage(navgan: navgan)
+                : const NavganPage(),
+            state: state,
+          );
+        },
+      ),
+      GoRoute(
+        path: NavganGradePatternFormPage.path,
+        name: NavganGradePatternFormPage.name,
+        pageBuilder: (context, state) {
+          final args = state.extra;
+          return getPage(
+            child: args is NavganGradePatternFormPageArgs
+                ? NavganGradePatternFormPage(
+                    navgan: args.navgan,
+                  )
                 : const NavganPage(),
             state: state,
           );

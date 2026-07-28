@@ -1,5 +1,6 @@
 import 'package:dio/dio.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/data/models/grade_pattern_model.dart';
+import 'package:eks_sana_plus_org/src/features/navgan/data/models/grade_pattern_reference_model.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/data/models/navgan_defect_model.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/data/models/navgan_json_helper.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/data/models/navgan_page_model.dart';
@@ -56,6 +57,34 @@ class NavganService {
     );
 
     return _singleGradePatternResponse(response.data);
+  }
+
+  Future<BaseListResponse<GradePatternReferenceModel>> getGradePatternReferences(
+    NavganIdRequestModel request,
+  ) async {
+    final response = await _dio.post<Map<String, dynamic>>(
+      '/api/GradePatternReference/GetByFilterJson',
+      data: GradePatternFilterRequestModel(
+        filters: [
+          GradePatternFilterModel(
+            field: 'Ref_Id',
+            operator: 'eq',
+            value: request.id.toString(),
+          ),
+          const GradePatternFilterModel(
+            field: 'isActive',
+            operator: 'eq',
+            value: 'true',
+          ),
+        ],
+      ).toJson(),
+      options: _jsonOptions,
+    );
+
+    return BaseListResponse<GradePatternReferenceModel>.fromJson(
+      response.data ?? {},
+      GradePatternReferenceModel.fromJson,
+    );
   }
 
   Future<BaseSingleResponse<String>> addGradeReference(

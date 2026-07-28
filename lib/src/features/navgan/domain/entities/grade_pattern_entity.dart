@@ -14,6 +14,9 @@ class GradePatternEntity implements DropdownItem<int?> {
     this.details = const [],
     this.detailsJson,
     this.isActive,
+    this.serviceTypeId,
+    this.serviceTypeTitle,
+    this.referenceId,
   });
 
   final int? id;
@@ -27,6 +30,9 @@ class GradePatternEntity implements DropdownItem<int?> {
   final List<GradePatternEntity> details;
   final String? detailsJson;
   final bool? isActive;
+  final int? serviceTypeId;
+  final String? serviceTypeTitle;
+  final int? referenceId;
 
   @override
   int? get value => id ?? gradeId;

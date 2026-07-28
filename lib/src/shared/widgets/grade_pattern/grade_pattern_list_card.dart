@@ -19,6 +19,9 @@ class GradePatternListCard extends StatelessWidget {
     this.actionTitle = 'عملیات',
     this.actionIcon = Icons.settings_outlined,
     this.actionSuffixIcon = Icons.keyboard_arrow_down_rounded,
+    this.statusLabelText,
+    this.statusLabelColor,
+    this.showSummary = true,
   });
 
   final GradePatternUiModel item;
@@ -29,6 +32,9 @@ class GradePatternListCard extends StatelessWidget {
   final String actionTitle;
   final IconData actionIcon;
   final IconData? actionSuffixIcon;
+  final String? statusLabelText;
+  final Color? statusLabelColor;
+  final bool showSummary;
 
   @override
   Widget build(BuildContext context) {
@@ -62,16 +68,20 @@ class GradePatternListCard extends StatelessWidget {
               ),
               Space.w8,
               StatusLabel(
-                text: item.isActive ? 'فعال' : 'غیرفعال',
-                color: item.isActive
-                    ? theme.colorScheme.onError
-                    : theme.colorScheme.error,
+                text: statusLabelText ??
+                    (item.isActive ? 'فعال' : 'غیرفعال'),
+                color: statusLabelColor ??
+                    (item.isActive
+                        ? theme.colorScheme.onError
+                        : theme.colorScheme.error),
                 variant: StatusLabelVariant.filledWithoutBorder,
               ),
             ],
           ),
-          Space.h16,
-          GradePatternLevelsSummary(details: item.details),
+          if (showSummary) ...[
+            Space.h16,
+            GradePatternLevelsSummary(details: item.details),
+          ],
           Space.h8,
           Divider(color: theme.dividerColor),
           Space.h8,

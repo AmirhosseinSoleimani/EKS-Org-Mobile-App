@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/emdad_service_category_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/grade_pattern_entity.dart';
+import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/grade_pattern_reference_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/navgan_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/params/navgan_grade_reference_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/params/navgan_id_param_entity.dart';
@@ -8,6 +9,7 @@ import 'package:eks_sana_plus_org/src/features/navgan/domain/usecases/add_navgan
 import 'package:eks_sana_plus_org/src/features/navgan/domain/usecases/delete_navgan_grade_reference_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/usecases/get_grade_pattern_detail_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/usecases/get_grade_pattern_list_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/navgan/domain/usecases/get_grade_pattern_references_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/usecases/get_navgan_defects_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/usecases/get_navgan_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/usecases/get_navgan_service_groups_use_case.dart';
@@ -21,19 +23,21 @@ import 'package:injectable/injectable.dart';
 @injectable
 class NavganCubit extends Cubit<NavganState> {
   NavganCubit(
-    this._getListUseCase,
-    this._getGradePatternsUseCase,
-    this._getGradePatternDetailUseCase,
-    this._addGradeReferenceUseCase,
-    this._deleteGradeReferenceUseCase,
-    this._getServiceGroupsUseCase,
-    GetNavganDefectsUseCase _,
-    this._submitServiceCategoriesUseCase,
-    SubmitNavganDefectsUseCase __,
-  ) : super(const NavganState());
+      this._getListUseCase,
+      this._getGradePatternsUseCase,
+      this._getGradePatternReferencesUseCase,
+      this._getGradePatternDetailUseCase,
+      this._addGradeReferenceUseCase,
+      this._deleteGradeReferenceUseCase,
+      this._getServiceGroupsUseCase,
+      GetNavganDefectsUseCase _,
+      this._submitServiceCategoriesUseCase,
+      SubmitNavganDefectsUseCase __,
+      ) : super(const NavganState());
 
   final GetNavganListUseCase _getListUseCase;
   final GetGradePatternListUseCase _getGradePatternsUseCase;
+  final GetGradePatternReferencesUseCase _getGradePatternReferencesUseCase;
   final GetGradePatternDetailUseCase _getGradePatternDetailUseCase;
   final AddNavganGradeReferenceUseCase _addGradeReferenceUseCase;
   final DeleteNavganGradeReferenceUseCase _deleteGradeReferenceUseCase;
@@ -82,12 +86,45 @@ class NavganCubit extends Cubit<NavganState> {
   Future<void> prepareGradeSheet(NavganEntity navgan) async {
     emit(state.copyWith(
       selectedNavgan: navgan,
+      gradeReferences: const [],
       clearSelectedGradePattern: true,
       clearGradePatternDetail: true,
       clearErrorMessage: true,
       clearSuccessMessage: true,
     ));
-    await fetchGradePatterns();
+    await Future.wait([
+      fetchGradePatternReferences(navgan),
+      fetchGradePatterns(),
+    ]);
+  }
+
+  Future<void> fetchGradePatternReferences(NavganEntity navgan) async {
+    final id = navgan.id;
+    if (id == null || state.isGradeReferencesLoading) return;
+
+    emit(state.copyWith(isGradeReferencesLoading: true));
+    final result = await _getGradePatternReferencesUseCase(
+      NavganIdParamEntity(id: id),
+    );
+    result.when(
+      success: (items, failures, resultCode) => emit(state.copyWith(
+        gradeReferences: items,
+        isGradeReferencesLoading: false,
+        clearErrorMessage: true,
+      )),
+      failure: (error, failures) => emit(state.copyWith(
+        isGradeReferencesLoading: false,
+        errorMessage: failures ?? 'دریافت رفرنس‌های الگوی گرید با خطا مواجه شد.',
+      )),
+      expireToken: () => emit(state.copyWith(
+        isGradeReferencesLoading: false,
+        errorMessage: 'نشست کاربری منقضی شده است.',
+      )),
+      connectionError: () => emit(state.copyWith(
+        isGradeReferencesLoading: false,
+        errorMessage: 'اتصال به اینترنت برقرار نیست.',
+      )),
+    );
   }
 
   Future<void> fetchGradePatterns() async {
@@ -165,7 +202,7 @@ class NavganCubit extends Cubit<NavganState> {
     await fetchGradePatternDetail(id);
   }
 
-  Future<bool> submitGradeReference() async {
+  Future<bool> submitGradeReference({int? serviceTypeId}) async {
     if (state.isGradeSubmitting) return false;
     final navgan = state.selectedNavgan;
     final pattern = state.selectedGradePattern;
@@ -180,7 +217,7 @@ class NavganCubit extends Cubit<NavganState> {
     final result = await _addGradeReferenceUseCase(
       NavganGradeReferenceParamEntity(
         gradePatternId: patternId,
-        serviceTypeId: navgan?.emdadgarNavganType ?? 1,
+        serviceTypeId: serviceTypeId ?? navgan?.emdadgarNavganType ?? 1,
         refType: 1,
         refId: navganId,
       ),
@@ -211,9 +248,17 @@ class NavganCubit extends Cubit<NavganState> {
     return success;
   }
 
-  Future<bool> assignGradePattern(GradePatternEntity pattern) async {
+  Future<bool> addGradeReference({
+    required GradePatternEntity pattern,
+    required int serviceTypeId,
+  }) async {
     emit(state.copyWith(selectedGradePattern: pattern));
-    return submitGradeReference();
+    final success = await submitGradeReference(serviceTypeId: serviceTypeId);
+    if (success) {
+      final navgan = state.selectedNavgan;
+      if (navgan != null) await fetchGradePatternReferences(navgan);
+    }
+    return success;
   }
 
   Future<bool> deleteGradeReference(int referenceId) async {
@@ -246,7 +291,22 @@ class NavganCubit extends Cubit<NavganState> {
         errorMessage: 'اتصال به اینترنت برقرار نیست.',
       )),
     );
+    if (success) {
+      final navgan = state.selectedNavgan;
+      if (navgan != null) await fetchGradePatternReferences(navgan);
+    }
     return success;
+  }
+
+  GradePatternEntity? patternForReference(
+      GradePatternReferenceEntity reference,
+      ) {
+    final patternId = reference.gradePatternId;
+    if (patternId == null) return null;
+    for (final pattern in state.gradePatterns) {
+      if ((pattern.id ?? pattern.gradeId) == patternId) return pattern;
+    }
+    return null;
   }
 
   Future<void> prepareServiceSheet(NavganEntity navgan) async {

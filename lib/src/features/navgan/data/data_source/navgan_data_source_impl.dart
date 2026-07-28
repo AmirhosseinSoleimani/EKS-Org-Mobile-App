@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/navgan/data/data_source/navgan_data_source.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/data/models/grade_pattern_model.dart';
+import 'package:eks_sana_plus_org/src/features/navgan/data/models/grade_pattern_reference_model.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/data/models/navgan_defect_model.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/data/models/navgan_page_model.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/data/models/navgan_service_group_model.dart';
@@ -26,6 +27,13 @@ class NavganDataSourceImpl extends NavganDataSource {
   @override
   Future<BaseSingleResponse<List<GradePatternModel>>> getGradePatterns() {
     return _service.getGradePatterns(const GradePatternFilterRequestModel());
+  }
+
+  @override
+  Future<BaseListResponse<GradePatternReferenceModel>> getGradePatternReferences(
+    NavganIdRequestModel request,
+  ) {
+    return _service.getGradePatternReferences(request);
   }
 
   @override
