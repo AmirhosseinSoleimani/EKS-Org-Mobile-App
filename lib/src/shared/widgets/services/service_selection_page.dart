@@ -1,7 +1,12 @@
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/sticky_form_action_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_medium_text.dart';
 import 'package:flutter/material.dart';
 
 class ServiceSelectionPage<TGroup, TItem> extends StatelessWidget {
@@ -47,21 +52,14 @@ class ServiceSelectionPage<TGroup, TItem> extends StatelessWidget {
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Scaffold(
-        backgroundColor: const Color(0xFFF6F6F6),
+        backgroundColor: theme.colorScheme.surface,
         appBar: SimpleActionBar(title: title, onBack: onCancel),
         body: SafeArea(
           top: false,
           child: isLoading
               ? const Center(child: LoadingWidget())
               : groups.isEmpty
-                  ? Center(
-                      child: Text(
-                        emptyMessage,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                        ),
-                      ),
-                    )
+              ? EmptyListWidget()
                   : ListView(
                       padding: const EdgeInsets.fromLTRB(
                         AppPadding.p16,
@@ -132,11 +130,9 @@ class _SelectedServices<TItem> extends StatelessWidget {
               size: AppSize.s22,
             ),
             Space.w8,
-            Text(
+            BodyMediumText(text:
               'سرویس‌های انتخاب شده',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
+              fontWeight: FontWeight.w700,
             ),
           ],
         ),
@@ -147,10 +143,12 @@ class _SelectedServices<TItem> extends StatelessWidget {
           children: items
               .map(
                 (item) => InputChip(
-                  label: Text(itemTitle(item)),
+                  label: BodySmallText(
+                    text: itemTitle(item), color: Color(0xFF1B1B1B),),
                   onDeleted: () => onRemove(item),
-                  deleteIcon: const Icon(Icons.close_rounded, size: 18),
-                  backgroundColor: theme.colorScheme.primary.withAlpha(35),
+                  deleteIcon: const Icon(Icons.close_rounded, size: 18,
+                      color: Color(0xFF1B1B1B)),
+                  backgroundColor: Color(0xFFCCE1FF),
                   side: BorderSide.none,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(AppSize.s20),
@@ -191,32 +189,16 @@ class _ServiceGroup<TItem> extends StatelessWidget {
           Row(
             children: [
               Expanded(
-                child: Text(
-                  title,
-                  textAlign: TextAlign.right,
-                  style: theme.textTheme.titleMedium?.copyWith(
-                    color: theme.colorScheme.primary,
-                    fontWeight: FontWeight.w800,
-                  ),
+                child: TitleMediumText(
+                  text: title,
+                  color: theme.colorScheme.primary,
+                  fontWeight: FontWeight.w800,
+                  fontSize: 16,
                 ),
               ),
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppPadding.p8,
-                  vertical: AppPadding.p4,
-                ),
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.outlineVariant,
-                  borderRadius: BorderRadius.circular(AppSize.s4),
-                ),
-                child: Text(
-                  '${items.length} مورد',
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                    fontWeight: FontWeight.w700,
-                  ),
-                ),
-              ),
+              StatusLabel(text: '${items.length} مورد',
+                  color: theme.colorScheme.onTertiaryFixed,
+                  variant: StatusLabelVariant.filledWithoutBorder),
             ],
           ),
           Space.h8,
@@ -243,6 +225,7 @@ class _ServiceTile extends StatelessWidget {
     required this.title,
     required this.selected,
     required this.onTap,
+
   });
 
   final String title;
@@ -271,7 +254,7 @@ class _ServiceTile extends StatelessWidget {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(AppSize.s8),
               border: Border.all(
-                color: selected ? selectedColor.withAlpha(120) : Colors.transparent,
+                color: selected ? selectedColor.withAlpha(60) : Colors.transparent,
               ),
             ),
             child: Row(
@@ -293,8 +276,9 @@ class _ServiceTile extends StatelessWidget {
                   ),
                 ),
                 Space.w8,
+                if(true) //todo: fix this condition
                 Icon(
-                  _iconForTitle(title),
+                  Icons.settings_outlined,
                   size: AppSize.s22,
                   color: selected
                       ? selectedColor
@@ -306,19 +290,6 @@ class _ServiceTile extends StatelessWidget {
         ),
       ),
     );
-  }
-
-  IconData _iconForTitle(String title) {
-    if (title.contains('روغن')) return Icons.oil_barrel_outlined;
-    if (title.contains('حمل')) return Icons.local_shipping_outlined;
-    if (title.contains('بازدید')) return Icons.search_rounded;
-    if (title.contains('رنگ') || title.contains('بدنه')) {
-      return Icons.fact_check_outlined;
-    }
-    if (title.contains('فراخوان')) return Icons.campaign_outlined;
-    if (title.contains('لوازم')) return Icons.grid_view_rounded;
-    if (title.contains('ادوار')) return Icons.event_note_outlined;
-    return Icons.miscellaneous_services_outlined;
   }
 }
 

@@ -101,7 +101,18 @@ class _NavganServiceHeader extends StatelessWidget {
         ],
       ),
       child: Row(
+
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
+          CircleAvatar(
+            radius: AppSize.s28,
+            backgroundColor: theme.colorScheme.primary.withAlpha(25),
+            child: Icon(
+              Icons.commute,
+              color: theme.colorScheme.primary,
+            ),
+          ),
+          Space.w16,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -116,7 +127,7 @@ class _NavganServiceHeader extends StatelessWidget {
                     fontWeight: FontWeight.w800,
                   ),
                 ),
-                Space.h8,
+                Space.h6,
                 Text(
                   'کد ناوگان: ${navgan?.code ?? '---'}',
                   textAlign: TextAlign.right,
@@ -136,15 +147,7 @@ class _NavganServiceHeader extends StatelessWidget {
                 : theme.colorScheme.error,
             variant: StatusLabelVariant.filledWithoutBorder,
           ),
-          Space.w12,
-          CircleAvatar(
-            radius: AppSize.s24,
-            backgroundColor: theme.colorScheme.primary.withAlpha(25),
-            child: Icon(
-              Icons.car_repair_rounded,
-              color: theme.colorScheme.primary,
-            ),
-          ),
+
         ],
       ),
     );
