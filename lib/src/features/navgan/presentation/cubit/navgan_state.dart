@@ -1,5 +1,7 @@
+import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/emdad_service_category_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/grade_pattern_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/grade_pattern_reference_entity.dart';
+import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/navgan_defect_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/navgan_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/navgan_service_group_entity.dart';
 
@@ -21,7 +23,11 @@ class NavganState {
     this.gradeReferences = const [],
     this.selectedGradePattern,
     this.gradePatternDetail,
+    this.loadingGradeDetailId,
     this.serviceGroups = const [],
+    this.selectedServiceCategory,
+    this.defects = const [],
+    this.loadingDefectServiceCategoryId,
     this.errorMessage,
     this.successMessage,
     this.isGradePatternsLoading = false,
@@ -31,6 +37,8 @@ class NavganState {
     this.isGradeDeleting = false,
     this.isServiceGroupsLoading = false,
     this.isServicesSubmitting = false,
+    this.isDefectsLoading = false,
+    this.isDefectsSubmitting = false,
   });
 
   final NavganViewStatus status;
@@ -40,7 +48,11 @@ class NavganState {
   final List<GradePatternReferenceEntity> gradeReferences;
   final GradePatternEntity? selectedGradePattern;
   final GradePatternEntity? gradePatternDetail;
+  final int? loadingGradeDetailId;
   final List<NavganServiceGroupEntity> serviceGroups;
+  final EmdadServiceCategoryEntity? selectedServiceCategory;
+  final List<NavganDefectEntity> defects;
+  final int? loadingDefectServiceCategoryId;
   final String? errorMessage;
   final String? successMessage;
   final bool isGradePatternsLoading;
@@ -50,6 +62,8 @@ class NavganState {
   final bool isGradeDeleting;
   final bool isServiceGroupsLoading;
   final bool isServicesSubmitting;
+  final bool isDefectsLoading;
+  final bool isDefectsSubmitting;
 
   bool get isInitialLoading =>
       status == NavganViewStatus.loading && records.isEmpty;
@@ -65,7 +79,14 @@ class NavganState {
     bool clearSelectedGradePattern = false,
     GradePatternEntity? gradePatternDetail,
     bool clearGradePatternDetail = false,
+    int? loadingGradeDetailId,
+    bool clearLoadingGradeDetailId = false,
     List<NavganServiceGroupEntity>? serviceGroups,
+    EmdadServiceCategoryEntity? selectedServiceCategory,
+    bool clearSelectedServiceCategory = false,
+    List<NavganDefectEntity>? defects,
+    int? loadingDefectServiceCategoryId,
+    bool clearLoadingDefectServiceCategoryId = false,
     String? errorMessage,
     bool clearErrorMessage = false,
     String? successMessage,
@@ -77,6 +98,8 @@ class NavganState {
     bool? isGradeDeleting,
     bool? isServiceGroupsLoading,
     bool? isServicesSubmitting,
+    bool? isDefectsLoading,
+    bool? isDefectsSubmitting,
   }) {
     return NavganState(
       status: status ?? this.status,
@@ -92,7 +115,17 @@ class NavganState {
       gradePatternDetail: clearGradePatternDetail
           ? null
           : gradePatternDetail ?? this.gradePatternDetail,
+      loadingGradeDetailId: clearLoadingGradeDetailId
+          ? null
+          : loadingGradeDetailId ?? this.loadingGradeDetailId,
       serviceGroups: serviceGroups ?? this.serviceGroups,
+      selectedServiceCategory: clearSelectedServiceCategory
+          ? null
+          : selectedServiceCategory ?? this.selectedServiceCategory,
+      defects: defects ?? this.defects,
+      loadingDefectServiceCategoryId: clearLoadingDefectServiceCategoryId
+          ? null
+          : loadingDefectServiceCategoryId ?? this.loadingDefectServiceCategoryId,
       errorMessage:
           clearErrorMessage ? null : errorMessage ?? this.errorMessage,
       successMessage:
@@ -107,6 +140,8 @@ class NavganState {
       isServiceGroupsLoading:
           isServiceGroupsLoading ?? this.isServiceGroupsLoading,
       isServicesSubmitting: isServicesSubmitting ?? this.isServicesSubmitting,
+      isDefectsLoading: isDefectsLoading ?? this.isDefectsLoading,
+      isDefectsSubmitting: isDefectsSubmitting ?? this.isDefectsSubmitting,
     );
   }
 }

@@ -110,7 +110,10 @@ class _NavganGradePatternView extends StatelessWidget {
     }
 
     var detail = pattern;
-    await cubit.loadGradePatternDetail(pattern);
+    await cubit.loadGradePatternDetail(
+      pattern,
+      loadingId: reference.id ?? reference.gradePatternId,
+    );
     final loaded = cubit.state.gradePatternDetail;
     if (loaded != null) detail = loaded;
 
@@ -273,7 +276,9 @@ class _GradePatternList extends StatelessWidget {
         return GradePatternListCard(
           item: reference.toUiModel(),
           showSummary: false,
-          isDetailsLoading: state.isGradeDetailLoading,
+          isDetailsLoading: state.isGradeDetailLoading &&
+              state.loadingGradeDetailId ==
+                  (reference.id ?? reference.gradePatternId),
           statusLabelText: reference.serviceTypeTitle ?? serviceType.label,
           statusLabelColor: serviceType.serviceColor,
           onDetails: () => onDetails(reference),

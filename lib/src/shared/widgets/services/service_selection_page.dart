@@ -21,6 +21,8 @@ class ServiceSelectionPage<TGroup, TItem> extends StatelessWidget {
     required this.onItemToggle,
     required this.onSubmit,
     required this.onCancel,
+    this.onItemSettings,
+    this.itemSettingsLoading,
     this.header,
     this.isLoading = false,
     this.isSubmitting = false,
@@ -36,6 +38,8 @@ class ServiceSelectionPage<TGroup, TItem> extends StatelessWidget {
   final ValueChanged<TItem> onItemToggle;
   final VoidCallback? onSubmit;
   final VoidCallback? onCancel;
+  final ValueChanged<TItem>? onItemSettings;
+  final bool Function(TItem item)? itemSettingsLoading;
   final Widget? header;
   final bool isLoading;
   final bool isSubmitting;
@@ -87,6 +91,8 @@ class ServiceSelectionPage<TGroup, TItem> extends StatelessWidget {
                             itemTitle: itemTitle,
                             itemSelected: itemSelected,
                             onItemToggle: onItemToggle,
+                            onItemSettings: onItemSettings,
+                            itemSettingsLoading: itemSettingsLoading,
                           ),
                         ),
                       ],
@@ -169,6 +175,8 @@ class _ServiceGroup<TItem> extends StatelessWidget {
     required this.itemTitle,
     required this.itemSelected,
     required this.onItemToggle,
+    this.onItemSettings,
+    this.itemSettingsLoading,
   });
 
   final String title;
@@ -176,6 +184,8 @@ class _ServiceGroup<TItem> extends StatelessWidget {
   final String Function(TItem item) itemTitle;
   final bool Function(TItem item) itemSelected;
   final ValueChanged<TItem> onItemToggle;
+  final ValueChanged<TItem>? onItemSettings;
+  final bool Function(TItem item)? itemSettingsLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -211,7 +221,11 @@ class _ServiceGroup<TItem> extends StatelessWidget {
               (item) => _ServiceTile(
                 title: itemTitle(item),
                 selected: itemSelected(item),
+                isSettingsLoading: itemSettingsLoading?.call(item) ?? false,
                 onTap: () => onItemToggle(item),
+                onSettingsTap: onItemSettings == null
+                    ? null
+                    : () => onItemSettings!(item),
               ),
             ),
         ],
@@ -225,12 +239,15 @@ class _ServiceTile extends StatelessWidget {
     required this.title,
     required this.selected,
     required this.onTap,
-
+    required this.isSettingsLoading,
+    this.onSettingsTap,
   });
 
   final String title;
   final bool selected;
+  final bool isSettingsLoading;
   final VoidCallback onTap;
+  final VoidCallback? onSettingsTap;
 
   @override
   Widget build(BuildContext context) {
@@ -276,19 +293,56 @@ class _ServiceTile extends StatelessWidget {
                   ),
                 ),
                 Space.w8,
-                if(selected)
-                Icon(
-                  Icons.settings_outlined,
-                  size: AppSize.s22,
-                  color: selected
-                      ? selectedColor
-                      : theme.colorScheme.onSurfaceVariant,
-                ),
+                if (selected)
+                  _SettingsButton(
+                    isLoading: isSettingsLoading,
+                    onTap: onSettingsTap,
+                  ),
               ],
             ),
           ),
         ),
       ),
+    );
+  }
+}
+
+class _SettingsButton extends StatelessWidget {
+  const _SettingsButton({
+    required this.isLoading,
+    required this.onTap,
+  });
+
+  final bool isLoading;
+  final VoidCallback? onTap;
+
+  @override
+  Widget build(BuildContext context) {
+    final primary = Theme.of(context).colorScheme.primary;
+
+    return SizedBox(
+      width: AppSize.s40,
+      height: AppSize.s40,
+      child: isLoading
+          ? Center(
+              child: SizedBox(
+                width: AppSize.s22,
+                height: AppSize.s22,
+                child: CircularProgressIndicator(
+                  strokeWidth: AppSize.s2,
+                  color: primary,
+                ),
+              ),
+            )
+          : IconButton(
+              onPressed: onTap,
+              splashRadius: AppSize.s22,
+              icon: Icon(
+                Icons.settings_outlined,
+                size: AppSize.s22,
+                color: primary,
+              ),
+            ),
     );
   }
 }

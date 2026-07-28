@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/navgan_ent
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/navgan_service_group_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/presentation/cubit/navgan_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/presentation/cubit/navgan_state.dart';
+import 'package:eks_sana_plus_org/src/features/navgan/presentation/widgets/navgan_defect_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/services/service_selection_page.dart';
@@ -65,6 +66,10 @@ class _NavganServicesView extends StatelessWidget {
           itemTitle: (item) => item.title ?? '---',
           itemSelected: (item) => item.selected,
           onItemToggle: cubit.toggleServiceCategory,
+          itemSettingsLoading: (item) =>
+              state.isDefectsLoading &&
+              state.loadingDefectServiceCategoryId == item.id,
+          onItemSettings: (item) => _openDefectSheet(context, cubit, item),
           isLoading: state.isServiceGroupsLoading,
           isSubmitting: state.isServicesSubmitting,
           onSubmit: () async {
@@ -72,6 +77,41 @@ class _NavganServicesView extends StatelessWidget {
             if (success && context.mounted) context.pop(true);
           },
           onCancel: () => context.pop(),
+        );
+      },
+    );
+  }
+
+  Future<void> _openDefectSheet(
+    BuildContext context,
+    NavganCubit cubit,
+    EmdadServiceCategoryEntity category,
+  ) async {
+    final loaded = await cubit.loadDefectsForServiceCategory(category);
+    if (!loaded || !context.mounted) return;
+
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
+      ),
+      builder: (sheetContext) {
+        return BlocProvider.value(
+          value: cubit,
+          child: FractionallySizedBox(
+            heightFactor: 0.92,
+            child: NavganDefectSheet(
+              onSuccess: () {
+                if (sheetContext.mounted) Navigator.of(sheetContext).pop();
+              },
+              onCancel: () {
+                if (sheetContext.mounted) Navigator.of(sheetContext).pop();
+              },
+            ),
+          ),
         );
       },
     );

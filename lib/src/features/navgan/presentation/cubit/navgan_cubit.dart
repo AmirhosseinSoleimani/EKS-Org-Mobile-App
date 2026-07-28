@@ -1,10 +1,12 @@
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/emdad_service_category_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/grade_pattern_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/grade_pattern_reference_entity.dart';
+import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/navgan_defect_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/navgan_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/params/navgan_grade_reference_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/params/navgan_id_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/params/navgan_ids_payload_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/params/navgan_service_category_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/usecases/add_navgan_grade_reference_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/usecases/delete_navgan_grade_reference_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/usecases/get_grade_pattern_detail_use_case.dart';
@@ -30,9 +32,9 @@ class NavganCubit extends Cubit<NavganState> {
       this._addGradeReferenceUseCase,
       this._deleteGradeReferenceUseCase,
       this._getServiceGroupsUseCase,
-      GetNavganDefectsUseCase _,
+      this._getDefectsUseCase,
       this._submitServiceCategoriesUseCase,
-      SubmitNavganDefectsUseCase __,
+      this._submitDefectsUseCase,
       ) : super(const NavganState());
 
   final GetNavganListUseCase _getListUseCase;
@@ -42,7 +44,9 @@ class NavganCubit extends Cubit<NavganState> {
   final AddNavganGradeReferenceUseCase _addGradeReferenceUseCase;
   final DeleteNavganGradeReferenceUseCase _deleteGradeReferenceUseCase;
   final GetNavganServiceGroupsUseCase _getServiceGroupsUseCase;
+  final GetNavganDefectsUseCase _getDefectsUseCase;
   final SubmitNavganServiceCategoriesUseCase _submitServiceCategoriesUseCase;
+  final SubmitNavganDefectsUseCase _submitDefectsUseCase;
 
   Future<void> init() async {
     await fetchList();
@@ -164,10 +168,13 @@ class NavganCubit extends Cubit<NavganState> {
     await fetchGradePatternDetail(id);
   }
 
-  Future<void> fetchGradePatternDetail(int id) async {
+  Future<void> fetchGradePatternDetail(int id, {int? loadingId}) async {
     if (state.isGradeDetailLoading) return;
 
-    emit(state.copyWith(isGradeDetailLoading: true));
+    emit(state.copyWith(
+      isGradeDetailLoading: true,
+      loadingGradeDetailId: loadingId ?? id,
+    ));
     final result = await _getGradePatternDetailUseCase(
       NavganIdParamEntity(id: id),
     );
@@ -175,31 +182,38 @@ class NavganCubit extends Cubit<NavganState> {
       success: (item, failures, resultCode) => emit(state.copyWith(
         gradePatternDetail: item,
         isGradeDetailLoading: false,
+        clearLoadingGradeDetailId: true,
         clearErrorMessage: true,
       )),
       failure: (error, failures) => emit(state.copyWith(
         isGradeDetailLoading: false,
+        clearLoadingGradeDetailId: true,
         errorMessage: failures ?? 'دریافت جزئیات الگوی گرید با خطا مواجه شد.',
       )),
       expireToken: () => emit(state.copyWith(
         isGradeDetailLoading: false,
+        clearLoadingGradeDetailId: true,
         errorMessage: 'نشست کاربری منقضی شده است.',
       )),
       connectionError: () => emit(state.copyWith(
         isGradeDetailLoading: false,
+        clearLoadingGradeDetailId: true,
         errorMessage: 'اتصال به اینترنت برقرار نیست.',
       )),
     );
   }
 
-  Future<void> loadGradePatternDetail(GradePatternEntity pattern) async {
+  Future<void> loadGradePatternDetail(
+    GradePatternEntity pattern, {
+    int? loadingId,
+  }) async {
     emit(state.copyWith(
       selectedGradePattern: pattern,
       clearGradePatternDetail: true,
     ));
     final id = pattern.id ?? pattern.gradeId;
     if (id == null) return;
-    await fetchGradePatternDetail(id);
+    await fetchGradePatternDetail(id, loadingId: loadingId);
   }
 
   Future<bool> submitGradeReference({int? serviceTypeId}) async {
@@ -313,6 +327,9 @@ class NavganCubit extends Cubit<NavganState> {
     emit(state.copyWith(
       selectedNavgan: navgan,
       serviceGroups: const [],
+      defects: const [],
+      clearSelectedServiceCategory: true,
+      clearLoadingDefectServiceCategoryId: true,
       clearErrorMessage: true,
       clearSuccessMessage: true,
     ));
@@ -392,6 +409,128 @@ class NavganCubit extends Cubit<NavganState> {
       )),
       connectionError: () => emit(state.copyWith(
         isServicesSubmitting: false,
+        errorMessage: 'اتصال به اینترنت برقرار نیست.',
+      )),
+    );
+    return success;
+  }
+
+  Future<bool> loadDefectsForServiceCategory(
+    EmdadServiceCategoryEntity category,
+  ) async {
+    if (state.isDefectsLoading) return false;
+
+    final navganId = state.selectedNavgan?.id;
+    final serviceCategoryId = category.id;
+    if (navganId == null || serviceCategoryId == null) {
+      emit(state.copyWith(errorMessage: 'شناسه سرویس برای دریافت ایرادات یافت نشد.'));
+      return false;
+    }
+
+    emit(state.copyWith(
+      selectedServiceCategory: category,
+      defects: const [],
+      isDefectsLoading: true,
+      loadingDefectServiceCategoryId: serviceCategoryId,
+      clearErrorMessage: true,
+      clearSuccessMessage: true,
+    ));
+
+    final result = await _getDefectsUseCase(
+      NavganServiceCategoryParamEntity(
+        navganId: navganId,
+        serviceCategoryId: serviceCategoryId,
+      ),
+    );
+
+    var success = false;
+    result.when(
+      success: (items, failures, resultCode) {
+        success = true;
+        emit(state.copyWith(
+          defects: items,
+          isDefectsLoading: false,
+          clearLoadingDefectServiceCategoryId: true,
+          clearErrorMessage: true,
+        ));
+      },
+      failure: (error, failures) => emit(state.copyWith(
+        isDefectsLoading: false,
+        clearLoadingDefectServiceCategoryId: true,
+        errorMessage: failures ?? 'دریافت ایرادات سرویس با خطا مواجه شد.',
+      )),
+      expireToken: () => emit(state.copyWith(
+        isDefectsLoading: false,
+        clearLoadingDefectServiceCategoryId: true,
+        errorMessage: 'نشست کاربری منقضی شده است.',
+      )),
+      connectionError: () => emit(state.copyWith(
+        isDefectsLoading: false,
+        clearLoadingDefectServiceCategoryId: true,
+        errorMessage: 'اتصال به اینترنت برقرار نیست.',
+      )),
+    );
+    return success;
+  }
+
+  void toggleDefect(NavganDefectEntity defect) {
+    final defects = state.defects.map((item) {
+      if (item.id != defect.id) return item;
+      return item.copyWith(selected: !item.selected);
+    }).toList();
+    emit(state.copyWith(defects: defects));
+  }
+
+  void setAllDefectsSelected(bool selected) {
+    final defects = state.defects
+        .map((item) => item.copyWith(selected: selected))
+        .toList();
+    emit(state.copyWith(defects: defects));
+  }
+
+  Future<bool> submitDefects() async {
+    if (state.isDefectsSubmitting) return false;
+
+    final navganId = state.selectedNavgan?.id;
+    final serviceCategoryId = state.selectedServiceCategory?.id;
+    if (navganId == null || serviceCategoryId == null) {
+      emit(state.copyWith(errorMessage: 'شناسه سرویس برای ثبت ایرادات یافت نشد.'));
+      return false;
+    }
+
+    final ids = state.defects
+        .where((item) => item.selected && item.id != null)
+        .map((item) => item.id!)
+        .toList();
+
+    emit(state.copyWith(isDefectsSubmitting: true, clearErrorMessage: true));
+    final result = await _submitDefectsUseCase(
+      NavganIdsPayloadParamEntity(
+        navganId: navganId,
+        serviceCategoryId: serviceCategoryId,
+        ids: ids,
+      ),
+    );
+
+    var success = false;
+    result.when(
+      success: (data, failures, resultCode) {
+        success = true;
+        emit(state.copyWith(
+          isDefectsSubmitting: false,
+          successMessage: 'محدودیت‌های ایرادات با موفقیت ثبت شد.',
+        ));
+      },
+      failure: (error, failures) => emit(state.copyWith(
+        isDefectsSubmitting: false,
+        errorMessage: failures ?? 'ثبت محدودیت‌های ایرادات با خطا مواجه شد.',
+      )),
+      expireToken: () => emit(state.copyWith(
+        isDefectsSubmitting: false,
+        errorMessage: 'نشست کاربری منقضی شده است.',
+      )),
+      connectionError: () => emit(state.copyWith(
+        isDefectsSubmitting: false,
         errorMessage: 'اتصال به اینترنت برقرار نیست.',
       )),
     );
