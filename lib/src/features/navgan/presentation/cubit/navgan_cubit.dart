@@ -328,6 +328,7 @@ class NavganCubit extends Cubit<NavganState> {
       selectedNavgan: navgan,
       serviceGroups: const [],
       defects: const [],
+      committedDefects: const [],
       clearSelectedServiceCategory: true,
       clearLoadingDefectServiceCategoryId: true,
       clearErrorMessage: true,
@@ -430,6 +431,7 @@ class NavganCubit extends Cubit<NavganState> {
     emit(state.copyWith(
       selectedServiceCategory: category,
       defects: const [],
+      committedDefects: const [],
       isDefectsLoading: true,
       loadingDefectServiceCategoryId: serviceCategoryId,
       clearErrorMessage: true,
@@ -449,6 +451,9 @@ class NavganCubit extends Cubit<NavganState> {
         success = true;
         emit(state.copyWith(
           defects: items,
+          committedDefects: items
+              .where((item) => item.selected)
+              .toList(growable: false),
           isDefectsLoading: false,
           clearLoadingDefectServiceCategoryId: true,
           clearErrorMessage: true,
@@ -517,6 +522,9 @@ class NavganCubit extends Cubit<NavganState> {
       success: (data, failures, resultCode) {
         success = true;
         emit(state.copyWith(
+          committedDefects: state.defects
+              .where((item) => item.selected)
+              .toList(growable: false),
           isDefectsSubmitting: false,
           successMessage: 'محدودیت‌های ایرادات با موفقیت ثبت شد.',
         ));

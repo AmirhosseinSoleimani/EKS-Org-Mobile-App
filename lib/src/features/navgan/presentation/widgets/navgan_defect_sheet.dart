@@ -9,8 +9,6 @@ import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/sticky_form_ac
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/selection_widgets/app_checkbox_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/search_input_field.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -49,8 +47,7 @@ class _NavganDefectSheetState extends State<NavganDefectSheet> {
       child: BlocBuilder<NavganCubit, NavganState>(
         builder: (context, state) {
           final title = _value(state.selectedServiceCategory?.title);
-          final selectedItems =
-          state.defects.where((item) => item.selected).toList();
+          final selectedItems = state.committedDefects;
           final filteredItems = _filteredItems(state.defects);
           final allSelected = state.defects.isNotEmpty &&
               state.defects.every((item) => item.selected);
@@ -69,55 +66,70 @@ class _NavganDefectSheetState extends State<NavganDefectSheet> {
                     bottom: false,
                     child: state.isDefectsLoading
                         ? const Center(child: LoadingWidget())
-                        : ListView(
-                      physics: const BouncingScrollPhysics(),
-                      padding: const EdgeInsets.fromLTRB(
-                        AppPadding.p16,
-                        AppPadding.p16,
-                        AppPadding.p16,
-                        AppPadding.p24,
-                      ),
-                      children: [
-                        _SelectedDefectsSummary(
-                          items: selectedItems,
-                          showAll: _showAllSelected,
-                          onShowMore: selectedItems.length <= 4
-                              ? null
-                              : () =>
-                              setState(() {
-                                _showAllSelected = !_showAllSelected;
-                              }),
-                          onRemove: cubit.toggleDefect,
-                        ),
-                        Space.h20,
-                        SearchInputField(
-                          controller: _searchController,
-                          hintText: 'جستجو',
-                          floatingLabelBehavior:
-                          FloatingLabelBehavior.never,
-                          onChanged: (value) {
-                            setState(() => _query = value.trim());
-                          },
-                        ),
-                        Space.h16,
-                        AppCheckboxWidget(title: 'انتخاب همه',
-                            value: allSelected,
-                            onChanged: state.defects.isNotEmpty
-                                ? (vaslue) => cubit.setAllDefectsSelected(!allSelected)
-                                : (value) {}),
-                        Space.h12,
-                        if (filteredItems.isEmpty)
-                          const EmptyListWidget()
-                        else
-                          ...filteredItems.map(
-                                (item) =>
-                                _DefectTile(
-                                  item: item,
-                                  onTap: () => cubit.toggleDefect(item),
+                        : Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.fromLTRB(
+                                  AppPadding.p16,
+                                  AppPadding.p16,
+                                  AppPadding.p16,
+                                  AppPadding.p8,
                                 ),
+                                child: _SelectedDefectsSummary(
+                                  items: selectedItems,
+                                  showAll: _showAllSelected,
+                                  onShowMore: selectedItems.length <= 4
+                                      ? null
+                                      : () => setState(() {
+                                            _showAllSelected =
+                                                !_showAllSelected;
+                                          }),
+                                ),
+                              ),
+                              Expanded(
+                                child: ListView(
+                                  physics: const BouncingScrollPhysics(),
+                                  padding: const EdgeInsets.fromLTRB(
+                                    AppPadding.p16,
+                                    AppPadding.p12,
+                                    AppPadding.p16,
+                                    AppPadding.p24,
+                                  ),
+                                  children: [
+                                    SearchInputField(
+                                      controller: _searchController,
+                                      hintText: 'جستجو',
+                                      floatingLabelBehavior:
+                                          FloatingLabelBehavior.never,
+                                      onChanged: (value) {
+                                        setState(() => _query = value.trim());
+                                      },
+                                    ),
+                                    Space.h16,
+                                    AppCheckboxWidget(
+                                      title: 'انتخاب همه',
+                                      value: allSelected,
+                                      onChanged: state.defects.isNotEmpty
+                                          ? (value) =>
+                                              cubit.setAllDefectsSelected(value)
+                                          : (value) {},
+                                    ),
+                                    Space.h12,
+                                    if (filteredItems.isEmpty)
+                                      const EmptyListWidget()
+                                    else
+                                      ...filteredItems.map(
+                                        (item) => _DefectTile(
+                                          item: item,
+                                          onTap: () =>
+                                              cubit.toggleDefect(item),
+                                        ),
+                                      ),
+                                  ],
+                                ),
+                              ),
+                            ],
                           ),
-                      ],
-                    ),
                   ),
                 ),
               ],
@@ -226,13 +238,11 @@ class _SelectedDefectsSummary extends StatelessWidget {
     required this.items,
     required this.showAll,
     required this.onShowMore,
-    required this.onRemove,
   });
 
   final List<NavganDefectEntity> items;
   final bool showAll;
   final VoidCallback? onShowMore;
-  final ValueChanged<NavganDefectEntity> onRemove;
 
   @override
   Widget build(BuildContext context) {
@@ -274,7 +284,7 @@ class _SelectedDefectsSummary extends StatelessWidget {
                         color: theme.colorScheme.onSurface,
                       ),
                     ),
-                    onDeleted: () => onRemove(item),
+                    onDeleted: null,
                     deleteIcon: Icon(
                       Icons.close_rounded,
                       size: AppSize.s18,

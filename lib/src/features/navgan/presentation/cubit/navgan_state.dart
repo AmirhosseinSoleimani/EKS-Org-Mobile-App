@@ -27,6 +27,7 @@ class NavganState {
     this.serviceGroups = const [],
     this.selectedServiceCategory,
     this.defects = const [],
+    this.committedDefects = const [],
     this.loadingDefectServiceCategoryId,
     this.errorMessage,
     this.successMessage,
@@ -52,6 +53,7 @@ class NavganState {
   final List<NavganServiceGroupEntity> serviceGroups;
   final EmdadServiceCategoryEntity? selectedServiceCategory;
   final List<NavganDefectEntity> defects;
+  final List<NavganDefectEntity> committedDefects;
   final int? loadingDefectServiceCategoryId;
   final String? errorMessage;
   final String? successMessage;
@@ -85,6 +87,7 @@ class NavganState {
     EmdadServiceCategoryEntity? selectedServiceCategory,
     bool clearSelectedServiceCategory = false,
     List<NavganDefectEntity>? defects,
+    List<NavganDefectEntity>? committedDefects,
     int? loadingDefectServiceCategoryId,
     bool clearLoadingDefectServiceCategoryId = false,
     String? errorMessage,
@@ -123,6 +126,7 @@ class NavganState {
           ? null
           : selectedServiceCategory ?? this.selectedServiceCategory,
       defects: defects ?? this.defects,
+      committedDefects: committedDefects ?? this.committedDefects,
       loadingDefectServiceCategoryId: clearLoadingDefectServiceCategoryId
           ? null
           : loadingDefectServiceCategoryId ?? this.loadingDefectServiceCategoryId,
