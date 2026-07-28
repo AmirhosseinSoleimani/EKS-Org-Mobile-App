@@ -7,6 +7,9 @@ class TitleMediumText extends StatelessWidget {
   final Color? color;
   final TextAlign? textAlign;
   final TextDirection? textDirection;
+  final int? maxLines;
+  final TextOverflow? textOverflow;
+  final FontWeight? fontWeight;
 
 
   const TitleMediumText({
@@ -16,6 +19,9 @@ class TitleMediumText extends StatelessWidget {
     this.color,
     this.textAlign,
     this.lineHeight,
+    this.maxLines,
+    this.textOverflow ,
+    this.fontWeight,
     this.textDirection = TextDirection.rtl,
   });
 
@@ -25,10 +31,16 @@ class TitleMediumText extends StatelessWidget {
       text,
       textDirection: textDirection,
       textAlign: textAlign,
+      overflow: textOverflow,
+      maxLines: maxLines,
       style: Theme.of(context)
           .textTheme
-          .titleMedium
-          ?.copyWith(fontSize: fontSize, color: color, height: lineHeight),
+          .titleMedium?.copyWith(
+        fontSize: fontSize,
+        color: color,
+        height: lineHeight,
+        fontWeight: fontWeight,
+      ),
     );
   }
 }

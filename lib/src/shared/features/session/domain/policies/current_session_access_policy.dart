@@ -122,6 +122,11 @@ class CurrentSessionAccessPolicy {
         canShowMenu(CurrentSessionMenuKeys.sanSkillsCertificate);
   }
 
+  bool canShowNavganButton() {
+    return isAuthenticated &&
+        canShowMenu(CurrentSessionMenuKeys.sanNavganServices);
+  }
+
   bool canShowInvoicesMenu() {
     return canShowAnyMenu([
       CurrentSessionMenuKeys.invoices,

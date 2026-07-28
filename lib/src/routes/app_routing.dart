@@ -13,6 +13,7 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presenta
 import 'package:eks_sana_plus_org/src/features/imei/presentation/imei_routes.dart';
 import 'package:eks_sana_plus_org/src/features/indicator_report/presentation/indicator_report_page/indicator_report_page.dart';
 import 'package:eks_sana_plus_org/src/features/leave/presentation/leave_routes.dart';
+import 'package:eks_sana_plus_org/src/features/navgan/presentation/navgan_routes.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/plan_info_location_page.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/plan_info_routes.dart';
@@ -374,6 +375,7 @@ class Routes {
         ...SkillsCertificatesRoutes.routes(getPage),
         ...ShiftRoutes.routes(getPage),
         ...ImeiRoutes.routes(getPage),
+        ...NavganRoutes.routes(getPage),
       ],
     );
   }

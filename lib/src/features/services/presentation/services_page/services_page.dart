@@ -5,6 +5,7 @@ import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/pages/emd
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/pages/grade_pattern_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/imei/presentation/pages/imei_page.dart';
 import 'package:eks_sana_plus_org/src/features/leave/presentation/pages/leave_page.dart';
+import 'package:eks_sana_plus_org/src/features/navgan/presentation/pages/navgan_page.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/plan_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/rescuer_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/home_service_request_list_page/home_service_request_list_page.dart';
@@ -126,7 +127,6 @@ class ServicesPage extends StatelessWidget {
                   context.pushNamed(SkillsCertificatesPage.name);
                 },
               ),
-
             if (access.canShowShift())
               _AgencyServiceItemData(
                 title: 'شیفت',
@@ -142,6 +142,14 @@ class ServicesPage extends StatelessWidget {
                 icon: Icons.grading_outlined,
                 onTap: () {
                   context.pushNamed(ImeiPage.name);
+                },
+              ),
+            if (access.canShowNavganButton())
+              _AgencyServiceItemData(
+                title: 'ناوگان',
+                icon: Icons.grading_outlined,
+                onTap: () {
+                  context.pushNamed(NavganPage.name);
                 },
               ),
           ];
