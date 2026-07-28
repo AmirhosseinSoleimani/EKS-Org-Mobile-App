@@ -1,7 +1,10 @@
 import 'package:eks_sana_plus_org/src/features/vehicle_model/domain/entities/vehicle_model_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_src.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_medium_text.dart';
@@ -39,11 +42,12 @@ class VehicleModelCard extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               CircleAvatar(
                 radius: AppSize.s28,
                 backgroundColor: theme.colorScheme.primary.withAlpha(25),
-                child: Icon(Icons.commute, color: theme.colorScheme.primary),
+                child: SvgWidget(src: SvgAsset(SvgManager.autoTowing )),
               ),
               Space.w8,
               Column(
@@ -52,7 +56,7 @@ class VehicleModelCard extends StatelessWidget {
                   TitleLargeText(
                     text: item.title ?? item.name ?? '---',
                     color: theme.colorScheme.onSurface,
-                    fontSize: AppSize.s18,
+                    fontSize: AppSize.s16,
                     textAlign: TextAlign.start,
                   ),
                   Space.h8,
@@ -63,6 +67,7 @@ class VehicleModelCard extends StatelessWidget {
                   ),
                 ],
               ),
+              Space.w8,
               Spacer(),
               StatusLabel(
                 text: item.isActive == true ? 'فعال' : 'غیرفعال',
@@ -88,7 +93,7 @@ class VehicleModelCard extends StatelessWidget {
           Space.h8,
           Row(
             children: [
-              Icon(Icons.gif_box_outlined, color: theme.colorScheme.onTertiaryFixed),
+              Icon(Icons.inventory_2_outlined, color: theme.colorScheme.onTertiaryFixed),
               Space.w8,
               TitleMediumText(
                 text: 'مجهز به انبارک: ${item.hasDepot == true ? 'بله' : 'خیر'}',

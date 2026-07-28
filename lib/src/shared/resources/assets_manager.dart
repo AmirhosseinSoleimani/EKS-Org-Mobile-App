@@ -65,6 +65,7 @@ class SvgManager {
   static const String alertCarIcon = '${_basePath}alert_car.svg';
   static const String carIcon = '${_basePath}car_icon.svg';
   static const String swapDriving = '${_basePath}swap_driving_apps.svg';
+  static const String autoTowing = '${_basePath}auto_towing.svg';
 
 }
 
