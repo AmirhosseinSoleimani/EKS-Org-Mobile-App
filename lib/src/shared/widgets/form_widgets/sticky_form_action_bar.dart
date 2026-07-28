@@ -47,7 +47,7 @@ class StickyFormActionBar extends StatelessWidget {
               child: InkwellButtonWidget(
                 title: submitTitle,
                 showLoading: isSubmitting,
-                onTap: isSubmitting ? null : onSubmit,
+                onTap: isSubmitting ? (){} : onSubmit,
                 borderRadius: AppSize.s8,
               ),
             ),
@@ -56,7 +56,7 @@ class StickyFormActionBar extends StatelessWidget {
               flex: 2,
               child: InkwellButtonWidget(
                 title: cancelTitle,
-                onTap: isSubmitting ? null : onCancel,
+                onTap: isSubmitting ? (){} : onCancel,
                 backgroundColor: theme.colorScheme.onPrimary,
                 borderColor: Colors.transparent,
                 titleColor: theme.colorScheme.onSurface,
