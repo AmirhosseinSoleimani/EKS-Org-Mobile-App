@@ -1,0 +1,317 @@
+import 'dart:ui';
+
+import 'package:eks_sana_plus_org/src/di/di_setup.dart';
+import 'package:eks_sana_plus_org/src/features/general_content/domain/entities/general_content_entity.dart';
+import 'package:eks_sana_plus_org/src/features/general_content/presentation/cubit/general_content_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/general_content/presentation/cubit/general_content_state.dart';
+import 'package:eks_sana_plus_org/src/features/general_content/presentation/pages/general_content_targets_page.dart';
+import 'package:eks_sana_plus_org/src/features/general_content/presentation/widgets/general_content_action_sheet.dart';
+import 'package:eks_sana_plus_org/src/features/general_content/presentation/widgets/general_content_card.dart';
+import 'package:eks_sana_plus_org/src/features/general_content/presentation/widgets/general_content_filter_sheet.dart';
+import 'package:eks_sana_plus_org/src/features/general_content/presentation/widgets/general_content_status_filter.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
+import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
+
+class GeneralContentPage extends StatelessWidget {
+  static const path = '/general-content-page';
+  static const name = 'general-content-page';
+
+  const GeneralContentPage({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (_) => getIt<GeneralContentCubit>()..init(),
+      child: const _GeneralContentView(),
+    );
+  }
+}
+
+class _GeneralContentView extends StatelessWidget {
+  const _GeneralContentView();
+
+  @override
+  Widget build(BuildContext context) {
+    final cubit = context.read<GeneralContentCubit>();
+    final theme = Theme.of(context);
+
+    return Directionality(
+      textDirection: TextDirection.rtl,
+      child: BlocConsumer<GeneralContentCubit, GeneralContentState>(
+        listenWhen: (previous, current) =>
+            previous.errorMessage != current.errorMessage ||
+            previous.successMessage != current.successMessage,
+        listener: (context, state) {
+          final error = state.errorMessage;
+          if (error?.trim().isNotEmpty == true) {
+            SnakeBarWidget.showError(context: context, message: error!);
+          }
+
+          final success = state.successMessage;
+          if (success?.trim().isNotEmpty == true) {
+            SnakeBarWidget.showSuccess(context: context, message: success!);
+          }
+        },
+        builder: (context, state) {
+          return Scaffold(
+            backgroundColor: theme.colorScheme.surface,
+            appBar: const SimpleActionBar(title: 'بخشنامه‌ها'),
+            floatingActionButton: FloatingActionButtonWidget(
+              title: 'بخشنامه جدید',
+              onPressed: () => SnakeBarWidget.showError(
+                context: context,
+                message: 'فرم ثبت بخشنامه در محدوده این پیاده‌سازی نیست.',
+              ),
+            ),
+            body: SafeArea(
+              top: false,
+              child: ScrollConfiguration(
+                behavior: ScrollConfiguration.of(context).copyWith(
+                  dragDevices: {
+                    PointerDeviceKind.touch,
+                    PointerDeviceKind.mouse,
+                  },
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(AppPadding.p16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      FiltersRow(
+                        filters: [
+                          FilterButton(
+                            title: 'فیلترها',
+                            onTap: () => _openFilterSheet(context, state),
+                          ),
+                          GeneralContentStatusFilterDropDown(
+                            value: state.statusFilter,
+                            onChanged: cubit.changeStatusFilter,
+                          ),
+                        ],
+                      ),
+                      Space.h24,
+                      Row(
+                        children: [
+                          const Expanded(
+                            child: TitleLargeText(
+                              text: 'بخشنامه‌های فعلی',
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                          StatusLabel(text:  '${state.visibleRecords.length} مورد',
+                            color: theme.colorScheme.primary,
+
+                          ),
+                        ],
+                      ),
+                      Space.h16,
+                      Expanded(
+                        child: _GeneralContentList(
+                          state: state,
+                          onRetry: () => cubit.fetchList(reset: true),
+                          onLoadMore: () => cubit.fetchList(),
+                          onActions: (item) => _openActions(context, item),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  void _openFilterSheet(BuildContext context, GeneralContentState state) {
+    final cubit = context.read<GeneralContentCubit>();
+    BottomSheetMessage.showCustom(
+      context: context,
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      maxHeight: MediaQuery.of(context).size.height * 0.76,
+      content: GeneralContentFilterSheet(
+        contentTypes: state.contentTypeOptions,
+        initialTitle: state.titleFilter,
+        initialContentType: state.contentTypeFilter,
+        onSubmit: (title, type) => cubit.applyFilter(
+          title: title,
+          contentType: type,
+        ),
+      ),
+      actionWidget: const SizedBox.shrink(),
+    );
+  }
+
+  void _openActions(BuildContext context, GeneralContentEntity item) {
+    final cubit = context.read<GeneralContentCubit>();
+    final theme = Theme.of(context);
+
+    BottomSheetMessage.showCustom(
+      context: context,
+      backgroundColor: theme.colorScheme.onPrimary,
+      content: BlocBuilder<GeneralContentCubit, GeneralContentState>(
+        bloc: cubit,
+        builder: (context, state) {
+          return GeneralContentActionSheet(
+            isDeleting: state.deletingId == item.id,
+            onRecipients: () {
+              context.pop();
+              context.pushNamed(
+                GeneralContentTargetsPage.name,
+                extra: item,
+              );
+            },
+            onEdit: () {
+              context.pop();
+              SnakeBarWidget.showError(
+                context: context,
+                message: 'فرم ویرایش بخشنامه در محدوده این پیاده‌سازی نیست.',
+              );
+            },
+            onDelete: () {
+              context.pop();
+              _confirmDelete(context, item, cubit);
+            },
+          );
+        },
+      ),
+      actionWidget: const SizedBox.shrink(),
+    );
+  }
+
+  void _confirmDelete(
+    BuildContext context,
+    GeneralContentEntity item,
+    GeneralContentCubit cubit,
+  ) {
+    var isSubmitting = false;
+    BottomSheetMessage.showCustom(
+      context: context,
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      isDismissible: !isSubmitting,
+      content: StatefulBuilder(
+        builder: (context, setState) {
+          return DeleteConfirmSheet(
+            title: 'حذف بخشنامه',
+            message: 'آیا از حذف «${item.title ?? 'این بخشنامه'}» مطمئن هستید؟',
+            confirmTitle: 'حذف',
+            isSubmitting: isSubmitting,
+            onConfirm: () async {
+              setState(() => isSubmitting = true);
+              final success = await cubit.deleteContent(item);
+              if (context.mounted && success) context.pop();
+              if (context.mounted && !success) {
+                setState(() => isSubmitting = false);
+              }
+            },
+          );
+        },
+      ),
+      actionWidget: const SizedBox.shrink(),
+    );
+  }
+}
+
+class _GeneralContentList extends StatelessWidget {
+  const _GeneralContentList({
+    required this.state,
+    required this.onRetry,
+    required this.onLoadMore,
+    required this.onActions,
+  });
+
+  final GeneralContentState state;
+  final VoidCallback onRetry;
+  final VoidCallback onLoadMore;
+  final ValueChanged<GeneralContentEntity> onActions;
+
+  @override
+  Widget build(BuildContext context) {
+    if (state.isInitialLoading) {
+      return const Center(child: LoadingWidget());
+    }
+
+    if (state.status == GeneralContentViewStatus.connectionError ||
+        state.status == GeneralContentViewStatus.failure) {
+      return _ErrorView(onRetry: onRetry);
+    }
+
+    final records = state.visibleRecords;
+    if (records.isEmpty) {
+      return const Center(child: EmptyListWidget());
+    }
+
+    return RefreshIndicator(
+      onRefresh: () async => onRetry(),
+      child: NotificationListener<ScrollNotification>(
+        onNotification: (notification) {
+          if (notification.metrics.pixels >=
+                  notification.metrics.maxScrollExtent - AppSize.s80 &&
+              state.canLoadMore) {
+            onLoadMore();
+          }
+          return false;
+        },
+        child: ListView.separated(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.only(bottom: AppPadding.p100),
+          itemCount: records.length + (state.isLoadingMore ? 1 : 0),
+          separatorBuilder: (_, __) => Space.h16,
+          itemBuilder: (context, index) {
+            if (index >= records.length) {
+              return const Padding(
+                padding: EdgeInsets.all(AppPadding.p16),
+                child: Center(child: LoadingWidget()),
+              );
+            }
+
+            final item = records[index];
+            return GeneralContentCard(
+              item: item,
+              isActionLoading: state.deletingId == item.id,
+              onActions: () => onActions(item),
+            );
+          },
+        ),
+      ),
+    );
+  }
+}
+
+class _ErrorView extends StatelessWidget {
+  const _ErrorView({required this.onRetry});
+
+  final VoidCallback onRetry;
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          const EmptyListWidget(),
+          Space.h12,
+          TextButton(
+            onPressed: onRetry,
+            child: const BodyMediumText(text: 'تلاش مجدد'),
+          ),
+        ],
+      ),
+    );
+  }
+}

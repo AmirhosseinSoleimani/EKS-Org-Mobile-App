@@ -6,6 +6,7 @@ import 'package:eks_sana_plus_org/src/features/bottom_navigation_bar/presentatio
 import 'package:eks_sana_plus_org/src/features/cartable/presentation/cartable_page.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/presentation/dashboard_page.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/emdad_unit_routes.dart';
+import 'package:eks_sana_plus_org/src/features/general_content/presentation/general_content_routes.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/grade_pattern_routes.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_vehicle/emdad_vehicle_page.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/evaluation_invoice_page/evaluation_invoice_page.dart';
@@ -376,6 +377,7 @@ class Routes {
         ...ShiftRoutes.routes(getPage),
         ...ImeiRoutes.routes(getPage),
         ...NavganRoutes.routes(getPage),
+        ...GeneralContentRoutes.routes(getPage),
       ],
     );
   }

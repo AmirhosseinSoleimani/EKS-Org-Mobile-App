@@ -240,6 +240,30 @@ import '../features/evaluation/domain/usecase/post_evaluation_use_case.dart'
     as _i296;
 import '../features/evaluation/domain/usecase/submit_evaluation_for_aid_service_use_case.dart'
     as _i571;
+import '../features/general_content/data/data_source/general_content_data_source.dart'
+    as _i557;
+import '../features/general_content/data/data_source/general_content_data_source_impl.dart'
+    as _i825;
+import '../features/general_content/data/repository/general_content_repository_impl.dart'
+    as _i226;
+import '../features/general_content/data/service/general_content_service.dart'
+    as _i881;
+import '../features/general_content/domain/repository/general_content_repository.dart'
+    as _i783;
+import '../features/general_content/domain/usecases/add_general_content_target_use_case.dart'
+    as _i392;
+import '../features/general_content/domain/usecases/add_general_content_use_case.dart'
+    as _i180;
+import '../features/general_content/domain/usecases/delete_general_content_use_case.dart'
+    as _i311;
+import '../features/general_content/domain/usecases/get_general_content_list_use_case.dart'
+    as _i564;
+import '../features/general_content/domain/usecases/get_general_content_targets_use_case.dart'
+    as _i233;
+import '../features/general_content/domain/usecases/update_general_content_use_case.dart'
+    as _i266;
+import '../features/general_content/presentation/cubit/general_content_cubit.dart'
+    as _i228;
 import '../features/grade_pattern/data/data_sources/grade_pattern_data_source.dart'
     as _i480;
 import '../features/grade_pattern/data/data_sources/grade_pattern_data_source_impl.dart'
@@ -904,6 +928,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i54.EmdadUnitService>(
     () => _i54.EmdadUnitService(gh<_i361.Dio>()),
   );
+  gh.lazySingleton<_i881.GeneralContentService>(
+    () => _i881.GeneralContentService(gh<_i361.Dio>()),
+  );
   gh.lazySingleton<_i300.GradePatternService>(
     () => _i300.GradePatternService(gh<_i361.Dio>()),
   );
@@ -934,6 +961,9 @@ _i174.GetIt $initGetIt(
     () => _i282.IndicatorReportRepositoryImpl(
       gh<_i691.IndicatorReportDataSource>(),
     ),
+  );
+  gh.lazySingleton<_i557.GeneralContentDataSource>(
+    () => _i825.GeneralContentDataSourceImpl(gh<_i881.GeneralContentService>()),
   );
   gh.lazySingleton<_i940.RescuerDataSource>(
     () => _i100.RescuerDataSourceImpl(gh<_i298.RescuerService>()),
@@ -1083,6 +1113,11 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i399.ShiftRepository>(
     () => _i520.ShiftRepositoryImpl(gh<_i970.ShiftDataSource>()),
   );
+  gh.lazySingleton<_i783.GeneralContentRepository>(
+    () => _i226.GeneralContentRepositoryImpl(
+      gh<_i557.GeneralContentDataSource>(),
+    ),
+  );
   gh.lazySingleton<_i87.NavganDataSource>(
     () => _i209.NavganDataSourceImpl(gh<_i584.NavganService>()),
   );
@@ -1112,6 +1147,32 @@ _i174.GetIt $initGetIt(
   );
   gh.factory<_i557.GetRescuersUseCase>(
     () => _i557.GetRescuersUseCase(gh<_i449.RescuerRepository>()),
+  );
+  gh.lazySingleton<_i392.AddGeneralContentTargetUseCase>(
+    () => _i392.AddGeneralContentTargetUseCase(
+      gh<_i783.GeneralContentRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i180.AddGeneralContentUseCase>(
+    () => _i180.AddGeneralContentUseCase(gh<_i783.GeneralContentRepository>()),
+  );
+  gh.lazySingleton<_i311.DeleteGeneralContentUseCase>(
+    () =>
+        _i311.DeleteGeneralContentUseCase(gh<_i783.GeneralContentRepository>()),
+  );
+  gh.lazySingleton<_i564.GetGeneralContentListUseCase>(
+    () => _i564.GetGeneralContentListUseCase(
+      gh<_i783.GeneralContentRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i233.GetGeneralContentTargetsUseCase>(
+    () => _i233.GetGeneralContentTargetsUseCase(
+      gh<_i783.GeneralContentRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i266.UpdateGeneralContentUseCase>(
+    () =>
+        _i266.UpdateGeneralContentUseCase(gh<_i783.GeneralContentRepository>()),
   );
   gh.lazySingleton<_i904.CreateShiftUseCase>(
     () => _i904.CreateShiftUseCase(gh<_i399.ShiftRepository>()),
@@ -1444,6 +1505,14 @@ _i174.GetIt $initGetIt(
   );
   gh.factory<_i579.VehicleInfoHistoryUseCase>(
     () => _i579.VehicleInfoHistoryUseCase(gh<_i1027.VehicleInfoRepository>()),
+  );
+  gh.factory<_i228.GeneralContentCubit>(
+    () => _i228.GeneralContentCubit(
+      gh<_i564.GetGeneralContentListUseCase>(),
+      gh<_i233.GetGeneralContentTargetsUseCase>(),
+      gh<_i311.DeleteGeneralContentUseCase>(),
+      gh<_i1058.CurrentSessionManager>(),
+    ),
   );
   gh.lazySingleton<_i825.AssignGradePatternReferenceUseCase>(
     () => _i825.AssignGradePatternReferenceUseCase(
@@ -2220,6 +2289,20 @@ _i174.GetIt $initGetIt(
       gh<_i695.SyncCurrentSessionUseCase>(),
     ),
   );
+  gh.factory<_i93.NavganCubit>(
+    () => _i93.NavganCubit(
+      gh<_i570.GetNavganListUseCase>(),
+      gh<_i745.GetGradePatternListUseCase>(),
+      gh<_i958.GetGradePatternReferencesUseCase>(),
+      gh<_i1031.GetGradePatternDetailUseCase>(),
+      gh<_i529.AddNavganGradeReferenceUseCase>(),
+      gh<_i467.DeleteNavganGradeReferenceUseCase>(),
+      gh<_i85.GetNavganServiceGroupsUseCase>(),
+      gh<_i193.GetNavganDefectsUseCase>(),
+      gh<_i940.SubmitNavganServiceCategoriesUseCase>(),
+      gh<_i71.SubmitNavganDefectsUseCase>(),
+    ),
+  );
   gh.factory<_i792.UpdateRequestCubit>(
     () => _i792.UpdateRequestCubit(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
@@ -2255,20 +2338,6 @@ _i174.GetIt $initGetIt(
       gh<_i672.GetReliefRequestByIdUseCase>(),
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
       gh<_i531.AcceptEvaluationUseCase>(),
-    ),
-  );
-  gh.factory<_i93.NavganCubit>(
-    () => _i93.NavganCubit(
-      gh<_i570.GetNavganListUseCase>(),
-      gh<_i745.GetGradePatternListUseCase>(),
-      gh<_i958.GetGradePatternReferencesUseCase>(),
-      gh<_i1031.GetGradePatternDetailUseCase>(),
-      gh<_i529.AddNavganGradeReferenceUseCase>(),
-      gh<_i467.DeleteNavganGradeReferenceUseCase>(),
-      gh<_i85.GetNavganServiceGroupsUseCase>(),
-      gh<_i193.GetNavganDefectsUseCase>(),
-      gh<_i940.SubmitNavganServiceCategoriesUseCase>(),
-      gh<_i71.SubmitNavganDefectsUseCase>(),
     ),
   );
   gh.factory<_i319.EvaluationAidServiceRequestCubit>(
