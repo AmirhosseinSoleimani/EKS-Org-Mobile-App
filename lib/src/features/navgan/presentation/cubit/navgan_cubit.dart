@@ -1,7 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/emdad_service_category_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/grade_pattern_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/navgan_entity.dart';
-import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/navgan_service_group_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/params/navgan_grade_reference_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/params/navgan_id_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/params/navgan_ids_payload_param_entity.dart';
@@ -156,6 +155,16 @@ class NavganCubit extends Cubit<NavganState> {
     );
   }
 
+  Future<void> loadGradePatternDetail(GradePatternEntity pattern) async {
+    emit(state.copyWith(
+      selectedGradePattern: pattern,
+      clearGradePatternDetail: true,
+    ));
+    final id = pattern.id ?? pattern.gradeId;
+    if (id == null) return;
+    await fetchGradePatternDetail(id);
+  }
+
   Future<bool> submitGradeReference() async {
     if (state.isGradeSubmitting) return false;
     final navgan = state.selectedNavgan;
@@ -200,6 +209,11 @@ class NavganCubit extends Cubit<NavganState> {
       )),
     );
     return success;
+  }
+
+  Future<bool> assignGradePattern(GradePatternEntity pattern) async {
+    emit(state.copyWith(selectedGradePattern: pattern));
+    return submitGradeReference();
   }
 
   Future<bool> deleteGradeReference(int referenceId) async {

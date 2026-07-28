@@ -276,7 +276,7 @@ class _ServiceTile extends StatelessWidget {
                   ),
                 ),
                 Space.w8,
-                if(true) //todo: fix this condition
+                if(selected)
                 Icon(
                   Icons.settings_outlined,
                   size: AppSize.s22,

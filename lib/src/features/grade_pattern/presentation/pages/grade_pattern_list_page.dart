@@ -39,6 +39,7 @@ class _GradePatternListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<GradePatternCubit>();
+    final theme = Theme.of(context);
 
     return BlocListener<GradePatternCubit, GradePatternState>(
       listener: (context, state) {

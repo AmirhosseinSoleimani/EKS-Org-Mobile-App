@@ -3,14 +3,14 @@ import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/grade_patt
 import 'package:eks_sana_plus_org/src/features/navgan/domain/entities/navgan_entity.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/presentation/cubit/navgan_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/presentation/cubit/navgan_state.dart';
-import 'package:eks_sana_plus_org/src/features/navgan/presentation/widgets/navgan_grade_pattern_detail_view.dart';
+import 'package:eks_sana_plus_org/src/features/navgan/presentation/widgets/navgan_grade_pattern_ui_mapper.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/overlay_dropdown_form_field.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/sticky_form_action_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/grade_pattern/grade_pattern_details_sheet.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/grade_pattern/grade_pattern_list_card.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -41,7 +41,6 @@ class _NavganGradePatternView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<NavganCubit>();
-    final theme = Theme.of(context);
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -66,79 +65,102 @@ class _NavganGradePatternView extends StatelessWidget {
             appBar: const SimpleActionBar(title: 'الگوی گرید'),
             body: SafeArea(
               top: false,
-              child: SingleChildScrollView(
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                padding: const EdgeInsets.all(AppPadding.p16),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.stretch,
-                  children: [
-                    _NavganSummaryCard(navgan: state.selectedNavgan),
-                    Space.h16,
-                    Container(
-                      padding: const EdgeInsets.all(AppPadding.p16),
-                      decoration: BoxDecoration(
-                        color: theme.colorScheme.onPrimary,
-                        borderRadius: BorderRadius.circular(AppSize.s8),
-                        boxShadow: [
-                          BoxShadow(
-                            color: theme.colorScheme.shadow.withOpacity(0.08),
-                            blurRadius: AppSize.s12,
-                            offset: const Offset(0, 6),
-                          ),
-                        ],
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.stretch,
-                        children: [
-                          OverlayDropdownFormField<GradePatternEntity>(
-                            key: ValueKey(
-                              'navgan-grade-pattern-${state.selectedGradePattern?.id}-${state.gradePatterns.length}',
-                            ),
-                            labelText: 'الگوی گرید',
-                            mandatory: true,
-                            items: state.gradePatterns,
-                            value: state.selectedGradePattern,
-                            enabled: !state.isGradePatternsLoading &&
-                                state.gradePatterns.isNotEmpty,
-                            hintText: state.isGradePatternsLoading
-                                ? 'در حال دریافت...'
-                                : 'انتخاب کنید',
-                            onChanged: cubit.selectGradePattern,
-                          ),
-                          Space.h20,
-                          if (state.isGradeDetailLoading)
-                            const Center(child: LoadingWidget())
-                          else if (state.gradePatternDetail != null)
-                            NavganGradePatternDetailView(
-                              item: state.gradePatternDetail!,
-                            )
-                          else
-                            BodySmallText(
-                              text:
-                                  'برای مشاهده جزئیات، یک الگوی گرید انتخاب کنید.',
-                              color: theme.colorScheme.onSurfaceVariant,
-                            ),
-                        ],
-                      ),
-                    ),
-                  ],
-                ),
+              child: _GradePatternList(
+                state: state,
+                onDetails: (item) => _showDetails(context, cubit, item),
+                onAssign: (item) async {
+                  final success = await cubit.assignGradePattern(item);
+                  if (success && context.mounted) context.pop(true);
+                },
               ),
-            ),
-            bottomNavigationBar: StickyFormActionBar(
-              submitTitle: 'ثبت',
-              cancelTitle: 'انصراف',
-              isSubmitting: state.isGradeSubmitting,
-              onSubmit: () async {
-                final success = await cubit.submitGradeReference();
-                if (success && context.mounted) context.pop(true);
-              },
-              onCancel: () => context.pop(),
             ),
           );
         },
       ),
+    );
+  }
+
+  Future<void> _showDetails(
+    BuildContext context,
+    NavganCubit cubit,
+    GradePatternEntity item,
+  ) async {
+    var detail = item;
+    await cubit.loadGradePatternDetail(item);
+    final loaded = cubit.state.gradePatternDetail;
+    if (loaded != null) detail = loaded;
+
+    if (!context.mounted) return;
+    showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      useSafeArea: true,
+      backgroundColor: Theme.of(context).colorScheme.surface,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
+      ),
+      builder: (_) => GradePatternDetailsSheet(item: detail.toUiModel()),
+    );
+  }
+}
+
+class _GradePatternList extends StatelessWidget {
+  const _GradePatternList({
+    required this.state,
+    required this.onDetails,
+    required this.onAssign,
+  });
+
+  final NavganState state;
+  final ValueChanged<GradePatternEntity> onDetails;
+  final ValueChanged<GradePatternEntity> onAssign;
+
+  @override
+  Widget build(BuildContext context) {
+    if (state.isGradePatternsLoading) {
+      return const Center(child: LoadingWidget());
+    }
+
+    final items = state.gradePatterns;
+    if (items.isEmpty) {
+      return const Center(child: EmptyListWidget());
+    }
+
+    final selectedId =
+        state.selectedGradePattern?.id ?? state.selectedGradePattern?.gradeId;
+
+    return ListView.builder(
+      padding: const EdgeInsets.fromLTRB(
+        AppPadding.p16,
+        AppPadding.p16,
+        AppPadding.p16,
+        AppPadding.p100,
+      ),
+      itemCount: items.length + 1,
+      itemBuilder: (context, index) {
+        if (index == 0) {
+          return Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              _NavganSummaryCard(navgan: state.selectedNavgan),
+              Space.h16,
+            ],
+          );
+        }
+
+        final item = items[index - 1];
+        final itemId = item.id ?? item.gradeId;
+        return GradePatternListCard(
+          item: item.toUiModel(),
+          isDetailsLoading: state.isGradeDetailLoading && selectedId == itemId,
+          isActionLoading: state.isGradeSubmitting && selectedId == itemId,
+          actionTitle: 'ثبت الگو',
+          actionIcon: Icons.add_task_outlined,
+          actionSuffixIcon: null,
+          onDetails: () => onDetails(item),
+          onAction: () => onAssign(item),
+        );
+      },
     );
   }
 }
