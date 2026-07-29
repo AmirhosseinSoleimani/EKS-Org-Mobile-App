@@ -110,8 +110,13 @@ class _ShiftListView extends StatelessWidget {
               ),
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: AppPadding.p16),
-                child: _ReportButton(
-                  onTap: cubit.exportReport,
+                child: BlocBuilder<ShiftListCubit, ShiftListState>(
+                  builder: (context, state) {
+                    return _ReportButton(
+                      isLoading: cubit.isExporting,
+                      onTap: cubit.exportReport,
+                    );
+                  },
                 ),
               ),
               Space.h12,
@@ -427,15 +432,22 @@ class _TopFilterButton extends StatelessWidget {
 }
 
 class _ReportButton extends StatelessWidget {
-  const _ReportButton({required this.onTap});
+  const _ReportButton({
+    required this.isLoading,
+    required this.onTap,
+  });
 
+  final bool isLoading;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return InkWell(
-      onTap: onTap,
+      onTap: () {
+        if (isLoading) return;
+        onTap();
+      },
       borderRadius: BorderRadius.circular(AppSize.s8),
       child: Container(
         height: AppSize.s40,
@@ -447,17 +459,26 @@ class _ReportButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            SvgWidget(src: SvgAsset(SvgManager.exportNotes)),
-            Space.w8,
-            Text(
-              'گزارش‌گیری',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onPrimaryFixed,
-                fontWeight: FontWeight.w800,
+            if (isLoading)
+              SizedBox(
+                width: AppSize.s20,
+                height: AppSize.s20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: theme.colorScheme.onPrimaryFixed,
+                ),
+              )
+            else ...[
+              SvgWidget(src: SvgAsset(SvgManager.exportNotes)),
+              Space.w8,
+              Text(
+                'گزارش‌گیری',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onPrimaryFixed,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
-            ),
-
-
+            ],
           ],
         ),
       ),

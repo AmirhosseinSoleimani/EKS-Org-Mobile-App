@@ -2,20 +2,20 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/agency_info_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/agency_info_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/add_agency_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_action_pages.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_contracts_page.dart';
-import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/add_agency_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_info_details_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_delete_action_view.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_detail_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_filter_sheet.dart';
-import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_report_button.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_summary_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
@@ -184,9 +184,12 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
                   buildWhen: (previous, current) =>
                   previous.data.isReportLoading != current.data.isReportLoading,
                   builder: (context, state) {
-                    return AgencyInfoReportButton(
+                    return ReportButtonWidget(
                       isLoading: state.data.isReportLoading,
-                      onTap: cubit.getReport,
+                      onTap: () {
+                        if (state.data.isReportLoading) return;
+                        cubit.getReport();
+                      },
                     );
                   },
                 ),

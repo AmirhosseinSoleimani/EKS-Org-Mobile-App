@@ -10,8 +10,9 @@ import 'package:eks_sana_plus_org/src/features/imei/domain/usecases/get_imei_inf
 import 'package:eks_sana_plus_org/src/features/imei/domain/usecases/get_imei_info_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/imei/domain/usecases/update_imei_info_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/imei/presentation/cubit/imei_state.dart';
-import 'package:eks_sana_plus_org/src/features/imei/presentation/util/imei_excel_exporter.dart';
+import 'package:eks_sana_plus_org/src/features/imei/presentation/util/imei_excel_report_factory.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -19,13 +20,14 @@ import 'package:injectable/injectable.dart';
 @injectable
 class ImeiCubit extends Cubit<ImeiState> {
   ImeiCubit(
-    this._getListUseCase,
-    this._getDeviceInfoListUseCase,
-    this._getByIdUseCase,
-    this._addUseCase,
-    this._updateUseCase,
-    this._deleteUseCase,
-  ) : super(const ImeiState());
+      this._getListUseCase,
+      this._getDeviceInfoListUseCase,
+      this._getByIdUseCase,
+      this._addUseCase,
+      this._updateUseCase,
+      this._deleteUseCase,
+      this._exportExcelUseCase,
+      ) : super(const ImeiState());
 
   static const int _pageSize = 10;
 
@@ -35,6 +37,7 @@ class ImeiCubit extends Cubit<ImeiState> {
   final AddImeiInfoUseCase _addUseCase;
   final UpdateImeiInfoUseCase _updateUseCase;
   final DeleteImeiInfoUseCase _deleteUseCase;
+  final ExportExcelUseCase _exportExcelUseCase;
 
   final filterSimNumberController = TextEditingController();
   final filterAvlSerialController = TextEditingController();
@@ -364,12 +367,55 @@ class ImeiCubit extends Cubit<ImeiState> {
   Future<void> exportReport() async {
     if (state.isReporting) return;
 
-    emit(state.copyWith(
-      isReporting: true,
-      clearErrorMessage: true,
-      clearSuccessMessage: true,
-      clearReportPath: true,
-    ));
+    emit(
+      state.copyWith(
+        isReporting: true,
+        clearErrorMessage: true,
+        clearSuccessMessage: true,
+        clearReportPath: true,
+      ),
+    );
+
+    final reportItems = await _fetchReportItems();
+    if (reportItems == null) return;
+
+    if (reportItems.isEmpty) {
+      _emitReportError('داده‌ای برای تهیه گزارش وجود ندارد.');
+      return;
+    }
+
+    final result = await _exportExcelUseCase(
+      ImeiExcelReportFactory.create(records: reportItems),
+    );
+
+    result.when(
+      success: (data, failures, resultCode) {
+        emit(
+          state.copyWith(
+            isReporting: false,
+            reportPath: data.displayPath,
+            successMessage: data.isBrowserDownload
+                ? 'دانلود گزارش IMEI آغاز شد.'
+                : 'گزارش IMEI با موفقیت ذخیره شد.',
+            clearErrorMessage: true,
+          ),
+        );
+      },
+      failure: (error, failures) => _emitReportError(
+        failures ?? 'ذخیره فایل گزارش با خطا مواجه شد.',
+      ),
+      expireToken: () => _emitReportError(
+        'نشست کاربری منقضی شده است.',
+      ),
+      connectionError: () => _emitReportError(
+        'ذخیره فایل گزارش با خطا مواجه شد.',
+      ),
+    );
+  }
+
+  Future<List<ImeiInfoEntity>?> _fetchReportItems() async {
+    List<ImeiInfoEntity>? items;
+    String? errorMessage;
 
     final result = await _getListUseCase(
       state.filter.copyWith(
@@ -378,35 +424,36 @@ class ImeiCubit extends Cubit<ImeiState> {
       ),
     );
 
-    List<ImeiInfoEntity>? reportItems;
     result.when(
       success: (page, failures, resultCode) {
-        reportItems = page.records;
+        items = page.records;
       },
-      failure: (error, failures) => emit(state.copyWith(
-        isReporting: false,
-        errorMessage: failures ?? 'گزارش‌گیری با خطا مواجه شد.',
-      )),
-      expireToken: () => emit(state.copyWith(
-        isReporting: false,
-        errorMessage: 'نشست کاربری منقضی شده است.',
-      )),
-      connectionError: () => emit(state.copyWith(
-        isReporting: false,
-        errorMessage: 'اتصال به اینترنت برقرار نیست.',
-      )),
+      failure: (error, failures) {
+        errorMessage = failures ?? 'دریافت اطلاعات گزارش با خطا مواجه شد.';
+      },
+      expireToken: () {
+        errorMessage = 'نشست کاربری منقضی شده است.';
+      },
+      connectionError: () {
+        errorMessage = 'اتصال به اینترنت برقرار نیست.';
+      },
     );
 
-    final items = reportItems;
-    if (items == null) return;
+    if (errorMessage != null) {
+      _emitReportError(errorMessage!);
+      return null;
+    }
 
-    final path = await ImeiExcelExporter.export(items);
-    emit(state.copyWith(
-      isReporting: false,
-      reportPath: path,
-      successMessage: 'گزارش IMEI با موفقیت ذخیره شد.',
-      clearErrorMessage: true,
-    ));
+    return items ?? const <ImeiInfoEntity>[];
+  }
+
+  void _emitReportError(String message) {
+    emit(
+      state.copyWith(
+        isReporting: false,
+        errorMessage: message,
+      ),
+    );
   }
 
   String? validateRequired(String? value) {

@@ -10,6 +10,7 @@ import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:flutter/material.dart';
@@ -311,6 +312,9 @@ class _VehicleInfoTopControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
     return Column(
       children: [
         Row(
@@ -333,9 +337,12 @@ class _VehicleInfoTopControls extends StatelessWidget {
           ],
         ),
         Space.h16,
-        _ReportButton(
+        ReportButtonWidget(
           isLoading: state.data.isReportLoading,
-          onTap: onReport,
+          onTap: () {
+            if (state.data.isReportLoading) return;
+            onReport();
+          },
         ),
       ],
     );
@@ -394,57 +401,6 @@ class _HeaderButton extends StatelessWidget {
               color: colorScheme.onSurfaceVariant,
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ReportButton extends StatelessWidget {
-  const _ReportButton({
-    required this.isLoading,
-    required this.onTap,
-  });
-
-  final bool isLoading;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Material(
-      color: Colors.transparent,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppSize.s8),
-        side: BorderSide(color: theme.colorScheme.onSurfaceVariant.withOpacity(0.65)),
-      ),
-      child: InkWell(
-        onTap: isLoading ? null : onTap,
-        borderRadius: BorderRadius.circular(AppSize.s8),
-        child: SizedBox(
-          height: AppSize.s42,
-          child: Center(
-            child: isLoading
-                ? const SizedBox(
-                    width: AppSize.s22,
-                    height: AppSize.s22,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Text(
-                        'گزارش‌گیری',
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onSurfaceVariant,
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      Space.w8,
-                      Icon(Icons.receipt_long_outlined, color: theme.colorScheme.onSurfaceVariant),
-                    ],
-                  ),
-          ),
         ),
       ),
     );

@@ -7,13 +7,13 @@ import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehi
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_model_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_tool_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/use_cases/vehicle_info_use_cases.dart';
-import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/utils/vehicle_info_excel_exporter.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/utils/vehicle_info_excel_report_factory.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:open_filex/open_filex.dart';
 
 part 'vehicle_info_cubit.freezed.dart';
 part 'vehicle_info_state.dart';
@@ -29,6 +29,7 @@ class VehicleInfoCubit extends Cubit<VehicleInfoState> {
     this._toolsUseCase,
     this._categoriesUseCase,
     this._historyUseCase,
+    this._exportExcelUseCase,
   ) : super(const VehicleInfoState.idle());
 
   final GetVehicleInfoListUseCase _getListUseCase;
@@ -48,6 +49,7 @@ class VehicleInfoCubit extends Cubit<VehicleInfoState> {
 
   static const int _pageSize = 10;
   VoidCallback? _retryAction;
+  final ExportExcelUseCase _exportExcelUseCase;
 
   VehicleInfoStateData get _data => state.data;
   bool get hasRetryAction => _retryAction != null;
@@ -163,31 +165,54 @@ class VehicleInfoCubit extends Cubit<VehicleInfoState> {
       errorMessage: null,
     )));
 
-    final result = await _getListUseCase(_data.filter.copyWith(skip: 0, pageSize: 0));
+    final result = await _getListUseCase(
+      _data.filter.copyWith(skip: 0, pageSize: 0),
+    );
     await result.when<Future<void>>(
       success: (page, failures, resultCode) async {
-        final filePath = await VehicleInfoExcelExporter.export(page.records);
-        emit(VehicleInfoState.loaded(data: _data.copyWith(
-          isReportLoading: false,
-          reportFilePath: filePath,
-          successMessage: 'فایل اکسل گزارش خودروها آماده شد',
-        )));
-
-        final openResult = await OpenFilex.open(
-          filePath,
-          type: 'application/vnd.ms-excel',
-        );
-
-        if (openResult.type != ResultType.done) {
-          emit(VehicleInfoState.loaded(data: _data.copyWith(
-            isReportLoading: false,
-            reportFilePath: filePath,
-            successMessage: 'فایل اکسل ذخیره شد اما برنامه ای برای باز کردن آن پیدا نشد',
-          )));
+        if (page.records.isEmpty) {
+          _emitFailure(
+            'داده‌ای برای تهیه گزارش وجود ندارد.',
+            clearReportLoading: true,
+          );
+          return;
         }
+
+        final exportResult = await _exportExcelUseCase(
+          VehicleInfoExcelReportFactory.create(page.records),
+        );
+        exportResult.when(
+          success: (data, failures, resultCode) => emit(
+            VehicleInfoState.loaded(data: _data.copyWith(
+              isReportLoading: false,
+              reportFilePath: data.displayPath,
+              successMessage: data.isBrowserDownload
+                  ? 'دانلود فایل گزارش خودروها آغاز شد.'
+                  : 'فایل اکسل گزارش خودروها ذخیره شد',
+            )),
+          ),
+          failure: (error, failures) => _emitFailure(
+            failures ?? 'ذخیره فایل گزارش با خطا مواجه شد',
+            clearReportLoading: true,
+          ),
+          expireToken: () => _emitFailure(
+            'نشست کاربری منقضی شده است.',
+            clearReportLoading: true,
+          ),
+          connectionError: () => _emitFailure(
+            'ذخیره فایل گزارش با خطا مواجه شد',
+            clearReportLoading: true,
+          ),
+        );
       },
-      failure: (error, failures) async => _emitFailure(failures, clearReportLoading: true),
-      expireToken: () async => _emitFailure('نشست کاربری منقضی شده است.', clearReportLoading: true),
+      failure: (error, failures) async => _emitFailure(
+        failures,
+        clearReportLoading: true,
+      ),
+      expireToken: () async => _emitFailure(
+        'نشست کاربری منقضی شده است.',
+        clearReportLoading: true,
+      ),
       connectionError: () async => emit(VehicleInfoState.connectionError(
         data: _data.copyWith(isReportLoading: false),
       )),

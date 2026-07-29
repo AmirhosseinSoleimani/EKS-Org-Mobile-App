@@ -7,13 +7,13 @@ import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/params/
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_lookup_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/usecases/plan_info_usecases.dart';
-import 'package:eks_sana_plus_org/src/features/plan_info/presentation/utils/plan_info_excel_exporter.dart';
+import 'package:eks_sana_plus_org/src/features/plan_info/presentation/utils/plan_info_excel_report_factory.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/manager/current_session_manager.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
-import 'package:open_filex/open_filex.dart';
 
 import 'plan_info_state.dart';
 
@@ -33,6 +33,7 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
       this._currentSessionManager,
       this._changeLocationUseCase,
       this._getPlanHistoriesUseCase,
+      this._exportExcelUseCase,
       ) : super(const PlanInfoState());
 
   final GetPlanListUseCase _getPlanListUseCase;
@@ -48,6 +49,7 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
   final CurrentSessionManager _currentSessionManager;
   final ChangeLocationUseCase _changeLocationUseCase;
   final GetPlanHistoriesUseCase _getPlanHistoriesUseCase;
+  final ExportExcelUseCase _exportExcelUseCase;
 
   final titleController = TextEditingController();
   final emdadUnitController = TextEditingController();
@@ -523,56 +525,93 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
   }
 
   Future<void> loadPlanReport() async {
+    if (state.isReportLoading) return;
+
     emit(
       state.copyWith(
-        status: PlanInfoStatus.submitting,
+        isReportLoading: true,
         clearReportFilePath: true,
+        clearMessage: true,
       ),
     );
 
-    final result = await _getPlanReportUseCase(_buildFilterParam(pageSize: 0));
+    final result = await _getPlanReportUseCase(
+      _buildFilterParam(pageSize: 0),
+    );
 
     await result.when<Future<void>>(
-      success: (data, _, __) async {
-        final filePath = await PlanInfoExcelExporter.export(data);
-
-        emit(
-          state.copyWith(
-            status: PlanInfoStatus.loaded,
-            reportItems: data,
-            reportFilePath: filePath,
-            message: 'فایل اکسل گزارش برنامه‌ریزی آماده شد',
-          ),
-        );
-
-        final openResult = await OpenFilex.open(
-          filePath,
-          type: 'application/vnd.ms-excel',
-        );
-
-        if (openResult.type != ResultType.done) {
+      success: (items, _, __) async {
+        if (items.isEmpty) {
           emit(
             state.copyWith(
-              status: PlanInfoStatus.loaded,
-              reportItems: data,
-              reportFilePath: filePath,
-              message: 'فایل اکسل ذخیره شد اما برنامه‌ای برای باز کردن آن پیدا نشد',
+              status: PlanInfoStatus.error,
+              isReportLoading: false,
+              message: 'داده‌ای برای تهیه گزارش وجود ندارد.',
             ),
           );
+          return;
         }
-      },
-      failure: (_, message) async {
-        emit(
-          state.copyWith(
-            status: PlanInfoStatus.error,
-            message: message ?? 'دریافت گزارش با خطا مواجه شد',
+
+        final exportResult = await _exportExcelUseCase(
+          PlanInfoExcelReportFactory.create(items),
+        );
+
+        exportResult.when(
+          success: (data, failures, resultCode) => emit(
+            state.copyWith(
+              status: PlanInfoStatus.loaded,
+              isReportLoading: false,
+              reportItems: items,
+              reportFilePath: data.displayPath,
+              message: data.isBrowserDownload
+                  ? 'دانلود فایل گزارش آغاز شد.'
+                  : 'فایل اکسل گزارش برنامه‌ریزی ذخیره شد.',
+            ),
+          ),
+          failure: (error, failures) => emit(
+            state.copyWith(
+              status: PlanInfoStatus.error,
+              isReportLoading: false,
+              message: failures ?? 'ذخیره فایل گزارش با خطا مواجه شد.',
+            ),
+          ),
+          expireToken: () => emit(
+            state.copyWith(
+              status: PlanInfoStatus.error,
+              isReportLoading: false,
+              message: 'نشست کاربری منقضی شده است.',
+            ),
+          ),
+          connectionError: () => emit(
+            state.copyWith(
+              status: PlanInfoStatus.error,
+              isReportLoading: false,
+              message: 'ذخیره فایل گزارش با خطا مواجه شد.',
+            ),
           ),
         );
       },
-      expireToken: () async {},
-      connectionError: () async {
-        emit(state.copyWith(status: PlanInfoStatus.connectionError));
-      },
+      failure: (_, message) async => emit(
+        state.copyWith(
+          status: PlanInfoStatus.error,
+          isReportLoading: false,
+          message: message ?? 'دریافت گزارش با خطا مواجه شد.',
+        ),
+      ),
+      expireToken: () async => emit(
+        state.copyWith(
+          status: PlanInfoStatus.error,
+          isReportLoading: false,
+          message: 'نشست کاربری منقضی شده است.',
+        ),
+      ),
+      connectionError: () async => emit(
+        state.copyWith(
+          status: PlanInfoStatus.connectionError,
+          isReportLoading: false,
+          message: 'اتصال به اینترنت برقرار نیست.',
+        ),
+      ),
     );
   }
 

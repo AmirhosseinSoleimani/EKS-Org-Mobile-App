@@ -1,6 +1,7 @@
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
@@ -50,16 +51,12 @@ class SkillsCertificatesToolbar extends StatelessWidget {
           ],
         ),
         Space.h16,
-        InkwellButtonWidget(
-          title: 'گزارش گیری',
-          titleColor: colorScheme.onPrimaryFixed,
-          loadingColor: colorScheme.onPrimaryFixed,
-          prefixIcon: SvgWidget(src: SvgAsset(SvgManager.exportNotes)),
-          backgroundColor: colorScheme.secondaryContainer,
-          borderColor: colorScheme.onPrimaryFixed,
-          borderWidth: AppSize.s2,
-          showLoading: isReportLoading,
-          onTap: onReportTap,
+        ReportButtonWidget(
+          isLoading: isReportLoading,
+          onTap: () {
+            if (isReportLoading) return;
+            onReportTap();
+          },
         ),
       ],
     );

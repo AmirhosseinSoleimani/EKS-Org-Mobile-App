@@ -57,7 +57,9 @@ class SpecialPlanReportCubit extends Cubit<SpecialPlanReportState> {
         emit(
           state.copyWith(
             isLoading: false,
-            successMessage: 'فایل گزارش با موفقیت ذخیره شد.',
+            successMessage: data.isBrowserDownload
+                ? 'دانلود فایل گزارش طرح‌ها آغاز شد.'
+                : 'فایل گزارش طرح‌ها با موفقیت ذخیره شد.',
             errorMessage: null,
           ),
         );

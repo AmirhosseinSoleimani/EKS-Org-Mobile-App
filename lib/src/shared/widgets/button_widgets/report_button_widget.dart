@@ -4,8 +4,8 @@ import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_src.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_widget.dart';
 import 'package:flutter/material.dart';
 
-class AgencyInfoReportButton extends StatelessWidget {
-  const AgencyInfoReportButton({
+class ReportButtonWidget extends StatelessWidget {
+  const ReportButtonWidget({
     super.key,
     required this.isLoading,
     required this.onTap,
@@ -20,13 +20,16 @@ class AgencyInfoReportButton extends StatelessWidget {
     return InkwellButtonWidget(
       title: 'گزارش گیری',
       titleColor: colorScheme.onPrimaryFixed,
-      showLoading: isLoading,
-      loadingColor: colorScheme.onPrimaryFixed,
       prefixIcon: SvgWidget(src: SvgAsset(SvgManager.exportNotes)),
       backgroundColor: colorScheme.secondaryContainer,
       borderColor: colorScheme.onPrimaryFixed,
       borderWidth: 2,
-      onTap: onTap,
+      showLoading: isLoading,
+      loadingColor: colorScheme.onPrimaryFixed,
+      onTap: () {
+        if (isLoading) return;
+        onTap();
+      },
     );
   }
 }

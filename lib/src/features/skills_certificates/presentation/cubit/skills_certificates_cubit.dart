@@ -4,14 +4,14 @@ import 'package:eks_sana_plus_org/src/features/skills_certificates/domain/entiti
 import 'package:eks_sana_plus_org/src/features/skills_certificates/domain/entities/skill_certificate_entity.dart';
 import 'package:eks_sana_plus_org/src/features/skills_certificates/domain/entities/skill_service_entity.dart';
 import 'package:eks_sana_plus_org/src/features/skills_certificates/domain/usecases/skills_certificates_usecases.dart';
-import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/utils/skill_certificate_excel_exporter.dart';
+import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/utils/skill_certificate_excel_report_factory.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:open_filex/open_filex.dart';
 
 part 'skills_certificates_cubit.freezed.dart';
 part 'skills_certificates_state.dart';
@@ -27,6 +27,7 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> {
     this._getSkillCertificateServicesUseCase,
     this._submitSkillCertificateServicesUseCase,
     this._getSkillCertificatesReportUseCase,
+    this._exportExcelUseCase,
   ) : super(const SkillsCertificatesState.idle());
 
   final GetSkillsCertificatesUseCase _getSkillsCertificatesUseCase;
@@ -38,6 +39,7 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> {
   final SubmitSkillCertificateServicesUseCase
       _submitSkillCertificateServicesUseCase;
   final GetSkillCertificatesReportUseCase _getSkillCertificatesReportUseCase;
+  final ExportExcelUseCase _exportExcelUseCase;
 
   final TextEditingController titleFilterController = TextEditingController();
 
@@ -429,6 +431,8 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> {
   }
 
   Future<void> exportReport() async {
+    if (_data.isReportLoading) return;
+
     emit(SkillsCertificatesState.loading(data: _data.copyWith(
       isReportLoading: true,
       reportFilePath: null,
@@ -441,53 +445,68 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> {
 
     await result.when<Future<void>>(
       success: (items, _, __) async {
-        final filePath = await SkillCertificateExcelExporter.export(items);
-        emit(SkillsCertificatesState.loaded(
-          data: _data.copyWith(
-            isReportLoading: false,
-            reportFilePath: filePath,
-            message: 'فایل اکسل گزارش گواهینامه مهارت آماده شد',
-          ),
-        ));
-
-        final openResult = await OpenFilex.open(
-          filePath,
-          type: 'application/vnd.ms-excel',
-        );
-
-        if (openResult.type != ResultType.done) {
-          emit(SkillsCertificatesState.loaded(
-            data: _data.copyWith(
-              isReportLoading: false,
-              reportFilePath: filePath,
-              message: 'فایل اکسل ذخیره شد اما برنامه‌ای برای باز کردن آن پیدا نشد',
+        if (items.isEmpty) {
+          emit(SkillsCertificatesState.error(
+            data: _data.copyWith(isReportLoading: false),
+            message: _message(
+              title: 'خطا',
+              message: 'داده‌ای برای تهیه گزارش وجود ندارد.',
             ),
           ));
+          return;
         }
-      },
-      failure: (_, message) async {
-        emit(SkillsCertificatesState.error(
-          data: _data.copyWith(isReportLoading: false),
-          message: _message(
-            title: 'خطا',
-            message: message ?? 'دریافت گزارش با خطا مواجه شد',
+
+        final exportResult = await _exportExcelUseCase(
+          SkillCertificateExcelReportFactory.create(items),
+        );
+        exportResult.when(
+          success: (data, failures, resultCode) => emit(
+            SkillsCertificatesState.loaded(
+              data: _data.copyWith(
+                isReportLoading: false,
+                reportFilePath: data.displayPath,
+                message: data.isBrowserDownload
+                    ? 'دانلود فایل گزارش گواهینامه مهارت آغاز شد.'
+                    : 'فایل اکسل گزارش گواهینامه مهارت ذخیره شد',
+              ),
+            ),
           ),
-        ));
+          failure: (error, failures) => emit(
+            SkillsCertificatesState.error(
+              data: _data.copyWith(isReportLoading: false),
+              message: _message(
+                title: 'خطا',
+                message: failures ?? 'ذخیره فایل گزارش با خطا مواجه شد',
+              ),
+            ),
+          ),
+          expireToken: () => emit(SkillsCertificatesState.loaded(
+            data: _data.copyWith(isReportLoading: false),
+          )),
+          connectionError: () => emit(SkillsCertificatesState.error(
+            data: _data.copyWith(isReportLoading: false),
+            message: _message(
+              title: 'خطا',
+              message: 'ذخیره فایل گزارش با خطا مواجه شد',
+            ),
+          )),
+        );
       },
-      expireToken: () async {
-        emit(SkillsCertificatesState.loaded(
-          data: _data.copyWith(isReportLoading: false),
-        ));
-      },
-      connectionError: () async {
-        emit(SkillsCertificatesState.connectionError(
-          data: _data.copyWith(isReportLoading: false),
-        ));
-      },
+      failure: (_, message) async => emit(SkillsCertificatesState.error(
+        data: _data.copyWith(isReportLoading: false),
+        message: _message(
+          title: 'خطا',
+          message: message ?? 'دریافت گزارش با خطا مواجه شد',
+        ),
+      )),
+      expireToken: () async => emit(SkillsCertificatesState.loaded(
+        data: _data.copyWith(isReportLoading: false),
+      )),
+      connectionError: () async => emit(SkillsCertificatesState.connectionError(
+        data: _data.copyWith(isReportLoading: false),
+      )),
     );
   }
-
-
   bool get areAllServicesSelected {
     final selectableIds = _data.services
         .where((service) => service.id != null)

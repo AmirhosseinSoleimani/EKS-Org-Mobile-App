@@ -1,5 +1,4 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_state.dart';
@@ -7,18 +6,16 @@ import 'package:eks_sana_plus_org/src/features/plan_info/presentation/plan_info_
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/plan_info_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/widgets/plan_card.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/widgets/plan_info_bottom_sheets.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_src.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -90,7 +87,8 @@ class _PlanInfoView extends StatelessWidget {
             children: [
               BlocBuilder<PlanInfoCubit, PlanInfoState>(
                 buildWhen: (previous, current) {
-                  return previous.activeFilter != current.activeFilter;
+                  return previous.activeFilter != current.activeFilter ||
+                      previous.isReportLoading != current.isReportLoading;
                 },
                 builder: (context, state) {
                   return Padding(
@@ -98,6 +96,7 @@ class _PlanInfoView extends StatelessWidget {
                     child: _PlanToolbar(
                       cubit: cubit,
                       activeFilter: state.activeFilter,
+                      isReportLoading: state.isReportLoading,
                     ),
                   );
                 },
@@ -278,10 +277,12 @@ class _PlanToolbar extends StatelessWidget {
   const _PlanToolbar({
     required this.cubit,
     required this.activeFilter,
+    required this.isReportLoading,
   });
 
   final PlanInfoCubit cubit;
   final bool? activeFilter;
+  final bool isReportLoading;
 
   @override
   Widget build(BuildContext context) {
@@ -351,16 +352,12 @@ class _PlanToolbar extends StatelessWidget {
           ],
         ),
         Space.h16,
-        InkwellButtonWidget(
-          title: 'گزارش گیری',
-          titleColor: colorScheme.onPrimaryFixed,
-          prefixIcon: SvgWidget(
-            src: SvgAsset(SvgManager.exportNotes),
-          ),
-          backgroundColor: colorScheme.secondaryContainer,
-          borderColor: colorScheme.onPrimaryFixed,
-          borderWidth: 2,
-          onTap: cubit.loadPlanReport,
+        ReportButtonWidget(
+          isLoading: isReportLoading,
+          onTap: () {
+            if (isReportLoading) return;
+            cubit.loadPlanReport();
+          },
         ),
       ],
     );

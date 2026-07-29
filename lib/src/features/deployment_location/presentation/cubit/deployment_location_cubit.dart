@@ -10,7 +10,9 @@ import 'package:eks_sana_plus_org/src/features/deployment_location/domain/usecas
 import 'package:eks_sana_plus_org/src/features/deployment_location/domain/usecases/get_deployment_location_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/deployment_location/domain/usecases/update_deployment_location_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/deployment_location/presentation/cubit/deployment_location_state.dart';
+import 'package:eks_sana_plus_org/src/features/deployment_location/presentation/services/deployment_location_excel_report_factory.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/usecase/get_province_with_city_list_use_case.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -24,6 +26,7 @@ class DeploymentLocationCubit extends Cubit<DeploymentLocationState> {
     this._updateUseCase,
     this._deleteUseCase,
     this._getProvinceWithCityListUseCase,
+    this._exportExcelUseCase,
   ) : super(const DeploymentLocationState());
 
   final GetDeploymentLocationListUseCase _getListUseCase;
@@ -32,6 +35,7 @@ class DeploymentLocationCubit extends Cubit<DeploymentLocationState> {
   final UpdateDeploymentLocationUseCase _updateUseCase;
   final DeleteDeploymentLocationUseCase _deleteUseCase;
   final GetProvinceWithCityListUseCase _getProvinceWithCityListUseCase;
+  final ExportExcelUseCase _exportExcelUseCase;
 
   Future<void> initList() async {
     await fetchList(reset: true);
@@ -412,14 +416,14 @@ class DeploymentLocationCubit extends Cubit<DeploymentLocationState> {
     return success;
   }
 
-  Future<List<DeploymentLocationEntity>?> loadReport() async {
-    if (state.isReportLoading) return null;
-    emit(
-      state.copyWith(
-        isReportLoading: true,
-        clearErrorMessage: true,
-      ),
-    );
+  Future<void> exportReport() async {
+    if (state.isReportLoading) return;
+
+    emit(state.copyWith(
+      isReportLoading: true,
+      clearErrorMessage: true,
+      clearSuccessMessage: true,
+    ));
 
     final result = await _getListUseCase(
       _buildFilterParam(
@@ -429,39 +433,55 @@ class DeploymentLocationCubit extends Cubit<DeploymentLocationState> {
       ),
     );
 
-    List<DeploymentLocationEntity>? records;
-    result.when(
-      success: (page, failures, resultCode) {
-        records = page.records;
-        emit(
-          state.copyWith(
+    await result.when<Future<void>>(
+      success: (page, failures, resultCode) async {
+        if (page.records.isEmpty) {
+          emit(state.copyWith(
             isReportLoading: false,
+            errorMessage: 'داده‌ای برای تهیه گزارش وجود ندارد.',
+          ));
+          return;
+        }
+
+        final exportResult = await _exportExcelUseCase(
+          DeploymentLocationExcelReportFactory.create(page.records),
+        );
+        exportResult.when(
+          success: (data, failures, resultCode) => emit(state.copyWith(
+            isReportLoading: false,
+            successMessage: data.isBrowserDownload
+                ? 'دانلود فایل گزارش آغاز شد.'
+                : 'فایل گزارش با موفقیت ذخیره شد.',
             clearErrorMessage: true,
-          ),
+          )),
+          failure: (error, failures) => emit(state.copyWith(
+            isReportLoading: false,
+            errorMessage: failures ?? 'ذخیره فایل گزارش با خطا مواجه شد.',
+          )),
+          expireToken: () => emit(state.copyWith(
+            isReportLoading: false,
+            errorMessage: 'نشست کاربری منقضی شده است.',
+          )),
+          connectionError: () => emit(state.copyWith(
+            isReportLoading: false,
+            errorMessage: 'ذخیره فایل گزارش با خطا مواجه شد.',
+          )),
         );
       },
-      failure: (error, failures) => emit(
-        state.copyWith(
-          isReportLoading: false,
-          errorMessage: failures ?? 'دریافت گزارش محل‌های استقرار ناموفق بود.',
-        ),
-      ),
-      expireToken: () => emit(
-        state.copyWith(
-          isReportLoading: false,
-          errorMessage: 'نشست کاربری منقضی شده است.',
-        ),
-      ),
-      connectionError: () => emit(
-        state.copyWith(
-          isReportLoading: false,
-          errorMessage: 'اتصال به اینترنت برقرار نیست.',
-        ),
-      ),
+      failure: (error, failures) async => emit(state.copyWith(
+        isReportLoading: false,
+        errorMessage: failures ?? 'دریافت گزارش محل‌های استقرار ناموفق بود.',
+      )),
+      expireToken: () async => emit(state.copyWith(
+        isReportLoading: false,
+        errorMessage: 'نشست کاربری منقضی شده است.',
+      )),
+      connectionError: () async => emit(state.copyWith(
+        isReportLoading: false,
+        errorMessage: 'اتصال به اینترنت برقرار نیست.',
+      )),
     );
-    return records;
   }
-
   DeploymentLocationFilterParamEntity _buildFilterParam({
     required int skip,
     required int pageSize,

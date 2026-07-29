@@ -1,17 +1,15 @@
-import 'dart:io';
-
 import 'package:eks_sana_plus_org/src/features/shift/domain/entities/params/shift_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/shift/domain/entities/shift_entity.dart';
 import 'package:eks_sana_plus_org/src/features/shift/domain/use_cases/delete_shift_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/shift/domain/use_cases/get_shift_list_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/shift/presentation/utils/shift_excel_report_factory.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_enum_item_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/manager/current_session_manager.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
-import 'package:open_filex/open_filex.dart';
-import 'package:path_provider/path_provider.dart';
 
 part 'shift_list_cubit.freezed.dart';
 part 'shift_list_state.dart';
@@ -24,6 +22,7 @@ class ShiftListCubit extends Cubit<ShiftListState> {
     this._getListUseCase,
     this._deleteUseCase,
     this._currentSessionManager,
+    this._exportExcelUseCase,
   ) : super(const ShiftListState.initial());
 
   static const int _pageSize = 10;
@@ -31,6 +30,9 @@ class ShiftListCubit extends Cubit<ShiftListState> {
   final GetShiftListUseCase _getListUseCase;
   final DeleteShiftUseCase _deleteUseCase;
   final CurrentSessionManager _currentSessionManager;
+  final ExportExcelUseCase _exportExcelUseCase;
+
+  bool get isExporting => _isExporting;
 
   List<ShiftEntity> items = [];
   int totalCount = 0;
@@ -178,27 +180,26 @@ class ShiftListCubit extends Cubit<ShiftListState> {
     var skip = 0;
     const reportPageSize = 1000;
 
-    while (true) {
+    while (_isExporting) {
       final result = await _getListUseCase(filter.copyWith(
         skip: skip,
         pageSize: reportPageSize,
       ));
 
-      final shouldContinue = await result.when(
+      var shouldContinue = false;
+      await result.when<Future<void>>(
         success: (page, failures, resultCode) async {
           allItems.addAll(page.records);
-          return page.records.length == reportPageSize &&
+          shouldContinue = page.records.length == reportPageSize &&
               allItems.length < page.count;
         },
         failure: (error, failures) async {
           _isExporting = false;
           _emitFailure(failures);
-          return false;
         },
         expireToken: () async {
           _isExporting = false;
           _emitFailure('نشست کاربری منقضی شده است.');
-          return false;
         },
         connectionError: () async {
           _isExporting = false;
@@ -206,7 +207,6 @@ class ShiftListCubit extends Cubit<ShiftListState> {
             filter: filter,
             items: items,
           ));
-          return false;
         },
       );
 
@@ -215,48 +215,38 @@ class ShiftListCubit extends Cubit<ShiftListState> {
     }
 
     if (!_isExporting) return;
-
-    try {
-      final file = await _writeCsvReport(allItems);
+    if (allItems.isEmpty) {
       _isExporting = false;
-      _safeEmit(const ShiftListState.success(
-        action: ShiftListAction.report,
-        message: 'گزارش شیفت با موفقیت آماده شد',
-      ));
-      await OpenFilex.open(file.path);
-    } catch (_) {
-      _isExporting = false;
-      _emitFailure('ذخیره گزارش شیفت با خطا مواجه شد');
+      _emitFailure('داده‌ای برای تهیه گزارش وجود ندارد.');
+      return;
     }
+
+    final exportResult = await _exportExcelUseCase(
+      ShiftExcelReportFactory.create(allItems),
+    );
+    exportResult.when(
+      success: (data, failures, resultCode) {
+        _isExporting = false;
+        _safeEmit(ShiftListState.success(
+          action: ShiftListAction.report,
+          message: data.isBrowserDownload
+              ? 'دانلود فایل گزارش شیفت‌ها آغاز شد.'
+              : 'فایل اکسل گزارش شیفت ذخیره شد',
+        ));
+      },
+      failure: (error, failures) {
+        _isExporting = false;
+        _emitFailure(failures ?? 'ذخیره گزارش شیفت با خطا مواجه شد');
+      },
+      expireToken: () {
+        _isExporting = false;
+        _emitFailure('نشست کاربری منقضی شده است.');
+      },
+      connectionError: () {
+        _isExporting = false;
+        _emitFailure('ذخیره گزارش شیفت با خطا مواجه شد');
+      },
+    );
   }
 
-  Future<File> _writeCsvReport(List<ShiftEntity> records) async {
-    final directory = await getApplicationDocumentsDirectory();
-    final fileName = 'shift_report_${DateTime.now().millisecondsSinceEpoch}.csv';
-    final file = File('${directory.path}/$fileName');
-
-    final rows = <List<String>>[
-      ['عنوان', 'نوع', 'زمان شروع', 'زمان پایان', 'وضعیت', 'نام ثبت کننده', 'تاریخ و زمان ثبت'],
-      ...records.map((item) => [
-        item.title ?? '',
-        item.typeTitle ?? '',
-        item.startTimeStr ?? item.startTime ?? '',
-        item.endTimeStr ?? item.endTime ?? '',
-        item.isActive ? 'فعال' : 'غیرفعال',
-        item.insertUserFullName ?? '',
-        item.insertDateTimeJalali ?? '',
-      ]),
-    ];
-
-    final csv = rows.map((row) => row.map(_csvEscape).join(',')).join('\n');
-    return file.writeAsString('\uFEFF$csv');
-  }
-
-  String _csvEscape(String value) {
-    final normalized = value.replaceAll('"', '""');
-    if (normalized.contains(',') || normalized.contains('\n') || normalized.contains('"')) {
-      return '"$normalized"';
-    }
-    return normalized;
-  }
 }

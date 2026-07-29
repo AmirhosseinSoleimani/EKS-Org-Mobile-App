@@ -1,3 +1,5 @@
+typedef ExcelCellValueBuilder<T> = Object? Function(T item, int index);
+
 class ExcelExportColumn<T> {
   const ExcelExportColumn({
     required this.title,
@@ -6,6 +8,6 @@ class ExcelExportColumn<T> {
   });
 
   final String title;
-  final Object? Function(T item, int index) valueBuilder;
+  final ExcelCellValueBuilder<T> valueBuilder;
   final double width;
 }

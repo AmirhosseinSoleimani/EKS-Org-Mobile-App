@@ -30,6 +30,7 @@ class PlanInfoState {
   final List<PlanLookupEntity> statusReasons;
   final List<PlanInfoEntity> reportItems;
   final String? reportFilePath;
+  final bool isReportLoading;
   final List<PlanHistoryEntity> histories;
   final int? loadingHistoryRefId;
 
@@ -50,6 +51,7 @@ class PlanInfoState {
     this.statusReasons = const [],
     this.reportItems = const [],
     this.reportFilePath,
+    this.isReportLoading = false,
     this.histories = const [],
     this.loadingHistoryRefId,
   });
@@ -81,6 +83,7 @@ class PlanInfoState {
     List<PlanInfoEntity>? reportItems,
     String? reportFilePath,
     bool clearReportFilePath = false,
+    bool? isReportLoading,
     List<PlanHistoryEntity>? histories,
     int? loadingHistoryRefId,
     bool clearLoadingHistoryRefId = false,
@@ -105,6 +108,7 @@ class PlanInfoState {
       reportItems: reportItems ?? this.reportItems,
       reportFilePath:
           clearReportFilePath ? null : reportFilePath ?? this.reportFilePath,
+      isReportLoading: isReportLoading ?? this.isReportLoading,
       histories: histories ?? this.histories,
       loadingHistoryRefId: clearLoadingHistoryRefId
           ? null

@@ -100,11 +100,11 @@ class _GradePatternListView extends StatelessWidget {
             ),
             Padding(
               padding: const EdgeInsets.symmetric(horizontal: AppPadding.p16),
-              child: _ReportButton(
-                onTap: () {
-                  SnakeBarWidget.showError(
-                    context: context,
-                    message: 'API گزارش‌گیری الگوی گرید هنوز تعریف نشده است',
+              child: BlocBuilder<GradePatternCubit, GradePatternState>(
+                builder: (context, state) {
+                  return _ReportButton(
+                    isLoading: cubit.isExporting,
+                    onTap: cubit.exportReport,
                   );
                 },
               ),
@@ -515,15 +515,22 @@ class _TopFilterButton extends StatelessWidget {
 }
 
 class _ReportButton extends StatelessWidget {
-  const _ReportButton({required this.onTap});
+  const _ReportButton({
+    required this.isLoading,
+    required this.onTap,
+  });
 
+  final bool isLoading;
   final VoidCallback onTap;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return InkWell(
-      onTap: onTap,
+      onTap: () {
+        if (isLoading) return;
+        onTap();
+      },
       borderRadius: BorderRadius.circular(AppSize.s8),
       child: Container(
         height: 40,
@@ -535,19 +542,30 @@ class _ReportButton extends StatelessWidget {
         child: Row(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Text(
-              'گزارش‌گیری',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-                fontWeight: FontWeight.w800,
+            if (isLoading)
+              SizedBox(
+                width: AppSize.s20,
+                height: AppSize.s20,
+                child: CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: theme.colorScheme.onSurfaceVariant,
+                ),
+              )
+            else ...[
+              Text(
+                'گزارش‌گیری',
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onSurfaceVariant,
+                  fontWeight: FontWeight.w800,
+                ),
               ),
-            ),
-            Space.w8,
-            Icon(
-              Icons.summarize_outlined,
-              size: AppSize.s22,
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
+              Space.w8,
+              Icon(
+                Icons.summarize_outlined,
+                size: AppSize.s22,
+                color: theme.colorScheme.onSurfaceVariant,
+              ),
+            ],
           ],
         ),
       ),

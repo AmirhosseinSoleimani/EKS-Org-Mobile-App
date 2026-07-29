@@ -94,7 +94,10 @@ class RescuerFiltersBox extends StatelessWidget {
           borderWidth: 2,
           showLoading: isReportLoading,
           loadingColor: colorScheme.onPrimaryFixed,
-          onTap: onReportTap,
+          onTap: () {
+            if (isReportLoading) return;
+            onReportTap();
+          },
         ),
       ],
     );

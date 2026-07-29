@@ -744,6 +744,10 @@ import '../services/network/interceptors/pretty_dio_logger.dart' as _i137;
 import '../shared/excel_export/data/repository/excel_export_repository_impl.dart'
     as _i931;
 import '../shared/excel_export/data/service/excel_export_service.dart' as _i384;
+import '../shared/excel_export/data/service/excel_workbook_builder.dart'
+    as _i255;
+import '../shared/excel_export/data/service/excel_workbook_builder_module.dart'
+    as _i166;
 import '../shared/excel_export/domain/repository/excel_export_repository.dart'
     as _i925;
 import '../shared/excel_export/domain/usecase/export_excel_use_case.dart'
@@ -874,6 +878,7 @@ _i174.GetIt $initGetIt(
   final slidingPanelControllerModule = _$SlidingPanelControllerModule();
   final networkModule = _$NetworkModule();
   final appModule = _$AppModule();
+  final excelWorkbookBuilderModule = _$ExcelWorkbookBuilderModule();
   gh.factory<_i336.BottomNavigationBarCubit>(
     () => _i336.BottomNavigationBarCubit(),
   );
@@ -904,6 +909,9 @@ _i174.GetIt $initGetIt(
     () => _i325.ValidateShiftUseCase(),
   );
   gh.lazySingleton<_i384.ExcelExportService>(() => _i384.ExcelExportService());
+  gh.lazySingleton<_i255.ExcelWorkbookBuilder>(
+    () => excelWorkbookBuilderModule.builder,
+  );
   gh.lazySingleton<_i838.RequestRepositoryShareData>(
     () => _i318.RequestRepositoryShareDataImpl(),
   );
@@ -933,6 +941,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i988.ILocationDeviceService>(
     () => _i988.LocationDeviceService(),
   );
+  gh.lazySingleton<_i925.ExcelExportRepository>(
+    () => _i931.ExcelExportRepositoryImpl(gh<_i255.ExcelWorkbookBuilder>()),
+  );
   gh.lazySingleton<_i308.SessionStorage>(
     () => _i577.SessionStorageMobileImpl(),
     registerFor: {_mobile},
@@ -946,6 +957,9 @@ _i174.GetIt $initGetIt(
       gh<_i988.IPermissionDeviceService>(),
     ),
   );
+  gh.lazySingleton<_i470.ExportExcelUseCase>(
+    () => _i470.ExportExcelUseCase(gh<_i925.ExcelExportRepository>()),
+  );
   gh.lazySingleton<_i528.ConnectivityService>(
     () => _i528.ConnectivityServiceImpl(gh<_i895.Connectivity>()),
   );
@@ -954,9 +968,6 @@ _i174.GetIt $initGetIt(
       gh<_i466.DioTokenInterceptor>(),
       gh<_i137.PrettyDioLogger>(),
     ),
-  );
-  gh.lazySingleton<_i925.ExcelExportRepository>(
-    () => _i931.ExcelExportRepositoryImpl(gh<_i384.ExcelExportService>()),
   );
   gh.lazySingleton<_i308.SessionStorage>(
     () => _i718.SessionStorageWebImpl(),
@@ -1062,9 +1073,6 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i320.DashboardDataSource>(
     () => _i822.DashboardDataSourceImpl(gh<_i953.DashboardService>()),
-  );
-  gh.lazySingleton<_i470.ExportExcelUseCase>(
-    () => _i470.ExportExcelUseCase(gh<_i925.ExcelExportRepository>()),
   );
   gh.lazySingleton<_i227.IndicatorReportRepository>(
     () => _i282.IndicatorReportRepositoryImpl(
@@ -1710,18 +1718,6 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i244.UpdateGradePatternUseCase>(
     () => _i244.UpdateGradePatternUseCase(gh<_i577.GradePatternRepository>()),
   );
-  gh.factory<_i772.VehicleInfoCubit>(
-    () => _i772.VehicleInfoCubit(
-      gh<_i579.GetVehicleInfoListUseCase>(),
-      gh<_i579.GetVehicleInfoByIdUseCase>(),
-      gh<_i579.SaveVehicleInfoUseCase>(),
-      gh<_i579.DeleteVehicleInfoUseCase>(),
-      gh<_i579.GetVehicleInfoLookupsUseCase>(),
-      gh<_i579.VehicleInfoToolsUseCase>(),
-      gh<_i579.VehicleInfoServiceCategoriesUseCase>(),
-      gh<_i579.VehicleInfoHistoryUseCase>(),
-    ),
-  );
   gh.factory<_i264.FollowUpRegisterCubit>(
     () => _i264.FollowUpRegisterCubit(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
@@ -1801,6 +1797,21 @@ _i174.GetIt $initGetIt(
   gh.factory<_i645.SearchVehicleInfoUseCase>(
     () => _i645.SearchVehicleInfoUseCase(gh<_i233.AgencyInfoRepository>()),
   );
+  gh.factory<_i791.GradePatternCubit>(
+    () => _i791.GradePatternCubit(
+      gh<_i614.GetGradePatternListUseCase>(),
+      gh<_i33.GetGradePatternByIdUseCase>(),
+      gh<_i833.CreateGradePatternUseCase>(),
+      gh<_i244.UpdateGradePatternUseCase>(),
+      gh<_i512.DeleteGradePatternUseCase>(),
+      gh<_i102.GetGradePatternReferencesUseCase>(),
+      gh<_i825.AssignGradePatternReferenceUseCase>(),
+      gh<_i33.DeleteGradePatternReferenceUseCase>(),
+      gh<_i928.ValidateGradePatternUseCase>(),
+      gh<_i1058.CurrentSessionManager>(),
+      gh<_i470.ExportExcelUseCase>(),
+    ),
+  );
   gh.factory<_i815.ChangeHomeServiceRequestTimeCubit>(
     () => _i815.ChangeHomeServiceRequestTimeCubit(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
@@ -1852,6 +1863,37 @@ _i174.GetIt $initGetIt(
     () => _i781.AuthRepositoryImpl(
       gh<_i479.AuthRemoteDataSource>(),
       gh<_i308.SessionStorage>(),
+    ),
+  );
+  gh.factory<_i943.PlanInfoCubit>(
+    () => _i943.PlanInfoCubit(
+      gh<_i203.GetPlanListUseCase>(),
+      gh<_i203.GetPlanByIdUseCase>(),
+      gh<_i203.CreatePlanUseCase>(),
+      gh<_i203.EditPlanUseCase>(),
+      gh<_i203.DeletePlanUseCase>(),
+      gh<_i203.GetPlanStatusReasonsUseCase>(),
+      gh<_i203.ChangePlanStatusUseCase>(),
+      gh<_i203.GetPlanReportUseCase>(),
+      gh<_i203.CancelPlanRequestsUseCase>(),
+      gh<_i203.GetPlanLookupsUseCase>(),
+      gh<_i1058.CurrentSessionManager>(),
+      gh<_i203.ChangeLocationUseCase>(),
+      gh<_i203.GetPlanHistoriesUseCase>(),
+      gh<_i470.ExportExcelUseCase>(),
+    ),
+  );
+  gh.factory<_i751.SkillsCertificatesCubit>(
+    () => _i751.SkillsCertificatesCubit(
+      gh<_i974.GetSkillsCertificatesUseCase>(),
+      gh<_i974.GetSkillCertificateByIdUseCase>(),
+      gh<_i974.CreateSkillCertificateUseCase>(),
+      gh<_i974.EditSkillCertificateUseCase>(),
+      gh<_i974.DeleteSkillCertificateUseCase>(),
+      gh<_i974.GetSkillCertificateServicesUseCase>(),
+      gh<_i974.SubmitSkillCertificateServicesUseCase>(),
+      gh<_i974.GetSkillCertificatesReportUseCase>(),
+      gh<_i470.ExportExcelUseCase>(),
     ),
   );
   gh.lazySingleton<_i1042.FetchKilometerFromImageUseCase>(
@@ -1915,16 +1957,6 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i139.LoginUseCase>(
     () => _i139.LoginUseCase(gh<_i716.AuthRepository>()),
   );
-  gh.factory<_i75.DeploymentLocationCubit>(
-    () => _i75.DeploymentLocationCubit(
-      gh<_i916.GetDeploymentLocationListUseCase>(),
-      gh<_i510.GetDeploymentLocationByIdUseCase>(),
-      gh<_i550.CreateDeploymentLocationUseCase>(),
-      gh<_i676.UpdateDeploymentLocationUseCase>(),
-      gh<_i950.DeleteDeploymentLocationUseCase>(),
-      gh<_i265.GetProvinceWithCityListUseCase>(),
-    ),
-  );
   gh.factory<_i860.AssignAndCancelEmdadgarCubit>(
     () => _i860.AssignAndCancelEmdadgarCubit(
       gh<_i955.GetEmdadgarListUseCase>(),
@@ -1939,20 +1971,6 @@ _i174.GetIt $initGetIt(
       gh<_i707.GetNonCooperationListUseCase>(),
     ),
   );
-  gh.factory<_i791.GradePatternCubit>(
-    () => _i791.GradePatternCubit(
-      gh<_i614.GetGradePatternListUseCase>(),
-      gh<_i33.GetGradePatternByIdUseCase>(),
-      gh<_i833.CreateGradePatternUseCase>(),
-      gh<_i244.UpdateGradePatternUseCase>(),
-      gh<_i512.DeleteGradePatternUseCase>(),
-      gh<_i102.GetGradePatternReferencesUseCase>(),
-      gh<_i825.AssignGradePatternReferenceUseCase>(),
-      gh<_i33.DeleteGradePatternReferenceUseCase>(),
-      gh<_i928.ValidateGradePatternUseCase>(),
-      gh<_i1058.CurrentSessionManager>(),
-    ),
-  );
   gh.lazySingleton<_i657.ArchiveCartableMessageUseCase>(
     () => _i657.ArchiveCartableMessageUseCase(gh<_i133.CartableRepository>()),
   );
@@ -1964,13 +1982,6 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i45.GetSubordinatedUsersUseCase>(
     () => _i45.GetSubordinatedUsersUseCase(gh<_i133.CartableRepository>()),
-  );
-  gh.factory<_i727.ShiftListCubit>(
-    () => _i727.ShiftListCubit(
-      gh<_i113.GetShiftListUseCase>(),
-      gh<_i585.DeleteShiftUseCase>(),
-      gh<_i1058.CurrentSessionManager>(),
-    ),
   );
   gh.factory<_i563.RequestStatusHistoryCubit>(
     () => _i563.RequestStatusHistoryCubit(
@@ -2030,37 +2041,22 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i139.EmdadVehicleRepository>(
     () => _i77.EmdadVehicleRepositoryImpl(gh<_i639.EmdadVehicleDataSource>()),
   );
-  gh.factory<_i598.AgencyInfoCubit>(
-    () => _i598.AgencyInfoCubit(
-      gh<_i553.GetAgencyInfoListUseCase>(),
-      gh<_i632.GetAgencyInfoByIdUseCase>(),
-      gh<_i516.SearchAgencyInfoUseCase>(),
-      gh<_i881.GetAgencyInfoReportUseCase>(),
-      gh<_i201.GetAgencyContractsUseCase>(),
-      gh<_i282.GetCurrentAgencyPersonsUseCase>(),
-      gh<_i807.GetCurrentAgencyVehiclesUseCase>(),
-      gh<_i147.ChangeAgencyStatusUseCase>(),
-      gh<_i449.DeleteAgencyUseCase>(),
-      gh<_i898.GetAgencyServiceTypesUseCase>(),
-      gh<_i600.GetAgencyAdditionalInformationUseCase>(),
-      gh<_i879.GetAgencyHistoryUseCase>(),
+  gh.factory<_i404.RescuerListCubit>(
+    () => _i404.RescuerListCubit(
+      gh<_i557.GetRescuersUseCase>(),
+      gh<_i708.DeleteRescuerUseCase>(),
+      gh<_i118.GetRescuerReportUseCase>(),
+      gh<_i833.GetRescuerSkillCertificatesUseCase>(),
+      gh<_i339.GetRescuerHistoryUseCase>(),
+      gh<_i470.ExportExcelUseCase>(),
     ),
   );
-  gh.factory<_i943.PlanInfoCubit>(
-    () => _i943.PlanInfoCubit(
-      gh<_i203.GetPlanListUseCase>(),
-      gh<_i203.GetPlanByIdUseCase>(),
-      gh<_i203.CreatePlanUseCase>(),
-      gh<_i203.EditPlanUseCase>(),
-      gh<_i203.DeletePlanUseCase>(),
-      gh<_i203.GetPlanStatusReasonsUseCase>(),
-      gh<_i203.ChangePlanStatusUseCase>(),
-      gh<_i203.GetPlanReportUseCase>(),
-      gh<_i203.CancelPlanRequestsUseCase>(),
-      gh<_i203.GetPlanLookupsUseCase>(),
+  gh.factory<_i727.ShiftListCubit>(
+    () => _i727.ShiftListCubit(
+      gh<_i113.GetShiftListUseCase>(),
+      gh<_i585.DeleteShiftUseCase>(),
       gh<_i1058.CurrentSessionManager>(),
-      gh<_i203.ChangeLocationUseCase>(),
-      gh<_i203.GetPlanHistoriesUseCase>(),
+      gh<_i470.ExportExcelUseCase>(),
     ),
   );
   gh.lazySingleton<_i122.EvaluationRepository>(
@@ -2076,13 +2072,15 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i217.LeaveRepository>(
     () => _i691.LeaveRepositoryImpl(gh<_i1017.LeaveDataSource>()),
   );
-  gh.factory<_i404.RescuerListCubit>(
-    () => _i404.RescuerListCubit(
-      gh<_i557.GetRescuersUseCase>(),
-      gh<_i708.DeleteRescuerUseCase>(),
-      gh<_i118.GetRescuerReportUseCase>(),
-      gh<_i833.GetRescuerSkillCertificatesUseCase>(),
-      gh<_i339.GetRescuerHistoryUseCase>(),
+  gh.factory<_i75.DeploymentLocationCubit>(
+    () => _i75.DeploymentLocationCubit(
+      gh<_i916.GetDeploymentLocationListUseCase>(),
+      gh<_i510.GetDeploymentLocationByIdUseCase>(),
+      gh<_i550.CreateDeploymentLocationUseCase>(),
+      gh<_i676.UpdateDeploymentLocationUseCase>(),
+      gh<_i950.DeleteDeploymentLocationUseCase>(),
+      gh<_i265.GetProvinceWithCityListUseCase>(),
+      gh<_i470.ExportExcelUseCase>(),
     ),
   );
   gh.lazySingleton<_i357.AddImeiInfoUseCase>(
@@ -2239,6 +2237,23 @@ _i174.GetIt $initGetIt(
       gh<_i470.ExportExcelUseCase>(),
     ),
   );
+  gh.factory<_i598.AgencyInfoCubit>(
+    () => _i598.AgencyInfoCubit(
+      gh<_i553.GetAgencyInfoListUseCase>(),
+      gh<_i632.GetAgencyInfoByIdUseCase>(),
+      gh<_i516.SearchAgencyInfoUseCase>(),
+      gh<_i881.GetAgencyInfoReportUseCase>(),
+      gh<_i201.GetAgencyContractsUseCase>(),
+      gh<_i282.GetCurrentAgencyPersonsUseCase>(),
+      gh<_i807.GetCurrentAgencyVehiclesUseCase>(),
+      gh<_i147.ChangeAgencyStatusUseCase>(),
+      gh<_i449.DeleteAgencyUseCase>(),
+      gh<_i898.GetAgencyServiceTypesUseCase>(),
+      gh<_i600.GetAgencyAdditionalInformationUseCase>(),
+      gh<_i879.GetAgencyHistoryUseCase>(),
+      gh<_i470.ExportExcelUseCase>(),
+    ),
+  );
   gh.factory<_i709.OnlineMapCubit>(
     () => _i709.OnlineMapCubit(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
@@ -2252,6 +2267,17 @@ _i174.GetIt $initGetIt(
     () => _i1048.ReliefRequestListCubit(
       gh<_i192.GetReliefRequestListUseCase>(),
       gh<_i369.SetSelectedRequestItemUseCase>(),
+    ),
+  );
+  gh.factory<_i70.ImeiCubit>(
+    () => _i70.ImeiCubit(
+      gh<_i518.GetImeiInfoListUseCase>(),
+      gh<_i277.GetDeviceInfoListUseCase>(),
+      gh<_i1055.GetImeiInfoByIdUseCase>(),
+      gh<_i357.AddImeiInfoUseCase>(),
+      gh<_i859.UpdateImeiInfoUseCase>(),
+      gh<_i911.DeleteImeiInfoUseCase>(),
+      gh<_i470.ExportExcelUseCase>(),
     ),
   );
   gh.factory<_i165.NonCooperationCubit>(
@@ -2307,18 +2333,6 @@ _i174.GetIt $initGetIt(
       gh<_i955.GetRequestStatusHistoryUseCase>(),
     ),
   );
-  gh.factory<_i751.SkillsCertificatesCubit>(
-    () => _i751.SkillsCertificatesCubit(
-      gh<_i974.GetSkillsCertificatesUseCase>(),
-      gh<_i974.GetSkillCertificateByIdUseCase>(),
-      gh<_i974.CreateSkillCertificateUseCase>(),
-      gh<_i974.EditSkillCertificateUseCase>(),
-      gh<_i974.DeleteSkillCertificateUseCase>(),
-      gh<_i974.GetSkillCertificateServicesUseCase>(),
-      gh<_i974.SubmitSkillCertificateServicesUseCase>(),
-      gh<_i974.GetSkillCertificatesReportUseCase>(),
-    ),
-  );
   gh.factory<_i710.LeaveCubit>(
     () => _i710.LeaveCubit(
       gh<_i75.GetLeaveReportsUseCase>(),
@@ -2326,6 +2340,19 @@ _i174.GetIt $initGetIt(
       gh<_i706.GetLeaveReasonsUseCase>(),
       gh<_i283.ChangeLeaveStatusUseCase>(),
       gh<_i918.RollbackLeaveRequestUseCase>(),
+    ),
+  );
+  gh.factory<_i772.VehicleInfoCubit>(
+    () => _i772.VehicleInfoCubit(
+      gh<_i579.GetVehicleInfoListUseCase>(),
+      gh<_i579.GetVehicleInfoByIdUseCase>(),
+      gh<_i579.SaveVehicleInfoUseCase>(),
+      gh<_i579.DeleteVehicleInfoUseCase>(),
+      gh<_i579.GetVehicleInfoLookupsUseCase>(),
+      gh<_i579.VehicleInfoToolsUseCase>(),
+      gh<_i579.VehicleInfoServiceCategoriesUseCase>(),
+      gh<_i579.VehicleInfoHistoryUseCase>(),
+      gh<_i470.ExportExcelUseCase>(),
     ),
   );
   gh.lazySingleton<_i147.CreateEmdadVehicleUseCase>(
@@ -2381,16 +2408,6 @@ _i174.GetIt $initGetIt(
       gh<_i973.GetSpecialPlanProductsUseCase>(),
       gh<_i723.DeleteSpecialPlanUseCase>(),
       gh<_i1015.GetProvinceLookupListUseCase>(),
-    ),
-  );
-  gh.factory<_i70.ImeiCubit>(
-    () => _i70.ImeiCubit(
-      gh<_i518.GetImeiInfoListUseCase>(),
-      gh<_i277.GetDeviceInfoListUseCase>(),
-      gh<_i1055.GetImeiInfoByIdUseCase>(),
-      gh<_i357.AddImeiInfoUseCase>(),
-      gh<_i859.UpdateImeiInfoUseCase>(),
-      gh<_i911.DeleteImeiInfoUseCase>(),
     ),
   );
   gh.lazySingleton<_i695.SyncCurrentSessionUseCase>(
@@ -2625,3 +2642,5 @@ class _$SlidingPanelControllerModule
 class _$NetworkModule extends _i453.NetworkModule {}
 
 class _$AppModule extends _i460.AppModule {}
+
+class _$ExcelWorkbookBuilderModule extends _i166.ExcelWorkbookBuilderModule {}

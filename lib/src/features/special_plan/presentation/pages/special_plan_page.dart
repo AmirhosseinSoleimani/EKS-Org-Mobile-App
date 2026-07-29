@@ -11,18 +11,15 @@ import 'package:eks_sana_plus_org/src/features/special_plan/presentation/widgets
 import 'package:eks_sana_plus_org/src/features/special_plan/presentation/widgets/special_plan_card.dart';
 import 'package:eks_sana_plus_org/src/features/special_plan/presentation/widgets/special_plan_filters_row.dart';
 import 'package:eks_sana_plus_org/src/features/special_plan/presentation/widgets/special_plan_list_header.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_src.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -123,15 +120,8 @@ class _SpecialPlanViewState extends State<_SpecialPlanView> {
                     BlocBuilder<SpecialPlanReportCubit,
                         SpecialPlanReportState>(
                       builder: (context, reportState) {
-                        return InkwellButtonWidget(
-                          title: 'گزارش گیری',
-                          titleColor: theme.colorScheme.onPrimaryFixed,
-                          showLoading: reportState.isLoading,
-                          loadingColor: theme.colorScheme.onPrimaryFixed,
-                          prefixIcon: SvgWidget(src: SvgAsset(SvgManager.exportNotes)),
-                          backgroundColor: theme.colorScheme.secondaryContainer,
-                          borderColor: theme.colorScheme.onPrimaryFixed,
-                          borderWidth: 2,
+                        return ReportButtonWidget(
+                          isLoading: reportState.isLoading,
                           onTap: () {
                             if (reportState.isLoading) return;
                             context.read<SpecialPlanReportCubit>().export(

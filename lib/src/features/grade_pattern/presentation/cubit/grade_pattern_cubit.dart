@@ -12,7 +12,9 @@ import 'package:eks_sana_plus_org/src/features/grade_pattern/domain/use_cases/ge
 import 'package:eks_sana_plus_org/src/features/grade_pattern/domain/use_cases/get_grade_pattern_references_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/domain/use_cases/update_grade_pattern_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/domain/use_cases/validate_grade_pattern_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/utils/grade_pattern_excel_report_factory.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_enum_item_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/manager/current_session_manager.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -28,6 +30,7 @@ enum GradePatternAction {
   delete,
   assignReference,
   deleteReference,
+  report,
 }
 
 @injectable
@@ -43,6 +46,7 @@ class GradePatternCubit extends Cubit<GradePatternState> {
     this._deleteReferenceUseCase,
     this._validateUseCase,
     this._currentSessionManager,
+    this._exportExcelUseCase,
   ) : super(const GradePatternState.initial());
 
   final GetGradePatternListUseCase _getListUseCase;
@@ -55,6 +59,7 @@ class GradePatternCubit extends Cubit<GradePatternState> {
   final DeleteGradePatternReferenceUseCase _deleteReferenceUseCase;
   final ValidateGradePatternUseCase _validateUseCase;
   final CurrentSessionManager _currentSessionManager;
+  final ExportExcelUseCase _exportExcelUseCase;
 
   static const int _pageSize = 10;
 
@@ -67,6 +72,9 @@ class GradePatternCubit extends Cubit<GradePatternState> {
   bool hasMore = true;
   int? loadingDetailId;
   int? deletingItemId;
+  bool _isExporting = false;
+
+  bool get isExporting => _isExporting;
 
   Future<void> fetchList({bool refresh = false}) async {
     final nextSkip = refresh ? 0 : items.length;
@@ -233,6 +241,68 @@ class GradePatternCubit extends Cubit<GradePatternState> {
           items: items,
         ));
         return false;
+      },
+    );
+  }
+
+  Future<void> exportReport() async {
+    if (_isExporting) return;
+    _isExporting = true;
+    _safeEmit(GradePatternState.submitting(items: items));
+
+    final result = await _getListUseCase(
+      filter.copyWith(skip: 0, pageSize: 0),
+    );
+    await result.when<Future<void>>(
+      success: (page, failures, resultCode) async {
+        if (page.records.isEmpty) {
+          _isExporting = false;
+          _emitFailure('داده‌ای برای تهیه گزارش وجود ندارد.');
+          return;
+        }
+
+        final exportResult = await _exportExcelUseCase(
+          GradePatternExcelReportFactory.create(page.records),
+        );
+        exportResult.when(
+          success: (data, failures, resultCode) {
+            _isExporting = false;
+            _safeEmit(GradePatternState.success(
+              action: GradePatternAction.report,
+              message: data.isBrowserDownload
+                  ? 'دانلود فایل گزارش الگوهای گرید آغاز شد.'
+                  : 'فایل اکسل گزارش الگوهای گرید ذخیره شد',
+              items: items,
+            ));
+          },
+          failure: (error, failures) {
+            _isExporting = false;
+            _emitFailure(failures ?? 'ذخیره فایل گزارش با خطا مواجه شد.');
+          },
+          expireToken: () {
+            _isExporting = false;
+            _emitFailure('نشست کاربری منقضی شده است.');
+          },
+          connectionError: () {
+            _isExporting = false;
+            _emitFailure('ذخیره فایل گزارش با خطا مواجه شد.');
+          },
+        );
+      },
+      failure: (error, failures) async {
+        _isExporting = false;
+        _emitFailure(failures);
+      },
+      expireToken: () async {
+        _isExporting = false;
+        _emitFailure('نشست کاربری منقضی شده است.');
+      },
+      connectionError: () async {
+        _isExporting = false;
+        _safeEmit(GradePatternState.connectionError(
+          filter: filter,
+          items: items,
+        ));
       },
     );
   }

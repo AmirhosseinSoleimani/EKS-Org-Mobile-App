@@ -7,12 +7,12 @@ import 'package:eks_sana_plus_org/src/features/imei/presentation/cubit/imei_stat
 import 'package:eks_sana_plus_org/src/features/imei/presentation/pages/imei_form_page.dart';
 import 'package:eks_sana_plus_org/src/features/imei/presentation/widgets/imei_filters_row.dart';
 import 'package:eks_sana_plus_org/src/features/imei/presentation/widgets/imei_info_card.dart';
-import 'package:eks_sana_plus_org/src/features/imei/presentation/widgets/imei_report_button.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
@@ -85,9 +85,12 @@ class _ImeiView extends StatelessWidget {
                     children: [
                       ImeiFiltersRow(cubit: cubit),
                       Space.h12,
-                      ImeiReportButton(
+                      ReportButtonWidget(
                         isLoading: state.isReporting,
-                        onTap: cubit.exportReport,
+                        onTap: () {
+                          if (state.isReporting) return;
+                          cubit.exportReport();
+                        },
                       ),
                       Space.h24,
                       Expanded(
