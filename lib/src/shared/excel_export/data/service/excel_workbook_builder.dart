@@ -4,7 +4,10 @@ import 'package:excel/excel.dart';
 class ExcelWorkbookBuilder {
   const ExcelWorkbookBuilder();
 
-  List<int> build(ExcelExportRequest request) {
+  List<int> build(
+    ExcelExportRequest request, {
+    required String webFileName,
+  }) {
     final workbook = Excel.createExcel();
     final sheetName = _sanitizeSheetName(request.sheetName);
     final defaultSheet = workbook.getDefaultSheet();
@@ -19,7 +22,9 @@ class ExcelWorkbookBuilder {
     _appendRows(sheet, request);
     _applyColumnWidths(sheet, request.columnWidths);
 
-    final bytes = workbook.save();
+    // In Flutter Web, excel.save() starts a browser download by itself.
+    // Therefore the repository must not call FileSaver for Web again.
+    final bytes = workbook.save(fileName: webFileName);
     if (bytes == null || bytes.isEmpty) {
       throw StateError('ساخت فایل اکسل با خطا مواجه شد.');
     }

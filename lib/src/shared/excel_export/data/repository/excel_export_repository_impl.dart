@@ -27,8 +27,29 @@ class ExcelExportRepositoryImpl implements ExcelExportRepository {
         );
       }
 
-      final bytes = Uint8List.fromList(_workbookBuilder.build(request));
       final fileName = _buildFileName(request.fileNamePrefix);
+      final fullFileName = '$fileName.xlsx';
+
+      final bytes = Uint8List.fromList(
+        _workbookBuilder.build(
+          request,
+          webFileName: kIsWeb ? fullFileName : 'report_at_${DateTime.now()}',
+        ),
+      );
+
+      // excel.save() itself starts the browser download on Web.
+      // Calling FileSaver here as well would download the same file twice.
+      if (kIsWeb) {
+        return ApiResult.success(
+          data: ExcelExportResult(
+            fileName: fullFileName,
+            savedPath: null,
+            isBrowserDownload: true,
+          ),
+          resultCode: 0,
+        );
+      }
+
       final savedPath = await FileSaver.instance.saveFile(
         name: fileName,
         bytes: bytes,
@@ -38,21 +59,20 @@ class ExcelExportRepositoryImpl implements ExcelExportRepository {
       );
       final normalizedSavedPath = savedPath.trim();
 
-      if (!kIsWeb && normalizedSavedPath.isEmpty) {
+      if (normalizedSavedPath.isEmpty) {
         throw StateError('مسیر فایل ذخیره‌شده دریافت نشد.');
       }
 
       return ApiResult.success(
         data: ExcelExportResult(
-          fileName: '$fileName.xlsx',
-          savedPath:
-              normalizedSavedPath.isEmpty ? null : normalizedSavedPath,
-          isBrowserDownload: kIsWeb,
+          fileName: fullFileName,
+          savedPath: normalizedSavedPath,
+          isBrowserDownload: false,
         ),
         resultCode: 0,
       );
-    } catch (error, stackTrace) {
-      return error.toApiResult(stackTrace);
+    } catch (error, stacktrace) {
+      return error.toApiResult(stacktrace);
 
     }
   }

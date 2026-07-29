@@ -1,6 +1,5 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/domain/entities/grade_pattern_entity.dart';
-import 'package:eks_sana_plus_org/src/features/grade_pattern/domain/entities/params/grade_pattern_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/cubit/grade_pattern_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/pages/grade_pattern_form_page.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/widgets/grade_pattern_action_sheet.dart';
@@ -11,6 +10,7 @@ import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/gestures.dart';
@@ -102,9 +102,12 @@ class _GradePatternListView extends StatelessWidget {
               padding: const EdgeInsets.symmetric(horizontal: AppPadding.p16),
               child: BlocBuilder<GradePatternCubit, GradePatternState>(
                 builder: (context, state) {
-                  return _ReportButton(
+                  return ReportButtonWidget(
                     isLoading: cubit.isExporting,
-                    onTap: cubit.exportReport,
+                    onTap: () {
+                      if (cubit.isExporting) return;
+                      cubit.exportReport();
+                    },
                   );
                 },
               ),
@@ -507,65 +510,6 @@ class _TopFilterButton extends StatelessWidget {
                 ),
               ),
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ReportButton extends StatelessWidget {
-  const _ReportButton({
-    required this.isLoading,
-    required this.onTap,
-  });
-
-  final bool isLoading;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return InkWell(
-      onTap: () {
-        if (isLoading) return;
-        onTap();
-      },
-      borderRadius: BorderRadius.circular(AppSize.s8),
-      child: Container(
-        height: 40,
-        decoration: BoxDecoration(
-          color: Colors.transparent,
-          borderRadius: BorderRadius.circular(AppSize.s8),
-          border: Border.all(color: theme.colorScheme.onSurfaceVariant),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (isLoading)
-              SizedBox(
-                width: AppSize.s20,
-                height: AppSize.s20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: theme.colorScheme.onSurfaceVariant,
-                ),
-              )
-            else ...[
-              Text(
-                'گزارش‌گیری',
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-              Space.w8,
-              Icon(
-                Icons.summarize_outlined,
-                size: AppSize.s22,
-                color: theme.colorScheme.onSurfaceVariant,
-              ),
-            ],
           ],
         ),
       ),

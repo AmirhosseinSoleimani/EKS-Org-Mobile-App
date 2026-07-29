@@ -14,6 +14,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
@@ -97,18 +98,8 @@ class _DeploymentLocationViewState extends State<_DeploymentLocationView> {
                 children: [
                   DeploymentLocationFiltersRow(cubit: cubit, state: state),
                   Space.h12,
-                  InkwellButtonWidget(
-                    title: 'گزارش‌گیری',
-                    showLoading: isReportBusy,
-                    backgroundColor: theme.colorScheme.surface,
-                    borderColor: theme.colorScheme.outline,
-                    titleColor: theme.colorScheme.onSurfaceVariant,
-                    loadingColor: theme.colorScheme.primary,
-                    prefixIcon: Icon(
-                      Icons.document_scanner_outlined,
-                      color: theme.colorScheme.onSurfaceVariant,
-                      size: AppSize.s20,
-                    ),
+                  ReportButtonWidget(
+                    isLoading: isReportBusy,
                     onTap: () {
                       if (isReportBusy) return;
                       cubit.exportReport();

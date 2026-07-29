@@ -79,6 +79,21 @@ class ExcelExportRequest {
     if (value is DateTime) return value.toIso8601String();
 
     final normalized = value.toString().trim();
-    return normalized.isEmpty ? '---' : normalized;
+    if (normalized.isEmpty || _isTechnicalValue(normalized)) {
+      return '---';
+    }
+    return normalized;
+  }
+
+  static bool _isTechnicalValue(String value) {
+    if (value.startsWith("Instance of '")) {
+      return true;
+    }
+
+    // Prevent backend type names such as
+    // EKS.Common.SAN.EmdadUnitPersonData from leaking into reports.
+    return RegExp(
+      r'^[A-Za-z_][A-Za-z0-9_]*(?:\.[A-Za-z_][A-Za-z0-9_]*){2,}$',
+    ).hasMatch(value);
   }
 }

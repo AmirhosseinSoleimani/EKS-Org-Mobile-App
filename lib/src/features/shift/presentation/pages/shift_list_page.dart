@@ -7,15 +7,13 @@ import 'package:eks_sana_plus_org/src/features/shift/presentation/widgets/shift_
 import 'package:eks_sana_plus_org/src/features/shift/presentation/widgets/shift_card.dart';
 import 'package:eks_sana_plus_org/src/features/shift/presentation/widgets/shift_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/shift/presentation/widgets/shift_filter_sheet.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_src.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -112,9 +110,13 @@ class _ShiftListView extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: AppPadding.p16),
                 child: BlocBuilder<ShiftListCubit, ShiftListState>(
                   builder: (context, state) {
-                    return _ReportButton(
+                    return ReportButtonWidget(
                       isLoading: cubit.isExporting,
-                      onTap: cubit.exportReport,
+                      onTap: () {
+                        if (cubit.isExporting) return;
+                        onTap:
+                        cubit.exportReport();
+                      },
                     );
                   },
                 ),
@@ -424,61 +426,6 @@ class _TopFilterButton extends StatelessWidget {
               Icons.keyboard_arrow_down_rounded,
               color: theme.colorScheme.onSurfaceVariant,
             ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _ReportButton extends StatelessWidget {
-  const _ReportButton({
-    required this.isLoading,
-    required this.onTap,
-  });
-
-  final bool isLoading;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return InkWell(
-      onTap: () {
-        if (isLoading) return;
-        onTap();
-      },
-      borderRadius: BorderRadius.circular(AppSize.s8),
-      child: Container(
-        height: AppSize.s40,
-        decoration: BoxDecoration(
-          color: theme.colorScheme.onPrimaryFixed.withValues(alpha: 0.05),
-          borderRadius: BorderRadius.circular(AppSize.s8),
-          border: Border.all(color: theme.colorScheme.onPrimaryFixed),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            if (isLoading)
-              SizedBox(
-                width: AppSize.s20,
-                height: AppSize.s20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: theme.colorScheme.onPrimaryFixed,
-                ),
-              )
-            else ...[
-              SvgWidget(src: SvgAsset(SvgManager.exportNotes)),
-              Space.w8,
-              Text(
-                'گزارش‌گیری',
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onPrimaryFixed,
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ],
           ],
         ),
       ),
