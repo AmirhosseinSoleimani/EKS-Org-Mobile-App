@@ -131,6 +131,28 @@ import '../features/dashboard/domain/repositories/dashboard_repository.dart'
 import '../features/dashboard/domain/use_cases/get_dashboard_data_use_case.dart'
     as _i208;
 import '../features/dashboard/presentation/cubit/dashboard_cubit.dart' as _i932;
+import '../features/deployment_location/data/data_source/deployment_location_data_source.dart'
+    as _i557;
+import '../features/deployment_location/data/data_source/deployment_location_data_source_impl.dart'
+    as _i584;
+import '../features/deployment_location/data/repository/deployment_location_repository_impl.dart'
+    as _i879;
+import '../features/deployment_location/data/service/deployment_location_service.dart'
+    as _i86;
+import '../features/deployment_location/domain/repository/deployment_location_repository.dart'
+    as _i6;
+import '../features/deployment_location/domain/usecases/create_deployment_location_use_case.dart'
+    as _i550;
+import '../features/deployment_location/domain/usecases/delete_deployment_location_use_case.dart'
+    as _i950;
+import '../features/deployment_location/domain/usecases/get_deployment_location_by_id_use_case.dart'
+    as _i510;
+import '../features/deployment_location/domain/usecases/get_deployment_location_list_use_case.dart'
+    as _i916;
+import '../features/deployment_location/domain/usecases/update_deployment_location_use_case.dart'
+    as _i676;
+import '../features/deployment_location/presentation/cubit/deployment_location_cubit.dart'
+    as _i75;
 import '../features/emdad_unit/data/data_sources/emdad_unit_data_source.dart'
     as _i930;
 import '../features/emdad_unit/data/data_sources/emdad_unit_data_source_impl.dart'
@@ -955,6 +977,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i427.AgencyInfoService>(
     () => _i427.AgencyInfoService(gh<_i361.Dio>()),
   );
+  gh.lazySingleton<_i86.DeploymentLocationService>(
+    () => _i86.DeploymentLocationService(gh<_i361.Dio>()),
+  );
   gh.lazySingleton<_i54.EmdadUnitService>(
     () => _i54.EmdadUnitService(gh<_i361.Dio>()),
   );
@@ -1068,6 +1093,11 @@ _i174.GetIt $initGetIt(
       gh<_i227.IndicatorReportRepository>(),
     ),
   );
+  gh.lazySingleton<_i557.DeploymentLocationDataSource>(
+    () => _i584.DeploymentLocationDataSourceImpl(
+      gh<_i86.DeploymentLocationService>(),
+    ),
+  );
   gh.lazySingleton<_i999.HomeServiceEvaluationDataSource>(
     () => _i983.HomeServiceEvaluationDataSourceImpl(
       gh<_i204.HomeServiceEvaluationService>(),
@@ -1148,6 +1178,11 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i422.ObserveNetworkRepository>(
     () =>
         _i16.ObserveNetworkRepositoryImpl(gh<_i333.ObserveNetworkDataSource>()),
+  );
+  gh.lazySingleton<_i6.DeploymentLocationRepository>(
+    () => _i879.DeploymentLocationRepositoryImpl(
+      gh<_i557.DeploymentLocationDataSource>(),
+    ),
   );
   gh.lazySingleton<_i399.ShiftRepository>(
     () => _i520.ShiftRepositoryImpl(gh<_i970.ShiftDataSource>()),
@@ -1231,6 +1266,31 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i615.SkillsCertificatesRepository>(
     () => _i526.SkillsCertificatesRepositoryImpl(
       gh<_i82.SkillsCertificatesDataSource>(),
+    ),
+  );
+  gh.lazySingleton<_i550.CreateDeploymentLocationUseCase>(
+    () => _i550.CreateDeploymentLocationUseCase(
+      gh<_i6.DeploymentLocationRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i950.DeleteDeploymentLocationUseCase>(
+    () => _i950.DeleteDeploymentLocationUseCase(
+      gh<_i6.DeploymentLocationRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i510.GetDeploymentLocationByIdUseCase>(
+    () => _i510.GetDeploymentLocationByIdUseCase(
+      gh<_i6.DeploymentLocationRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i916.GetDeploymentLocationListUseCase>(
+    () => _i916.GetDeploymentLocationListUseCase(
+      gh<_i6.DeploymentLocationRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i676.UpdateDeploymentLocationUseCase>(
+    () => _i676.UpdateDeploymentLocationUseCase(
+      gh<_i6.DeploymentLocationRepository>(),
     ),
   );
   gh.factory<_i125.AssignEmdadUnitPersonUseCase>(
@@ -1774,6 +1834,16 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i139.LoginUseCase>(
     () => _i139.LoginUseCase(gh<_i716.AuthRepository>()),
+  );
+  gh.factory<_i75.DeploymentLocationCubit>(
+    () => _i75.DeploymentLocationCubit(
+      gh<_i916.GetDeploymentLocationListUseCase>(),
+      gh<_i510.GetDeploymentLocationByIdUseCase>(),
+      gh<_i550.CreateDeploymentLocationUseCase>(),
+      gh<_i676.UpdateDeploymentLocationUseCase>(),
+      gh<_i950.DeleteDeploymentLocationUseCase>(),
+      gh<_i265.GetProvinceWithCityListUseCase>(),
+    ),
   );
   gh.factory<_i860.AssignAndCancelEmdadgarCubit>(
     () => _i860.AssignAndCancelEmdadgarCubit(

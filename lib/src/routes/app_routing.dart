@@ -5,6 +5,7 @@ import 'package:eks_sana_plus_org/src/features/authentication/presentation/login
 import 'package:eks_sana_plus_org/src/features/bottom_navigation_bar/presentation/pages/bottom_nav_page.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/presentation/cartable_page.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/presentation/dashboard_page.dart';
+import 'package:eks_sana_plus_org/src/features/deployment_location/presentation/deployment_location_routes.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/emdad_unit_routes.dart';
 import 'package:eks_sana_plus_org/src/features/general_content/presentation/general_content_routes.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/grade_pattern_routes.dart';
@@ -43,6 +44,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/update_requ
 import 'package:eks_sana_plus_org/src/features/shift/presentation/shift_routes.dart';
 import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/skills_certificates_routes.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/vehicle_info_routes.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/vehicle_model_routes.dart';
 import 'package:eks_sana_plus_org/src/routes/current_session_sync_navigator_observer.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -378,6 +380,7 @@ class Routes {
         ...ImeiRoutes.routes(getPage),
         ...NavganRoutes.routes(getPage),
         ...VehicleModelRoutes.routes(getPage),
+        ...DeploymentLocationRoutes.routes(getPage),
         ...GeneralContentRoutes.routes(getPage),
       ],
     );

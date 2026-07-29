@@ -131,6 +131,10 @@ class CurrentSessionAccessPolicy {
     return isAuthenticated &&
         canShowMenu(CurrentSessionMenuKeys.sanVehicleModel);
   }
+  bool canShowDeploymentLocationButton() {
+    return isAuthenticated &&
+        canShowMenu(CurrentSessionMenuKeys.sanLocation);
+  }
 
   bool canShowSanGeneralContent() {
     return isAuthenticated &&

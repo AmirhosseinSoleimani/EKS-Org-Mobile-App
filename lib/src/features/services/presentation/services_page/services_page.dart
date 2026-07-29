@@ -1,6 +1,7 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_info_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/presentation/cartable_page.dart';
+import 'package:eks_sana_plus_org/src/features/deployment_location/presentation/pages/deployment_location_page.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/pages/emdad_unit_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/general_content/presentation/pages/general_content_page.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/pages/grade_pattern_list_page.dart';
@@ -169,6 +170,14 @@ class ServicesPage extends StatelessWidget {
                 icon: Icons.grading_outlined,
                 onTap: () {
                   context.pushNamed(VehicleModelPage.name);
+                },
+              ),
+            if (access.canShowDeploymentLocationButton())
+              _AgencyServiceItemData(
+                title: 'محل استقرار',
+                icon: Icons.grading_outlined,
+                onTap: () {
+                  context.pushNamed(DeploymentLocationPage.name);
                 },
               ),
           ];
