@@ -1,5 +1,7 @@
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_medium_text.dart';
 import 'package:flutter/material.dart';
 
 class DeleteConfirmSheet extends StatelessWidget {
@@ -30,11 +32,24 @@ class DeleteConfirmSheet extends StatelessWidget {
 
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.fromLTRB(
+          AppPadding.p24,
+          AppPadding.p8,
+          AppPadding.p24,
+          AppPadding.p24,
+        ),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Space.h16,
+            Container(
+              width: AppSize.s40,
+              height: AppSize.s4,
+              decoration: BoxDecoration(
+                color: theme.colorScheme.primary.withOpacity(0.28),
+                borderRadius: BorderRadius.circular(AppSize.s8),
+              ),
+            ),
+            Space.h24,
             Container(
               width: AppSize.s64,
               height: AppSize.s64,
@@ -50,21 +65,19 @@ class DeleteConfirmSheet extends StatelessWidget {
               ),
             ),
             Space.h24,
-            Text(
-              title,
+            TitleMediumText(
+              text: title,
               textAlign: TextAlign.center,
-              style: theme.textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w800,
-              ),
+              fontWeight: FontWeight.w800,
             ),
             Space.h12,
-            Text(
-              message,
+            BodyMediumText(
+              text: message,
               textAlign: TextAlign.center,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurfaceVariant,
-                height: 1.8,
-              ),
+              color: theme.colorScheme.onSurfaceVariant,
+              lineHeight: 1.8,
+              maxLines: 4,
+              textOverflow: TextOverflow.ellipsis,
             ),
             Space.h24,
             InkwellButtonWidget(

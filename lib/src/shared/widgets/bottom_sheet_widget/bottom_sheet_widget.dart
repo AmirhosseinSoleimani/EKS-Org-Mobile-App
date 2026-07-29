@@ -53,7 +53,7 @@ class BottomSheetWidget extends StatelessWidget {
 
     const horizontal = AppPadding.p16;
     const top = AppPadding.p8;
-    const bottom = AppPadding.p16;
+    const bottom = AppPadding.p4;
 
     return AnimatedPadding(
       duration: const Duration(milliseconds: 150),

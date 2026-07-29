@@ -14,6 +14,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/home_servic
 import 'package:eks_sana_plus_org/src/features/services/presentation/relief_request_list_page/relief_request_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/shift/presentation/pages/shift_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/skills_certificates_page.dart';
+import 'package:eks_sana_plus_org/src/features/special_plan/presentation/pages/special_plan_page.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/pages/vehicle_info_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/pages/vehicle_model_page.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/presentation/widgets/current_session_access_builder.dart';
@@ -178,6 +179,14 @@ class ServicesPage extends StatelessWidget {
                 icon: Icons.grading_outlined,
                 onTap: () {
                   context.pushNamed(DeploymentLocationPage.name);
+                },
+              ),
+            if (access.canShowSpecialPlanButton())
+              _AgencyServiceItemData(
+                title: 'طزح',
+                icon: Icons.grading_outlined,
+                onTap: () {
+                  context.pushNamed(SpecialPlanPage.name);
                 },
               ),
           ];

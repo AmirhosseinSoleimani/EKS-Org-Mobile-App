@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 
 class BottomSheetActionTile extends StatelessWidget {
@@ -40,12 +41,10 @@ class BottomSheetActionTile extends StatelessWidget {
               )
             : Icon(icon, color: effectiveColor, size: AppSize.s24),
       ),
-      title: Text(
-        title,
-        style: theme.textTheme.bodyMedium?.copyWith(
-          color: effectiveColor,
-          fontWeight: FontWeight.w700,
-        ),
+      title: BodyMediumText(
+        text: title,
+        color: effectiveColor,
+        fontWeight: FontWeight.w700,
       ),
       onTap: () {
         if (!enabled || isLoading) return;

@@ -135,6 +135,10 @@ class CurrentSessionAccessPolicy {
     return isAuthenticated &&
         canShowMenu(CurrentSessionMenuKeys.sanLocation);
   }
+  bool canShowSpecialPlanButton() {
+    return isAuthenticated &&
+        canShowMenu(CurrentSessionMenuKeys.sanSpecialPlan);
+  }
 
   bool canShowSanGeneralContent() {
     return isAuthenticated &&

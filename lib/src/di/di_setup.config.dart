@@ -661,6 +661,32 @@ import '../features/skills_certificates/domain/usecases/skills_certificates_usec
     as _i974;
 import '../features/skills_certificates/presentation/cubit/skills_certificates_cubit.dart'
     as _i751;
+import '../features/special_plan/data/data_source/special_plan_data_source.dart'
+    as _i407;
+import '../features/special_plan/data/data_source/special_plan_data_source_impl.dart'
+    as _i206;
+import '../features/special_plan/data/repository/special_plan_repository_impl.dart'
+    as _i922;
+import '../features/special_plan/data/service/special_plan_service.dart'
+    as _i626;
+import '../features/special_plan/domain/repository/special_plan_repository.dart'
+    as _i630;
+import '../features/special_plan/domain/usecases/create_special_plan_use_case.dart'
+    as _i150;
+import '../features/special_plan/domain/usecases/delete_special_plan_use_case.dart'
+    as _i723;
+import '../features/special_plan/domain/usecases/get_special_plan_list_use_case.dart'
+    as _i944;
+import '../features/special_plan/domain/usecases/get_special_plan_products_use_case.dart'
+    as _i973;
+import '../features/special_plan/domain/usecases/update_special_plan_use_case.dart'
+    as _i1001;
+import '../features/special_plan/presentation/cubit/special_plan_form_cubit.dart'
+    as _i162;
+import '../features/special_plan/presentation/cubit/special_plan_list_cubit.dart'
+    as _i304;
+import '../features/special_plan/presentation/cubit/special_plan_report_cubit.dart'
+    as _i1055;
 import '../features/vehicle_info/data/data_sources/vehicle_info_data_source.dart'
     as _i247;
 import '../features/vehicle_info/data/data_sources/vehicle_info_data_source_impl.dart'
@@ -715,6 +741,13 @@ import '../services/local_service/session_local_storage_service/data/data_source
 import '../services/network/di/network_module.dart' as _i453;
 import '../services/network/interceptors/dio_token_interceptor.dart' as _i466;
 import '../services/network/interceptors/pretty_dio_logger.dart' as _i137;
+import '../shared/excel_export/data/repository/excel_export_repository_impl.dart'
+    as _i931;
+import '../shared/excel_export/data/service/excel_export_service.dart' as _i384;
+import '../shared/excel_export/domain/repository/excel_export_repository.dart'
+    as _i925;
+import '../shared/excel_export/domain/usecase/export_excel_use_case.dart'
+    as _i470;
 import '../shared/features/invoice/data/remote/data_source/invoice_data_source.dart'
     as _i935;
 import '../shared/features/invoice/data/remote/data_source/invoice_data_source_impl.dart'
@@ -747,6 +780,7 @@ import '../shared/features/map/data/repository_impl/map_share_data_repository_im
 import '../shared/features/map/data/service/address_service.dart' as _i1036;
 import '../shared/features/map/data/service/location_permission_service.dart'
     as _i988;
+import '../shared/features/map/data/service/map_lookup_service.dart' as _i275;
 import '../shared/features/map/data/service/map_service.dart' as _i929;
 import '../shared/features/map/domain/repository/location_permission_repository.dart'
     as _i995;
@@ -767,8 +801,12 @@ import '../shared/features/map/domain/usecase/get_area_base_info_use_case.dart'
     as _i159;
 import '../shared/features/map/domain/usecase/get_current_location_use_case.dart'
     as _i705;
+import '../shared/features/map/domain/usecase/get_discountable_areas_use_case.dart'
+    as _i981;
 import '../shared/features/map/domain/usecase/get_location_data_use_case.dart'
     as _i850;
+import '../shared/features/map/domain/usecase/get_province_lookup_list_use_case.dart'
+    as _i1015;
 import '../shared/features/map/domain/usecase/get_province_with_city_list_use_case.dart'
     as _i265;
 import '../shared/features/map/domain/usecase/get_route_use_case.dart' as _i678;
@@ -865,6 +903,7 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i325.ValidateShiftUseCase>(
     () => _i325.ValidateShiftUseCase(),
   );
+  gh.lazySingleton<_i384.ExcelExportService>(() => _i384.ExcelExportService());
   gh.lazySingleton<_i838.RequestRepositoryShareData>(
     () => _i318.RequestRepositoryShareDataImpl(),
   );
@@ -915,6 +954,9 @@ _i174.GetIt $initGetIt(
       gh<_i466.DioTokenInterceptor>(),
       gh<_i137.PrettyDioLogger>(),
     ),
+  );
+  gh.lazySingleton<_i925.ExcelExportRepository>(
+    () => _i931.ExcelExportRepositoryImpl(gh<_i384.ExcelExportService>()),
   );
   gh.lazySingleton<_i308.SessionStorage>(
     () => _i718.SessionStorageWebImpl(),
@@ -999,11 +1041,17 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i298.RescuerService>(
     () => _i298.RescuerService(gh<_i361.Dio>()),
   );
+  gh.lazySingleton<_i626.SpecialPlanService>(
+    () => _i626.SpecialPlanService(gh<_i361.Dio>()),
+  );
   gh.lazySingleton<_i810.VehicleInfoService>(
     () => _i810.VehicleInfoService(gh<_i361.Dio>()),
   );
   gh.lazySingleton<_i386.VehicleModelService>(
     () => _i386.VehicleModelService(gh<_i361.Dio>()),
+  );
+  gh.lazySingleton<_i275.MapLookupService>(
+    () => _i275.MapLookupService(gh<_i361.Dio>()),
   );
   gh.lazySingleton<_i691.IndicatorReportDataSource>(
     () =>
@@ -1014,6 +1062,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i320.DashboardDataSource>(
     () => _i822.DashboardDataSourceImpl(gh<_i953.DashboardService>()),
+  );
+  gh.lazySingleton<_i470.ExportExcelUseCase>(
+    () => _i470.ExportExcelUseCase(gh<_i925.ExcelExportRepository>()),
   );
   gh.lazySingleton<_i227.IndicatorReportRepository>(
     () => _i282.IndicatorReportRepositoryImpl(
@@ -1028,6 +1079,13 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i475.MainRemoteDataSource>(
     () => _i203.MainRemoteDataSourceImpl(gh<_i438.MainService>()),
+  );
+  gh.lazySingleton<_i971.MapDataSource>(
+    () => _i583.MapDataSourceImpl(
+      gh<_i929.MapService>(),
+      gh<_i1036.AddressService>(),
+      gh<_i275.MapLookupService>(),
+    ),
   );
   gh.lazySingleton<_i854.MainRepository>(
     () => _i320.MainRepositoryImpl(gh<_i475.MainRemoteDataSource>()),
@@ -1074,11 +1132,8 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i670.DateTimeInfoDataSource>(
     () => _i940.DateTimeInfoDataSourceImpl(gh<_i99.DateTimeService>()),
   );
-  gh.lazySingleton<_i971.MapDataSource>(
-    () => _i583.MapDataSourceImpl(
-      gh<_i929.MapService>(),
-      gh<_i1036.AddressService>(),
-    ),
+  gh.lazySingleton<_i407.SpecialPlanDataSource>(
+    () => _i206.SpecialPlanDataSourceImpl(gh<_i626.SpecialPlanService>()),
   );
   gh.lazySingleton<_i82.SkillsCertificatesDataSource>(
     () => _i518.SkillsCertificatesDataSourceImpl(
@@ -1397,8 +1452,14 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i159.GetAreaBaseInfoUseCase>(
     () => _i159.GetAreaBaseInfoUseCase(gh<_i92.MapRepository>()),
   );
+  gh.lazySingleton<_i981.GetDiscountableAreasUseCase>(
+    () => _i981.GetDiscountableAreasUseCase(gh<_i92.MapRepository>()),
+  );
   gh.lazySingleton<_i850.GetLocationDataUseCase>(
     () => _i850.GetLocationDataUseCase(gh<_i92.MapRepository>()),
+  );
+  gh.lazySingleton<_i1015.GetProvinceLookupListUseCase>(
+    () => _i1015.GetProvinceLookupListUseCase(gh<_i92.MapRepository>()),
   );
   gh.lazySingleton<_i265.GetProvinceWithCityListUseCase>(
     () => _i265.GetProvinceWithCityListUseCase(gh<_i92.MapRepository>()),
@@ -1496,6 +1557,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i180.UpdateServiceRequestUseCase>(
     () => _i180.UpdateServiceRequestUseCase(gh<_i603.RequestRepository>()),
+  );
+  gh.lazySingleton<_i630.SpecialPlanRepository>(
+    () => _i922.SpecialPlanRepositoryImpl(gh<_i407.SpecialPlanDataSource>()),
   );
   gh.factory<_i63.RescuerDetailCubit>(
     () => _i63.RescuerDetailCubit(
@@ -1761,6 +1825,22 @@ _i174.GetIt $initGetIt(
       gh<_i699.SearchPersonInfoUseCase>(),
       gh<_i427.AddAgencyPersonUseCase>(),
     ),
+  );
+  gh.lazySingleton<_i150.CreateSpecialPlanUseCase>(
+    () => _i150.CreateSpecialPlanUseCase(gh<_i630.SpecialPlanRepository>()),
+  );
+  gh.lazySingleton<_i723.DeleteSpecialPlanUseCase>(
+    () => _i723.DeleteSpecialPlanUseCase(gh<_i630.SpecialPlanRepository>()),
+  );
+  gh.lazySingleton<_i944.GetSpecialPlanListUseCase>(
+    () => _i944.GetSpecialPlanListUseCase(gh<_i630.SpecialPlanRepository>()),
+  );
+  gh.lazySingleton<_i973.GetSpecialPlanProductsUseCase>(
+    () =>
+        _i973.GetSpecialPlanProductsUseCase(gh<_i630.SpecialPlanRepository>()),
+  );
+  gh.lazySingleton<_i1001.UpdateSpecialPlanUseCase>(
+    () => _i1001.UpdateSpecialPlanUseCase(gh<_i630.SpecialPlanRepository>()),
   );
   gh.factory<_i951.IndicatorReportCubit>(
     () => _i951.IndicatorReportCubit(gh<_i375.FetchIndicatorReportUseCase>()),
@@ -2127,6 +2207,14 @@ _i174.GetIt $initGetIt(
       gh<_i1058.CurrentSessionManager>(),
     ),
   );
+  gh.factory<_i162.SpecialPlanFormCubit>(
+    () => _i162.SpecialPlanFormCubit(
+      gh<_i973.GetSpecialPlanProductsUseCase>(),
+      gh<_i981.GetDiscountableAreasUseCase>(),
+      gh<_i150.CreateSpecialPlanUseCase>(),
+      gh<_i1001.UpdateSpecialPlanUseCase>(),
+    ),
+  );
   gh.factory<_i806.ChangeHomeServiceRequestAddressCubit>(
     () => _i806.ChangeHomeServiceRequestAddressCubit(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
@@ -2142,6 +2230,13 @@ _i174.GetIt $initGetIt(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
       gh<_i672.GetReliefRequestByIdUseCase>(),
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
+    ),
+  );
+  gh.factory<_i1055.SpecialPlanReportCubit>(
+    () => _i1055.SpecialPlanReportCubit(
+      gh<_i944.GetSpecialPlanListUseCase>(),
+      gh<_i973.GetSpecialPlanProductsUseCase>(),
+      gh<_i470.ExportExcelUseCase>(),
     ),
   );
   gh.factory<_i709.OnlineMapCubit>(
@@ -2279,6 +2374,14 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i558.UpdateEmdadVehicleUseCase>(
     () => _i558.UpdateEmdadVehicleUseCase(gh<_i139.EmdadVehicleRepository>()),
+  );
+  gh.factory<_i304.SpecialPlanListCubit>(
+    () => _i304.SpecialPlanListCubit(
+      gh<_i944.GetSpecialPlanListUseCase>(),
+      gh<_i973.GetSpecialPlanProductsUseCase>(),
+      gh<_i723.DeleteSpecialPlanUseCase>(),
+      gh<_i1015.GetProvinceLookupListUseCase>(),
+    ),
   );
   gh.factory<_i70.ImeiCubit>(
     () => _i70.ImeiCubit(

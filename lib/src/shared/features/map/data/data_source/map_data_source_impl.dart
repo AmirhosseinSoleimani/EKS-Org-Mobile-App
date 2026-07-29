@@ -1,59 +1,71 @@
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/data/data_source/map_data_source.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/data/models/address_to_location_response_model.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/data/models/area_base_model.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/data/models/discountable_area_model.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/data/models/location_data_model.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/data/models/location_model.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/data/models/location_to_address_response_model.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/data/models/map_request_model.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/data/models/online_route_model.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/data/models/param/area_base_info_param_model.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/data/models/param/route_param_model.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/data/models/province_lookup_model.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/data/models/province_model.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/data/service/address_service.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/data/service/map_lookup_service.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/data/service/map_service.dart';
 import 'package:injectable/injectable.dart';
-
-import '../models/address_to_location_response_model.dart';
-import '../models/location_to_address_response_model.dart';
-import '../models/map_request_model.dart';
-import '../service/map_service.dart';
-import 'map_data_source.dart';
 
 @LazySingleton(as: MapDataSource)
 class MapDataSourceImpl extends MapDataSource {
-  final MapService _service;
-  final AddressService addressService;
+  MapDataSourceImpl(
+    this._service,
+    this._addressService,
+    this._lookupService,
+  );
 
-  MapDataSourceImpl(this._service, this.addressService);
+  final MapService _service;
+  final AddressService _addressService;
+  final MapLookupService _lookupService;
 
   @override
   Future<LocationToAddressResponseModel?> fetchLocationToAddress(
-      MapRequestModel? model) async {
-    final result =
-        await _service.fetchLocationToAddress('${model?.lon},${model?.lat}');
-    return result;
-  }
+    MapRequestModel? model,
+  ) => _service.fetchLocationToAddress('${model?.lon},${model?.lat}');
 
   @override
   Future<AddressToLocationResponseModel?> fetchAddressToLocation(
-      MapRequestModel? model) async {
-    final result = await _service.fetchAddressToLocation(
-        model?.text ?? '', '${model?.lon},${model?.lat}');
-    return result;
-  }
+    MapRequestModel? model,
+  ) => _service.fetchAddressToLocation(
+        model?.text ?? '',
+        '${model?.lon},${model?.lat}',
+      );
 
   @override
-  Future<BaseSingleResponse<RouteDataModel>> getRoute(RouteParamModel param) async {
-    return await addressService.getRoute(param.toJson());
-  }
+  Future<BaseSingleResponse<RouteDataModel>> getRoute(
+    RouteParamModel param,
+  ) => _addressService.getRoute(param.toJson());
 
   @override
-  Future<BaseListResponse<AreaBaseModel>> getAreaBaseData(AreaBaseInfoParamModel param) async{
-    return await addressService.getAreaBaseData(param.toJson());
-  }
+  Future<BaseListResponse<AreaBaseModel>> getAreaBaseData(
+    AreaBaseInfoParamModel param,
+  ) => _addressService.getAreaBaseData(param.toJson());
 
   @override
-  Future<BaseListResponse<ProvinceModel>> getProvinceList() async {
-    return await addressService.getCitiesWithProvince({});
-  }
+  Future<BaseListResponse<ProvinceModel>> getProvinceList() =>
+      _addressService.getCitiesWithProvince({});
 
   @override
-  Future<BaseSingleResponse<LocationDataModel>> getLocationData(LocationModel param) async
-  => await addressService.getLocationData(param.toLocationRequestJson());
+  Future<BaseSingleResponse<List<ProvinceLookupModel>>>
+      getProvinceLookupList() => _lookupService.getProvinceLookupList();
+
+  @override
+  Future<BaseSingleResponse<List<DiscountableAreaModel>>>
+      getDiscountableAreas() => _lookupService.getDiscountableAreas();
+
+  @override
+  Future<BaseSingleResponse<LocationDataModel>> getLocationData(
+    LocationModel param,
+  ) => _addressService.getLocationData(param.toLocationRequestJson());
 }
