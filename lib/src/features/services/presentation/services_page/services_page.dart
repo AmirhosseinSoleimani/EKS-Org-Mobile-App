@@ -183,7 +183,7 @@ class ServicesPage extends StatelessWidget {
               ),
             if (access.canShowSpecialPlanButton())
               _AgencyServiceItemData(
-                title: 'طزح',
+                title: 'طرح',
                 icon: Icons.grading_outlined,
                 onTap: () {
                   context.pushNamed(SpecialPlanPage.name);
