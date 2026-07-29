@@ -39,137 +39,6 @@ class SpecialPlanListCubit extends Cubit<SpecialPlanListState> {
       return;
     }
 
-    emit(
-      state.copyWith(
-        status: reset
-            ? SpecialPlanViewStatus.loading
-            : state.status,
-        isLoadingMore: !reset,
-        skip: reset ? 0 : state.records.length,
-        errorMessage: null,
-        successMessage: null,
-      ),
-    );
-
-    // شبیه‌سازی زمان پاسخ API
-    await Future<void>.delayed(
-      const Duration(milliseconds: 700),
-    );
-
-    final fakeRecords = <SpecialPlanEntity>[
-      SpecialPlanEntity(
-        id: 1,
-        title: 'طرح ویژه اربعین',
-        areaBaseInfoId: 59,
-        areaTitle: 'اربعین',
-        productId: 8640,
-        productTitle: 'محصول امدادی ویژه',
-        orderNo: 3,
-        hasHighPriority: false,
-        onlySaipaCars: false,
-        startDate: DateTime(2026, 7, 21),
-        endDate: DateTime(2026, 8, 15),
-        insertUserFullName: 'امیر حسینی',
-        insertDateTime: DateTime(2026, 7, 9, 21, 56),
-        insertDateTimeJalali: '1405/04/18 21:56',
-        updateUserFullName: 'امیر حسینی',
-        updateDateTime: DateTime(2026, 7, 10, 10, 30),
-        updateDateTimeJalali: '1405/04/19 10:30',
-        provinceTitle: 'تهران',
-        cityTitle: 'تهران',
-        isDeleted: false,
-        isActive: true,
-      ),
-      SpecialPlanEntity(
-        id: 2,
-        title: 'طرح خدمات تابستانی',
-        areaBaseInfoId: 61,
-        areaTitle: 'مناطق شمالی',
-        productId: 8960,
-        productTitle: 'خدمات امداد در محل',
-        orderNo: 1,
-        hasHighPriority: true,
-        onlySaipaCars: true,
-        startDate: DateTime(2026, 7, 1),
-        endDate: DateTime(2026, 9, 22),
-        insertUserFullName: 'علی اکبری',
-        insertDateTime: DateTime(2026, 6, 25, 12, 20),
-        insertDateTimeJalali: '1405/04/04 12:20',
-        updateUserFullName: 'علی اکبری',
-        updateDateTime: DateTime(2026, 7, 5, 9, 15),
-        updateDateTimeJalali: '1405/04/14 09:15',
-        provinceTitle: 'مازندران',
-        cityTitle: 'ساری',
-        isDeleted: false,
-        isActive: true,
-      ),
-      SpecialPlanEntity(
-        id: 3,
-        title: 'طرح ویژه نوروز',
-        areaBaseInfoId: 63,
-        areaTitle: 'سراسر کشور',
-        productId: 9180,
-        productTitle: 'اشتراک امدادی نوروز',
-        orderNo: 2,
-        hasHighPriority: true,
-        onlySaipaCars: false,
-        startDate: DateTime(2026, 3, 10),
-        endDate: DateTime(2026, 4, 10),
-        insertUserFullName: 'مدیر سیستم',
-        insertDateTime: DateTime(2026, 2, 15, 8, 45),
-        insertDateTimeJalali: '1404/11/26 08:45',
-        updateUserFullName: 'مدیر سیستم',
-        updateDateTime: DateTime(2026, 3, 1, 11),
-        updateDateTimeJalali: '1404/12/10 11:00',
-        provinceTitle: 'تمام استان‌ها',
-        cityTitle: 'تمام شهرها',
-        isDeleted: false,
-        isActive: false,
-      ),
-      SpecialPlanEntity(
-        id: 4,
-        title: 'طرح امداد جاده‌ای زمستان',
-        areaBaseInfoId: 65,
-        areaTitle: 'محورهای کوهستانی',
-        productId: 9120,
-        productTitle: 'امداد جاده‌ای ویژه',
-        orderNo: 4,
-        hasHighPriority: false,
-        onlySaipaCars: true,
-        startDate: DateTime(2026, 11, 21),
-        endDate: DateTime(2027, 2, 19),
-        insertUserFullName: 'سارا محمدی',
-        insertDateTime: DateTime(2026, 7, 15, 14, 10),
-        insertDateTimeJalali: '1405/04/24 14:10',
-        updateUserFullName: 'سارا محمدی',
-        updateDateTime: DateTime(2026, 7, 20, 16, 40),
-        updateDateTimeJalali: '1405/04/29 16:40',
-        provinceTitle: 'البرز',
-        cityTitle: 'کرج',
-        isDeleted: false,
-        isActive: true,
-      ),
-    ];
-
-    emit(
-      state.copyWith(
-        status: SpecialPlanViewStatus.loaded,
-        records: fakeRecords,
-        totalCount: fakeRecords.length,
-        skip: fakeRecords.length,
-        isLoadingMore: false,
-        isRefreshing: false,
-        errorMessage: null,
-      ),
-    );
-  }
-
-
-/*  Future<void> fetchList({bool reset = false}) async {
-    if (state.isInitialLoading || state.isLoadingMore || state.isRefreshing) {
-      return;
-    }
-
     final nextSkip = reset ? 0 : state.records.length;
     emit(
       state.copyWith(
@@ -219,7 +88,7 @@ class SpecialPlanListCubit extends Cubit<SpecialPlanListState> {
         ),
       ),
     );
-  }*/
+  }
 
   Future<void> refresh() async {
     if (state.isInitialLoading || state.isLoadingMore || state.isRefreshing) {
