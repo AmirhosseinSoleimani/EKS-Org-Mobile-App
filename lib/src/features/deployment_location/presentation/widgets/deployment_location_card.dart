@@ -41,8 +41,9 @@ class DeploymentLocationCard extends StatelessWidget {
         children: [
           Row(
             crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Container(
+              Row(children: [ Container(
                 width: AppSize.s48,
                 height: AppSize.s48,
                 decoration: BoxDecoration(
@@ -55,9 +56,8 @@ class DeploymentLocationCard extends StatelessWidget {
                   size: AppSize.s28,
                 ),
               ),
-              Space.w12,
-              Expanded(
-                child: Padding(
+                Space.w12,
+                Padding(
                   padding: const EdgeInsets.only(top: AppPadding.p8),
                   child: TitleLargeText(
                     text: item.title ?? '---',
@@ -66,7 +66,7 @@ class DeploymentLocationCard extends StatelessWidget {
                     textAlign: TextAlign.start,
                   ),
                 ),
-              ),
+              ],),
               Space.w8,
               StatusLabel(
                 text: item.isActive == true ? 'فعال' : 'غیرفعال',
