@@ -1,4 +1,3 @@
-import 'package:eks_sana_plus_org/src/features/vehicle_model/domain/entities/vehicle_model_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/pages/vehicle_model_form_page.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/pages/vehicle_model_page.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/pages/vehicle_model_services_page.dart';
@@ -40,10 +39,13 @@ class VehicleModelRoutes {
         path: VehicleModelServicesPage.path,
         name: VehicleModelServicesPage.name,
         pageBuilder: (context, state) {
-          final item = state.extra;
+          final args = state.extra;
           return getPage(
-            child: item is VehicleModelEntity
-                ? VehicleModelServicesPage(item: item)
+            child: args is VehicleModelServicesPageArgs
+                ? VehicleModelServicesPage(
+                    item: args.item,
+                    initialGroups: args.initialGroups,
+                  )
                 : const VehicleModelPage(),
             state: state,
           );

@@ -26,6 +26,8 @@ class ServiceSelectionPage<TGroup, TItem> extends StatelessWidget {
     this.header,
     this.isLoading = false,
     this.isSubmitting = false,
+    this.submitTitle = 'ثبت',
+    this.cancelTitle = 'انصراف',
     this.emptyMessage = 'سرویسی برای نمایش وجود ندارد.',
   });
 
@@ -43,6 +45,8 @@ class ServiceSelectionPage<TGroup, TItem> extends StatelessWidget {
   final Widget? header;
   final bool isLoading;
   final bool isSubmitting;
+  final String submitTitle;
+  final String cancelTitle;
   final String emptyMessage;
 
   @override
@@ -99,8 +103,8 @@ class ServiceSelectionPage<TGroup, TItem> extends StatelessWidget {
                     ),
         ),
         bottomNavigationBar: StickyFormActionBar(
-          submitTitle: 'ثبت',
-          cancelTitle: 'انصراف',
+          submitTitle: submitTitle,
+          cancelTitle: cancelTitle,
           isSubmitting: isSubmitting,
           onSubmit: onSubmit,
           onCancel: onCancel,

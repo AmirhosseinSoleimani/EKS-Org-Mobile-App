@@ -9,15 +9,18 @@ class VehicleModelActionSheet extends StatelessWidget {
     required this.onEdit,
     required this.onDelete,
     this.isDeleting = false,
+    this.isServicesLoading = false,
   });
 
   final VoidCallback onServices;
   final VoidCallback onEdit;
   final VoidCallback onDelete;
   final bool isDeleting;
+  final bool isServicesLoading;
 
   @override
   Widget build(BuildContext context) {
+    final isBusy = isDeleting || isServicesLoading;
     return Directionality(
       textDirection: TextDirection.rtl,
       child: Padding(
@@ -29,11 +32,14 @@ class VehicleModelActionSheet extends StatelessWidget {
             BottomSheetActionTile(
               icon: Icons.miscellaneous_services_outlined,
               title: 'سرویس‌ها',
+              isLoading: isServicesLoading,
+              enabled: !isDeleting,
               onTap: onServices,
             ),
             BottomSheetActionTile(
               icon: Icons.edit_outlined,
               title: 'ویرایش',
+              enabled: !isBusy,
               onTap: onEdit,
             ),
             Divider(color: Theme.of(context).dividerColor),
@@ -42,7 +48,7 @@ class VehicleModelActionSheet extends StatelessWidget {
               title: 'حذف',
               isDestructive: true,
               isLoading: isDeleting,
-              enabled: !isDeleting,
+              enabled: !isBusy,
               onTap: onDelete,
             ),
           ],

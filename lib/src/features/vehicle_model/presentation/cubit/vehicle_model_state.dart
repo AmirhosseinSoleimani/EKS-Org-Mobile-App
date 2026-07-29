@@ -34,8 +34,10 @@ class VehicleModelState {
     this.errorMessage,
     this.successMessage,
     this.isLoadingMore = false,
+    this.isRefreshing = false,
     this.isDeleting = false,
     this.deletingId,
+    this.loadingServicesVehicleModelId,
     this.isNavgansLoading = false,
     this.isFormSubmitting = false,
     this.isServiceGroupsLoading = false,
@@ -64,8 +66,10 @@ class VehicleModelState {
   final String? errorMessage;
   final String? successMessage;
   final bool isLoadingMore;
+  final bool isRefreshing;
   final bool isDeleting;
   final int? deletingId;
+  final int? loadingServicesVehicleModelId;
   final bool isNavgansLoading;
   final bool isFormSubmitting;
   final bool isServiceGroupsLoading;
@@ -78,7 +82,13 @@ class VehicleModelState {
       status == VehicleModelViewStatus.loading && records.isEmpty;
 
   bool get canLoadMore =>
-      !isLoadingMore && records.isNotEmpty && records.length < totalCount;
+      !isLoadingMore &&
+      !isRefreshing &&
+      records.isNotEmpty &&
+      records.length < totalCount;
+
+  bool isServicesActionLoading(int? vehicleModelId) =>
+      vehicleModelId != null && loadingServicesVehicleModelId == vehicleModelId;
 
   List<VehicleModelEntity> get visibleRecords {
     final localFilter = pageStatusFilter;
@@ -116,9 +126,12 @@ class VehicleModelState {
     String? successMessage,
     bool clearSuccessMessage = false,
     bool? isLoadingMore,
+    bool? isRefreshing,
     bool? isDeleting,
     int? deletingId,
     bool clearDeletingId = false,
+    int? loadingServicesVehicleModelId,
+    bool clearLoadingServicesVehicleModelId = false,
     bool? isNavgansLoading,
     bool? isFormSubmitting,
     bool? isServiceGroupsLoading,
@@ -160,8 +173,13 @@ class VehicleModelState {
       successMessage:
           clearSuccessMessage ? null : successMessage ?? this.successMessage,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
+      isRefreshing: isRefreshing ?? this.isRefreshing,
       isDeleting: isDeleting ?? this.isDeleting,
       deletingId: clearDeletingId ? null : deletingId ?? this.deletingId,
+      loadingServicesVehicleModelId: clearLoadingServicesVehicleModelId
+          ? null
+          : loadingServicesVehicleModelId ??
+              this.loadingServicesVehicleModelId,
       isNavgansLoading: isNavgansLoading ?? this.isNavgansLoading,
       isFormSubmitting: isFormSubmitting ?? this.isFormSubmitting,
       isServiceGroupsLoading:

@@ -1,7 +1,6 @@
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:flutter/material.dart';
 
-
 class BottomSheetActionTile extends StatelessWidget {
   const BottomSheetActionTile({
     super.key,
@@ -26,8 +25,8 @@ class BottomSheetActionTile extends StatelessWidget {
     final color = isDestructive
         ? theme.colorScheme.error
         : theme.colorScheme.onPrimaryFixed;
-    final effectiveColor = enabled || isLoading ? color : color.withOpacity(
-        0.45);
+    final effectiveColor =
+        enabled || isLoading ? color : color.withOpacity(0.45);
 
     return ListTile(
       contentPadding: EdgeInsets.zero,
@@ -36,9 +35,9 @@ class BottomSheetActionTile extends StatelessWidget {
         height: AppSize.s24,
         child: isLoading
             ? CircularProgressIndicator(
-          strokeWidth: 2,
-          color: effectiveColor,
-        )
+                strokeWidth: 2,
+                color: effectiveColor,
+              )
             : Icon(icon, color: effectiveColor, size: AppSize.s24),
       ),
       title: Text(
@@ -48,7 +47,10 @@ class BottomSheetActionTile extends StatelessWidget {
           fontWeight: FontWeight.w700,
         ),
       ),
-      onTap: enabled && !isLoading ? onTap : null,
+      onTap: () {
+        if (!enabled || isLoading) return;
+        onTap();
+      },
     );
   }
 }

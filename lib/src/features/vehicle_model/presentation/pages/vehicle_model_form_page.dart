@@ -86,10 +86,7 @@ class _VehicleModelFormViewState extends State<_VehicleModelFormView> {
           final error = state.errorMessage;
           if (error?.trim().isNotEmpty == true) {
             SnakeBarWidget.showError(context: context, message: error!);
-          }
-          final success = state.successMessage;
-          if (success?.trim().isNotEmpty == true) {
-            SnakeBarWidget.showSuccess(context: context, message: success!);
+            context.read<VehicleModelCubit>().clearErrorMessage();
           }
         },
         builder: (context, state) {
@@ -184,9 +181,13 @@ class _VehicleModelFormViewState extends State<_VehicleModelFormView> {
               submitTitle: isEdit ? 'ثبت ویرایش' : 'ثبت نوع خودرو',
               cancelTitle: 'انصراف',
               isSubmitting: state.isFormSubmitting,
-              onCancel: () => context.pop(false),
+              onCancel: () {
+                if (state.isFormSubmitting) return;
+                context.pop(false);
+              },
               onSubmit: () {
-                if (!state.isFormSubmitting) _submit(context);
+                if (state.isFormSubmitting) return;
+                _submit(context);
               },
             ),
           );
@@ -226,7 +227,7 @@ class _VehicleModelFormViewState extends State<_VehicleModelFormView> {
             code: _codeController.text.trim(),
             name: _nameController.text.trim(),
             navganTypeId: navganId,
-            isActive: true,
+            isActive: widget.item?.isActive ?? true,
             hasDepot: _hasDepot,
           ),
         );

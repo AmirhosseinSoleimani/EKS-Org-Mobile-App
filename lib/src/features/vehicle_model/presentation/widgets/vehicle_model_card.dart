@@ -54,7 +54,7 @@ class VehicleModelCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   TitleLargeText(
-                    text: item.title ?? item.name ?? '---',
+                    text:  item.name ?? item.title  ?? '---',
                     color: theme.colorScheme.onSurface,
                     fontSize: AppSize.s16,
                     textAlign: TextAlign.start,

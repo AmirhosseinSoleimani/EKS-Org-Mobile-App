@@ -41,6 +41,8 @@ class InkwellButtonWidget extends StatelessWidget {
   final Color? loadingColor;
   final double? borderWidth;
 
+  bool get _isLoading => showLoading ?? false;
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -57,7 +59,10 @@ class InkwellButtonWidget extends StatelessWidget {
   }
 
   Widget _buildMaterialButton(
-      BuildContext context, ThemeData theme, BorderRadius borderRadius) {
+    BuildContext context,
+    ThemeData theme,
+    BorderRadius borderRadius,
+  ) {
     return Material(
       color: onTap == null
           ? theme.colorScheme.onInverseSurface
@@ -65,7 +70,7 @@ class InkwellButtonWidget extends StatelessWidget {
       shape: RoundedRectangleBorder(
         borderRadius: borderRadius,
         side: BorderSide(
-          style: borderStyle ??  BorderStyle.solid,
+          style: borderStyle ?? BorderStyle.solid,
           color: borderColor ?? Colors.transparent,
           width: borderWidth ?? 1,
         ),
@@ -75,12 +80,21 @@ class InkwellButtonWidget extends StatelessWidget {
   }
 
   Widget _buildInkWell(
-      BuildContext context, ThemeData theme, BorderRadius borderRadius) {
+    BuildContext context,
+    ThemeData theme,
+    BorderRadius borderRadius,
+  ) {
     return InkWell(
       borderRadius: borderRadius,
-      splashColor:  splashColor ??theme.colorScheme.onPrimary.withOpacity(0.1),
+      splashColor:
+          splashColor ?? theme.colorScheme.onPrimary.withOpacity(0.1),
       highlightColor: theme.colorScheme.onPrimary.withOpacity(0.05),
-      onTap: (showLoading ?? false) ? null : onTap,
+      onTap: onTap == null
+          ? null
+          : () {
+              if (_isLoading) return;
+              onTap!.call();
+            },
       child: _buildButtonContent(context),
     );
   }
@@ -90,7 +104,7 @@ class InkwellButtonWidget extends StatelessWidget {
 
     return Padding(
       padding: EdgeInsets.all(paddingValue),
-      child: (showLoading ?? false)
+      child: _isLoading
           ? _buildLoadingIndicator(context)
           : _buildTitleText(context),
     );
@@ -99,12 +113,13 @@ class InkwellButtonWidget extends StatelessWidget {
   Widget _buildLoadingIndicator(BuildContext context) {
     return Center(
       child: SizedBox(
-          width: AppSize.s28,
-          height: AppSize.s28,
-          child: CircularProgressIndicator(
-            color: loadingColor ?? Theme.of(context).colorScheme.onPrimary,
-            strokeWidth: 3,
-          )),
+        width: AppSize.s28,
+        height: AppSize.s28,
+        child: CircularProgressIndicator(
+          color: loadingColor ?? Theme.of(context).colorScheme.onPrimary,
+          strokeWidth: 3,
+        ),
+      ),
     );
   }
 
@@ -122,17 +137,20 @@ class InkwellButtonWidget extends StatelessWidget {
           textAlign: TextAlign.center,
           style: _titleStyle(context),
         ),
-        if (suffixIcon != null) ...[Space.w8, suffixIcon!],
+        if (suffixIcon != null) ...[
+          Space.w8,
+          suffixIcon!,
+        ],
       ],
-      );
+    );
   }
 
   TextStyle? _titleStyle(BuildContext context) {
     return textStyle ??
         Theme.of(context).textTheme.bodyMedium?.copyWith(
-              color: (onTap == null)
+              color: onTap == null
                   ? Theme.of(context).colorScheme.onSecondaryFixed
                   : titleColor ?? Theme.of(context).colorScheme.onPrimary,
-        );
+            );
   }
 }

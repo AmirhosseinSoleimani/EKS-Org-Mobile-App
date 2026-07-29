@@ -84,15 +84,22 @@ class DeleteConfirmSheet extends StatelessWidget {
               title: confirmTitle,
               backgroundColor: theme.colorScheme.error,
               showLoading: isSubmitting,
-              onTap: isSubmitting ? null : () => onConfirm(),
+              onTap: () {
+                if (isSubmitting) return;
+                onConfirm();
+              },
             ),
             Space.h12,
             InkwellButtonWidget(
               title: 'انصراف',
               backgroundColor: theme.colorScheme.onPrimary,
-              borderColor: theme.colorScheme.outlineVariant.withOpacity(0.28),
+              borderColor:
+                  theme.colorScheme.outlineVariant.withOpacity(0.28),
               titleColor: theme.colorScheme.onSurface,
-              onTap: isSubmitting ? null : () => Navigator.of(context).pop(false),
+              onTap: () {
+                if (isSubmitting) return;
+                Navigator.of(context).pop(false);
+              },
             ),
           ],
         ),
