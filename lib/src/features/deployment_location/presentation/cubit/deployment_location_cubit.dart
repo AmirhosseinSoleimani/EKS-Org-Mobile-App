@@ -34,10 +34,7 @@ class DeploymentLocationCubit extends Cubit<DeploymentLocationState> {
   final GetProvinceWithCityListUseCase _getProvinceWithCityListUseCase;
 
   Future<void> initList() async {
-    await Future.wait([
-      fetchProvinceCities(),
-      fetchList(reset: true),
-    ]);
+    await fetchList(reset: true);
   }
 
   Future<void> initializeForm({int? id}) async {

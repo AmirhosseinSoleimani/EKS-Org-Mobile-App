@@ -1,9 +1,6 @@
-import 'package:eks_sana_plus_org/src/features/deployment_location/presentation/widgets/deployment_location_area_utils.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/province_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/overlay_dropdown_form_field.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_medium_text.dart';
 import 'package:flutter/material.dart';
@@ -17,8 +14,6 @@ class DeploymentLocationFilterSheet extends StatefulWidget {
     this.initialCityTitle,
     this.initialAddress,
     this.initialIsActive,
-    required this.provinceCities,
-    required this.isAreasLoading,
     required this.onSubmit,
   });
 
@@ -27,8 +22,6 @@ class DeploymentLocationFilterSheet extends StatefulWidget {
   final String? initialCityTitle;
   final String? initialAddress;
   final bool? initialIsActive;
-  final List<ProvinceEntity> provinceCities;
-  final bool isAreasLoading;
   final void Function(
     String? title,
     String? provinceTitle,
@@ -45,33 +38,28 @@ class DeploymentLocationFilterSheet extends StatefulWidget {
 class _DeploymentLocationFilterSheetState
     extends State<DeploymentLocationFilterSheet> {
   late final TextEditingController _titleController;
+  late final TextEditingController _provinceController;
+  late final TextEditingController _cityController;
   late final TextEditingController _addressController;
-  ProvinceEntity? _selectedProvince;
-  ProvinceEntity? _selectedCity;
   bool? _isActive;
 
   @override
   void initState() {
     super.initState();
     _titleController = TextEditingController(text: widget.initialTitle);
+    _provinceController = TextEditingController(
+      text: widget.initialProvinceTitle,
+    );
+    _cityController = TextEditingController(text: widget.initialCityTitle);
     _addressController = TextEditingController(text: widget.initialAddress);
-    _syncInitialArea();
     _isActive = widget.initialIsActive;
-  }
-
-  @override
-  void didUpdateWidget(covariant DeploymentLocationFilterSheet oldWidget) {
-    super.didUpdateWidget(oldWidget);
-    if (oldWidget.provinceCities.length != widget.provinceCities.length ||
-        oldWidget.initialProvinceTitle != widget.initialProvinceTitle ||
-        oldWidget.initialCityTitle != widget.initialCityTitle) {
-      _syncInitialArea();
-    }
   }
 
   @override
   void dispose() {
     _titleController.dispose();
+    _provinceController.dispose();
+    _cityController.dispose();
     _addressController.dispose();
     super.dispose();
   }
@@ -79,13 +67,6 @@ class _DeploymentLocationFilterSheetState
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final provinces = uniqueDeploymentLocationProvinces(
-      widget.provinceCities,
-    );
-    final cities = deploymentLocationCitiesForProvince(
-      widget.provinceCities,
-      _selectedProvince?.provinceId,
-    );
 
     return Directionality(
       textDirection: TextDirection.rtl,
@@ -107,38 +88,14 @@ class _DeploymentLocationFilterSheetState
                 labelText: 'عنوان',
               ),
               Space.h12,
-              OverlayDropdownFormField<ProvinceEntity>(
-                key: ValueKey(
-                  'filter-province-${_selectedProvince?.provinceId}-${provinces.length}',
-                ),
+              TextFormFieldWidget(
+                controller: _provinceController,
                 labelText: 'استان',
-                items: provinces,
-                value: _selectedProvince,
-                enabled: provinces.isNotEmpty,
-                hintText: widget.isAreasLoading
-                    ? 'در حال دریافت...'
-                    : 'انتخاب کنید',
-                onChanged: (item) {
-                  setState(() {
-                    _selectedProvince = item;
-                    _selectedCity = null;
-                  });
-                },
               ),
               Space.h12,
-              OverlayDropdownFormField<ProvinceEntity>(
-                key: ValueKey(
-                  'filter-city-${_selectedProvince?.provinceId}-${_selectedCity?.cityId}-${cities.length}',
-                ),
+              TextFormFieldWidget(
+                controller: _cityController,
                 labelText: 'شهر',
-                items: cities,
-                value: _selectedCity,
-                enabled: _selectedProvince != null && cities.isNotEmpty,
-                hintText: _selectedProvince == null
-                    ? 'ابتدا استان را انتخاب کنید'
-                    : 'انتخاب کنید',
-                itemTitleBuilder: (item) => item.cityName ?? '',
-                onChanged: (item) => setState(() => _selectedCity = item),
               ),
               Space.h12,
               TextFormFieldWidget(
@@ -161,16 +118,7 @@ class _DeploymentLocationFilterSheetState
                   Expanded(
                     child: InkwellButtonWidget(
                       title: 'اعمال فیلتر',
-                      onTap: () {
-                        widget.onSubmit(
-                          _titleController.text,
-                          _selectedProvince?.title,
-                          _selectedCity?.cityName,
-                          _addressController.text,
-                          _isActive,
-                        );
-                        context.pop();
-                      },
+                      onTap: _submit,
                     ),
                   ),
                   Space.w12,
@@ -180,10 +128,7 @@ class _DeploymentLocationFilterSheetState
                       backgroundColor: theme.colorScheme.onPrimary,
                       borderColor: theme.colorScheme.outline,
                       titleColor: theme.colorScheme.onSurface,
-                      onTap: () {
-                        widget.onSubmit(null, null, null, null, null);
-                        context.pop();
-                      },
+                      onTap: _clear,
                     ),
                   ),
                 ],
@@ -195,15 +140,25 @@ class _DeploymentLocationFilterSheetState
     );
   }
 
-  void _syncInitialArea() {
-    _selectedProvince = findDeploymentLocationProvince(
-      items: widget.provinceCities,
-      provinceTitle: widget.initialProvinceTitle,
+  void _submit() {
+    widget.onSubmit(
+      _normalizedText(_titleController),
+      _normalizedText(_provinceController),
+      _normalizedText(_cityController),
+      _normalizedText(_addressController),
+      _isActive,
     );
-    _selectedCity = findDeploymentLocationCity(
-      items: widget.provinceCities,
-      cityTitle: widget.initialCityTitle,
-    );
+    context.pop();
+  }
+
+  void _clear() {
+    widget.onSubmit(null, null, null, null, null);
+    context.pop();
+  }
+
+  String? _normalizedText(TextEditingController controller) {
+    final value = controller.text.trim();
+    return value.isEmpty ? null : value;
   }
 
   String _statusTitle(bool? value) {

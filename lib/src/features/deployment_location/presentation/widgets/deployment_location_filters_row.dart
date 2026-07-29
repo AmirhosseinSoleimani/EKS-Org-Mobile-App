@@ -7,7 +7,6 @@ import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_butto
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/overlay_drop_down_menu.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 
 class DeploymentLocationFiltersRow extends StatelessWidget {
   const DeploymentLocationFiltersRow({
@@ -33,39 +32,28 @@ class DeploymentLocationFiltersRow extends StatelessWidget {
           expand: true,
           overlayBuilder: (context, position, width, dismiss) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              if (state.provinceCities.isEmpty && !state.isAreasLoading) {
-                cubit.fetchProvinceCities();
-              }
               BottomSheetMessage.showCustom(
                 context: context,
-                content:
-                    BlocBuilder<DeploymentLocationCubit, DeploymentLocationState>(
-                  bloc: cubit,
-                  builder: (context, currentState) {
-                    return DeploymentLocationFilterSheet(
-                      initialTitle: currentState.titleFilter,
-                      initialProvinceTitle: currentState.provinceTitleFilter,
-                      initialCityTitle: currentState.cityTitleFilter,
-                      initialAddress: currentState.addressFilter,
-                      initialIsActive: currentState.isActiveFilter,
-                      provinceCities: currentState.provinceCities,
-                      isAreasLoading: currentState.isAreasLoading,
-                      onSubmit: (
-                        title,
-                        provinceTitle,
-                        cityTitle,
-                        address,
-                        isActive,
-                      ) =>
-                          cubit.applyFilter(
-                        title: title,
-                        provinceTitle: provinceTitle,
-                        cityTitle: cityTitle,
-                        address: address,
-                        isActive: isActive,
-                      ),
-                    );
-                  },
+                content: DeploymentLocationFilterSheet(
+                  initialTitle: state.titleFilter,
+                  initialProvinceTitle: state.provinceTitleFilter,
+                  initialCityTitle: state.cityTitleFilter,
+                  initialAddress: state.addressFilter,
+                  initialIsActive: state.isActiveFilter,
+                  onSubmit: (
+                    title,
+                    provinceTitle,
+                    cityTitle,
+                    address,
+                    isActive,
+                  ) =>
+                      cubit.applyFilter(
+                    title: title,
+                    provinceTitle: provinceTitle,
+                    cityTitle: cityTitle,
+                    address: address,
+                    isActive: isActive,
+                  ),
                 ),
                 actionWidget: const SizedBox.shrink(),
                 backgroundColor: Theme.of(context).colorScheme.onPrimary,

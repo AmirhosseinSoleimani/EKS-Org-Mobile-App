@@ -5,10 +5,10 @@ import 'package:eks_sana_plus_org/src/features/deployment_location/domain/entiti
 import 'package:eks_sana_plus_org/src/features/deployment_location/presentation/cubit/deployment_location_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/deployment_location/presentation/cubit/deployment_location_state.dart';
 import 'package:eks_sana_plus_org/src/features/deployment_location/presentation/pages/deployment_location_form_page.dart';
+import 'package:eks_sana_plus_org/src/features/deployment_location/presentation/services/deployment_location_excel_exporter.dart';
 import 'package:eks_sana_plus_org/src/features/deployment_location/presentation/widgets/deployment_location_action_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/deployment_location/presentation/widgets/deployment_location_card.dart';
 import 'package:eks_sana_plus_org/src/features/deployment_location/presentation/widgets/deployment_location_filters_row.dart';
-import 'package:eks_sana_plus_org/src/features/deployment_location/presentation/widgets/deployment_location_report_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
@@ -19,6 +19,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -48,6 +49,9 @@ class _DeploymentLocationView extends StatefulWidget {
 
 class _DeploymentLocationViewState extends State<_DeploymentLocationView> {
   late final ScrollController _scrollController;
+  final DeploymentLocationExcelExporter _excelExporter =
+      const DeploymentLocationExcelExporter();
+  bool _isReportSaving = false;
 
   @override
   void initState() {
@@ -83,6 +87,7 @@ class _DeploymentLocationViewState extends State<_DeploymentLocationView> {
         },
         builder: (context, state) {
           final theme = Theme.of(context);
+          final isReportBusy = state.isReportLoading || _isReportSaving;
           return Scaffold(
             backgroundColor: theme.colorScheme.surface,
             appBar: const SimpleActionBar(title: 'محل استقرار'),
@@ -99,7 +104,7 @@ class _DeploymentLocationViewState extends State<_DeploymentLocationView> {
                   Space.h12,
                   InkwellButtonWidget(
                     title: 'گزارش‌گیری',
-                    showLoading: state.isReportLoading,
+                    showLoading: isReportBusy,
                     backgroundColor: theme.colorScheme.surface,
                     borderColor: theme.colorScheme.outline,
                     titleColor: theme.colorScheme.onSurfaceVariant,
@@ -110,8 +115,8 @@ class _DeploymentLocationViewState extends State<_DeploymentLocationView> {
                       size: AppSize.s20,
                     ),
                     onTap: () {
-                      if (state.isReportLoading) return;
-                      _openReport(context, cubit);
+                      if (isReportBusy) return;
+                      _exportReport(context, cubit);
                     },
                   ),
                   Space.h16,
@@ -158,20 +163,45 @@ class _DeploymentLocationViewState extends State<_DeploymentLocationView> {
     );
   }
 
-  Future<void> _openReport(
+  Future<void> _exportReport(
     BuildContext context,
     DeploymentLocationCubit cubit,
   ) async {
-    final records = await cubit.loadReport();
-    if (records == null || !context.mounted) return;
+    if (_isReportSaving || cubit.state.isReportLoading) return;
 
-    await BottomSheetMessage.showFullScreenCustom<void>(
-      context: context,
-      backgroundColor: Theme.of(context).colorScheme.surface,
-      isDismissible: true,
-      enableDrag: true,
-      content: DeploymentLocationReportSheet(records: records),
-    );
+    setState(() => _isReportSaving = true);
+    try {
+      final records = await cubit.loadReport();
+      if (records == null || !context.mounted) return;
+
+      if (records.isEmpty) {
+        SnakeBarWidget.showError(
+          context: context,
+          message: 'داده‌ای برای تهیه گزارش وجود ندارد.',
+        );
+        return;
+      }
+
+      await _excelExporter.export(records);
+      if (!context.mounted) return;
+
+      SnakeBarWidget.showSuccess(
+        context: context,
+        message: kIsWeb
+            ? 'فایل گزارش در پوشه دانلودها ذخیره شد.'
+            : 'فایل گزارش با موفقیت در حافظه ذخیره شد.',
+      );
+    } catch (_) {
+      if (!context.mounted) return;
+      SnakeBarWidget.showError(
+        context: context,
+        message: 'ذخیره فایل گزارش با خطا مواجه شد.',
+      );
+    } finally {
+      if (mounted) {
+        setState(() => _isReportSaving = false);
+      }
+    }
   }
 
   void _openActions(
