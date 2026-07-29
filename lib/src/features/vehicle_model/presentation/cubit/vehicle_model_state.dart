@@ -25,6 +25,7 @@ class VehicleModelState {
     this.codeFilter,
     this.nameFilter,
     this.isActiveFilter,
+    this.pageStatusFilter,
     this.navganTypeTitleFilter,
     this.hasDepotFilter,
     this.skip = 0,
@@ -54,6 +55,7 @@ class VehicleModelState {
   final String? codeFilter;
   final String? nameFilter;
   final bool? isActiveFilter;
+  final bool? pageStatusFilter;
   final String? navganTypeTitleFilter;
   final bool? hasDepotFilter;
   final int skip;
@@ -78,6 +80,12 @@ class VehicleModelState {
   bool get canLoadMore =>
       !isLoadingMore && records.isNotEmpty && records.length < totalCount;
 
+  List<VehicleModelEntity> get visibleRecords {
+    final localFilter = pageStatusFilter;
+    if (localFilter == null) return records;
+    return records.where((item) => item.isActive == localFilter).toList();
+  }
+
   VehicleModelState copyWith({
     VehicleModelViewStatus? status,
     List<VehicleModelEntity>? records,
@@ -94,6 +102,8 @@ class VehicleModelState {
     bool clearNameFilter = false,
     bool? isActiveFilter,
     bool clearIsActiveFilter = false,
+    bool? pageStatusFilter,
+    bool clearPageStatusFilter = false,
     String? navganTypeTitleFilter,
     bool clearNavganTypeTitleFilter = false,
     bool? hasDepotFilter,
@@ -134,6 +144,9 @@ class VehicleModelState {
       nameFilter: clearNameFilter ? null : nameFilter ?? this.nameFilter,
       isActiveFilter:
           clearIsActiveFilter ? null : isActiveFilter ?? this.isActiveFilter,
+      pageStatusFilter: clearPageStatusFilter
+          ? null
+          : pageStatusFilter ?? this.pageStatusFilter,
       navganTypeTitleFilter: clearNavganTypeTitleFilter
           ? null
           : navganTypeTitleFilter ?? this.navganTypeTitleFilter,

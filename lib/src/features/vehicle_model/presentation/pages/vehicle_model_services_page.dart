@@ -191,7 +191,7 @@ class _ServicesBody extends StatelessWidget {
                   ),
                   IconButton(
                     onPressed: () => onDefects(category),
-                    icon: const Icon(Icons.bug_report_outlined),
+                    icon:  Icon(Icons.settings_outlined, color: Theme.of(context).primaryColor,),
                   ),
                 ],
               ),

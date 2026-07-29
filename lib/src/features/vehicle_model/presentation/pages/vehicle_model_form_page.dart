@@ -8,11 +8,13 @@ import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/cubit/
 import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/cubit/vehicle_model_state.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/overlay_dropdown_form_field.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/form_section_container.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/sticky_form_action_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/selection_widgets/app_checkbox_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -54,7 +56,6 @@ class _VehicleModelFormViewState extends State<_VehicleModelFormView> {
   late final TextEditingController _codeController;
   late final TextEditingController _nameController;
   VehicleNavganEntity? _selectedNavgan;
-  late bool _isActive;
   late bool _hasDepot;
 
   @override
@@ -63,7 +64,6 @@ class _VehicleModelFormViewState extends State<_VehicleModelFormView> {
     final item = widget.item;
     _codeController = TextEditingController(text: item?.code);
     _nameController = TextEditingController(text: item?.name);
-    _isActive = item?.isActive ?? true;
     _hasDepot = item?.hasDepot ?? false;
   }
 
@@ -110,69 +110,89 @@ class _VehicleModelFormViewState extends State<_VehicleModelFormView> {
                 ),
                 child: Form(
                   key: _formKey,
-                  child: ListView(
+                  child: SingleChildScrollView(
+                    keyboardDismissBehavior:
+                        ScrollViewKeyboardDismissBehavior.onDrag,
                     padding: const EdgeInsets.all(AppPadding.p16),
-                    children: [
-                      TextFormFieldWidget(
-                        controller: _codeController,
-                        labelText: 'کد',
-                        mandatory: true,
-                        validator: _required,
+                    child: FormSectionContainer(
+                      padding: const EdgeInsets.all(AppPadding.p16),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.stretch,
+                        children: [
+                          Row(
+                            children: [
+                              Icon(
+                                Icons.directions_car_outlined,
+                                color: theme.colorScheme.primary,
+                              ),
+                              Space.w8,
+                              BodyMediumText(
+                                text: 'اطلاعات نوع خودرو',
+                                color: theme.colorScheme.onSurface,
+                                fontWeight: FontWeight.w800,
+                                fontSize: AppSize.s16,
+                              ),
+                            ],
+                          ),
+                          Space.h20,
+                          TextFormFieldWidget(
+                            controller: _codeController,
+                            labelText: 'کد',
+                            mandatory: true,
+                            validator: _required,
+                          ),
+                          Space.h16,
+                          TextFormFieldWidget(
+                            controller: _nameController,
+                            labelText: 'عنوان',
+                            mandatory: true,
+                            validator: _required,
+                          ),
+                          Space.h16,
+                          OverlayDropdownFormField<VehicleNavganEntity>(
+                            key: ValueKey(
+                              'form-navgan-${_selectedNavgan?.id}-${state.navgans.length}',
+                            ),
+                            labelText: 'نوع ناوگان',
+                            mandatory: true,
+                            items: state.navgans,
+                            value: _selectedNavgan,
+                            enabled: state.navgans.isNotEmpty,
+                            hintText: state.isNavgansLoading
+                                ? 'در حال دریافت...'
+                                : 'انتخاب کنید',
+                            validator: (item) =>
+                                item == null ? 'این فیلد الزامی است.' : null,
+                            onChanged: (item) =>
+                                setState(() => _selectedNavgan = item),
+                          ),
+                          Space.h16,
+                          AppCheckboxWidget(
+                            title: 'مجهز به انبارک',
+                            value: _hasDepot,
+                            onChanged: (value) =>
+                                setState(() => _hasDepot = value),
+                          ),
+                        ],
                       ),
-                      Space.h16,
-                      TextFormFieldWidget(
-                        controller: _nameController,
-                        labelText: 'نام',
-                        mandatory: true,
-                        validator: _required,
-                      ),
-                      Space.h16,
-                      EkDropDown(
-                        _navganTitles(state.navgans),
-                        label: 'نوع ناوگان',
-                        mandatory: true,
-                        selectedItem: _selectedNavgan?.title,
-                        onItemValue: (value) => setState(() {
-                          _selectedNavgan = state.navgans.firstWhere(
-                            (item) => item.title == value,
-                            orElse: () => const VehicleNavganEntity(),
-                          );
-                        }),
-                      ),
-                      Space.h16,
-                      AppCheckboxWidget(
-                        title: 'فعال',
-                        value: _isActive,
-                        onChanged: (value) => setState(() => _isActive = value),
-                      ),
-                      AppCheckboxWidget(
-                        title: 'دپو دارد',
-                        value: _hasDepot,
-                        onChanged: (value) => setState(() => _hasDepot = value),
-                      ),
-                      Space.h32,
-                      InkwellButtonWidget(
-                        title: isEdit ? 'ثبت ویرایش' : 'ثبت نوع خودرو',
-                        showLoading: state.isFormSubmitting,
-                        onTap: state.isFormSubmitting ? null : () => _submit(context),
-                      ),
-                    ],
+                    ),
                   ),
                 ),
               ),
+            ),
+            bottomNavigationBar: StickyFormActionBar(
+              submitTitle: isEdit ? 'ثبت ویرایش' : 'ثبت نوع خودرو',
+              cancelTitle: 'انصراف',
+              isSubmitting: state.isFormSubmitting,
+              onCancel: () => context.pop(false),
+              onSubmit: () {
+                if (!state.isFormSubmitting) _submit(context);
+              },
             ),
           );
         },
       ),
     );
-  }
-
-  List<String> _navganTitles(List<VehicleNavganEntity> items) {
-    final titles = items
-        .map((item) => item.title ?? '')
-        .where((item) => item.trim().isNotEmpty)
-        .toList();
-    return titles.isEmpty ? const ['انتخاب کنید'] : titles;
   }
 
   VehicleNavganEntity? _initialNavgan(List<VehicleNavganEntity> navgans) {
@@ -206,7 +226,7 @@ class _VehicleModelFormViewState extends State<_VehicleModelFormView> {
             code: _codeController.text.trim(),
             name: _nameController.text.trim(),
             navganTypeId: navganId,
-            isActive: _isActive,
+            isActive: true,
             hasDepot: _hasDepot,
           ),
         );

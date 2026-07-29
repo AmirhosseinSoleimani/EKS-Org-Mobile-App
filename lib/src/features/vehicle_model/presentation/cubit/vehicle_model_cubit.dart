@@ -44,7 +44,10 @@ class VehicleModelCubit extends Cubit<VehicleModelState> {
   final UpdateVehicleModelUseCase _updateUseCase;
 
   Future<void> init() async {
-    await fetchList(reset: true);
+    await Future.wait([
+      fetchNavgans(),
+      fetchList(reset: true),
+    ]);
   }
 
   Future<void> fetchList({bool reset = false}) async {
@@ -125,6 +128,13 @@ class VehicleModelCubit extends Cubit<VehicleModelState> {
       totalCount: 0,
     ));
     await fetchList(reset: true);
+  }
+
+  void setPageStatusFilter(bool? value) {
+    emit(state.copyWith(
+      pageStatusFilter: value,
+      clearPageStatusFilter: value == null,
+    ));
   }
 
   Future<void> fetchNavgans() async {

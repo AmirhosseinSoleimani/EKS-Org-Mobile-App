@@ -8,14 +8,13 @@ import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/pages/
 import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/pages/vehicle_model_services_page.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/widgets/vehicle_model_action_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/widgets/vehicle_model_card.dart';
-import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/widgets/vehicle_model_filter_sheet.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/widgets/vehicle_model_filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
@@ -75,10 +74,7 @@ class _VehicleModelView extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.stretch,
                 children: [
-                  FilterButton(
-                    title: 'فیلترها',
-                    onTap: () => _openFilter(context, state),
-                  ),
+                  VehicleModelFiltersRow(cubit: cubit, state: state),
                   Space.h16,
                   Expanded(
                     child: _VehicleModelList(
@@ -94,36 +90,6 @@ class _VehicleModelView extends StatelessWidget {
           );
         },
       ),
-    );
-  }
-
-  void _openFilter(BuildContext context, VehicleModelState state) {
-    final cubit = context.read<VehicleModelCubit>();
-    BottomSheetMessage.showCustom(
-      context: context,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      content: VehicleModelFilterSheet(
-        initialCode: state.codeFilter,
-        initialName: state.nameFilter,
-        initialIsActive: state.isActiveFilter,
-        initialNavganTypeTitle: state.navganTypeTitleFilter,
-        initialHasDepot: state.hasDepotFilter,
-        onSubmit: (
-          code,
-          name,
-          isActive,
-          navganTypeTitle,
-          hasDepot,
-        ) =>
-            cubit.applyFilter(
-          code: code,
-          name: name,
-          isActive: isActive,
-          navganTypeTitle: navganTypeTitle,
-          hasDepot: hasDepot,
-        ),
-      ),
-      actionWidget: const SizedBox.shrink(),
     );
   }
 
@@ -216,7 +182,8 @@ class _VehicleModelList extends StatelessWidget {
         state.status == VehicleModelViewStatus.connectionError) {
       return _ErrorView(onRetry: onRetry);
     }
-    if (state.records.isEmpty) {
+    final records = state.visibleRecords;
+    if (records.isEmpty) {
       return const Center(child: EmptyListWidget());
     }
     return RefreshIndicator(
@@ -233,13 +200,13 @@ class _VehicleModelList extends StatelessWidget {
         child: ListView.separated(
           physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.only(bottom: AppPadding.p100),
-          itemCount: state.records.length + (state.isLoadingMore ? 1 : 0),
+          itemCount: records.length + (state.isLoadingMore ? 1 : 0),
           separatorBuilder: (_, __) => Space.h12,
           itemBuilder: (context, index) {
-            if (index >= state.records.length) {
+            if (index >= records.length) {
               return const Center(child: LoadingWidget());
             }
-            final item = state.records[index];
+            final item = records[index];
             return VehicleModelCard(
               item: item,
               isActionLoading: state.deletingId == item.id,
