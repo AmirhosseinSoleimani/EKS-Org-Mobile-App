@@ -1,11 +1,12 @@
 import 'dart:async';
 
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/enums/request_card_operation.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/bottom_sheet/request_operations_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../enums/request_card_operation.dart';
 import 'request_header.dart';
 import 'request_info_row.dart';
 
@@ -16,8 +17,6 @@ class RequestCard extends StatelessWidget {
   final IconData serviceIcon;
   final FutureOr<void> Function(BaseRequestEntity) onSelected;
   final FutureOr<void> Function()? onRefreshAfterReturn;
-  final ValueNotifier<num?> selectedOperationRequestId;
-
 
   const RequestCard({
     super.key,
@@ -26,76 +25,48 @@ class RequestCard extends StatelessWidget {
     required this.serviceColor,
     required this.serviceIcon,
     required this.onSelected,
-    required this.selectedOperationRequestId,
     required this.onRefreshAfterReturn,
   });
 
   @override
   Widget build(BuildContext context) {
-    return ValueListenableBuilder<num?>(
-      valueListenable: selectedOperationRequestId,
-      builder: (context, selectedRequestId, _) {
-        final isOperationsMode = selectedRequestId == request.id;
-
-        return Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(12),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withAlpha(25),
-                blurRadius: 10,
-                offset: const Offset(0, 4),
-              ),
-            ],
+    return Container(
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(12),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withAlpha(25),
+            blurRadius: 10,
+            offset: const Offset(0, 4),
           ),
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              RequestHeader(
-                request: request,
-              ),
-              const SizedBox(height: 16),
-              AnimatedSwitcher(
-                duration: const Duration(milliseconds: 350),
-                transitionBuilder: (child, animation) {
-                  return FadeTransition(
-                    opacity: animation,
-                    child: ScaleTransition(
-                      scale: animation,
-                      child: child,
-                    ),
-                  );
-                },
-                child: isOperationsMode
-                    ? _buildOperationsGrid(context)
-                    : _buildInfoList(context),
-              ),
-              const SizedBox(height: 12),
-              Divider(
-                height: 1,
-                color: Theme.of(context).colorScheme.tertiaryFixed,
-              ),
-              const SizedBox(height: 12),
-              _buildBottomBar(
-                context: context,
-                isOperationsMode: isOperationsMode,
-              ),
-            ],
+        ],
+      ),
+      padding: const EdgeInsets.all(16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          RequestHeader(request: request),
+          const SizedBox(height: 16),
+          _buildInfoList(),
+          const SizedBox(height: 12),
+          Divider(
+            height: 1,
+            color: Theme.of(context).colorScheme.tertiaryFixed,
           ),
-        );
-      },
+          const SizedBox(height: 12),
+          _buildOperationsButton(context),
+        ],
+      ),
     );
   }
 
-  Widget _buildInfoList(BuildContext context) {
+  Widget _buildInfoList() {
     return Column(
-      key: ValueKey('info_${request.id}'),
       children: [
         RequestInfoRow(
           icon: Icons.person,
-          text: "${request.firstName} ${request.lastName}",
+          text: '${request.firstName} ${request.lastName}',
         ),
         const SizedBox(height: 8),
         RequestInfoRow(
@@ -105,7 +76,7 @@ class RequestCard extends StatelessWidget {
         const SizedBox(height: 8),
         RequestInfoRow(
           icon: Icons.check_circle,
-          text: "${request.carName} - ${request.licensePlate}",
+          text: '${request.carName} - ${request.licensePlate}',
         ),
         const SizedBox(height: 8),
         RequestInfoRow(
@@ -116,93 +87,64 @@ class RequestCard extends StatelessWidget {
     );
   }
 
-
-  Widget _buildOperationsGrid(BuildContext context) {
-    final items = RequestCardOperation.values
-        .where((item) => item.isVisible(request))
-        .toList();
-    return GridView.builder(
-      key: ValueKey('operations_${request.id}'),
-      shrinkWrap: true,
-      physics: const NeverScrollableScrollPhysics(),
-      itemCount: items.length,
-      gridDelegate: const SliverGridDelegateWithMaxCrossAxisExtent(
-        maxCrossAxisExtent: 70,
-        mainAxisSpacing: 8,
-        crossAxisSpacing: 16,
-        childAspectRatio: 1,
+  Widget _buildOperationsButton(BuildContext context) {
+    return Align(
+      alignment: AlignmentDirectional.centerStart,
+      child: InkWell(
+        borderRadius: BorderRadius.circular(8),
+        onTap: () => _showOperationsBottomSheet(context),
+        child: const Padding(
+          padding: EdgeInsets.symmetric(vertical: 4),
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Icon(Icons.apps, size: 22),
+              SizedBox(width: 6),
+              BodyMediumText(text: 'عملیات'),
+            ],
+          ),
+        ),
       ),
-      itemBuilder: (context, index) {
-        final item = items[index];
+    );
+  }
 
-        return LayoutBuilder(
-          builder: (context, constraints) {
-            final size = constraints.maxWidth.clamp(40.0, 72.0);
+  Future<void> _showOperationsBottomSheet(BuildContext context) async {
+    final operations = RequestCardOperation.values
+        .where((operation) => operation.isVisible(request))
+        .toList(growable: false);
 
-            return Tooltip(
-              message: item.label,
-              child: InkWell(
-                onTap: () async {
-                  await Future.sync(() => onSelected(request));
+    if (operations.isEmpty) return;
 
-                  if (!context.mounted) return;
-
-                  await context.push(item.route, extra: request.id);
-
-                  if (!context.mounted) return;
-
-                  selectedOperationRequestId.value = null;
-
-                  await Future.sync(() => onRefreshAfterReturn?.call());
-                },
-                child: Center(
-                  child: CircleAvatar(
-                    radius: size / 2.2,
-                    backgroundColor: item.color.withAlpha(230),
-                    child: Icon(
-                      item.icon,
-                      color: Colors.white,
-                      size: size * 0.40,
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
+    await showModalBottomSheet<void>(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (bottomSheetContext) {
+        return RequestOperationsBottomSheet(
+          operations: operations,
+          onOperationSelected: (operation) => _openOperation(
+            pageContext: context,
+            bottomSheetContext: bottomSheetContext,
+            operation: operation,
+          ),
         );
       },
     );
   }
 
-  Widget _buildBottomBar({
-    required BuildContext context,
-    required bool isOperationsMode,
-  }) {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        InkWell(
-          onTap: () {
-            if (isOperationsMode) {
-              selectedOperationRequestId.value = null;
-            } else {
-              selectedOperationRequestId.value = request.id;
-            }
-          },
-          child: Row(
-            children: [
-              Icon(
-                isOperationsMode ? Icons.menu : Icons.apps,
-                size: 22,
-              ),
-              const SizedBox(width: 6),
-              BodyMediumText(
-                text: isOperationsMode ? "اطلاعات درخواست" : "عملیات",
-              ),
-            ],
-          ),
-        ),
-      ],
-    );
+  Future<void> _openOperation({
+    required BuildContext pageContext,
+    required BuildContext bottomSheetContext,
+    required RequestCardOperation operation,
+  }) async {
+    Navigator.of(bottomSheetContext).pop();
+
+    await Future.sync(() => onSelected(request));
+    if (!pageContext.mounted) return;
+
+    await pageContext.push(operation.route, extra: request.id);
+    if (!pageContext.mounted) return;
+
+    await Future.sync(() => onRefreshAfterReturn?.call());
   }
 }

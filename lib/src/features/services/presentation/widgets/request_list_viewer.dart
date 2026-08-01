@@ -33,39 +33,40 @@ class RequestListViewer extends StatefulWidget {
 
 class _RequestListViewerState extends State<RequestListViewer> {
   late final ScrollController _controller;
-  final ValueNotifier<num?> _selectedOperationRequestId = ValueNotifier<num?>(null);
 
   @override
   void initState() {
     super.initState();
-    _controller = ScrollController();
-    _controller.addListener(_onScroll);
+    _controller = ScrollController()..addListener(_onScroll);
   }
 
   void _onScroll() {
-    if (!widget.hasMore) return;
-    if (!_controller.hasClients) return;
+    if (!widget.hasMore || !_controller.hasClients) return;
 
-    if (_controller.position.pixels >=
-        _controller.position.maxScrollExtent - 200) {
+    final position = _controller.position;
+    if (position.pixels >= position.maxScrollExtent - 200) {
       widget.onLoadMore();
     }
   }
 
   @override
   void dispose() {
-    _controller.removeListener(_onScroll);
-    _controller.dispose();
-    _selectedOperationRequestId.dispose();
+    _controller
+      ..removeListener(_onScroll)
+      ..dispose();
     super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
-    final itemCount = widget.hasMore ? widget.items.length + 1 : widget.items.length;
+    final itemCount = widget.hasMore
+        ? widget.items.length + 1
+        : widget.items.length;
+
     if (itemCount < 1) {
       return const EmptyListWidget();
     }
+
     return ListView.separated(
       controller: _controller,
       padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -78,14 +79,15 @@ class _RequestListViewerState extends State<RequestListViewer> {
         }
 
         final adjustedIndex = index - 1;
-
         if (adjustedIndex >= widget.items.length) {
-          return Center(child: CircularProgressIndicator(
-            color: widget.items.first.serviceType?.serviceColor,));
+          return Center(
+            child: CircularProgressIndicator(
+              color: widget.items.first.serviceType?.serviceColor,
+            ),
+          );
         }
 
         final item = widget.items[adjustedIndex];
-
         return RequestCard(
           request: item,
           serviceTitle: _resolveServiceTitle(item),
@@ -94,7 +96,6 @@ class _RequestListViewerState extends State<RequestListViewer> {
           serviceIcon: Icons.build,
           onSelected: widget.onSelected,
           onRefreshAfterReturn: widget.onRefreshAfterReturn,
-          selectedOperationRequestId: _selectedOperationRequestId,
         );
       },
     );
@@ -107,6 +108,6 @@ class _RequestListViewerState extends State<RequestListViewer> {
     if (entity is HomeServiceRequestEntity) {
       return entity.emdadServiceCategoryTitle ?? '';
     }
-    return "";
+    return '';
   }
 }
