@@ -1,10 +1,11 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/emdad_unit_entity.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/lookup_entity.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/params/change_emdad_unit_location_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/cubit/emdad_unit_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/emdad_unit_summary_card.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/marker_style.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/view_model/marker_style.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/single_location_map_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
@@ -17,7 +18,6 @@ import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart';
 
@@ -49,7 +49,6 @@ class _EmdadUnitLocationView extends StatefulWidget {
 
 class _EmdadUnitLocationViewState extends State<_EmdadUnitLocationView> {
   final _addressController = TextEditingController();
-  final _mapController = MapController();
   int? _locationId;
   double? _latitude;
   double? _longitude;
@@ -111,7 +110,6 @@ class _EmdadUnitLocationViewState extends State<_EmdadUnitLocationView> {
                 EmdadUnitSummaryCard(item: widget.item),
                 Space.h16,
                 _LocationCard(
-                  mapController: _mapController,
                   latitude: _latitude,
                   longitude: _longitude,
                   locationId: _locationId,
@@ -138,9 +136,6 @@ class _EmdadUnitLocationViewState extends State<_EmdadUnitLocationView> {
       _longitude = location?.longitude ?? _longitude;
       _addressController.text = location?.address ?? _addressController.text;
     });
-    if (_latitude != null && _longitude != null) {
-      _mapController.move(LatLng(_latitude!, _longitude!), 14);
-    }
   }
 
   void _setPoint(LatLng point) {
@@ -186,7 +181,6 @@ class _EmdadUnitLocationViewState extends State<_EmdadUnitLocationView> {
 
 class _LocationCard extends StatelessWidget {
   const _LocationCard({
-    required this.mapController,
     required this.latitude,
     required this.longitude,
     required this.locationId,
@@ -198,7 +192,6 @@ class _LocationCard extends StatelessWidget {
     required this.onSubmit,
   });
 
-  final MapController mapController;
   final double? latitude;
   final double? longitude;
   final int? locationId;
@@ -228,6 +221,7 @@ class _LocationCard extends StatelessWidget {
             latitude: latitude,
             longitude: longitude,
             markerStyle: MarkerStyle(iconPath: SvgManager.location),
+            serviceType: ServiceType.reliefService,
             height: AppSize.s300,
             initialZoom: 14,
             onMapTap: onMapTap,

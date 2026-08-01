@@ -203,6 +203,8 @@ const markerStyleResolver = EmdadgarMarkerStyleResolver();
                           cubit.selectedEmdadgar!),
                       destinationMarkerStyle: markerStyleResolver
                           .resolveCustomer(),
+                      serviceType: cubit.selectedRequest?.serviceType ??
+                          ServiceType.reliefService,
                     )
                   else
                     ServiceAssignmentMapWidget(
@@ -210,7 +212,8 @@ const markerStyleResolver = EmdadgarMarkerStyleResolver();
                       emdadgars: cubit.emdadgarList,
                       customerLatitude: cubit.selectedRequest?.latitude ?? 0,
                       customerLongitude: cubit.selectedRequest?.longitude ?? 0,
-
+                      serviceType: cubit.selectedRequest?.serviceType ??
+                          ServiceType.reliefService,
                       onEmdadgarTap: (emdadgar) {
                         cubit.setSelectedEmdadgar(emdadgar);
                         cubit.getCheckDepotAndRoute();

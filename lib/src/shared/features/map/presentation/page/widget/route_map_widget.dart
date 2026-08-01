@@ -1,207 +1,190 @@
-import 'package:eks_sana_plus_org/src/common/constants/app_constants.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/map_control_buttons.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/map_pin_marker.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/marker_style.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/route_info_box.dart';
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/location_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/online_route_entity.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/map_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/route_map_empty_state.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/core/app_map.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/core/app_map_marker.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/map_pin_marker.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/view_model/marker_style.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/route_info_box.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
-import 'package:latlong2/latlong.dart' as lat_lng;
+import 'package:latlong2/latlong.dart';
 
-class RouteMapWidget extends StatelessWidget {
-  final RouteDataEntity routeData;
-  final MarkerStyle startMarkerStyle;
-  final MarkerStyle destinationMarkerStyle;
-  final double height;
-  final double initialZoom;
-  final bool showInfoBox;
-  final bool isFullScreen;
-
-  RouteMapWidget({
+class RouteMapWidget extends StatefulWidget {
+  const RouteMapWidget({
     super.key,
     required this.routeData,
     required this.startMarkerStyle,
     required this.destinationMarkerStyle,
+    required this.serviceType,
     this.height = 520,
     this.initialZoom = 14,
     this.showInfoBox = true,
     this.isFullScreen = false,
   });
 
-  final MapController _mapController = MapController();
+  final RouteDataEntity routeData;
+  final MarkerStyle startMarkerStyle;
+  final MarkerStyle destinationMarkerStyle;
+  final ServiceType serviceType;
+  final double? height;
+  final double initialZoom;
+  final bool showInfoBox;
+  final bool isFullScreen;
 
-  static const Color _routeColor = Color(0xff2563EB);
+  @override
+  State<RouteMapWidget> createState() => _RouteMapWidgetState();
+}
+
+class _RouteMapWidgetState extends State<RouteMapWidget> {
+  final MapController _mapController = MapController();
 
   @override
   Widget build(BuildContext context) {
-    final route = _getMainRoute();
-
+    final route = _mainRoute;
     if (route == null) {
-      return const RouteMapEmptyState();
+      return _RouteMapEmptyState(
+        height: widget.height,
+        serviceType: widget.serviceType,
+      );
     }
 
     final routePoints = _extractRoutePoints(route);
-
     if (routePoints.isEmpty) {
-      return const RouteMapEmptyState();
+      return _RouteMapEmptyState(
+        height: widget.height,
+        serviceType: widget.serviceType,
+      );
     }
 
     final startPoint = _toLatLng(route.start);
     final destinationPoint = _toLatLng(route.destination);
 
-    return SizedBox(
-      height: height,
-      width: double.infinity,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(25),
-        child: Stack(
-          children: [
-            FlutterMap(
-              mapController: _mapController,
-              options: MapOptions(
-                initialCenter: startPoint,
-                initialZoom: initialZoom,
-                initialCameraFit: CameraFit.bounds(
-                  bounds: LatLngBounds.fromPoints(routePoints),
-                  padding: const EdgeInsets.all(48),
-                ),
-                interactionOptions: const InteractionOptions(
-                  flags:
-                      InteractiveFlag.drag |
-                      InteractiveFlag.pinchZoom |
-                      InteractiveFlag.doubleTapZoom |
-                      InteractiveFlag.flingAnimation |
-                      InteractiveFlag.scrollWheelZoom,
-                ),
-              ),
-              children: [
-                _buildTileLayer(),
-                _buildRoutePolyline(routePoints),
-                _buildMarkers(
-                  startPoint: startPoint,
-                  destinationPoint: destinationPoint,
-                  startMarkerStyle: startMarkerStyle,
-                  destinationMarkerStyle: destinationMarkerStyle,
-                ),
-              ],
-            ),
-
-            MapControlButtons(
-              mapController: _mapController,
-              defaultCenter: startPoint,
-              defaultZoom: initialZoom,
-              isFullScreen: isFullScreen,
-              onFullScreenTap: () => _openFullScreenMap(context),
-            ),
-
-            if (showInfoBox)
-              PositionedDirectional(
-                start: 16,
-                end: 16,
-                bottom: 16,
-                child: RouteInfoBox(route: route),
-              ),
-          ],
+    return AppMap(
+      mapController: _mapController,
+      serviceType: widget.serviceType,
+      initialCenter: startPoint,
+      initialZoom: widget.initialZoom,
+      height: widget.height,
+      routePoints: routePoints,
+      fitPoints: routePoints,
+      markers: [
+        AppMapMarker(
+          point: startPoint,
+          width: AppSize.s48,
+          height: AppSize.s48,
+          child: MapPinMarker(
+            iconPath: widget.startMarkerStyle.iconPath,
+            color: widget.startMarkerStyle.color,
+          ),
+        ),
+        AppMapMarker(
+          point: destinationPoint,
+          width: AppSize.s42,
+          height: AppSize.s42,
+          child: MapPinMarker(
+            iconPath: widget.destinationMarkerStyle.iconPath,
+            color: widget.destinationMarkerStyle.color,
+          ),
+        ),
+      ],
+      isFullScreen: widget.isFullScreen,
+      onFullScreenTap: () => _openFullScreenMap(context),
+      onCurrentLocationTap: () => _mapController.fitCamera(
+        CameraFit.bounds(
+          bounds: LatLngBounds.fromPoints(routePoints),
+          padding: const EdgeInsets.all(48),
         ),
       ),
+      bottomOverlay: widget.showInfoBox
+          ? PositionedDirectional(
+              start: AppPadding.p16,
+              end: AppPadding.p16,
+              bottom: AppPadding.p16,
+              child: RouteInfoBox(route: route),
+            )
+          : null,
     );
   }
 
-  RouteEntity? _getMainRoute() {
-    if (routeData.routes.isEmpty) return null;
-    return routeData.routes.first;
+  RouteEntity? get _mainRoute {
+    if (widget.routeData.routes.isEmpty) return null;
+    return widget.routeData.routes.first;
   }
 
-  List<lat_lng.LatLng> _extractRoutePoints(RouteEntity route) {
+  List<LatLng> _extractRoutePoints(RouteEntity route) {
     return route.legs
         .expand((leg) => leg.steps)
         .expand((step) => step.points)
         .where((point) => point.length >= 2)
-        .map((point) => lat_lng.LatLng(point[0], point[1]))
-        .toList();
+        .map((point) => LatLng(point[0], point[1]))
+        .toList(growable: false);
   }
 
-  lat_lng.LatLng _toLatLng(LocationEntity location) {
-    return lat_lng.LatLng(location.latitude, location.longitude);
-  }
-
-  TileLayer _buildTileLayer() {
-    return TileLayer(
-      urlTemplate: AppConstants.parsiMapUrlTemplate,
-      tileProvider: NonCachingNetworkTileProvider(
-        urlTemplate: AppConstants.parsiMapUrlTemplate,
-      ),
-    );
-  }
-
-  PolylineLayer _buildRoutePolyline(List<lat_lng.LatLng> points) {
-    return PolylineLayer(
-      polylines: [
-        Polyline(
-          points: points,
-          strokeWidth: 5,
-          color: _routeColor,
-          borderStrokeWidth: 2,
-          borderColor: Colors.white,
-        ),
-      ],
-    );
-  }
-
-  MarkerLayer _buildMarkers({
-    required lat_lng.LatLng startPoint,
-    required lat_lng.LatLng destinationPoint,
-    required MarkerStyle startMarkerStyle,
-    required MarkerStyle destinationMarkerStyle,
-  }) {
-    return MarkerLayer(
-      markers: [
-        Marker(
-          width: AppSize.s48,
-          height: AppSize.s48,
-          point: startPoint,
-          child: MapPinMarker(
-            iconPath: startMarkerStyle.iconPath,
-            color: startMarkerStyle.color,
-          ),
-        ),
-        Marker(
-          width: AppSize.s42,
-          height: AppSize.s42,
-          point: destinationPoint,
-          child: MapPinMarker(
-            iconPath: destinationMarkerStyle.iconPath,
-            color: destinationMarkerStyle.color,
-          ),
-        ),
-      ],
-    );
+  LatLng _toLatLng(LocationEntity location) {
+    return LatLng(location.latitude, location.longitude);
   }
 
   void _openFullScreenMap(BuildContext context) {
-    showModalBottomSheet(
+    showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (_) {
         return SizedBox(
-          height: MediaQuery.of(context).size.height,
+          height: MediaQuery.sizeOf(context).height,
           child: RouteMapWidget(
-            routeData: routeData,
-            startMarkerStyle: startMarkerStyle,
-            destinationMarkerStyle: destinationMarkerStyle,
+            routeData: widget.routeData,
+            startMarkerStyle: widget.startMarkerStyle,
+            destinationMarkerStyle: widget.destinationMarkerStyle,
+            serviceType: widget.serviceType,
             initialZoom: _mapController.camera.zoom,
-            height: MediaQuery.of(context).size.height,
-            showInfoBox: showInfoBox,
+            height: MediaQuery.sizeOf(context).height,
+            showInfoBox: widget.showInfoBox,
             isFullScreen: true,
           ),
         );
       },
     );
+  }
+}
+
+class _RouteMapEmptyState extends StatelessWidget {
+  const _RouteMapEmptyState({
+    required this.height,
+    required this.serviceType,
+  });
+
+  final double? height;
+  final ServiceType serviceType;
+
+  @override
+  Widget build(BuildContext context) {
+    final content = DecoratedBox(
+      decoration: BoxDecoration(
+        color: serviceType.serviceColor.withAlpha(18),
+        borderRadius: BorderRadius.circular(25),
+      ),
+      child: Center(
+        child: BodyMediumText(
+          text: 'مسیر قابل نمایش نیست',
+          color: serviceType.serviceColor,
+          fontWeight: FontWeight.w600,
+        ),
+      ),
+    );
+
+    if (height != null) {
+      return SizedBox(
+        height: height,
+        width: double.infinity,
+        child: content,
+      );
+    }
+
+    return SizedBox.expand(child: content);
   }
 }

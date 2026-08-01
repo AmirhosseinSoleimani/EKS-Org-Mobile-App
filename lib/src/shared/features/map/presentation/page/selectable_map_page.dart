@@ -225,7 +225,10 @@ class _MapCanvas extends StatelessWidget {
           Expanded(
             child: Stack(
               children: [
-                const MapWidget(key: ValueKey('static_map_widget')),
+                MapWidget(
+                  key: const ValueKey('selectable_map'),
+                  serviceType: serviceType,
+                ),
                 Align(
                   alignment: AlignmentDirectional.bottomStart,
                   child: Padding(
@@ -244,7 +247,7 @@ class _MapCanvas extends StatelessWidget {
                     padding: EdgeInsetsDirectional.only(
                       start: AppPadding.p16,
                       end: AppPadding.p16,
-                      top: AppPadding.p16,
+                      top: 80,
                     ),
                     child: MapSearchField(),
                   ),

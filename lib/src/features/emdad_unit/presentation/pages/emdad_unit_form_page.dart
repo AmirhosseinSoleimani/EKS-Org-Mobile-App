@@ -1,10 +1,14 @@
 import 'dart:io';
 
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/lookup_entity.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/params/create_emdad_unit_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/cubit/emdad_unit_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/emdad_unit_detail_row.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/view_model/marker_style.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/single_location_map_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
@@ -12,10 +16,8 @@ import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:latlong2/latlong.dart';
 
 class EmdadUnitFormPage extends StatelessWidget {
   static const path = '/emdad-unit-create-page';
@@ -404,38 +406,18 @@ class _MapPreview extends StatelessWidget {
           borderRadius: BorderRadius.circular(AppSize.s8),
           color: Theme.of(context).colorScheme.surfaceContainerHighest,
         ),
-        child: const Text('پس از انتخاب محل استقرار، موقعیت نمایش داده می‌شود'),
+        child: const BodyMediumText(
+          text: 'پس از انتخاب محل استقرار، موقعیت نمایش داده می‌شود',
+        ),
       );
     }
-    final point = LatLng(lat, lng);
-    return SizedBox(
+    return SingleLocationMapWidget(
+      latitude: lat,
+      longitude: lng,
+      markerStyle: const MarkerStyle(iconPath: SvgManager.location),
+      serviceType: ServiceType.reliefService,
       height: AppSize.s220,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppSize.s8),
-        child: FlutterMap(
-          options: MapOptions(initialCenter: point, initialZoom: 12),
-          children: [
-            TileLayer(
-              urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-              userAgentPackageName: 'eks_sana_plus_org',
-            ),
-            MarkerLayer(
-              markers: [
-                Marker(
-                  point: point,
-                  width: AppSize.s48,
-                  height: AppSize.s48,
-                  child: Icon(
-                    Icons.location_on_rounded,
-                    color: Theme.of(context).colorScheme.error,
-                    size: AppSize.s40,
-                  ),
-                ),
-              ],
-            ),
-          ],
-        ),
-      ),
+      initialZoom: 12,
     );
   }
 }

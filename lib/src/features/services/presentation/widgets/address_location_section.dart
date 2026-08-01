@@ -3,7 +3,9 @@ import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/form_section_c
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/address_info_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/province_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/bottom_sheet/selectable_map_bottom_sheet.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/static_map_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/view_model/marker_style.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/single_location_map_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/overlay_drop_down_menu.dart';
@@ -70,10 +72,16 @@ class AddressLocationSection extends StatelessWidget {
             height: 280,
             child: Stack(
               children: [
-                StaticMapWidget(
+                SingleLocationMapWidget(
                   serviceType: serviceType,
                   latitude: latitude,
                   longitude: longitude,
+                  height: null,
+                  markerStyle: MarkerStyle(
+                    iconPath: serviceType == ServiceType.homeService
+                        ? SvgManager.homeServiceLocation
+                        : SvgManager.location,
+                  ),
                 ),
                 Positioned(
                   bottom: 12,

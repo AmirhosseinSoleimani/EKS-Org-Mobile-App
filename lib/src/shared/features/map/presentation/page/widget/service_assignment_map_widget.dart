@@ -1,33 +1,23 @@
-import 'package:eks_sana_plus_org/src/common/constants/app_constants.dart';
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/cubit/assign_and_cancel_emdadgar_cubit.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/core/app_map_marker.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/emdadgar_marker_style_resolver.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/map_control_buttons.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/map_pin_marker.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/map_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/multi_location_map_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:flutter_map/flutter_map.dart';
-import 'package:go_router/go_router.dart';
-import 'package:latlong2/latlong.dart' as lat_lng;
+import 'package:latlong2/latlong.dart';
 
 class ServiceAssignmentMapWidget extends StatelessWidget {
-  final List<EmdadgarEntity> emdadgars;
-  final double customerLatitude;
-  final double customerLongitude;
-  final double initialZoom;
-  final double height;
-  final void Function(EmdadgarEntity emdadgar)? onEmdadgarTap;
-  final VoidCallback? onCurrentLocationTap;
-  final bool isFullScreen;
-
-  ServiceAssignmentMapWidget({
+  const ServiceAssignmentMapWidget({
     super.key,
     required this.emdadgars,
     required this.customerLatitude,
     required this.customerLongitude,
+    required this.serviceType,
     this.initialZoom = 12,
     this.height = 520,
     this.onEmdadgarTap,
@@ -35,180 +25,117 @@ class ServiceAssignmentMapWidget extends StatelessWidget {
     this.isFullScreen = false,
   });
 
-  final MapController _mapController = MapController();
+  final List<EmdadgarEntity> emdadgars;
+  final double customerLatitude;
+  final double customerLongitude;
+  final ServiceType serviceType;
+  final double initialZoom;
+  final double? height;
+  final void Function(EmdadgarEntity emdadgar)? onEmdadgarTap;
+  final VoidCallback? onCurrentLocationTap;
+  final bool isFullScreen;
 
   static const Color _purple = Color(0xff6C35D4);
   static const Color _orange = Color(0xffF59E0B);
   static const Color _green = Color(0xff22C55E);
 
-  lat_lng.LatLng get _customerPoint =>
-      lat_lng.LatLng(
-        customerLatitude,
-        customerLongitude,
-      );
+  LatLng get _customerPoint => LatLng(customerLatitude, customerLongitude);
 
   @override
   Widget build(BuildContext context) {
-    return SizedBox(
-      height: height,
-      width: double.infinity,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(25),
-        child: Stack(
-          children: [
-            BlocBuilder<AssignAndCancelEmdadgarCubit,
-                AssignAndCancelEmdadgarState>(
-              builder: (context, state) {
-                final int? loadingEmdadgarId = state.maybeWhen(
-                  checkDepotLoading: (emdadgarId) => emdadgarId,
-                  orElse: () => null,
-                );
+    return BlocBuilder<AssignAndCancelEmdadgarCubit,
+        AssignAndCancelEmdadgarState>(
+      builder: (context, state) {
+        final loadingEmdadgarId = state.maybeWhen(
+          checkDepotLoading: (emdadgarId) => emdadgarId,
+          orElse: () => null,
+        );
 
-                final bool isMapLoading = loadingEmdadgarId != null;
-
-                const markerStyleResolver = EmdadgarMarkerStyleResolver();
-                final customerMarkerStyle =
-                markerStyleResolver.resolveCustomer();
-
-                return AbsorbPointer(
-                  absorbing: isMapLoading,
-                  child: FlutterMap(
-                    mapController: _mapController,
-                    options: MapOptions(
-                      initialCenter: _customerPoint,
-                      initialZoom: initialZoom,
-                      interactionOptions: const InteractionOptions(
-                        flags: InteractiveFlag.drag |
-                        InteractiveFlag.pinchZoom |
-                        InteractiveFlag.doubleTapZoom |
-                        InteractiveFlag.flingAnimation |
-                        InteractiveFlag.scrollWheelZoom,
-                      ),
-                    ),
-                    children: [
-                      TileLayer(
-                        urlTemplate: AppConstants.parsiMapUrlTemplate,
-                        tileProvider: NonCachingNetworkTileProvider(
-                          urlTemplate: AppConstants.parsiMapUrlTemplate,
-                        ),
-                      ),
-                      MarkerLayer(
-                        markers: [
-                          Marker(
-                            width: AppSize.s42,
-                            height: AppSize.s42,
-                            point: _customerPoint,
-                            child: MapPinMarker(
-                              iconPath: customerMarkerStyle.iconPath,
-                              color: customerMarkerStyle.color,
-                            ),
-                          ),
-                          ...emdadgars
-                              .where(
-                                (e) =>
-                                e.lastLocationLatitude != null &&
-                                    e.lastLocationLongitude != null,
-                          )
-                              .map((emdadgar) {
-                            final markerStyle =
-                            markerStyleResolver.resolve(emdadgar);
-
-                            return Marker(
-                              width: AppSize.s48,
-                              height: AppSize.s48,
-                              point: lat_lng.LatLng(
-                                emdadgar.lastLocationLatitude!,
-                                emdadgar.lastLocationLongitude!,
-                              ),
-                              child: GestureDetector(
-                                onTap: () {
-                                  onEmdadgarTap?.call(emdadgar);
-                                },
-                                child: MapPinMarker(
-                                  iconPath: markerStyle.iconPath,
-                                  color: markerStyle.color,
-                                ),
-                              ),
-                            );
-                          }),
-                        ],
-                      ),
-                    ],
-                  ),
-                );
-              },
+        return AbsorbPointer(
+          absorbing: loadingEmdadgarId != null,
+          child: MultiLocationMapWidget(
+            markers: _buildMarkers(),
+            initialCenter: _customerPoint,
+            serviceType: serviceType,
+            initialZoom: initialZoom,
+            height: height,
+            isFullScreen: isFullScreen,
+            onCurrentLocationTap: onCurrentLocationTap,
+            onFullScreenTap: isFullScreen
+                ? null
+                : () => _openFullScreenMap(context),
+            bottomOverlay: const PositionedDirectional(
+              start: AppPadding.p16,
+              end: AppPadding.p16,
+              bottom: AppPadding.p16,
+              child: _AssignmentMapLegend(),
             ),
-
-            MapControlButtons(
-              mapController: _mapController,
-              defaultCenter: _customerPoint,
-              defaultZoom: initialZoom,
-              isFullScreen: isFullScreen,
-              onFullScreenTap: () => _openFullScreenMap(context),
-              onCurrentLocationTap: onCurrentLocationTap,
-            ),
-
-            PositionedDirectional(
-              start: 16,
-              end: 16,
-              bottom: 16,
-              child: Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 14,
-                  vertical: 10,
-                ),
-                decoration: BoxDecoration(
-                  color: Colors.white,
-                  borderRadius: BorderRadius.circular(18),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withAlpha(100),
-                      blurRadius: 12,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
-                ),
-                child: const FittedBox(
-                  fit: BoxFit.scaleDown,
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      _LegendItem(color: _purple, title: 'مشتری'),
-                      _DividerText(),
-                      _LegendItem(color: _orange, title: 'درحال خدمت'),
-                      _DividerText(),
-                      _LegendItem(color: _green, title: 'درحال ماموریت'),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
+          ),
+        );
+      },
     );
   }
 
-  void _openFullScreenMap(BuildContext context) {
-    final assignAndCancelEmdadgarCubit =
-    context.read<AssignAndCancelEmdadgarCubit>();
+  List<AppMapMarker> _buildMarkers() {
+    const resolver = EmdadgarMarkerStyleResolver();
+    final customerStyle = resolver.resolveCustomer();
 
-    showModalBottomSheet(
+    return [
+      AppMapMarker(
+        point: _customerPoint,
+        width: AppSize.s42,
+        height: AppSize.s42,
+        child: MapPinMarker(
+          iconPath: customerStyle.iconPath,
+          color: customerStyle.color,
+        ),
+      ),
+      ...emdadgars
+          .where(
+            (item) =>
+                item.lastLocationLatitude != null &&
+                item.lastLocationLongitude != null,
+          )
+          .map((emdadgar) {
+        final markerStyle = resolver.resolve(emdadgar);
+
+        return AppMapMarker(
+          point: LatLng(
+            emdadgar.lastLocationLatitude!,
+            emdadgar.lastLocationLongitude!,
+          ),
+          width: AppSize.s48,
+          height: AppSize.s48,
+          onTap: () => onEmdadgarTap?.call(emdadgar),
+          child: MapPinMarker(
+            iconPath: markerStyle.iconPath,
+            color: markerStyle.color,
+          ),
+        );
+      }),
+    ];
+  }
+
+  void _openFullScreenMap(BuildContext context) {
+    final cubit = context.read<AssignAndCancelEmdadgarCubit>();
+
+    showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
       useSafeArea: true,
       backgroundColor: Colors.transparent,
       builder: (_) {
         return BlocProvider.value(
-          value: assignAndCancelEmdadgarCubit,
+          value: cubit,
           child: SizedBox(
-            height: MediaQuery.of(context).size.height,
+            height: MediaQuery.sizeOf(context).height,
             child: ServiceAssignmentMapWidget(
               emdadgars: emdadgars,
               customerLatitude: customerLatitude,
               customerLongitude: customerLongitude,
-              initialZoom: _mapController.camera.zoom,
-              height: MediaQuery.of(context).size.height,
+              serviceType: serviceType,
+              initialZoom: initialZoom,
+              height: MediaQuery.sizeOf(context).height,
               onEmdadgarTap: onEmdadgarTap,
               onCurrentLocationTap: onCurrentLocationTap,
               isFullScreen: true,
@@ -220,23 +147,69 @@ class ServiceAssignmentMapWidget extends StatelessWidget {
   }
 }
 
+class _AssignmentMapLegend extends StatelessWidget {
+  const _AssignmentMapLegend();
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppPadding.p14,
+        vertical: AppPadding.p10,
+      ),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(AppSize.s18),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x26000000),
+            blurRadius: 12,
+            offset: Offset(0, 4),
+          ),
+        ],
+      ),
+      child: const FittedBox(
+        fit: BoxFit.scaleDown,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            _LegendItem(
+              color: ServiceAssignmentMapWidget._purple,
+              title: 'مشتری',
+            ),
+            _DividerText(),
+            _LegendItem(
+              color: ServiceAssignmentMapWidget._orange,
+              title: 'درحال خدمت',
+            ),
+            _DividerText(),
+            _LegendItem(
+              color: ServiceAssignmentMapWidget._green,
+              title: 'درحال ماموریت',
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class _LegendItem extends StatelessWidget {
+  const _LegendItem({required this.color, required this.title});
+
   final Color color;
   final String title;
-
-  const _LegendItem({required this.color, required this.title});
 
   @override
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(Icons.location_on, color: color, size: 20),
-        const SizedBox(width: 4),
-        BodyMediumText(text:
-        title,
-            fontSize: 12, fontWeight: FontWeight.w600
-
+        Icon(Icons.location_on, color: color, size: AppSize.s20),
+        const SizedBox(width: AppSize.s4),
+        BodyMediumText(
+          text: title,
+          fontSize: AppSize.s12,
+          fontWeight: FontWeight.w600,
         ),
       ],
     );
@@ -248,14 +221,12 @@ class _DividerText extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8),
-      child: Text(
-        '|',
-        style: TextStyle(
-          color: Colors.grey.shade400,
-          fontWeight: FontWeight.bold,
-        ),
+    return const Padding(
+      padding: EdgeInsets.symmetric(horizontal: AppPadding.p8),
+      child: BodyMediumText(
+        text: '|',
+        color: Color(0xFFBDBDBD),
+        fontWeight: FontWeight.bold,
       ),
     );
   }

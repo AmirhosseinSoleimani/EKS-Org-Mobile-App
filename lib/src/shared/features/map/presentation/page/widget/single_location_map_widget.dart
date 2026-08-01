@@ -1,42 +1,43 @@
-import 'package:eks_sana_plus_org/src/common/constants/app_constants.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/map_control_buttons.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/core/app_map.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/core/app_map_marker.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/map_pin_marker.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/map_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/marker_style.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/view_model/marker_style.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:latlong2/latlong.dart';
 
 class SingleLocationMapWidget extends StatefulWidget {
-  final double? latitude;
-  final double? longitude;
-  final MarkerStyle markerStyle;
-
-  final double height;
-  final double initialZoom;
-  final bool isFullScreen;
-
-  final ValueChanged<LatLng>? onMapTap;
-
-  final VoidCallback? onCurrentLocationTap;
-
-  final VoidCallback? onMarkerTap;
-  final ServiceType serviceType;
   const SingleLocationMapWidget({
     super.key,
     required this.latitude,
     required this.longitude,
     required this.markerStyle,
+    required this.serviceType,
     this.height = 520,
     this.initialZoom = 14,
     this.isFullScreen = false,
+    this.interactive = true,
+    this.showFullScreenButton = true,
     this.onMapTap,
     this.onCurrentLocationTap,
     this.onMarkerTap,
-    this.serviceType = ServiceType.reliefService,
   });
+
+  final double? latitude;
+  final double? longitude;
+  final MarkerStyle markerStyle;
+  final ServiceType serviceType;
+  final double? height;
+  final double initialZoom;
+  final bool isFullScreen;
+  final bool interactive;
+  final bool showFullScreenButton;
+  final ValueChanged<LatLng>? onMapTap;
+  final VoidCallback? onCurrentLocationTap;
+  final VoidCallback? onMarkerTap;
 
   @override
   State<SingleLocationMapWidget> createState() =>
@@ -61,25 +62,16 @@ class _SingleLocationMapWidgetState extends State<SingleLocationMapWidget> {
   void didUpdateWidget(covariant SingleLocationMapWidget oldWidget) {
     super.didUpdateWidget(oldWidget);
 
-    final locationChanged =
-        oldWidget.latitude != widget.latitude ||
+    final locationChanged = oldWidget.latitude != widget.latitude ||
         oldWidget.longitude != widget.longitude;
-
-    if (!locationChanged) {
-      return;
-    }
-
     final point = _locationPoint;
 
-    if (point == null) {
+    if (!locationChanged || point == null) {
       return;
     }
 
     WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (!mounted) {
-        return;
-      }
-
+      if (!mounted) return;
       _mapController.move(point, _mapController.camera.zoom);
     });
   }
@@ -92,76 +84,27 @@ class _SingleLocationMapWidgetState extends State<SingleLocationMapWidget> {
       return _LocationMapEmptyState(height: widget.height);
     }
 
-    return SizedBox(
+    return AppMap(
+      mapController: _mapController,
+      serviceType: widget.serviceType,
+      initialCenter: point,
+      initialZoom: widget.initialZoom,
       height: widget.height,
-      width: double.infinity,
-      child: ClipRRect(
-        borderRadius: BorderRadius.circular(25),
-        child: Stack(
-          children: [
-            FlutterMap(
-              mapController: _mapController,
-              options: MapOptions(
-                initialCenter: point,
-                initialZoom: widget.initialZoom,
-                interactionOptions: const InteractionOptions(
-                  flags:
-                      InteractiveFlag.drag |
-                      InteractiveFlag.pinchZoom |
-                      InteractiveFlag.doubleTapZoom |
-                      InteractiveFlag.flingAnimation |
-                      InteractiveFlag.scrollWheelZoom,
-                ),
-                onTap: widget.onMapTap == null
-                    ? null
-                    : (_, selectedPoint) {
-                        widget.onMapTap?.call(selectedPoint);
-                      },
-              ),
-              children: [_buildTileLayer(), _buildMarkerLayer(point)],
-            ),
-
-            MapControlButtons(
-              mapController: _mapController,
-              defaultCenter: point,
-              defaultZoom: widget.initialZoom,
-              isFullScreen: widget.isFullScreen,
-              onFullScreenTap: () {
-                _openFullScreenMap(context);
-              },
-              onCurrentLocationTap: () {
-                _handleCurrentLocationTap(point);
-              },
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  TileLayer _buildTileLayer() {
-    return TileLayer(
-      urlTemplate: AppConstants.parsiMapUrlTemplate,
-      tileProvider: NonCachingNetworkTileProvider(
-        urlTemplate: AppConstants.parsiMapUrlTemplate,
-      ),
-    );
-  }
-
-  MarkerLayer _buildMarkerLayer(LatLng point) {
-    return MarkerLayer(
+      interactive: widget.interactive,
+      showFullScreenButton: widget.showFullScreenButton,
+      isFullScreen: widget.isFullScreen,
+      onMapTap: widget.onMapTap,
+      onCurrentLocationTap: () => _handleCurrentLocationTap(point),
+      onFullScreenTap: () => _openFullScreenMap(context),
       markers: [
-        Marker(
+        AppMapMarker(
+          point: point,
           width: AppSize.s48,
           height: AppSize.s48,
-          point: point,
-          child: GestureDetector(
-            behavior: HitTestBehavior.opaque,
-            onTap: widget.onMarkerTap,
-            child: MapPinMarker(
-              iconPath: widget.markerStyle.iconPath,
-              color: widget.markerStyle.color,
-            ),
+          onTap: widget.onMarkerTap,
+          child: MapPinMarker(
+            iconPath: widget.markerStyle.iconPath,
+            color: widget.markerStyle.color,
           ),
         ),
       ],
@@ -179,10 +122,7 @@ class _SingleLocationMapWidgetState extends State<SingleLocationMapWidget> {
 
   void _openFullScreenMap(BuildContext context) {
     final point = _locationPoint;
-
-    if (point == null) {
-      return;
-    }
+    if (point == null) return;
 
     showModalBottomSheet<void>(
       context: context,
@@ -196,9 +136,12 @@ class _SingleLocationMapWidgetState extends State<SingleLocationMapWidget> {
             latitude: point.latitude,
             longitude: point.longitude,
             markerStyle: widget.markerStyle,
+            serviceType: widget.serviceType,
             initialZoom: _mapController.camera.zoom,
             height: MediaQuery.sizeOf(context).height,
             isFullScreen: true,
+            interactive: widget.interactive,
+            showFullScreenButton: widget.showFullScreenButton,
             onMapTap: widget.onMapTap,
             onMarkerTap: widget.onMarkerTap,
             onCurrentLocationTap: widget.onCurrentLocationTap,
@@ -209,34 +152,25 @@ class _SingleLocationMapWidgetState extends State<SingleLocationMapWidget> {
   }
 
   bool _isValidCoordinate(double? latitude, double? longitude) {
-    if (latitude == null || longitude == null) {
-      return false;
-    }
+    if (latitude == null || longitude == null) return false;
+    if (!latitude.isFinite || !longitude.isFinite) return false;
 
-    if (!latitude.isFinite || !longitude.isFinite) {
-      return false;
-    }
-
-    final isLatitudeValid = latitude >= -90 && latitude <= 90;
-
-    final isLongitudeValid = longitude >= -180 && longitude <= 180;
-
-    return isLatitudeValid && isLongitudeValid;
+    return latitude >= -90 &&
+        latitude <= 90 &&
+        longitude >= -180 &&
+        longitude <= 180;
   }
 }
 
 class _LocationMapEmptyState extends StatelessWidget {
-  final double height;
-
   const _LocationMapEmptyState({required this.height});
+
+  final double? height;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
-
-    return Container(
-      height: height,
-      width: double.infinity,
+    final child = DecoratedBox(
       decoration: BoxDecoration(
         color: colorScheme.surfaceContainerHighest,
         borderRadius: BorderRadius.circular(25),
@@ -251,15 +185,23 @@ class _LocationMapEmptyState extends StatelessWidget {
               color: colorScheme.onSurfaceVariant,
             ),
             const SizedBox(height: AppSize.s12),
-            Text(
-              'موقعیت مکانی ثبت نشده است',
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-              ),
+            BodyMediumText(
+              text: 'موقعیت مکانی ثبت نشده است',
+              color: colorScheme.onSurfaceVariant,
             ),
           ],
         ),
       ),
     );
+
+    if (height != null) {
+      return SizedBox(
+        height: height,
+        width: double.infinity,
+        child: child,
+      );
+    }
+
+    return SizedBox.expand(child: child);
   }
 }

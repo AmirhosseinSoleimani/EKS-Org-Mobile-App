@@ -4,7 +4,7 @@ import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widg
 import 'package:eks_sana_plus_org/src/features/services/presentation/online_map_page/cubit/online_map_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/expand_toggle_button.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/route_map_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/static_map_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/single_location_map_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/key_value_row.dart';
 import 'package:flutter/material.dart';
@@ -39,7 +39,7 @@ class OnlineMapSection extends StatelessWidget {
           child: Column(
             children: [
               ClipRRect(
-                borderRadius: BorderRadius.circular(AppSize.s12),
+                borderRadius: BorderRadius.circular(25),
                 child: SizedBox(
                   width: double.infinity,
                   height: MediaQuery.of(context).size.width * 1.2,
@@ -50,10 +50,13 @@ class OnlineMapSection extends StatelessWidget {
                       showInfoBox: false,
                       startMarkerStyle: markerStyleResolver.resolveInfo(emdadgar),
                       destinationMarkerStyle: markerStyleResolver.resolveCustomer(),
-                    ) : StaticMapWidget(
+                      serviceType: request?.serviceType ?? ServiceType.reliefService,
+                    ) : SingleLocationMapWidget(
                       serviceType: request?.serviceType ?? ServiceType.reliefService,
                       latitude: request?.latitude ?? 0,
                       longitude: request?.longitude ?? 0,
+                      height: null,
+                      markerStyle: markerStyleResolver.resolveCustomer(),
                     ),
                 ),
               ),

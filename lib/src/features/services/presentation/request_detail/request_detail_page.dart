@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/cubit/request_detail_cubit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
@@ -144,6 +145,8 @@ class RequestDetailPage extends StatelessWidget {
                                             cubit.selectedRequest?.provinceName,
                                         address:
                                             cubit.selectedRequest?.aidAddress,
+                                        serviceType: cubit.selectedRequest?.serviceType ??
+                                            ServiceType.reliefService,
                                       ),
                                     ),
                                      ExpandableSection(

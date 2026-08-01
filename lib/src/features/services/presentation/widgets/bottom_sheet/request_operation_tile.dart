@@ -19,7 +19,7 @@ class RequestOperationTile extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final foregroundColor = isDestructive
         ? colorScheme.error
-        : colorScheme.onSurfaceVariant;
+        : colorScheme.secondaryFixed;
 
     return Material(
       color: Colors.transparent,
@@ -41,8 +41,7 @@ class RequestOperationTile extends StatelessWidget {
                   child: BodyMediumText(
                     text: _resolveLabel(operation),
                     color: foregroundColor,
-                    fontWeight:
-                        isDestructive ? FontWeight.w500 : FontWeight.normal,
+                    fontWeight: FontWeight.w500 ,
                     textAlign: TextAlign.start,
                   ),
                 ),

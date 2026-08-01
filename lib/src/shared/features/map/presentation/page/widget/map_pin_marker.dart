@@ -16,8 +16,8 @@ class MapPinMarker extends StatelessWidget {
     return Stack(
       alignment: Alignment.center,
       children: [
-        if(color != null)...[//customer marker color is null and it don't need white background
-
+        if(color != null)...[
+          //customer marker color is null and it don't need white background
           SvgWidget(
             src: SvgAsset(SvgManager.emptyMarker),
             color: Colors.white,

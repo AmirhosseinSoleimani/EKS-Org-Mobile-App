@@ -1,9 +1,10 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_lookup_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_state.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/marker_style.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/view_model/marker_style.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/single_location_map_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
@@ -491,6 +492,7 @@ class _LocationCard extends StatelessWidget {
             latitude: latitude,
             longitude: longitude,
             markerStyle: MarkerStyle(iconPath: SvgManager.location),
+            serviceType: ServiceType.reliefService,
             height: AppSize.s300,
             initialZoom: 14,
             onMapTap: onMapTap,

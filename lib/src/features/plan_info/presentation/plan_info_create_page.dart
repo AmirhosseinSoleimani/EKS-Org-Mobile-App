@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_lookup_entity.dart';
@@ -5,7 +6,7 @@ import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_state.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/cubit/map_cubit.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/map_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/marker_style.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/view_model/marker_style.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/single_location_map_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
@@ -591,6 +592,7 @@ class _PlanLocationMap extends StatelessWidget {
         latitude: latitude,
         longitude: longitude,
         markerStyle: MarkerStyle(iconPath: SvgManager.location),
+        serviceType: ServiceType.reliefService,
         height: AppSize.s220,
         initialZoom: 14,
       );
@@ -599,11 +601,12 @@ class _PlanLocationMap extends StatelessWidget {
     return SizedBox(
       height: AppSize.s220,
       child: ClipRRect(
-        borderRadius: BorderRadius.circular(AppSize.s8),
+        borderRadius: BorderRadius.circular(25),
         child: BlocProvider(
           create: (_) => getIt<MapCubit>()..init(),
           child: const MapWidget(
             key: ValueKey('plan-default-tehran-map'),
+            serviceType: ServiceType.reliefService,
           ),
         ),
       ),
