@@ -1,4 +1,6 @@
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/submit_cancel_buttons.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/date_picker_widget/jalali_year_picker_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
@@ -49,111 +51,45 @@ class JalaliYearPickerWidget extends StatelessWidget {
   Future<void> _pickYear(BuildContext context) async {
     final currentYear = Jalali.now().year;
     final maxYear = lastYear ?? currentYear;
-    final selectedYear = int.tryParse(controller.text.trim()) ??
-        initialYear ??
-        maxYear;
+    var selectedYear = _normalizeSelectedYear(
+      int.tryParse(controller.text.trim()) ?? initialYear ?? maxYear,
+      maxYear,
+    );
+    var isConfirmed = false;
 
-    final year = await showDialog<int>(
+    await BottomSheetMessage.showCustom(
       context: context,
-      builder: (dialogContext) {
-        return Directionality(
-          textDirection: TextDirection.rtl,
-          child: _JalaliYearDialog(
-            firstYear: firstYear,
-            lastYear: maxYear,
-            selectedYear: selectedYear,
-          ),
-        );
-      },
+      maxHeight: 0.72,
+      content: JalaliYearPickerSheet(
+        firstYear: firstYear,
+        lastYear: maxYear,
+        selectedYear: selectedYear,
+        onYearChanged: (value) => selectedYear = value,
+      ),
+      actionWidget: Builder(
+        builder: (sheetContext) {
+          return SubmitCancelButtons(
+            submitTitle: 'تایید',
+            submitButtonColor: Theme.of(sheetContext).colorScheme.primary,
+            onSubmit: () {
+              isConfirmed = true;
+              Navigator.of(sheetContext).pop();
+            },
+            onCancel: () => Navigator.of(sheetContext).pop(),
+          );
+        },
+      ),
     );
 
-    if (year == null) return;
+    if (!isConfirmed) return;
 
-    controller.text = year.toString();
-    onChanged?.call(year);
+    controller.text = selectedYear.toString();
+    onChanged?.call(selectedYear);
   }
-}
 
-class _JalaliYearDialog extends StatelessWidget {
-  const _JalaliYearDialog({
-    required this.firstYear,
-    required this.lastYear,
-    required this.selectedYear,
-  });
-
-  final int firstYear;
-  final int lastYear;
-  final int selectedYear;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final years = List<int>.generate(
-      lastYear - firstYear + 1,
-      (index) => lastYear - index,
-      growable: false,
-    );
-
-    return AlertDialog(
-      titlePadding: const EdgeInsets.fromLTRB(
-        AppPadding.p20,
-        AppPadding.p20,
-        AppPadding.p20,
-        AppPadding.p8,
-      ),
-      contentPadding: const EdgeInsets.fromLTRB(
-        AppPadding.p12,
-        AppPadding.p8,
-        AppPadding.p12,
-        AppPadding.p16,
-      ),
-      title: Text(
-        'انتخاب سال',
-        style: theme.textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.w700,
-        ),
-      ),
-      content: SizedBox(
-        width: 320,
-        height: 360,
-        child: GridView.builder(
-          itemCount: years.length,
-          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
-            crossAxisCount: 3,
-            childAspectRatio: 1.8,
-            mainAxisSpacing: AppSize.s8,
-            crossAxisSpacing: AppSize.s8,
-          ),
-          itemBuilder: (context, index) {
-            final year = years[index];
-            final isSelected = year == selectedYear;
-
-            return Material(
-              color: isSelected
-                  ? theme.colorScheme.primaryContainer
-                  : theme.colorScheme.surface,
-              borderRadius: BorderRadius.circular(AppSize.s8),
-              child: InkWell(
-                borderRadius: BorderRadius.circular(AppSize.s8),
-                onTap: () => Navigator.of(context).pop(year),
-                child: Center(
-                  child: Text(
-                    year.toString(),
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: isSelected
-                          ? theme.colorScheme.primary
-                          : theme.colorScheme.onSurface,
-                      fontWeight: isSelected
-                          ? FontWeight.w700
-                          : FontWeight.w400,
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
-        ),
-      ),
-    );
+  int _normalizeSelectedYear(int value, int maxYear) {
+    if (value < firstYear) return firstYear;
+    if (value > maxYear) return maxYear;
+    return value;
   }
 }

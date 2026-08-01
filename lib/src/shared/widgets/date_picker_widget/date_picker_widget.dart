@@ -1,9 +1,9 @@
 import 'dart:async';
 
-import 'package:eks_sana_plus_org/src/shared/resources/color_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/font_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/style_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/submit_cancel_buttons.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/date_picker_widget/persian_date_picker_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
@@ -63,37 +63,54 @@ class DatePickerWidget extends StatelessWidget {
   }
 
   Future<void> _pickDate(BuildContext context) async {
-    final picked = await showPersianDatePicker(
-      locale: const Locale('fa', 'IR'),
-      initialEntryMode: PersianDatePickerEntryMode.calendarOnly,
+    final minDate = firstDate ?? Jalali(1300, 1, 1);
+    final maxDate = lastDate ?? Jalali.now();
+    var selectedDate = _clampDate(
+      _controllerDate() ?? initialDate ?? Jalali.now(),
+      minDate,
+      maxDate,
+    );
+    var isConfirmed = false;
+
+    await BottomSheetMessage.showCustom(
       context: context,
-      initialDate: _controllerDate() ?? initialDate ?? Jalali.now(),
-      firstDate: firstDate ?? Jalali(1300, 1, 1),
-      lastDate: lastDate ?? Jalali.now(),
-      initialDatePickerMode: PersianDatePickerMode.day,
-      builder: (ctx, child) {
-        return Localizations.override(
-          context: context,
-          locale: const Locale('fa', 'IR'),
-          delegates: const [
-            PersianMaterialLocalizations.delegate,
-            PersianCupertinoLocalizations.delegate,
-          ],
-          child: Directionality(
-            textDirection: TextDirection.rtl,
-            child: Theme(
-              data: _pickerTheme(context),
-              child: child ?? const SizedBox.shrink(),
-            ),
-          ),
-        );
-      },
+      maxHeight: 0.86,
+      content: PersianDatePickerSheet(
+        initialDate: selectedDate,
+        firstDate: minDate,
+        lastDate: maxDate,
+        onDateChanged: (value) => selectedDate = value,
+      ),
+      actionWidget: Builder(
+        builder: (sheetContext) {
+          return SubmitCancelButtons(
+            submitTitle: 'تایید',
+            submitButtonColor: Theme.of(sheetContext).colorScheme.primary,
+            onSubmit: () {
+              isConfirmed = true;
+              Navigator.of(sheetContext).pop();
+            },
+            onCancel: () => Navigator.of(sheetContext).pop(),
+          );
+        },
+      ),
     );
 
-    if (picked == null) return;
+    if (!isConfirmed) return;
 
-    controller.text = _format(picked);
-    await onTap?.call(picked);
+    controller.text = _format(selectedDate);
+    await onTap?.call(selectedDate);
+  }
+
+  Jalali _clampDate(Jalali value, Jalali minDate, Jalali maxDate) {
+    final valueKey = _dateKey(value);
+    if (valueKey < _dateKey(minDate)) return minDate;
+    if (valueKey > _dateKey(maxDate)) return maxDate;
+    return value;
+  }
+
+  int _dateKey(Jalali value) {
+    return (value.year * 10000) + (value.month * 100) + value.day;
   }
 
   Jalali? _controllerDate() {
@@ -116,94 +133,5 @@ class DatePickerWidget extends StatelessWidget {
     final month = value.month.toString().padLeft(2, '0');
     final day = value.day.toString().padLeft(2, '0');
     return '${value.year}/$month/$day';
-  }
-
-  ThemeData _pickerTheme(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return ThemeData(
-      colorScheme: ColorScheme(
-        primary: colorScheme.primary,
-        brightness: Brightness.light,
-        onPrimary: colorScheme.surface,
-        secondary: colorScheme.surface,
-        onSecondary: colorScheme.surface,
-        error: colorScheme.error,
-        onError: colorScheme.onError,
-        surface: colorScheme.surface,
-        onSurface: colorScheme.onSurface,
-        primaryContainer: colorScheme.surface,
-      ),
-      textTheme: TextTheme(
-        headlineLarge: getBoldStyle(
-          fontSize: AppSize.s24,
-          color: ColorLightManager.surface,
-        ),
-        headlineMedium: getSemiBoldStyle(
-          fontSize: AppSize.s24,
-          color: ColorLightManager.surface,
-        ),
-        headlineSmall: getRegularStyle(
-          fontSize: AppSize.s24,
-          color: ColorLightManager.surface,
-        ),
-        titleLarge: getBoldStyle(
-          fontSize: AppSize.s20,
-          color: ColorLightManager.surface,
-        ),
-        titleMedium: getSemiBoldStyle(
-          fontSize: AppSize.s20,
-          color: ColorLightManager.surface,
-        ),
-        titleSmall: getRegularStyle(
-          fontSize: AppSize.s20,
-          color: ColorLightManager.surface,
-        ),
-        displayLarge: getBoldStyle(
-          fontSize: AppSize.s18,
-          color: ColorLightManager.surface,
-        ),
-        displayMedium: getSemiBoldStyle(
-          fontSize: AppSize.s18,
-          color: ColorLightManager.surface,
-        ),
-        displaySmall: getRegularStyle(
-          fontSize: AppSize.s18,
-          color: ColorLightManager.surface,
-        ),
-        bodyLarge: getBoldStyle(
-          fontSize: AppSize.s16,
-          color: ColorLightManager.surface,
-        ),
-        bodyMedium: getSemiBoldStyle(
-          fontSize: AppSize.s16,
-          color: ColorLightManager.surface,
-        ),
-        bodySmall: getRegularStyle(
-          fontSize: AppSize.s16,
-          color: ColorLightManager.surface,
-        ),
-        labelLarge: getBoldStyle(
-          fontSize: AppSize.s14,
-          color: ColorLightManager.surface,
-        ),
-        labelMedium: getSemiBoldStyle(
-          fontSize: AppSize.s14,
-          color: ColorLightManager.surface,
-        ),
-        labelSmall: getRegularStyle(
-          fontSize: AppSize.s14,
-          color: ColorLightManager.surface,
-        ),
-      ).apply(fontFamily: FontConstants.fontFamilyPersian),
-      dialogTheme: DialogThemeData(
-        backgroundColor: colorScheme.surface,
-        shadowColor: colorScheme.surface,
-        surfaceTintColor: colorScheme.surface,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.all(Radius.circular(AppSize.s12)),
-        ),
-      ),
-    );
   }
 }
