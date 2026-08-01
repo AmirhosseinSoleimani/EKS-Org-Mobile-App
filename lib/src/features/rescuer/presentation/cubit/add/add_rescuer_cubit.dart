@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/params/add_rescuer_param_entity.dart';
@@ -7,6 +6,7 @@ import 'package:eks_sana_plus_org/src/features/rescuer/presentation/cubit/add/ad
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart'
     show ApiResultPatterns;
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/province_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/features/upload_file/domain/entities/uploaded_file_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/usecase/get_province_with_city_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/overlay_dropdown_form_field.dart';
 import 'package:flutter/material.dart';
@@ -94,16 +94,10 @@ class AddRescuerCubit extends Cubit<AddRescuerState> {
     );
   }
 
-  void setImage(Uint8List bytes, String mime) {
-    imageBytes = bytes;
-    imageBase64 = 'data:$mime;base64,${base64Encode(bytes)}';
-    emit(state.copyWith(imageVersion: state.imageVersion + 1, clearError: true));
-  }
-
-  void clearImage() {
-    imageBytes = null;
-    imageBase64 = null;
-    emit(state.copyWith(imageVersion: state.imageVersion + 1, clearError: true));
+  void setProfileImage(UploadedFileEntity? file) {
+    imageBytes = file?.bytes;
+    imageBase64 = file?.dataUri;
+    emit(state.copyWith(clearError: true));
   }
 
   void setBirthDate(Jalali? value) {

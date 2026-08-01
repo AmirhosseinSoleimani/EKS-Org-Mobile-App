@@ -1,5 +1,3 @@
-import 'dart:typed_data';
-
 import 'package:eks_sana_plus_org/src/features/general_content/domain/entities/general_content_entity.dart';
 import 'package:eks_sana_plus_org/src/features/general_content/domain/entities/params/general_content_form_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/general_content/presentation/cubit/general_content_state.dart';
@@ -9,9 +7,9 @@ import 'package:eks_sana_plus_org/src/features/general_content/presentation/widg
 import 'package:eks_sana_plus_org/src/features/general_content/presentation/widgets/form/general_content_main_info_section.dart';
 import 'package:eks_sana_plus_org/src/features/general_content/presentation/widgets/form/general_content_schedule_section.dart';
 import 'package:eks_sana_plus_org/src/features/general_content/presentation/widgets/form/general_content_submit_controller.dart';
+import 'package:eks_sana_plus_org/src/shared/features/upload_file/domain/entities/uploaded_file_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 
 class GeneralContentForm extends StatefulWidget {
@@ -35,15 +33,6 @@ class GeneralContentForm extends StatefulWidget {
 }
 
 class _GeneralContentFormState extends State<GeneralContentForm> {
-  static const _maxFileSize = 5 * 1024 * 1024;
-  static const _allowedExtensions = <String>[
-    'jpeg',
-    'jpg',
-    'png',
-    'zip',
-    'pdf',
-  ];
-
   final _formKey = GlobalKey<FormState>();
 
   late final TextEditingController _titleController;
@@ -54,11 +43,7 @@ class _GeneralContentFormState extends State<GeneralContentForm> {
   int? _selectedContentType;
   int? _selectedReceiverType;
   int? _selectedStatus;
-  String? _filePath;
-  String? _fileName;
-  Uint8List? _fileBytes;
-  bool _isImage = false;
-  bool _showFileRequiredError = false;
+  UploadedFileEntity? _selectedFile;
 
   bool get _isEditMode => widget.initialContent?.id != null;
 
@@ -141,13 +126,8 @@ class _GeneralContentFormState extends State<GeneralContentForm> {
             applyDateController: _applyDateController,
           ),
           GeneralContentFileSection(
-            fileName: _fileName,
-            previewBytes: _fileBytes,
-            isImage: _isImage,
             isEditMode: _isEditMode,
-            showRequiredError: _showFileRequiredError,
-            onPickFile: _pickFile,
-            onRemoveFile: _removeFile,
+            onFileChanged: (file) => _selectedFile = file,
           ),
           GeneralContentDescriptionSection(
             controller: _descriptionController,
@@ -156,81 +136,12 @@ class _GeneralContentFormState extends State<GeneralContentForm> {
       ),
     );
   }
-  Future<void> _pickFile() async {
-    FocusScope.of(context).unfocus();
-
-    try {
-      final result = await FilePicker.pickFiles(
-        type: FileType.custom,
-        allowedExtensions: _allowedExtensions,
-        allowMultiple: false,
-        withData: true,
-      );
-
-      final file = result?.files.single;
-      if (file == null) return;
-
-      if (file.size > _maxFileSize) {
-        if (!mounted) return;
-
-        SnakeBarWidget.showError(
-          context: context,
-          message: 'حجم فایل انتخاب‌شده نباید بیشتر از ۵ مگابایت باشد.',
-        );
-        return;
-      }
-
-      final bytes = file.bytes ?? await file.xFile.readAsBytes();
-
-      if (!mounted) return;
-
-      if (bytes.isEmpty) {
-        SnakeBarWidget.showError(
-          context: context,
-          message: 'امکان خواندن فایل انتخاب‌شده وجود ندارد.',
-        );
-        return;
-      }
-
-      final extension = file.extension?.toLowerCase() ?? '';
-
-      setState(() {
-        _filePath = file.path;
-        _fileName = file.name;
-        _fileBytes = bytes;
-        _isImage = extension == 'jpg' ||
-            extension == 'jpeg' ||
-            extension == 'png';
-
-        _showFileRequiredError = false;
-      });
-    } catch (_) {
-      if (!mounted) return;
-
-      SnakeBarWidget.showError(
-        context: context,
-        message: 'خطایی هنگام انتخاب فایل رخ داده است.',
-      );
-    }
-  }
-
-  void _removeFile() {
-    setState(() {
-      _filePath = null;
-      _fileName = null;
-      _fileBytes = null;
-      _isImage = false;
-    });
-  }
 
   Future<void> _submit() async {
     FocusScope.of(context).unfocus();
 
     final isFormValid = _formKey.currentState?.validate() ?? false;
-    final isFileValid = _isEditMode || _fileName?.trim().isNotEmpty == true;
-    setState(() => _showFileRequiredError = !isFileValid);
-
-    if (!isFormValid || !isFileValid) return;
+    if (!isFormValid) return;
 
     if (GeneralContentDateConverter.isApplyDateBeforeStartDate(
       startDate: _startDateController.text,
@@ -261,6 +172,7 @@ class _GeneralContentFormState extends State<GeneralContentForm> {
     final receiverType = _selectedReceiverType;
     if (contentType == null || receiverType == null) return;
 
+    final selectedFile = _selectedFile;
     final success = await widget.onSubmit(
       GeneralContentFormParamEntity(
         id: widget.initialContent?.id,
@@ -271,9 +183,9 @@ class _GeneralContentFormState extends State<GeneralContentForm> {
         contentType: contentType,
         receiverType: receiverType,
         isActive: _selectedStatus != 0,
-        filePath: _filePath,
-        fileBytes: _fileBytes,
-        fileName: _fileName,
+        filePath: selectedFile?.path,
+        fileBytes: selectedFile?.bytes,
+        fileName: selectedFile?.name,
       ),
     );
 

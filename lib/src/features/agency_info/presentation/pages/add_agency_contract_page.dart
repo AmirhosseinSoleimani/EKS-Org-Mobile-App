@@ -2,18 +2,17 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/add_contract/add_agency_contract_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/add_contract/add_agency_contract_state.dart';
+import 'package:eks_sana_plus_org/src/shared/features/upload_file/upload_file.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/date_picker_widget/date_picker_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/file_upload/dotted_file_picker_box.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/form_section_container.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/sticky_form_action_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -63,7 +62,7 @@ class _AddAgencyContractView extends StatelessWidget {
               AppPadding.p24,
             ),
             child: FormSectionContainer(
-              padding: EdgeInsets.all(22),
+              padding: const EdgeInsets.all(AppSize.s22),
               child: Form(
                 key: cubit.formKey,
                 child: Column(
@@ -132,9 +131,7 @@ class _AgencySummary extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme
-        .of(context)
-        .colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
 
     return Row(
       children: [
@@ -143,7 +140,7 @@ class _AgencySummary extends StatelessWidget {
           color: colorScheme.primary,
         ),
         Space.w12,
-        Expanded(
+        const Expanded(
           child: BodyMediumText(
             text: 'اطلاعات قرارداد',
             fontWeight: FontWeight.w800,
@@ -186,7 +183,9 @@ class _ContractFormFields extends StatelessWidget {
           lastDate: Jalali(1500, 12, 29),
           onTap: cubit.setStartDate,
           suffixIcon: const Icon(
-              Icons.calendar_month_outlined, color: Color(0xFFA4A4A4)),
+            Icons.calendar_month_outlined,
+            color: Color(0xFFA4A4A4),
+          ),
         ),
         Space.h16,
         DatePickerWidget(
@@ -197,7 +196,9 @@ class _ContractFormFields extends StatelessWidget {
           lastDate: Jalali(1500, 12, 29),
           onTap: cubit.setExpireDate,
           suffixIcon: const Icon(
-              Icons.calendar_month_outlined, color: Color(0xFFA4A4A4)),
+            Icons.calendar_month_outlined,
+            color: Color(0xFFA4A4A4),
+          ),
         ),
       ],
     );
@@ -211,71 +212,25 @@ class _ContractFileField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return FormField<bool>(
-      validator: (_) => cubit.validateFile(),
-      builder: (field) {
-        return BlocSelector<AddAgencyContractCubit,
-            AddAgencyContractState,
-            int>(
-          selector: (state) => state.fileVersion,
-          builder: (context, _) {
-            final hasFile = cubit.fileBase64 != null;
+    final colorScheme = Theme.of(context).colorScheme;
 
-            final colorScheme = Theme.of(context).colorScheme;
-            return Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                 BodyMediumText(
-                  text: 'بارگذاری مستندات',
-                  fontWeight: FontWeight.w500,
-                  color: colorScheme.onPrimaryFixed,
-                ),
-                Space.h16,
-                DottedFilePickerBox(
-                  title: 'انتخاب فایل',
-                  description: 'فرمت‌های مجاز: PNG, JPG, PDF و ZIP',
-                  selected: hasFile,
-                  fileName: cubit.fileName,
-                  previewBytes: cubit.fileBytes,
-                  isImage: _isImage(cubit.fileExtension),
-                  icon: _fileIcon(cubit.fileExtension),
-                  onRemove: () {
-                    cubit.clearFile();
-                    field.didChange(false);
-                  },
-                  onTap: () async {
-                    await cubit.pickFile();
-                    field.didChange(cubit.fileBase64 != null);
-                  },
-                ),
-                if (field.hasError) ...[
-                  Space.h6,
-                  BodySmallText(
-                    text: field.errorText ?? '',
-                    color: Theme.of(context).colorScheme.error,
-                  ),
-                ],
-              ],
-            );
-          },
-        );
-      },
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        BodyMediumText(
+          text: 'بارگذاری مستندات',
+          fontWeight: FontWeight.w500,
+          color: colorScheme.onPrimaryFixed,
+        ),
+        Space.h16,
+        UploadFileField(
+          type: UploadFileType.attachment,
+          isRequired: true,
+          requiredMessage: 'انتخاب مستندات قرارداد اجباری است',
+          selectedFileSubtitle: 'مستند قرارداد انتخاب شد',
+          onChanged: cubit.setFile,
+        ),
+      ],
     );
-  }
-
-  IconData _fileIcon(String? extension) {
-    return switch (extension) {
-      'pdf' => Icons.picture_as_pdf_outlined,
-      'zip' => Icons.folder_zip_outlined,
-      'png' || 'jpg' || 'jpeg' => Icons.image_outlined,
-      _ => Icons.insert_drive_file_outlined,
-    };
-  }
-
-  bool _isImage(String? extension) {
-    return switch (extension) {
-      'png' || 'jpg' || 'jpeg' => true,
-      _ => false,
-    };
   }
 }

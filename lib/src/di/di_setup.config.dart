@@ -849,6 +849,18 @@ import '../shared/features/session/domain/manager/current_session_memory_manager
     as _i950;
 import '../shared/features/session/domain/use_cases/sync_current_session_use_case.dart'
     as _i695;
+import '../shared/features/upload_file/data/data_sources/upload_file_data_source.dart'
+    as _i445;
+import '../shared/features/upload_file/data/data_sources/upload_file_data_source_impl.dart'
+    as _i563;
+import '../shared/features/upload_file/data/repositories/upload_file_repository_impl.dart'
+    as _i988;
+import '../shared/features/upload_file/domain/repositories/upload_file_repository.dart'
+    as _i436;
+import '../shared/features/upload_file/domain/use_cases/pick_upload_file_use_case.dart'
+    as _i515;
+import '../shared/features/upload_file/presentation/cubit/upload_file_cubit.dart'
+    as _i683;
 import '../shared/features/user/data/data_source/user_data_source.dart'
     as _i1039;
 import '../shared/features/user/data/data_source/user_data_source_impl.dart'
@@ -915,6 +927,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i838.RequestRepositoryShareData>(
     () => _i318.RequestRepositoryShareDataImpl(),
   );
+  gh.lazySingleton<_i445.UploadFileDataSource>(
+    () => _i563.UploadFileDataSourceImpl(),
+  );
   gh.lazySingleton<_i837.MapShareDataRepository>(
     () => _i173.MapShareDataRepositoryImpl(),
   );
@@ -950,6 +965,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i988.IPermissionDeviceService>(
     () => _i988.PermissionDeviceService(),
+  );
+  gh.lazySingleton<_i436.UploadFileRepository>(
+    () => _i988.UploadFileRepositoryImpl(gh<_i445.UploadFileDataSource>()),
   );
   gh.lazySingleton<_i221.LocationPermissionDataSource>(
     () => _i1040.LocationPermissionDataSourceImpl(
@@ -1063,6 +1081,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i275.MapLookupService>(
     () => _i275.MapLookupService(gh<_i361.Dio>()),
+  );
+  gh.lazySingleton<_i515.PickUploadFileUseCase>(
+    () => _i515.PickUploadFileUseCase(gh<_i436.UploadFileRepository>()),
   );
   gh.lazySingleton<_i691.IndicatorReportDataSource>(
     () =>
@@ -1180,6 +1201,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i565.UrgentRequestUseCase>(
     () => _i565.UrgentRequestUseCase(gh<_i854.MainRepository>()),
+  );
+  gh.factory<_i683.UploadFileCubit>(
+    () => _i683.UploadFileCubit(gh<_i515.PickUploadFileUseCase>()),
   );
   gh.lazySingleton<_i970.ShiftDataSource>(
     () => _i5.ShiftDataSourceImpl(gh<_i401.ShiftService>()),
