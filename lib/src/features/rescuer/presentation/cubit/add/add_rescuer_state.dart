@@ -7,7 +7,6 @@ class AddRescuerState {
     this.connectionError = false,
     this.createdId,
     this.isActive = true,
-    this.imageVersion = 0,
   });
 
   final int currentStep;
@@ -17,7 +16,6 @@ class AddRescuerState {
   final bool connectionError;
   final String? createdId;
   final bool isActive;
-  final int imageVersion;
 
   AddRescuerState copyWith({
     int? currentStep,
@@ -28,7 +26,6 @@ class AddRescuerState {
     bool? connectionError,
     String? createdId,
     bool? isActive,
-    int? imageVersion,
   }) {
     return AddRescuerState(
       currentStep: currentStep ?? this.currentStep,
@@ -38,7 +35,6 @@ class AddRescuerState {
       connectionError: connectionError ?? this.connectionError,
       createdId: createdId ?? this.createdId,
       isActive: isActive ?? this.isActive,
-      imageVersion: imageVersion ?? this.imageVersion,
     );
   }
 }

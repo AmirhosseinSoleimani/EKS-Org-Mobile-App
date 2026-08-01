@@ -755,6 +755,18 @@ import '../shared/features/session/domain/manager/current_session_memory_manager
     as _i950;
 import '../shared/features/session/domain/use_cases/sync_current_session_use_case.dart'
     as _i695;
+import '../shared/features/upload_file/data/data_sources/upload_file_data_source.dart'
+    as _i2001;
+import '../shared/features/upload_file/data/data_sources/upload_file_data_source_impl.dart'
+    as _i2002;
+import '../shared/features/upload_file/data/repositories/upload_file_repository_impl.dart'
+    as _i2003;
+import '../shared/features/upload_file/domain/repositories/upload_file_repository.dart'
+    as _i2004;
+import '../shared/features/upload_file/domain/use_cases/pick_upload_file_use_case.dart'
+    as _i2005;
+import '../shared/features/upload_file/presentation/cubit/upload_file_cubit.dart'
+    as _i2006;
 import '../shared/features/user/data/data_source/user_data_source.dart'
     as _i1039;
 import '../shared/features/user/data/data_source/user_data_source_impl.dart'
@@ -812,6 +824,24 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i325.ValidateShiftUseCase>(
     () => _i325.ValidateShiftUseCase(),
+  );
+  gh.lazySingleton<_i2001.UploadFileDataSource>(
+    () => _i2002.UploadFileDataSourceImpl(),
+  );
+  gh.lazySingleton<_i2004.UploadFileRepository>(
+    () => _i2003.UploadFileRepositoryImpl(
+      gh<_i2001.UploadFileDataSource>(),
+    ),
+  );
+  gh.lazySingleton<_i2005.PickUploadFileUseCase>(
+    () => _i2005.PickUploadFileUseCase(
+      gh<_i2004.UploadFileRepository>(),
+    ),
+  );
+  gh.factory<_i2006.UploadFileCubit>(
+    () => _i2006.UploadFileCubit(
+      gh<_i2005.PickUploadFileUseCase>(),
+    ),
   );
   gh.lazySingleton<_i838.RequestRepositoryShareData>(
     () => _i318.RequestRepositoryShareDataImpl(),

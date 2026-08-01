@@ -1,4 +1,3 @@
-import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_entity.dart';
@@ -6,7 +5,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/param
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/use_cases/add_agency_contract_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/add_contract/add_agency_contract_state.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:eks_sana_plus_org/src/shared/features/upload_file/domain/entities/uploaded_file_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -33,37 +32,13 @@ class AddAgencyContractCubit extends Cubit<AddAgencyContractState> {
   int? fileSize;
   Uint8List? fileBytes;
 
-  Future<void> pickFile() async {
-    final result = await FilePicker.pickFiles(
-      withData: true,
-      type: FileType.custom,
-      allowedExtensions: const ['png', 'jpg', 'jpeg', 'pdf', 'zip'],
-    );
-    final file = result?.files.single;
-    if (file == null) return;
-
-    final bytes = file.bytes ?? await file.xFile.readAsBytes();
-
-    final extension = _normalizeExtension(file.extension);
-    fileName = file.name;
-    fileExtension = extension;
-    fileSize = file.size;
-    fileBytes = bytes;
-    fileBase64 = 'data:${_mimeType(extension)};base64,${base64Encode(bytes)}';
-    emit(state.copyWith(
-      fileVersion: state.fileVersion + 1,
-      clearError: true,
-      connectionError: false,
-    ));
-  }
-
-  void clearFile() {
-    fileName = null;
-    fileExtension = null;
-    fileSize = null;
-    fileBytes = null;
-    fileBase64 = null;
-    emit(state.copyWith(fileVersion: state.fileVersion + 1, clearError: true));
+  void setFile(UploadedFileEntity? file) {
+    fileName = file?.name;
+    fileExtension = file?.extension;
+    fileSize = file?.size;
+    fileBytes = file?.bytes;
+    fileBase64 = file?.dataUri;
+    emit(state.copyWith(clearError: true, connectionError: false));
   }
 
   void setStartDate(Jalali? value) {
@@ -85,11 +60,13 @@ class AddAgencyContractCubit extends Cubit<AddAgencyContractState> {
     }
     if (formKey.currentState?.validate() != true) return;
 
-    emit(state.copyWith(
-      isSubmitting: true,
-      clearError: true,
-      connectionError: false,
-    ));
+    emit(
+      state.copyWith(
+        isSubmitting: true,
+        clearError: true,
+        connectionError: false,
+      ),
+    );
 
     final result = await _addContractUseCase(
       AddAgencyContractParamEntity(
@@ -108,16 +85,20 @@ class AddAgencyContractCubit extends Cubit<AddAgencyContractState> {
         emit(state.copyWith(isSubmitting: false, createdId: data));
       },
       failure: (error, failures) {
-        emit(state.copyWith(
-          isSubmitting: false,
-          errorMessage: failures ?? 'ثبت قرارداد با خطا مواجه شد.',
-        ));
+        emit(
+          state.copyWith(
+            isSubmitting: false,
+            errorMessage: failures ?? 'ثبت قرارداد با خطا مواجه شد.',
+          ),
+        );
       },
       expireToken: () {
-        emit(state.copyWith(
-          isSubmitting: false,
-          errorMessage: 'نشست کاربری منقضی شده است.',
-        ));
+        emit(
+          state.copyWith(
+            isSubmitting: false,
+            errorMessage: 'نشست کاربری منقضی شده است.',
+          ),
+        );
       },
       connectionError: () {
         emit(state.copyWith(isSubmitting: false, connectionError: true));
@@ -127,21 +108,6 @@ class AddAgencyContractCubit extends Cubit<AddAgencyContractState> {
 
   String? validateRequired(String? value) {
     return value?.trim().isNotEmpty == true ? null : 'این فیلد اجباری است';
-  }
-
-  String? validateFile() {
-    return fileBase64?.trim().isNotEmpty == true
-        ? null
-        : 'انتخاب مستندات قرارداد اجباری است';
-  }
-
-  String fileSizeText() {
-    final size = fileSize;
-    if (size == null) return '';
-    if (size < 1024 * 1024) {
-      return '${(size / 1024).toStringAsFixed(0)} KB';
-    }
-    return '${(size / (1024 * 1024)).toStringAsFixed(1)} MB';
   }
 
   @override
@@ -160,27 +126,13 @@ class AddAgencyContractCubit extends Cubit<AddAgencyContractState> {
     return '$year-$month-$day';
   }
 
-  String _normalizeExtension(String? value) {
-    return value?.trim().toLowerCase().replaceAll('.', '') ?? '';
-  }
-
   String _fileType(String? extension) {
-    final normalized = _normalizeExtension(extension);
+    final normalized = extension?.trim().toLowerCase().replaceAll('.', '') ?? '';
     if (normalized == 'png' ||
         normalized == 'jpg' ||
         normalized == 'jpeg') {
       return 'image';
     }
     return normalized;
-  }
-
-  String _mimeType(String extension) {
-    return switch (extension) {
-      'png' => 'image/png',
-      'jpg' || 'jpeg' => 'image/jpeg',
-      'pdf' => 'application/pdf',
-      'zip' => 'application/zip',
-      _ => 'application/octet-stream',
-    };
   }
 }
