@@ -1232,6 +1232,17 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i1061.ObserveNetworkUseCase>(
     () => _i1061.ObserveNetworkUseCase(gh<_i422.ObserveNetworkRepository>()),
   );
+  gh.factory<_i228.GeneralContentCubit>(
+    () => _i228.GeneralContentCubit(
+      gh<_i564.GetGeneralContentListUseCase>(),
+      gh<_i233.GetGeneralContentTargetsUseCase>(),
+      gh<_i180.AddGeneralContentUseCase>(),
+      gh<_i266.UpdateGeneralContentUseCase>(),
+      gh<_i392.AddGeneralContentTargetUseCase>(),
+      gh<_i311.DeleteGeneralContentUseCase>(),
+      gh<_i1058.CurrentSessionManager>(),
+    ),
+  );
   gh.lazySingleton<_i815.RepresentationRepository>(
     () =>
         _i386.RepresentationRepositoryImpl(gh<_i59.RepresentationDataSource>()),
@@ -1505,14 +1516,6 @@ _i174.GetIt $initGetIt(
   );
   gh.factory<_i579.VehicleInfoHistoryUseCase>(
     () => _i579.VehicleInfoHistoryUseCase(gh<_i1027.VehicleInfoRepository>()),
-  );
-  gh.factory<_i228.GeneralContentCubit>(
-    () => _i228.GeneralContentCubit(
-      gh<_i564.GetGeneralContentListUseCase>(),
-      gh<_i233.GetGeneralContentTargetsUseCase>(),
-      gh<_i311.DeleteGeneralContentUseCase>(),
-      gh<_i1058.CurrentSessionManager>(),
-    ),
   );
   gh.lazySingleton<_i825.AssignGradePatternReferenceUseCase>(
     () => _i825.AssignGradePatternReferenceUseCase(

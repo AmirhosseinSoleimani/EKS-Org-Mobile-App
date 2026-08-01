@@ -59,7 +59,7 @@ class DottedFilePickerBox extends StatelessWidget {
                 color: colorScheme.surface,
                 borderRadius: BorderRadius.circular(AppSize.s12),
               ),
-              child: selected ? _SelectedContent(context: context,
+              child: selected ? _selectedContent(context: context,
                   boxIcon: icon) : _EmptyContent(
                 title: title,
                 description: description,
@@ -72,7 +72,7 @@ class DottedFilePickerBox extends StatelessWidget {
     );
   }
 
-  Widget _SelectedContent(
+  Widget _selectedContent(
       {required BuildContext context, required IconData boxIcon}) {
     final colorScheme = Theme
         .of(context)
@@ -90,7 +90,7 @@ class DottedFilePickerBox extends StatelessWidget {
                 bytes,
                 width: AppSize.s150,
                 height: AppSize.s110,
-                fit: BoxFit.cover,
+                fit: BoxFit.fitHeight,
               ),
             ),
           ),
@@ -157,6 +157,7 @@ class _EmptyContent extends StatelessWidget {
             text: description,
             fontSize: AppSize.s12,
             color: colorScheme.onTertiaryFixed,
+            textAlign: TextAlign.center,
           ),
         ],
       ),

@@ -69,7 +69,7 @@ class GeneralContentService {
   ) async {
     final response = await _dio.put<dynamic>(
       '/api/GeneralContent/UpdateGeneralContent',
-      data: await request.toFormData(),
+      data: await request.toFormData(includeFile: request.hasFile),
     );
 
     return _voidMutationResponse(response.data);

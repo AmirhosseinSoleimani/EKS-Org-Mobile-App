@@ -33,14 +33,6 @@ class GeneralContentTargetHeaderCard extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          StatusLabel(
-            text: item.isActive == true ? 'فعال' : 'غیرفعال',
-            color: item.isActive == true
-                ? theme.colorScheme.onError
-                : theme.colorScheme.error,
-            variant: StatusLabelVariant.filledWithoutBorder,
-          ),
-          Space.w12,
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -57,6 +49,14 @@ class GeneralContentTargetHeaderCard extends StatelessWidget {
                 ),
               ],
             ),
+          ),
+          Space.w12,
+          StatusLabel(
+            text: item.isActive == true ? 'فعال' : 'غیرفعال',
+            color: item.isActive == true
+                ? theme.colorScheme.onError
+                : theme.colorScheme.error,
+            variant: StatusLabelVariant.filledWithoutBorder,
           ),
         ],
       ),

@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:eks_sana_plus_org/src/features/general_content/data/models/params/general_content_form_request_model.dart';
 
 class GeneralContentFormParamEntity {
@@ -11,6 +13,8 @@ class GeneralContentFormParamEntity {
     required this.receiverType,
     required this.isActive,
     this.filePath,
+    this.fileBytes,
+    this.fileName,
   });
 
   final int? id;
@@ -22,6 +26,8 @@ class GeneralContentFormParamEntity {
   final int receiverType;
   final bool isActive;
   final String? filePath;
+  final Uint8List? fileBytes;
+  final String? fileName;
 
   GeneralContentFormRequestModel toModel() {
     return GeneralContentFormRequestModel(
@@ -34,6 +40,8 @@ class GeneralContentFormParamEntity {
       receiverType: receiverType,
       isActive: isActive,
       filePath: filePath,
+      fileBytes: fileBytes,
+      fileName: fileName,
     );
   }
 }

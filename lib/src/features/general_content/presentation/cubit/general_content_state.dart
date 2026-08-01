@@ -24,6 +24,11 @@ class GeneralContentState {
     this.records = const [],
     this.targets = const [],
     this.contentTypeOptions = const [],
+    this.receiverTypeOptions = const [],
+    this.targetTypeOptions = const [],
+    this.targetBoundaryTypeOptions = const [],
+    this.logicalOperatorTypeOptions = const [],
+    this.targetCategoryOptions = const [],
     this.titleFilter,
     this.contentTypeFilter,
     this.statusFilter = GeneralContentStatusFilter.all,
@@ -35,6 +40,7 @@ class GeneralContentState {
     this.successMessage,
     this.isLoadingMore = false,
     this.isDeleting = false,
+    this.isSubmitting = false,
     this.deletingId,
   });
 
@@ -43,6 +49,11 @@ class GeneralContentState {
   final List<GeneralContentEntity> records;
   final List<GeneralContentTargetEntity> targets;
   final List<CurrentSessionEnumItemEntity> contentTypeOptions;
+  final List<CurrentSessionEnumItemEntity> receiverTypeOptions;
+  final List<CurrentSessionEnumItemEntity> targetTypeOptions;
+  final List<CurrentSessionEnumItemEntity> targetBoundaryTypeOptions;
+  final List<CurrentSessionEnumItemEntity> logicalOperatorTypeOptions;
+  final List<CurrentSessionEnumItemEntity> targetCategoryOptions;
   final String? titleFilter;
   final CurrentSessionEnumItemEntity? contentTypeFilter;
   final GeneralContentStatusFilter statusFilter;
@@ -54,6 +65,7 @@ class GeneralContentState {
   final String? successMessage;
   final bool isLoadingMore;
   final bool isDeleting;
+  final bool isSubmitting;
   final int? deletingId;
 
   bool get isInitialLoading =>
@@ -90,6 +102,11 @@ class GeneralContentState {
     List<GeneralContentEntity>? records,
     List<GeneralContentTargetEntity>? targets,
     List<CurrentSessionEnumItemEntity>? contentTypeOptions,
+    List<CurrentSessionEnumItemEntity>? receiverTypeOptions,
+    List<CurrentSessionEnumItemEntity>? targetTypeOptions,
+    List<CurrentSessionEnumItemEntity>? targetBoundaryTypeOptions,
+    List<CurrentSessionEnumItemEntity>? logicalOperatorTypeOptions,
+    List<CurrentSessionEnumItemEntity>? targetCategoryOptions,
     String? titleFilter,
     bool clearTitleFilter = false,
     CurrentSessionEnumItemEntity? contentTypeFilter,
@@ -106,6 +123,7 @@ class GeneralContentState {
     bool clearSuccessMessage = false,
     bool? isLoadingMore,
     bool? isDeleting,
+    bool? isSubmitting,
     int? deletingId,
     bool clearDeletingId = false,
   }) {
@@ -115,6 +133,14 @@ class GeneralContentState {
       records: records ?? this.records,
       targets: targets ?? this.targets,
       contentTypeOptions: contentTypeOptions ?? this.contentTypeOptions,
+      receiverTypeOptions: receiverTypeOptions ?? this.receiverTypeOptions,
+      targetTypeOptions: targetTypeOptions ?? this.targetTypeOptions,
+      targetBoundaryTypeOptions:
+          targetBoundaryTypeOptions ?? this.targetBoundaryTypeOptions,
+      logicalOperatorTypeOptions:
+          logicalOperatorTypeOptions ?? this.logicalOperatorTypeOptions,
+      targetCategoryOptions:
+          targetCategoryOptions ?? this.targetCategoryOptions,
       titleFilter: clearTitleFilter ? null : titleFilter ?? this.titleFilter,
       contentTypeFilter: clearContentTypeFilter
           ? null
@@ -132,6 +158,7 @@ class GeneralContentState {
           clearSuccessMessage ? null : successMessage ?? this.successMessage,
       isLoadingMore: isLoadingMore ?? this.isLoadingMore,
       isDeleting: isDeleting ?? this.isDeleting,
+      isSubmitting: isSubmitting ?? this.isSubmitting,
       deletingId: clearDeletingId ? null : deletingId ?? this.deletingId,
     );
   }

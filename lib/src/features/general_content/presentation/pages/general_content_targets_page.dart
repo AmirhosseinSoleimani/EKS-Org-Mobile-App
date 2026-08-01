@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/general_content/domain/entities/general_content_entity.dart';
 import 'package:eks_sana_plus_org/src/features/general_content/presentation/cubit/general_content_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/general_content/presentation/cubit/general_content_state.dart';
+import 'package:eks_sana_plus_org/src/features/general_content/presentation/pages/general_content_target_form_page.dart';
 import 'package:eks_sana_plus_org/src/features/general_content/presentation/widgets/general_content_target_card.dart';
 import 'package:eks_sana_plus_org/src/features/general_content/presentation/widgets/general_content_target_header_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
@@ -16,6 +17,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_te
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class GeneralContentTargetsPage extends StatelessWidget {
   static const path = '/general-content-targets-page';
@@ -65,10 +67,7 @@ class _GeneralContentTargetsView extends StatelessWidget {
             appBar: const SimpleActionBar(title: 'گیرندگان بخشنامه'),
             floatingActionButton: FloatingActionButtonWidget(
               title: 'گیرنده جدید',
-              onPressed: () => SnakeBarWidget.showError(
-                context: context,
-                message: 'فرم ثبت گیرنده در محدوده این پیاده‌سازی نیست.',
-              ),
+              onPressed: () => _openTargetForm(context, cubit),
             ),
             body: SafeArea(
               top: false,
@@ -110,6 +109,23 @@ class _GeneralContentTargetsView extends StatelessWidget {
         },
       ),
     );
+  }
+
+  Future<void> _openTargetForm(
+    BuildContext context,
+    GeneralContentCubit cubit,
+  ) async {
+    final changed = await context.pushNamed<bool>(
+      GeneralContentTargetFormPage.name,
+      extra: content,
+    );
+    if (!context.mounted || changed != true) return;
+
+    SnakeBarWidget.showSuccess(
+      context: context,
+      message: 'گیرنده با موفقیت افزوده شد.',
+    );
+    await cubit.fetchTargets(content);
   }
 }
 

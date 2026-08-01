@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/general_content/domain/entities/general_content_entity.dart';
 import 'package:eks_sana_plus_org/src/features/general_content/presentation/cubit/general_content_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/general_content/presentation/cubit/general_content_state.dart';
+import 'package:eks_sana_plus_org/src/features/general_content/presentation/pages/general_content_form_page.dart';
 import 'package:eks_sana_plus_org/src/features/general_content/presentation/pages/general_content_targets_page.dart';
 import 'package:eks_sana_plus_org/src/features/general_content/presentation/widgets/general_content_action_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/general_content/presentation/widgets/general_content_card.dart';
@@ -72,10 +73,7 @@ class _GeneralContentView extends StatelessWidget {
             appBar: const SimpleActionBar(title: 'بخشنامه‌ها'),
             floatingActionButton: FloatingActionButtonWidget(
               title: 'بخشنامه جدید',
-              onPressed: () => SnakeBarWidget.showError(
-                context: context,
-                message: 'فرم ثبت بخشنامه در محدوده این پیاده‌سازی نیست.',
-              ),
+              onPressed: () => _openCreateForm(context, cubit),
             ),
             body: SafeArea(
               top: false,
@@ -112,9 +110,9 @@ class _GeneralContentView extends StatelessWidget {
                               textAlign: TextAlign.start,
                             ),
                           ),
-                          StatusLabel(text:  '${state.visibleRecords.length} مورد',
+                          StatusLabel(
+                            text: '${state.visibleRecords.length} مورد',
                             color: theme.colorScheme.primary,
-
                           ),
                         ],
                       ),
@@ -138,6 +136,41 @@ class _GeneralContentView extends StatelessWidget {
     );
   }
 
+  Future<void> _openCreateForm(
+    BuildContext context,
+    GeneralContentCubit cubit,
+  ) async {
+    final changed = await context.pushNamed<bool>(GeneralContentFormPage.name);
+    if (!context.mounted || changed != true) return;
+
+    SnakeBarWidget.showSuccess(
+      context: context,
+      message: 'بخشنامه با موفقیت ثبت شد.',
+    );
+    await cubit.fetchList(reset: true);
+  }
+
+  Future<void> _openEditForm(
+    BuildContext context,
+    GeneralContentCubit cubit,
+    GeneralContentEntity item,
+  ) async {
+    await Future<void>.delayed(Duration.zero);
+    if (!context.mounted) return;
+
+    final changed = await context.pushNamed<bool>(
+      GeneralContentFormPage.name,
+      extra: item,
+    );
+    if (!context.mounted || changed != true) return;
+
+    SnakeBarWidget.showSuccess(
+      context: context,
+      message: 'بخشنامه با موفقیت ویرایش شد.',
+    );
+    await cubit.fetchList(reset: true);
+  }
+
   void _openFilterSheet(BuildContext context, GeneralContentState state) {
     final cubit = context.read<GeneralContentCubit>();
     BottomSheetMessage.showCustom(
@@ -158,34 +191,32 @@ class _GeneralContentView extends StatelessWidget {
   }
 
   void _openActions(BuildContext context, GeneralContentEntity item) {
-    final cubit = context.read<GeneralContentCubit>();
-    final theme = Theme.of(context);
+    final pageContext = context;
+    final cubit = pageContext.read<GeneralContentCubit>();
+    final theme = Theme.of(pageContext);
 
     BottomSheetMessage.showCustom(
-      context: context,
+      context: pageContext,
       backgroundColor: theme.colorScheme.onPrimary,
       content: BlocBuilder<GeneralContentCubit, GeneralContentState>(
         bloc: cubit,
-        builder: (context, state) {
+        builder: (sheetContext, state) {
           return GeneralContentActionSheet(
             isDeleting: state.deletingId == item.id,
             onRecipients: () {
-              context.pop();
-              context.pushNamed(
+              sheetContext.pop();
+              pageContext.pushNamed(
                 GeneralContentTargetsPage.name,
                 extra: item,
               );
             },
             onEdit: () {
-              context.pop();
-              SnakeBarWidget.showError(
-                context: context,
-                message: 'فرم ویرایش بخشنامه در محدوده این پیاده‌سازی نیست.',
-              );
+              sheetContext.pop();
+              _openEditForm(pageContext, cubit, item);
             },
             onDelete: () {
-              context.pop();
-              _confirmDelete(context, item, cubit);
+              sheetContext.pop();
+              _confirmDelete(pageContext, item, cubit);
             },
           );
         },
