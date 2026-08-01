@@ -25,6 +25,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_te
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 import 'widgets/service_icon_widget.dart';
 
@@ -92,10 +93,34 @@ class ServicesPage extends StatelessWidget {
               ),
             if (access.canShowHomeServiceRequestsMenu())
               _AgencyServiceItemData(
+                title: 'نمایندگی',
+                icon: Icons.storefront_outlined,
+                onTap: () {
+                  context.pushNamed(AgencyInfoListPage.name);
+                },
+              ),
+            if (access.canShowHomeServiceRequestsMenu())
+              _AgencyServiceItemData(
                 title: 'مرخصی‌ها',
                 icon: Icons.event_busy_outlined,
                 onTap: () {
                   context.pushNamed(LeavePage.name);
+                },
+              ),
+            if (access.canShowSkillsCertificateButton())
+              _AgencyServiceItemData(
+                title: 'گواهینامه',
+                icon: Icons.card_membership_outlined,
+                onTap: () {
+                  context.pushNamed(SkillsCertificatesPage.name);
+                },
+              ),
+            if (access.canShowSanRescuerInfoMenu())
+              _AgencyServiceItemData(
+                title: 'امدادرسان',
+                icon: Icons.person_3_outlined,
+                onTap: () {
+                  context.pushNamed(RescuerListPage.name);
                 },
               ),
             if (access.canShowHomeServiceRequestsMenu())
@@ -106,61 +131,42 @@ class ServicesPage extends StatelessWidget {
                   context.pushNamed(GradePatternListPage.name);
                 },
               ),
-            if (access.canShowHomeServiceRequestsMenu())
+            if (access.canShowIMEI())
               _AgencyServiceItemData(
-                title: 'نمایندگی',
-                icon: Icons.storefront_outlined,
+                title: 'IMEI',
+                icon: Icons.router_outlined,
                 onTap: () {
-                  context.pushNamed(AgencyInfoListPage.name);
-                },
-              ),
-
-            if (access.canShowSanRescuerInfoMenu())
-              _AgencyServiceItemData(
-                title: 'امدادرسان',
-                icon: Icons.grading_outlined,
-                onTap: () {
-                  context.pushNamed(RescuerListPage.name);
-                },
-              ),
-            if (access.canShowSkillsCertificateButton())
-              _AgencyServiceItemData(
-                title: 'گواهینامه مهارت',
-                icon: Icons.grading_outlined,
-                onTap: () {
-                  context.pushNamed(SkillsCertificatesPage.name);
+                  context.pushNamed(ImeiPage.name);
                 },
               ),
             if (access.canShowShift())
               _AgencyServiceItemData(
                 title: 'شیفت',
-                icon: Icons.grading_outlined,
+                icon: Symbols.swap_driving_apps,
                 onTap: () {
                   context.pushNamed(ShiftListPage.name);
-                },
-              ),
-
-            if (access.canShowIMEI())
-              _AgencyServiceItemData(
-                title: 'IMEI',
-                icon: Icons.grading_outlined,
-                onTap: () {
-                  context.pushNamed(ImeiPage.name);
                 },
               ),
             if (access.canShowNavganButton())
               _AgencyServiceItemData(
                 title: 'ناوگان',
-                icon: Icons.grading_outlined,
+                icon: Icons.commute_outlined,
                 onTap: () {
                   context.pushNamed(NavganPage.name);
                 },
               ),
-
+            if (access.canShowDeploymentLocationButton())
+              _AgencyServiceItemData(
+                title: 'محل استقرار',
+                icon: Icons.pin_drop_outlined,
+                onTap: () {
+                  context.pushNamed(DeploymentLocationPage.name);
+                },
+              ),
             if (access.canShowSanGeneralContent())
               _AgencyServiceItemData(
                 title: 'بخش نامه',
-                icon: Icons.grading_outlined,
+                icon: Symbols.developer_guide,
                 onTap: () {
                   context.pushNamed(GeneralContentPage.name);
                 },
@@ -168,23 +174,15 @@ class ServicesPage extends StatelessWidget {
             if (access.canShowNavganTypeButton())
               _AgencyServiceItemData(
                 title: 'نوع خودرو',
-                icon: Icons.grading_outlined,
+                icon: Symbols.auto_towing,
                 onTap: () {
                   context.pushNamed(VehicleModelPage.name);
-                },
-              ),
-            if (access.canShowDeploymentLocationButton())
-              _AgencyServiceItemData(
-                title: 'محل استقرار',
-                icon: Icons.grading_outlined,
-                onTap: () {
-                  context.pushNamed(DeploymentLocationPage.name);
                 },
               ),
             if (access.canShowSpecialPlanButton())
               _AgencyServiceItemData(
                 title: 'طرح',
-                icon: Icons.grading_outlined,
+                icon: Symbols.domain_verification,
                 onTap: () {
                   context.pushNamed(SpecialPlanPage.name);
                 },
@@ -463,7 +461,7 @@ class _MainServiceItem extends StatelessWidget {
             Container(
               width: double.infinity,
               height: AppSize.s4,
-              color: colorScheme.primary,
+              color: item.backgroundColor,
             ),
           ],
         ),
@@ -535,7 +533,7 @@ class _AgencyServicesGrid extends StatelessWidget {
                   crossAxisCount: crossAxisCount,
                   crossAxisSpacing: _spacing,
                   mainAxisSpacing: _spacing,
-                  mainAxisExtent: 105,
+                  mainAxisExtent: 84,
                 ),
                 itemBuilder: (context, index) {
                   return _AgencyServiceItem(
