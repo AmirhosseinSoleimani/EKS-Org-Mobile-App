@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/common/constants/app_constants.dart';
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/map_control_buttons.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/map_pin_marker.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/map_widget.dart';
@@ -22,7 +23,7 @@ class SingleLocationMapWidget extends StatefulWidget {
   final VoidCallback? onCurrentLocationTap;
 
   final VoidCallback? onMarkerTap;
-
+  final ServiceType serviceType;
   const SingleLocationMapWidget({
     super.key,
     required this.latitude,
@@ -34,6 +35,7 @@ class SingleLocationMapWidget extends StatefulWidget {
     this.onMapTap,
     this.onCurrentLocationTap,
     this.onMarkerTap,
+    this.serviceType = ServiceType.reliefService,
   });
 
   @override

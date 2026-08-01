@@ -322,7 +322,7 @@ class _DeploymentLocationFormViewState
 
     final result = await SelectableMapBottomSheet.show(
       context: context,
-      serviceType: ServiceType.homeService,
+      serviceType: ServiceType.reliefService,
       initialLocation: initialLocation,
     );
     if (!mounted || result == null) return;
