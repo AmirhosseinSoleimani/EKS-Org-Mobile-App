@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:eks_sana_plus_org/src/shared/features/upload_file/data/data_sources/upload_file_data_source.dart';
+import 'package:eks_sana_plus_org/src/shared/features/upload_file/data/exceptions/upload_file_picker_exception.dart';
 import 'package:eks_sana_plus_org/src/shared/features/upload_file/domain/entities/uploaded_file_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/upload_file/domain/enums/upload_file_type.dart';
 import 'package:eks_sana_plus_org/src/shared/features/upload_file/domain/exceptions/upload_file_exception.dart';
@@ -17,7 +18,7 @@ class UploadFileRepositoryImpl implements UploadFileRepository {
   Future<UploadedFileEntity?> pickFile(UploadFileType type) async {
     try {
       final file = await _dataSource.pickFile(
-        allowedExtensions: type.allowedExtensions,
+        imageOnly: type == UploadFileType.image,
       );
       if (file == null) return null;
 
@@ -33,7 +34,10 @@ class UploadFileRepositoryImpl implements UploadFileRepository {
         fileName: file.name,
       );
       if (!type.allowedExtensions.contains(extension)) {
-        throw const UploadFileException('فرمت فایل انتخاب‌شده مجاز نیست.');
+        throw UploadFileException(
+          'فرمت فایل انتخاب‌شده مجاز نیست. فرمت‌های مجاز: '
+          '${type.allowedExtensionsText}',
+        );
       }
 
       final bytes = file.bytes ?? await file.xFile.readAsBytes();
@@ -60,6 +64,11 @@ class UploadFileRepositoryImpl implements UploadFileRepository {
         mimeType: mimeType,
         dataUri: 'data:$mimeType;base64,${base64Encode(bytes)}',
         path: file.path,
+      );
+    } on UploadFilePickerUnavailableException {
+      throw const UploadFileException(
+        'انتخاب‌گر فایل در نسخه فعلی برنامه فعال نشده است. '
+        'برنامه را کامل ببندید و دوباره اجرا کنید.',
       );
     } on UploadFileException {
       rethrow;

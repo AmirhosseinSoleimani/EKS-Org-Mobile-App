@@ -30,14 +30,8 @@ class GeneralContentCubit extends Cubit<GeneralContentState> {
     this._deleteUseCase,
     this._sessionManager,
   ) : super(const GeneralContentState());
-
-  // These use cases are kept for restoring the real methods below.
-  // ignore: unused_field
   final GetGeneralContentListUseCase _getListUseCase;
-
-  // ignore: unused_field
   final GetGeneralContentTargetsUseCase _getTargetsUseCase;
-
   final AddGeneralContentUseCase _addUseCase;
   final UpdateGeneralContentUseCase _updateUseCase;
   final AddGeneralContentTargetUseCase _addTargetUseCase;
@@ -127,8 +121,7 @@ class GeneralContentCubit extends Cubit<GeneralContentState> {
     );
   }
 
-  // TODO: realMethod
-  /*
+
   Future<void> fetchList({bool reset = false}) async {
     if (state.isInitialLoading || state.isLoadingMore) return;
 
@@ -182,62 +175,7 @@ class GeneralContentCubit extends Cubit<GeneralContentState> {
       )),
     );
   }
-  */
 
-  // TODO: fakeMethod
-  Future<void> fetchList({bool reset = false}) async {
-    if (state.isInitialLoading || state.isLoadingMore) return;
-
-    final nextSkip = reset ? 0 : state.records.length;
-    emit(
-      state.copyWith(
-        status: reset ? GeneralContentViewStatus.loading : state.status,
-        isLoadingMore: !reset,
-        skip: nextSkip,
-        clearErrorMessage: true,
-        clearSuccessMessage: true,
-      ),
-    );
-
-    await Future<void>.delayed(const Duration(milliseconds: 500));
-
-    final titleFilter = state.titleFilter?.trim().toLowerCase();
-    final contentTypeValue = state.contentTypeFilter?.value;
-
-    final filteredRecords = GeneralContentFakeData.buildContents(
-      contentTypes: state.contentTypeOptions,
-      receiverTypes: state.receiverTypeOptions,
-    ).where((item) {
-      final matchesTitle = titleFilter == null ||
-          titleFilter.isEmpty ||
-          (item.title ?? '').toLowerCase().contains(titleFilter);
-      final matchesContentType =
-          contentTypeValue == null || item.contentType == contentTypeValue;
-
-      return matchesTitle && matchesContentType;
-    }).toList();
-
-    final pageRecords = filteredRecords
-        .skip(nextSkip)
-        .take(state.pageSize)
-        .toList(growable: false);
-
-    final records = reset
-        ? pageRecords
-        : <GeneralContentEntity>[...state.records, ...pageRecords];
-
-    emit(
-      state.copyWith(
-        status: records.isEmpty
-            ? GeneralContentViewStatus.empty
-            : GeneralContentViewStatus.loaded,
-        records: records,
-        totalCount: filteredRecords.length,
-        isLoadingMore: false,
-        clearErrorMessage: true,
-      ),
-    );
-  }
 
   Future<void> applyFilter({
     String? title,
@@ -260,8 +198,6 @@ class GeneralContentCubit extends Cubit<GeneralContentState> {
     emit(state.copyWith(statusFilter: filter));
   }
 
-  // TODO: realMethod
-  /*
   Future<void> fetchTargets(GeneralContentEntity content) async {
     final id = content.id;
     if (id == null) {
@@ -300,43 +236,6 @@ class GeneralContentCubit extends Cubit<GeneralContentState> {
         targetStatus: GeneralContentViewStatus.connectionError,
         errorMessage: 'اتصال به اینترنت برقرار نیست.',
       )),
-    );
-  }
-  */
-
-  // TODO: fakeMethod
-  Future<void> fetchTargets(GeneralContentEntity content) async {
-    final id = content.id;
-    if (id == null) {
-      emit(
-        state.copyWith(
-          targetStatus: GeneralContentViewStatus.failure,
-          errorMessage: 'شناسه بخشنامه برای دریافت گیرندگان یافت نشد.',
-        ),
-      );
-      return;
-    }
-
-    emit(
-      state.copyWith(
-        targetStatus: GeneralContentViewStatus.loading,
-        targets: const [],
-        clearErrorMessage: true,
-        clearSuccessMessage: true,
-      ),
-    );
-
-    await Future<void>.delayed(const Duration(milliseconds: 400));
-
-    final targets = GeneralContentFakeData.buildTargets(contentId: id);
-    emit(
-      state.copyWith(
-        targetStatus: targets.isEmpty
-            ? GeneralContentViewStatus.empty
-            : GeneralContentViewStatus.loaded,
-        targets: targets,
-        clearErrorMessage: true,
-      ),
     );
   }
 
