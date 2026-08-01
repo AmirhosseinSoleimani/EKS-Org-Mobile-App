@@ -653,6 +653,36 @@ import '../features/vehicle_info/domain/use_cases/vehicle_info_use_cases.dart'
     as _i579;
 import '../features/vehicle_info/presentation/cubit/vehicle_info_cubit.dart'
     as _i772;
+import '../features/vehicle_model/data/data_source/vehicle_model_data_source.dart'
+    as _i802;
+import '../features/vehicle_model/data/data_source/vehicle_model_data_source_impl.dart'
+    as _i602;
+import '../features/vehicle_model/data/repository/vehicle_model_repository_impl.dart'
+    as _i13;
+import '../features/vehicle_model/data/service/vehicle_model_service.dart'
+    as _i386;
+import '../features/vehicle_model/domain/repository/vehicle_model_repository.dart'
+    as _i913;
+import '../features/vehicle_model/domain/usecases/add_vehicle_model_use_case.dart'
+    as _i1038;
+import '../features/vehicle_model/domain/usecases/delete_vehicle_model_use_case.dart'
+    as _i325;
+import '../features/vehicle_model/domain/usecases/get_vehicle_defects_use_case.dart'
+    as _i820;
+import '../features/vehicle_model/domain/usecases/get_vehicle_model_list_use_case.dart'
+    as _i961;
+import '../features/vehicle_model/domain/usecases/get_vehicle_navgan_list_use_case.dart'
+    as _i8;
+import '../features/vehicle_model/domain/usecases/get_vehicle_service_groups_use_case.dart'
+    as _i487;
+import '../features/vehicle_model/domain/usecases/submit_vehicle_defects_use_case.dart'
+    as _i603;
+import '../features/vehicle_model/domain/usecases/submit_vehicle_service_categories_use_case.dart'
+    as _i518;
+import '../features/vehicle_model/domain/usecases/update_vehicle_model_use_case.dart'
+    as _i562;
+import '../features/vehicle_model/presentation/cubit/vehicle_model_cubit.dart'
+    as _i360;
 import '../routes/startup_guard.dart' as _i238;
 import '../services/local_service/session_local_storage_service/data/data_source/secure_session_storage_mobile_impl.dart'
     as _i577;
@@ -947,6 +977,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i810.VehicleInfoService>(
     () => _i810.VehicleInfoService(gh<_i361.Dio>()),
   );
+  gh.lazySingleton<_i386.VehicleModelService>(
+    () => _i386.VehicleModelService(gh<_i361.Dio>()),
+  );
   gh.lazySingleton<_i691.IndicatorReportDataSource>(
     () =>
         _i87.IndicatorReportDataSourceImpl(gh<_i140.IndicatorReportService>()),
@@ -1003,6 +1036,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i935.InvoiceDataSource>(
     () => _i981.InvoiceDataSourceImpl(gh<_i634.InvoiceService>()),
+  );
+  gh.lazySingleton<_i802.VehicleModelDataSource>(
+    () => _i602.VehicleModelDataSourceImpl(gh<_i386.VehicleModelService>()),
   );
   gh.lazySingleton<_i59.RepresentationDataSource>(
     () => _i423.RepresentationDataSourceImpl(gh<_i854.RepresentationService>()),
@@ -1086,6 +1122,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i1065.ImeiDataSource>(
     () => _i572.ImeiDataSourceImpl(gh<_i587.ImeiService>()),
+  );
+  gh.lazySingleton<_i913.VehicleModelRepository>(
+    () => _i13.VehicleModelRepositoryImpl(gh<_i802.VehicleModelDataSource>()),
   );
   gh.lazySingleton<_i603.RequestRepository>(
     () => _i794.RequestRepositoryImpl(gh<_i1016.RequestDataSource>()),
@@ -1795,6 +1834,37 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i1025.NavganRepository>(
     () => _i475.NavganRepositoryImpl(gh<_i87.NavganDataSource>()),
   );
+  gh.lazySingleton<_i1038.AddVehicleModelUseCase>(
+    () => _i1038.AddVehicleModelUseCase(gh<_i913.VehicleModelRepository>()),
+  );
+  gh.lazySingleton<_i325.DeleteVehicleModelUseCase>(
+    () => _i325.DeleteVehicleModelUseCase(gh<_i913.VehicleModelRepository>()),
+  );
+  gh.lazySingleton<_i820.GetVehicleDefectsUseCase>(
+    () => _i820.GetVehicleDefectsUseCase(gh<_i913.VehicleModelRepository>()),
+  );
+  gh.lazySingleton<_i961.GetVehicleModelListUseCase>(
+    () => _i961.GetVehicleModelListUseCase(gh<_i913.VehicleModelRepository>()),
+  );
+  gh.lazySingleton<_i8.GetVehicleNavganListUseCase>(
+    () => _i8.GetVehicleNavganListUseCase(gh<_i913.VehicleModelRepository>()),
+  );
+  gh.lazySingleton<_i487.GetVehicleServiceGroupsUseCase>(
+    () => _i487.GetVehicleServiceGroupsUseCase(
+      gh<_i913.VehicleModelRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i603.SubmitVehicleDefectsUseCase>(
+    () => _i603.SubmitVehicleDefectsUseCase(gh<_i913.VehicleModelRepository>()),
+  );
+  gh.lazySingleton<_i518.SubmitVehicleServiceCategoriesUseCase>(
+    () => _i518.SubmitVehicleServiceCategoriesUseCase(
+      gh<_i913.VehicleModelRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i562.UpdateVehicleModelUseCase>(
+    () => _i562.UpdateVehicleModelUseCase(gh<_i913.VehicleModelRepository>()),
+  );
   gh.factory<_i317.HomeServiceEvaluationFirstStepCubit>(
     () => _i317.HomeServiceEvaluationFirstStepCubit(
       gh<_i1059.GetLastEvaluationHomeServiceUseCase>(),
@@ -2031,6 +2101,19 @@ _i174.GetIt $initGetIt(
     () => _i21.AddRescuerCubit(
       gh<_i110.AddRescuerUseCase>(),
       gh<_i265.GetProvinceWithCityListUseCase>(),
+    ),
+  );
+  gh.factory<_i360.VehicleModelCubit>(
+    () => _i360.VehicleModelCubit(
+      gh<_i961.GetVehicleModelListUseCase>(),
+      gh<_i8.GetVehicleNavganListUseCase>(),
+      gh<_i487.GetVehicleServiceGroupsUseCase>(),
+      gh<_i820.GetVehicleDefectsUseCase>(),
+      gh<_i603.SubmitVehicleDefectsUseCase>(),
+      gh<_i518.SubmitVehicleServiceCategoriesUseCase>(),
+      gh<_i325.DeleteVehicleModelUseCase>(),
+      gh<_i1038.AddVehicleModelUseCase>(),
+      gh<_i562.UpdateVehicleModelUseCase>(),
     ),
   );
   gh.factory<_i379.ServiceListCubit>(

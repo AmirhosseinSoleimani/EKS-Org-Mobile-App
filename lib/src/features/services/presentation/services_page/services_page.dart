@@ -14,6 +14,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/relief_requ
 import 'package:eks_sana_plus_org/src/features/shift/presentation/pages/shift_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/skills_certificates_page.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/pages/vehicle_info_list_page.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/pages/vehicle_model_page.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/presentation/widgets/current_session_access_builder.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
@@ -160,6 +161,14 @@ class ServicesPage extends StatelessWidget {
                 icon: Icons.grading_outlined,
                 onTap: () {
                   context.pushNamed(GeneralContentPage.name);
+                },
+              ),
+            if (access.canShowNavganTypeButton())
+              _AgencyServiceItemData(
+                title: 'نوع خودرو',
+                icon: Icons.grading_outlined,
+                onTap: () {
+                  context.pushNamed(VehicleModelPage.name);
                 },
               ),
           ];

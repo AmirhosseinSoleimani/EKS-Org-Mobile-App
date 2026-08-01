@@ -377,6 +377,7 @@ class Routes {
         ...ShiftRoutes.routes(getPage),
         ...ImeiRoutes.routes(getPage),
         ...NavganRoutes.routes(getPage),
+        ...VehicleModelRoutes.routes(getPage),
         ...GeneralContentRoutes.routes(getPage),
       ],
     );
