@@ -13,6 +13,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_te
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:material_symbols_icons/symbols.dart';
 
 class LeaveDetailsPage extends StatelessWidget {
   static const path = '/leave-details-page';
@@ -370,10 +371,10 @@ class _BottomActions extends StatelessWidget {
                 ] else if (status.canRollback)
                   InkwellButtonWidget(
                     title: 'تغییر وضعیت به ثبت شده',
-                    backgroundColor: const Color(0xFFE5A000),
+                    backgroundColor: const Color(0xFFDB950C),
                     showLoading: state.isActionLoading,
                     prefixIcon: const Icon(
-                      Icons.undo_rounded,
+                      Symbols.undo_rounded,
                       color: Colors.white,
                     ),
                     onTap: () async {

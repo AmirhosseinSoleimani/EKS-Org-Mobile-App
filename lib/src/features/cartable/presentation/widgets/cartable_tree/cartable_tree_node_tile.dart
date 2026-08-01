@@ -239,8 +239,9 @@ class _ExpandButton extends StatelessWidget {
       height: AppSize.s32,
       child: IconButton(
         padding: EdgeInsets.zero,
+
         constraints: const BoxConstraints(),
-        splashRadius: AppSize.s18,
+        splashRadius: AppSize.s20,
         onPressed: onTap,
         icon: Icon(
           isExpanded
