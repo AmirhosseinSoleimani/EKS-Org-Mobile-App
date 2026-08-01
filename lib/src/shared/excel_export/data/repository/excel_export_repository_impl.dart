@@ -18,8 +18,8 @@ class ExcelExportRepositoryImpl implements ExcelExportRepository {
 
   @override
   Future<ApiResult<ExcelExportResult>> export(
-    ExcelExportRequest request,
-  ) async {
+      ExcelExportRequest request,
+      ) async {
     try {
       if (request.rows.isEmpty) {
         return ApiResult.failure(

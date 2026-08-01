@@ -55,7 +55,7 @@ class BottomNavPage extends StatelessWidget {
             ),
           ),
           BottomNavigationBarItem(
-            icon: _BottomNavSvgIcon(src: SvgManager.dashboardIcon,
+            icon: _BottomNavSvgIcon(src: SvgManager.dashboardIconOutline,
               color: colorScheme.onTertiaryFixed,),
             activeIcon: _BottomNavSvgIcon(
               src: SvgManager.dashboardIcon,

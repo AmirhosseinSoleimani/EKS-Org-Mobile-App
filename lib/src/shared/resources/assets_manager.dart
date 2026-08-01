@@ -61,6 +61,7 @@ class SvgManager {
   static const String contactInformation = '${_basePath}contact_information.svg';
   static const String identityInformation = '${_basePath}identity_information.svg';
   static const String dashboardIcon = '${_basePath}dashboard_icon.svg';
+  static const String dashboardIconOutline = '${_basePath}dashboard_icon_outline.svg';
   static const String simCardIcon = '${_basePath}sim_card_icon.svg';
   static const String alertCarIcon = '${_basePath}alert_car.svg';
   static const String carIcon = '${_basePath}car_icon.svg';
