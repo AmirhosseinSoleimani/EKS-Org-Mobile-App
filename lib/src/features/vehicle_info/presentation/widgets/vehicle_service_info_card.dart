@@ -1,6 +1,7 @@
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/vehicle_info_summary_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 
 class VehicleServiceInfoCard extends StatelessWidget {
@@ -42,13 +43,10 @@ class VehicleServiceInfoCard extends StatelessWidget {
               fontWeight: FontWeight.w500,
             ),
           ),
-          Text(
-            item.title,
-            textAlign: TextAlign.start,
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: const Color(0xFF151515),
-              fontWeight: FontWeight.w800,
-            ),
+          BodyMediumText(
+            text:  item.title,
+            fontWeight: FontWeight.w600,
+            fontSize: 16,
           ),
           Space.h12,
           Row(

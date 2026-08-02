@@ -1,6 +1,9 @@
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_info_entity.dart';
-import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/vehicle_info_status_badge.dart';
+import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/operation_button.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 
 class VehicleInfoSummaryCard extends StatelessWidget {
@@ -56,16 +59,18 @@ class VehicleInfoSummaryCard extends StatelessWidget {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      Text(
-                        item.title,
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
-                        style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.w800),
+                      BodyMediumText(
+                        text: item.title,
+                        fontWeight: FontWeight.w600,
+                        fontSize: 16,
                       ),
                     ],
                   ),
                 ),
-                VehicleInfoStatusBadge(title: item.vehicleStatusTitle, isActive: item.isActive),
+                StatusLabel(text: item.vehicleStatusTitle ?? '',
+                  color: (item.isActive ?? false)
+                      ? theme.colorScheme.onError
+                      : theme.colorScheme.error,),
               ],
             ),
             Space.h16,
@@ -112,25 +117,24 @@ class VehicleInfoSummaryCard extends StatelessWidget {
             Row(
               children: [
                 Expanded(
-                  child: Text(
+                  child: BodyMediumText(text:
                     'ثبت کننده: ${_dash(item.insertUserFullName)}',
                     maxLines: 1,
-                    overflow: TextOverflow.ellipsis,
-                    style: theme.textTheme.bodySmall?.copyWith(
-                      color: theme.colorScheme.onSurfaceVariant,
-                    ),
+                    textOverflow: TextOverflow.ellipsis,
+                    color: theme.colorScheme.onPrimaryFixed,
+                    fontSize: 13,
                   ),
                 ),
-                Text(
-                  _dash(item.insertDateTimeJalali),
-                  style: theme.textTheme.bodySmall?.copyWith(
-                    color: theme.colorScheme.onSurfaceVariant,
-                  ),
+                BodyMediumText(text:
+                JalaliDateHelper.formatStringJalaliDateTime(
+                    item.insertDateTimeJalali),
+                  color: theme.colorScheme.onPrimaryFixed,
+                  fontSize: 13,
                 ),
               ],
             ),
             Space.h24,
-            _OperationButton(onTap: () => _showActions(context)),
+            OperationButton(onTap: () => _showActions(context)),
           ],
         ),
       ),
@@ -216,59 +220,33 @@ class _DetailLine extends StatelessWidget {
       padding: const EdgeInsets.symmetric(vertical: AppPadding.p8),
       child: Row(
         children: [
-          Icon(icon, size: AppSize.s20, color: Color(0xFF555555)),
+          Icon(
+              icon, size: AppSize.s20, color: theme.colorScheme.onPrimaryFixed),
           Space.w8,
           Expanded(
-            child: Text(
-              '$label: $displayValue',
-              textAlign: TextAlign.right,
-              maxLines: 1,
-              overflow: TextOverflow.ellipsis,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: Color(0xFF555555),
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _OperationButton extends StatelessWidget {
-  const _OperationButton({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Material(
-      color: theme.colorScheme.surface,
-      borderRadius: BorderRadius.circular(AppSize.s8),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(AppSize.s8),
-        child: SizedBox(
-          height: AppSize.s48,
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.settings_outlined, size: AppSize.s20, color: theme.colorScheme.onSurfaceVariant),
-              Space.w8,
+            child: Row(children: [
               Text(
-                'عملیات',
+                '$label: ',
+                textAlign: TextAlign.right,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
                 style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onSurfaceVariant,
+                  color: theme.colorScheme.onTertiaryFixed,
                   fontWeight: FontWeight.w700,
                 ),
               ),
-              Space.w8,
-              Icon(Icons.keyboard_arrow_down_rounded, size: AppSize.s22, color: theme.colorScheme.onSurfaceVariant),
-            ],
+              Text(displayValue,
+                textAlign: TextAlign.right,
+                maxLines: 1,
+                overflow: TextOverflow.ellipsis,
+                style: theme.textTheme.bodyMedium?.copyWith(
+                  color: theme.colorScheme.onTertiaryFixed,
+                  fontWeight: FontWeight.w500,
+                ),
+              )
+            ],),
           ),
-        ),
+        ],
       ),
     );
   }
