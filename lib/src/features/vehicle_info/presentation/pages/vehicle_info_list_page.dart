@@ -12,6 +12,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filter_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -86,33 +87,39 @@ class _VehicleInfoListViewState extends State<_VehicleInfoListView> {
           title: 'خودروی جدید',
           onPressed: () => _showAddVehicleSheet(context, cubit),
         ),
-        body: BlocBuilder<VehicleInfoCubit, VehicleInfoState>(
-          builder: (context, state) {
-            return Column(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.fromLTRB(
-                    AppPadding.p16,
-                    AppPadding.p16,
-                    AppPadding.p16,
-                    AppPadding.p0,
-                  ),
-                  child: _VehicleInfoTopControls(
-                    state: state,
-                    onFilter: () => _showFilter(context, cubit),
-                    onStatus: () => _showStatusFilter(context, cubit),
-                    onReport: cubit.loadVehicleReport,
-                  ),
-                ),
-                Space.h16,
-                Expanded(
-                  child: _buildContent(
-                    context: context,
-                    cubit: cubit,
-                    state: state,
-                  ),
-                ),
-              ],
+        body: ValueListenableBuilder<bool?>(
+          valueListenable: cubit.pageStatusFilter,
+          builder: (context, pageStatusFilter, _) {
+            return BlocBuilder<VehicleInfoCubit, VehicleInfoState>(
+              builder: (context, state) {
+                return Column(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.fromLTRB(
+                        AppPadding.p16,
+                        AppPadding.p16,
+                        AppPadding.p16,
+                        AppPadding.p0,
+                      ),
+                      child: _VehicleInfoTopControls(
+                        state: state,
+                        activeFilter: pageStatusFilter,
+                        onFilter: () => _showFilter(context, cubit),
+                        onStatusChanged: cubit.setPageStatusFilter,
+                        onReport: cubit.loadVehicleReport,
+                      ),
+                    ),
+                    Space.h16,
+                    Expanded(
+                      child: _buildContent(
+                        context: context,
+                        cubit: cubit,
+                        state: state,
+                      ),
+                    ),
+                  ],
+                );
+              },
             );
           },
         ),
@@ -133,7 +140,8 @@ class _VehicleInfoListViewState extends State<_VehicleInfoListView> {
       );
     }
 
-    if (data.items.isEmpty) {
+    final items = cubit.visibleItems;
+    if (items.isEmpty) {
       return const Center(
         child: EmptyListWidget(),
       );
@@ -152,10 +160,10 @@ class _VehicleInfoListViewState extends State<_VehicleInfoListView> {
           AppPadding.p16,
           AppPadding.p16,
         ),
-        itemCount: data.items.length + (data.isPaginationLoading ? 1 : 0),
+        itemCount: items.length + (data.isPaginationLoading ? 1 : 0),
         separatorBuilder: (_, __) => Space.h16,
         itemBuilder: (context, index) {
-          if (index >= data.items.length) {
+          if (index >= items.length) {
             return const Padding(
               padding: EdgeInsets.all(AppPadding.p16),
               child: Center(
@@ -164,7 +172,7 @@ class _VehicleInfoListViewState extends State<_VehicleInfoListView> {
             );
           }
 
-          final item = data.items[index];
+          final item = items[index];
 
           return VehicleInfoSummaryCard(
             item: item,
@@ -221,9 +229,9 @@ class _VehicleInfoListViewState extends State<_VehicleInfoListView> {
   }
 
   void _showFilter(
-      BuildContext context,
-      VehicleInfoCubit cubit,
-      ) {
+    BuildContext context,
+    VehicleInfoCubit cubit,
+  ) {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -264,57 +272,26 @@ class _VehicleInfoListViewState extends State<_VehicleInfoListView> {
       );
     }
   }
-
-  void _showStatusFilter(
-      BuildContext context,
-      VehicleInfoCubit cubit,
-      ) {
-    showModalBottomSheet<void>(
-      context: context,
-      useSafeArea: true,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(AppSize.s20),
-        ),
-      ),
-      builder: (_) {
-        return _VehicleStatusSheet(
-          value: cubit.state.data.filter.isActive,
-          onChanged: (value) {
-            final currentFilter = cubit.state.data.filter;
-
-            cubit.applyFilter(
-              currentFilter.copyWith(
-                isActive: value,
-                clearIsActive: value == null,
-                skip: 0,
-              ),
-            );
-          },
-        );
-      },
-    );
-  }
 }
+
 class _VehicleInfoTopControls extends StatelessWidget {
   const _VehicleInfoTopControls({
     required this.state,
+    required this.activeFilter,
     required this.onFilter,
-    required this.onStatus,
+    required this.onStatusChanged,
     required this.onReport,
   });
 
   final VehicleInfoState state;
+  final bool? activeFilter;
   final VoidCallback onFilter;
-  final VoidCallback onStatus;
+  final ValueChanged<bool?> onStatusChanged;
   final VoidCallback onReport;
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme
-        .of(context)
-        .colorScheme;
+    final colorScheme = Theme.of(context).colorScheme;
     return Column(
       children: [
         Row(
@@ -328,10 +305,14 @@ class _VehicleInfoTopControls extends StatelessWidget {
             ),
             Space.w12,
             Expanded(
-              child: _HeaderButton(
-                title: _statusTitle(state.data.filter.isActive),
-                icon: Icons.keyboard_arrow_down_rounded,
-                onTap: onStatus,
+              child: StatusFilterDropdown<bool?>(
+                value: activeFilter,
+                options: const [
+                  StatusFilterOption(value: null, label: 'همه'),
+                  StatusFilterOption(value: true, label: 'فعال'),
+                  StatusFilterOption(value: false, label: 'غیرفعال'),
+                ],
+                onChanged: onStatusChanged,
               ),
             ),
           ],
@@ -348,11 +329,6 @@ class _VehicleInfoTopControls extends StatelessWidget {
     );
   }
 
-  String _statusTitle(bool? value) {
-    if (value == true) return 'فعال';
-    if (value == false) return 'غیرفعال';
-    return 'وضعیت';
-  }
 }
 
 class _HeaderButton extends StatelessWidget {
@@ -403,66 +379,6 @@ class _HeaderButton extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _VehicleStatusSheet extends StatelessWidget {
-  const _VehicleStatusSheet({
-    required this.value,
-    required this.onChanged,
-  });
-
-  final bool? value;
-  final ValueChanged<bool?> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.all(AppPadding.p16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'وضعیت',
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800),
-            ),
-            Space.h12,
-            _StatusOption(title: 'همه', selected: value == null, value: null, onChanged: onChanged),
-            _StatusOption(title: 'فعال', selected: value == true, value: true, onChanged: onChanged),
-            _StatusOption(title: 'غیرفعال', selected: value == false, value: false, onChanged: onChanged),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _StatusOption extends StatelessWidget {
-  const _StatusOption({
-    required this.title,
-    required this.selected,
-    required this.value,
-    required this.onChanged,
-  });
-
-  final String title;
-  final bool selected;
-  final bool? value;
-  final ValueChanged<bool?> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      title: Text(title),
-      trailing: selected ? const Icon(Icons.check_rounded) : null,
-      onTap: () {
-        Navigator.of(context).pop();
-        onChanged(value);
-      },
     );
   }
 }

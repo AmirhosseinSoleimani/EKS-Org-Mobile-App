@@ -14,6 +14,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_butto
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filter_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:flutter/gestures.dart';
@@ -112,7 +113,8 @@ class _PlanInfoView extends StatelessWidget {
                       return const Center(child: CircularProgressIndicator());
                     }
 
-                    if (state.items.isEmpty) {
+                    final items = state.visibleItems;
+                    if (items.isEmpty) {
                       return const EmptyListWidget();
                     }
 
@@ -125,10 +127,10 @@ class _PlanInfoView extends StatelessWidget {
                           AppPadding.p16,
                           AppPadding.p24,
                         ),
-                        itemCount: state.items.length + (state.hasMore ? 1 : 0),
+                        itemCount: items.length + (state.hasMore ? 1 : 0),
                         separatorBuilder: (_, __) => Space.h12,
                         itemBuilder: (context, index) {
-                          if (index == state.items.length) {
+                          if (index == items.length) {
                             return Padding(
                               padding: const EdgeInsets.all(AppPadding.p16),
                               child: state.status == PlanInfoStatus.loadingMore
@@ -143,7 +145,7 @@ class _PlanInfoView extends StatelessWidget {
                             );
                           }
 
-                          final item = state.items[index];
+                          final item = items[index];
 
                           return PlanCard(
                             item: item,
@@ -271,7 +273,6 @@ class _PlanInfoView extends StatelessWidget {
             )
     );
   }
-
 }
 class _PlanToolbar extends StatelessWidget {
   const _PlanToolbar({
@@ -286,8 +287,6 @@ class _PlanToolbar extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Column(
       children: [
         FiltersRow(
@@ -299,55 +298,14 @@ class _PlanToolbar extends StatelessWidget {
                 cubit: cubit,
               ),
             ),
-            FilterButton(
-              title: _getStatusTitle(activeFilter),
-              overlayBuilder: (
-                  overlayContext,
-                  position,
-                  width,
-                  dismiss,
-                  ) {
-                return Positioned(
-                  top: position.dy + 52,
-                  left: position.dx,
-                  width: width,
-                  child: Material(
-                    color: Colors.white,
-                    elevation: 6,
-                    borderRadius: BorderRadius.circular(8),
-                    clipBehavior: Clip.antiAlias,
-                    child: Column(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        _StatusFilterItem(
-                          title: 'همه',
-                          isSelected: activeFilter == null,
-                          onTap: () {
-                            dismiss();
-                            cubit.changeActiveFilter(null);
-                          },
-                        ),
-                        _StatusFilterItem(
-                          title: 'فعال',
-                          isSelected: activeFilter == true,
-                          onTap: () {
-                            dismiss();
-                            cubit.changeActiveFilter(true);
-                          },
-                        ),
-                        _StatusFilterItem(
-                          title: 'غیرفعال',
-                          isSelected: activeFilter == false,
-                          onTap: () {
-                            dismiss();
-                            cubit.changeActiveFilter(false);
-                          },
-                        ),
-                      ],
-                    ),
-                  ),
-                );
-              },
+            StatusFilterDropdown<bool?>(
+              value: activeFilter,
+              options: const [
+                StatusFilterOption(value: null, label: 'همه'),
+                StatusFilterOption(value: true, label: 'فعال'),
+                StatusFilterOption(value: false, label: 'غیرفعال'),
+              ],
+              onChanged: cubit.changeActiveFilter,
             ),
           ],
         ),
@@ -360,60 +318,6 @@ class _PlanToolbar extends StatelessWidget {
           },
         ),
       ],
-    );
-  }
-
-  String _getStatusTitle(bool? status) {
-    return switch (status) {
-      true => 'فعال',
-      false => 'غیرفعال',
-      null => 'همه وضعیت‌ها',
-    };
-  }
-}
-
-
-class _StatusFilterItem extends StatelessWidget {
-  const _StatusFilterItem({
-    required this.title,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  final String title;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return InkWell(
-      onTap: onTap,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(
-          horizontal: 12,
-          vertical: 14,
-        ),
-        child: Row(
-          children: [
-            Expanded(
-              child: Text(
-                title,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                ),
-              ),
-            ),
-            if (isSelected)
-              Icon(
-                Icons.check,
-                size: 18,
-                color: colorScheme.primary,
-              ),
-          ],
-        ),
-      ),
     );
   }
 }

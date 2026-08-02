@@ -12,11 +12,17 @@ part of 'shift_list_cubit.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$ShiftListState {
+mixin _$ShiftListState implements DiagnosticableTreeMixin {
 
 
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'ShiftListState'))
+    ;
+}
 
 @override
 bool operator ==(Object other) {
@@ -28,7 +34,7 @@ bool operator ==(Object other) {
 int get hashCode => runtimeType.hashCode;
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'ShiftListState()';
 }
 
@@ -228,7 +234,7 @@ return exporting(_that.items,_that.filter);case _:
 /// @nodoc
 
 
-class _Initial implements ShiftListState {
+class _Initial with DiagnosticableTreeMixin implements ShiftListState {
   const _Initial();
   
 
@@ -236,6 +242,12 @@ class _Initial implements ShiftListState {
 
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'ShiftListState.initial'))
+    ;
+}
 
 @override
 bool operator ==(Object other) {
@@ -247,7 +259,7 @@ bool operator ==(Object other) {
 int get hashCode => runtimeType.hashCode;
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'ShiftListState.initial()';
 }
 
@@ -260,7 +272,7 @@ String toString() {
 /// @nodoc
 
 
-class _Loading implements ShiftListState {
+class _Loading with DiagnosticableTreeMixin implements ShiftListState {
   const _Loading({required this.filter});
   
 
@@ -273,6 +285,12 @@ class _Loading implements ShiftListState {
 _$LoadingCopyWith<_Loading> get copyWith => __$LoadingCopyWithImpl<_Loading>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'ShiftListState.loading'))
+    ..add(DiagnosticsProperty('filter', filter));
+}
 
 @override
 bool operator ==(Object other) {
@@ -284,7 +302,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,filter);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'ShiftListState.loading(filter: $filter)';
 }
 
@@ -326,7 +344,7 @@ as ShiftFilterParamEntity,
 /// @nodoc
 
 
-class _Loaded implements ShiftListState {
+class _Loaded with DiagnosticableTreeMixin implements ShiftListState {
   const _Loaded({required final  List<ShiftEntity> items, required this.totalCount, required this.hasMore, required this.filter}): _items = items;
   
 
@@ -348,6 +366,12 @@ class _Loaded implements ShiftListState {
 _$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'ShiftListState.loaded'))
+    ..add(DiagnosticsProperty('items', items))..add(DiagnosticsProperty('totalCount', totalCount))..add(DiagnosticsProperty('hasMore', hasMore))..add(DiagnosticsProperty('filter', filter));
+}
 
 @override
 bool operator ==(Object other) {
@@ -359,7 +383,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),totalCount,hasMore,filter);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'ShiftListState.loaded(items: $items, totalCount: $totalCount, hasMore: $hasMore, filter: $filter)';
 }
 
@@ -404,7 +428,7 @@ as ShiftFilterParamEntity,
 /// @nodoc
 
 
-class _Empty implements ShiftListState {
+class _Empty with DiagnosticableTreeMixin implements ShiftListState {
   const _Empty({required this.filter});
   
 
@@ -417,6 +441,12 @@ class _Empty implements ShiftListState {
 _$EmptyCopyWith<_Empty> get copyWith => __$EmptyCopyWithImpl<_Empty>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'ShiftListState.empty'))
+    ..add(DiagnosticsProperty('filter', filter));
+}
 
 @override
 bool operator ==(Object other) {
@@ -428,7 +458,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,filter);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'ShiftListState.empty(filter: $filter)';
 }
 
@@ -470,7 +500,7 @@ as ShiftFilterParamEntity,
 /// @nodoc
 
 
-class _LoadingMore implements ShiftListState {
+class _LoadingMore with DiagnosticableTreeMixin implements ShiftListState {
   const _LoadingMore({required final  List<ShiftEntity> items, required this.totalCount, required this.filter}): _items = items;
   
 
@@ -491,6 +521,12 @@ class _LoadingMore implements ShiftListState {
 _$LoadingMoreCopyWith<_LoadingMore> get copyWith => __$LoadingMoreCopyWithImpl<_LoadingMore>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'ShiftListState.loadingMore'))
+    ..add(DiagnosticsProperty('items', items))..add(DiagnosticsProperty('totalCount', totalCount))..add(DiagnosticsProperty('filter', filter));
+}
 
 @override
 bool operator ==(Object other) {
@@ -502,7 +538,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),totalCount,filter);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'ShiftListState.loadingMore(items: $items, totalCount: $totalCount, filter: $filter)';
 }
 
@@ -546,7 +582,7 @@ as ShiftFilterParamEntity,
 /// @nodoc
 
 
-class _Deleting implements ShiftListState {
+class _Deleting with DiagnosticableTreeMixin implements ShiftListState {
   const _Deleting({required final  List<ShiftEntity> items, required this.deletingItemId}): _items = items;
   
 
@@ -566,6 +602,12 @@ class _Deleting implements ShiftListState {
 _$DeletingCopyWith<_Deleting> get copyWith => __$DeletingCopyWithImpl<_Deleting>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'ShiftListState.deleting'))
+    ..add(DiagnosticsProperty('items', items))..add(DiagnosticsProperty('deletingItemId', deletingItemId));
+}
 
 @override
 bool operator ==(Object other) {
@@ -577,7 +619,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),deletingItemId);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'ShiftListState.deleting(items: $items, deletingItemId: $deletingItemId)';
 }
 
@@ -620,7 +662,7 @@ as int,
 /// @nodoc
 
 
-class _Success implements ShiftListState {
+class _Success with DiagnosticableTreeMixin implements ShiftListState {
   const _Success({required this.action, required this.message});
   
 
@@ -634,6 +676,12 @@ class _Success implements ShiftListState {
 _$SuccessCopyWith<_Success> get copyWith => __$SuccessCopyWithImpl<_Success>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'ShiftListState.success'))
+    ..add(DiagnosticsProperty('action', action))..add(DiagnosticsProperty('message', message));
+}
 
 @override
 bool operator ==(Object other) {
@@ -645,7 +693,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,action,message);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'ShiftListState.success(action: $action, message: $message)';
 }
 
@@ -688,7 +736,7 @@ as String,
 /// @nodoc
 
 
-class _Failure implements ShiftListState {
+class _Failure with DiagnosticableTreeMixin implements ShiftListState {
   const _Failure({required this.message, final  List<ShiftEntity> items = const []}): _items = items;
   
 
@@ -708,6 +756,12 @@ class _Failure implements ShiftListState {
 _$FailureCopyWith<_Failure> get copyWith => __$FailureCopyWithImpl<_Failure>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'ShiftListState.failure'))
+    ..add(DiagnosticsProperty('message', message))..add(DiagnosticsProperty('items', items));
+}
 
 @override
 bool operator ==(Object other) {
@@ -719,7 +773,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,message,const DeepCollectionEquality().hash(_items));
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'ShiftListState.failure(message: $message, items: $items)';
 }
 
@@ -762,7 +816,7 @@ as List<ShiftEntity>,
 /// @nodoc
 
 
-class _ConnectionError implements ShiftListState {
+class _ConnectionError with DiagnosticableTreeMixin implements ShiftListState {
   const _ConnectionError({required this.filter, final  List<ShiftEntity> items = const []}): _items = items;
   
 
@@ -782,6 +836,12 @@ class _ConnectionError implements ShiftListState {
 _$ConnectionErrorCopyWith<_ConnectionError> get copyWith => __$ConnectionErrorCopyWithImpl<_ConnectionError>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'ShiftListState.connectionError'))
+    ..add(DiagnosticsProperty('filter', filter))..add(DiagnosticsProperty('items', items));
+}
 
 @override
 bool operator ==(Object other) {
@@ -793,7 +853,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,filter,const DeepCollectionEquality().hash(_items));
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'ShiftListState.connectionError(filter: $filter, items: $items)';
 }
 
@@ -836,7 +896,7 @@ as List<ShiftEntity>,
 /// @nodoc
 
 
-class _Exporting implements ShiftListState {
+class _Exporting with DiagnosticableTreeMixin implements ShiftListState {
   const _Exporting({required final  List<ShiftEntity> items, required this.filter}): _items = items;
   
 
@@ -856,6 +916,12 @@ class _Exporting implements ShiftListState {
 _$ExportingCopyWith<_Exporting> get copyWith => __$ExportingCopyWithImpl<_Exporting>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'ShiftListState.exporting'))
+    ..add(DiagnosticsProperty('items', items))..add(DiagnosticsProperty('filter', filter));
+}
 
 @override
 bool operator ==(Object other) {
@@ -867,7 +933,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),filter);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'ShiftListState.exporting(items: $items, filter: $filter)';
 }
 

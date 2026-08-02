@@ -52,10 +52,21 @@ class LeaveDetailsPageView extends StatelessWidget {
             current.lastMessage != null;
       },
       listener: (context, state) async {
-        await BottomSheetMessage.showNotice(
-          context: context,
-          data: state.lastMessage!,
-        );
+        final message = state.lastMessage!;
+        if (message.title.contains('خطا')) {
+          await BottomSheetMessage.showError(
+            context: context,
+            data: message,
+            isDismissible: true,
+            enableDrag: true,
+            onButtonTap: () => Navigator.of(context).pop(),
+          );
+        } else {
+          await BottomSheetMessage.showNotice(
+            context: context,
+            data: message,
+          );
+        }
         if (state.actionCompleted && context.mounted) {
           context.pop(true);
         }
@@ -581,4 +592,3 @@ class _DateBlock extends StatelessWidget {
 String _text(String? value) {
   return value?.trim().isNotEmpty == true ? value! : '---';
 }
-

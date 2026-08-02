@@ -1,5 +1,4 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
-import 'package:eks_sana_plus_org/src/features/shift/domain/entities/params/shift_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/shift/domain/entities/shift_entity.dart';
 import 'package:eks_sana_plus_org/src/features/shift/presentation/cubit/shift_list_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/shift/presentation/pages/shift_form_page.dart';
@@ -13,6 +12,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filter_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/gestures.dart';
@@ -53,34 +53,39 @@ class _ShiftListView extends StatelessWidget {
           },
         );
       },
-      child: Scaffold(
-        backgroundColor: const Color(0xFFF8F7F7),
-        appBar: const SimpleAppBar(title: 'شیفت'),
-        floatingActionButton: FloatingActionButtonWidget(
-          title: 'شیفت جدید',
-          onPressed: () async {
-            final changed = await context.pushNamed<bool>(ShiftFormPage.name);
-            if (changed == true && context.mounted) {
-              cubit.fetchList(refresh: true);
-            }
-          },
-        ),
-        body: ScrollConfiguration(
-          behavior: ScrollConfiguration.of(context).copyWith(
-            dragDevices: {PointerDeviceKind.touch, PointerDeviceKind.mouse},
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  AppPadding.p16,
-                  AppPadding.p16,
-                  AppPadding.p16,
-                  AppPadding.p8,
-                ),
-                child: BlocBuilder<ShiftListCubit, ShiftListState>(
-                  builder: (context, state) {
-                    return Row(
+      child: ValueListenableBuilder<bool?>(
+        valueListenable: cubit.pageStatusFilter,
+        builder: (context, pageStatusFilter, _) {
+          return Scaffold(
+            backgroundColor: const Color(0xFFF8F7F7),
+            appBar: const SimpleAppBar(title: 'شیفت'),
+            floatingActionButton: FloatingActionButtonWidget(
+              title: 'شیفت جدید',
+              onPressed: () async {
+                final changed =
+                    await context.pushNamed<bool>(ShiftFormPage.name);
+                if (changed == true && context.mounted) {
+                  cubit.fetchList(refresh: true);
+                }
+              },
+            ),
+            body: ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(
+                dragDevices: {
+                  PointerDeviceKind.touch,
+                  PointerDeviceKind.mouse,
+                },
+              ),
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(
+                      AppPadding.p16,
+                      AppPadding.p16,
+                      AppPadding.p16,
+                      AppPadding.p8,
+                    ),
+                    child: Row(
                       children: [
                         Expanded(
                           child: _TopFilterButton(
@@ -91,125 +96,139 @@ class _ShiftListView extends StatelessWidget {
                         ),
                         Space.w12,
                         Expanded(
-                          child: _TopFilterButton(
-                            title: _statusTitle(cubit.filter.isActive),
-                            isActive: cubit.filter.isActive != null,
-                            onTap: () => _showStatusSheet(
-                              context,
-                              cubit,
-                              cubit.filter,
-                            ),
+                          child: StatusFilterDropdown<bool?>(
+                            value: pageStatusFilter,
+                            options: const [
+                              StatusFilterOption(value: null, label: 'همه'),
+                              StatusFilterOption(value: true, label: 'فعال'),
+                              StatusFilterOption(
+                                value: false,
+                                label: 'غیرفعال',
+                              ),
+                            ],
+                            onChanged: cubit.setPageStatusFilter,
                           ),
                         ),
                       ],
-                    );
-                  },
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: AppPadding.p16),
-                child: BlocBuilder<ShiftListCubit, ShiftListState>(
-                  builder: (context, state) {
-                    return ReportButtonWidget(
-                      isLoading: cubit.isExporting,
-                      onTap: () {
-                        if (cubit.isExporting) return;
-                        onTap:
-                        cubit.exportReport();
-                      },
-                    );
-                  },
-                ),
-              ),
-              Space.h12,
-              Expanded(
-                child: BlocBuilder<ShiftListCubit, ShiftListState>(
-                  builder: (context, state) {
-                    return state.maybeWhen(
-                      loading: (_) =>
-                          const Center(child: CircularProgressIndicator()),
-                      connectionError: (_, __) => _MessageState(
-                        title: 'اتصال به اینترنت برقرار نیست',
-                        actionTitle: 'تلاش مجدد',
-                        onAction: () => cubit.fetchList(refresh: true),
-                      ),
-                      empty: (filter) => _MessageState(
-                        title: filter.hasActiveFilters
-                            ? 'نتیجه‌ای برای فیلترهای انتخابی یافت نشد'
-                            : 'شیفتی یافت نشد',
-                        actionTitle:
-                            filter.hasActiveFilters ? 'پاک کردن فیلترها' : 'بازخوانی',
-                        onAction: filter.hasActiveFilters
-                            ? cubit.clearFilter
-                            : () => cubit.fetchList(refresh: true),
-                      ),
-                      orElse: () {
-                        final items = cubit.items;
-                        if (items.isEmpty) {
-                          return _MessageState(
-                            title: 'شیفتی یافت نشد',
-                            actionTitle: 'بازخوانی',
-                            onAction: () => cubit.fetchList(refresh: true),
-                          );
-                        }
-
-                        final isLoadingMore = state.maybeWhen(
-                          loadingMore: (_, __, ___) => true,
-                          orElse: () => false,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: AppPadding.p16,
+                    ),
+                    child: BlocBuilder<ShiftListCubit, ShiftListState>(
+                      builder: (context, state) {
+                        return ReportButtonWidget(
+                          isLoading: cubit.isExporting,
+                          onTap: () {
+                            if (cubit.isExporting) return;
+                            cubit.exportReport();
+                          },
                         );
-
-                        return RefreshIndicator(
-                          onRefresh: () => cubit.fetchList(refresh: true),
-                          child: NotificationListener<ScrollNotification>(
-                            onNotification: (notification) {
-                              if (notification.metrics.pixels >=
-                                      notification.metrics.maxScrollExtent -
-                                          AppSize.s80 &&
-                                  cubit.hasMore &&
-                                  !isLoadingMore) {
-                                cubit.fetchList();
-                              }
-                              return false;
-                            },
-                            child: ListView.builder(
-                              padding: const EdgeInsets.fromLTRB(
-                                AppPadding.p16,
-                                AppPadding.p8,
-                                AppPadding.p16,
-                                AppPadding.p100,
-                              ),
-                              itemCount: items.length + (isLoadingMore ? 1 : 0),
-                              itemBuilder: (context, index) {
-                                if (index >= items.length) {
-                                  return const Padding(
-                                    padding: EdgeInsets.all(AppPadding.p16),
-                                    child: Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  );
-                                }
-
-                                final item = items[index];
-                                return ShiftCard(
-                                  item: item,
-                                  onOperations: () => _showOperationSheet(
-                                    context,
-                                    cubit,
-                                    item,
-                                  ),
-                                );
-                              },
-                            ),
+                      },
+                    ),
+                  ),
+                  Space.h12,
+                  Expanded(
+                    child: BlocBuilder<ShiftListCubit, ShiftListState>(
+                      builder: (context, state) {
+                        return state.maybeWhen(
+                          loading: (_) => const Center(
+                            child: CircularProgressIndicator(),
                           ),
+                          connectionError: (_, __) => _MessageState(
+                            title: 'اتصال به اینترنت برقرار نیست',
+                            actionTitle: 'تلاش مجدد',
+                            onAction: () => cubit.fetchList(refresh: true),
+                          ),
+                          empty: (filter) => _MessageState(
+                            title: filter.hasActiveFilters
+                                ? 'نتیجه‌ای برای فیلترهای انتخابی یافت نشد'
+                                : 'شیفتی یافت نشد',
+                            actionTitle: filter.hasActiveFilters
+                                ? 'پاک کردن فیلترها'
+                                : 'بازخوانی',
+                            onAction: filter.hasActiveFilters
+                                ? cubit.clearFilter
+                                : () => cubit.fetchList(refresh: true),
+                          ),
+                          orElse: () {
+                            final items = cubit.visibleItems;
+                            if (items.isEmpty) {
+                              return _MessageState(
+                                title: cubit.items.isEmpty
+                                    ? 'شیفتی یافت نشد'
+                                    : 'شیفتی با وضعیت انتخاب‌شده یافت نشد',
+                                actionTitle: cubit.items.isEmpty
+                                    ? 'بازخوانی'
+                                    : 'نمایش همه',
+                                onAction: cubit.items.isEmpty
+                                    ? () => cubit.fetchList(refresh: true)
+                                    : () => cubit.setPageStatusFilter(null),
+                              );
+                            }
+
+                            final isLoadingMore = state.maybeWhen(
+                              loadingMore: (_, __, ___) => true,
+                              orElse: () => false,
+                            );
+
+                            return RefreshIndicator(
+                              onRefresh: () => cubit.fetchList(refresh: true),
+                              child:
+                                  NotificationListener<ScrollNotification>(
+                                onNotification: (notification) {
+                                  if (notification.metrics.pixels >=
+                                          notification.metrics.maxScrollExtent -
+                                              AppSize.s80 &&
+                                      cubit.hasMore &&
+                                      !isLoadingMore) {
+                                    cubit.fetchList();
+                                  }
+                                  return false;
+                                },
+                                child: ListView.builder(
+                                  padding: const EdgeInsets.fromLTRB(
+                                    AppPadding.p16,
+                                    AppPadding.p8,
+                                    AppPadding.p16,
+                                    AppPadding.p100,
+                                  ),
+                                  itemCount:
+                                      items.length + (isLoadingMore ? 1 : 0),
+                                  itemBuilder: (context, index) {
+                                    if (index >= items.length) {
+                                      return const Padding(
+                                        padding: EdgeInsets.all(AppPadding.p16),
+                                        child: Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      );
+                                    }
+
+                                    final item = items[index];
+                                    return ShiftCard(
+                                      item: item,
+                                      onOperations: () => _showOperationSheet(
+                                        context,
+                                        cubit,
+                                        item,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            );
+                          },
                         );
                       },
-                    );
-                  },
-                ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
-        ),
+            ),
+          );
+        },
       ),
     );
   }
@@ -228,55 +247,6 @@ class _ShiftListView extends StatelessWidget {
         shiftTypes: cubit.shiftTypes,
         onApply: cubit.applyFilter,
         onClear: cubit.clearFilter,
-      ),
-    );
-  }
-
-  void _showStatusSheet(
-    BuildContext context,
-    ShiftListCubit cubit,
-    ShiftFilterParamEntity filter,
-  ) {
-    showModalBottomSheet<void>(
-      context: context,
-      useSafeArea: true,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
-      ),
-      builder: (context) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppPadding.p16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _StatusTile(
-                title: 'همه',
-                onTap: () {
-                  Navigator.of(context).pop();
-                  cubit.applyFilter(filter.copyWith(
-                    clearIsActive: true,
-                    skip: 0,
-                  ));
-                },
-              ),
-              _StatusTile(
-                title: 'فعال',
-                onTap: () {
-                  Navigator.of(context).pop();
-                  cubit.applyFilter(filter.copyWith(isActive: true, skip: 0));
-                },
-              ),
-              _StatusTile(
-                title: 'غیرفعال',
-                onTap: () {
-                  Navigator.of(context).pop();
-                  cubit.applyFilter(filter.copyWith(isActive: false, skip: 0));
-                },
-              ),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -374,11 +344,6 @@ class _ShiftListView extends StatelessWidget {
     );
   }
 
-  String _statusTitle(bool? value) {
-    if (value == true) return 'فعال';
-    if (value == false) return 'غیرفعال';
-    return 'وضعیت';
-  }
 }
 
 class _TopFilterButton extends StatelessWidget {
@@ -428,24 +393,6 @@ class _TopFilterButton extends StatelessWidget {
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _StatusTile extends StatelessWidget {
-  const _StatusTile({required this.title, required this.onTap});
-
-  final String title;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: BodyMediumText(text: title),
-      onTap: onTap,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppSize.s8),
       ),
     );
   }

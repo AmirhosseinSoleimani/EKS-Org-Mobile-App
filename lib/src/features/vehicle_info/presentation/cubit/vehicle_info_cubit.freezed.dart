@@ -12,7 +12,7 @@ part of 'vehicle_info_cubit.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$VehicleInfoStateData {
+mixin _$VehicleInfoStateData implements DiagnosticableTreeMixin {
 
  List<VehicleInfoEntity> get items; List<VehicleModelEntity> get vehicleModels; List<VehicleToolEntity> get tools; List<VehicleToolEntity> get filteredTools; List<EmdadServiceCategoryGroupEntity> get serviceCategoryGroups; List<VehicleDefectLimitationEntity> get defects; List<VehicleHistoryEntity> get histories; VehicleInfoEntity? get selectedItem; VehicleInfoFilterParamEntity get filter; int get totalCount; bool get hasMore; bool get isInitialLoading; bool get isRefreshing; bool get isPaginationLoading; bool get isLookupsLoading; bool get isSubmitting; bool get isReportLoading; int? get loadingDetailId; int? get deletingVehicleId; int? get loadingToolsVehicleId; int? get loadingServicesVehicleId; int? get loadingDefectsServiceCategoryId; int? get loadingHistoryRefId; int? get selectedServiceCategoryId; String get toolsSearchText; String? get reportFilePath; String? get successMessage; String? get errorMessage;
 /// Create a copy of VehicleInfoStateData
@@ -22,6 +22,12 @@ mixin _$VehicleInfoStateData {
 $VehicleInfoStateDataCopyWith<VehicleInfoStateData> get copyWith => _$VehicleInfoStateDataCopyWithImpl<VehicleInfoStateData>(this as VehicleInfoStateData, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'VehicleInfoStateData'))
+    ..add(DiagnosticsProperty('items', items))..add(DiagnosticsProperty('vehicleModels', vehicleModels))..add(DiagnosticsProperty('tools', tools))..add(DiagnosticsProperty('filteredTools', filteredTools))..add(DiagnosticsProperty('serviceCategoryGroups', serviceCategoryGroups))..add(DiagnosticsProperty('defects', defects))..add(DiagnosticsProperty('histories', histories))..add(DiagnosticsProperty('selectedItem', selectedItem))..add(DiagnosticsProperty('filter', filter))..add(DiagnosticsProperty('totalCount', totalCount))..add(DiagnosticsProperty('hasMore', hasMore))..add(DiagnosticsProperty('isInitialLoading', isInitialLoading))..add(DiagnosticsProperty('isRefreshing', isRefreshing))..add(DiagnosticsProperty('isPaginationLoading', isPaginationLoading))..add(DiagnosticsProperty('isLookupsLoading', isLookupsLoading))..add(DiagnosticsProperty('isSubmitting', isSubmitting))..add(DiagnosticsProperty('isReportLoading', isReportLoading))..add(DiagnosticsProperty('loadingDetailId', loadingDetailId))..add(DiagnosticsProperty('deletingVehicleId', deletingVehicleId))..add(DiagnosticsProperty('loadingToolsVehicleId', loadingToolsVehicleId))..add(DiagnosticsProperty('loadingServicesVehicleId', loadingServicesVehicleId))..add(DiagnosticsProperty('loadingDefectsServiceCategoryId', loadingDefectsServiceCategoryId))..add(DiagnosticsProperty('loadingHistoryRefId', loadingHistoryRefId))..add(DiagnosticsProperty('selectedServiceCategoryId', selectedServiceCategoryId))..add(DiagnosticsProperty('toolsSearchText', toolsSearchText))..add(DiagnosticsProperty('reportFilePath', reportFilePath))..add(DiagnosticsProperty('successMessage', successMessage))..add(DiagnosticsProperty('errorMessage', errorMessage));
+}
 
 @override
 bool operator ==(Object other) {
@@ -33,7 +39,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hashAll([runtimeType,const DeepCollectionEquality().hash(items),const DeepCollectionEquality().hash(vehicleModels),const DeepCollectionEquality().hash(tools),const DeepCollectionEquality().hash(filteredTools),const DeepCollectionEquality().hash(serviceCategoryGroups),const DeepCollectionEquality().hash(defects),const DeepCollectionEquality().hash(histories),selectedItem,filter,totalCount,hasMore,isInitialLoading,isRefreshing,isPaginationLoading,isLookupsLoading,isSubmitting,isReportLoading,loadingDetailId,deletingVehicleId,loadingToolsVehicleId,loadingServicesVehicleId,loadingDefectsServiceCategoryId,loadingHistoryRefId,selectedServiceCategoryId,toolsSearchText,reportFilePath,successMessage,errorMessage]);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'VehicleInfoStateData(items: $items, vehicleModels: $vehicleModels, tools: $tools, filteredTools: $filteredTools, serviceCategoryGroups: $serviceCategoryGroups, defects: $defects, histories: $histories, selectedItem: $selectedItem, filter: $filter, totalCount: $totalCount, hasMore: $hasMore, isInitialLoading: $isInitialLoading, isRefreshing: $isRefreshing, isPaginationLoading: $isPaginationLoading, isLookupsLoading: $isLookupsLoading, isSubmitting: $isSubmitting, isReportLoading: $isReportLoading, loadingDetailId: $loadingDetailId, deletingVehicleId: $deletingVehicleId, loadingToolsVehicleId: $loadingToolsVehicleId, loadingServicesVehicleId: $loadingServicesVehicleId, loadingDefectsServiceCategoryId: $loadingDefectsServiceCategoryId, loadingHistoryRefId: $loadingHistoryRefId, selectedServiceCategoryId: $selectedServiceCategoryId, toolsSearchText: $toolsSearchText, reportFilePath: $reportFilePath, successMessage: $successMessage, errorMessage: $errorMessage)';
 }
 
@@ -232,7 +238,7 @@ return $default(_that.items,_that.vehicleModels,_that.tools,_that.filteredTools,
 /// @nodoc
 
 
-class _VehicleInfoStateData implements VehicleInfoStateData {
+class _VehicleInfoStateData with DiagnosticableTreeMixin implements VehicleInfoStateData {
   const _VehicleInfoStateData({final  List<VehicleInfoEntity> items = const [], final  List<VehicleModelEntity> vehicleModels = const [], final  List<VehicleToolEntity> tools = const [], final  List<VehicleToolEntity> filteredTools = const [], final  List<EmdadServiceCategoryGroupEntity> serviceCategoryGroups = const [], final  List<VehicleDefectLimitationEntity> defects = const [], final  List<VehicleHistoryEntity> histories = const [], this.selectedItem, this.filter = const VehicleInfoFilterParamEntity(), this.totalCount = 0, this.hasMore = true, this.isInitialLoading = false, this.isRefreshing = false, this.isPaginationLoading = false, this.isLookupsLoading = false, this.isSubmitting = false, this.isReportLoading = false, this.loadingDetailId, this.deletingVehicleId, this.loadingToolsVehicleId, this.loadingServicesVehicleId, this.loadingDefectsServiceCategoryId, this.loadingHistoryRefId, this.selectedServiceCategoryId, this.toolsSearchText = '', this.reportFilePath, this.successMessage, this.errorMessage}): _items = items,_vehicleModels = vehicleModels,_tools = tools,_filteredTools = filteredTools,_serviceCategoryGroups = serviceCategoryGroups,_defects = defects,_histories = histories;
   
 
@@ -314,6 +320,12 @@ class _VehicleInfoStateData implements VehicleInfoStateData {
 _$VehicleInfoStateDataCopyWith<_VehicleInfoStateData> get copyWith => __$VehicleInfoStateDataCopyWithImpl<_VehicleInfoStateData>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'VehicleInfoStateData'))
+    ..add(DiagnosticsProperty('items', items))..add(DiagnosticsProperty('vehicleModels', vehicleModels))..add(DiagnosticsProperty('tools', tools))..add(DiagnosticsProperty('filteredTools', filteredTools))..add(DiagnosticsProperty('serviceCategoryGroups', serviceCategoryGroups))..add(DiagnosticsProperty('defects', defects))..add(DiagnosticsProperty('histories', histories))..add(DiagnosticsProperty('selectedItem', selectedItem))..add(DiagnosticsProperty('filter', filter))..add(DiagnosticsProperty('totalCount', totalCount))..add(DiagnosticsProperty('hasMore', hasMore))..add(DiagnosticsProperty('isInitialLoading', isInitialLoading))..add(DiagnosticsProperty('isRefreshing', isRefreshing))..add(DiagnosticsProperty('isPaginationLoading', isPaginationLoading))..add(DiagnosticsProperty('isLookupsLoading', isLookupsLoading))..add(DiagnosticsProperty('isSubmitting', isSubmitting))..add(DiagnosticsProperty('isReportLoading', isReportLoading))..add(DiagnosticsProperty('loadingDetailId', loadingDetailId))..add(DiagnosticsProperty('deletingVehicleId', deletingVehicleId))..add(DiagnosticsProperty('loadingToolsVehicleId', loadingToolsVehicleId))..add(DiagnosticsProperty('loadingServicesVehicleId', loadingServicesVehicleId))..add(DiagnosticsProperty('loadingDefectsServiceCategoryId', loadingDefectsServiceCategoryId))..add(DiagnosticsProperty('loadingHistoryRefId', loadingHistoryRefId))..add(DiagnosticsProperty('selectedServiceCategoryId', selectedServiceCategoryId))..add(DiagnosticsProperty('toolsSearchText', toolsSearchText))..add(DiagnosticsProperty('reportFilePath', reportFilePath))..add(DiagnosticsProperty('successMessage', successMessage))..add(DiagnosticsProperty('errorMessage', errorMessage));
+}
 
 @override
 bool operator ==(Object other) {
@@ -325,7 +337,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hashAll([runtimeType,const DeepCollectionEquality().hash(_items),const DeepCollectionEquality().hash(_vehicleModels),const DeepCollectionEquality().hash(_tools),const DeepCollectionEquality().hash(_filteredTools),const DeepCollectionEquality().hash(_serviceCategoryGroups),const DeepCollectionEquality().hash(_defects),const DeepCollectionEquality().hash(_histories),selectedItem,filter,totalCount,hasMore,isInitialLoading,isRefreshing,isPaginationLoading,isLookupsLoading,isSubmitting,isReportLoading,loadingDetailId,deletingVehicleId,loadingToolsVehicleId,loadingServicesVehicleId,loadingDefectsServiceCategoryId,loadingHistoryRefId,selectedServiceCategoryId,toolsSearchText,reportFilePath,successMessage,errorMessage]);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'VehicleInfoStateData(items: $items, vehicleModels: $vehicleModels, tools: $tools, filteredTools: $filteredTools, serviceCategoryGroups: $serviceCategoryGroups, defects: $defects, histories: $histories, selectedItem: $selectedItem, filter: $filter, totalCount: $totalCount, hasMore: $hasMore, isInitialLoading: $isInitialLoading, isRefreshing: $isRefreshing, isPaginationLoading: $isPaginationLoading, isLookupsLoading: $isLookupsLoading, isSubmitting: $isSubmitting, isReportLoading: $isReportLoading, loadingDetailId: $loadingDetailId, deletingVehicleId: $deletingVehicleId, loadingToolsVehicleId: $loadingToolsVehicleId, loadingServicesVehicleId: $loadingServicesVehicleId, loadingDefectsServiceCategoryId: $loadingDefectsServiceCategoryId, loadingHistoryRefId: $loadingHistoryRefId, selectedServiceCategoryId: $selectedServiceCategoryId, toolsSearchText: $toolsSearchText, reportFilePath: $reportFilePath, successMessage: $successMessage, errorMessage: $errorMessage)';
 }
 
@@ -392,7 +404,7 @@ as String?,
 }
 
 /// @nodoc
-mixin _$VehicleInfoState {
+mixin _$VehicleInfoState implements DiagnosticableTreeMixin {
 
  VehicleInfoStateData get data;
 /// Create a copy of VehicleInfoState
@@ -402,6 +414,12 @@ mixin _$VehicleInfoState {
 $VehicleInfoStateCopyWith<VehicleInfoState> get copyWith => _$VehicleInfoStateCopyWithImpl<VehicleInfoState>(this as VehicleInfoState, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'VehicleInfoState'))
+    ..add(DiagnosticsProperty('data', data));
+}
 
 @override
 bool operator ==(Object other) {
@@ -413,7 +431,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,data);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'VehicleInfoState(data: $data)';
 }
 
@@ -624,7 +642,7 @@ return connectionError(_that.data);case _:
 /// @nodoc
 
 
-class _Idle implements VehicleInfoState {
+class _Idle with DiagnosticableTreeMixin implements VehicleInfoState {
   const _Idle({this.data = const VehicleInfoStateData()});
   
 
@@ -637,6 +655,12 @@ class _Idle implements VehicleInfoState {
 _$IdleCopyWith<_Idle> get copyWith => __$IdleCopyWithImpl<_Idle>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'VehicleInfoState.idle'))
+    ..add(DiagnosticsProperty('data', data));
+}
 
 @override
 bool operator ==(Object other) {
@@ -648,7 +672,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,data);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'VehicleInfoState.idle(data: $data)';
 }
 
@@ -699,7 +723,7 @@ $VehicleInfoStateDataCopyWith<$Res> get data {
 /// @nodoc
 
 
-class _Loading implements VehicleInfoState {
+class _Loading with DiagnosticableTreeMixin implements VehicleInfoState {
   const _Loading({required this.data});
   
 
@@ -712,6 +736,12 @@ class _Loading implements VehicleInfoState {
 _$LoadingCopyWith<_Loading> get copyWith => __$LoadingCopyWithImpl<_Loading>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'VehicleInfoState.loading'))
+    ..add(DiagnosticsProperty('data', data));
+}
 
 @override
 bool operator ==(Object other) {
@@ -723,7 +753,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,data);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'VehicleInfoState.loading(data: $data)';
 }
 
@@ -774,7 +804,7 @@ $VehicleInfoStateDataCopyWith<$Res> get data {
 /// @nodoc
 
 
-class _Loaded implements VehicleInfoState {
+class _Loaded with DiagnosticableTreeMixin implements VehicleInfoState {
   const _Loaded({required this.data});
   
 
@@ -787,6 +817,12 @@ class _Loaded implements VehicleInfoState {
 _$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'VehicleInfoState.loaded'))
+    ..add(DiagnosticsProperty('data', data));
+}
 
 @override
 bool operator ==(Object other) {
@@ -798,7 +834,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,data);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'VehicleInfoState.loaded(data: $data)';
 }
 
@@ -849,7 +885,7 @@ $VehicleInfoStateDataCopyWith<$Res> get data {
 /// @nodoc
 
 
-class _Success implements VehicleInfoState {
+class _Success with DiagnosticableTreeMixin implements VehicleInfoState {
   const _Success({required this.data});
   
 
@@ -862,6 +898,12 @@ class _Success implements VehicleInfoState {
 _$SuccessCopyWith<_Success> get copyWith => __$SuccessCopyWithImpl<_Success>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'VehicleInfoState.success'))
+    ..add(DiagnosticsProperty('data', data));
+}
 
 @override
 bool operator ==(Object other) {
@@ -873,7 +915,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,data);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'VehicleInfoState.success(data: $data)';
 }
 
@@ -924,7 +966,7 @@ $VehicleInfoStateDataCopyWith<$Res> get data {
 /// @nodoc
 
 
-class _Failure implements VehicleInfoState {
+class _Failure with DiagnosticableTreeMixin implements VehicleInfoState {
   const _Failure({required this.data});
   
 
@@ -937,6 +979,12 @@ class _Failure implements VehicleInfoState {
 _$FailureCopyWith<_Failure> get copyWith => __$FailureCopyWithImpl<_Failure>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'VehicleInfoState.failure'))
+    ..add(DiagnosticsProperty('data', data));
+}
 
 @override
 bool operator ==(Object other) {
@@ -948,7 +996,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,data);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'VehicleInfoState.failure(data: $data)';
 }
 
@@ -999,7 +1047,7 @@ $VehicleInfoStateDataCopyWith<$Res> get data {
 /// @nodoc
 
 
-class _ConnectionError implements VehicleInfoState {
+class _ConnectionError with DiagnosticableTreeMixin implements VehicleInfoState {
   const _ConnectionError({required this.data});
   
 
@@ -1012,6 +1060,12 @@ class _ConnectionError implements VehicleInfoState {
 _$ConnectionErrorCopyWith<_ConnectionError> get copyWith => __$ConnectionErrorCopyWithImpl<_ConnectionError>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'VehicleInfoState.connectionError'))
+    ..add(DiagnosticsProperty('data', data));
+}
 
 @override
 bool operator ==(Object other) {
@@ -1023,7 +1077,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,data);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'VehicleInfoState.connectionError(data: $data)';
 }
 

@@ -27,10 +27,7 @@ class SummaryCardHeader extends StatelessWidget {
       return Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
-          Align(
-            alignment: AlignmentDirectional.centerStart,
-            child: _Badges(items: badges),
-          ),
+          _Badges(items: badges),
           Space.h12,
           _TitleRow(
             title: title,
@@ -42,25 +39,39 @@ class SummaryCardHeader extends StatelessWidget {
       );
     }
 
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
-      children: [
-        if (leading != null) ...[
-          leading!,
-          Space.w12,
-        ],
-        Expanded(
-          child: _TitleBlock(
-            title: title,
-            subtitle: subtitle,
-            titleMaxLines: titleMaxLines,
-          ),
-        ),
-        if (badges.isNotEmpty) ...[
-          Space.w8,
-          Align(alignment: AlignmentGeometry.topLeft ,child: Flexible(child: _Badges(items: badges))),
-        ],
-      ],
+    return LayoutBuilder(
+      builder: (context, constraints) {
+        final badgeMaxWidth = constraints.maxWidth.isFinite
+            ? constraints.maxWidth * 0.45
+            : 160.0;
+
+        return Row(
+          crossAxisAlignment: CrossAxisAlignment.start
+          ,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            Row(children: [
+              if (leading != null) ...[
+                leading!,
+                Space.w12,
+              ],
+              _TitleBlock(
+                title: title,
+                subtitle: subtitle,
+                titleMaxLines: titleMaxLines,
+              )
+            ],),
+
+            if (badges.isNotEmpty) ...[
+              Space.w8,
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: badgeMaxWidth),
+                child: _Badges(items: badges),
+              ),
+            ],
+          ],
+        );
+      },
     );
   }
 }
@@ -81,7 +92,7 @@ class _TitleRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.center,
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         if (leading != null) ...[
           leading!,
@@ -158,6 +169,7 @@ class _Badges extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Wrap(
+      alignment: WrapAlignment.start,
       spacing: AppSize.s8,
       runSpacing: AppSize.s8,
       children: items,

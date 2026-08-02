@@ -6,9 +6,10 @@ import 'package:eks_sana_plus_org/src/features/leave/presentation/pages/leave_de
 import 'package:eks_sana_plus_org/src/features/leave/presentation/widgets/leave_filter_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/leave/presentation/widgets/leave_list_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/main_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filter_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,10 +40,21 @@ class LeavePageView extends StatelessWidget {
         return previous.lastMessage != current.lastMessage &&
             current.lastMessage != null;
       },
-      listener: (context, state) {
-        BottomSheetMessage.showNotice(
+      listener: (context, state) async {
+        final message = state.lastMessage!;
+        if (message.title.contains('خطا')) {
+          await BottomSheetMessage.showError(
+            context: context,
+            data: message,
+            isDismissible: true,
+            enableDrag: true,
+            onButtonTap: () => Navigator.of(context).pop(),
+          );
+          return;
+        }
+        await BottomSheetMessage.showNotice(
           context: context,
-          data: state.lastMessage!,
+          data: message,
         );
       },
       builder: (context, state) {
@@ -69,25 +81,17 @@ class LeavePageView extends StatelessWidget {
                             ),
                             Space.w12,
                             Expanded(
-                              child: _TopDropdown(
-                                title: 'وضعیت',
+                              child: StatusFilterDropdown<LeaveStatus>(
                                 value: state.selectedStatus,
-                                items: LeaveCubit.statusOptions
+                                options: LeaveCubit.statusOptions
                                     .map(
-                                      (item) => DropdownMenuItem(
-                                    value: item.status,
-                                    child: Text(
-                                        item.title,
-                                      style: Theme.of(context).textTheme.bodyMedium,
-                                    ),
-                                  ),
-                                )
+                                      (item) => StatusFilterOption(
+                                        value: item.status,
+                                        label: item.title,
+                                      ),
+                                    )
                                     .toList(),
-                                onChanged: (value) {
-                                  if (value != null) {
-                                    cubit.onStatusChanged(value);
-                                  }
-                                },
+                                onChanged: cubit.onStatusChanged,
                               ),
                             ),
                           ],
@@ -116,6 +120,11 @@ class LeavePageView extends StatelessWidget {
                         final item = state.filteredItems[index];
                         return LeaveListCard(
                           item: item,
+                          onDelete: () => _confirmDelete(
+                            context,
+                            cubit,
+                            item.id,
+                          ),
                           onDetailsTap: () async {
                             final changed = await context.pushNamed<bool>(
                               LeaveDetailsPage.name,
@@ -134,6 +143,40 @@ class LeavePageView extends StatelessWidget {
           ),
         );
       },
+    );
+  }
+
+  void _confirmDelete(
+    BuildContext context,
+    LeaveCubit cubit,
+    int? id,
+  ) {
+    if (id == null) return;
+
+    BottomSheetMessage.showCustom(
+      context: context,
+      content: BlocProvider.value(
+        value: cubit,
+        child: BlocBuilder<LeaveCubit, LeaveState>(
+          builder: (sheetContext, state) {
+            return DeleteConfirmSheet(
+              title: 'حذف درخواست مرخصی',
+              message: 'آیا از حذف این درخواست مرخصی مطمئن هستید؟',
+              confirmTitle: 'حذف',
+              isSubmitting: state.isActionLoading,
+              onConfirm: () async {
+                Navigator.of(sheetContext).pop();
+                await cubit.deleteRequest(id);
+              },
+            );
+          },
+        ),
+      ),
+      actionWidget: const SizedBox.shrink(),
+      isDismissible: false,
+      enableDrag: false,
+      backgroundColor: Colors.white,
+      maxHeight: 0.5,
     );
   }
 
@@ -174,51 +217,12 @@ class _FilterButton extends StatelessWidget {
         ),
         child: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            BodyMediumText(text: 'فیلترها',),
+          children: const [
+            BodyMediumText(text: 'فیلترها'),
             Icon(Icons.keyboard_arrow_down_rounded),
-
           ],
         ),
       ),
     );
   }
 }
-
-class _TopDropdown extends StatelessWidget {
-  const _TopDropdown({
-    required this.title,
-    required this.value,
-    required this.items,
-    required this.onChanged,
-  });
-
-  final String title;
-  final LeaveStatus value;
-  final List<DropdownMenuItem<LeaveStatus>> items;
-  final ValueChanged<LeaveStatus?> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      height: 40,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(8),
-      ),
-      child: DropdownButtonHideUnderline(
-        child: DropdownButton<LeaveStatus>(
-          value: value,
-          isExpanded: true,
-          alignment: AlignmentDirectional.centerEnd,
-          icon: const Icon(Icons.keyboard_arrow_down_rounded),
-          items: items,
-          onChanged: onChanged,
-          hint: Text(title),
-        ),
-      ),
-    );
-  }
-}
-

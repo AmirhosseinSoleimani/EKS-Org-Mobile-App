@@ -28,9 +28,7 @@ class SummaryCardActions extends StatelessWidget {
             onTap: isOperationLoading ? () {} : onOperation!,
           );
 
-    print(operationButton);
     if (primaryAction != null && operationButton != null) {
-
       return Row(
         children: [
           Flexible(flex: primaryActionFlex, child: primaryAction!),

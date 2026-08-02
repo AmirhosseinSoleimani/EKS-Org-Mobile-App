@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/common/constants/app_constants.dart';
+import 'package:eks_sana_plus_org/src/shared/error_handling/user_facing_error_message.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -236,35 +237,6 @@ class BottomSheetMessage {
   }
 
   static String _safeErrorMessage(String message) {
-    final normalized = message.trim();
-    if (normalized.isEmpty) {
-      return 'عملیات با خطا مواجه شد.';
-    }
-
-    if (_looksLikeTechnicalException(normalized)) {
-      return 'سرویس مورد نظر در دسترس نیست. لطفاً دوباره تلاش کنید یا با پشتیبانی تماس بگیرید.';
-    }
-
-    const maxLength = 280;
-    if (normalized.length <= maxLength) {
-      return normalized;
-    }
-
-    return '${normalized.substring(0, maxLength).trim()}...';
-  }
-
-  static bool _looksLikeTechnicalException(String message) {
-    final lower = message.toLowerCase();
-
-    return message.length > 600 ||
-        lower.contains('exception') ||
-        lower.contains('stack trace') ||
-        lower.contains('system.') ||
-        lower.contains('microsoft.') ||
-        lower.contains('entityframework') ||
-        lower.contains(' at ') ||
-        lower.contains('line ') ||
-        lower.contains('https://') ||
-        lower.contains('http://');
+    return UserFacingErrorMessage.resolve(message);
   }
 }

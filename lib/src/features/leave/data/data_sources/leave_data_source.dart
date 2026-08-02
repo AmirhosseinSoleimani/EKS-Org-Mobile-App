@@ -22,5 +22,6 @@ abstract class LeaveDataSource {
   Future<BaseResponse> rollbackStaffLeaveRequest(
     RollbackLeaveRequestParamModel param,
   );
-}
 
+  Future<BaseResponse> deleteLeaveRequest(int id);
+}

@@ -1,12 +1,8 @@
-import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_src.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filter_dropdown.dart';
 import 'package:flutter/material.dart';
 
 class SkillsCertificatesToolbar extends StatelessWidget {
@@ -25,8 +21,6 @@ class SkillsCertificatesToolbar extends StatelessWidget {
   final ValueChanged<bool?> onStatusChanged;
   final VoidCallback onReportTap;
 
-  static const _statusTitles = ['همه', 'فعال', 'غیرفعال'];
-
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
@@ -41,12 +35,14 @@ class SkillsCertificatesToolbar extends StatelessWidget {
               icon: Icons.filter_alt_outlined,
               onTap: onFilterTap,
             ),
-            EkDropDown(
-              _statusTitles,
-              label: 'وضعیت',
-               fillColor:Colors.white,
-              selectedItem: _statusTitle(activeFilter),
-              onItemValue: (value) => onStatusChanged(_statusValue(value)),
+            StatusFilterDropdown<bool?>(
+              value: activeFilter,
+              options: const [
+                StatusFilterOption(value: null, label: 'همه'),
+                StatusFilterOption(value: true, label: 'فعال'),
+                StatusFilterOption(value: false, label: 'غیرفعال'),
+              ],
+              onChanged: onStatusChanged,
             ),
           ],
         ),
@@ -62,15 +58,4 @@ class SkillsCertificatesToolbar extends StatelessWidget {
     );
   }
 
-  String _statusTitle(bool? value) {
-    if (value == true) return 'فعال';
-    if (value == false) return 'غیرفعال';
-    return 'همه';
-  }
-
-  bool? _statusValue(String value) {
-    if (value == 'فعال') return true;
-    if (value == 'غیرفعال') return false;
-    return null;
-  }
 }

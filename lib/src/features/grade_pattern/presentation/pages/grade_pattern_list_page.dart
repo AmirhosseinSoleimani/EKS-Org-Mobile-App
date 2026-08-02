@@ -11,6 +11,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_b
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filter_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/gestures.dart';
@@ -39,7 +40,6 @@ class _GradePatternListView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<GradePatternCubit>();
-    final theme = Theme.of(context);
 
     return BlocListener<GradePatternCubit, GradePatternState>(
       listener: (context, state) {
@@ -52,163 +52,188 @@ class _GradePatternListView extends StatelessWidget {
           },
         );
       },
-      child: Scaffold(
-        backgroundColor: const Color(0xFFF6F6F6),
-        appBar: const SimpleAppBar(title: 'الگوی گرید'),
-        floatingActionButton: FloatingActionButtonWidget(
-          title: 'افزودن الگوی گرید',
-          onPressed: () async {
-            final changed = await context.pushNamed<bool>(
-              GradePatternFormPage.name,
-              extra: _draftTemplate(cubit),
-            );
-            if (changed == true && context.mounted) {
-              cubit.fetchList(refresh: true);
-            }
-          },
-        ),
-        body: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppPadding.p16,
-                AppPadding.p16,
-                AppPadding.p16,
-                AppPadding.p8,
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: _TopFilterButton(
-                      title: 'فیلترها',
-                      isActive: cubit.filter.name?.trim().isNotEmpty == true,
-                      icon: Icons.tune_rounded,
-                      onTap: () => _showSearchSheet(context, cubit),
-                    ),
-                  ),
-                  Space.w12,
-                  Expanded(
-                    child: _TopFilterButton(
-                      title: 'وضعیت',
-                      isActive: cubit.filter.isActive != null,
-                      icon: Icons.keyboard_arrow_down_rounded,
-                      onTap: () => _showStatusSheet(context, cubit),
-                    ),
-                  ),
-                ],
-              ),
+      child: ValueListenableBuilder<bool?>(
+        valueListenable: cubit.pageStatusFilter,
+        builder: (context, pageStatusFilter, _) {
+          return Scaffold(
+            backgroundColor: const Color(0xFFF6F6F6),
+            appBar: const SimpleAppBar(title: 'الگوی گرید'),
+            floatingActionButton: FloatingActionButtonWidget(
+              title: 'افزودن الگوی گرید',
+              onPressed: () async {
+                final changed = await context.pushNamed<bool>(
+                  GradePatternFormPage.name,
+                  extra: _draftTemplate(cubit),
+                );
+                if (changed == true && context.mounted) {
+                  cubit.fetchList(refresh: true);
+                }
+              },
             ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppPadding.p16),
-              child: BlocBuilder<GradePatternCubit, GradePatternState>(
-                builder: (context, state) {
-                  return ReportButtonWidget(
-                    isLoading: cubit.isExporting,
-                    onTap: () {
-                      if (cubit.isExporting) return;
-                      cubit.exportReport();
-                    },
-                  );
-                },
-              ),
-            ),
-            Space.h12,
-            Expanded(
-              child: BlocBuilder<GradePatternCubit, GradePatternState>(
-                builder: (context, state) {
-                  return state.maybeWhen(
-                    loading: (_) => const Center(child: CircularProgressIndicator()),
-                    connectionError: (_, __) => _MessageState(
-                      icon: Icons.wifi_off_rounded,
-                      title: 'اتصال به اینترنت برقرار نیست',
-                      actionTitle: 'تلاش مجدد',
-                      onAction: () => cubit.fetchList(refresh: true),
-                    ),
-                    empty: (filter) => _MessageState(
-                      icon: Icons.inbox_outlined,
-                      title: filter.hasActiveFilters
-                          ? 'نتیجه‌ای برای فیلترهای انتخابی یافت نشد'
-                          : 'رکوردی یافت نشد',
-                      actionTitle: filter.hasActiveFilters ? 'پاک کردن فیلترها' : 'تلاش مجدد',
-                      onAction: filter.hasActiveFilters
-                          ? cubit.clearFilter
-                          : () => cubit.fetchList(refresh: true),
-                    ),
-                    orElse: () {
-                      final items = cubit.items;
-                      if (items.isEmpty) {
-                        return _MessageState(
-                          icon: Icons.inbox_outlined,
-                          title: 'رکوردی یافت نشد',
-                          actionTitle: 'بازخوانی',
-                          onAction: () => cubit.fetchList(refresh: true),
-                        );
-                      }
-
-                      final isLoadingMore = state.maybeWhen(
-                        loadingMore: (_, __, ___) => true,
-                        orElse: () => false,
-                      );
-                      return RefreshIndicator(
-                        onRefresh: () => cubit.fetchList(refresh: true),
-                        child: ScrollConfiguration(
-                          behavior: ScrollConfiguration.of(context).copyWith(
-                            dragDevices: {
-                              PointerDeviceKind.touch,
-                              PointerDeviceKind.mouse,
-                            },
-                          ),
-                          child: NotificationListener<ScrollNotification>(
-                            onNotification: (notification) {
-                              if (notification.metrics.pixels >=
-                                      notification.metrics.maxScrollExtent -
-                                          AppSize.s80 &&
-                                  cubit.hasMore &&
-                                  !isLoadingMore) {
-                                cubit.fetchList();
-                              }
-                              return false;
-                            },
-                            child: ListView.builder(
-                              padding: const EdgeInsets.fromLTRB(
-                                AppPadding.p16,
-                                AppPadding.p8,
-                                AppPadding.p16,
-                                AppPadding.p100,
-                              ),
-                              itemCount: items.length + (isLoadingMore ? 1 : 0),
-                              itemBuilder: (context, index) {
-                                if (index >= items.length) {
-                                  return const Padding(
-                                    padding: EdgeInsets.all(AppPadding.p16),
-                                    child: Center(
-                                      child: CircularProgressIndicator(),
-                                    ),
-                                  );
-                                }
-                                final item = items[index];
-                                return GradePatternCard(
-                                  item: item,
-                                  isDetailsLoading: cubit.loadingDetailId == item.id,
-                                  onDetails: () => _showDetails(context, cubit, item),
-                                  onOperations: () => _showOperationSheet(
-                                    context,
-                                    cubit,
-                                    item,
-                                  ),
-                                );
-                              },
-                            ),
-                          ),
+            body: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    AppPadding.p16,
+                    AppPadding.p16,
+                    AppPadding.p16,
+                    AppPadding.p8,
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: _TopFilterButton(
+                          title: 'فیلترها',
+                          isActive:
+                              cubit.filter.name?.trim().isNotEmpty == true,
+                          icon: Icons.tune_rounded,
+                          onTap: () => _showSearchSheet(context, cubit),
                         ),
+                      ),
+                      Space.w12,
+                      Expanded(
+                        child: StatusFilterDropdown<bool?>(
+                          value: pageStatusFilter,
+                          options: const [
+                            StatusFilterOption(value: null, label: 'همه'),
+                            StatusFilterOption(value: true, label: 'فعال'),
+                            StatusFilterOption(value: false, label: 'غیرفعال'),
+                          ],
+                          onChanged: cubit.setPageStatusFilter,
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: AppPadding.p16,
+                  ),
+                  child: BlocBuilder<GradePatternCubit, GradePatternState>(
+                    builder: (context, state) {
+                      return ReportButtonWidget(
+                        isLoading: cubit.isExporting,
+                        onTap: () {
+                          if (cubit.isExporting) return;
+                          cubit.exportReport();
+                        },
                       );
                     },
-                  );
-                },
-              ),
+                  ),
+                ),
+                Space.h12,
+                Expanded(
+                  child: BlocBuilder<GradePatternCubit, GradePatternState>(
+                    builder: (context, state) {
+                      return state.maybeWhen(
+                        loading: (_) => const Center(
+                          child: CircularProgressIndicator(),
+                        ),
+                        connectionError: (_, __) => _MessageState(
+                          icon: Icons.wifi_off_rounded,
+                          title: 'اتصال به اینترنت برقرار نیست',
+                          actionTitle: 'تلاش مجدد',
+                          onAction: () => cubit.fetchList(refresh: true),
+                        ),
+                        empty: (filter) => _MessageState(
+                          icon: Icons.inbox_outlined,
+                          title: filter.hasActiveFilters
+                              ? 'نتیجه‌ای برای فیلترهای انتخابی یافت نشد'
+                              : 'رکوردی یافت نشد',
+                          actionTitle: filter.hasActiveFilters
+                              ? 'پاک کردن فیلترها'
+                              : 'تلاش مجدد',
+                          onAction: filter.hasActiveFilters
+                              ? cubit.clearFilter
+                              : () => cubit.fetchList(refresh: true),
+                        ),
+                        orElse: () {
+                          final items = cubit.visibleItems;
+                          if (items.isEmpty) {
+                            return _MessageState(
+                              icon: Icons.inbox_outlined,
+                              title: cubit.items.isEmpty
+                                  ? 'رکوردی یافت نشد'
+                                  : 'رکوردی با وضعیت انتخاب‌شده یافت نشد',
+                              actionTitle: cubit.items.isEmpty
+                                  ? 'بازخوانی'
+                                  : 'نمایش همه',
+                              onAction: cubit.items.isEmpty
+                                  ? () => cubit.fetchList(refresh: true)
+                                  : () => cubit.setPageStatusFilter(null),
+                            );
+                          }
+
+                          final isLoadingMore = state.maybeWhen(
+                            loadingMore: (_, __, ___) => true,
+                            orElse: () => false,
+                          );
+                          return RefreshIndicator(
+                            onRefresh: () => cubit.fetchList(refresh: true),
+                            child: ScrollConfiguration(
+                              behavior:
+                                  ScrollConfiguration.of(context).copyWith(
+                                dragDevices: {
+                                  PointerDeviceKind.touch,
+                                  PointerDeviceKind.mouse,
+                                },
+                              ),
+                              child: NotificationListener<ScrollNotification>(
+                                onNotification: (notification) {
+                                  if (notification.metrics.pixels >=
+                                          notification.metrics.maxScrollExtent -
+                                              AppSize.s80 &&
+                                      cubit.hasMore &&
+                                      !isLoadingMore) {
+                                    cubit.fetchList();
+                                  }
+                                  return false;
+                                },
+                                child: ListView.builder(
+                                  padding: const EdgeInsets.fromLTRB(
+                                    AppPadding.p16,
+                                    AppPadding.p8,
+                                    AppPadding.p16,
+                                    AppPadding.p100,
+                                  ),
+                                  itemCount:
+                                      items.length + (isLoadingMore ? 1 : 0),
+                                  itemBuilder: (context, index) {
+                                    if (index >= items.length) {
+                                      return const Padding(
+                                        padding: EdgeInsets.all(AppPadding.p16),
+                                        child: Center(
+                                          child: CircularProgressIndicator(),
+                                        ),
+                                      );
+                                    }
+                                    final item = items[index];
+                                    return GradePatternCard(
+                                      item: item,
+                                      isDetailsLoading:
+                                          cubit.loadingDetailId == item.id,
+                                      onDetails: () =>
+                                          _showDetails(context, cubit, item),
+                                      onOperations: () => _showOperationSheet(
+                                        context,
+                                        cubit,
+                                        item,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          );
+        },
       ),
     );
   }
@@ -346,57 +371,6 @@ class _GradePatternListView extends StatelessWidget {
     );
   }
 
-  void _showStatusSheet(BuildContext context, GradePatternCubit cubit) {
-    showModalBottomSheet<void>(
-      context: context,
-      useSafeArea: true,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
-      ),
-      builder: (context) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppPadding.p16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _StatusTile(
-                title: 'همه',
-                onTap: () {
-                  Navigator.of(context).pop();
-                  cubit.applyFilter(cubit.filter.copyWith(
-                    clearIsActive: true,
-                    skip: 0,
-                  ));
-                },
-              ),
-              _StatusTile(
-                title: 'فعال',
-                onTap: () {
-                  Navigator.of(context).pop();
-                  cubit.applyFilter(cubit.filter.copyWith(
-                    isActive: true,
-                    skip: 0,
-                  ));
-                },
-              ),
-              _StatusTile(
-                title: 'غیرفعال',
-                onTap: () {
-                  Navigator.of(context).pop();
-                  cubit.applyFilter(cubit.filter.copyWith(
-                    isActive: false,
-                    skip: 0,
-                  ));
-                },
-              ),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
   Future<void> _showDetails(
     BuildContext context,
     GradePatternCubit cubit,
@@ -513,22 +487,6 @@ class _TopFilterButton extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _StatusTile extends StatelessWidget {
-  const _StatusTile({required this.title, required this.onTap});
-
-  final String title;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: Text(title),
-      onTap: onTap,
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(AppSize.s8)),
     );
   }
 }

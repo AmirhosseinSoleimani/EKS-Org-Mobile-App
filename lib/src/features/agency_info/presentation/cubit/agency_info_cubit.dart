@@ -67,6 +67,19 @@ class AgencyInfoCubit extends Cubit<AgencyInfoState> {
   AgencyInfoStateData get _data => state.data;
   bool get hasRetryAction => _retryAction != null;
 
+  bool? pageStatusFilter;
+
+  List<AgencyInfoEntity> get visibleItems {
+    final status = pageStatusFilter;
+    if (status == null) return _data.items;
+    return _data.items.where((item) => item.isActive == status).toList();
+  }
+
+  void setPageStatusFilter(bool? value) {
+    pageStatusFilter = value;
+    emit(AgencyInfoState(status: state.status, data: _data));
+  }
+
   void retryLastAction() => _retryAction?.call();
 
   Future<void> fetchList({bool refresh = false}) async {
@@ -134,6 +147,7 @@ class AgencyInfoCubit extends Cubit<AgencyInfoState> {
   }
 
   Future<void> clearFilter() async {
+    pageStatusFilter = null;
     emit(AgencyInfoState(
       status: AgencyInfoViewStatus.filterLoading,
       data: _data.copyWith(

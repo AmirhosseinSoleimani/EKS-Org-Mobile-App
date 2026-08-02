@@ -1,7 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/cubit/skills_certificates_cubit.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,16 +15,6 @@ class SkillsCertificatesFilterSheet extends StatefulWidget {
 
 class _SkillsCertificatesFilterSheetState
     extends State<SkillsCertificatesFilterSheet> {
-  static const _statusTitles = ['همه', 'فعال', 'غیرفعال'];
-
-  bool? _isActive;
-
-  @override
-  void initState() {
-    super.initState();
-    _isActive = context.read<SkillsCertificatesCubit>().state.data.activeFilter;
-  }
-
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -85,7 +74,7 @@ class _SkillsCertificatesFilterSheetState
 
   void _apply() {
     FocusScope.of(context).unfocus();
-    context.read<SkillsCertificatesCubit>().changeActiveFilter(_isActive);
+    context.read<SkillsCertificatesCubit>().submitFilters();
     Navigator.of(context).pop();
   }
 
@@ -95,17 +84,6 @@ class _SkillsCertificatesFilterSheetState
     Navigator.of(context).pop();
   }
 
-  String _statusTitle(bool? value) {
-    if (value == true) return 'فعال';
-    if (value == false) return 'غیرفعال';
-    return 'همه';
-  }
-
-  bool? _statusValue(String value) {
-    if (value == 'فعال') return true;
-    if (value == 'غیرفعال') return false;
-    return null;
-  }
 }
 
 class _BottomActions extends StatelessWidget {

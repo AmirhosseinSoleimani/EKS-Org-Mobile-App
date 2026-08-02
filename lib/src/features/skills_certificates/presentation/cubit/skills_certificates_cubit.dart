@@ -52,6 +52,12 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> {
 
   SkillsCertificatesStateData get _data => state.data;
 
+  List<SkillCertificateEntity> get visibleItems {
+    final status = _data.activeFilter;
+    if (status == null) return _data.items;
+    return _data.items.where((item) => item.isActive == status).toList();
+  }
+
   Future<void> init() => fetchSkills();
 
   void retryLastAction() => _retryAction?.call();
@@ -133,13 +139,10 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> {
     await fetchSkills();
   }
 
-  Future<void> changeActiveFilter(bool? value) async {
+  void changeActiveFilter(bool? value) {
     emit(SkillsCertificatesState.loaded(
-      data: _data.copyWith(
-        activeFilter: value,
-      ),
+      data: _data.copyWith(activeFilter: value),
     ));
-    await fetchSkills();
   }
 
   Future<SkillCertificateEntity?> getSkillById(int id) async {
@@ -536,7 +539,6 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> {
       skip: _skip,
       pageSize: pageSize ?? _pageSize,
       title: titleFilterController.text,
-      isActive: _data.activeFilter,
     );
   }
 

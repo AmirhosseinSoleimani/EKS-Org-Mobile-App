@@ -14,6 +14,7 @@ import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/e
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filter_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/gestures.dart';
@@ -79,7 +80,6 @@ class _EmdadUnitListView extends StatelessWidget {
                   AppPadding.p8,
                 ),
                 child: BlocBuilder<EmdadUnitCubit, EmdadUnitState>(
-                  buildWhen: (previous, current) => previous.filter != current.filter,
                   builder: (context, state) {
                     return Row(
                       children: [
@@ -92,10 +92,14 @@ class _EmdadUnitListView extends StatelessWidget {
                         ),
                         Space.w12,
                         Expanded(
-                          child: _TopFilterButton(
-                            title: _statusTitle(state.filter.isActive),
-                            isActive: state.filter.isActive != null,
-                            onTap: () => _showStatusSheet(context, cubit, state.filter),
+                          child: StatusFilterDropdown<bool?>(
+                            value: cubit.pageStatusFilter,
+                            options: const [
+                              StatusFilterOption(value: null, label: 'همه'),
+                              StatusFilterOption(value: true, label: 'فعال'),
+                              StatusFilterOption(value: false, label: 'غیرفعال'),
+                            ],
+                            onChanged: cubit.setPageStatusFilter,
                           ),
                         ),
                       ],
@@ -117,6 +121,7 @@ class _EmdadUnitListView extends StatelessWidget {
                         onAction: cubit.retryLastAction,
                       );
                     }
+                    final items = cubit.visibleItems;
                     if (state.items.isEmpty) {
                       return _MessageState(
                         icon: Icons.inbox_outlined,
@@ -127,6 +132,15 @@ class _EmdadUnitListView extends StatelessWidget {
                         onAction: state.filter.isActiveFilter
                             ? cubit.clearFilter
                             : () => cubit.fetchList(refresh: true),
+                      );
+                    }
+
+                    if (items.isEmpty) {
+                      return _MessageState(
+                        icon: Icons.inbox_outlined,
+                        title: 'رکوردی با وضعیت انتخاب‌شده یافت نشد',
+                        actionTitle: 'نمایش همه',
+                        onAction: () => cubit.setPageStatusFilter(null),
                       );
                     }
 
@@ -149,16 +163,16 @@ class _EmdadUnitListView extends StatelessWidget {
                             AppPadding.p16,
                             AppPadding.p100,
                           ),
-                          itemCount: state.items.length +
+                          itemCount: items.length +
                               (state.status == EmdadUnitViewStatus.loadingMore ? 1 : 0),
                           itemBuilder: (context, index) {
-                            if (index >= state.items.length) {
+                            if (index >= items.length) {
                               return const Padding(
                                 padding: EdgeInsets.all(AppPadding.p16),
                                 child: Center(child: CircularProgressIndicator()),
                               );
                             }
-                            final item = state.items[index];
+                            final item = items[index];
                             return EmdadUnitCard(
                               item: item,
                               onAction: () => _showActionSheet(context, item, cubit),
@@ -190,43 +204,6 @@ class _EmdadUnitListView extends StatelessWidget {
         initialFilter: cubit.state.filter,
         onApply: cubit.applyFilter,
         onClear: cubit.clearFilter,
-      ),
-    );
-  }
-
-  void _showStatusSheet(
-    BuildContext context,
-    EmdadUnitCubit cubit,
-    EmdadUnitFilterParamEntity filter,
-  ) {
-    showModalBottomSheet<void>(
-      context: context,
-      useSafeArea: true,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
-      ),
-      builder: (context) => SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppPadding.p16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              _StatusTile(title: 'همه', onTap: () {
-                Navigator.of(context).pop();
-                cubit.applyFilter(filter.copyWith(clearIsActive: true, skip: 0));
-              }),
-              _StatusTile(title: 'فعال', onTap: () {
-                Navigator.of(context).pop();
-                cubit.applyFilter(filter.copyWith(isActive: true, skip: 0));
-              }),
-              _StatusTile(title: 'غیرفعال', onTap: () {
-                Navigator.of(context).pop();
-                cubit.applyFilter(filter.copyWith(isActive: false, skip: 0));
-              }),
-            ],
-          ),
-        ),
       ),
     );
   }
@@ -328,12 +305,6 @@ class _EmdadUnitListView extends StatelessWidget {
       ),
     );
   }
-
-  String _statusTitle(bool? value) {
-    if (value == true) return 'فعال';
-    if (value == false) return 'غیرفعال';
-    return 'وضعیت';
-  }
 }
 
 class _TopFilterButton extends StatelessWidget {
@@ -396,24 +367,6 @@ class _TopFilterButton extends StatelessWidget {
           ],
         ),
       ),
-    );
-  }
-}
-
-class _StatusTile extends StatelessWidget {
-  const _StatusTile({
-    required this.title,
-    required this.onTap,
-  });
-
-  final String title;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return ListTile(
-      title: BodyMediumText(text: title),
-      onTap: onTap,
     );
   }
 }

@@ -45,5 +45,9 @@ class LeaveDataSourceImpl extends LeaveDataSource {
   ) async {
     return _service.rollbackStaffLeaveRequest(param.toJson());
   }
-}
 
+  @override
+  Future<BaseResponse> deleteLeaveRequest(int id) async {
+    return _service.deleteLeaveRequest(id);
+  }
+}

@@ -2,6 +2,8 @@ import 'package:eks_sana_plus_org/src/features/leave/domain/entities/leave_list_
 import 'package:eks_sana_plus_org/src/features/leave/presentation/widgets/leave_status_badge.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/color_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_action_tile.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card_models.dart';
@@ -12,10 +14,12 @@ class LeaveListCard extends StatelessWidget {
     super.key,
     required this.item,
     required this.onDetailsTap,
+    required this.onDelete,
   });
 
   final LeaveListItemEntity item;
   final VoidCallback onDetailsTap;
+  final VoidCallback onDelete;
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +71,7 @@ class LeaveListCard extends StatelessWidget {
           date: item.insertDateTimeJalali,
         ),
       ],
+      onOperation: () => _showActionsSheet(context),
       primaryAction: InkwellButtonWidget(
         title: 'مشاهده جزئیات',
         backgroundColor: ColorLightManager.primary,
@@ -78,7 +83,23 @@ class LeaveListCard extends StatelessWidget {
         ),
         onTap: onDetailsTap,
       ),
+    );
+  }
 
+  void _showActionsSheet(BuildContext context) {
+    BottomSheetMessage.showCustom(
+      context: context,
+      backgroundColor: Colors.white,
+      content: BottomSheetActionTile(
+        icon: Icons.delete_forever_outlined,
+        title: 'حذف',
+        isDestructive: true,
+        onTap: () {
+          Navigator.of(context).pop();
+          onDelete();
+        },
+      ),
+      actionWidget: const SizedBox.shrink(),
     );
   }
 

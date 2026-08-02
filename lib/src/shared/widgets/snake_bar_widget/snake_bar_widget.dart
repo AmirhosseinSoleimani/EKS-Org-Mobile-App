@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/shared/extensions/string_extensions.dart';
+import 'package:eks_sana_plus_org/src/shared/error_handling/user_facing_error_message.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:flutter/material.dart';
 
@@ -63,7 +64,7 @@ class SnakeBarWidget {
   }) {
     _showSnackBarMessage(
       context: context,
-      message: message,
+      message: UserFacingErrorMessage.resolve(message),
       backgroundColor: Theme.of(context).colorScheme.inversePrimary,
       textColor: Theme.of(context).colorScheme.error,
       snackBarBehavior: snackBarBehavior,

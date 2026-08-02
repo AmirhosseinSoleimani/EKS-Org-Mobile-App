@@ -22,5 +22,6 @@ abstract class LeaveRepository {
   Future<ApiResult<void>> rollbackStaffLeaveRequest(
     RollbackLeaveRequestParamEntity param,
   );
-}
 
+  Future<ApiResult<void>> deleteLeaveRequest(int id);
+}

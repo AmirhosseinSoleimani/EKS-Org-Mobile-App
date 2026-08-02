@@ -32,24 +32,11 @@ class DeleteConfirmSheet extends StatelessWidget {
 
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          AppPadding.p24,
-          AppPadding.p8,
-          AppPadding.p24,
-          AppPadding.p24,
-        ),
+        padding: const EdgeInsets.symmetric(horizontal: 16),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Container(
-              width: AppSize.s40,
-              height: AppSize.s4,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.primary.withOpacity(0.28),
-                borderRadius: BorderRadius.circular(AppSize.s8),
-              ),
-            ),
-            Space.h24,
+
             Container(
               width: AppSize.s64,
               height: AppSize.s64,

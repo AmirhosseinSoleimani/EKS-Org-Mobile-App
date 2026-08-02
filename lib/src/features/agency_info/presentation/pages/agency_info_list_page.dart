@@ -1,6 +1,5 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_entity.dart';
-import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/agency_info_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/agency_info_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/add_agency_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_action_pages.dart';
@@ -16,10 +15,10 @@ import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_b
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filter_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
@@ -147,8 +146,6 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
                   AppPadding.p8,
                 ),
                 child: BlocBuilder<AgencyInfoCubit, AgencyInfoState>(
-                  buildWhen: (previous, current) =>
-                  previous.data.filter != current.data.filter,
                   builder: (context, state) {
                     return FiltersRow(
                       filters: [
@@ -157,19 +154,14 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
                           icon: Icons.filter_alt_outlined,
                           onTap: () => _showFilter(context, cubit),
                         ),
-                        SizedBox(
-                          width: AppSize.s120,
-                          child: EkDropDown(
-                            const ['همه', 'فعال', 'غیرفعال'],
-                            label: 'وضعیت',
-                            selectedItem:
-                                _statusDropDownTitle(state.data.filter.isActive),
-                            onItemValue: (value) => _applyStatusFilter(
-                              cubit,
-                              state.data.filter,
-                              value,
-                            ),
-                          ),
+                        StatusFilterDropdown<bool?>(
+                          value: cubit.pageStatusFilter,
+                          options: const [
+                            StatusFilterOption(value: null, label: 'همه'),
+                            StatusFilterOption(value: true, label: 'فعال'),
+                            StatusFilterOption(value: false, label: 'غیرفعال'),
+                          ],
+                          onChanged: cubit.setPageStatusFilter,
                         ),
                       ],
                     );
@@ -179,10 +171,12 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
               Padding(
                 padding: const EdgeInsets.symmetric(
                   vertical: AppPadding.p18,
-                  horizontal: AppPadding.p16,),
+                  horizontal: AppPadding.p16,
+                ),
                 child: BlocBuilder<AgencyInfoCubit, AgencyInfoState>(
                   buildWhen: (previous, current) =>
-                  previous.data.isReportLoading != current.data.isReportLoading,
+                      previous.data.isReportLoading !=
+                      current.data.isReportLoading,
                   builder: (context, state) {
                     return ReportButtonWidget(
                       isLoading: state.data.isReportLoading,
@@ -208,10 +202,13 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
     );
   }
 
-  Widget _buildContent(BuildContext context,
-      AgencyInfoCubit cubit,
-      AgencyInfoState state,) {
+  Widget _buildContent(
+    BuildContext context,
+    AgencyInfoCubit cubit,
+    AgencyInfoState state,
+  ) {
     final data = state.data;
+    final items = cubit.visibleItems;
 
     if (data.isInitialLoading && data.items.isEmpty) {
       return const Center(child: CircularProgressIndicator());
@@ -236,7 +233,7 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
       );
     }
 
-    if (data.items.isEmpty) {
+    if (items.isEmpty) {
       return LayoutBuilder(
         builder: (context, constraints) {
           return RefreshIndicator(
@@ -265,16 +262,16 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
           AppPadding.p16,
           AppPadding.p100,
         ),
-        itemCount: data.items.length + (data.isPaginationLoading ? 1 : 0),
+        itemCount: items.length + (data.isPaginationLoading ? 1 : 0),
         separatorBuilder: (_, __) => Space.h12,
         itemBuilder: (context, index) {
-          if (index >= data.items.length) {
+          if (index >= items.length) {
             return const Padding(
               padding: EdgeInsets.all(AppPadding.p16),
               child: Center(child: CircularProgressIndicator()),
             );
           }
-          final item = data.items[index];
+          final item = items[index];
           return AgencyInfoSummaryCard(
             item: item,
             onTap: () {}, //=> _openDetails(context, item),
@@ -439,29 +436,6 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
     return fallback;
   }
 
-  void _applyStatusFilter(
-    AgencyInfoCubit cubit,
-    AgencyInfoFilterParamEntity filter,
-    String value,
-  ) {
-    if (value == 'فعال') {
-      cubit.applyFilter(filter.copyWith(isActive: true, skip: 0));
-      return;
-    }
-
-    if (value == 'غیرفعال') {
-      cubit.applyFilter(filter.copyWith(isActive: false, skip: 0));
-      return;
-    }
-
-    cubit.applyFilter(filter.copyWith(clearIsActive: true, skip: 0));
-  }
-
-  String _statusDropDownTitle(bool? value) {
-    if (value == true) return 'فعال';
-    if (value == false) return 'غیرفعال';
-    return 'همه';
-  }
 }
 
 class _MessageState extends StatelessWidget {

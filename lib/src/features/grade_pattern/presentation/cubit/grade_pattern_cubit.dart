@@ -17,6 +17,7 @@ import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_enum_item_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/manager/current_session_manager.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -73,8 +74,19 @@ class GradePatternCubit extends Cubit<GradePatternState> {
   int? loadingDetailId;
   int? deletingItemId;
   bool _isExporting = false;
+  final ValueNotifier<bool?> pageStatusFilter = ValueNotifier<bool?>(null);
 
   bool get isExporting => _isExporting;
+
+  List<GradePatternEntity> get visibleItems {
+    final status = pageStatusFilter.value;
+    if (status == null) return items;
+    return items.where((item) => item.isActive == status).toList();
+  }
+
+  void setPageStatusFilter(bool? value) {
+    pageStatusFilter.value = value;
+  }
 
   Future<void> fetchList({bool refresh = false}) async {
     final nextSkip = refresh ? 0 : items.length;
@@ -123,6 +135,7 @@ class GradePatternCubit extends Cubit<GradePatternState> {
   }
 
   Future<void> clearFilter() async {
+    pageStatusFilter.value = null;
     filter = const GradePatternFilterParamEntity(pageSize: _pageSize);
     await fetchList(refresh: true);
   }
@@ -512,5 +525,11 @@ class GradePatternCubit extends Cubit<GradePatternState> {
 
   void _safeEmit(GradePatternState state) {
     if (!isClosed) emit(state);
+  }
+
+  @override
+  Future<void> close() {
+    pageStatusFilter.dispose();
+    return super.close();
   }
 }

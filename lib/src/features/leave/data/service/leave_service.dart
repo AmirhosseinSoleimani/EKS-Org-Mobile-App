@@ -37,9 +37,11 @@ abstract class LeaveService {
     @Body() Map<String, dynamic> body,
   );
 
+  @DELETE('/api/StaffLeave/DeleteByID')
+  Future<BaseResponse> deleteLeaveRequest(@Query('id') int id);
+
   @GET('/api/AgencyInfo/GetAgencyByName')
   Future<BaseListResponse<LeaveListItemModel>> getAgencyByName(
     @Query('Title') String title,
   );
 }
-

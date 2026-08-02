@@ -6,11 +6,13 @@ import 'package:eks_sana_plus_org/src/features/leave/domain/entities/param/chang
 import 'package:eks_sana_plus_org/src/features/leave/domain/entities/param/get_leave_reports_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/leave/domain/entities/param/rollback_leave_request_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/leave/domain/use_cases/change_leave_status_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/leave/domain/use_cases/delete_leave_request_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/leave/domain/use_cases/get_leave_details_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/leave/domain/use_cases/get_leave_reasons_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/leave/domain/use_cases/get_leave_reports_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/leave/domain/use_cases/rollback_leave_request_use_case.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/error_handling/user_facing_error_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -26,6 +28,7 @@ class LeaveCubit extends Cubit<LeaveState> {
     this._getLeaveReasonsUseCase,
     this._changeLeaveStatusUseCase,
     this._rollbackLeaveRequestUseCase,
+    this._deleteLeaveRequestUseCase,
   ) : super(const LeaveState());
 
   final GetLeaveReportsUseCase _getLeaveReportsUseCase;
@@ -33,6 +36,7 @@ class LeaveCubit extends Cubit<LeaveState> {
   final GetLeaveReasonsUseCase _getLeaveReasonsUseCase;
   final ChangeLeaveStatusUseCase _changeLeaveStatusUseCase;
   final RollbackLeaveRequestUseCase _rollbackLeaveRequestUseCase;
+  final DeleteLeaveRequestUseCase _deleteLeaveRequestUseCase;
 
   final TextEditingController agencyCodeController = TextEditingController();
   final TextEditingController emdadgarNameController = TextEditingController();
@@ -108,7 +112,11 @@ class LeaveCubit extends Cubit<LeaveState> {
         emit(
           state.copyWith(
             items: items,
-            filteredItems: _filterItems(items, state.searchText),
+            filteredItems: _filterItems(
+              items,
+              state.searchText,
+              state.selectedStatus,
+            ),
             isListLoading: false,
           ),
         );
@@ -243,8 +251,12 @@ class LeaveCubit extends Cubit<LeaveState> {
   }
 
   void onStatusChanged(LeaveStatus status) {
-    emit(state.copyWith(selectedStatus: status));
-    getLeaveReports();
+    emit(
+      state.copyWith(
+        selectedStatus: status,
+        filteredItems: _filterItems(state.items, state.searchText, status),
+      ),
+    );
   }
 
   void onTypeChanged(LeaveType type) {
@@ -276,7 +288,7 @@ class LeaveCubit extends Cubit<LeaveState> {
     emit(
       state.copyWith(
         searchText: text,
-        filteredItems: _filterItems(state.items, text),
+        filteredItems: _filterItems(state.items, text, state.selectedStatus),
       ),
     );
   }
@@ -306,6 +318,65 @@ class LeaveCubit extends Cubit<LeaveState> {
       ),
     );
     await getLeaveReports();
+  }
+
+  Future<bool> deleteRequest(int id) async {
+    if (state.isActionLoading) return false;
+
+    emit(state.copyWith(isActionLoading: true, clearLastMessage: true));
+    final result = await _deleteLeaveRequestUseCase(id);
+
+    return result.when(
+      success: (data, failures, resultCode) {
+        final remainingItems =
+            state.items.where((item) => item.id != id).toList();
+        emit(
+          state.copyWith(
+            items: remainingItems,
+            filteredItems: _filterItems(
+              remainingItems,
+              state.searchText,
+              state.selectedStatus,
+            ),
+            isActionLoading: false,
+            lastMessage: _message(
+              'عملیات موفق',
+              'درخواست مرخصی با موفقیت حذف شد',
+            ),
+          ),
+        );
+        return true;
+      },
+      failure: (error, failures) {
+        emit(
+          state.copyWith(
+            isActionLoading: false,
+            lastMessage: _message(
+              'خطا در حذف مرخصی',
+              failures ?? 'حذف درخواست مرخصی با خطا مواجه شد.',
+            ),
+          ),
+        );
+        return false;
+      },
+      expireToken: () {
+        emit(state.copyWith(isActionLoading: false));
+        return false;
+      },
+      connectionError: () {
+        emit(
+          state.copyWith(
+            isActionLoading: false,
+            hasConnectionError: true,
+            lastMessage: _message(
+              'خطا در حذف مرخصی',
+              UserFacingErrorMessage.serviceUnavailable,
+            ),
+          ),
+        );
+        return false;
+      },
+    );
   }
 
   Future<void> _changeStatus({
@@ -362,8 +433,6 @@ class LeaveCubit extends Cubit<LeaveState> {
       agencyCode: int.tryParse(state.agencyCode),
       emdadgarFullName: state.emdadgarFullName,
       type: state.selectedType == LeaveType.all ? null : state.selectedType.code,
-      status:
-          state.selectedStatus == LeaveStatus.all ? null : state.selectedStatus.code,
       mainReason: state.selectedMainReason?.id == 0
           ? null
           : state.selectedMainReason?.id,
@@ -374,11 +443,16 @@ class LeaveCubit extends Cubit<LeaveState> {
   List<LeaveListItemEntity> _filterItems(
     List<LeaveListItemEntity> items,
     String query,
+    LeaveStatus status,
   ) {
     final normalized = query.trim().toLowerCase();
-    if (normalized.isEmpty) return items;
 
     return items.where((item) {
+      final matchesStatus =
+          status == LeaveStatus.all || item.statusCode == status.code;
+      if (!matchesStatus) return false;
+      if (normalized.isEmpty) return true;
+
       return [
         item.agencyName,
         item.agencyCode?.toString(),
@@ -393,7 +467,11 @@ class LeaveCubit extends Cubit<LeaveState> {
   }
 
   BottomSheetMessageModel _message(String title, String message) {
-    return BottomSheetMessageModel(title: title, message: message);
+    final isError = title.contains('خطا');
+    return BottomSheetMessageModel(
+      title: title,
+      message: isError ? UserFacingErrorMessage.resolve(message) : message,
+    );
   }
 
   @override

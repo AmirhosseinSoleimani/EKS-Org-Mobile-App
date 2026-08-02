@@ -62,6 +62,19 @@ class EmdadUnitCubit extends Cubit<EmdadUnitState> {
   static const int _pageSize = 10;
   static const int maxImageSize = 1024 * 1024;
 
+  bool? pageStatusFilter;
+
+  List<EmdadUnitEntity> get visibleItems {
+    final status = pageStatusFilter;
+    if (status == null) return state.items;
+    return state.items.where((item) => item.isActive == status).toList();
+  }
+
+  void setPageStatusFilter(bool? value) {
+    pageStatusFilter = value;
+    emit(state.copyWith());
+  }
+
   void retryLastAction() => _retryAction?.call();
 
   Future<void> fetchList({bool refresh = false}) async {
@@ -106,6 +119,7 @@ class EmdadUnitCubit extends Cubit<EmdadUnitState> {
   }
 
   Future<void> clearFilter() async {
+    pageStatusFilter = null;
     nameController.clear();
     agencyController.clear();
     vehicleController.clear();

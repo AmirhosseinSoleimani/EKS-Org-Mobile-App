@@ -699,11 +699,12 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
     fromDateController.clear();
     toDateController.clear();
     seatTypeFilter = null;
+    emit(state.copyWith(clearActiveFilter: true));
 
     fetchPlans();
   }
 
-  Future<void> changeActiveFilter(bool? value) async {
+  void changeActiveFilter(bool? value) {
     emit(
       state.copyWith(
         activeFilter: value,
@@ -711,8 +712,6 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
         clearMessage: true,
       ),
     );
-
-    await fetchPlans();
   }
 
   void setSeatTypeFilter(int? value) {
@@ -764,7 +763,6 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
       skip: _skip,
       pageSize: pageSize ?? _pageSize,
       title: titleController.text,
-      isActive: state.activeFilter,
       emdadUnitName: emdadUnitController.text,
       shiftTitle: shiftController.text,
       specialPlanTitle: specialPlanController.text,

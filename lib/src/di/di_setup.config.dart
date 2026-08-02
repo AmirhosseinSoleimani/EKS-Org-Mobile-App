@@ -424,6 +424,8 @@ import '../features/leave/data/service/leave_service.dart' as _i233;
 import '../features/leave/domain/repositories/leave_repository.dart' as _i217;
 import '../features/leave/domain/use_cases/change_leave_status_use_case.dart'
     as _i283;
+import '../features/leave/domain/use_cases/delete_leave_request_use_case.dart'
+    as _i680;
 import '../features/leave/domain/use_cases/get_leave_details_use_case.dart'
     as _i70;
 import '../features/leave/domain/use_cases/get_leave_reasons_use_case.dart'
@@ -2190,6 +2192,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i283.ChangeLeaveStatusUseCase>(
     () => _i283.ChangeLeaveStatusUseCase(gh<_i217.LeaveRepository>()),
   );
+  gh.lazySingleton<_i680.DeleteLeaveRequestUseCase>(
+    () => _i680.DeleteLeaveRequestUseCase(gh<_i217.LeaveRepository>()),
+  );
   gh.lazySingleton<_i70.GetLeaveDetailsUseCase>(
     () => _i70.GetLeaveDetailsUseCase(gh<_i217.LeaveRepository>()),
   );
@@ -2357,15 +2362,6 @@ _i174.GetIt $initGetIt(
       gh<_i955.GetRequestStatusHistoryUseCase>(),
     ),
   );
-  gh.factory<_i710.LeaveCubit>(
-    () => _i710.LeaveCubit(
-      gh<_i75.GetLeaveReportsUseCase>(),
-      gh<_i70.GetLeaveDetailsUseCase>(),
-      gh<_i706.GetLeaveReasonsUseCase>(),
-      gh<_i283.ChangeLeaveStatusUseCase>(),
-      gh<_i918.RollbackLeaveRequestUseCase>(),
-    ),
-  );
   gh.factory<_i772.VehicleInfoCubit>(
     () => _i772.VehicleInfoCubit(
       gh<_i579.GetVehicleInfoListUseCase>(),
@@ -2455,6 +2451,16 @@ _i174.GetIt $initGetIt(
       gh<_i301.DelegateCartableMessageUseCase>(),
       gh<_i369.SetSelectedRequestItemUseCase>(),
       gh<_i657.ArchiveCartableMessageUseCase>(),
+    ),
+  );
+  gh.factory<_i710.LeaveCubit>(
+    () => _i710.LeaveCubit(
+      gh<_i75.GetLeaveReportsUseCase>(),
+      gh<_i70.GetLeaveDetailsUseCase>(),
+      gh<_i706.GetLeaveReasonsUseCase>(),
+      gh<_i283.ChangeLeaveStatusUseCase>(),
+      gh<_i918.RollbackLeaveRequestUseCase>(),
+      gh<_i680.DeleteLeaveRequestUseCase>(),
     ),
   );
   gh.factory<_i566.LoginCubit>(

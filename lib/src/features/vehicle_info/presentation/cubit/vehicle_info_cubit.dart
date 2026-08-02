@@ -10,6 +10,7 @@ import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/use_cases/veh
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/utils/vehicle_info_excel_report_factory.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -53,6 +54,18 @@ class VehicleInfoCubit extends Cubit<VehicleInfoState> {
 
   VehicleInfoStateData get _data => state.data;
   bool get hasRetryAction => _retryAction != null;
+
+  final ValueNotifier<bool?> pageStatusFilter = ValueNotifier<bool?>(null);
+
+  List<VehicleInfoEntity> get visibleItems {
+    final status = pageStatusFilter.value;
+    if (status == null) return _data.items;
+    return _data.items.where((item) => item.isActive == status).toList();
+  }
+
+  void setPageStatusFilter(bool? value) {
+    pageStatusFilter.value = value;
+  }
 
   void retryLastAction() => _retryAction?.call();
 
@@ -101,6 +114,7 @@ class VehicleInfoCubit extends Cubit<VehicleInfoState> {
   }
 
   Future<void> clearFilter() async {
+    pageStatusFilter.value = null;
     chassisController.clear();
     engineController.clear();
     imeiController.clear();
@@ -484,6 +498,7 @@ class VehicleInfoCubit extends Cubit<VehicleInfoState> {
     imeiController.dispose();
     licensePlateController.dispose();
     toolsSearchController.dispose();
+    pageStatusFilter.dispose();
     return super.close();
   }
 }

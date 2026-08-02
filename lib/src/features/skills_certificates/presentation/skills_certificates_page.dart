@@ -2,11 +2,12 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/skills_certificates/domain/entities/skill_certificate_entity.dart';
 import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/cubit/skills_certificates_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/widgets/skill_certificate_card.dart';
-import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/widgets/skills_certificates_toolbar.dart';
 import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/widgets/skills_certificates_bottom_sheets.dart';
+import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/widgets/skills_certificates_toolbar.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
@@ -112,7 +113,8 @@ class _SkillsCertificatesView extends StatelessWidget {
                         return const Center(child: CircularProgressIndicator());
                       }
 
-                      if (data.items.isEmpty) {
+                      final items = cubit.visibleItems;
+                      if (items.isEmpty) {
                         return const Center(child: EmptyListWidget());
                       }
 
@@ -125,10 +127,10 @@ class _SkillsCertificatesView extends StatelessWidget {
                             AppPadding.p16,
                             AppPadding.p32,
                           ),
-                          itemCount: data.items.length + (data.hasMore ? 1 : 0),
+                          itemCount: items.length + (data.hasMore ? 1 : 0),
                           separatorBuilder: (_, __) => Space.h12,
                           itemBuilder: (context, index) {
-                            if (index == data.items.length) {
+                            if (index == items.length) {
                               return Padding(
                                 padding: const EdgeInsets.all(AppPadding.p16),
                                 child: OutlinedButton.icon(
@@ -139,7 +141,7 @@ class _SkillsCertificatesView extends StatelessWidget {
                               );
                             }
 
-                            final item = data.items[index];
+                            final item = items[index];
                             return SkillCertificateCard(
                               item: item,
                               onLoadServices: () => cubit.loadServices(item),
@@ -182,34 +184,16 @@ class _SkillsCertificatesView extends StatelessWidget {
   }) {
     BottomSheetMessage.showCustom(
       context: context,
-      content: Padding(
-        padding: const EdgeInsets.all(AppPadding.p16),
-        child: Text(
-          'آیا مهارت ${skill.displayTitle} حذف شود؟',
-          textAlign: TextAlign.center,
-          style: Theme.of(context).textTheme.titleMedium,
-        ),
+      content: DeleteConfirmSheet(
+        title: 'حذف گواهی نامه ریزی',
+        message: 'آیا مهارت ${skill.displayTitle} حذف شود؟',
+        confirmTitle: 'حذف',
+        onConfirm: () async {
+          Navigator.of(context).pop();
+          cubit.deleteSkill(skill);
+        },
       ),
-      actionWidget: Row(
-        children: [
-          Expanded(
-            child: OutlinedButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('انصراف'),
-            ),
-          ),
-          Space.w12,
-          Expanded(
-            child: FilledButton(
-              onPressed: () {
-                Navigator.of(context).pop();
-                cubit.deleteSkill(skill);
-              },
-              child: const Text('حذف'),
-            ),
-          ),
-        ],
-      ),
+      actionWidget: SizedBox.shrink(),
     );
   }
 }

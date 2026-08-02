@@ -61,6 +61,12 @@ class PlanInfoState {
 
   bool get isSubmitting => status == PlanInfoStatus.submitting;
 
+  List<PlanInfoEntity> get visibleItems {
+    final selectedStatus = activeFilter;
+    if (selectedStatus == null) return items;
+    return items.where((item) => item.isActive == selectedStatus).toList();
+  }
+
   PlanInfoState copyWith({
     bool? activeFilter,
     bool clearActiveFilter = false,

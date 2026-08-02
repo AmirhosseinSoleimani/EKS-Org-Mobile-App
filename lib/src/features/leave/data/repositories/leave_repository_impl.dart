@@ -85,5 +85,20 @@ class LeaveRepositoryImpl extends LeaveRepository {
       return e.toApiResult(s);
     }
   }
-}
 
+  @override
+  Future<ApiResult<void>> deleteLeaveRequest(int id) async {
+    try {
+      final response = await _dataSource.deleteLeaveRequest(id);
+      if (response.resultCode == 0) {
+        return const ApiResult.success(data: null);
+      }
+      return ApiResult.failure(
+        failures: response.failures?.join('\n') ??
+            'حذف درخواست مرخصی با خطا مواجه شد.',
+      );
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+}

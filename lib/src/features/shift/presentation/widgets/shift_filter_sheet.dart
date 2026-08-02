@@ -135,7 +135,6 @@ class _ShiftFilterSheetState extends State<ShiftFilterSheet> {
       type: _type,
       startTime: _startTimeController.text,
       endTime: _endTimeController.text,
-      isActive: widget.initialFilter.isActive,
       skip: 0,
     ));
     Navigator.of(context).pop();
