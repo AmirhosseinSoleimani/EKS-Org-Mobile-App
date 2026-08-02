@@ -24,12 +24,12 @@ class RescuerInfoRow extends StatelessWidget {
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          SvgWidget(src: SvgAsset(icon)),
+          SvgWidget(src: SvgAsset(icon), color: colorScheme.onPrimaryFixed,),
           const SizedBox(width: 8),
           Expanded(
             child: BodyMediumText(
               text: '$label: $value',
-              color: colorScheme.onTertiaryFixed,
+              color: colorScheme.onPrimaryFixed,
               fontSize: 13,
               maxLines: 2,
               textOverflow: TextOverflow.ellipsis,

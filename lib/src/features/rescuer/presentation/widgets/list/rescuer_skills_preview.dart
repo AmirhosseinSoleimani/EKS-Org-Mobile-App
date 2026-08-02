@@ -16,7 +16,7 @@ class RescuerSkillsPreview extends StatelessWidget {
 
     final visibleTitles = titles.take(2).toList(growable: false);
     final hiddenCount = titles.length - visibleTitles.length;
-
+    final colorScheme = Theme.of(context).colorScheme;
     return Wrap(
       spacing: 6,
       runSpacing: 6,
@@ -26,13 +26,13 @@ class RescuerSkillsPreview extends StatelessWidget {
           (title) => Container(
             padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
             decoration: BoxDecoration(
-              color: Theme.of(context).colorScheme.surfaceContainerHighest,
+              color: Color(0xFFEFEDED),
               borderRadius: BorderRadius.circular(20),
             ),
             child: BodySmallText(
               text: title,
               fontSize: 11,
-              color: Theme.of(context).colorScheme.onSurfaceVariant,
+              color: colorScheme.onPrimaryFixed,
             ),
           ),
         ),
@@ -40,13 +40,13 @@ class RescuerSkillsPreview extends StatelessWidget {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 9, vertical: 4),
             decoration: BoxDecoration(
-              color: const Color(0xFFFFE9DD),
+              color:colorScheme.primary.withAlpha(25),
               borderRadius: BorderRadius.circular(20),
             ),
             child: BodySmallText(
               text: '+ $hiddenCount مورد دیگر',
               fontSize: 11,
-              color: const Color(0xFFF97316),
+              color: colorScheme.primary,
             ),
           ),
       ],

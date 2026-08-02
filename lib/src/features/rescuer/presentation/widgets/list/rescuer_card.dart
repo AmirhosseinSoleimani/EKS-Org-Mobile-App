@@ -118,22 +118,22 @@ class RescuerCard extends StatelessWidget {
             children: [
               _svgIcon(
                 assetPath: SvgManager.clothingSize,
-                color: colorScheme.onSurfaceVariant,
+                color: colorScheme.onPrimaryFixed,
               ),
               const SizedBox(width: 5),
               BodySmallText(
                 text: 'سایز لباس: ${_value(item.clothingSize)}',
-                color: colorScheme.onSurfaceVariant,
+                color: colorScheme.onPrimaryFixed,
               ),
               const SizedBox(width: 18),
               _svgIcon(
                 assetPath: SvgManager.shoeSize,
-                color: colorScheme.onSurfaceVariant,
+                color: colorScheme.onPrimaryFixed,
               ),
               const SizedBox(width: 5),
               BodySmallText(
                 text: 'سایز کفش: ${item.shoesSize?.toString() ?? '-'}',
-                color: colorScheme.onSurfaceVariant,
+                color: colorScheme.onPrimaryFixed,
               ),
             ],
           ),
