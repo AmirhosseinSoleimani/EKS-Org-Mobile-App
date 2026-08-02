@@ -32,7 +32,8 @@ class PlanCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
     final isActive = item.isActive;
     return Card(
       margin: EdgeInsets.zero,
@@ -110,7 +111,7 @@ class PlanCard extends StatelessWidget {
                     text: 'بازه: ${item.dateRangeText}',
                   ),
                   BodyMediumText(text: 'توضیحات: ${item.description ?? '---'}'),
-                  Divider(color: colorScheme.onInverseSurface),
+                  Divider(color: theme.dividerColor),
                   Space.h12,
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -122,12 +123,12 @@ class PlanCard extends StatelessWidget {
                             ? 'ثبت کننده: ${item.insertUserFullName}'
                             : 'ثبت کننده: ---',
                         color: colorScheme.onTertiaryFixed,
-                        fontSize: 15,
+                        fontSize: 12,
                       ),
                       BodyMediumText(
                         text: formatJalaliDateTime(item.insertDateTimeJalali),
                         color: colorScheme.onTertiaryFixed,
-                        fontSize: 15,
+                        fontSize: 12,
                       ),
                     ],
                   ),
@@ -142,12 +143,12 @@ class PlanCard extends StatelessWidget {
                             ? 'آخرین ویرایش: ${item.updateUserFullName}'
                             : 'آخرین ویرایش: ---',
                         color: colorScheme.onTertiaryFixed,
-                        fontSize: 15,
+                        fontSize: 12,
                       ),
                       BodyMediumText(
                         text: formatJalaliDateTime(item.updateDateTimeJalali),
                         color: colorScheme.onTertiaryFixed,
-                        fontSize: 15,
+                        fontSize: 12,
                       ),
                     ],
                   ),
@@ -159,7 +160,7 @@ class PlanCard extends StatelessWidget {
                       style: Theme.of(context).textTheme.bodySmall,
                     ),
                   ],
-                  Space.h8,
+                  Space.h16,
                   Align(
                     alignment: Alignment.centerLeft,
                     child: InkwellButtonWidget(
@@ -230,9 +231,8 @@ class PlanCard extends StatelessWidget {
   }
 
   void _showActionsSheet(BuildContext context) {
-    final colorScheme = Theme
-        .of(context)
-        .colorScheme;
+    final theme = Theme
+        .of(context);
 
     BottomSheetMessage.showCustom(
         backgroundColor: Colors.white,
@@ -249,6 +249,7 @@ class PlanCard extends StatelessWidget {
                 onEdit();
               },
             ),
+            Divider(color: theme.dividerColor),
             BottomSheetActionTile(
               icon: Icons.copy,
               title: 'کپی',
@@ -257,6 +258,7 @@ class PlanCard extends StatelessWidget {
                 onCopy();
               },
             ),
+            Divider(color: theme.dividerColor),
             BottomSheetActionTile(
                 icon: Icons.cancel_outlined,
                 title: 'لغو ماموریت',
@@ -265,6 +267,7 @@ class PlanCard extends StatelessWidget {
                   onCancelRequests();
                 },
               ),
+            Divider(color: theme.dividerColor),
             BottomSheetActionTile(
               icon: Icons.bus_alert_outlined,
               title: 'تغییر محل استقرار',
@@ -273,7 +276,7 @@ class PlanCard extends StatelessWidget {
                 onLocation();
               },
             ),
-            Divider(color: colorScheme.onInverseSurface,),
+            Divider(color: theme.dividerColor),
             BottomSheetActionTile(
               icon: Icons.toggle_off_outlined,
               title: 'تغییر وضعیت',
@@ -282,7 +285,7 @@ class PlanCard extends StatelessWidget {
                 onStatus();
               },
             ),
-            Divider(color: colorScheme.onInverseSurface,),
+            Divider(color: theme.dividerColor),
             BottomSheetActionTile(
               icon: Icons.history_outlined,
               title: 'تاریخچه',
@@ -291,7 +294,7 @@ class PlanCard extends StatelessWidget {
                 onHistory();
               },
             ),
-            Divider(color: colorScheme.onInverseSurface,),
+            Divider(color: theme.dividerColor),
             BottomSheetActionTile(
               icon: Icons.delete_forever_outlined,
               title: 'حذف',
@@ -332,7 +335,7 @@ class _InfoLine extends StatelessWidget {
             child: BodyMediumText(
               text: text,
               color: colorScheme.onTertiaryFixed,
-              fontSize: 15,
+              fontSize: 13,
             ),
           ),
         ],
