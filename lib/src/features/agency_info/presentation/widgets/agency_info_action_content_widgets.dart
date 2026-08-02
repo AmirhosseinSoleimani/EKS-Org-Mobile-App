@@ -1,5 +1,7 @@
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card_info_row.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card_models.dart';
 import 'package:flutter/material.dart';
 
 class AgencyInfoActionSectionHeader extends StatelessWidget {
@@ -73,9 +75,9 @@ class AgencyInfoActionCard extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSize.s8),
         boxShadow: [
           BoxShadow(
-            color: colorScheme.shadow.withOpacity(0.08),
-            blurRadius: AppSize.s12,
-            offset: const Offset(0, 5),
+            color: colorScheme.shadow.withOpacity(0.06),
+            blurRadius: AppSize.s16,
+            offset: const Offset(0, 8),
           ),
         ],
       ),
@@ -142,31 +144,11 @@ class AgencyInfoActionIconInfoRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppPadding.p4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(
-            icon,
-            size: AppSize.s18,
-            color: colorScheme.onTertiaryFixed,
-          ),
-          Space.w8,
-          Expanded(
-            child: Text(
-              '$label: ${AgencyInfoActionFormatter.valueOrDash(value)}',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-                height: 1.5,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ],
+    return SummaryCardInfoRow(
+      item: SummaryCardInfo(
+        icon: icon,
+        label: label,
+        value: value,
       ),
     );
   }

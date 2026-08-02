@@ -3,9 +3,9 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agenc
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_person_page_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_agency_header.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_content_widgets.dart';
-import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_status_badge.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:flutter/material.dart';
 
 class AgencyInfoActiveReliefWorkersActionView extends StatelessWidget {
@@ -64,7 +64,7 @@ class _AgencyReliefWorkerItem extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
-
+    final isActive = _isActive(person) ??false;
     return AgencyInfoActionCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -87,7 +87,7 @@ class _AgencyReliefWorkerItem extends StatelessWidget {
                 ),
               ),
               Space.w8,
-              AgencyInfoStatusBadge(isActive: _isActive(person)),
+              StatusLabel(text: isActive? 'فعال' : 'غیرفعال', color: isActive ? colorScheme.onError : colorScheme.error),
             ],
           ),
           Space.h12,

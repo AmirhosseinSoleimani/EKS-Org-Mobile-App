@@ -4,9 +4,9 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agenc
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_contract_image_viewer.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_agency_header.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_content_widgets.dart';
-import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_status_badge.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:flutter/material.dart';
 
 class AgencyInfoContractsActionView extends StatelessWidget {
@@ -84,7 +84,7 @@ class _AgencyContractItem extends StatelessWidget {
                 ),
               ),
               Space.w8,
-              AgencyInfoStatusBadge(isActive: contract.isActive ?? true),
+              StatusLabel(text: contract.isActive? 'فعال' : 'غیرفعال', color: contract.isActive ? colorScheme.onError : colorScheme.error),
             ],
           ),
           Space.h12,

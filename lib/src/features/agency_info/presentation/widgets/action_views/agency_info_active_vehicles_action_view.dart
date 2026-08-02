@@ -3,10 +3,10 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agenc
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_vehicle_page_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_agency_header.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_content_widgets.dart';
-import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_status_badge.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/car_license_plate_widget/vehicle_license_plate_view.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:flutter/material.dart';
 
 class AgencyInfoActiveVehiclesActionView extends StatelessWidget {
@@ -64,7 +64,7 @@ class _AgencyVehicleItem extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final licensePlate = vehicle.licensePlate?.trim();
-
+    final isActive = _isActive(vehicle) ?? false;
     return AgencyInfoActionCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -85,7 +85,7 @@ class _AgencyVehicleItem extends StatelessWidget {
                 ),
               ),
               Space.w8,
-              AgencyInfoStatusBadge(isActive: _isActive(vehicle)),
+              StatusLabel(text: isActive? 'فعال' : 'غیرفعال', color: isActive ? colorScheme.onError : colorScheme.error),
             ],
           ),
           Space.h12,

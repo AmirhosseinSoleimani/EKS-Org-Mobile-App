@@ -1,9 +1,11 @@
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_info_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/operation_button.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_action_tile.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/car_license_plate_widget/vehicle_license_plate_view.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card_models.dart';
 import 'package:flutter/material.dart';
 
 class VehicleInfoSummaryCard extends StatelessWidget {
@@ -27,122 +29,74 @@ class VehicleInfoSummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final plate = item.licensePlate?.trim();
 
-    return InkWell(
+    return AppSummaryCard(
+      title: item.title,
       onTap: onTap,
-      borderRadius: BorderRadius.circular(AppSize.s8),
-      child: Container(
-        padding: const EdgeInsets.fromLTRB(
-          AppPadding.p16,
-          AppPadding.p16,
-          AppPadding.p16,
-          AppPadding.p14,
+      badges: [
+        StatusLabel(
+          text: item.vehicleStatusTitle ?? '',
+          color: item.isActive == true
+              ? theme.colorScheme.onError
+              : theme.colorScheme.error,
+          variant: StatusLabelVariant.filledWithoutBorder,
         ),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.onPrimary,
-          borderRadius: BorderRadius.circular(AppSize.s8),
-          boxShadow: [
-            BoxShadow(
-              color: theme.colorScheme.shadow.withOpacity(0.06),
-              blurRadius: AppSize.s16,
-              offset: const Offset(0, 8),
-            ),
-          ],
+      ],
+      beforeInfo: plate != null && plate.isNotEmpty
+          ? Align(
+              alignment: AlignmentDirectional.centerStart,
+              child: VehicleLicensePlateView(licensePlate: plate),
+            )
+          : null,
+      infoItems: [
+        SummaryCardInfo(
+          icon: Icons.tag_outlined,
+          label: 'شماره شاسی',
+          value: item.chassisNumber,
         ),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      BodyMediumText(
-                        text: item.title,
-                        fontWeight: FontWeight.w600,
-                        fontSize: 16,
-                      ),
-                    ],
-                  ),
-                ),
-                StatusLabel(text: item.vehicleStatusTitle ?? '',
-                  color: (item.isActive ?? false)
-                      ? theme.colorScheme.onError
-                      : theme.colorScheme.error,),
-              ],
-            ),
-            Space.h16,
-            if (item.licensePlate?.trim().isNotEmpty == true) ...[
-              Align(
-                alignment: Alignment.centerRight,
-                child: VehicleLicensePlateView(licensePlate: item.licensePlate!),
-              ),
-              Space.h16,
-            ],
-            _DetailLine(
-              icon: Icons.tag_outlined,
-              label: 'شماره شاسی',
-              value: item.chassisNumber,
-            ),
-            _DetailLine(
-              icon: Icons.settings_outlined,
-              label: 'شماره موتور',
-              value: item.engineNumber,
-            ),
-            _DetailLine(
-              icon: Icons.calendar_today_outlined,
-              label: 'سال ساخت',
-              value: item.productYear,
-            ),
-            _DetailLine(
-              icon: Icons.memory_outlined,
-              label: 'دستگاه IMEI',
-              value: item.imeiSerial,
-            ),
-            _DetailLine(
-              icon: Icons.check_circle_outline_rounded,
-              label: 'عیب یاب',
-              value: item.isTroubleShooter == true ? 'دارد' : 'ندارد',
-            ),
-            _DetailLine(
-              icon: Icons.inventory_2_outlined,
-              label: 'انبارک',
-              value: item.isDepotEnabled == true ? 'فعال' : 'غیرفعال',
-            ),
-            Space.h16,
-            Divider(height: AppSize.s1, color: theme.dividerColor),
-            Space.h16,
-            Row(
-              children: [
-                Expanded(
-                  child: BodyMediumText(text:
-                    'ثبت کننده: ${_dash(item.insertUserFullName)}',
-                    maxLines: 1,
-                    textOverflow: TextOverflow.ellipsis,
-                    color: theme.colorScheme.onPrimaryFixed,
-                    fontSize: 13,
-                  ),
-                ),
-                BodyMediumText(text:
-                JalaliDateHelper.formatStringJalaliDateTime(
-                    item.insertDateTimeJalali),
-                  color: theme.colorScheme.onPrimaryFixed,
-                  fontSize: 13,
-                ),
-              ],
-            ),
-            Space.h24,
-            OperationButton(onTap: () => _showActions(context)),
-          ],
+        SummaryCardInfo(
+          icon: Icons.settings_outlined,
+          label: 'شماره موتور',
+          value: item.engineNumber,
         ),
-      ),
+        SummaryCardInfo(
+          icon: Icons.calendar_today_outlined,
+          label: 'سال ساخت',
+          value: item.productYear,
+        ),
+        SummaryCardInfo(
+          icon: Icons.memory_outlined,
+          label: 'دستگاه IMEI',
+          value: item.imeiSerial,
+        ),
+        SummaryCardInfo(
+          icon: Icons.check_circle_outline_rounded,
+          label: 'عیب یاب',
+          value: item.isTroubleShooter == true ? 'دارد' : 'ندارد',
+        ),
+        SummaryCardInfo(
+          icon: Icons.inventory_2_outlined,
+          label: 'انبارک',
+          value: item.isDepotEnabled == true ? 'فعال' : 'غیرفعال',
+        ),
+      ],
+      metaItems: [
+        SummaryCardMeta(
+          label: 'ثبت‌کننده',
+          value: item.insertUserFullName,
+          date: JalaliDateHelper.formatStringJalaliDateTime(
+            item.insertDateTimeJalali,
+          ),
+        ),
+      ],
+      onOperation: () => _showActions(context),
     );
   }
 
   void _showActions(BuildContext context) {
     final theme = Theme.of(context);
+
     showModalBottomSheet<void>(
       context: context,
       useSafeArea: true,
@@ -170,26 +124,30 @@ class VehicleInfoSummaryCard extends StatelessWidget {
                 ),
               ),
               Space.h24,
-              _ActionTile(
-                title: 'ابزار ها',
+              BottomSheetActionTile(
+                title: 'ابزارها',
                 icon: Icons.build_circle_outlined,
-                onTap: onTools,
+                enabled: onTools != null,
+                onTap: () => _runAction(context, onTools),
               ),
-              _ActionTile(
-                title: 'سرویس ها',
+              BottomSheetActionTile(
+                title: 'سرویس‌ها',
                 icon: Icons.settings_outlined,
-                onTap: onServices,
+                enabled: onServices != null,
+                onTap: () => _runAction(context, onServices),
               ),
-              _ActionTile(
+              BottomSheetActionTile(
                 title: 'تاریخچه',
                 icon: Icons.history_rounded,
-                onTap: onHistory,
+                enabled: onHistory != null,
+                onTap: () => _runAction(context, onHistory),
               ),
-              _ActionTile(
+              BottomSheetActionTile(
                 title: 'حذف',
                 icon: Icons.delete_outline_rounded,
-                onTap: onDelete,
-                color: theme.colorScheme.error,
+                enabled: onDelete != null,
+                isDestructive: true,
+                onTap: () => _runAction(context, onDelete),
               ),
             ],
           ),
@@ -198,179 +156,10 @@ class VehicleInfoSummaryCard extends StatelessWidget {
     );
   }
 
-  static String _dash(String? value) => value?.trim().isNotEmpty == true ? value!.trim() : '---';
-}
-
-class _DetailLine extends StatelessWidget {
-  const _DetailLine({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
-
-  final IconData icon;
-  final String label;
-  final String? value;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final displayValue = value?.trim().isNotEmpty == true ? value!.trim() : '---';
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppPadding.p8),
-      child: Row(
-        children: [
-          Icon(
-              icon, size: AppSize.s20, color: theme.colorScheme.onPrimaryFixed),
-          Space.w8,
-          Expanded(
-            child: Row(children: [
-              Text(
-                '$label: ',
-                textAlign: TextAlign.right,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onTertiaryFixed,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              Text(displayValue,
-                textAlign: TextAlign.right,
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: theme.colorScheme.onTertiaryFixed,
-                  fontWeight: FontWeight.w500,
-                ),
-              )
-            ],),
-          ),
-        ],
-      ),
-    );
+  void _runAction(BuildContext context, VoidCallback? action) {
+    if (action == null) return;
+    Navigator.of(context).pop();
+    action();
   }
-}
 
-class _ActionTile extends StatelessWidget {
-  const _ActionTile({
-    required this.title,
-    required this.icon,
-    this.onTap,
-    this.color,
-  });
-
-  final String title;
-  final IconData icon;
-  final VoidCallback? onTap;
-  final Color? color;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return InkWell(
-      onTap: onTap == null
-          ? null
-          : () {
-              Navigator.of(context).pop();
-              onTap!();
-            },
-      child: Container(
-        height: AppSize.s48,
-        decoration: BoxDecoration(
-          border: Border(
-            bottom: BorderSide(color: theme.dividerColor.withOpacity(0.45)),
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(icon, color: color ?? theme.colorScheme.onTertiaryFixed),
-            Space.w12,
-            Text(
-              title,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: color ?? theme.colorScheme.onTertiaryFixed,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class VehicleLicensePlateView extends StatelessWidget {
-  const VehicleLicensePlateView({
-    super.key,
-    required this.licensePlate,
-  });
-
-  final String licensePlate;
-
-  @override
-  Widget build(BuildContext context) {
-    final parts = licensePlate.trim().split(RegExp(r'\s+'));
-    final normalized = parts.length >= 4 ? parts.take(4).toList() : <String>['--', '-', '---', '--'];
-
-    return Container(
-      height: AppSize.s42,
-      constraints: const BoxConstraints(maxWidth: 196),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(width: 2, color: Colors.black87),
-        borderRadius: BorderRadius.circular(AppSize.s6),
-      ),
-      child: Row(
-        children: [
-          _PlateCell(normalized[3], flex: 2),
-          VerticalDivider(
-            thickness: AppSize.s1,
-            color: Theme.of(context).colorScheme.shadow,
-          ),
-
-          _PlateCell(normalized[0], flex: 2),
-          _PlateCell(normalized[1], flex: 2),
-          _PlateCell(normalized[2], flex: 3),
-
-          Container(
-            width: AppSize.s28,
-            height: double.infinity,
-            color: const Color(0xFF073DA1),
-            alignment: Alignment.center,
-            child: const Text(
-              'I.R.\nIRAN',
-              textAlign: TextAlign.center,
-              style: TextStyle(color: Colors.white, fontSize: 7, fontWeight: FontWeight.w700),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-class _PlateCell extends StatelessWidget {
-  const _PlateCell(this.text, {required this.flex});
-
-  final String text;
-  final int flex;
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      flex: flex,
-      child: Center(
-        child: Text(
-          text,
-          maxLines: 1,
-          style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                fontWeight: FontWeight.w600,
-                color: Colors.black87,
-                fontSize: AppSize.s14
-              ),
-        ),
-      ),
-    );
-  }
 }

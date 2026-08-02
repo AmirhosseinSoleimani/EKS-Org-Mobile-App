@@ -3,10 +3,11 @@ import 'dart:typed_data';
 
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/person_info_search_entity.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_content_widgets.dart';
-import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_status_badge.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/image_widget/image_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card_models.dart';
 import 'package:flutter/material.dart';
 
 class AgencyPersonSummaryCard extends StatelessWidget {
@@ -23,78 +24,57 @@ class AgencyPersonSummaryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return AgencyInfoActionCard(
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              if (!compact) ...[
-                _PersonAvatar(person: person),
-                Space.w12,
-              ],
-              Expanded(
-                child: BodyMediumText(
-                  text: AgencyInfoActionFormatter.joinNonEmpty(
-                    [person.firstName, person.lastName],
-                  ),
-                  maxLines: 1,
-                  textOverflow: TextOverflow.ellipsis,
-                  fontWeight: FontWeight.w800,
-                  color: colorScheme.onSurface,
-                  fontSize: AppSize.s16,
-                ),
-              ),
-              if (!compact) ...[
-                Space.w8,
-                AgencyInfoStatusBadge(isActive: _isActive(person)),
-              ],
-            ],
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
+    final isActive = _isActive(person) ?? false;
+    return AppSummaryCard(
+      title: AgencyInfoActionFormatter.joinNonEmpty(
+        [person.firstName, person.lastName],
+      ),
+      leading: compact ? null : _PersonAvatar(person: person),
+      badges: compact
+          ? const []
+          : [
+        StatusLabel(text: isActive ? 'فعال' : 'غیرفعال',
+            color: isActive ? colorScheme.onError : colorScheme.error)
+      ],
+      infoItems: [
+        SummaryCardInfo(
+          icon: Icons.badge_outlined,
+          label: 'کد پرسنلی',
+          value: person.code,
+        ),
+        SummaryCardInfo(
+          icon: Icons.contact_mail_outlined,
+          label: 'کد ملی',
+          value: person.nationalNumber,
+        ),
+        if (!compact)
+          SummaryCardInfo(
+            icon: Icons.credit_card_outlined,
+            label: 'کد گواهینامه',
+            value: person.licenseCode,
           ),
-          Space.h12,
-          Divider(
-            height: AppSize.s1,
-            color: theme.dividerColor.withOpacity(0.55),
+        if (!compact)
+          SummaryCardInfo(
+            icon: Icons.location_on_outlined,
+            label: 'استان/شهر',
+            value: AgencyInfoActionFormatter.joinNonEmpty([
+              person.provinceNameIssuingPlace,
+              person.cityNameIssuingPlace,
+            ]),
           ),
-          Space.h8,
-          _InfoRow(
-            icon: Icons.badge_outlined,
-            label: 'کد پرسنلی',
-            value: person.code,
-          ),
-          _InfoRow(
-            icon: Icons.contact_mail_outlined,
-            label: 'کد ملی',
-            value: person.nationalNumber,
-          ),
-          if (!compact) ...[
-            _InfoRow(
-              icon: Icons.credit_card_outlined,
-              label: 'کد گواهینامه',
-              value: person.licenseCode,
-            ),
-            _InfoRow(
-              icon: Icons.location_on_outlined,
-              label: 'استان/شهر',
-              value: AgencyInfoActionFormatter.joinNonEmpty([
-                person.provinceNameIssuingPlace,
-                person.cityNameIssuingPlace,
-              ]),
-            ),
-          ],
-          _InfoRow(
-            icon: Icons.phone_outlined,
-            label: 'شماره تماس',
-            value: person.mobile,
-          ),
-          if (onAdd != null) ...[
-            Space.h12,
-            Align(
-              alignment: Alignment.centerLeft,
+        SummaryCardInfo(
+          icon: Icons.phone_outlined,
+          label: 'شماره تماس',
+          value: person.mobile,
+        ),
+      ],
+      afterInfo: onAdd == null
+          ? null
+          : Align(
+        alignment: AlignmentDirectional.centerEnd,
               child: SizedBox(
                 width: AppSize.s40,
                 height: AppSize.s40,
@@ -112,9 +92,6 @@ class AgencyPersonSummaryCard extends StatelessWidget {
                 ),
               ),
             ),
-          ],
-        ],
-      ),
     );
   }
 
@@ -129,46 +106,6 @@ class AgencyPersonSummaryCard extends StatelessWidget {
     }
     if (statusTitle.contains('فعال')) return true;
     return null;
-  }
-}
-
-class _InfoRow extends StatelessWidget {
-  const _InfoRow({
-    required this.icon,
-    required this.label,
-    required this.value,
-  });
-
-  final IconData icon;
-  final String label;
-  final String? value;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: AppPadding.p4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Icon(
-            icon,
-            size: AppSize.s18,
-            color: colorScheme.onTertiaryFixed,
-          ),
-          Space.w8,
-          Expanded(
-            child: BodyMediumText(
-              text: '$label: ${AgencyInfoActionFormatter.valueOrDash(value)}',
-              color: colorScheme.onSurfaceVariant,
-              lineHeight: 1.5,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-        ],
-      ),
-    );
   }
 }
 

@@ -7,11 +7,11 @@ import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/ad
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_contract_image_viewer.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_agency_header.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_content_widgets.dart';
-import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_status_badge.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_medium_text.dart';
@@ -195,7 +195,7 @@ class _AgencyContractCard extends StatelessWidget {
     final colorScheme = theme.colorScheme;
     final fileBase64 = contract.fileBase64?.trim();
     final hasFile = fileBase64?.isNotEmpty == true;
-
+    final isActive = contract.isActive;
     return AgencyInfoActionCard(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -209,7 +209,7 @@ class _AgencyContractCard extends StatelessWidget {
                 ),
               ),
               Space.w8,
-              AgencyInfoStatusBadge(isActive: contract.isActive),
+              StatusLabel(text: isActive ? 'فعال' : 'غیرفعال', color: isActive ? colorScheme.onError : colorScheme.error),
             ],
           ),
           Space.h12,

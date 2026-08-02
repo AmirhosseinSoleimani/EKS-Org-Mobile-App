@@ -1,5 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/leave/domain/entities/leave_status.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:flutter/material.dart';
 
 class LeaveStatusBadge extends StatelessWidget {
@@ -16,22 +16,12 @@ class LeaveStatusBadge extends StatelessWidget {
   Widget build(BuildContext context) {
     final status = LeaveStatus.fromCode(statusCode);
     final colors = _colors(status);
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: AppPadding.p12, vertical: AppPadding.p6),
-      decoration: BoxDecoration(
-        color: colors.background,
-        borderRadius: BorderRadius.circular(AppSize.s16),
-      ),
-      child: Text(
-        title?.trim().isNotEmpty == true ? title! : _fallbackTitle(status),
-        style: Theme.of(context).textTheme.labelMedium?.copyWith(
-              color: colors.foreground,
-              fontSize: AppSize.s14,
-              fontWeight: FontWeight.w700,
-            ),
-      ),
-    );
+    return StatusLabel(
+      text: title
+          ?.trim()
+          .isNotEmpty == true ? title! : _fallbackTitle(status),
+      color: colors.foreground,
+      backgroundColor: colors.background,);
   }
 
   _BadgeColors _colors(LeaveStatus status) {

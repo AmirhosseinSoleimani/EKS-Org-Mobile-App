@@ -4,12 +4,13 @@ import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/emdad_
 import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/lookup_entity.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/cubit/emdad_unit_cubit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
-import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/emdad_unit_status_badge.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/emdad_unit_summary_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/drop_down_map_items_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -121,7 +122,7 @@ class _EmdadUnitPersonsViewState extends State<_EmdadUnitPersonsView> {
                   ),
                   Space.h12,
                   if (state.persons.isEmpty)
-                    _EmptyCard(message: 'امدادرسانی برای این واحد ثبت نشده است.')
+                    EmptyListWidget()
                   else
                     ...state.persons.map(
                           (person) => _PersonCard(
@@ -313,16 +314,19 @@ class _PersonCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
 
     return Container(
       margin: const EdgeInsets.only(bottom: AppMargin.m12),
       padding: const EdgeInsets.all(AppPadding.p16),
       decoration: BoxDecoration(
-        color: theme.colorScheme.onPrimary,
+        color: colorScheme.onPrimary,
         borderRadius: BorderRadius.circular(AppSize.s8),
         boxShadow: [
           BoxShadow(
-            color: theme.colorScheme.shadow.withOpacity(0.04),
+            color: colorScheme.shadow.withOpacity(0.04),
             blurRadius: AppSize.s12,
             offset: const Offset(0, 6),
           ),
@@ -346,12 +350,15 @@ class _PersonCard extends StatelessWidget {
                 onPressed: isSubmitting ? null : onDelete,
                 icon: Icon(
                   Icons.delete_outline_rounded,
-                  color: theme.colorScheme.error,
+                  color: colorScheme.error,
                 ),
               ),
             ],
           ),
-          EmdadUnitStatusBadge(isActive: person.isActive),
+          StatusLabel(text: (person.isActive ?? false) ? 'فعال' : 'غیرفعال',
+              color: (person.isActive ?? false)
+                  ? colorScheme.onError
+                  : colorScheme.error),
           Space.h12,
           Divider(height: AppSize.s1, color: Color(0xFFE3E2E2)),
           Space.h12,

@@ -4,8 +4,8 @@ import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_butt
 import 'package:eks_sana_plus_org/src/shared/widgets/grade_pattern/grade_pattern_levels_summary.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/grade_pattern/grade_pattern_ui_model.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card_models.dart';
 import 'package:flutter/material.dart';
 
 class GradePatternListCard extends StatelessWidget {
@@ -16,9 +16,6 @@ class GradePatternListCard extends StatelessWidget {
     required this.onAction,
     this.isDetailsLoading = false,
     this.isActionLoading = false,
-    this.actionTitle = 'عملیات',
-    this.actionIcon = Icons.settings_outlined,
-    this.actionSuffixIcon = Icons.keyboard_arrow_down_rounded,
     this.statusLabelText,
     this.statusLabelColor,
     this.showSummary = true,
@@ -29,9 +26,6 @@ class GradePatternListCard extends StatelessWidget {
   final VoidCallback onAction;
   final bool isDetailsLoading;
   final bool isActionLoading;
-  final String actionTitle;
-  final IconData actionIcon;
-  final IconData? actionSuffixIcon;
   final String? statusLabelText;
   final Color? statusLabelColor;
   final bool showSummary;
@@ -40,112 +34,43 @@ class GradePatternListCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Container(
+    return AppSummaryCard(
       margin: const EdgeInsets.only(bottom: AppPadding.p12),
-      padding: const EdgeInsets.all(AppPadding.p18),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.onPrimary,
-        borderRadius: BorderRadius.circular(AppSize.s8),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withAlpha(25),
-            blurRadius: 10,
-            offset: const Offset(0, 4),
+      title: _value(item.title),
+      badges: [
+        StatusLabel(
+          text: statusLabelText ?? (item.isActive ? 'فعال' : 'غیرفعال'),
+          color: statusLabelColor ??
+              (item.isActive
+                  ? theme.colorScheme.onError
+                  : theme.colorScheme.error),
+          variant: StatusLabelVariant.filledWithoutBorder,
+        ),
+      ],
+      afterInfo: showSummary
+          ? GradePatternLevelsSummary(details: item.details)
+          : null,
+      metaItems: [
+        SummaryCardMeta(
+          label: 'ثبت‌کننده',
+          value: item.insertUserFullName,
+          date: JalaliDateHelper.formatStringJalaliDateTime(
+            item.insertDateTimeJalali,
           ),
-        ],
+        ),
+      ],
+      primaryAction: InkwellButtonWidget(
+        title: 'مشاهده جزئیات',
+        showLoading: isDetailsLoading,
+        onTap: isDetailsLoading ? null : onDetails,
+        prefixIcon: Icon(
+          Icons.visibility_outlined,
+          color: theme.colorScheme.onPrimary,
+          size: AppSize.s22,
+        ),
       ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.stretch,
-        children: [
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Expanded(
-                child: TitleLargeText(
-                  text: _value(item.title),
-                  textAlign: TextAlign.right,
-                ),
-              ),
-              Space.w8,
-              StatusLabel(
-                text: statusLabelText ??
-                    (item.isActive ? 'فعال' : 'غیرفعال'),
-                color: statusLabelColor ??
-                    (item.isActive
-                        ? theme.colorScheme.onError
-                        : theme.colorScheme.error),
-                variant: StatusLabelVariant.filledWithoutBorder,
-              ),
-            ],
-          ),
-          if (showSummary) ...[
-            Space.h16,
-            GradePatternLevelsSummary(details: item.details),
-          ],
-          Space.h8,
-          Divider(color: theme.dividerColor),
-          Space.h8,
-          Row(
-            children: [
-              Expanded(
-                child: BodySmallText(
-                  text: 'ثبت‌کننده: ${_value(item.insertUserFullName)}',
-                  maxLines: 1,
-                  textOverflow: TextOverflow.ellipsis,
-                  color: theme.colorScheme.onPrimaryFixed,
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
-              BodySmallText(
-                text: JalaliDateHelper.formatStringJalaliDateTime(
-                  item.insertDateTimeJalali,
-                ),
-                maxLines: 1,
-                textOverflow: TextOverflow.ellipsis,
-                color: theme.colorScheme.onPrimaryFixed,
-                fontWeight: FontWeight.w500,
-              ),
-            ],
-          ),
-          Space.h16,
-          Row(
-            children: [
-              Expanded(
-                child: InkwellButtonWidget(
-                  title: 'مشاهده جزئیات',
-                  showLoading: isDetailsLoading,
-                  onTap: onDetails,
-                  prefixIcon: Icon(
-                    Icons.visibility_outlined,
-                    color: theme.colorScheme.onPrimary,
-                    size: 22,
-                  ),
-                ),
-              ),
-              Space.w8,
-              Expanded(
-                child: InkwellButtonWidget(
-                  title: actionTitle,
-                  showLoading: isActionLoading,
-                  backgroundColor: theme.colorScheme.secondaryContainer,
-                  titleColor: theme.colorScheme.onTertiaryFixed,
-                  prefixIcon: Icon(
-                    actionIcon,
-                    color: theme.colorScheme.onTertiaryFixed,
-                  ),
-                  suffixIcon: actionSuffixIcon == null
-                      ? null
-                      : Icon(
-                          actionSuffixIcon,
-                          color: theme.colorScheme.onTertiaryFixed,
-                        ),
-                  onTap: isActionLoading ? null : onAction,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
+      onOperation: onAction,
+      isOperationLoading: isActionLoading,
     );
   }
 }

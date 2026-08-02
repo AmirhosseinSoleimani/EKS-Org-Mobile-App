@@ -2,22 +2,13 @@ import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_in
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_action_tile.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card_models.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
 class PlanCard extends StatelessWidget {
-  final PlanInfoEntity item;
-  final VoidCallback onEdit;
-  final VoidCallback onCopy;
-  final VoidCallback onDelete;
-  final VoidCallback onStatus;
-  final VoidCallback onCancelRequests;
-  final VoidCallback onLocation;
-  final VoidCallback onHistory;
-
   const PlanCard({
     super.key,
     required this.item,
@@ -30,163 +21,92 @@ class PlanCard extends StatelessWidget {
     required this.onHistory,
   });
 
+  final PlanInfoEntity item;
+  final VoidCallback onEdit;
+  final VoidCallback onCopy;
+  final VoidCallback onDelete;
+  final VoidCallback onStatus;
+  final VoidCallback onCancelRequests;
+  final VoidCallback onLocation;
+  final VoidCallback onHistory;
+
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final isActive = item.isActive;
-    return Card(
-      margin: EdgeInsets.zero,
-      color: Colors.white,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(AppSize.s8),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(AppPadding.p16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
+    final colorScheme = Theme.of(context).colorScheme;
 
-              children: [
-                CircleAvatar(
-                  radius: 24,
-                  backgroundColor: colorScheme.primary.withAlpha(25),
-                  child: Icon(
-                    Icons.person_3_outlined,
-                    color: colorScheme.primary,
-                    size: 24,
-                  ),
-                ),
-
-                Space.w12,
-
-                Expanded(
-                  child: BodyMediumText(
-                    text: item.personsText,
-                    fontWeight: FontWeight.w600,
-                    fontSize: 16,
-                  ),
-                ),
-
-                Space.w8,
-
-                StatusLabel(
-                  text: isActive ? 'فعال' : 'غیرفعال',
-                  color: isActive ? colorScheme.onError : colorScheme.error,
-                ),
-              ],
-            ),
-            Space.h16,
-            Padding(
-              padding: EdgeInsetsGeometry.all(4),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  _InfoLine(
-                    icon: Icons.engineering_outlined,
-                    text: 'واحد امدادی: ${item.emdadUnitName}',
-                  ),
-
-                  _InfoLine(
-                    icon: Icons.timer_outlined,
-                    text: 'شیفت: ${item.shiftTitle}',
-                  ),
-                  _InfoLine(
-                    icon: Icons.bus_alert_outlined,
-                    text: item.seatTypeTitle != null
-                        ? 'محل استقرار: ${item.seatTypeTitle}'
-                        : 'محل استقرار: ---}',
-                  ),
-
-                  _InfoLine(
-                    icon: Icons.location_on_outlined,
-                    text: item.locationTitle != null
-                        ? 'آدرس: ${item.locationTitle}'
-                        : 'آدرس: ---',
-                  ),
-                  _InfoLine(
-                    icon: Icons.calendar_month_outlined,
-                    text: 'بازه: ${item.dateRangeText}',
-                  ),
-                  BodyMediumText(text: 'توضیحات: ${item.description ?? '---'}'),
-                  Divider(color: theme.dividerColor),
-                  Space.h12,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      BodyMediumText(
-                        text:
-                            item.insertUserFullName != null &&
-                                item.insertUserFullName!.trim().isNotEmpty
-                            ? 'ثبت کننده: ${item.insertUserFullName}'
-                            : 'ثبت کننده: ---',
-                        color: colorScheme.onTertiaryFixed,
-                        fontSize: 12,
-                      ),
-                      BodyMediumText(
-                        text: formatJalaliDateTime(item.insertDateTimeJalali),
-                        color: colorScheme.onTertiaryFixed,
-                        fontSize: 12,
-                      ),
-                    ],
-                  ),
-                  Space.h8,
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      BodyMediumText(
-                        text:
-                            item.updateUserFullName != null &&
-                                item.updateUserFullName!.trim().isNotEmpty
-                            ? 'آخرین ویرایش: ${item.updateUserFullName}'
-                            : 'آخرین ویرایش: ---',
-                        color: colorScheme.onTertiaryFixed,
-                        fontSize: 12,
-                      ),
-                      BodyMediumText(
-                        text: formatJalaliDateTime(item.updateDateTimeJalali),
-                        color: colorScheme.onTertiaryFixed,
-                        fontSize: 12,
-                      ),
-                    ],
-                  ),
-
-                  if ((item.reasonTitle ?? item.description) != null) ...[
-                    Space.h8,
-                    Text(
-                      'دلیل تغییر وضعیت: ${item.reasonTitle ?? '---'}',
-                      style: Theme.of(context).textTheme.bodySmall,
-                    ),
-                  ],
-                  Space.h16,
-                  Align(
-                    alignment: Alignment.centerLeft,
-                    child: InkwellButtonWidget(
-                      title: 'عملیات',
-                      height: AppSize.s42,
-                      backgroundColor: colorScheme.secondaryContainer,
-                      titleColor: colorScheme.onSurface,
-                      prefixIcon: Icon(
-                        Icons.settings_outlined,
-                        size: AppSize.s20,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                      suffixIcon: Icon(
-                        Icons.expand_more_outlined,
-                        size: AppSize.s20,
-                        color: colorScheme.onSurfaceVariant,
-                      ),
-                      onTap: () => _showActionsSheet(context),
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+    return AppSummaryCard(
+      title: item.personsText,
+      leading: CircleAvatar(
+        radius: AppSize.s24,
+        backgroundColor: colorScheme.primary.withAlpha(25),
+        child: Icon(
+          Icons.person_3_outlined,
+          color: colorScheme.primary,
+          size: AppSize.s24,
         ),
       ),
+      badges: [
+        StatusLabel(
+          text: item.isActive ? 'فعال' : 'غیرفعال',
+          color: item.isActive ? colorScheme.onError : colorScheme.error,
+          variant: StatusLabelVariant.filledWithoutBorder,
+        ),
+      ],
+      infoItems: [
+        SummaryCardInfo(
+          icon: Icons.engineering_outlined,
+          label: 'واحد امدادی',
+          value: item.emdadUnitName,
+        ),
+        SummaryCardInfo(
+          icon: Icons.timer_outlined,
+          label: 'شیفت',
+          value: item.shiftTitle,
+        ),
+        SummaryCardInfo(
+          icon: Icons.bus_alert_outlined,
+          label: 'محل استقرار',
+          value: item.seatTypeTitle,
+        ),
+        SummaryCardInfo(
+          icon: Icons.location_on_outlined,
+          label: 'آدرس',
+          value: item.locationTitle,
+          maxLines: 2,
+        ),
+        SummaryCardInfo(
+          icon: Icons.calendar_month_outlined,
+          label: 'بازه',
+          value: item.dateRangeText,
+          maxLines: 2,
+        ),
+        SummaryCardInfo(
+          icon: Icons.notes_outlined,
+          label: 'توضیحات',
+          value: item.description,
+          maxLines: 3,
+        ),
+        if (item.reasonTitle?.trim().isNotEmpty == true)
+          SummaryCardInfo(
+            icon: Icons.change_circle_outlined,
+            label: 'دلیل تغییر وضعیت',
+            value: item.reasonTitle,
+            maxLines: 2,
+          ),
+      ],
+      metaItems: [
+        SummaryCardMeta(
+          label: 'ثبت‌کننده',
+          value: item.insertUserFullName,
+          date: formatJalaliDateTime(item.insertDateTimeJalali),
+        ),
+        SummaryCardMeta(
+          label: 'آخرین ویرایش',
+          value: item.updateUserFullName,
+          date: formatJalaliDateTime(item.updateDateTimeJalali),
+        ),
+      ],
+      onOperation: () => _showActionsSheet(context),
     );
   }
 
@@ -225,121 +145,86 @@ class PlanCard extends StatelessWidget {
 
     return value.split('').map((character) {
       final index = englishDigits.indexOf(character);
-
       return index == -1 ? character : persianDigits[index];
     }).join();
   }
 
   void _showActionsSheet(BuildContext context) {
-    final theme = Theme
-        .of(context);
+    final theme = Theme.of(context);
 
     BottomSheetMessage.showCustom(
-        backgroundColor: Colors.white,
-        context: context,
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            BottomSheetActionTile(
-              icon: Icons.edit,
-              title: 'ویرایش',
-              onTap: () {
-                context.pop();
-                onEdit();
-              },
-            ),
-            Divider(color: theme.dividerColor),
-            BottomSheetActionTile(
-              icon: Icons.copy,
-              title: 'کپی',
-              onTap: () {
-                context.pop();
-                onCopy();
-              },
-            ),
-            Divider(color: theme.dividerColor),
-            BottomSheetActionTile(
-                icon: Icons.cancel_outlined,
-                title: 'لغو ماموریت',
-                onTap: () {
-                  context.pop();
-                  onCancelRequests();
-                },
-              ),
-            Divider(color: theme.dividerColor),
-            BottomSheetActionTile(
-              icon: Icons.bus_alert_outlined,
-              title: 'تغییر محل استقرار',
-              onTap: (){
-                context.pop();
-                onLocation();
-              },
-            ),
-            Divider(color: theme.dividerColor),
-            BottomSheetActionTile(
-              icon: Icons.toggle_off_outlined,
-              title: 'تغییر وضعیت',
-              onTap: (){
-                context.pop();
-                onStatus();
-              },
-            ),
-            Divider(color: theme.dividerColor),
-            BottomSheetActionTile(
-              icon: Icons.history_outlined,
-              title: 'تاریخچه',
-              onTap: (){
-                context.pop();
-                onHistory();
-              },
-            ),
-            Divider(color: theme.dividerColor),
-            BottomSheetActionTile(
-              icon: Icons.delete_forever_outlined,
-              title: 'حذف',
-              isDestructive: true,
-              onTap: (){
-                context.pop();
-                onDelete();
-              },
-            ),
-          ],
-        ),
-        actionWidget: SizedBox.shrink());
-
-  }
-}
-
-class _InfoLine extends StatelessWidget {
-  final IconData icon;
-  final String text;
-
-  const _InfoLine({required this.icon, required this.text});
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppPadding.p12),
-      child: Row(
+      backgroundColor: Colors.white,
+      context: context,
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Icon(
-            icon,
-            size: AppSize.s20,
-            color: Theme.of(context).colorScheme.onPrimaryFixed,
+          BottomSheetActionTile(
+            icon: Icons.edit,
+            title: 'ویرایش',
+            onTap: () {
+              context.pop();
+              onEdit();
+            },
           ),
-          Space.w8,
-          Expanded(
-            child: BodyMediumText(
-              text: text,
-              color: colorScheme.onTertiaryFixed,
-              fontSize: 13,
-            ),
+          Divider(color: theme.dividerColor),
+          BottomSheetActionTile(
+            icon: Icons.copy,
+            title: 'کپی',
+            onTap: () {
+              context.pop();
+              onCopy();
+            },
+          ),
+          Divider(color: theme.dividerColor),
+          BottomSheetActionTile(
+            icon: Icons.cancel_outlined,
+            title: 'لغو ماموریت',
+            onTap: () {
+              context.pop();
+              onCancelRequests();
+            },
+          ),
+          Divider(color: theme.dividerColor),
+          BottomSheetActionTile(
+            icon: Icons.bus_alert_outlined,
+            title: 'تغییر محل استقرار',
+            onTap: () {
+              context.pop();
+              onLocation();
+            },
+          ),
+          Divider(color: theme.dividerColor),
+          BottomSheetActionTile(
+            icon: Icons.toggle_off_outlined,
+            title: 'تغییر وضعیت',
+            onTap: () {
+              context.pop();
+              onStatus();
+            },
+          ),
+          Divider(color: theme.dividerColor),
+          BottomSheetActionTile(
+            icon: Icons.history_outlined,
+            title: 'تاریخچه',
+            onTap: () {
+              context.pop();
+              onHistory();
+            },
+          ),
+          Divider(color: theme.dividerColor),
+          BottomSheetActionTile(
+            icon: Icons.delete_forever_outlined,
+            title: 'حذف',
+            isDestructive: true,
+            onTap: () {
+              context.pop();
+              onDelete();
+            },
           ),
         ],
       ),
+      actionWidget: const SizedBox.shrink(),
     );
   }
 }

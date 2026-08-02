@@ -1,6 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/agency_info_entity.dart';
-import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_status_badge.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:flutter/material.dart';
 
 class AgencyInfoActionAgencyHeader extends StatelessWidget {
@@ -74,7 +74,10 @@ class AgencyInfoActionAgencyHeader extends StatelessWidget {
             ),
           ),
           Spacer(),
-          AgencyInfoStatusBadge(isActive: item.isActive),
+          StatusLabel(text: (item.isActive ?? false) ? 'فعال' : 'غیرفعال',
+              color: (item.isActive ?? false)
+                  ? colorScheme.onError
+                  : colorScheme.error),
         ],
       ),
     );
