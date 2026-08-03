@@ -1,6 +1,7 @@
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/emdad_service_category_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/services/service_category_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/selection_widgets/selection_group_header.dart';
 import 'package:flutter/material.dart';
 
 class ServiceGroupSection extends StatelessWidget {
@@ -23,13 +24,9 @@ class ServiceGroupSection extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           if (group.name.trim().isNotEmpty) ...[
-            Text(
-              group.name,
-              textAlign: TextAlign.start,
-              style: Theme.of(context).textTheme.titleSmall?.copyWith(
-                    color: const Color(0xFF666666),
-                    fontWeight: FontWeight.w700,
-                  ),
+            SelectionGroupHeader(
+              title: group.name,
+              icon: _groupIcon(group.name),
             ),
             Space.h12,
           ],
@@ -38,7 +35,9 @@ class ServiceGroupSection extends StatelessWidget {
               padding: const EdgeInsets.only(bottom: AppPadding.p8),
               child: ServiceCategoryCard(
                 category: category,
-                onTap: onSelect == null ? null : () => onSelect!(category.id),
+                onTap: onSelect == null
+                    ? null
+                    : () => onSelect!(category.id),
                 onDefects: onDefects,
               ),
             ),
@@ -46,5 +45,11 @@ class ServiceGroupSection extends StatelessWidget {
         ],
       ),
     );
+  }
+
+  IconData _groupIcon(String title) {
+    if (title.contains('امدادی')) return Icons.car_repair_outlined;
+    if (title.contains('محل')) return Icons.home_repair_service_outlined;
+    return Icons.miscellaneous_services_outlined;
   }
 }

@@ -1,12 +1,14 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_info_entity.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_tool_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/cubit/vehicle_info_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/tools/vehicle_tools_section.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/vehicle_info_form/vehicle_info_form_scaffold.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/vehicle_service_info_card.dart';
-import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/tools/vehicle_tool_chip.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/selection_widgets/app_checkbox_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/selection_widgets/selected_items_section.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/selection_widgets/selection_select_all_tile.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/search_input_field.dart';
 import 'package:flutter/material.dart';
@@ -40,37 +42,48 @@ class _VehicleInfoToolsView extends StatelessWidget {
     final cubit = context.read<VehicleInfoCubit>();
 
     return BlocListener<VehicleInfoCubit, VehicleInfoState>(
-      listener: (context, state) {
-        if (state.data.errorMessage?.isNotEmpty == true) {
-          SnakeBarWidget.showError(context: context, message: state.data.errorMessage!);
-        }
-        if (state.data.successMessage?.isNotEmpty == true) {
-          context.pop(state.data.successMessage);
-        }
-      },
+      listener: _onStateChanged,
       child: Directionality(
         textDirection: TextDirection.rtl,
         child: Scaffold(
-          appBar: SimpleAppBar(title: 'ابزار ها'),
-          backgroundColor: const Color(0xFFF4F4F4),
+          appBar: const SimpleAppBar(title: 'ابزارها'),
+          backgroundColor: Theme.of(context).colorScheme.surface,
           bottomNavigationBar: BlocBuilder<VehicleInfoCubit, VehicleInfoState>(
+            buildWhen: (previous, current) =>
+                previous.data.isSubmitting != current.data.isSubmitting,
             builder: (context, state) {
               return VehicleInfoFormActions(
                 submitTitle: 'ثبت',
-                cancelTitle: 'بستن',
+                cancelTitle: 'انصراف',
                 isSubmitting: state.data.isSubmitting,
                 onCancel: () => context.pop(),
-                onSubmit: item.id == null ? () {} : () => cubit.submitTools(item.id!),
+                onSubmit: item.id == null
+                    ? () {}
+                    : () => cubit.submitTools(item.id!),
               );
             },
           ),
           body: BlocBuilder<VehicleInfoCubit, VehicleInfoState>(
             builder: (context, state) {
               final data = state.data;
+
               if (data.loadingToolsVehicleId != null) {
                 return const Center(child: CircularProgressIndicator());
               }
+
+              if (data.tools.isEmpty) {
+                return const Center(
+                  child: Text('ابزاری برای این خودرو یافت نشد.'),
+                );
+              }
+
+              final selectedTools = data.tools
+                  .where((tool) => tool.isSelectable)
+                  .toList(growable: false);
+
               return ListView(
+                keyboardDismissBehavior:
+                    ScrollViewKeyboardDismissBehavior.onDrag,
                 padding: const EdgeInsets.fromLTRB(
                   AppPadding.p16,
                   AppPadding.p16,
@@ -80,27 +93,43 @@ class _VehicleInfoToolsView extends StatelessWidget {
                 children: [
                   VehicleServiceInfoCard(item: item),
                   Space.h24,
-                  _ToolsSearchField(cubit: cubit),
+                  if (selectedTools.isNotEmpty) ...[
+                    SelectedItemsSection<VehicleToolEntity>(
+                      title: 'ابزارهای انتخاب شده',
+                      items: selectedTools,
+                      itemTitle: (tool) => tool.emdadToolsTitle,
+                      onRemove: data.isSubmitting
+                          ? null
+                          : (tool) => cubit.toggleTool(tool.emdadToolsId),
+                    ),
+                    Space.h24,
+                  ],
+                  SearchInputField(
+                    hintText: 'جستجو',
+                    controller: cubit.toolsSearchController,
+                    onChanged: cubit.onToolsSearchChanged,
+                  ),
                   Space.h16,
-                  AppCheckboxWidget(
-                    title: 'همه',
-                    value: data.tools.isNotEmpty && data.tools.every((tool) => tool.isSelectable),
+                  SelectionSelectAllTile(
+                    value: data.tools.every((tool) => tool.isSelectable),
+                    enabled: !data.isSubmitting,
                     onChanged: cubit.setAllTools,
                   ),
-                  Space.h24,
+                  Space.h12,
                   if (data.filteredTools.isEmpty)
-                    const Center(child: Text('ابزاری برای این خودرو یافت نشد.'))
+                    const Padding(
+                      padding: EdgeInsets.symmetric(
+                        vertical: AppPadding.p32,
+                      ),
+                      child: Center(
+                        child: Text('ابزاری با این عنوان یافت نشد.'),
+                      ),
+                    )
                   else
-                    Wrap(
-                      alignment: WrapAlignment.start,
-                      spacing: AppSize.s8,
-                      runSpacing: 10,
-                      children: data.filteredTools.map((tool) {
-                        return VehicleToolChip(
-                          tool: tool,
-                          onTap: () => cubit.toggleTool(tool.emdadToolsId),
-                        );
-                      }).toList(),
+                    VehicleToolsSection(
+                      tools: data.filteredTools,
+                      onSelect:
+                          data.isSubmitting ? null : cubit.toggleTool,
                     ),
                 ],
               );
@@ -110,18 +139,23 @@ class _VehicleInfoToolsView extends StatelessWidget {
       ),
     );
   }
-}
 
-class _ToolsSearchField extends StatelessWidget {
-  const _ToolsSearchField({required this.cubit});
-
-  final VehicleInfoCubit cubit;
-
-  @override
-  Widget build(BuildContext context) {
-    return SearchInputField(hintText: 'جستجوی ابزار',
-      controller: cubit.toolsSearchController,
-      onChanged: cubit.onToolsSearchChanged,
+  void _onStateChanged(BuildContext context, VehicleInfoState state) {
+    state.maybeWhen(
+      failure: (data) => _showError(context, data.errorMessage),
+      connectionError: (data) => _showError(context, data.errorMessage),
+      success: (data) {
+        final message = data.successMessage;
+        if (message?.isNotEmpty == true) {
+          context.pop(message);
+        }
+      },
+      orElse: () {},
     );
+  }
+
+  void _showError(BuildContext context, String? message) {
+    if (message?.isNotEmpty != true) return;
+    SnakeBarWidget.showError(context: context, message: message!);
   }
 }

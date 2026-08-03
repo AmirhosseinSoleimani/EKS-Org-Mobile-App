@@ -1,10 +1,9 @@
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_tool_entity.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/selection_widgets/selectable_check_item.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/selection_widgets/selectable_list_item.dart';
 import 'package:flutter/material.dart';
 
-@Deprecated('Use SelectableCheckItem instead.')
-class VehicleToolChip extends StatelessWidget {
-  const VehicleToolChip({
+class VehicleToolCard extends StatelessWidget {
+  const VehicleToolCard({
     super.key,
     required this.tool,
     this.onTap,
@@ -15,7 +14,7 @@ class VehicleToolChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return SelectableCheckItem(
+    return SelectableListItem(
       title: tool.emdadToolsTitle,
       selected: tool.isSelectable,
       onTap: onTap,

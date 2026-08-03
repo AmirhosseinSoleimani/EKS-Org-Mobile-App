@@ -1,8 +1,9 @@
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/emdad_service_category_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/services/service_category_selection_x.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/selection_widgets/selectable_check_item.dart';
 import 'package:flutter/material.dart';
 
+@Deprecated('Use SelectableCheckItem instead.')
 class LocalServiceChip extends StatelessWidget {
   const LocalServiceChip({
     super.key,
@@ -17,52 +18,24 @@ class LocalServiceChip extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final selected = category.isSelectedForVehicle;
-    final color = selected ? theme.colorScheme.primary : const Color(0xFFE0E0E0);
 
-    return Material(
-      color: Colors.white,
-      borderRadius: BorderRadius.circular(10),
-      child: InkWell(
-        onTap: onTap,
-        borderRadius: BorderRadius.circular(10),
-        child: Container(
-          constraints: const BoxConstraints(minHeight: 44),
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppPadding.p16,
-            vertical: AppPadding.p10,
-          ),
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(10),
-            border: Border.all(color: color, width: selected ? 1.6 : 1),
-          ),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (selected) ...[
-                Icon(Icons.check_circle_outline_rounded, size: AppSize.s16, color: color),
-                const SizedBox(width: 6),
-              ],
-              Text(
-                category.title,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: selected ? color : const Color(0xFF202020),
-                  fontWeight: FontWeight.w600,
-                ),
+    return SelectableCheckItem(
+      title: category.title,
+      selected: selected,
+      onTap: onTap,
+      suffix: selected && onDefects != null
+          ? IconButton(
+              onPressed: () => onDefects!(category.id),
+              padding: EdgeInsets.zero,
+              visualDensity: VisualDensity.compact,
+              icon: Icon(
+                Icons.settings_outlined,
+                size: 18,
+                color: Theme.of(context).colorScheme.primary,
               ),
-              if (selected && onDefects != null) ...[
-                Space.w8,
-                GestureDetector(
-                  onTap: () => onDefects!(category.id),
-                  child: Icon(Icons.settings_outlined, size: AppSize.s16, color: color),
-                ),
-              ],
-            ],
-          ),
-        ),
-      ),
+            )
+          : null,
     );
   }
 }

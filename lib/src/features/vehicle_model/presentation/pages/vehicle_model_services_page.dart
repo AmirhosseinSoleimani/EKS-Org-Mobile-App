@@ -6,14 +6,19 @@ import 'package:eks_sana_plus_org/src/features/vehicle_model/domain/entities/veh
 import 'package:eks_sana_plus_org/src/features/vehicle_model/domain/entities/vehicle_service_group_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/cubit/vehicle_model_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/cubit/vehicle_model_state.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/widgets/vehicle_model_service_group_section.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/widgets/vehicle_model_service_header_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/full_screen_bottom_sheet_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/sticky_form_action_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/selection_widgets/app_checkbox_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/services/service_selection_page.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/selection_widgets/selected_items_section.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/selection_widgets/selection_select_all_tile.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/search_input_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -53,12 +58,29 @@ class VehicleModelServicesPage extends StatelessWidget {
   }
 }
 
-class _VehicleModelServicesView extends StatelessWidget {
+class _VehicleModelServicesView extends StatefulWidget {
   const _VehicleModelServicesView();
+
+  @override
+  State<_VehicleModelServicesView> createState() =>
+      _VehicleModelServicesViewState();
+}
+
+class _VehicleModelServicesViewState
+    extends State<_VehicleModelServicesView> {
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<VehicleModelCubit>();
+
     return BlocConsumer<VehicleModelCubit, VehicleModelState>(
       listener: (context, state) {
         final error = state.errorMessage;
@@ -68,48 +90,165 @@ class _VehicleModelServicesView extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        return ScrollConfiguration(
-          behavior: ScrollConfiguration.of(context).copyWith(
-            dragDevices: {
-              PointerDeviceKind.touch,
-              PointerDeviceKind.mouse,
-              PointerDeviceKind.stylus,
-            },
-          ),
-          child: ServiceSelectionPage<
-              VehicleServiceGroupEntity,
-              EmdadServiceCategoryEntity>(
-            title: 'سرویس‌های نوع خودرو',
-            groups: state.serviceGroups,
-            groupTitle: (group) => group.serviceTypeTitle ?? '---',
-            groupItems: (group) => group.emdadCategories,
-            itemTitle: (category) => category.title ?? '---',
-            itemSelected: (category) => category.selected,
-            itemSettingsLoading: (category) =>
-                state.isDefectsLoading &&
-                state.loadingDefectServiceCategoryId == category.id,
-            isLoading: state.isServiceGroupsLoading,
-            isSubmitting: state.isServicesSubmitting,
-            submitTitle: 'ثبت سرویس‌ها',
-            onItemToggle: cubit.toggleServiceCategory,
-            onItemSettings: (category) {
-              if (!category.selected || state.isDefectsLoading) return;
-              _openDefects(context, category);
-            },
-            onCancel: () {
-              if (state.isServicesSubmitting) return;
-              context.pop();
-            },
-            onSubmit: () async {
-              if (cubit.state.isServicesSubmitting) return;
-              final success = await cubit.submitServiceCategories();
-              if (!context.mounted || !success) return;
-              context.pop(VehicleModelServicesResult.saved);
-            },
+        final categories = state.serviceGroups
+            .expand((group) => group.emdadCategories)
+            .toList(growable: false);
+        final selectedCategories = categories
+            .where((category) => category.selected)
+            .toList(growable: false);
+        final visibleGroups = _filterGroups(state.serviceGroups);
+
+        return Directionality(
+          textDirection: TextDirection.rtl,
+          child: ScrollConfiguration(
+            behavior: ScrollConfiguration.of(context).copyWith(
+              dragDevices: {
+                PointerDeviceKind.touch,
+                PointerDeviceKind.mouse,
+                PointerDeviceKind.stylus,
+              },
+            ),
+            child: Scaffold(
+              backgroundColor: Theme.of(context).colorScheme.surface,
+              appBar: SimpleActionBar(
+                title: 'سرویس های نوع خودرو',
+                onBack: state.isServicesSubmitting
+                    ? () {}
+                    : () => context.pop(),
+              ),
+              body: _buildBody(
+                context: context,
+                cubit: cubit,
+                state: state,
+                categories: categories,
+                selectedCategories: selectedCategories,
+                visibleGroups: visibleGroups,
+              ),
+              bottomNavigationBar: StickyFormActionBar(
+                submitTitle: 'ثبت',
+                cancelTitle: 'انصراف',
+                isSubmitting: state.isServicesSubmitting,
+                onCancel: () => context.pop(),
+                onSubmit: () => _submit(context, cubit),
+              ),
+            ),
           ),
         );
       },
     );
+  }
+
+  Widget _buildBody({
+    required BuildContext context,
+    required VehicleModelCubit cubit,
+    required VehicleModelState state,
+    required List<EmdadServiceCategoryEntity> categories,
+    required List<EmdadServiceCategoryEntity> selectedCategories,
+    required List<VehicleServiceGroupEntity> visibleGroups,
+  }) {
+    if (state.isServiceGroupsLoading) {
+      return const Center(child: CircularProgressIndicator());
+    }
+
+    if (state.serviceGroups.isEmpty || state.selectedVehicleModel == null) {
+      return const Center(child: EmptyListWidget());
+    }
+
+    return ListView(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      padding: const EdgeInsets.fromLTRB(
+        AppPadding.p16,
+        AppPadding.p16,
+        AppPadding.p16,
+        AppPadding.p32,
+      ),
+      children: [
+        VehicleModelServiceHeaderCard(item: state.selectedVehicleModel!),
+        Space.h24,
+        if (selectedCategories.isNotEmpty) ...[
+          SelectedItemsSection<EmdadServiceCategoryEntity>(
+            title: 'سرویس های انتخاب شده',
+            items: selectedCategories,
+            itemTitle: (category) => category.title ?? '---',
+            onRemove: state.isServicesSubmitting
+                ? null
+                : cubit.toggleServiceCategory,
+          ),
+          Space.h24,
+        ],
+        SearchInputField(
+          controller: _searchController,
+          hintText: 'جستجو',
+          onChanged: (value) => setState(() => _searchQuery = value),
+        ),
+        Space.h16,
+        SelectionSelectAllTile(
+          value: categories.isNotEmpty &&
+              categories.every((category) => category.selected),
+          enabled: !state.isServicesSubmitting,
+          onChanged: cubit.setAllServiceCategories,
+        ),
+        Space.h12,
+        if (visibleGroups.isEmpty)
+          const Padding(
+            padding: EdgeInsets.symmetric(vertical: AppPadding.p32),
+            child: Center(
+              child: Text('سرویسی با این عنوان یافت نشد.'),
+            ),
+          )
+        else
+          ...visibleGroups.map(
+            (group) => VehicleModelServiceGroupSection(
+              group: group,
+              enabled: !state.isServicesSubmitting,
+              onToggle: cubit.toggleServiceCategory,
+              isSettingsLoading: (category) =>
+                  state.isDefectsLoading &&
+                  state.loadingDefectServiceCategoryId == category.id,
+              onSettings: (category) {
+                if (state.isServicesSubmitting ||
+                    !category.selected ||
+                    state.isDefectsLoading) {
+                  return;
+                }
+                _openDefects(context, category);
+              },
+            ),
+          ),
+      ],
+    );
+  }
+
+  List<VehicleServiceGroupEntity> _filterGroups(
+    List<VehicleServiceGroupEntity> groups,
+  ) {
+    final query = _searchQuery.trim().toLowerCase();
+    if (query.isEmpty) return groups;
+
+    return groups
+        .map(
+          (group) => group.copyWith(
+            emdadCategories: group.emdadCategories
+                .where(
+                  (category) => (category.title ?? '')
+                      .toLowerCase()
+                      .contains(query),
+                )
+                .toList(growable: false),
+          ),
+        )
+        .where((group) => group.emdadCategories.isNotEmpty)
+        .toList(growable: false);
+  }
+
+  Future<void> _submit(
+    BuildContext context,
+    VehicleModelCubit cubit,
+  ) async {
+    if (cubit.state.isServicesSubmitting) return;
+    final success = await cubit.submitServiceCategories();
+    if (!context.mounted || !success) return;
+    context.pop(VehicleModelServicesResult.saved);
   }
 
   Future<void> _openDefects(
@@ -147,6 +286,7 @@ class _DefectsFullScreenSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<VehicleModelCubit>();
+
     return Directionality(
       textDirection: TextDirection.rtl,
       child: BlocBuilder<VehicleModelCubit, VehicleModelState>(

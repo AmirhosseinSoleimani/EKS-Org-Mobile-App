@@ -496,6 +496,22 @@ class VehicleModelCubit extends Cubit<VehicleModelState> {
     emit(state.copyWith(serviceGroups: groups));
   }
 
+  void setAllServiceCategories(bool selected) {
+    if (state.isServicesSubmitting) return;
+
+    final groups = state.serviceGroups
+        .map(
+          (group) => group.copyWith(
+            emdadCategories: group.emdadCategories
+                .map((item) => item.copyWith(selected: selected))
+                .toList(growable: false),
+          ),
+        )
+        .toList(growable: false);
+
+    emit(state.copyWith(serviceGroups: groups));
+  }
+
   Future<bool> submitServiceCategories() async {
     final vehicleModelId = state.selectedVehicleModel?.id;
     if (vehicleModelId == null || state.isServicesSubmitting) return false;

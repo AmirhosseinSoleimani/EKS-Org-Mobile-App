@@ -361,18 +361,40 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> {
   }
 
   void setAllServices(bool selected) {
+    setServicesSelection(_data.services, selected);
+  }
+
+  void setServicesSelection(
+    Iterable<SkillServiceEntity> services,
+    bool selected,
+  ) {
     if (_data.isServicesSubmitting) return;
 
-    final selectedIds = selected
-        ? _data.services
-            .where((service) => service.id != null)
-            .map((service) => service.id!)
-            .toSet()
-        : <int>{};
+    final serviceIds = services
+        .where((service) => service.id != null)
+        .map((service) => service.id!)
+        .toSet();
+    final selectedIds = Set<int>.from(_data.selectedServiceIds);
+
+    if (selected) {
+      selectedIds.addAll(serviceIds);
+    } else {
+      selectedIds.removeAll(serviceIds);
+    }
 
     emit(SkillsCertificatesState.loaded(
       data: _data.copyWith(selectedServiceIds: selectedIds),
     ));
+  }
+
+  bool areServicesSelected(Iterable<SkillServiceEntity> services) {
+    final serviceIds = services
+        .where((service) => service.id != null)
+        .map((service) => service.id!)
+        .toSet();
+
+    return serviceIds.isNotEmpty &&
+        _data.selectedServiceIds.containsAll(serviceIds);
   }
 
   void filterServices(String query) {
