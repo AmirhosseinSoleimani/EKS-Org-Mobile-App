@@ -10,9 +10,12 @@ import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/selection_widgets/app_checkbox_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/search_input_field.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -328,16 +331,16 @@ class _DefectsSheet extends StatelessWidget {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text('محدودیت عیوب', style: Theme.of(context).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.w800)),
+                  TitleMediumText(text: 'محدودیت عیوب', fontWeight:  FontWeight.w800),
                   Space.h12,
                   Expanded(
                     child: data.defects.isEmpty
-                        ? const Center(child: Text('عیبی برای این سرویس یافت نشد.'))
+                        ? const Center(child: EmptyListWidget())
                         : ListView(
                             children: data.defects
                                 .map((defect) => CheckboxListTile(
                                       value: defect.selected,
-                                      title: Text(defect.title),
+                                      title: BodyMediumText(text:defect.title),
                                       onChanged: (_) => cubit.toggleDefect(defect.id),
                                     ))
                                 .toList(),

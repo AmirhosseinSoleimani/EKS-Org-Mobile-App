@@ -34,54 +34,42 @@ class _SelectedVehicleDefectsSectionState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
-        Row(
-          children: [
-            Icon(
-              Icons.check_circle_outline_rounded,
-              size: AppSize.s20,
-              color: theme.colorScheme.primary,
-            ),
-            Space.w8,
-            Text(
-              'ایرادات انتخاب شده',
-              style: theme.textTheme.titleSmall?.copyWith(
-                color: const Color(0xFF4A4A4A),
-                fontWeight: FontWeight.w700,
+
+        if (widget.items.isNotEmpty)...[
+          Row(
+            children: [
+              Icon(
+                Icons.check_circle_outline_rounded,
+                size: AppSize.s20,
+                color: theme.colorScheme.primary,
               ),
-            ),
-          ],
-        ),
-        Space.h12,
-        if (widget.items.isEmpty)
+
+
+            ],
+          ),
+          Space.w8,
           Text(
-            'ایرادی برای این خودرو انتخاب نشده است.',
-            textAlign: TextAlign.center,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: const Color(0xFF6B6B6B),
-            ),
-          )
-        else
-          AnimatedSize(
-            duration: const Duration(milliseconds: 220),
-            curve: Curves.easeInOut,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: visibleItems
-                  .map(
-                    (category) => Padding(
-                      padding: const EdgeInsets.only(bottom: AppPadding.p8),
-                      child: Align(
-                        alignment: AlignmentDirectional.centerStart,
-                        child: _SelectedDefectChip(
-                          category: category,
-                          onRemove: () => widget.onRemove(category.id),
-                        ),
-                      ),
-                    ),
-                  )
-                  .toList(),
+            'ایرادات انتخاب شده',
+            style: theme.textTheme.titleSmall?.copyWith(
+              color: const Color(0xFF4A4A4A),
+              fontWeight: FontWeight.w700,
             ),
           ),
+          Space.h12,
+          ...visibleItems.map(
+                (category) => Padding(
+              padding: const EdgeInsets.only(bottom: AppPadding.p8),
+              child: Align(
+                alignment: AlignmentDirectional.centerStart,
+                child: _SelectedDefectChip(
+                  category: category,
+                  onRemove: () => widget.onRemove(category.id),
+                ),
+              ),
+            ),
+          ),
+        ],
+
         if (canExpand) ...[
           Space.h4,
           Align(
