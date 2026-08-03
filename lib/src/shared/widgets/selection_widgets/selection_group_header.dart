@@ -21,7 +21,7 @@ class SelectionGroupHeader extends StatelessWidget {
           Icon(
             icon,
             size: AppSize.s20,
-            color: theme.colorScheme.onSurfaceVariant,
+            color: theme.colorScheme.onTertiaryFixed,
           ),
           Space.w8,
         ],
@@ -30,7 +30,7 @@ class SelectionGroupHeader extends StatelessWidget {
             title,
             textAlign: TextAlign.start,
             style: theme.textTheme.titleSmall?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
+              color: theme.colorScheme.onTertiaryFixed,
               fontWeight: FontWeight.w800,
             ),
           ),
