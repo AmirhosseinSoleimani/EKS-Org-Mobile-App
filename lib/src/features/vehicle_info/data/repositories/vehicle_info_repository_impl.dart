@@ -184,12 +184,19 @@ class VehicleInfoRepositoryImpl extends VehicleInfoRepository {
       case 3:
         AppEventBus.emit(AppEvent.tokenExpired);
         return const ApiResult.expireToken();
+      case 4:
+        return const ApiResult.failure(
+          failures: 'سرویس با مشکل مواجه شده است. لطفاً کمی بعد دوباره تلاش کنید.',
+        );
       case 1:
       case 2:
-      case 4:
-      default:
         return ApiResult.failure(
-          failures: response.failures?.listToString() ?? 'خطای غیرمنتظره، لطفا با شماره 096550 تماس بگیرید',
+          failures: response.failures?.listToString() ??
+              'در انجام عملیات خطایی رخ داده است. لطفاً دوباره تلاش کنید.',
+        );
+      default:
+        return const ApiResult.failure(
+          failures: 'پاسخ نامعتبر از سرویس دریافت شد. لطفاً دوباره تلاش کنید.',
         );
     }
   }

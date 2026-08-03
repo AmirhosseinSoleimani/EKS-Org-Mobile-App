@@ -5,18 +5,32 @@ part 'base_response.g.dart';
 class BaseResponse {
   @JsonKey(name: 'resultCode')
   final int? resultCode;
+
   @JsonKey(name: 'failures')
   final List<String>? failures;
 
   BaseResponse({this.resultCode, this.failures});
 
   factory BaseResponse.fromJson(Map<String, dynamic> json) {
+    final rawResultCode = json['resultCode'] ?? json['ResultCode'];
+    final rawFailures = json['failures'] ?? json['Failures'];
+
     return BaseResponse(
-      resultCode: json["resultCode"],
-      failures: json["failures"] != null
-          ? (json["failures"] as List<String>).map((e) => e).toList()
-          : null,
+      resultCode: rawResultCode is int
+          ? rawResultCode
+          : int.tryParse(rawResultCode?.toString() ?? ''),
+      failures: _parseFailures(rawFailures),
     );
+  }
+
+  static List<String>? _parseFailures(dynamic rawFailures) {
+    if (rawFailures == null) return null;
+
+    if (rawFailures is List) {
+      return rawFailures.map((failure) => failure.toString()).toList();
+    }
+
+    return [rawFailures.toString()];
   }
 }
 
@@ -31,42 +45,39 @@ class BaseListResponse<T> extends BaseResponse {
   });
 
   factory BaseListResponse.fromJson(
-      Map<String, dynamic> json,
-      T Function(Map<String, dynamic>) create,
-      ) {
-    List<T> parsedData = [];
-
-    final rawData = json['data'];
+    Map<String, dynamic> json,
+    T Function(Map<String, dynamic>) create,
+  ) {
+    final baseResponse = BaseResponse.fromJson(json);
+    final parsedData = <T>[];
+    final rawData = json['data'] ?? json['Data'];
 
     if (rawData is List) {
-      parsedData = rawData.map((e) => create(e as Map<String, dynamic>)).toList();
-    } else if (rawData is Map<String, dynamic>) {
+      parsedData.addAll(
+        rawData.map((item) => create(Map<String, dynamic>.from(item as Map))),
+      );
+    } else if (rawData is Map) {
       final firstList = rawData.values.firstWhere(
-            (v) => v is List,
+        (value) => value is List,
         orElse: () => <dynamic>[],
       );
+
       if (firstList is List) {
-        parsedData = firstList.map((e) => create(e as Map<String, dynamic>)).toList();
+        parsedData.addAll(
+          firstList.map(
+            (item) => create(Map<String, dynamic>.from(item as Map)),
+          ),
+        );
       }
     }
 
-    List<String>? parsedFailures;
-    if (json['failures'] != null) {
-      parsedFailures = (json['failures'] as List).map((e) => e.toString()).toList();
-    } else if (json['Failures'] != null) {
-      parsedFailures = (json['Failures'] as List).map((e) => e.toString()).toList();
-    } else {
-      parsedFailures = [];
-    }
-
     return BaseListResponse<T>(
-      resultCode: json['resultCode'],
-      failures: parsedFailures,
+      resultCode: baseResponse.resultCode,
+      failures: baseResponse.failures,
       data: parsedData,
     );
   }
 }
-
 
 @JsonSerializable(genericArgumentFactories: true)
 class BaseSingleResponse<T> extends BaseResponse {
@@ -79,22 +90,18 @@ class BaseSingleResponse<T> extends BaseResponse {
   });
 
   factory BaseSingleResponse.fromJson(
-      Map<String, dynamic> json, Function(Map<String, dynamic>) create) {
-    List<String>? failures;
-    if (json["failures"] != null) {
-      failures = (json["failures"] as List).map((e) => e.toString()).toList();
-    } else if (json["Failures"] != null) {
-      failures = (json["Failures"] as List).map((e) => e.toString()).toList();
-    } else {
-      failures = [];
-    }
+    Map<String, dynamic> json,
+    T Function(Map<String, dynamic>) create,
+  ) {
+    final baseResponse = BaseResponse.fromJson(json);
+    final rawData = json['data'] ?? json['Data'];
+
     return BaseSingleResponse<T>(
-        failures: failures,
-        resultCode: json["resultCode"] ?? json["ResultCode"],
-        data: json['data'] != null
-            ? create(json['data'])
-            : json['Data'] != null
-                ? create(json['Data'])
-                : null);
+      failures: baseResponse.failures,
+      resultCode: baseResponse.resultCode,
+      data: rawData is Map
+          ? create(Map<String, dynamic>.from(rawData))
+          : null,
+    );
   }
 }

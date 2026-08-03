@@ -318,7 +318,13 @@ class VehicleInfoCubit extends Cubit<VehicleInfoState> {
         categories: categories,
       );
     }).toList();
-    emit(VehicleInfoState.loaded(data: _data.copyWith(serviceCategoryGroups: groups)));
+    emit(VehicleInfoState.loaded(
+      data: _data.copyWith(
+        serviceCategoryGroups: groups,
+        errorMessage: null,
+        successMessage: null,
+      ),
+    ));
   }
 
   void setAllServiceCategories(bool selected) {
@@ -338,7 +344,13 @@ class VehicleInfoCubit extends Cubit<VehicleInfoState> {
         categories: categories,
       );
     }).toList();
-    emit(VehicleInfoState.loaded(data: _data.copyWith(serviceCategoryGroups: groups)));
+    emit(VehicleInfoState.loaded(
+      data: _data.copyWith(
+        serviceCategoryGroups: groups,
+        errorMessage: null,
+        successMessage: null,
+      ),
+    ));
   }
 
   Future<bool> submitServiceCategories(int vehicleId, {bool useBatchEndpoint = false}) async {
