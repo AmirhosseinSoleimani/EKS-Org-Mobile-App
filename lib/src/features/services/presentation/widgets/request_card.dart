@@ -2,8 +2,11 @@ import 'dart:async';
 
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/enums/request_card_operation.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/request_detail_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/bottom_sheet/request_operations_bottom_sheet.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card_actions.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -55,7 +58,29 @@ class RequestCard extends StatelessWidget {
             color: Theme.of(context).colorScheme.tertiaryFixed,
           ),
           const SizedBox(height: 12),
-          _buildOperationsButton(context),
+          SummaryCardActions(
+            operationActionFlex: 50,
+            primaryActionFlex: 50,
+            primaryAction: InkwellButtonWidget(
+              title: 'مشاهده جزئیات',
+              backgroundColor: serviceColor,
+              prefixIcon: const Icon(
+                Icons.visibility_outlined,
+                color: Colors.white,
+                size: AppSize.s20,
+              ),
+              onTap: () async {
+                await Future.sync(() => onSelected(request));
+                if (!context.mounted) return;
+                context.pushNamed(
+                  RequestDetailPage.name,
+                  extra: request,
+                );
+              },
+            ),
+            onOperation: () => _showOperationsBottomSheet(context),
+            isOperationLoading: false,
+          ),
         ],
       ),
     );
@@ -84,27 +109,6 @@ class RequestCard extends StatelessWidget {
           text: serviceTitle,
         ),
       ],
-    );
-  }
-
-  Widget _buildOperationsButton(BuildContext context) {
-    return Align(
-      alignment: AlignmentDirectional.centerStart,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(8),
-        onTap: () => _showOperationsBottomSheet(context),
-        child: const Padding(
-          padding: EdgeInsets.symmetric(vertical: 4),
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Icon(Icons.apps, size: 22),
-              SizedBox(width: 6),
-              BodyMediumText(text: 'عملیات'),
-            ],
-          ),
-        ),
-      ),
     );
   }
 
