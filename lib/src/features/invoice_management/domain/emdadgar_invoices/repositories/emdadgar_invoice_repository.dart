@@ -1,0 +1,15 @@
+import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/params/invoice_details_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/params/invoice_list_filter_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/emdadgar_invoice_page_entity.dart';
+import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/invoice_entity.dart';
+
+abstract class EmdadgarInvoiceRepository {
+  Future<ApiResult<EmdadgarInvoicePageEntity>> getInitialInvoices(
+    InvoiceListFilterParamEntity param,
+  );
+
+  Future<ApiResult<InvoiceEntity?>> getInitialInvoiceDetails(
+    InvoiceDetailsParamEntity param,
+  );
+}

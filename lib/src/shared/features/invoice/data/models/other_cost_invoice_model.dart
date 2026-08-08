@@ -9,11 +9,20 @@ class OtherCostInvoiceModel extends OtherCostInvoiceEntity {
   });
 
   factory OtherCostInvoiceModel.fromJson(Map<String, dynamic> json) {
+    final receptions =
+        json['otherCostReception'] ?? json['otherCostReceptions'];
     return OtherCostInvoiceModel(
-      title: json['title'],
-      otherCostReceptions: (json['otherCostReceptions'] as List<dynamic>?)?.map((e) => OtherCostReceptionModel.fromJson(e)).toList(),
-      customerTotalPrice: json['customerTotalPrice'],
-      companyTotalPrice: json['companyTotalPrice'],
+      title: json['title']?.toString(),
+      otherCostReceptions: (receptions as List?)
+          ?.whereType<Map>()
+          .map(
+            (item) => OtherCostReceptionModel.fromJson(
+              Map<String, dynamic>.from(item),
+            ),
+          )
+          .toList(),
+      customerTotalPrice: (json['customerTotalPrice'] as num?)?.toInt(),
+      companyTotalPrice: (json['companyTotalPrice'] as num?)?.toInt(),
     );
   }
 }
@@ -25,17 +34,18 @@ class OtherCostReceptionModel extends OtherCostReceptionEntity {
     super.customerPrice,
     super.id,
     super.invoiceId,
-    super.title
+    super.title,
   });
 
   factory OtherCostReceptionModel.fromJson(Map<String, dynamic> json) {
     return OtherCostReceptionModel(
-      invoiceId: json['invoiceId'],
-      id: json['id'],
-      title: json['title'],
-      companyPrice: json['companyPrice'],
-      customerPrice: json['customerPrice'],
-      companyPriceWithZarib: json['companyPriceWithZarib'],
+      invoiceId: (json['invoiceId'] as num?)?.toInt(),
+      id: (json['id'] as num?)?.toInt(),
+      title: json['title']?.toString(),
+      companyPrice: (json['companyPrice'] as num?)?.toInt(),
+      customerPrice: (json['customerPrice'] as num?)?.toInt(),
+      companyPriceWithZarib:
+          (json['companyPriceWithZarib'] as num?)?.toInt(),
     );
   }
 }

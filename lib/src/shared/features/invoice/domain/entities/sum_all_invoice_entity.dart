@@ -6,6 +6,8 @@ class SumAllInvoiceEntity {
     this.detailEmdadInvoiceTotalCompany,
     this.detailEmdadInvoiceTotalCustomer,
     this.customerPaymentPrice,
+    this.totalAgencyShare,
+    this.emdadKhodroShare,
     this.totalReusableCustomerPrice,
     this.totalReusableCompanyPrice,
     this.laborTotal,
@@ -27,9 +29,27 @@ class SumAllInvoiceEntity {
     this.isGuaranty,
     this.isCancelInvoice,
     this.isEvaluationChanged,
+    this.evaluationChangedTitle,
+    this.emdadServiceCategoryTitle,
     this.detailEmdadgarInvoiceBase,
+    this.detailEmdadgarInvoiceBaseText,
     this.detailEmdadInvoiceTotalCustomerTax,
+    this.detailEmdadInvoiceTotalCustomerTaxText,
     this.emdadgarInvoiceBaseAndTaxCustomer,
+    this.emdadgarInvoiceBaseAndTaxCustomerText,
+    this.useAppCost,
+    this.useAppCostText,
+    this.privateCar,
+    this.privateCarText,
+    this.agencyGrade,
+    this.agencyGradeText,
+    this.emdadgarBimePrice,
+    this.emdadgarBimePriceText,
+    this.emdadgarTaxPrice,
+    this.emdadgarTaxPriceText,
+    this.emdadgarTotalPrice,
+    this.commisionCoefficientPrice,
+    this.commisionCoefficientText,
     this.hasReusable,
     this.discountTotalPrice,
   });
@@ -38,6 +58,8 @@ class SumAllInvoiceEntity {
   final int? detailEmdadInvoiceTotalCompany;
   final int? detailEmdadInvoiceTotalCustomer;
   final int? customerPaymentPrice;
+  final int? totalAgencyShare;
+  final int? emdadKhodroShare;
   final int? totalReusableCustomerPrice;
   final int? totalReusableCompanyPrice;
   final bool? hasReusable;
@@ -61,9 +83,27 @@ class SumAllInvoiceEntity {
   final bool? isGuaranty;
   final bool? isCancelInvoice;
   final bool? isEvaluationChanged;
+  final String? evaluationChangedTitle;
+  final String? emdadServiceCategoryTitle;
   final int? detailEmdadgarInvoiceBase;
+  final String? detailEmdadgarInvoiceBaseText;
   final int? detailEmdadInvoiceTotalCustomerTax;
+  final String? detailEmdadInvoiceTotalCustomerTaxText;
   final int? emdadgarInvoiceBaseAndTaxCustomer;
+  final String? emdadgarInvoiceBaseAndTaxCustomerText;
+  final int? useAppCost;
+  final String? useAppCostText;
+  final int? privateCar;
+  final String? privateCarText;
+  final num? agencyGrade;
+  final String? agencyGradeText;
+  final int? emdadgarBimePrice;
+  final String? emdadgarBimePriceText;
+  final int? emdadgarTaxPrice;
+  final String? emdadgarTaxPriceText;
+  final int? emdadgarTotalPrice;
+  final int? commisionCoefficientPrice;
+  final String? commisionCoefficientText;
 
   SumAllInvoiceModel toModel() {
     return SumAllInvoiceModel(
@@ -71,6 +111,8 @@ class SumAllInvoiceEntity {
       detailEmdadInvoiceTotalCompany: detailEmdadInvoiceTotalCompany,
       detailEmdadInvoiceTotalCustomer: detailEmdadInvoiceTotalCustomer,
       customerPaymentPrice: customerPaymentPrice,
+      totalAgencyShare: totalAgencyShare,
+      emdadKhodroShare: emdadKhodroShare,
       totalReusableCustomerPrice: totalReusableCustomerPrice,
       totalReusableCompanyPrice: totalReusableCompanyPrice,
       laborTotal: laborTotal,
@@ -92,9 +134,29 @@ class SumAllInvoiceEntity {
       isGuaranty: isGuaranty,
       isCancelInvoice: isCancelInvoice,
       isEvaluationChanged: isEvaluationChanged,
+      evaluationChangedTitle: evaluationChangedTitle,
+      emdadServiceCategoryTitle: emdadServiceCategoryTitle,
       detailEmdadgarInvoiceBase: detailEmdadgarInvoiceBase,
+      detailEmdadgarInvoiceBaseText: detailEmdadgarInvoiceBaseText,
       detailEmdadInvoiceTotalCustomerTax: detailEmdadInvoiceTotalCustomerTax,
+      detailEmdadInvoiceTotalCustomerTaxText:
+          detailEmdadInvoiceTotalCustomerTaxText,
       emdadgarInvoiceBaseAndTaxCustomer: emdadgarInvoiceBaseAndTaxCustomer,
+      emdadgarInvoiceBaseAndTaxCustomerText:
+          emdadgarInvoiceBaseAndTaxCustomerText,
+      useAppCost: useAppCost,
+      useAppCostText: useAppCostText,
+      privateCar: privateCar,
+      privateCarText: privateCarText,
+      agencyGrade: agencyGrade,
+      agencyGradeText: agencyGradeText,
+      emdadgarBimePrice: emdadgarBimePrice,
+      emdadgarBimePriceText: emdadgarBimePriceText,
+      emdadgarTaxPrice: emdadgarTaxPrice,
+      emdadgarTaxPriceText: emdadgarTaxPriceText,
+      emdadgarTotalPrice: emdadgarTotalPrice,
+      commisionCoefficientPrice: commisionCoefficientPrice,
+      commisionCoefficientText: commisionCoefficientText,
       hasReusable: hasReusable,
       discountTotalPrice: discountTotalPrice,
     );

@@ -7,13 +7,18 @@ class ServiceInvoiceModel extends ServiceInvoiceEntity {
   });
 
   factory ServiceInvoiceModel.fromJson(Map<String, dynamic> json) {
+    final receptions =
+        json['serviceReception'] ?? json['optionServiceReception'];
     return ServiceInvoiceModel(
-      title: json['title'],
-      serviceReception: json['serviceReception'] != null
-          ? (json['serviceReception'] as List)
-              .map((e) => ServiceReceptionModel.fromJson(e))
-              .toList()
-          : null,
+      title: json['title']?.toString(),
+      serviceReception: (receptions as List?)
+          ?.whereType<Map>()
+          .map(
+            (item) => ServiceReceptionModel.fromJson(
+              Map<String, dynamic>.from(item),
+            ),
+          )
+          .toList(),
     );
   }
 }
@@ -33,15 +38,15 @@ class ServiceReceptionModel extends ServiceReceptionEntity {
 
   factory ServiceReceptionModel.fromJson(Map<String, dynamic> json) {
     return ServiceReceptionModel(
-      invoiceId: json['invoiceId'],
-      serviceId: json['serviceId'],
-      serviceTitle: json['serviceTitle'],
-      serviceCategoryId: json['serviceCategoryId'],
-      serviceCategoryTitle: json['serviceCategoryTitle'],
-      serviceCategoryCode: json['serviceCategoryCode'],
-      serviceCode: json['serviceCode'],
-      serviceType: json['serviceType'],
-      serviceTypeTitle: json['serviceTypeTitle'],
+      invoiceId: (json['invoiceId'] as num?)?.toInt(),
+      serviceId: (json['serviceId'] as num?)?.toInt(),
+      serviceTitle: json['serviceTitle']?.toString(),
+      serviceCategoryId: (json['serviceCategoryId'] as num?)?.toInt(),
+      serviceCategoryTitle: json['serviceCategoryTitle']?.toString(),
+      serviceCategoryCode: json['serviceCategoryCode']?.toString(),
+      serviceCode: json['serviceCode']?.toString(),
+      serviceType: (json['serviceType'] as num?)?.toInt(),
+      serviceTypeTitle: json['serviceTypeTitle']?.toString(),
     );
   }
 }
