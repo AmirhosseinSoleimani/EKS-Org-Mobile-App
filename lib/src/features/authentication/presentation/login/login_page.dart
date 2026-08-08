@@ -17,11 +17,40 @@ import 'package:go_router/go_router.dart';
 
 import 'widgets/submit_button.dart';
 
-class LoginPage extends StatelessWidget {
+class LoginPage extends StatefulWidget {
   static const path = '/login';
   static const name = 'login';
 
-  const LoginPage({super.key});
+  const LoginPage({super.key, this.successMessage});
+
+  final String? successMessage;
+
+  @override
+  State<LoginPage> createState() => _LoginPageState();
+}
+
+class _LoginPageState extends State<LoginPage> {
+  bool _hasShownSuccessMessage = false;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    _showSuccessMessageIfNeeded();
+  }
+
+  void _showSuccessMessageIfNeeded() {
+    final message = widget.successMessage?.trim();
+    if (_hasShownSuccessMessage || message == null || message.isEmpty) return;
+
+    _hasShownSuccessMessage = true;
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (!mounted) return;
+      SnakeBarWidget.showSuccess(
+        context: context,
+        message: message,
+      );
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

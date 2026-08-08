@@ -148,7 +148,7 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
           autofocus: widget.autofocus ?? false,
           key: widget.newKey,
           readOnly: widget.readOnly ?? false,
-          maxLines: widget.maxLines,
+          maxLines: (widget.obscureText ?? false) ? 1 : widget.maxLines,
           maxLength: widget.maxLength,
           keyboardType: widget.textInputType,
           textInputAction: widget.textInputAction,
