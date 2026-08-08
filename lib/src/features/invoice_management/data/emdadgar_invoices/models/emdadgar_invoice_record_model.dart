@@ -1,20 +1,20 @@
 import 'package:eks_sana_plus_org/src/features/invoice_management/data/common/models/invoice_document_urls_model.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/data/common/models/invoice_record_model.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/data/common/models/json_value_reader.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/data/emdadgar_invoices/models/emdadgar_settlement_model.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/emdadgar_invoice_record_entity.dart';
-import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/emdadgar_settlement_entity.dart';
 
 class EmdadgarInvoiceRecordModel extends EmdadgarInvoiceRecordEntity {
   const EmdadgarInvoiceRecordModel({
-    required super.identity,
-    required super.customer,
-    required super.agency,
-    required super.vehicle,
-    required super.amounts,
-    required super.state,
-    required super.operation,
-    required super.audit,
-    required super.settlement,
+    super.identity,
+    super.customer,
+    super.agency,
+    super.vehicle,
+    super.amounts,
+    super.state,
+    super.operation,
+    super.audit,
+    super.settlement,
     super.documentGuid,
     super.documentUrls,
     super.checkAmendmentDaraei,
@@ -62,8 +62,8 @@ class EmdadgarInvoiceRecordModel extends EmdadgarInvoiceRecordEntity {
       privateCarType: JsonValueReader.intValue(json['khodroShakhsi']),
       agencyGrade: JsonValueReader.stringValue(json['agencyGrade']),
       agencyWithoutTax: JsonValueReader.intValue(json['agencyWithoutTax']),
-      settlement: EmdadgarSettlementEntity(
-        amounts: EmdadgarSettlementAmountsEntity(
+      settlement: EmdadgarSettlementModel(
+        amounts: EmdadgarSettlementAmountsModel(
           priceAfterCoefficients:
               JsonValueReader.intValue(json['priceAfterZarayebMoshtarak']),
           totalWithoutTaxAndInsurance: JsonValueReader.intValue(
@@ -110,7 +110,7 @@ class EmdadgarInvoiceRecordModel extends EmdadgarInvoiceRecordEntity {
           companyTotalReusablePartPrice:
               JsonValueReader.intValue(json['companyTotalReusablePartPrice']),
         ),
-        coefficients: EmdadgarSettlementCoefficientsEntity(
+        coefficients: EmdadgarSettlementCoefficientsModel(
           privateCarText:
               JsonValueReader.stringValue(json['privateCarZaribText']),
           privateCarPrice:

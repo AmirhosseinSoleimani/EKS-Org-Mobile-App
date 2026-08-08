@@ -4,8 +4,8 @@ import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/
 
 class InvoiceRecordPageModel extends InvoiceRecordPageEntity {
   const InvoiceRecordPageModel({
-    required super.records,
-    required super.count,
+    super.records,
+    super.count,
   });
 
   factory InvoiceRecordPageModel.fromResponse(dynamic response) {

@@ -1,3 +1,5 @@
+import 'package:eks_sana_plus_org/src/features/invoice_management/data/agency_invoice_objections/models/emdadgar_assignment_model.dart';
+
 class EmdadgarAssignmentEntity {
   const EmdadgarAssignmentEntity({
     this.id,
@@ -60,6 +62,40 @@ class EmdadgarAssignmentEntity {
   final int? emdadgarCount;
   final double? distanceKmToOrigin;
   final int? emdadServiceId;
+
+  EmdadgarAssignmentModel toModel() {
+    return EmdadgarAssignmentModel(
+      id: id,
+      startDateText: startDateText,
+      endDateText: endDateText,
+      shiftTypeText: shiftTypeText,
+      shiftTypeId: shiftTypeId,
+      planningId: planningId,
+      shiftId: shiftId,
+      planId: planId,
+      planName: planName,
+      shiftName: shiftName,
+      agency: agency?.toModel(),
+      vehicle: vehicle?.toModel(),
+      contact: contact?.toModel(),
+      location: location?.toModel(),
+      status: status,
+      statusName: statusName,
+      statusTitle: statusTitle,
+      isDeleted: isDeleted,
+      isActive: isActive,
+      avlIsOnline: avlIsOnline,
+      inShift: inShift,
+      inVacation: inVacation,
+      shiftIsOffline: shiftIsOffline,
+      isDepotEnabled: isDepotEnabled,
+      isHomeService: isHomeService,
+      isEmdadService: isEmdadService,
+      emdadgarCount: emdadgarCount,
+      distanceKmToOrigin: distanceKmToOrigin,
+      emdadServiceId: emdadServiceId,
+    );
+  }
 }
 
 class EmdadgarAgencyEntity {
@@ -80,6 +116,16 @@ class EmdadgarAgencyEntity {
   final String? provinceCode;
   final String? cityName;
   final String? cityCode;
+
+  EmdadgarAgencyModel toModel() => EmdadgarAgencyModel(
+        code: code,
+        name: name,
+        labelCode: labelCode,
+        provinceName: provinceName,
+        provinceCode: provinceCode,
+        cityName: cityName,
+        cityCode: cityCode,
+      );
 }
 
 class EmdadgarVehicleEntity {
@@ -100,6 +146,16 @@ class EmdadgarVehicleEntity {
   final int? vehicleTypeId;
   final String? navganType;
   final int? navganTypeCode;
+
+  EmdadgarVehicleModel toModel() => EmdadgarVehicleModel(
+        agencyVehicleId: agencyVehicleId,
+        imei: imei,
+        plate: plate,
+        vehicleType: vehicleType,
+        vehicleTypeId: vehicleTypeId,
+        navganType: navganType,
+        navganTypeCode: navganTypeCode,
+      );
 }
 
 class EmdadgarContactEntity {
@@ -112,6 +168,12 @@ class EmdadgarContactEntity {
   final String? irancellMobile;
   final String? mobile;
   final String? nationalCode;
+
+  EmdadgarContactModel toModel() => EmdadgarContactModel(
+        irancellMobile: irancellMobile,
+        mobile: mobile,
+        nationalCode: nationalCode,
+      );
 }
 
 class EmdadgarLocationEntity {
@@ -132,4 +194,14 @@ class EmdadgarLocationEntity {
   final int? locationId;
   final String? locationCode;
   final String? locationName;
+
+  EmdadgarLocationModel toModel() => EmdadgarLocationModel(
+        lastLatitude: lastLatitude,
+        lastLongitude: lastLongitude,
+        latitude: latitude,
+        longitude: longitude,
+        locationId: locationId,
+        locationCode: locationCode,
+        locationName: locationName,
+      );
 }

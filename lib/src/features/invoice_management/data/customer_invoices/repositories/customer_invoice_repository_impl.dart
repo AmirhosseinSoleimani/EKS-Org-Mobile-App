@@ -1,5 +1,3 @@
-import 'package:eks_sana_plus_org/src/features/invoice_management/data/common/models/invoice_details_request_model.dart';
-import 'package:eks_sana_plus_org/src/features/invoice_management/data/common/models/invoice_list_filter_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/invoice_record_page_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/params/invoice_details_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/params/invoice_list_filter_param_entity.dart';
@@ -22,7 +20,7 @@ class CustomerInvoiceRepositoryImpl implements CustomerInvoiceRepository {
   ) async {
     try {
       final result = await _dataSource.getPreInvoices(
-        InvoiceListFilterRequestModel.fromEntity(param),
+        param.toModel(),
       );
       return ApiResult.success(data: result, resultCode: 0);
     } catch (error, stackTrace) {
@@ -36,7 +34,7 @@ class CustomerInvoiceRepositoryImpl implements CustomerInvoiceRepository {
   ) async {
     try {
       final result = await _dataSource.getInvoices(
-        InvoiceListFilterRequestModel.fromEntity(param),
+        param.toModel(),
       );
       return ApiResult.success(data: result, resultCode: 0);
     } catch (error, stackTrace) {
@@ -50,7 +48,7 @@ class CustomerInvoiceRepositoryImpl implements CustomerInvoiceRepository {
   ) async {
     try {
       final result = await _dataSource.getDetails(
-        InvoiceDetailsRequestModel.fromEntity(param),
+        param.toModel(),
       );
       return result.toApiResult();
     } catch (error, stackTrace) {
@@ -64,7 +62,7 @@ class CustomerInvoiceRepositoryImpl implements CustomerInvoiceRepository {
   ) async {
     try {
       final result = await _dataSource.finalizeInvoice(
-        InvoiceDetailsRequestModel.fromEntity(param),
+        param.toModel(),
       );
       return result.toApiResult<String>();
     } catch (error, stackTrace) {

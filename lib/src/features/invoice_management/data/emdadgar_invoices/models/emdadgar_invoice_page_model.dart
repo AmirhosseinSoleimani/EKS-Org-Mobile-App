@@ -4,8 +4,8 @@ import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadga
 
 class EmdadgarInvoicePageModel extends EmdadgarInvoicePageEntity {
   const EmdadgarInvoicePageModel({
-    required super.records,
-    required super.count,
+    super.records,
+    super.count,
   });
 
   factory EmdadgarInvoicePageModel.fromResponse(dynamic response) {

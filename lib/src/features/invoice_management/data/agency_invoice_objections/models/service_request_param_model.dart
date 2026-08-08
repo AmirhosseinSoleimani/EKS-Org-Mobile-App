@@ -2,21 +2,17 @@ import 'package:eks_sana_plus_org/src/features/invoice_management/domain/agency_
 
 class ServiceRequestParamModel extends ServiceRequestParamEntity {
   const ServiceRequestParamModel({
-    required super.serviceRequestId,
-    required super.serviceType,
+    super.serviceRequestId,
+    super.serviceType,
   });
 
-  factory ServiceRequestParamModel.fromEntity(ServiceRequestParamEntity entity) {
-    return ServiceRequestParamModel(
-      serviceRequestId: entity.serviceRequestId,
-      serviceType: entity.serviceType,
-    );
-  }
+  factory ServiceRequestParamModel.fromEntity(ServiceRequestParamEntity entity) =>
+      entity.toModel();
 
   Map<String, dynamic> toJson() {
     return <String, dynamic>{
       'serviceRequestId': serviceRequestId,
-      'serviceType': serviceType,
+      'serviceType': serviceType?.value,
     };
   }
 }

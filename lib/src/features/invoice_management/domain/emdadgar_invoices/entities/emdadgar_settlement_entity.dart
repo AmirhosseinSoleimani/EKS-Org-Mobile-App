@@ -1,11 +1,20 @@
+import 'package:eks_sana_plus_org/src/features/invoice_management/data/emdadgar_invoices/models/emdadgar_settlement_model.dart';
+
 class EmdadgarSettlementEntity {
   const EmdadgarSettlementEntity({
-    required this.amounts,
-    required this.coefficients,
+    this.amounts,
+    this.coefficients,
   });
 
-  final EmdadgarSettlementAmountsEntity amounts;
-  final EmdadgarSettlementCoefficientsEntity coefficients;
+  final EmdadgarSettlementAmountsEntity? amounts;
+  final EmdadgarSettlementCoefficientsEntity? coefficients;
+
+  EmdadgarSettlementModel toModel() {
+    return EmdadgarSettlementModel(
+      amounts: amounts?.toModel(),
+      coefficients: coefficients?.toModel(),
+    );
+  }
 }
 
 class EmdadgarSettlementAmountsEntity {
@@ -64,6 +73,37 @@ class EmdadgarSettlementAmountsEntity {
   final int? totalPriceWithCoefficient;
   final int? customerTotalReusablePartPrice;
   final int? companyTotalReusablePartPrice;
+
+  EmdadgarSettlementAmountsModel toModel() {
+    return EmdadgarSettlementAmountsModel(
+      priceAfterCoefficients: priceAfterCoefficients,
+      totalWithoutTaxAndInsurance: totalWithoutTaxAndInsurance,
+      totalPrice: totalPrice,
+      distanceCost: distanceCost,
+      distanceCostWithCoefficient: distanceCostWithCoefficient,
+      entranceWageCost: entranceWageCost,
+      entranceWageCostWithCoefficient: entranceWageCostWithCoefficient,
+      towingCost: towingCost,
+      towingCostWithCoefficient: towingCostWithCoefficient,
+      loadingCost: loadingCost,
+      loadingCostWithCoefficient: loadingCostWithCoefficient,
+      stopTimeCost: stopTimeCost,
+      stopTimeCostWithCoefficient: stopTimeCostWithCoefficient,
+      useAppCost: useAppCost,
+      insurance: insurance,
+      valueAddedTaxCost: valueAddedTaxCost,
+      nightAndHolidayCost: nightAndHolidayCost,
+      customerTotalPartPrice: customerTotalPartPrice,
+      companyTotalPartPrice: companyTotalPartPrice,
+      guarantyTotalPartPrice: guarantyTotalPartPrice,
+      customerTotalLaborPrice: customerTotalLaborPrice,
+      companyTotalLaborPrice: companyTotalLaborPrice,
+      guarantyTotalLaborPrice: guarantyTotalLaborPrice,
+      totalPriceWithCoefficient: totalPriceWithCoefficient,
+      customerTotalReusablePartPrice: customerTotalReusablePartPrice,
+      companyTotalReusablePartPrice: companyTotalReusablePartPrice,
+    );
+  }
 }
 
 class EmdadgarSettlementCoefficientsEntity {
@@ -84,4 +124,16 @@ class EmdadgarSettlementCoefficientsEntity {
   final String? commissionText;
   final int? commissionPrice;
   final String? commissionCoefficient;
+
+  EmdadgarSettlementCoefficientsModel toModel() {
+    return EmdadgarSettlementCoefficientsModel(
+      privateCarText: privateCarText,
+      privateCarPrice: privateCarPrice,
+      agencyGradeText: agencyGradeText,
+      agencyGradePrice: agencyGradePrice,
+      commissionText: commissionText,
+      commissionPrice: commissionPrice,
+      commissionCoefficient: commissionCoefficient,
+    );
+  }
 }

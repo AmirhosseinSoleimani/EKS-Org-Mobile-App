@@ -46,7 +46,7 @@ class EmdadgarAssignmentModel extends EmdadgarAssignmentEntity {
       planId: JsonValueReader.intValue(json['tarhId']),
       planName: JsonValueReader.stringValue(json['tarhNameText']),
       shiftName: JsonValueReader.stringValue(json['shiftName']),
-      agency: EmdadgarAgencyEntity(
+      agency: EmdadgarAgencyModel(
         code: JsonValueReader.stringValue(json['agencyCode']),
         name: JsonValueReader.stringValue(json['agencyName']),
         labelCode: JsonValueReader.stringValue(json['agencyCodeLabel']),
@@ -57,7 +57,7 @@ class EmdadgarAssignmentModel extends EmdadgarAssignmentEntity {
         cityName: JsonValueReader.stringValue(json['shahrNamayandegiText']),
         cityCode: JsonValueReader.stringValue(json['shahrNamayandegiCode']),
       ),
-      vehicle: EmdadgarVehicleEntity(
+      vehicle: EmdadgarVehicleModel(
         agencyVehicleId: JsonValueReader.intValue(json['khodroAgnecyId']),
         imei: JsonValueReader.stringValue(json['nImei']),
         plate: JsonValueReader.stringValue(json['plakText']),
@@ -66,7 +66,7 @@ class EmdadgarAssignmentModel extends EmdadgarAssignmentEntity {
         navganType: JsonValueReader.stringValue(json['navganTypeText']),
         navganTypeCode: JsonValueReader.intValue(json['navganTypeCode']),
       ),
-      contact: EmdadgarContactEntity(
+      contact: EmdadgarContactModel(
         irancellMobile: JsonValueReader.stringValue(
           json['allEmdadgarIrancellMobile'] ?? json['irancellMobile'],
         ),
@@ -75,7 +75,7 @@ class EmdadgarAssignmentModel extends EmdadgarAssignmentEntity {
         ),
         nationalCode: JsonValueReader.stringValue(json['nationalCode']),
       ),
-      location: EmdadgarLocationEntity(
+      location: EmdadgarLocationModel(
         lastLatitude:
             JsonValueReader.doubleValue(json['lastLocationLatitude']),
         lastLongitude:
@@ -104,4 +104,49 @@ class EmdadgarAssignmentModel extends EmdadgarAssignmentEntity {
       emdadServiceId: JsonValueReader.intValue(json['emdadServiceId']),
     );
   }
+}
+
+
+class EmdadgarAgencyModel extends EmdadgarAgencyEntity {
+  const EmdadgarAgencyModel({
+    super.code,
+    super.name,
+    super.labelCode,
+    super.provinceName,
+    super.provinceCode,
+    super.cityName,
+    super.cityCode,
+  });
+}
+
+class EmdadgarVehicleModel extends EmdadgarVehicleEntity {
+  const EmdadgarVehicleModel({
+    super.agencyVehicleId,
+    super.imei,
+    super.plate,
+    super.vehicleType,
+    super.vehicleTypeId,
+    super.navganType,
+    super.navganTypeCode,
+  });
+}
+
+class EmdadgarContactModel extends EmdadgarContactEntity {
+  const EmdadgarContactModel({
+    super.irancellMobile,
+    super.mobile,
+    super.nationalCode,
+  });
+}
+
+class EmdadgarLocationModel extends EmdadgarLocationEntity {
+  const EmdadgarLocationModel({
+    super.lastLatitude,
+    super.lastLongitude,
+    super.latitude,
+    super.longitude,
+    super.locationId,
+    super.locationCode,
+    super.locationName,
+  });
 }

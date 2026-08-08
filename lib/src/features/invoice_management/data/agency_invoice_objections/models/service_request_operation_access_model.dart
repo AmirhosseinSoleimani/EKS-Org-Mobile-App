@@ -1,40 +1,40 @@
-import 'package:eks_sana_plus_org/src/features/invoice_management/domain/agency_invoice_objections/entities/service_request_operation_access_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/data/common/models/json_value_reader.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/domain/agency_invoice_objections/entities/service_request_operation_access_entity.dart';
 
 class ServiceRequestOperationAccessModel
     extends ServiceRequestOperationAccessEntity {
   const ServiceRequestOperationAccessModel({
-    required super.cancel,
-    required super.cancelAfterAssign,
-    required super.cancelBeforeAssign,
-    required super.assign,
-    required super.assignCancel,
-    required super.lackOfCooperation,
-    required super.cartableCycle,
-    required super.followUp,
-    required super.invoiceCancel,
-    required super.customerInvoice,
-    required super.emdadgarInvoice,
-    required super.invoiceRegistration,
-    required super.externalEmdadNavgan,
-    required super.cancelExternalEmdadNavgan,
-    required super.serviceRequestCopy,
-    required super.evaluationHistory,
-    required super.invoiceModification,
-    required super.urgentServiceRequestCompleted,
-    required super.canInsert,
-    required super.canView,
-    required super.canUpdate,
-    required super.canDelete,
-    required super.canExport,
-    required super.canPrint,
-    required super.canImport,
+    super.cancel,
+    super.cancelAfterAssign,
+    super.cancelBeforeAssign,
+    super.assign,
+    super.assignCancel,
+    super.lackOfCooperation,
+    super.cartableCycle,
+    super.followUp,
+    super.invoiceCancel,
+    super.customerInvoice,
+    super.emdadgarInvoice,
+    super.invoiceRegistration,
+    super.externalEmdadNavgan,
+    super.cancelExternalEmdadNavgan,
+    super.serviceRequestCopy,
+    super.evaluationHistory,
+    super.invoiceModification,
+    super.urgentServiceRequestCompleted,
+    super.canInsert,
+    super.canView,
+    super.canUpdate,
+    super.canDelete,
+    super.canExport,
+    super.canPrint,
+    super.canImport,
   });
 
   factory ServiceRequestOperationAccessModel.fromJson(
     Map<String, dynamic> json,
   ) {
-    bool read(String key) => JsonValueReader.boolValue(json[key]) ?? false;
+    bool? read(String key) => JsonValueReader.boolValue(json[key]);
     return ServiceRequestOperationAccessModel(
       cancel: read('cancel'),
       cancelAfterAssign: read('cancelAfterAssign'),

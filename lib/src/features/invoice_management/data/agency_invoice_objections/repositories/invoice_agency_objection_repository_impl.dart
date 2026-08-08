@@ -1,7 +1,8 @@
 import 'package:eks_sana_plus_org/src/features/invoice_management/data/agency_invoice_objections/data_sources/invoice_agency_objection_data_source.dart';
-import 'package:eks_sana_plus_org/src/features/invoice_management/data/agency_invoice_objections/models/service_request_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/agency_invoice_objections/entities/emdadgar_assignment_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/agency_invoice_objections/entities/invoice_agency_objection_entity.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/domain/agency_invoice_objections/entities/invoice_agency_objection_page_entity.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/domain/agency_invoice_objections/entities/params/invoice_agency_objection_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/agency_invoice_objections/entities/params/service_request_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/agency_invoice_objections/entities/service_request_compact_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/agency_invoice_objections/entities/service_request_operation_access_entity.dart';
@@ -18,11 +19,23 @@ class InvoiceAgencyObjectionRepositoryImpl
   final InvoiceAgencyObjectionDataSource _dataSource;
 
   @override
+  Future<ApiResult<InvoiceAgencyObjectionPageEntity>> getObjections(
+    InvoiceAgencyObjectionFilterParamEntity param,
+  ) async {
+    try {
+      final result = await _dataSource.getObjections(param.toModel());
+      return ApiResult.success(data: result, resultCode: 0);
+    } catch (error, stackTrace) {
+      return error.toApiResult(stackTrace);
+    }
+  }
+
+  @override
   Future<ApiResult<EmdadgarAssignmentEntity?>> getEmdadgar(
     ServiceRequestParamEntity param,
   ) async {
     try {
-      final result = await _dataSource.getEmdadgar(ServiceRequestParamModel.fromEntity(param));
+      final result = await _dataSource.getEmdadgar(param.toModel());
       return ApiResult.success(data: result, resultCode: 0);
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
@@ -34,7 +47,7 @@ class InvoiceAgencyObjectionRepositoryImpl
     ServiceRequestParamEntity param,
   ) async {
     try {
-      final result = await _dataSource.getObjection(ServiceRequestParamModel.fromEntity(param));
+      final result = await _dataSource.getObjection(param.toModel());
       return ApiResult.success(data: result, resultCode: 0);
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
@@ -43,10 +56,10 @@ class InvoiceAgencyObjectionRepositoryImpl
 
   @override
   Future<ApiResult<ServiceRequestCompactEntity?>> getServiceRequest(
-    int serviceRequestId,
+    ServiceRequestParamEntity param,
   ) async {
     try {
-      final result = await _dataSource.getServiceRequest(serviceRequestId);
+      final result = await _dataSource.getServiceRequest(param.toModel());
       return ApiResult.success(data: result, resultCode: 0);
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);

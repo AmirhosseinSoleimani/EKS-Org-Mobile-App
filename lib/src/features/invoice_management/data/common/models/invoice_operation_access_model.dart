@@ -3,19 +3,19 @@ import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/
 
 class InvoiceOperationAccessModel extends InvoiceOperationAccessEntity {
   const InvoiceOperationAccessModel({
-    required super.batchConfirmation,
-    required super.hasAdminAccess,
-    required super.hasTechAccess,
-    required super.hasMaliAmaliatAccess,
+    super.batchConfirmation,
+    super.hasAdminAccess,
+    super.hasTechAccess,
+    super.hasMaliAmaliatAccess,
   });
 
   factory InvoiceOperationAccessModel.fromJson(Map<String, dynamic> json) {
     return InvoiceOperationAccessModel(
-      batchConfirmation: JsonValueReader.boolValue(json['batchConfirmation']) ?? false,
-      hasAdminAccess: JsonValueReader.boolValue(json['hasAdminAccess']) ?? false,
-      hasTechAccess: JsonValueReader.boolValue(json['hasTechAccess']) ?? false,
+      batchConfirmation: JsonValueReader.boolValue(json['batchConfirmation']),
+      hasAdminAccess: JsonValueReader.boolValue(json['hasAdminAccess']),
+      hasTechAccess: JsonValueReader.boolValue(json['hasTechAccess']),
       hasMaliAmaliatAccess:
-          JsonValueReader.boolValue(json['hasMaliAmaliatAccess']) ?? false,
+          JsonValueReader.boolValue(json['hasMaliAmaliatAccess']),
     );
   }
 }

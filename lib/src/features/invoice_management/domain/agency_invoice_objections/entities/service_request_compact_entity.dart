@@ -1,8 +1,10 @@
+import 'package:eks_sana_plus_org/src/features/invoice_management/data/agency_invoice_objections/models/service_request_compact_model.dart';
+
 class ServiceRequestCompactEntity {
   const ServiceRequestCompactEntity({
-    required this.customer,
-    required this.vehicle,
-    required this.assignment,
+    this.customer,
+    this.vehicle,
+    this.assignment,
     this.serviceRequestId,
     this.trackCode,
     this.description,
@@ -33,9 +35,31 @@ class ServiceRequestCompactEntity {
   final int? defectId;
   final String? defectTitle;
   final String? invoiceDocumentGuid;
-  final ServiceRequestCustomerEntity customer;
-  final ServiceRequestVehicleEntity vehicle;
-  final ServiceRequestAssignmentEntity assignment;
+  final ServiceRequestCustomerEntity? customer;
+  final ServiceRequestVehicleEntity? vehicle;
+  final ServiceRequestAssignmentEntity? assignment;
+
+  ServiceRequestCompactModel toModel() {
+    return ServiceRequestCompactModel(
+      customer: customer?.toModel(),
+      vehicle: vehicle?.toModel(),
+      assignment: assignment?.toModel(),
+      serviceRequestId: serviceRequestId,
+      trackCode: trackCode,
+      description: description,
+      insertDateTime: insertDateTime,
+      insertDateTimeJalali: insertDateTimeJalali,
+      requestDateTime: requestDateTime,
+      requestDateTimeJalali: requestDateTimeJalali,
+      requestStatus: requestStatus,
+      requestStatusTitle: requestStatusTitle,
+      subscription: subscription,
+      dispatcher: dispatcher,
+      defectId: defectId,
+      defectTitle: defectTitle,
+      invoiceDocumentGuid: invoiceDocumentGuid,
+    );
+  }
 }
 
 class ServiceRequestCustomerEntity {
@@ -56,6 +80,18 @@ class ServiceRequestCustomerEntity {
   final int? personType;
   final String? nationalNumber;
   final String? aidAddress;
+
+  ServiceRequestCustomerModel toModel() {
+    return ServiceRequestCustomerModel(
+      firstName: firstName,
+      lastName: lastName,
+      callMobileNumber: callMobileNumber,
+      customerMobileNumber: customerMobileNumber,
+      personType: personType,
+      nationalNumber: nationalNumber,
+      aidAddress: aidAddress,
+    );
+  }
 }
 
 class ServiceRequestVehicleEntity {
@@ -100,6 +136,30 @@ class ServiceRequestVehicleEntity {
   final int? wageGroupType;
   final String? weightGroupTitle;
   final bool? isGaranty;
+
+  ServiceRequestVehicleModel toModel() {
+    return ServiceRequestVehicleModel(
+      agencyVehicleLabelCode: agencyVehicleLabelCode,
+      chassisNumber: chassisNumber,
+      licensePlate: licensePlate,
+      kilometer: kilometer,
+      carInfoId: carInfoId,
+      carModelId: carModelId,
+      carInfoGuid: carInfoGuid,
+      carName: carName,
+      carEngineNumber: carEngineNumber,
+      carGroupTitle: carGroupTitle,
+      carFactory: carFactory,
+      carFactoryTitle: carFactoryTitle,
+      isSaipa: isSaipa,
+      carProductionYear: carProductionYear,
+      vehicleUsageId: vehicleUsageId,
+      vehicleUsageTitle: vehicleUsageTitle,
+      wageGroupType: wageGroupType,
+      weightGroupTitle: weightGroupTitle,
+      isGaranty: isGaranty,
+    );
+  }
 }
 
 class ServiceRequestAssignmentEntity {
@@ -128,4 +188,20 @@ class ServiceRequestAssignmentEntity {
   final String? agencyCode;
   final DateTime? assignDate;
   final String? assignDateTimeJalali;
+
+  ServiceRequestAssignmentModel toModel() {
+    return ServiceRequestAssignmentModel(
+      hasEmdadgar: hasEmdadgar,
+      planningId: planningId,
+      emdadgarId: emdadgarId,
+      emdadgarName: emdadgarName,
+      emdadgarMobile: emdadgarMobile,
+      emdadgarNavganType: emdadgarNavganType,
+      emdadgarVehicleType: emdadgarVehicleType,
+      agencyName: agencyName,
+      agencyCode: agencyCode,
+      assignDate: assignDate,
+      assignDateTimeJalali: assignDateTimeJalali,
+    );
+  }
 }

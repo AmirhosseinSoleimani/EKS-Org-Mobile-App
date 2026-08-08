@@ -1,3 +1,5 @@
+import 'package:eks_sana_plus_org/src/features/invoice_management/data/common/models/invoice_document_urls_model.dart';
+
 class InvoiceDocumentUrlsEntity {
   const InvoiceDocumentUrlsEntity({
     this.htmlViewUrl,
@@ -16,4 +18,13 @@ class InvoiceDocumentUrlsEntity {
       htmlDownloadUrl != null ||
       pdfViewUrl != null ||
       pdfDownloadUrl != null;
+
+  InvoiceDocumentUrlsModel toModel() {
+    return InvoiceDocumentUrlsModel(
+      htmlViewUrl: htmlViewUrl,
+      htmlDownloadUrl: htmlDownloadUrl,
+      pdfViewUrl: pdfViewUrl,
+      pdfDownloadUrl: pdfDownloadUrl,
+    );
+  }
 }
