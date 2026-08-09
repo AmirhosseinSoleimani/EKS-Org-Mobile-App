@@ -2669,14 +2669,6 @@ _i174.GetIt $initGetIt(
       gh<_i1058.CurrentSessionManager>(),
     ),
   );
-  gh.factory<_i47.CustomerPreInvoiceCubit>(
-    () => _i47.CustomerPreInvoiceCubit(
-      gh<_i138.GetCustomerPreInvoicesUseCase>(),
-      gh<_i245.GetCustomerInvoiceDetailsUseCase>(),
-      gh<_i700.GetEmdadCategoriesUseCase>(),
-      gh<_i470.ExportExcelUseCase>(),
-    ),
-  );
   gh.factory<_i362.EmdadgarInvoiceCubit>(
     () => _i362.EmdadgarInvoiceCubit(
       gh<_i204.GetEmdadgarInvoiceUseCase>(),
@@ -2826,6 +2818,15 @@ _i174.GetIt $initGetIt(
       gh<_i226.GetActiveServiceRequestUseCase>(),
       gh<_i535.GetLastEvaluationUseCase>(),
       gh<_i684.PostEvaluationUseCase>(),
+    ),
+  );
+  gh.factory<_i47.CustomerPreInvoiceCubit>(
+    () => _i47.CustomerPreInvoiceCubit(
+      gh<_i138.GetCustomerPreInvoicesUseCase>(),
+      gh<_i245.GetCustomerInvoiceDetailsUseCase>(),
+      gh<_i700.GetEmdadCategoriesUseCase>(),
+      gh<_i470.ExportExcelUseCase>(),
+      gh<_i369.SetSelectedRequestItemUseCase>(),
     ),
   );
   gh.factory<_i680.AddAgencyVehicleCubit>(

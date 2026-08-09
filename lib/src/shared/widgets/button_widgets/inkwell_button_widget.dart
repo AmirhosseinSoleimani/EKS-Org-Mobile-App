@@ -148,6 +148,7 @@ class InkwellButtonWidget extends StatelessWidget {
   TextStyle? _titleStyle(BuildContext context) {
     return textStyle ??
         Theme.of(context).textTheme.bodyMedium?.copyWith(
+          fontWeight: FontWeight.w600,
               color: onTap == null
                   ? Theme.of(context).colorScheme.onSecondaryFixed
                   : titleColor ?? Theme.of(context).colorScheme.onPrimary,

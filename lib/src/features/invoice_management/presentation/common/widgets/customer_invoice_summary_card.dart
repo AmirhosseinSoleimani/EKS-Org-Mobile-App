@@ -124,18 +124,20 @@ class CustomerInvoiceSummaryCard extends StatelessWidget {
         prefixIcon: const Icon(
           Icons.receipt_long_outlined,
           color: Colors.white,
-          size: AppSize.s20,
+          size: AppSize.s24,
         ),
         onTap: isPrimaryLoading ? null : onPrimaryAction,
       ),
       operationAction: InkwellButtonWidget(
-        title: 'مشاهده جزئیات',
+        title: 'جزئیات',
+
         backgroundColor: theme.colorScheme.secondaryContainer,
         titleColor: theme.colorScheme.onSurfaceVariant,
         prefixIcon: Icon(
           Icons.info_outline_rounded,
           color: theme.colorScheme.onSurfaceVariant,
-          size: AppSize.s20,
+          fontWeight:  FontWeight.w500,
+          size: AppSize.s24,
         ),
         onTap: onDetails,
       ),

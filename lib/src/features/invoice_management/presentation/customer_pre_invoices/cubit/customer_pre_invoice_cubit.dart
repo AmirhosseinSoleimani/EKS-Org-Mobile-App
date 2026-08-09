@@ -7,6 +7,10 @@ import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/customer_invoices/use_cases/get_customer_invoice_details_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/customer_invoices/use_cases/get_customer_pre_invoices_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_pre_invoices/utils/customer_pre_invoice_excel_report_factory.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/usecases/set_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/invoice_entity.dart';
@@ -22,6 +26,7 @@ class CustomerPreInvoiceCubit extends Cubit<CustomerPreInvoiceState> {
     this._getCustomerInvoiceDetailsUseCase,
     this._getEmdadCategoriesUseCase,
     this._exportExcelUseCase,
+    this._setSelectedRequestItemUseCase,
   ) : super(const CustomerPreInvoiceState());
 
   static const int pageSize = 25;
@@ -31,6 +36,7 @@ class CustomerPreInvoiceCubit extends Cubit<CustomerPreInvoiceState> {
   final GetCustomerInvoiceDetailsUseCase _getCustomerInvoiceDetailsUseCase;
   final GetEmdadCategoriesUseCase _getEmdadCategoriesUseCase;
   final ExportExcelUseCase _exportExcelUseCase;
+  final SetSelectedRequestItemUseCase _setSelectedRequestItemUseCase;
 
   void Function()? _retryAction;
 
@@ -231,6 +237,35 @@ class CustomerPreInvoiceCubit extends Cubit<CustomerPreInvoiceState> {
         clearPreviewInvoice: true,
         clearLoadingPreviewEvaluationId: true,
       ),
+    );
+  }
+
+  Future<int?> cacheSelectedRequest(InvoiceRecordEntity item) async {
+    final request = _mapToServiceRequest(item);
+
+    if (request == null) {
+      _emitError('اطلاعات درخواست برای نمایش جزئیات کامل نیست.');
+      return null;
+    }
+
+    try {
+      await _setSelectedRequestItemUseCase(request);
+      return request.id;
+    } catch (_) {
+      _emitError('ذخیره درخواست انتخاب‌شده با خطا مواجه شد.');
+      return null;
+    }
+  }
+
+  BaseRequestEntity? _mapToServiceRequest(InvoiceRecordEntity item) {
+    final requestId = item.identity?.serviceRequestId;
+    final ServiceType serviceType = ServiceType.fromValue(item.state?.serviceType);
+
+    if (requestId == null) return null;
+
+    return ReliefRequestEntity(
+      id: requestId,
+      serviceType: serviceType,
     );
   }
 

@@ -4,13 +4,12 @@ import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/widgets/customer_invoice_summary_card.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/widgets/invoice_list_section_header.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/widgets/invoice_preview_sheet.dart';
-import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/widgets/invoice_record_details_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_pre_invoices/cubit/customer_pre_invoice_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_pre_invoices/widgets/customer_pre_invoice_filter_sheet.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/request_detail_page.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/list_filter_toolbar.dart';
@@ -20,6 +19,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class CustomerPreInvoicePage extends StatelessWidget {
   const CustomerPreInvoicePage({super.key});
@@ -200,7 +200,7 @@ class _CustomerPreInvoiceViewState extends State<_CustomerPreInvoiceView> {
                 evaluationId != null &&
                 state.loadingPreviewEvaluationId == evaluationId,
             onPrimaryAction: () => cubit.loadPreview(item),
-            onDetails: () => _showDetails(context, item),
+            onDetails: () => _openRequestDetails(context, cubit, item),
           );
         },
       ),
@@ -280,17 +280,17 @@ class _CustomerPreInvoiceViewState extends State<_CustomerPreInvoiceView> {
     );
   }
 
-  void _showDetails(
+  Future<void> _openRequestDetails(
     BuildContext context,
+    CustomerPreInvoiceCubit cubit,
     InvoiceRecordEntity item,
-  ) {
-    BottomSheetMessage.showCustom(
-      context: context,
-      content: InvoiceRecordDetailsSheet(item: item),
-      actionWidget: InkwellButtonWidget(
-        title: 'بستن',
-        onTap: () => Navigator.of(context).pop(),
-      ),
+  ) async {
+    final requestId = await cubit.cacheSelectedRequest(item);
+    if (requestId == null || !context.mounted) return;
+
+    await context.push(
+      RequestDetailPage.path,
+      extra: requestId,
     );
   }
 
