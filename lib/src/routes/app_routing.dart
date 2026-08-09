@@ -36,7 +36,6 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/followup_re
 import 'package:eks_sana_plus_org/src/features/services/presentation/home_service_request_list_page/home_service_request_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/non_cooperation_page/non_cooperation_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/online_map_page/online_map_page.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/pre_invoice_page/pre_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/pre_invoice_page/service_invoice_request_context_loader.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/relief_request_list_page/relief_request_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/request_detail_page.dart';
@@ -48,7 +47,8 @@ import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/
 import 'package:eks_sana_plus_org/src/features/special_plan/presentation/special_plan_routes.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/vehicle_info_routes.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/vehicle_model_routes.dart';
-import 'package:eks_sana_plus_org/src/shared/features/invoice/presentation/pages/invoice_details_page.dart';
+import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/enums/invoice_type.dart';
+import 'package:eks_sana_plus_org/src/shared/features/invoice/presentation/pages/invoice_page.dart';
 import 'package:eks_sana_plus_org/src/routes/current_session_sync_navigator_observer.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -230,19 +230,12 @@ class Routes {
           ),
         ),
         GoRoute(
-          path: PreInvoicePage.path,
-          name: PreInvoicePage.name,
+          path: InvoicePage.path,
+          name: InvoicePage.name,
           pageBuilder: (context, state) => getPage(
-            child: const PreInvoicePage(),
-            state: state,
-          ),
-        ),
-        GoRoute(
-          path: InvoiceDetailsPage.path,
-          name: InvoiceDetailsPage.name,
-          pageBuilder: (context, state) => getPage(
-            child: InvoiceDetailsPage(
+            child: InvoicePage(
               requestContextLoader: createServiceInvoiceRequestContextLoader(),
+              invoiceType: state.extra! as InvoiceType,
             ),
             state: state,
           ),

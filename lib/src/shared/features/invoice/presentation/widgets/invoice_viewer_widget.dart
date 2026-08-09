@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
+import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/enums/invoice_type.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/invoice_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/presentation/widgets/details_invoice_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/presentation/widgets/labor_invoice_widget.dart';
@@ -16,10 +17,12 @@ class InvoiceViewerWidget extends StatelessWidget {
     super.key,
     required this.type,
     required this.invoice,
+    required this.invoiceType,
   });
 
   final ServiceType type;
   final InvoiceEntity? invoice;
+  final InvoiceType invoiceType;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +41,7 @@ class InvoiceViewerWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               BodyMediumText(
-                text: 'مشاهده جزئیات پیش‌فاکتور',
+                text: invoiceType.detailsTitle,
                 color: Theme.of(context).colorScheme.secondary,
               ),
               Space.w4,

@@ -1,15 +1,10 @@
 enum InvoiceType {
-  preInvoice,
-  invoice,
-}
+  preInvoice(title: 'پیش فاکتور'),
+  invoice(title: 'فاکتور');
 
-extension InvoiceTypeTitle on InvoiceType {
-  String get title {
-    switch (this) {
-      case InvoiceType.preInvoice:
-        return 'پیش فاکتور';
-      case InvoiceType.invoice:
-        return 'فاکتور';
-    }
-  }
+  final String title;
+
+  const InvoiceType({required this.title});
+
+  String get detailsTitle => 'مشاهده جزئیات $title';
 }

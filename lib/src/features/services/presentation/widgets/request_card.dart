@@ -146,7 +146,10 @@ class RequestCard extends StatelessWidget {
     await Future.sync(() => onSelected(request));
     if (!pageContext.mounted) return;
 
-    await pageContext.push(operation.route, extra: request.id);
+    await pageContext.push(
+      operation.route,
+      extra: operation.routeExtra(request.id),
+    );
     if (!pageContext.mounted) return;
 
     await Future.sync(() => onRefreshAfterReturn?.call());

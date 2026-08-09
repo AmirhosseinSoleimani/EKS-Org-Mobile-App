@@ -17,10 +17,11 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_
 import 'package:eks_sana_plus_org/src/features/services/presentation/followup_register_page/follow_up_register_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/non_cooperation_page/non_cooperation_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/online_map_page/online_map_page.dart';
-import 'package:eks_sana_plus_org/src/features/services/presentation/pre_invoice_page/pre_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/request_detail_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_status_history_page/request_status_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/update_request_page/update_request_page.dart';
+import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/enums/invoice_type.dart';
+import 'package:eks_sana_plus_org/src/shared/features/invoice/presentation/pages/invoice_page.dart';
 import 'package:flutter/material.dart';
 
 
@@ -77,7 +78,8 @@ enum RequestCardOperation {
     label: 'پیش فاکتور',
     icon: Icons.description_outlined,
     color: Color(0xFFff9305),
-    route: PreInvoicePage.path,
+    route: InvoicePage.path,
+    invoiceType: InvoiceType.preInvoice,
   ),
 
   emdadgarInvoice(
@@ -153,13 +155,17 @@ enum RequestCardOperation {
   final IconData icon;
   final Color color;
   final String route;
+  final InvoiceType? invoiceType;
 
   const RequestCardOperation({
     required this.label,
     required this.icon,
     required this.color,
     required this.route,
+    this.invoiceType,
   });
+
+  Object? routeExtra(int? requestId) => invoiceType ?? requestId;
 }
 
 extension OperationItemVisibility on RequestCardOperation {

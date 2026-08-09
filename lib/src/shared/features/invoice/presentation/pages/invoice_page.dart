@@ -2,6 +2,7 @@ import 'dart:ui';
 
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
+import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/enums/invoice_type.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/use_case/get_pre_invoice_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/presentation/cubit/invoice_details_cubit.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/presentation/invoice_request_context_loader.dart';
@@ -16,16 +17,18 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-class InvoiceDetailsPage extends StatelessWidget {
-  const InvoiceDetailsPage({
+class InvoicePage extends StatelessWidget {
+  const InvoicePage({
     super.key,
     required this.requestContextLoader,
+    required this.invoiceType,
   });
 
-  static const path = '/invoice-details-page';
-  static const name = 'invoice-details-page';
+  static const path = '/invoice-page';
+  static const name = 'invoice-page';
 
   final InvoiceRequestContextLoader requestContextLoader;
+  final InvoiceType invoiceType;
 
   @override
   Widget build(BuildContext context) {
@@ -34,13 +37,15 @@ class InvoiceDetailsPage extends StatelessWidget {
         getIt<GetPreInvoiceUseCase>(),
         requestContextLoader,
       )..init(),
-      child: const _View(),
+      child: _View(invoiceType: invoiceType),
     );
   }
 }
 
 class _View extends StatelessWidget {
-  const _View();
+  const _View({required this.invoiceType});
+
+  final InvoiceType invoiceType;
 
   @override
   Widget build(BuildContext context) {
@@ -76,16 +81,18 @@ class _View extends StatelessWidget {
             break;
         }
       },
-      child: const Scaffold(
-        appBar: SimpleAppBar(title: 'پیش فاکتور'),
-        body: _Body(),
+      child: Scaffold(
+        appBar: SimpleAppBar(title: invoiceType.title),
+        body: _Body(invoiceType: invoiceType),
       ),
     );
   }
 }
 
 class _Body extends StatelessWidget {
-  const _Body();
+  const _Body({required this.invoiceType});
+
+  final InvoiceType invoiceType;
 
   @override
   Widget build(BuildContext context) {
@@ -105,14 +112,16 @@ class _Body extends StatelessWidget {
           );
         }
 
-        return const _LoadedView();
+        return _LoadedView(invoiceType: invoiceType);
       },
     );
   }
 }
 
 class _LoadedView extends StatelessWidget {
-  const _LoadedView();
+  const _LoadedView({required this.invoiceType});
+
+  final InvoiceType invoiceType;
 
   @override
   Widget build(BuildContext context) {
@@ -164,6 +173,7 @@ class _LoadedView extends StatelessWidget {
               InvoiceViewerWidget(
                 invoice: cubit.invoiceEntity,
                 type: request?.serviceType ?? ServiceType.homeService,
+                invoiceType: invoiceType,
               ),
           ],
         ),

@@ -6,7 +6,8 @@ import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/c
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_invoices/cubit/customer_invoice_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_pre_invoices/widgets/customer_pre_invoice_filter_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/request_detail_page.dart';
-import 'package:eks_sana_plus_org/src/shared/features/invoice/presentation/pages/invoice_details_page.dart';
+import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/enums/invoice_type.dart';
+import 'package:eks_sana_plus_org/src/shared/features/invoice/presentation/pages/invoice_page.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
@@ -274,7 +275,10 @@ class _CustomerInvoiceViewState extends State<_CustomerInvoiceView> {
     final requestId = await cubit.cacheSelectedRequest(item);
     if (requestId == null || !context.mounted) return;
 
-    await context.push(InvoiceDetailsPage.path);
+    await context.push(
+      InvoicePage.path,
+      extra: InvoiceType.invoice,
+    );
   }
 
   Future<void> _openRequestDetails(
