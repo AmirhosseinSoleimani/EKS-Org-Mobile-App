@@ -6,6 +6,7 @@ import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/pages/emd
 import 'package:eks_sana_plus_org/src/features/general_content/presentation/pages/general_content_page.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/pages/grade_pattern_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/imei/presentation/pages/imei_page.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_invoices/customer_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_pre_invoices/customer_pre_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/leave/presentation/pages/leave_page.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/presentation/pages/navgan_page.dart';
@@ -196,15 +197,13 @@ class ServicesPage extends StatelessWidget {
               _ServiceMenuItemData(
                 title: 'پیش فاکتورهای مشتری',
                 icon: Icons.request_quote_outlined,
-                onTap: () {
-                  context.pushNamed(CustomerPreInvoicePage.name);
-                },
+                onTap: () =>  context.pushNamed(CustomerPreInvoicePage.name),
               ),
             if (access.canShowCustomerInvoiceMenu())
               _ServiceMenuItemData(
                 title: 'فاکتورهای مشتری',
                 icon: Icons.receipt_long_outlined,
-                onTap: () {},
+                onTap: () => context.pushNamed(CustomerInvoicePage.name),
               ),
             if (access.canShowEmdadgarPreInvoiceMenu())
               _ServiceMenuItemData(

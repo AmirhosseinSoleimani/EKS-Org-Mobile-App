@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_invoices/customer_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_pre_invoices/customer_pre_invoice_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -21,8 +22,16 @@ class InvoiceManagementRoutes {
         ),
       ),
 
+      GoRoute(
+        path: CustomerInvoicePage.path,
+        name: CustomerInvoicePage.name,
+        pageBuilder: (context, state) => getPage(
+          child: const CustomerInvoicePage(),
+          state: state,
+        ),
+      ),
+
       // TODO: Add the routes below when their presentation pages are implemented:
-      // CustomerInvoicePage
       // EmdadgarPreInvoicePage
       // EmdadgarInvoicePage
       // EmdadgarAmaliatFinalInvoicePage

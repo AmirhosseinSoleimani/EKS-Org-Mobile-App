@@ -497,6 +497,8 @@ import '../features/invoice_management/domain/emdadgar_invoices/use_cases/get_in
     as _i1017;
 import '../features/invoice_management/domain/emdadgar_invoices/use_cases/get_initial_emdadgar_invoices_use_case.dart'
     as _i476;
+import '../features/invoice_management/presentation/customer_invoices/cubit/customer_invoice_cubit.dart'
+    as _i105;
 import '../features/invoice_management/presentation/customer_pre_invoices/cubit/customer_pre_invoice_cubit.dart'
     as _i47;
 import '../features/leave/data/data_sources/leave_data_source.dart' as _i1017;
@@ -2583,6 +2585,15 @@ _i174.GetIt $initGetIt(
       gh<_i178.FetchInsertHomeServiceCategoryUseCase>(),
       gh<_i226.GetActiveServiceRequestUseCase>(),
       gh<_i535.GetLastEvaluationUseCase>(),
+    ),
+  );
+  gh.factory<_i105.CustomerInvoiceCubit>(
+    () => _i105.CustomerInvoiceCubit(
+      gh<_i61.GetCustomerInvoicesUseCase>(),
+      gh<_i245.GetCustomerInvoiceDetailsUseCase>(),
+      gh<_i700.GetEmdadCategoriesUseCase>(),
+      gh<_i470.ExportExcelUseCase>(),
+      gh<_i369.SetSelectedRequestItemUseCase>(),
     ),
   );
   gh.factory<_i802.RequestDetailCubit>(

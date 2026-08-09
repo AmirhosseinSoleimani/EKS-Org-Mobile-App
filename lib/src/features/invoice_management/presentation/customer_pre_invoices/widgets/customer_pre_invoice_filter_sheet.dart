@@ -13,12 +13,14 @@ import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 class CustomerPreInvoiceFilterSheet extends StatefulWidget {
   const CustomerPreInvoiceFilterSheet({
     super.key,
+    this.title = 'فیلتر پیش فاکتورهای مشتری',
     required this.initialFilter,
     required this.categories,
     required this.onApply,
     required this.onClear,
   });
 
+  final String title;
   final InvoiceListFilterParamEntity initialFilter;
   final List<EmdadServiceCategoryEntity> categories;
   final ValueChanged<InvoiceListFilterParamEntity> onApply;
@@ -105,7 +107,7 @@ class _CustomerPreInvoiceFilterSheetState
                 AppPadding.p8,
               ),
               child: Text(
-                'فیلتر پیش فاکتورهای مشتری',
+                widget.title,
                 style: theme.textTheme.titleMedium?.copyWith(
                   fontWeight: FontWeight.w800,
                 ),
