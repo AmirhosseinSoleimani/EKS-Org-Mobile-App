@@ -5,6 +5,7 @@ class SummaryCardActions extends StatelessWidget {
   const SummaryCardActions({
     super.key,
     this.primaryAction,
+    this.operationAction,
     this.onOperation,
     this.isOperationLoading = false,
     this.primaryActionFlex = 56,
@@ -13,6 +14,13 @@ class SummaryCardActions extends StatelessWidget {
   });
 
   final Widget? primaryAction;
+
+  /// Use this when the second action has a custom UI.
+  ///
+  /// If it is null, [onOperation] keeps the previous behavior and renders
+  /// the shared [OperationButton].
+  final Widget? operationAction;
+
   final VoidCallback? onOperation;
   final bool isOperationLoading;
   final int primaryActionFlex;
@@ -21,23 +29,33 @@ class SummaryCardActions extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final operationButton = onOperation == null
-        ? null
-        : OperationButton(
-            isLoading: isOperationLoading,
-            onTap: isOperationLoading ? () {} : onOperation!,
-          );
+    final secondaryAction = operationAction ?? _buildOperationButton();
 
-    if (primaryAction != null && operationButton != null) {
+    if (primaryAction != null && secondaryAction != null) {
       return Row(
         children: [
-          Flexible(flex: primaryActionFlex, child: primaryAction!),
+          Expanded(
+            flex: primaryActionFlex,
+            child: primaryAction!,
+          ),
           SizedBox(width: spacing),
-          Expanded(flex: operationActionFlex, child: operationButton),
+          Expanded(
+            flex: operationActionFlex,
+            child: secondaryAction,
+          ),
         ],
       );
     }
 
-    return primaryAction ?? operationButton ?? const SizedBox.shrink();
+    return primaryAction ?? secondaryAction ?? const SizedBox.shrink();
+  }
+
+  Widget? _buildOperationButton() {
+    if (onOperation == null) return null;
+
+    return OperationButton(
+      isLoading: isOperationLoading,
+      onTap: isOperationLoading ? () {} : onOperation!,
+    );
   }
 }

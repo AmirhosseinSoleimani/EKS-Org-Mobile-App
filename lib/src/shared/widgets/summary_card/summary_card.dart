@@ -10,6 +10,7 @@ class AppSummaryCard extends StatelessWidget {
   const AppSummaryCard({
     super.key,
     required this.title,
+    this.titleLabel,
     this.subtitle,
     this.leading,
     this.badges = const [],
@@ -19,6 +20,7 @@ class AppSummaryCard extends StatelessWidget {
     this.afterInfo,
     this.metaItems = const [],
     this.primaryAction,
+    this.operationAction,
     this.onOperation,
     this.isOperationLoading = false,
     this.onTap,
@@ -36,6 +38,7 @@ class AppSummaryCard extends StatelessWidget {
   });
 
   final String title;
+  final String? titleLabel;
   final String? subtitle;
   final Widget? leading;
   final List<Widget> badges;
@@ -45,6 +48,7 @@ class AppSummaryCard extends StatelessWidget {
   final Widget? afterInfo;
   final List<SummaryCardMeta> metaItems;
   final Widget? primaryAction;
+  final Widget? operationAction;
   final VoidCallback? onOperation;
   final bool isOperationLoading;
   final VoidCallback? onTap;
@@ -58,6 +62,7 @@ class AppSummaryCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
     return Container(
       margin: margin,
       decoration: BoxDecoration(
@@ -84,6 +89,7 @@ class AppSummaryCard extends StatelessWidget {
               children: [
                 SummaryCardHeader(
                   title: title,
+                  titleLabel: titleLabel,
                   subtitle: subtitle,
                   leading: leading,
                   badges: badges,
@@ -95,7 +101,8 @@ class AppSummaryCard extends StatelessWidget {
                   beforeInfo!,
                 ],
                 if (infoItems.isNotEmpty) ...[
-                  Space.h8,
+                  Divider(color: theme.dividerColor),
+                  Space.h6,
                   ...infoItems.map(
                     (item) => SummaryCardInfoRow(item: item),
                   ),
@@ -116,11 +123,13 @@ class AppSummaryCard extends StatelessWidget {
                     if (index != metaItems.length - 1) Space.h8,
                   ],
                 ],
-
-                if (primaryAction != null || onOperation != null) ...[
+                if (primaryAction != null ||
+                    operationAction != null ||
+                    onOperation != null) ...[
                   Space.h24,
                   SummaryCardActions(
                     primaryAction: primaryAction,
+                    operationAction: operationAction,
                     onOperation: onOperation,
                     isOperationLoading: isOperationLoading,
                     primaryActionFlex: primaryActionFlex,
@@ -136,4 +145,3 @@ class AppSummaryCard extends StatelessWidget {
     );
   }
 }
-

@@ -6,6 +6,7 @@ import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/pages/emd
 import 'package:eks_sana_plus_org/src/features/general_content/presentation/pages/general_content_page.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/pages/grade_pattern_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/imei/presentation/pages/imei_page.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_pre_invoices/customer_pre_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/leave/presentation/pages/leave_page.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/presentation/pages/navgan_page.dart';
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/plan_info_page.dart';
@@ -22,6 +23,7 @@ import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/main_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -66,9 +68,9 @@ class ServicesPage extends StatelessWidget {
               ),
           ];
 
-          final agencyServices = <_AgencyServiceItemData>[
+          final agencyServices = <_ServiceMenuItemData>[
             if (access.canShowHomeServiceRequestsMenu())
-              _AgencyServiceItemData(
+              _ServiceMenuItemData(
                 title: 'برنامه‌ریزی',
                 icon: Icons.calendar_month_outlined,
                 onTap: () {
@@ -76,7 +78,7 @@ class ServicesPage extends StatelessWidget {
                 },
               ),
             if (access.canShowHomeServiceRequestsMenu())
-              _AgencyServiceItemData(
+              _ServiceMenuItemData(
                 title: 'خودروی امدادی',
                 icon: Icons.local_shipping_outlined,
                 onTap: () {
@@ -84,7 +86,7 @@ class ServicesPage extends StatelessWidget {
                 },
               ),
             if (access.canShowHomeServiceRequestsMenu())
-              _AgencyServiceItemData(
+              _ServiceMenuItemData(
                 title: 'واحد امدادی',
                 icon: Icons.groups_outlined,
                 onTap: () {
@@ -92,7 +94,7 @@ class ServicesPage extends StatelessWidget {
                 },
               ),
             if (access.canShowHomeServiceRequestsMenu())
-              _AgencyServiceItemData(
+              _ServiceMenuItemData(
                 title: 'نمایندگی',
                 icon: Icons.storefront_outlined,
                 onTap: () {
@@ -100,7 +102,7 @@ class ServicesPage extends StatelessWidget {
                 },
               ),
             if (access.canShowHomeServiceRequestsMenu())
-              _AgencyServiceItemData(
+              _ServiceMenuItemData(
                 title: 'مرخصی‌ها',
                 icon: Icons.event_busy_outlined,
                 onTap: () {
@@ -108,7 +110,7 @@ class ServicesPage extends StatelessWidget {
                 },
               ),
             if (access.canShowSkillsCertificateButton())
-              _AgencyServiceItemData(
+              _ServiceMenuItemData(
                 title: 'گواهینامه',
                 icon: Icons.card_membership_outlined,
                 onTap: () {
@@ -116,7 +118,7 @@ class ServicesPage extends StatelessWidget {
                 },
               ),
             if (access.canShowSanRescuerInfoMenu())
-              _AgencyServiceItemData(
+              _ServiceMenuItemData(
                 title: 'امدادرسان',
                 icon: Icons.person_3_outlined,
                 onTap: () {
@@ -124,7 +126,7 @@ class ServicesPage extends StatelessWidget {
                 },
               ),
             if (access.canShowHomeServiceRequestsMenu())
-              _AgencyServiceItemData(
+              _ServiceMenuItemData(
                 title: 'الگوی گرید',
                 icon: Icons.grading_outlined,
                 onTap: () {
@@ -132,7 +134,7 @@ class ServicesPage extends StatelessWidget {
                 },
               ),
             if (access.canShowIMEI())
-              _AgencyServiceItemData(
+              _ServiceMenuItemData(
                 title: 'IMEI',
                 icon: Icons.router_outlined,
                 onTap: () {
@@ -140,7 +142,7 @@ class ServicesPage extends StatelessWidget {
                 },
               ),
             if (access.canShowShift())
-              _AgencyServiceItemData(
+              _ServiceMenuItemData(
                 title: 'شیفت',
                 icon: Symbols.swap_driving_apps,
                 onTap: () {
@@ -148,7 +150,7 @@ class ServicesPage extends StatelessWidget {
                 },
               ),
             if (access.canShowNavganButton())
-              _AgencyServiceItemData(
+              _ServiceMenuItemData(
                 title: 'ناوگان',
                 icon: Icons.commute_outlined,
                 onTap: () {
@@ -156,7 +158,7 @@ class ServicesPage extends StatelessWidget {
                 },
               ),
             if (access.canShowDeploymentLocationButton())
-              _AgencyServiceItemData(
+              _ServiceMenuItemData(
                 title: 'محل استقرار',
                 icon: Icons.pin_drop_outlined,
                 onTap: () {
@@ -164,7 +166,7 @@ class ServicesPage extends StatelessWidget {
                 },
               ),
             if (access.canShowSanGeneralContent())
-              _AgencyServiceItemData(
+              _ServiceMenuItemData(
                 title: 'بخش نامه',
                 icon: Symbols.developer_guide,
                 onTap: () {
@@ -172,7 +174,7 @@ class ServicesPage extends StatelessWidget {
                 },
               ),
             if (access.canShowNavganTypeButton())
-              _AgencyServiceItemData(
+              _ServiceMenuItemData(
                 title: 'نوع خودرو',
                 icon: Symbols.auto_towing,
                 onTap: () {
@@ -180,7 +182,7 @@ class ServicesPage extends StatelessWidget {
                 },
               ),
             if (access.canShowSpecialPlanButton())
-              _AgencyServiceItemData(
+              _ServiceMenuItemData(
                 title: 'طرح',
                 icon: Symbols.domain_verification,
                 onTap: () {
@@ -189,7 +191,62 @@ class ServicesPage extends StatelessWidget {
               ),
           ];
 
-          if (mainServices.isEmpty && agencyServices.isEmpty) {
+          final invoiceServices = <_ServiceMenuItemData>[
+            if (access.canShowCustomerPreInvoiceMenu())
+              _ServiceMenuItemData(
+                title: 'پیش فاکتورهای مشتری',
+                icon: Icons.request_quote_outlined,
+                onTap: () {
+                  context.pushNamed(CustomerPreInvoicePage.name);
+                },
+              ),
+            if (access.canShowCustomerInvoiceMenu())
+              _ServiceMenuItemData(
+                title: 'فاکتورهای مشتری',
+                icon: Icons.receipt_long_outlined,
+                onTap: () {},
+              ),
+            if (access.canShowEmdadgarPreInvoiceMenu())
+              _ServiceMenuItemData(
+                title: 'صورت وضعیت‌های اولیه',
+                icon: Icons.description_outlined,
+                onTap: () {},
+              ),
+            if (access.canShowEmdadgarInvoiceMenu())
+              _ServiceMenuItemData(
+                title: 'صورت وضعیت‌ها',
+                icon: Icons.article_outlined,
+                onTap: () {},
+              ),
+            if (access.canShowEmdadgarAmaliatFinalInvoiceMenu())
+              _ServiceMenuItemData(
+                title: 'صورت وضعیت‌های (تایید نهایی)',
+                icon: Icons.fact_check_outlined,
+                onTap: () {},
+              ),
+            if (access.canShowEmdadgarFinalInvoiceMenu())
+              _ServiceMenuItemData(
+                title: 'صورت وضعیت‌های نهایی (تایید و اصلاح)',
+                icon: Icons.rule_outlined,
+                onTap: () {},
+              ),
+            if (access.canShowEmdadgarDefiniteInvoiceMenu())
+              _ServiceMenuItemData(
+                title: 'صورت وضعیت‌های (قطعی مؤدیان)',
+                icon: Icons.verified_outlined,
+                onTap: () {},
+              ),
+            if (access.canShowEmdadgarInvoiceObjectionMenu())
+              _ServiceMenuItemData(
+                title: 'درخواست‌های اصلاحی (نماینده)',
+                icon: Icons.edit_note_outlined,
+                onTap: () {},
+              ),
+          ];
+
+          if (mainServices.isEmpty &&
+              agencyServices.isEmpty &&
+              invoiceServices.isEmpty) {
             return const _EmptyServicesMessage(
               message: 'شما دسترسی لازم برای مشاهده خدمات را ندارید.',
             );
@@ -198,6 +255,7 @@ class ServicesPage extends StatelessWidget {
           return _ServicesPageContent(
             mainServices: mainServices,
             agencyServices: agencyServices,
+            invoiceServices: invoiceServices,
             onCartableTap: () => context.push(CartablePage.path),
           );
         },
@@ -210,11 +268,13 @@ class _ServicesPageContent extends StatelessWidget {
   const _ServicesPageContent({
     required this.mainServices,
     required this.agencyServices,
+    required this.invoiceServices,
     required this.onCartableTap,
   });
 
   final List<_MainServiceItemData> mainServices;
-  final List<_AgencyServiceItemData> agencyServices;
+  final List<_ServiceMenuItemData> agencyServices;
+  final List<_ServiceMenuItemData> invoiceServices;
   final VoidCallback onCartableTap;
 
   static const double _maxContentWidth = 1100;
@@ -251,8 +311,20 @@ class _ServicesPageContent extends StatelessWidget {
                   title: 'امور نمایندگی‌ها',
                 ),
                 Space.h16,
-                _AgencyServicesGrid(
+                _ServiceMenuGrid(
                   items: agencyServices,
+                ),
+              ],
+              if ((mainServices.isNotEmpty || agencyServices.isNotEmpty) &&
+                  invoiceServices.isNotEmpty)
+                Space.h24,
+              if (invoiceServices.isNotEmpty) ...[
+                const _ServicesSectionTitle(
+                  title: 'فاکتورها',
+                ),
+                Space.h16,
+                _ServiceMenuGrid(
+                  items: invoiceServices,
                 ),
               ],
             ],
@@ -470,12 +542,12 @@ class _MainServiceItem extends StatelessWidget {
   }
 }
 
-class _AgencyServicesGrid extends StatelessWidget {
-  const _AgencyServicesGrid({
+class _ServiceMenuGrid extends StatelessWidget {
+  const _ServiceMenuGrid({
     required this.items,
   });
 
-  final List<_AgencyServiceItemData> items;
+  final List<_ServiceMenuItemData> items;
 
   static const double _maxItemWidth = 160;
   static const double _spacing = AppSize.s12;
@@ -536,7 +608,7 @@ class _AgencyServicesGrid extends StatelessWidget {
                   mainAxisExtent: 84,
                 ),
                 itemBuilder: (context, index) {
-                  return _AgencyServiceItem(
+                  return _ServiceMenuItem(
                     item: items[index],
                   );
                 },
@@ -549,21 +621,18 @@ class _AgencyServicesGrid extends StatelessWidget {
   }
 }
 
-class _AgencyServiceItem extends StatelessWidget {
-  const _AgencyServiceItem({
+class _ServiceMenuItem extends StatelessWidget {
+  const _ServiceMenuItem({
     required this.item,
   });
 
-  final _AgencyServiceItemData item;
+  final _ServiceMenuItemData item;
 
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme
         .of(context)
         .colorScheme;
-    final textTheme = Theme
-        .of(context)
-        .textTheme;
 
     return Material(
       color: colorScheme.onInverseSurface,
@@ -585,14 +654,13 @@ class _AgencyServiceItem extends StatelessWidget {
                 color: colorScheme.outline,
               ),
               Space.h8,
-              Text(
-                item.title,
-                maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                textAlign: TextAlign.center,
-                style: textTheme.titleSmall?.copyWith(
-                  color: colorScheme.outline,
-                  fontSize: AppSize.s14,
+              FittedBox(
+                child: BodySmallText(text:
+                  item.title,
+                  maxLines: 2,
+                  textOverflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.center,
+                  
                 ),
               ),
             ],
@@ -638,8 +706,8 @@ class _MainServiceItemData {
   final VoidCallback onTap;
 }
 
-class _AgencyServiceItemData {
-  const _AgencyServiceItemData({
+class _ServiceMenuItemData {
+  const _ServiceMenuItemData({
     required this.title,
     required this.icon,
     required this.onTap,
