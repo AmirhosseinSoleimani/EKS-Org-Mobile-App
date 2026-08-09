@@ -1,18 +1,16 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/emdad_service_category_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/invoice_record_entity.dart';
-import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/params/invoice_details_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/params/invoice_list_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/use_cases/get_emdad_categories_use_case.dart';
-import 'package:eks_sana_plus_org/src/features/invoice_management/domain/customer_invoices/use_cases/get_customer_invoice_details_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/customer_invoices/use_cases/get_customer_invoices_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_invoices/utils/customer_invoice_excel_report_factory.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/set_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
-import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/invoice_entity.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
@@ -22,7 +20,6 @@ part 'customer_invoice_state.dart';
 class CustomerInvoiceCubit extends Cubit<CustomerInvoiceState> {
   CustomerInvoiceCubit(
     this._getCustomerInvoicesUseCase,
-    this._getCustomerInvoiceDetailsUseCase,
     this._getEmdadCategoriesUseCase,
     this._exportExcelUseCase,
     this._setSelectedRequestItemUseCase,
@@ -32,7 +29,6 @@ class CustomerInvoiceCubit extends Cubit<CustomerInvoiceState> {
   static const Object _unset = Object();
 
   final GetCustomerInvoicesUseCase _getCustomerInvoicesUseCase;
-  final GetCustomerInvoiceDetailsUseCase _getCustomerInvoiceDetailsUseCase;
   final GetEmdadCategoriesUseCase _getEmdadCategoriesUseCase;
   final ExportExcelUseCase _exportExcelUseCase;
   final SetSelectedRequestItemUseCase _setSelectedRequestItemUseCase;
@@ -169,76 +165,6 @@ class CustomerInvoiceCubit extends Cubit<CustomerInvoiceState> {
     await fetchList(refresh: true);
   }
 
-  Future<void> loadPreview(InvoiceRecordEntity item) async {
-    final evaluationId = item.identity?.evaluationId ?? item.identity?.id;
-    if (evaluationId == null ||
-        state.loadingPreviewEvaluationId == evaluationId) {
-      return;
-    }
-
-    _retryAction = () => loadPreview(item);
-
-    emit(
-      state.copyWith(
-        status: CustomerInvoiceViewStatus.previewLoading,
-        loadingPreviewEvaluationId: evaluationId,
-        clearPreviewInvoice: true,
-        clearErrorMessage: true,
-      ),
-    );
-
-    final serviceTypeValue = item.state?.serviceType;
-    final serviceType = serviceTypeValue == null
-        ? state.filter.serviceType
-        : ServiceType.fromValue(serviceTypeValue);
-
-    final result = await _getCustomerInvoiceDetailsUseCase(
-      InvoiceDetailsParamEntity(
-        emdadgarEvaluationId: evaluationId,
-        serviceType: serviceType,
-      ),
-    );
-
-    result.when(
-      success: (invoice, failures, resultCode) {
-        emit(
-          state.copyWith(
-            status: CustomerInvoiceViewStatus.previewLoaded,
-            previewInvoice: invoice,
-            clearLoadingPreviewEvaluationId: true,
-            clearErrorMessage: true,
-          ),
-        );
-      },
-      failure: (error, failures) => _emitError(
-        failures,
-        clearPreviewLoading: true,
-      ),
-      expireToken: () => _emitError(
-        'نشست کاربری منقضی شده است.',
-        clearPreviewLoading: true,
-      ),
-      connectionError: () {
-        emit(
-          state.copyWith(
-            status: CustomerInvoiceViewStatus.connectionError,
-            clearLoadingPreviewEvaluationId: true,
-          ),
-        );
-      },
-    );
-  }
-
-  void clearPreview() {
-    emit(
-      state.copyWith(
-        status: CustomerInvoiceViewStatus.loaded,
-        clearPreviewInvoice: true,
-        clearLoadingPreviewEvaluationId: true,
-      ),
-    );
-  }
-
   Future<int?> cacheSelectedRequest(InvoiceRecordEntity item) async {
     final request = _mapToServiceRequest(item);
 
@@ -261,6 +187,13 @@ class CustomerInvoiceCubit extends Cubit<CustomerInvoiceState> {
     final serviceType = ServiceType.fromValue(item.state?.serviceType);
 
     if (requestId == null) return null;
+
+    if (serviceType == ServiceType.homeService) {
+      return HomeServiceRequestEntity(
+        id: requestId,
+        serviceType: serviceType,
+      );
+    }
 
     return ReliefRequestEntity(
       id: requestId,
@@ -352,7 +285,6 @@ class CustomerInvoiceCubit extends Cubit<CustomerInvoiceState> {
 
   void _emitError(
     String? message, {
-    bool clearPreviewLoading = false,
     bool clearReportLoading = false,
   }) {
     emit(
@@ -362,7 +294,6 @@ class CustomerInvoiceCubit extends Cubit<CustomerInvoiceState> {
         isPaginationLoading: false,
         isReportLoading:
             clearReportLoading ? false : state.isReportLoading,
-        clearLoadingPreviewEvaluationId: clearPreviewLoading,
         errorMessage: message?.trim().isNotEmpty == true
             ? message
             : 'عملیات با خطا مواجه شد.',

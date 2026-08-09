@@ -5,8 +5,6 @@ enum CustomerInvoiceViewStatus {
   initialLoading,
   loaded,
   loadingMore,
-  previewLoading,
-  previewLoaded,
   reportLoading,
   reportSuccess,
   error,
@@ -22,8 +20,6 @@ class CustomerInvoiceState {
     this.isInitialLoading = false,
     this.isPaginationLoading = false,
     this.isReportLoading = false,
-    this.loadingPreviewEvaluationId,
-    this.previewInvoice,
     this.categories = const [],
     this.filter = const InvoiceListFilterParamEntity(
       serviceType: ServiceType.reliefService,
@@ -41,8 +37,6 @@ class CustomerInvoiceState {
   final bool isInitialLoading;
   final bool isPaginationLoading;
   final bool isReportLoading;
-  final int? loadingPreviewEvaluationId;
-  final InvoiceEntity? previewInvoice;
   final List<EmdadServiceCategoryEntity> categories;
   final InvoiceListFilterParamEntity filter;
   final String? errorMessage;
@@ -58,10 +52,6 @@ class CustomerInvoiceState {
     bool? isInitialLoading,
     bool? isPaginationLoading,
     bool? isReportLoading,
-    int? loadingPreviewEvaluationId,
-    bool clearLoadingPreviewEvaluationId = false,
-    InvoiceEntity? previewInvoice,
-    bool clearPreviewInvoice = false,
     List<EmdadServiceCategoryEntity>? categories,
     InvoiceListFilterParamEntity? filter,
     String? errorMessage,
@@ -78,11 +68,6 @@ class CustomerInvoiceState {
       isPaginationLoading:
           isPaginationLoading ?? this.isPaginationLoading,
       isReportLoading: isReportLoading ?? this.isReportLoading,
-      loadingPreviewEvaluationId: clearLoadingPreviewEvaluationId
-          ? null
-          : loadingPreviewEvaluationId ?? this.loadingPreviewEvaluationId,
-      previewInvoice:
-          clearPreviewInvoice ? null : previewInvoice ?? this.previewInvoice,
       categories: categories ?? this.categories,
       filter: filter ?? this.filter,
       errorMessage:

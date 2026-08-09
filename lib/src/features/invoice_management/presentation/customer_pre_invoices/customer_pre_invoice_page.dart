@@ -3,10 +3,10 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/invoice_record_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/widgets/customer_invoice_summary_card.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/widgets/invoice_list_section_header.dart';
-import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/widgets/invoice_preview_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_pre_invoices/cubit/customer_pre_invoice_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_pre_invoices/widgets/customer_pre_invoice_filter_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/request_detail_page.dart';
+import 'package:eks_sana_plus_org/src/shared/features/invoice/presentation/pages/invoice_details_page.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
@@ -190,16 +190,12 @@ class _CustomerPreInvoiceViewState extends State<_CustomerPreInvoiceView> {
           }
 
           final item = state.items[index];
-          final evaluationId = item.identity?.evaluationId ?? item.identity?.id;
 
           return CustomerInvoiceSummaryCard(
             item: item,
             serviceColor: serviceColor,
             primaryActionTitle: 'پیش فاکتور',
-            isPrimaryLoading:
-                evaluationId != null &&
-                state.loadingPreviewEvaluationId == evaluationId,
-            onPrimaryAction: () => cubit.loadPreview(item),
+            onPrimaryAction: () => _openInvoice(context, cubit, item),
             onDetails: () => _openRequestDetails(context, cubit, item),
           );
         },
@@ -241,17 +237,6 @@ class _CustomerPreInvoiceViewState extends State<_CustomerPreInvoiceView> {
       );
     }
 
-    final invoice = state.previewInvoice;
-    if (state.status == CustomerPreInvoiceViewStatus.previewLoaded &&
-        invoice != null) {
-      cubit.clearPreview();
-
-      await BottomSheetMessage.showFullScreenCustom<void>(
-        context: context,
-        backgroundColor: Theme.of(context).colorScheme.surface,
-        content: InvoicePreviewSheet(invoice: invoice),
-      );
-    }
   }
 
   void _showFilter(
@@ -278,6 +263,17 @@ class _CustomerPreInvoiceViewState extends State<_CustomerPreInvoiceView> {
         );
       },
     );
+  }
+
+  Future<void> _openInvoice(
+    BuildContext context,
+    CustomerPreInvoiceCubit cubit,
+    InvoiceRecordEntity item,
+  ) async {
+    final requestId = await cubit.cacheSelectedRequest(item);
+    if (requestId == null || !context.mounted) return;
+
+    await context.push(InvoiceDetailsPage.path);
   }
 
   Future<void> _openRequestDetails(

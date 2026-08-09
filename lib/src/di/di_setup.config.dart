@@ -2587,15 +2587,6 @@ _i174.GetIt $initGetIt(
       gh<_i535.GetLastEvaluationUseCase>(),
     ),
   );
-  gh.factory<_i105.CustomerInvoiceCubit>(
-    () => _i105.CustomerInvoiceCubit(
-      gh<_i61.GetCustomerInvoicesUseCase>(),
-      gh<_i245.GetCustomerInvoiceDetailsUseCase>(),
-      gh<_i700.GetEmdadCategoriesUseCase>(),
-      gh<_i470.ExportExcelUseCase>(),
-      gh<_i369.SetSelectedRequestItemUseCase>(),
-    ),
-  );
   gh.factory<_i802.RequestDetailCubit>(
     () => _i802.RequestDetailCubit(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
@@ -2604,6 +2595,14 @@ _i174.GetIt $initGetIt(
       gh<_i67.GetRequestFollowupHistoryUseCase>(),
       gh<_i786.GetEmdadgarInfoUseCase>(),
       gh<_i955.GetRequestStatusHistoryUseCase>(),
+    ),
+  );
+  gh.factory<_i47.CustomerPreInvoiceCubit>(
+    () => _i47.CustomerPreInvoiceCubit(
+      gh<_i138.GetCustomerPreInvoicesUseCase>(),
+      gh<_i700.GetEmdadCategoriesUseCase>(),
+      gh<_i470.ExportExcelUseCase>(),
+      gh<_i369.SetSelectedRequestItemUseCase>(),
     ),
   );
   gh.factory<_i772.VehicleInfoCubit>(
@@ -2737,6 +2736,14 @@ _i174.GetIt $initGetIt(
       gh<_i91.GetReusablePriceUseCase>(),
     ),
   );
+  gh.factory<_i105.CustomerInvoiceCubit>(
+    () => _i105.CustomerInvoiceCubit(
+      gh<_i61.GetCustomerInvoicesUseCase>(),
+      gh<_i700.GetEmdadCategoriesUseCase>(),
+      gh<_i470.ExportExcelUseCase>(),
+      gh<_i369.SetSelectedRequestItemUseCase>(),
+    ),
+  );
   gh.factory<_i757.AppCubit>(
     () => _i757.AppCubit(
       gh<_i695.SyncCurrentSessionUseCase>(),
@@ -2829,15 +2836,6 @@ _i174.GetIt $initGetIt(
       gh<_i226.GetActiveServiceRequestUseCase>(),
       gh<_i535.GetLastEvaluationUseCase>(),
       gh<_i684.PostEvaluationUseCase>(),
-    ),
-  );
-  gh.factory<_i47.CustomerPreInvoiceCubit>(
-    () => _i47.CustomerPreInvoiceCubit(
-      gh<_i138.GetCustomerPreInvoicesUseCase>(),
-      gh<_i245.GetCustomerInvoiceDetailsUseCase>(),
-      gh<_i700.GetEmdadCategoriesUseCase>(),
-      gh<_i470.ExportExcelUseCase>(),
-      gh<_i369.SetSelectedRequestItemUseCase>(),
     ),
   );
   gh.factory<_i680.AddAgencyVehicleCubit>(
