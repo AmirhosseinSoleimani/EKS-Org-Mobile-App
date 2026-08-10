@@ -23,7 +23,14 @@ class CustomerPreInvoiceCubit extends Cubit<CustomerPreInvoiceState> {
     this._getEmdadCategoriesUseCase,
     this._exportExcelUseCase,
     this._setSelectedRequestItemUseCase,
-  ) : super(const CustomerPreInvoiceState());
+  ) : super(
+          CustomerPreInvoiceState(
+            filter: InvoiceListFilterParamEntity.withDefaultDateRange(
+              pageSize: pageSize,
+              skip: 0,
+            ),
+          ),
+        );
 
   static const int pageSize = 25;
   static const Object _unset = Object();
@@ -138,8 +145,7 @@ class CustomerPreInvoiceCubit extends Cubit<CustomerPreInvoiceState> {
   Future<void> clearFilter() async {
     emit(
       state.copyWith(
-        filter: const InvoiceListFilterParamEntity(
-          serviceType: ServiceType.reliefService,
+        filter: InvoiceListFilterParamEntity.withDefaultDateRange(
           pageSize: pageSize,
           skip: 0,
         ),

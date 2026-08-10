@@ -1,8 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/params/invoice_details_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/params/invoice_list_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/bulk_invoice_accept_result_entity.dart';
-import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/emdadgar_definite_invoice_entity.dart';
-import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/emdadgar_final_invoice_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/emdadgar_invoice_page_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/params/bulk_invoice_accept_param_entity.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
@@ -33,11 +31,11 @@ abstract class EmdadgarInvoiceRepository {
     InvoiceListFilterParamEntity param,
   );
 
-  Future<ApiResult<EmdadgarFinalInvoicePageEntity>> getFinalCorrectionInvoices(
+  Future<ApiResult<EmdadgarInvoicePageEntity>> getFinalCorrectionInvoices(
     InvoiceListFilterParamEntity param,
   );
 
-  Future<ApiResult<EmdadgarDefiniteInvoicePageEntity>> getDefiniteInvoices(
+  Future<ApiResult<EmdadgarInvoicePageEntity>> getDefiniteInvoices(
     InvoiceListFilterParamEntity param,
   );
 }

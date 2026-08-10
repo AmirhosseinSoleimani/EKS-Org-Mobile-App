@@ -15,7 +15,10 @@ import '../../../../evaluation/domain/entities/defect_entity.dart';
 class ServiceDetailSection extends StatelessWidget {
   final EvaluationAidServiceRequestCubit cubit;
 
-  const ServiceDetailSection({super.key, required this.cubit});
+  const ServiceDetailSection({
+    super.key,
+    required this.cubit,
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +31,6 @@ class ServiceDetailSection extends StatelessWidget {
             fontSize: 16,
             textAlign: TextAlign.start,
           ),
-
           Space.h32,
           DropdownSelector<DefectEntity>(
             label: 'ایراد خودرو',
@@ -39,9 +41,7 @@ class ServiceDetailSection extends StatelessWidget {
             itemTitleBuilder: (item) => item.title ?? '',
             onSelect: (item) => cubit.selectDefect(item),
           ),
-
           Space.h16,
-
           DropdownSelector<ServiceCategoryEntity>(
             label: 'نوع امداد',
             placeholder: 'انتخاب نوع امداد',
@@ -51,17 +51,15 @@ class ServiceDetailSection extends StatelessWidget {
             itemTitleBuilder: (item) => item.title ?? '',
             onSelect: (item) => cubit.setSelectedServiceCategory(item),
           ),
-
           Space.h16,
-
           TextFormFieldWidget(
             controller: cubit.mainForm.serviceController,
             labelText: 'سرویس',
             textInputType: TextInputType.none,
             focusNode: AlwaysDisabledFocusNode(),
             readOnly: true,
-            borderColor: Colors.grey.shade400,
-            backgroundColor: Colors.grey.shade100,
+            borderColor: Theme.of(context).dividerColor,
+            backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
           ),
           Space.h16,
           TextFormFieldWidget(

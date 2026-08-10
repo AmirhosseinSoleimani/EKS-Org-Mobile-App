@@ -4,7 +4,7 @@ import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/widgets/customer_invoice_summary_card.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/widgets/invoice_list_section_header.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_pre_invoices/cubit/customer_pre_invoice_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_pre_invoices/widgets/customer_pre_invoice_filter_sheet.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/widgets/invoice_filter_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/request_detail_page.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/enums/invoice_type.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/presentation/pages/invoice_page.dart';
@@ -256,7 +256,8 @@ class _CustomerPreInvoiceViewState extends State<_CustomerPreInvoiceView> {
         ),
       ),
       builder: (_) {
-        return CustomerPreInvoiceFilterSheet(
+        return InvoiceFilterSheet(
+          title: 'فیلتر پیش فاکتورهای مشتری',
           initialFilter: state.filter,
           categories: state.categories,
           onApply: cubit.applyFilter,

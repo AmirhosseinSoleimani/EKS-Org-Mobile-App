@@ -1,5 +1,7 @@
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_invoices/customer_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_pre_invoices/customer_pre_invoice_page.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/enums/emdadgar_invoice_stage.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoices/emdadgar_initial_invoice_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -31,13 +33,20 @@ class InvoiceManagementRoutes {
         ),
       ),
 
-      // TODO: Add the routes below when their presentation pages are implemented:
-      // EmdadgarPreInvoicePage
-      // EmdadgarInvoicePage
-      // EmdadgarAmaliatFinalInvoicePage
-      // EmdadgarFinalInvoicePage
-      // EmdadgarDefiniteInvoicePage
-      // InvoiceAgencyObjectionPage
+      GoRoute(
+        path: EmdadgarInitialInvoicePage.path,
+        name: EmdadgarInitialInvoicePage.name,
+        pageBuilder: (context, state) => getPage(
+          child: EmdadgarInitialInvoicePage(
+            initialStage: state.extra is EmdadgarInvoiceStage
+                ? state.extra! as EmdadgarInvoiceStage
+                : EmdadgarInvoiceStage.initial,
+          ),
+          state: state,
+        ),
+      ),
+
+      // TODO: Add InvoiceAgencyObjectionPage when its presentation is implemented.
     ];
   }
 }

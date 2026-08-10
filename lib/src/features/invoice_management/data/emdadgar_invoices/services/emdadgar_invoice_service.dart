@@ -4,8 +4,6 @@ import 'package:eks_sana_plus_org/src/features/invoice_management/data/common/mo
 import 'package:eks_sana_plus_org/src/features/invoice_management/data/common/models/response_json_reader.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/data/emdadgar_invoices/models/bulk_invoice_accept_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/data/emdadgar_invoices/models/bulk_invoice_accept_result_model.dart';
-import 'package:eks_sana_plus_org/src/features/invoice_management/data/emdadgar_invoices/models/emdadgar_definite_invoice_model.dart';
-import 'package:eks_sana_plus_org/src/features/invoice_management/data/emdadgar_invoices/models/emdadgar_final_invoice_model.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/data/emdadgar_invoices/models/emdadgar_invoice_page_model.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/data/models/invoice_model.dart';
@@ -17,6 +15,8 @@ class EmdadgarInvoiceService {
 
   final Dio _dio;
 
+  ///real method
+  /*
   Future<EmdadgarInvoicePageModel> getInitialInvoices(
     InvoiceListFilterRequestModel request,
   ) async {
@@ -25,6 +25,14 @@ class EmdadgarInvoiceService {
       data: request.toJson(),
     );
     return EmdadgarInvoicePageModel.fromResponse(response.data);
+  }
+  */
+
+  ///fake method
+  Future<EmdadgarInvoicePageModel> getInitialInvoices(
+    InvoiceListFilterRequestModel request,
+  ) async {
+    return _fakeInvoicePage('اولیه');
   }
 
   Future<BaseSingleResponse<InvoiceModel?>> getInitialInvoiceDetails(
@@ -52,6 +60,8 @@ class EmdadgarInvoiceService {
     return BulkInvoiceAcceptResultModel.fromResponse(response.data);
   }
 
+  ///real method
+  /*
   Future<EmdadgarInvoicePageModel> getInvoices(
     InvoiceListFilterRequestModel request,
   ) async {
@@ -60,6 +70,14 @@ class EmdadgarInvoiceService {
       data: request.toJson(),
     );
     return EmdadgarInvoicePageModel.fromResponse(response.data);
+  }
+  */
+
+  ///fake method
+  Future<EmdadgarInvoicePageModel> getInvoices(
+    InvoiceListFilterRequestModel request,
+  ) async {
+    return _fakeInvoicePage('جاری');
   }
 
   Future<BulkInvoiceAcceptResultModel> acceptInvoices(
@@ -72,6 +90,8 @@ class EmdadgarInvoiceService {
     return BulkInvoiceAcceptResultModel.fromResponse(response.data);
   }
 
+  ///real method
+  /*
   Future<EmdadgarInvoicePageModel> getFinalApprovalInvoices(
     InvoiceListFilterRequestModel request,
   ) async {
@@ -81,24 +101,131 @@ class EmdadgarInvoiceService {
     );
     return EmdadgarInvoicePageModel.fromResponse(response.data);
   }
+  */
 
-  Future<EmdadgarFinalInvoicePageModel> getFinalCorrectionInvoices(
+  ///fake method
+  Future<EmdadgarInvoicePageModel> getFinalApprovalInvoices(
+    InvoiceListFilterRequestModel request,
+  ) async {
+    return _fakeInvoicePage('تایید نهایی');
+  }
+
+  ///real method
+  /*
+  Future<EmdadgarInvoicePageModel> getFinalCorrectionInvoices(
     InvoiceListFilterRequestModel request,
   ) async {
     final response = await _dio.post<dynamic>(
       '/api/Invoice/ReportEmdadgarFinalInvoice',
       data: request.toJson(),
     );
-    return EmdadgarFinalInvoicePageModel.fromResponse(response.data);
+    return EmdadgarInvoicePageModel.fromResponse(response.data);
+  }
+  */
+
+  ///fake method
+  Future<EmdadgarInvoicePageModel> getFinalCorrectionInvoices(
+    InvoiceListFilterRequestModel request,
+  ) async {
+    return _fakeInvoicePage('تایید و اصلاح');
   }
 
-  Future<EmdadgarDefiniteInvoicePageModel> getDefiniteInvoices(
+  ///real method
+  /*
+  Future<EmdadgarInvoicePageModel> getDefiniteInvoices(
     InvoiceListFilterRequestModel request,
   ) async {
     final response = await _dio.post<dynamic>(
       '/api/Invoice/ReportEmdadgarDefiniteInvoice',
       data: request.toJson(),
     );
-    return EmdadgarDefiniteInvoicePageModel.fromResponse(response.data);
+    return EmdadgarInvoicePageModel.fromResponse(response.data);
   }
+  */
+
+  ///fake method
+  Future<EmdadgarInvoicePageModel> getDefiniteInvoices(
+    InvoiceListFilterRequestModel request,
+  ) async {
+    return _fakeInvoicePage('قطعی مودی');
+  }
+
+  EmdadgarInvoicePageModel _fakeInvoicePage(String stageTitle) {
+    final records = <Map<String, dynamic>>[
+      {
+        'id': 1,
+        'invoiceId': 91001,
+        'serviceRequestId': 12001,
+        'requestTrackCode': 14020175001,
+        'evaluationId': 81001,
+        'requestDateTimeJalali': '1405/05/19 - 10:30',
+        'emdadkhahFirstName': 'اصغر',
+        'emdadkhahLastName': 'سعیدی نیکو',
+        'agencyName': 'ابراهیم فرجی',
+        'agencyCode': '687',
+        'emdadgarName': 'محمد حسینی',
+        'invoiceStatusTitle': '$stageTitle - ارزیابی شده',
+        'ownerTypeTitle': 'نماینده',
+        'subscription': true,
+        'isGaranty': true,
+        'serviceType': 1,
+        'companyTotalPrice': 28500000,
+        'emdadgarTotalPrice': 28500000,
+        'insertUserName': 'امیر حسینی',
+        'insertDateTimeJalali': '1405/05/19 - 10:35',
+      },
+      {
+        'id': 2,
+        'invoiceId': 91002,
+        'serviceRequestId': 12002,
+        'requestTrackCode': 14020175002,
+        'evaluationId': 81002,
+        'requestDateTimeJalali': '1405/05/18 - 14:20',
+        'emdadkhahFirstName': 'مریم',
+        'emdadkhahLastName': 'احمدی',
+        'agencyName': 'نمایندگی آزادی',
+        'agencyCode': '421',
+        'emdadgarName': 'علی رضایی',
+        'invoiceStatusTitle': '$stageTitle - در انتظار بررسی',
+        'ownerTypeTitle': 'نماینده',
+        'subscription': false,
+        'isGaranty': true,
+        'serviceType': 1,
+        'companyTotalPrice': 16450000,
+        'emdadgarTotalPrice': 16450000,
+        'insertUserName': 'رضا اکبری',
+        'insertDateTimeJalali': '1405/05/18 - 14:28',
+      },
+      {
+        'id': 3,
+        'invoiceId': 91003,
+        'serviceRequestId': 12003,
+        'requestTrackCode': 14020175003,
+        'evaluationId': 81003,
+        'requestDateTimeJalali': '1405/05/17 - 09:10',
+        'emdadkhahFirstName': 'حسین',
+        'emdadkhahLastName': 'کریمی',
+        'agencyName': 'نمایندگی مرکزی',
+        'agencyCode': '105',
+        'emdadgarName': 'سعید محمدی',
+        'invoiceStatusTitle': '$stageTitle - تایید شده',
+        'ownerTypeTitle': 'نماینده',
+        'subscription': true,
+        'isGaranty': false,
+        'serviceType': 1,
+        'companyTotalPrice': 39700000,
+        'emdadgarTotalPrice': 39700000,
+        'insertUserName': 'مهدی احمدپور',
+        'insertDateTimeJalali': '1405/05/17 - 09:16',
+      },
+    ];
+
+    return EmdadgarInvoicePageModel.fromResponse({
+      'data': {
+        'records': records,
+        'count': records.length,
+      },
+    });
+  }
+
 }

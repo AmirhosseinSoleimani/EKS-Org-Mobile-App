@@ -32,6 +32,28 @@ class InvoiceListFilterParamEntity {
   final int? pageSize;
   final int? skip;
 
+  factory InvoiceListFilterParamEntity.withDefaultDateRange({
+    DateTime? now,
+    int? pageSize,
+    int? skip,
+  }) {
+    final today = now ?? DateTime.now();
+    final fromDate = today.subtract(const Duration(days: 7));
+
+    return InvoiceListFilterParamEntity(
+      fromDate: _formatApiDate(fromDate),
+      toDate: _formatApiDate(today),
+      pageSize: pageSize,
+      skip: skip,
+    );
+  }
+
+  static String _formatApiDate(DateTime value) {
+    final month = value.month.toString().padLeft(2, '0');
+    final day = value.day.toString().padLeft(2, '0');
+    return '${value.year}-$month-$day';
+  }
+
   InvoiceListFilterRequestModel toModel() {
     return InvoiceListFilterRequestModel(
       serviceType: serviceType,

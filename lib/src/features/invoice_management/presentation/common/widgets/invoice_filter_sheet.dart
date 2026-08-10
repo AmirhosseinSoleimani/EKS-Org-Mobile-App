@@ -10,10 +10,11 @@ import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text
 import 'package:flutter/material.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
-class CustomerPreInvoiceFilterSheet extends StatefulWidget {
-  const CustomerPreInvoiceFilterSheet({
+class InvoiceFilterSheet extends StatefulWidget {
+  const InvoiceFilterSheet({
     super.key,
-    this.title = 'فیلتر پیش فاکتورهای مشتری',
+    this.title = 'فیلترها',
+    this.showSubscriptionField = true,
     required this.initialFilter,
     required this.categories,
     required this.onApply,
@@ -21,18 +22,19 @@ class CustomerPreInvoiceFilterSheet extends StatefulWidget {
   });
 
   final String title;
+  final bool showSubscriptionField;
   final InvoiceListFilterParamEntity initialFilter;
   final List<EmdadServiceCategoryEntity> categories;
   final ValueChanged<InvoiceListFilterParamEntity> onApply;
   final VoidCallback onClear;
 
   @override
-  State<CustomerPreInvoiceFilterSheet> createState() =>
-      _CustomerPreInvoiceFilterSheetState();
+  State<InvoiceFilterSheet> createState() =>
+      _InvoiceFilterSheetState();
 }
 
-class _CustomerPreInvoiceFilterSheetState
-    extends State<CustomerPreInvoiceFilterSheet> {
+class _InvoiceFilterSheetState
+    extends State<InvoiceFilterSheet> {
   static const String _all = 'همه';
 
   late final TextEditingController _requestTrackCodeController;
@@ -185,14 +187,16 @@ class _CustomerPreInvoiceFilterSheetState
                       textInputAction: TextInputAction.done,
                     ),
                     Space.h12,
-                    LabeledSwitchField(
-                      label: 'فقط درخواست‌های اشتراکی',
-                      value: _showSubscription,
-                      onChanged: (value) {
-                        setState(() => _showSubscription = value);
-                      },
-                    ),
-                    Space.h16,
+                    if (widget.showSubscriptionField) ...[
+                      LabeledSwitchField(
+                        label: 'فقط درخواست‌های اشتراکی',
+                        value: _showSubscription,
+                        onChanged: (value) {
+                          setState(() => _showSubscription = value);
+                        },
+                      ),
+                      Space.h16,
+                    ],
                   ],
                 ),
               ),
@@ -284,7 +288,9 @@ class _CustomerPreInvoiceFilterSheetState
         fromDate: _apiDate(_fromDate),
         toDate: _apiDate(_toDate),
         invoiceStatus: widget.initialFilter.invoiceStatus,
-        showSubscription: _showSubscription ? true : null,
+        showSubscription: widget.showSubscriptionField
+            ? (_showSubscription ? true : null)
+            : widget.initialFilter.showSubscription,
         categoryGivenCode: _category?.title,
         agencyCode: _normalized(_agencyCodeController.text),
         emdadgarName: _normalized(_emdadgarNameController.text),

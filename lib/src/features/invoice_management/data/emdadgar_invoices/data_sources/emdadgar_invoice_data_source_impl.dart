@@ -3,8 +3,6 @@ import 'package:eks_sana_plus_org/src/features/invoice_management/data/common/mo
 import 'package:eks_sana_plus_org/src/features/invoice_management/data/emdadgar_invoices/data_sources/emdadgar_invoice_data_source.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/data/emdadgar_invoices/models/bulk_invoice_accept_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/data/emdadgar_invoices/models/bulk_invoice_accept_result_model.dart';
-import 'package:eks_sana_plus_org/src/features/invoice_management/data/emdadgar_invoices/models/emdadgar_definite_invoice_model.dart';
-import 'package:eks_sana_plus_org/src/features/invoice_management/data/emdadgar_invoices/models/emdadgar_final_invoice_model.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/data/emdadgar_invoices/models/emdadgar_invoice_page_model.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/data/emdadgar_invoices/services/emdadgar_invoice_service.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
@@ -48,12 +46,12 @@ class EmdadgarInvoiceDataSourceImpl implements EmdadgarInvoiceDataSource {
   ) => _service.getFinalApprovalInvoices(request);
 
   @override
-  Future<EmdadgarFinalInvoicePageModel> getFinalCorrectionInvoices(
+  Future<EmdadgarInvoicePageModel> getFinalCorrectionInvoices(
     InvoiceListFilterRequestModel request,
   ) => _service.getFinalCorrectionInvoices(request);
 
   @override
-  Future<EmdadgarDefiniteInvoicePageModel> getDefiniteInvoices(
+  Future<EmdadgarInvoicePageModel> getDefiniteInvoices(
     InvoiceListFilterRequestModel request,
   ) => _service.getDefiniteInvoices(request);
 }
