@@ -1,5 +1,5 @@
 
-import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoices/cubit/emdadgar_initial_invoice_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoices/cubit/emdadgar_invoice_cubit.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/theme/app_semantic_colors.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
@@ -12,7 +12,7 @@ class EmdadgarSelectedItemsBar extends StatelessWidget {
     required this.onConfirmTap,
   });
 
-  final EmdadgarInitialInvoiceCubit cubit;
+  final EmdadgarInvoiceCubit cubit;
   final VoidCallback onConfirmTap;
 
   @override

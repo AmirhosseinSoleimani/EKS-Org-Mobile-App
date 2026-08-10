@@ -14,7 +14,7 @@ import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadga
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/use_cases/get_final_approval_emdadgar_invoices_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/use_cases/get_final_correction_emdadgar_invoices_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/use_cases/get_initial_emdadgar_invoices_use_case.dart';
-import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoices/utils/emdadgar_initial_invoice_excel_report_factory.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoices/utils/emdadgar_invoice_excel_report_factory.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
@@ -27,12 +27,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
-part 'emdadgar_initial_invoice_cubit.freezed.dart';
-part 'emdadgar_initial_invoice_state.dart';
+part 'emdadgar_invoice_cubit.freezed.dart';
+part 'emdadgar_invoice_state.dart';
 
 @injectable
-class EmdadgarInitialInvoiceCubit extends Cubit<EmdadgarInitialInvoiceState> {
-  EmdadgarInitialInvoiceCubit(
+class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
+  EmdadgarInvoiceCubit(
     this._getInitialInvoicesUseCase,
     this._getInvoicesUseCase,
     this._getFinalApprovalInvoicesUseCase,
@@ -43,7 +43,7 @@ class EmdadgarInitialInvoiceCubit extends Cubit<EmdadgarInitialInvoiceState> {
     this._getEmdadCategoriesUseCase,
     this._setSelectedRequestItemUseCase,
     this._exportExcelUseCase,
-  ) : super(const EmdadgarInitialInvoiceState.idle());
+  ) : super(const EmdadgarInvoiceState.idle());
 
   static const int pageSize = 25;
   static const Object _unset = Object();
@@ -100,7 +100,7 @@ class EmdadgarInitialInvoiceCubit extends Cubit<EmdadgarInitialInvoiceState> {
   }) async {
     selectedStage = initialStage;
     _retryAction = () => initialize(initialStage: initialStage);
-    _safeEmit(const EmdadgarInitialInvoiceState.loading());
+    _safeEmit(const EmdadgarInvoiceState.loading());
 
     final categoriesLoaded = await fetchCategories();
     if (!categoriesLoaded) return;
@@ -134,7 +134,7 @@ class EmdadgarInitialInvoiceCubit extends Cubit<EmdadgarInitialInvoiceState> {
         _emitError('نشست کاربری منقضی شده است.');
       },
       connectionError: () {
-        _safeEmit(const EmdadgarInitialInvoiceState.connectionError());
+        _safeEmit(const EmdadgarInvoiceState.connectionError());
       },
     );
 
@@ -166,7 +166,7 @@ class EmdadgarInitialInvoiceCubit extends Cubit<EmdadgarInitialInvoiceState> {
 
     final isInitialLoad = refresh || items.isEmpty;
     if (isInitialLoad) {
-      _safeEmit(const EmdadgarInitialInvoiceState.loading());
+      _safeEmit(const EmdadgarInvoiceState.loading());
     } else {
       paginationLoadingNotifier.value = true;
     }
@@ -197,7 +197,7 @@ class EmdadgarInitialInvoiceCubit extends Cubit<EmdadgarInitialInvoiceState> {
         if (refresh) {
           _retainSelections(records);
         }
-        _safeEmit(const EmdadgarInitialInvoiceState.loaded());
+        _safeEmit(const EmdadgarInvoiceState.loaded());
       },
       failure: (error, message) {
         hasLoadedOnce = true;
@@ -212,7 +212,7 @@ class EmdadgarInitialInvoiceCubit extends Cubit<EmdadgarInitialInvoiceState> {
       connectionError: () {
         hasLoadedOnce = true;
         paginationLoadingNotifier.value = false;
-        _safeEmit(const EmdadgarInitialInvoiceState.connectionError());
+        _safeEmit(const EmdadgarInvoiceState.connectionError());
       },
     );
   }
@@ -355,7 +355,7 @@ class EmdadgarInitialInvoiceCubit extends Cubit<EmdadgarInitialInvoiceState> {
       },
       connectionError: () {
         confirmLoadingNotifier.value = false;
-        _safeEmit(const EmdadgarInitialInvoiceState.connectionError());
+        _safeEmit(const EmdadgarInvoiceState.connectionError());
       },
     );
   }
@@ -382,7 +382,7 @@ class EmdadgarInitialInvoiceCubit extends Cubit<EmdadgarInitialInvoiceState> {
         }
 
         final exportResult = await _exportExcelUseCase(
-          EmdadgarInitialInvoiceExcelReportFactory.create(reportItems),
+          EmdadgarInvoiceExcelReportFactory.create(reportItems),
         );
 
         exportResult.when(
@@ -391,7 +391,7 @@ class EmdadgarInitialInvoiceCubit extends Cubit<EmdadgarInitialInvoiceState> {
             _successMessage = data.isBrowserDownload
                 ? 'دانلود گزارش صورت وضعیت‌ها آغاز شد.'
                 : 'گزارش صورت وضعیت‌ها ذخیره شد.';
-            _safeEmit(const EmdadgarInitialInvoiceState.loaded());
+            _safeEmit(const EmdadgarInvoiceState.loaded());
           },
           failure: (error, message) {
             reportLoadingNotifier.value = false;
@@ -403,7 +403,7 @@ class EmdadgarInitialInvoiceCubit extends Cubit<EmdadgarInitialInvoiceState> {
           },
           connectionError: () {
             reportLoadingNotifier.value = false;
-            _safeEmit(const EmdadgarInitialInvoiceState.connectionError());
+            _safeEmit(const EmdadgarInvoiceState.connectionError());
           },
         );
       },
@@ -417,7 +417,7 @@ class EmdadgarInitialInvoiceCubit extends Cubit<EmdadgarInitialInvoiceState> {
       },
       connectionError: () async {
         reportLoadingNotifier.value = false;
-        _safeEmit(const EmdadgarInitialInvoiceState.connectionError());
+        _safeEmit(const EmdadgarInvoiceState.connectionError());
       },
     );
   }
@@ -540,7 +540,7 @@ class EmdadgarInitialInvoiceCubit extends Cubit<EmdadgarInitialInvoiceState> {
 
   void _emitError(String? message) {
     _safeEmit(
-      EmdadgarInitialInvoiceState.error(
+      EmdadgarInvoiceState.error(
         message: BottomSheetMessageModel(
           title: 'خطا',
           message: _normalizeError(message),
@@ -556,7 +556,7 @@ class EmdadgarInitialInvoiceCubit extends Cubit<EmdadgarInitialInvoiceState> {
         : value;
   }
 
-  void _safeEmit(EmdadgarInitialInvoiceState value) {
+  void _safeEmit(EmdadgarInvoiceState value) {
     if (!isClosed) emit(value);
   }
 

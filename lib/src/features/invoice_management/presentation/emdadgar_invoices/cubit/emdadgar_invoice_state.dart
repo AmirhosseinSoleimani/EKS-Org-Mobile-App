@@ -1,18 +1,18 @@
-part of 'emdadgar_initial_invoice_cubit.dart';
+part of 'emdadgar_invoice_cubit.dart';
 
 @freezed
-class EmdadgarInitialInvoiceState with _$EmdadgarInitialInvoiceState {
-  const factory EmdadgarInitialInvoiceState.idle() = _Idle;
+class EmdadgarInvoiceState with _$EmdadgaInvoiceState {
+  const factory EmdadgarInvoiceState.idle() = _Idle;
 
-  const factory EmdadgarInitialInvoiceState.loading() = _Loading;
+  const factory EmdadgarInvoiceState.loading() = _Loading;
 
-  const factory EmdadgarInitialInvoiceState.loaded() = _Loaded;
+  const factory EmdadgarInvoiceState.loaded() = _Loaded;
 
-  const factory EmdadgarInitialInvoiceState.error({
+  const factory EmdadgarInvoiceState.error({
     required BottomSheetMessageModel message,
   }) = _Error;
 
-  const factory EmdadgarInitialInvoiceState.connectionError() =
+  const factory EmdadgarInvoiceState.connectionError() =
       _ConnectionError;
 
   @override

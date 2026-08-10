@@ -2,8 +2,8 @@ import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadga
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/entities/excel_export_column.dart';
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/entities/excel_export_request.dart';
 
-class EmdadgarInitialInvoiceExcelReportFactory {
-  const EmdadgarInitialInvoiceExcelReportFactory._();
+class EmdadgarInvoiceExcelReportFactory {
+  const EmdadgarInvoiceExcelReportFactory._();
 
   static ExcelExportRequest create(List<EmdadgarInvoiceRecordEntity> items) {
     return ExcelExportRequest.fromItems<EmdadgarInvoiceRecordEntity>(

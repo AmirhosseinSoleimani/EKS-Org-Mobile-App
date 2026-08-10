@@ -2,7 +2,7 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/emdadgar_invoice_record_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/enums/emdadgar_invoice_stage.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/widgets/invoice_filter_sheet.dart';
-import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoices/cubit/emdadgar_initial_invoice_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoices/cubit/emdadgar_invoice_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/emdadgar_invoice_page/emdadgar_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/request_detail_page.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
@@ -15,28 +15,28 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
-import 'widgets/emdadgar_initial_invoice_header.dart';
-import 'widgets/emdadgar_initial_invoice_list.dart';
+import 'widgets/emdadgar_invoice_header.dart';
+import 'widgets/emdadgar_invoice_list.dart';
 import 'widgets/emdadgar_invoice_confirmation_sheet.dart';
 import 'widgets/emdadgar_invoice_operations_sheet.dart';
 import 'widgets/emdadgar_selected_items_bar.dart';
 
-class EmdadgarInitialInvoicePage extends StatelessWidget {
-  const EmdadgarInitialInvoicePage({
+class EmdadgarInvoicePage extends StatelessWidget {
+  const EmdadgarInvoicePage({
     super.key,
     this.initialStage = EmdadgarInvoiceStage.initial,
   });
 
   final EmdadgarInvoiceStage initialStage;
 
-  static const String path = '/emdadgar-initial-invoices';
-  static const String name = 'emdadgar-initial-invoices';
+  static const String path = '/emdadgar-invoices';
+  static const String name = 'emdadgar-invoices';
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) =>
-          getIt<EmdadgarInitialInvoiceCubit>()
+          getIt<EmdadgarInvoiceCubit>()
             ..initialize(initialStage: initialStage),
       child: const _EmdadgarInitialInvoiceView(),
     );
@@ -71,12 +71,12 @@ class _EmdadgarInitialInvoiceViewState
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<EmdadgarInitialInvoiceCubit>();
+    final cubit = context.read<EmdadgarInvoiceCubit>();
     final theme = Theme.of(context);
 
     return BlocListener<
-      EmdadgarInitialInvoiceCubit,
-      EmdadgarInitialInvoiceState
+      EmdadgarInvoiceCubit,
+      EmdadgarInvoiceState
     >(
       listener: (context, state) => _listenState(context, cubit, state),
       child: Scaffold(
@@ -91,8 +91,8 @@ class _EmdadgarInitialInvoiceViewState
           ),
           child:
               BlocBuilder<
-                EmdadgarInitialInvoiceCubit,
-                EmdadgarInitialInvoiceState
+                EmdadgarInvoiceCubit,
+                EmdadgarInvoiceState
               >(
                 builder: (context, state) {
                   return state.when(
@@ -117,19 +117,19 @@ class _EmdadgarInitialInvoiceViewState
 
   Widget _buildContent(
     BuildContext context,
-    EmdadgarInitialInvoiceCubit cubit, {
+    EmdadgarInvoiceCubit cubit, {
     bool listLoading = false,
   }) {
     return Column(
       children: [
-        EmdadgarInitialInvoiceHeader(
+        EmdadgarInvoiceHeader(
           cubit: cubit,
           onFilterTap: () => _showFilter(context, cubit),
         ),
         Expanded(
           child: listLoading
               ? const Center(child: CircularProgressIndicator())
-              : EmdadgarInitialInvoiceList(
+              : EmdadgarInvoiceList(
                   cubit: cubit,
                   scrollController: _scrollController,
                   onInvoiceTap: (item) => _openInvoice(context, cubit, item),
@@ -143,8 +143,8 @@ class _EmdadgarInitialInvoiceViewState
 
   void _listenState(
     BuildContext context,
-    EmdadgarInitialInvoiceCubit cubit,
-    EmdadgarInitialInvoiceState state,
+    EmdadgarInvoiceCubit cubit,
+    EmdadgarInvoiceState state,
   ) {
     state.whenOrNull(
       error: (message) {
@@ -174,7 +174,7 @@ class _EmdadgarInitialInvoiceViewState
     );
   }
 
-  void _showFilter(BuildContext context, EmdadgarInitialInvoiceCubit cubit) {
+  void _showFilter(BuildContext context, EmdadgarInvoiceCubit cubit) {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -196,7 +196,7 @@ class _EmdadgarInitialInvoiceViewState
 
   Future<void> _openInvoice(
     BuildContext context,
-    EmdadgarInitialInvoiceCubit cubit,
+    EmdadgarInvoiceCubit cubit,
     EmdadgarInvoiceRecordEntity item,
   ) async {
     print("onEvaluationClicked....");
@@ -207,7 +207,7 @@ class _EmdadgarInitialInvoiceViewState
 
   Future<void> _showOperations(
     BuildContext context,
-    EmdadgarInitialInvoiceCubit cubit,
+    EmdadgarInvoiceCubit cubit,
     EmdadgarInvoiceRecordEntity item,
   ) async {
     await BottomSheetMessage.showCustom(
@@ -227,7 +227,7 @@ class _EmdadgarInitialInvoiceViewState
 
   Future<void> _openRequestDetails(
     BuildContext context,
-    EmdadgarInitialInvoiceCubit cubit,
+    EmdadgarInvoiceCubit cubit,
     EmdadgarInvoiceRecordEntity item,
   ) async {
     final id = await cubit.cacheSelectedRequest(item);
@@ -237,7 +237,7 @@ class _EmdadgarInitialInvoiceViewState
 
   Future<void> _showConfirmation(
     BuildContext context,
-    EmdadgarInitialInvoiceCubit cubit,
+    EmdadgarInvoiceCubit cubit,
   ) {
     return BottomSheetMessage.showCustom(
       context: context,
@@ -255,7 +255,7 @@ class _EmdadgarInitialInvoiceViewState
   void _onScroll() {
     if (!_scrollController.hasClients) return;
 
-    final cubit = context.read<EmdadgarInitialInvoiceCubit>();
+    final cubit = context.read<EmdadgarInvoiceCubit>();
     final reachedBottom =
         _scrollController.position.pixels >=
         _scrollController.position.maxScrollExtent - AppSize.s120;

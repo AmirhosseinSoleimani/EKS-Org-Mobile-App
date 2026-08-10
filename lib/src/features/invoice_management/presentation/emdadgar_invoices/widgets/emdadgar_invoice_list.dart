@@ -1,12 +1,12 @@
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/emdadgar_invoice_record_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/widgets/emdadgar_invoice_summary_card.dart';
-import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoices/cubit/emdadgar_initial_invoice_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoices/cubit/emdadgar_invoice_cubit.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:flutter/material.dart';
 
-class EmdadgarInitialInvoiceList extends StatelessWidget {
-  const EmdadgarInitialInvoiceList({
+class EmdadgarInvoiceList extends StatelessWidget {
+  const EmdadgarInvoiceList({
     super.key,
     required this.cubit,
     required this.scrollController,
@@ -14,7 +14,7 @@ class EmdadgarInitialInvoiceList extends StatelessWidget {
     required this.onOperationsTap,
   });
 
-  final EmdadgarInitialInvoiceCubit cubit;
+  final EmdadgarInvoiceCubit cubit;
   final ScrollController scrollController;
   final ValueChanged<EmdadgarInvoiceRecordEntity> onInvoiceTap;
   final ValueChanged<EmdadgarInvoiceRecordEntity> onOperationsTap;
@@ -83,7 +83,7 @@ class EmdadgarInitialInvoiceList extends StatelessWidget {
 class _EmptyContent extends StatelessWidget {
   const _EmptyContent({required this.cubit});
 
-  final EmdadgarInitialInvoiceCubit cubit;
+  final EmdadgarInvoiceCubit cubit;
 
   @override
   Widget build(BuildContext context) {

@@ -1,5 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/enums/emdadgar_invoice_stage.dart';
-import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoices/emdadgar_initial_invoice_page.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoices/emdadgar_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_info_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/presentation/cartable_page.dart';
@@ -212,7 +212,7 @@ class ServicesPage extends StatelessWidget {
                 title: 'صورت وضعیت‌های اولیه',
                 icon: Icons.description_outlined,
                 onTap: () => context.pushNamed(
-                  EmdadgarInitialInvoicePage.name,
+                  EmdadgarInvoicePage.name,
                   extra: EmdadgarInvoiceStage.initial,
                 ),
               ),
@@ -221,7 +221,7 @@ class ServicesPage extends StatelessWidget {
                 title: 'صورت وضعیت‌ها',
                 icon: Icons.article_outlined,
                 onTap: () => context.pushNamed(
-                  EmdadgarInitialInvoicePage.name,
+                  EmdadgarInvoicePage.name,
                   extra: EmdadgarInvoiceStage.current,
                 ),
               ),
@@ -230,7 +230,7 @@ class ServicesPage extends StatelessWidget {
                 title: 'صورت وضعیت‌های (تایید نهایی)',
                 icon: Icons.fact_check_outlined,
                 onTap: () => context.pushNamed(
-                  EmdadgarInitialInvoicePage.name,
+                  EmdadgarInvoicePage.name,
                   extra: EmdadgarInvoiceStage.finalApproval,
                 ),
               ),
@@ -239,7 +239,7 @@ class ServicesPage extends StatelessWidget {
                 title: 'صورت وضعیت‌های نهایی (تایید و اصلاح)',
                 icon: Icons.rule_outlined,
                 onTap: () => context.pushNamed(
-                  EmdadgarInitialInvoicePage.name,
+                  EmdadgarInvoicePage.name,
                   extra: EmdadgarInvoiceStage.finalCorrection,
                 ),
               ),
@@ -248,7 +248,7 @@ class ServicesPage extends StatelessWidget {
                 title: 'صورت وضعیت‌های (قطعی مؤدیان)',
                 icon: Icons.verified_outlined,
                 onTap: () => context.pushNamed(
-                  EmdadgarInitialInvoicePage.name,
+                  EmdadgarInvoicePage.name,
                   extra: EmdadgarInvoiceStage.taxpayerFinal,
                 ),
               ),

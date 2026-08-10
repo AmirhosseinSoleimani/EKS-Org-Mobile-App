@@ -1,20 +1,20 @@
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/widgets/emdadgar_invoice_stage_selector.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/widgets/invoice_list_section_header.dart';
-import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoices/cubit/emdadgar_initial_invoice_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoices/cubit/emdadgar_invoice_cubit.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/list_filter_toolbar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filter_dropdown.dart';
 import 'package:flutter/material.dart';
 
-class EmdadgarInitialInvoiceHeader extends StatelessWidget {
-  const EmdadgarInitialInvoiceHeader({
+class EmdadgarInvoiceHeader extends StatelessWidget {
+  const EmdadgarInvoiceHeader({
     super.key,
     required this.cubit,
     required this.onFilterTap,
   });
 
-  final EmdadgarInitialInvoiceCubit cubit;
+  final EmdadgarInvoiceCubit cubit;
   final VoidCallback onFilterTap;
 
   static const _subscriptionOptions = <StatusFilterOption<bool?>>[
@@ -76,7 +76,7 @@ class EmdadgarInitialInvoiceHeader extends StatelessWidget {
 class _SelectAllRow extends StatelessWidget {
   const _SelectAllRow({required this.cubit});
 
-  final EmdadgarInitialInvoiceCubit cubit;
+  final EmdadgarInvoiceCubit cubit;
 
   @override
   Widget build(BuildContext context) {

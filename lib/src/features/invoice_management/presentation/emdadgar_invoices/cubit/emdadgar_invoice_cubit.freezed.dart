@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'emdadgar_initial_invoice_cubit.dart';
+part of 'emdadgar_invoice_cubit.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -12,7 +12,7 @@ part of 'emdadgar_initial_invoice_cubit.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$EmdadgarInitialInvoiceState implements DiagnosticableTreeMixin {
+mixin _$EmdadgaInvoiceState implements DiagnosticableTreeMixin {
 
 
 
@@ -26,7 +26,7 @@ void debugFillProperties(DiagnosticPropertiesBuilder properties) {
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EmdadgarInitialInvoiceState);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is EmdadgarInvoiceState);
 }
 
 
@@ -43,12 +43,12 @@ String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
 
 /// @nodoc
 class $EmdadgarInitialInvoiceStateCopyWith<$Res>  {
-$EmdadgarInitialInvoiceStateCopyWith(EmdadgarInitialInvoiceState _, $Res Function(EmdadgarInitialInvoiceState) __);
+$EmdadgarInitialInvoiceStateCopyWith(EmdadgarInvoiceState _, $Res Function(EmdadgarInvoiceState) __);
 }
 
 
-/// Adds pattern-matching-related methods to [EmdadgarInitialInvoiceState].
-extension EmdadgarInitialInvoiceStatePatterns on EmdadgarInitialInvoiceState {
+/// Adds pattern-matching-related methods to [EmdadgarInvoiceState].
+extension EmdadgarInitialInvoiceStatePatterns on EmdadgarInvoiceState {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -204,7 +204,7 @@ return connectionError();case _:
 /// @nodoc
 
 
-class _Idle with DiagnosticableTreeMixin implements EmdadgarInitialInvoiceState {
+class _Idle with DiagnosticableTreeMixin implements EmdadgarInvoiceState {
   const _Idle();
   
 
@@ -242,7 +242,7 @@ String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
 /// @nodoc
 
 
-class _Loading with DiagnosticableTreeMixin implements EmdadgarInitialInvoiceState {
+class _Loading with DiagnosticableTreeMixin implements EmdadgarInvoiceState {
   const _Loading();
   
 
@@ -280,7 +280,7 @@ String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
 /// @nodoc
 
 
-class _Loaded with DiagnosticableTreeMixin implements EmdadgarInitialInvoiceState {
+class _Loaded with DiagnosticableTreeMixin implements EmdadgarInvoiceState {
   const _Loaded();
   
 
@@ -318,7 +318,7 @@ String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
 /// @nodoc
 
 
-class _Error with DiagnosticableTreeMixin implements EmdadgarInitialInvoiceState {
+class _Error with DiagnosticableTreeMixin implements EmdadgarInvoiceState {
   const _Error({required this.message});
   
 
@@ -390,7 +390,7 @@ as BottomSheetMessageModel,
 /// @nodoc
 
 
-class _ConnectionError with DiagnosticableTreeMixin implements EmdadgarInitialInvoiceState {
+class _ConnectionError with DiagnosticableTreeMixin implements EmdadgarInvoiceState {
   const _ConnectionError();
   
 

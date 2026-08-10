@@ -501,7 +501,7 @@ import '../features/invoice_management/presentation/customer_invoices/cubit/cust
     as _i105;
 import '../features/invoice_management/presentation/customer_pre_invoices/cubit/customer_pre_invoice_cubit.dart'
     as _i47;
-import '../features/invoice_management/presentation/emdadgar_invoices/initial/cubit/emdadgar_initial_invoice_cubit.dart'
+import '../features/invoice_management/presentation/emdadgar_invoices/initial/cubit/emdadgar_invoice_cubit.dart'
     as _i605;
 import '../features/leave/data/data_sources/leave_data_source.dart' as _i1017;
 import '../features/leave/data/data_sources/leave_data_source_impl.dart'
