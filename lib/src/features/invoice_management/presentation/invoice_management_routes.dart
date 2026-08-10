@@ -1,5 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/enums/emdadgar_invoice_stage.dart';
-import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/agency_invoice_objections/invoice_agency_objection_page.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/agency_invoice_objections/agency_correction_requests_page.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_invoices/customer_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_pre_invoices/customer_pre_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoices/emdadgar_invoice_page.dart';
@@ -47,11 +47,11 @@ class InvoiceManagementRoutes {
       ),
 
       GoRoute(
-        path: InvoiceAgencyObjectionPage.path,
-        name: InvoiceAgencyObjectionPage.name,
+        path: AgencyCorrectionRequestsPage.path,
+        name: AgencyCorrectionRequestsPage.name,
         pageBuilder: (context, state) =>
             getPage(
-              child: const InvoiceAgencyObjectionPage(),
+              child: const AgencyCorrectionRequestsPage(),
               state: state,
             ),
       ),

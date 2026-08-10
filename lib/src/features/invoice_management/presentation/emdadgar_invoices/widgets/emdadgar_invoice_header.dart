@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/enums/emdadgar_invoice_stage.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/widgets/emdadgar_invoice_stage_selector.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/widgets/invoice_list_section_header.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoices/cubit/emdadgar_invoice_cubit.dart';
@@ -11,10 +12,12 @@ class EmdadgarInvoiceHeader extends StatelessWidget {
   const EmdadgarInvoiceHeader({
     super.key,
     required this.cubit,
+    required this.availableStages,
     required this.onFilterTap,
   });
 
   final EmdadgarInvoiceCubit cubit;
+  final List<EmdadgarInvoiceStage> availableStages;
   final VoidCallback onFilterTap;
 
   static const _subscriptionOptions = <StatusFilterOption<bool?>>[
@@ -53,6 +56,7 @@ class EmdadgarInvoiceHeader extends StatelessWidget {
           ),
           Space.h24,
           EmdadgarInvoiceStageSelector(
+            stages: availableStages,
             selectedStage: cubit.selectedStage,
             onChanged: cubit.setStage,
           ),

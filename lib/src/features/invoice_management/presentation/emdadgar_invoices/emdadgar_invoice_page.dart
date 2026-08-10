@@ -4,6 +4,8 @@ import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadga
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/widgets/invoice_filter_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoices/cubit/emdadgar_invoice_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/request_detail_page.dart';
+import 'package:eks_sana_plus_org/src/shared/features/session/domain/policies/current_session_access_policy.dart';
+import 'package:eks_sana_plus_org/src/shared/features/session/presentation/widgets/current_session_access_builder.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
@@ -33,25 +35,73 @@ class EmdadgarInvoicePage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) =>
-          getIt<EmdadgarInvoiceCubit>()
-            ..initialize(initialStage: initialStage),
-      child: const _EmdadgarInitialInvoiceView(),
+    return CurrentSessionAccessBuilder(
+      emptyBuilder: (_) => const _InvoiceAccessDeniedView(),
+      builder: (context, access) {
+        final availableStages = _availableStages(access);
+        if (availableStages.isEmpty) {
+          return const _InvoiceAccessDeniedView();
+        }
+
+        final resolvedInitialStage = availableStages.contains(initialStage)
+            ? initialStage
+            : availableStages.first;
+
+        return BlocProvider(
+          create: (_) => getIt<EmdadgarInvoiceCubit>()
+            ..initialize(initialStage: resolvedInitialStage),
+          child: _EmdadgarInvoiceView(availableStages: availableStages),
+        );
+      },
+    );
+  }
+
+  List<EmdadgarInvoiceStage> _availableStages(
+    CurrentSessionAccessPolicy access,
+  ) {
+    return [
+      if (access.canShowEmdadgarPreInvoiceMenu())
+        EmdadgarInvoiceStage.initial,
+      if (access.canShowEmdadgarInvoiceMenu())
+        EmdadgarInvoiceStage.current,
+      if (access.canShowEmdadgarAmaliatFinalInvoiceMenu())
+        EmdadgarInvoiceStage.finalApproval,
+      if (access.canShowEmdadgarFinalInvoiceMenu())
+        EmdadgarInvoiceStage.finalCorrection,
+      if (access.canShowEmdadgarDefiniteInvoiceMenu())
+        EmdadgarInvoiceStage.taxpayerFinal,
+    ];
+  }
+}
+
+class _InvoiceAccessDeniedView extends StatelessWidget {
+  const _InvoiceAccessDeniedView();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: const SimpleAppBar(title: 'صورت وضعیت ها'),
+      body: Center(
+        child: Text(
+          'شما دسترسی لازم برای مشاهده صورت وضعیت‌ها را ندارید.',
+          style: Theme.of(context).textTheme.bodyMedium,
+          textAlign: TextAlign.center,
+        ),
+      ),
     );
   }
 }
 
-class _EmdadgarInitialInvoiceView extends StatefulWidget {
-  const _EmdadgarInitialInvoiceView();
+class _EmdadgarInvoiceView extends StatefulWidget {
+  const _EmdadgarInvoiceView({required this.availableStages});
+
+  final List<EmdadgarInvoiceStage> availableStages;
 
   @override
-  State<_EmdadgarInitialInvoiceView> createState() =>
-      _EmdadgarInitialInvoiceViewState();
+  State<_EmdadgarInvoiceView> createState() => _EmdadgarInvoiceViewState();
 }
 
-class _EmdadgarInitialInvoiceViewState
-    extends State<_EmdadgarInitialInvoiceView> {
+class _EmdadgarInvoiceViewState extends State<_EmdadgarInvoiceView> {
   final ScrollController _scrollController = ScrollController();
 
   @override
@@ -123,6 +173,7 @@ class _EmdadgarInitialInvoiceViewState
       children: [
         EmdadgarInvoiceHeader(
           cubit: cubit,
+          availableStages: widget.availableStages,
           onFilterTap: () => _showFilter(context, cubit),
         ),
         Expanded(

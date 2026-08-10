@@ -1,5 +1,4 @@
-import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/agency_invoice_objections/invoice_agency_objection_page.dart';
-import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/enums/emdadgar_invoice_stage.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/agency_invoice_objections/agency_correction_requests_page.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoices/emdadgar_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_info_list_page.dart';
@@ -208,56 +207,17 @@ class ServicesPage extends StatelessWidget {
                 icon: Icons.receipt_long_outlined,
                 onTap: () => context.pushNamed(CustomerInvoicePage.name),
               ),
-            if (access.canShowEmdadgarPreInvoiceMenu())
-              _ServiceMenuItemData(
-                title: 'صورت وضعیت‌های اولیه',
-                icon: Icons.description_outlined,
-                onTap: () => context.pushNamed(
-                  EmdadgarInvoicePage.name,
-                  extra: EmdadgarInvoiceStage.initial,
-                ),
-              ),
-            if (access.canShowEmdadgarInvoiceMenu())
+          //  if (access.canShowAnyEmdadgarInvoiceStageMenu())
               _ServiceMenuItemData(
                 title: 'صورت وضعیت‌ها',
                 icon: Icons.article_outlined,
-                onTap: () => context.pushNamed(
-                  EmdadgarInvoicePage.name,
-                  extra: EmdadgarInvoiceStage.current,
-                ),
-              ),
-            if (access.canShowEmdadgarAmaliatFinalInvoiceMenu())
-              _ServiceMenuItemData(
-                title: 'صورت وضعیت‌های (تایید نهایی)',
-                icon: Icons.fact_check_outlined,
-                onTap: () => context.pushNamed(
-                  EmdadgarInvoicePage.name,
-                  extra: EmdadgarInvoiceStage.finalApproval,
-                ),
-              ),
-            if (access.canShowEmdadgarFinalInvoiceMenu())
-              _ServiceMenuItemData(
-                title: 'صورت وضعیت‌های نهایی (تایید و اصلاح)',
-                icon: Icons.rule_outlined,
-                onTap: () => context.pushNamed(
-                  EmdadgarInvoicePage.name,
-                  extra: EmdadgarInvoiceStage.finalCorrection,
-                ),
-              ),
-            if (access.canShowEmdadgarDefiniteInvoiceMenu())
-              _ServiceMenuItemData(
-                title: 'صورت وضعیت‌های (قطعی مؤدیان)',
-                icon: Icons.verified_outlined,
-                onTap: () => context.pushNamed(
-                  EmdadgarInvoicePage.name,
-                  extra: EmdadgarInvoiceStage.taxpayerFinal,
-                ),
+                onTap: () => context.pushNamed(EmdadgarInvoicePage.name),
               ),
             if (access.canShowEmdadgarInvoiceObjectionMenu())
               _ServiceMenuItemData(
                 title: 'درخواست‌های اصلاحی (نماینده)',
                 icon: Icons.edit_note_outlined,
-                onTap: () => context.pushNamed(InvoiceAgencyObjectionPage.name),
+                onTap: () => context.pushNamed(AgencyCorrectionRequestsPage.name),
               ),
           ];
 

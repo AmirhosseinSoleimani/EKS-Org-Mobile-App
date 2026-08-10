@@ -5,10 +5,12 @@ import 'package:flutter/material.dart';
 class EmdadgarInvoiceStageSelector extends StatelessWidget {
   const EmdadgarInvoiceStageSelector({
     super.key,
+    required this.stages,
     required this.selectedStage,
     required this.onChanged,
   });
 
+  final List<EmdadgarInvoiceStage> stages;
   final EmdadgarInvoiceStage selectedStage;
   final ValueChanged<EmdadgarInvoiceStage> onChanged;
 
@@ -19,10 +21,10 @@ class EmdadgarInvoiceStageSelector extends StatelessWidget {
       child: ListView.separated(
         scrollDirection: Axis.horizontal,
         padding: EdgeInsets.zero,
-        itemCount: EmdadgarInvoiceStage.values.length,
+        itemCount: stages.length,
         separatorBuilder: (_, __) => Space.w8,
         itemBuilder: (context, index) {
-          final stage = EmdadgarInvoiceStage.values[index];
+          final stage = stages[index];
           return _StageChip(
             title: stage.title,
             selected: stage == selectedStage,
