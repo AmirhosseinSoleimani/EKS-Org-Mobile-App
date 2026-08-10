@@ -501,8 +501,8 @@ import '../features/invoice_management/presentation/customer_invoices/cubit/cust
     as _i105;
 import '../features/invoice_management/presentation/customer_pre_invoices/cubit/customer_pre_invoice_cubit.dart'
     as _i47;
-import '../features/invoice_management/presentation/emdadgar_invoices/initial/cubit/emdadgar_invoice_cubit.dart'
-    as _i605;
+import '../features/invoice_management/presentation/emdadgar_invoices/cubit/emdadgar_invoice_cubit.dart'
+    as _i487;
 import '../features/leave/data/data_sources/leave_data_source.dart' as _i1017;
 import '../features/leave/data/data_sources/leave_data_source_impl.dart'
     as _i336;
@@ -2848,8 +2848,8 @@ _i174.GetIt $initGetIt(
       gh<_i695.SyncCurrentSessionUseCase>(),
     ),
   );
-  gh.factory<_i605.EmdadgarInitialInvoiceCubit>(
-    () => _i605.EmdadgarInitialInvoiceCubit(
+  gh.factory<_i487.EmdadgarInvoiceCubit>(
+    () => _i487.EmdadgarInvoiceCubit(
       gh<_i476.GetInitialEmdadgarInvoicesUseCase>(),
       gh<_i694.GetEmdadgarInvoicesUseCase>(),
       gh<_i762.GetFinalApprovalEmdadgarInvoicesUseCase>(),

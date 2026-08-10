@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/agency_invoice_objections/invoice_agency_objection_page.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/enums/emdadgar_invoice_stage.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoices/emdadgar_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
@@ -256,7 +257,7 @@ class ServicesPage extends StatelessWidget {
               _ServiceMenuItemData(
                 title: 'درخواست‌های اصلاحی (نماینده)',
                 icon: Icons.edit_note_outlined,
-                onTap: () {},
+                onTap: () => context.pushNamed(InvoiceAgencyObjectionPage.name),
               ),
           ];
 

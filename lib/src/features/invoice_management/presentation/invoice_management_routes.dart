@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/enums/emdadgar_invoice_stage.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/agency_invoice_objections/invoice_agency_objection_page.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_invoices/customer_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_pre_invoices/customer_pre_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoices/emdadgar_invoice_page.dart';
@@ -8,12 +9,10 @@ import 'package:go_router/go_router.dart';
 class InvoiceManagementRoutes {
   const InvoiceManagementRoutes._();
 
-  static List<RouteBase> routes(
-    Page Function({
+  static List<RouteBase> routes(Page Function({
       required Widget child,
       required GoRouterState state,
-    }) getPage,
-  ) {
+  }) getPage,) {
     return [
       GoRoute(
         path: CustomerPreInvoicePage.path,
@@ -23,6 +22,7 @@ class InvoiceManagementRoutes {
           state: state,
         ),
       ),
+
       GoRoute(
         path: CustomerInvoicePage.path,
         name: CustomerInvoicePage.name,
@@ -46,7 +46,15 @@ class InvoiceManagementRoutes {
             ),
       ),
 
-      // TODO: Add InvoiceAgencyObjectionPage when its presentation is implemented.
+      GoRoute(
+        path: InvoiceAgencyObjectionPage.path,
+        name: InvoiceAgencyObjectionPage.name,
+        pageBuilder: (context, state) =>
+            getPage(
+              child: const InvoiceAgencyObjectionPage(),
+              state: state,
+            ),
+      ),
     ];
   }
 }

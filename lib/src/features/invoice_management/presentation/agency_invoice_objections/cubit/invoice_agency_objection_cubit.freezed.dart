@@ -3,7 +3,7 @@
 // ignore_for_file: type=lint
 // ignore_for_file: unused_element, deprecated_member_use, deprecated_member_use_from_same_package, use_function_type_syntax_for_parameters, unnecessary_const, avoid_init_to_null, invalid_override_different_default_values_named, prefer_expression_function_bodies, annotate_overrides, invalid_annotation_target, unnecessary_question_mark
 
-part of 'emdadgar_invoice_cubit.dart';
+part of 'invoice_agency_objection_cubit.dart';
 
 // **************************************************************************
 // FreezedGenerator
@@ -12,7 +12,7 @@ part of 'emdadgar_invoice_cubit.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$EmdadgarInvoiceState implements DiagnosticableTreeMixin {
+mixin _$InvoiceAgencyObjectionState implements DiagnosticableTreeMixin {
 
 
 
@@ -20,13 +20,13 @@ mixin _$EmdadgarInvoiceState implements DiagnosticableTreeMixin {
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
-    ..add(DiagnosticsProperty('type', 'EmdadgarInvoiceState'))
+    ..add(DiagnosticsProperty('type', 'InvoiceAgencyObjectionState'))
     ;
 }
 
 @override
 bool operator ==(Object other) {
-  return identical(this, other) || (other.runtimeType == runtimeType&&other is EmdadgarInvoiceState);
+  return identical(this, other) || (other.runtimeType == runtimeType&&other is InvoiceAgencyObjectionState);
 }
 
 
@@ -35,20 +35,20 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'EmdadgarInvoiceState()';
+  return 'InvoiceAgencyObjectionState()';
 }
 
 
 }
 
 /// @nodoc
-class $EmdadgarInvoiceStateCopyWith<$Res>  {
-$EmdadgarInvoiceStateCopyWith(EmdadgarInvoiceState _, $Res Function(EmdadgarInvoiceState) __);
+class $InvoiceAgencyObjectionStateCopyWith<$Res>  {
+$InvoiceAgencyObjectionStateCopyWith(InvoiceAgencyObjectionState _, $Res Function(InvoiceAgencyObjectionState) __);
 }
 
 
-/// Adds pattern-matching-related methods to [EmdadgarInvoiceState].
-extension EmdadgarInvoiceStatePatterns on EmdadgarInvoiceState {
+/// Adds pattern-matching-related methods to [InvoiceAgencyObjectionState].
+extension InvoiceAgencyObjectionStatePatterns on InvoiceAgencyObjectionState {
 /// A variant of `map` that fallback to returning `orElse`.
 ///
 /// It is equivalent to doing:
@@ -198,7 +198,7 @@ return connectionError();case _:
 /// @nodoc
 
 
-class _Idle with DiagnosticableTreeMixin implements EmdadgarInvoiceState {
+class _Idle with DiagnosticableTreeMixin implements InvoiceAgencyObjectionState {
   const _Idle();
   
 
@@ -209,7 +209,7 @@ class _Idle with DiagnosticableTreeMixin implements EmdadgarInvoiceState {
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
-    ..add(DiagnosticsProperty('type', 'EmdadgarInvoiceState.idle'))
+    ..add(DiagnosticsProperty('type', 'InvoiceAgencyObjectionState.idle'))
     ;
 }
 
@@ -224,7 +224,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'EmdadgarInvoiceState.idle()';
+  return 'InvoiceAgencyObjectionState.idle()';
 }
 
 
@@ -236,7 +236,7 @@ String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
 /// @nodoc
 
 
-class _Loading with DiagnosticableTreeMixin implements EmdadgarInvoiceState {
+class _Loading with DiagnosticableTreeMixin implements InvoiceAgencyObjectionState {
   const _Loading();
   
 
@@ -247,7 +247,7 @@ class _Loading with DiagnosticableTreeMixin implements EmdadgarInvoiceState {
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
-    ..add(DiagnosticsProperty('type', 'EmdadgarInvoiceState.loading'))
+    ..add(DiagnosticsProperty('type', 'InvoiceAgencyObjectionState.loading'))
     ;
 }
 
@@ -262,7 +262,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'EmdadgarInvoiceState.loading()';
+  return 'InvoiceAgencyObjectionState.loading()';
 }
 
 
@@ -274,7 +274,7 @@ String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
 /// @nodoc
 
 
-class _Loaded with DiagnosticableTreeMixin implements EmdadgarInvoiceState {
+class _Loaded with DiagnosticableTreeMixin implements InvoiceAgencyObjectionState {
   const _Loaded();
   
 
@@ -285,7 +285,7 @@ class _Loaded with DiagnosticableTreeMixin implements EmdadgarInvoiceState {
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
-    ..add(DiagnosticsProperty('type', 'EmdadgarInvoiceState.loaded'))
+    ..add(DiagnosticsProperty('type', 'InvoiceAgencyObjectionState.loaded'))
     ;
 }
 
@@ -300,7 +300,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'EmdadgarInvoiceState.loaded()';
+  return 'InvoiceAgencyObjectionState.loaded()';
 }
 
 
@@ -312,13 +312,13 @@ String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
 /// @nodoc
 
 
-class _Error with DiagnosticableTreeMixin implements EmdadgarInvoiceState {
+class _Error with DiagnosticableTreeMixin implements InvoiceAgencyObjectionState {
   const _Error({required this.message});
   
 
  final  BottomSheetMessageModel message;
 
-/// Create a copy of EmdadgarInvoiceState
+/// Create a copy of InvoiceAgencyObjectionState
 /// with the given fields replaced by the non-null parameter values.
 @JsonKey(includeFromJson: false, includeToJson: false)
 @pragma('vm:prefer-inline')
@@ -328,7 +328,7 @@ _$ErrorCopyWith<_Error> get copyWith => __$ErrorCopyWithImpl<_Error>(this, _$ide
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
-    ..add(DiagnosticsProperty('type', 'EmdadgarInvoiceState.error'))
+    ..add(DiagnosticsProperty('type', 'InvoiceAgencyObjectionState.error'))
     ..add(DiagnosticsProperty('message', message));
 }
 
@@ -343,14 +343,14 @@ int get hashCode => Object.hash(runtimeType,message);
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'EmdadgarInvoiceState.error(message: $message)';
+  return 'InvoiceAgencyObjectionState.error(message: $message)';
 }
 
 
 }
 
 /// @nodoc
-abstract mixin class _$ErrorCopyWith<$Res> implements $EmdadgarInvoiceStateCopyWith<$Res> {
+abstract mixin class _$ErrorCopyWith<$Res> implements $InvoiceAgencyObjectionStateCopyWith<$Res> {
   factory _$ErrorCopyWith(_Error value, $Res Function(_Error) _then) = __$ErrorCopyWithImpl;
 @useResult
 $Res call({
@@ -369,7 +369,7 @@ class __$ErrorCopyWithImpl<$Res>
   final _Error _self;
   final $Res Function(_Error) _then;
 
-/// Create a copy of EmdadgarInvoiceState
+/// Create a copy of InvoiceAgencyObjectionState
 /// with the given fields replaced by the non-null parameter values.
 @pragma('vm:prefer-inline') $Res call({Object? message = null,}) {
   return _then(_Error(
@@ -384,7 +384,7 @@ as BottomSheetMessageModel,
 /// @nodoc
 
 
-class _ConnectionError with DiagnosticableTreeMixin implements EmdadgarInvoiceState {
+class _ConnectionError with DiagnosticableTreeMixin implements InvoiceAgencyObjectionState {
   const _ConnectionError();
   
 
@@ -395,7 +395,7 @@ class _ConnectionError with DiagnosticableTreeMixin implements EmdadgarInvoiceSt
 @override
 void debugFillProperties(DiagnosticPropertiesBuilder properties) {
   properties
-    ..add(DiagnosticsProperty('type', 'EmdadgarInvoiceState.connectionError'))
+    ..add(DiagnosticsProperty('type', 'InvoiceAgencyObjectionState.connectionError'))
     ;
 }
 
@@ -410,7 +410,7 @@ int get hashCode => runtimeType.hashCode;
 
 @override
 String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
-  return 'EmdadgarInvoiceState.connectionError()';
+  return 'InvoiceAgencyObjectionState.connectionError()';
 }
 
 
