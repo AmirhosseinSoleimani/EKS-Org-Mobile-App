@@ -32,7 +32,7 @@ class EmdadgarInvoiceService {
   Future<EmdadgarInvoicePageModel> getInitialInvoices(
     InvoiceListFilterRequestModel request,
   ) async {
-    return _fakeInvoicePage('اولیه');
+    return _fakeInvoicePage();
   }
 
   Future<BaseSingleResponse<InvoiceModel?>> getInitialInvoiceDetails(
@@ -77,7 +77,7 @@ class EmdadgarInvoiceService {
   Future<EmdadgarInvoicePageModel> getInvoices(
     InvoiceListFilterRequestModel request,
   ) async {
-    return _fakeInvoicePage('جاری');
+    return _fakeInvoicePage();
   }
 
   Future<BulkInvoiceAcceptResultModel> acceptInvoices(
@@ -107,7 +107,7 @@ class EmdadgarInvoiceService {
   Future<EmdadgarInvoicePageModel> getFinalApprovalInvoices(
     InvoiceListFilterRequestModel request,
   ) async {
-    return _fakeInvoicePage('تایید نهایی');
+    return _fakeInvoicePage();
   }
 
   ///real method
@@ -127,7 +127,7 @@ class EmdadgarInvoiceService {
   Future<EmdadgarInvoicePageModel> getFinalCorrectionInvoices(
     InvoiceListFilterRequestModel request,
   ) async {
-    return _fakeInvoicePage('تایید و اصلاح');
+    return _fakeInvoicePage();
   }
 
   ///real method
@@ -147,10 +147,10 @@ class EmdadgarInvoiceService {
   Future<EmdadgarInvoicePageModel> getDefiniteInvoices(
     InvoiceListFilterRequestModel request,
   ) async {
-    return _fakeInvoicePage('قطعی مودی');
+    return _fakeInvoicePage();
   }
 
-  EmdadgarInvoicePageModel _fakeInvoicePage(String stageTitle) {
+  EmdadgarInvoicePageModel _fakeInvoicePage() {
     final records = <Map<String, dynamic>>[
       {
         'id': 1,
@@ -158,13 +158,14 @@ class EmdadgarInvoiceService {
         'serviceRequestId': 12001,
         'requestTrackCode': 14020175001,
         'evaluationId': 81001,
-        'requestDateTimeJalali': '1405/05/19 - 10:30',
+        'requestDateTimeJalali': '1405/05/19 10:30:00',
+        'customerInvoiceDateTimeJalali': '1405/05/19 10:34:00',
         'emdadkhahFirstName': 'اصغر',
         'emdadkhahLastName': 'سعیدی نیکو',
         'agencyName': 'ابراهیم فرجی',
         'agencyCode': '687',
         'emdadgarName': 'محمد حسینی',
-        'invoiceStatusTitle': '$stageTitle - ارزیابی شده',
+        'invoiceStatusTitle': 'ارزیابی شده',
         'ownerTypeTitle': 'نماینده',
         'subscription': true,
         'isGaranty': true,
@@ -172,7 +173,7 @@ class EmdadgarInvoiceService {
         'companyTotalPrice': 28500000,
         'emdadgarTotalPrice': 28500000,
         'insertUserName': 'امیر حسینی',
-        'insertDateTimeJalali': '1405/05/19 - 10:35',
+        'insertDateTimeJalali': '1405/05/19 10:35:00',
       },
       {
         'id': 2,
@@ -180,13 +181,14 @@ class EmdadgarInvoiceService {
         'serviceRequestId': 12002,
         'requestTrackCode': 14020175002,
         'evaluationId': 81002,
-        'requestDateTimeJalali': '1405/05/18 - 14:20',
+        'requestDateTimeJalali': '1405/05/18 14:20:00',
+        'customerInvoiceDateTimeJalali': '1405/05/18 14:26:00',
         'emdadkhahFirstName': 'مریم',
         'emdadkhahLastName': 'احمدی',
         'agencyName': 'نمایندگی آزادی',
         'agencyCode': '421',
         'emdadgarName': 'علی رضایی',
-        'invoiceStatusTitle': '$stageTitle - در انتظار بررسی',
+        'invoiceStatusTitle': 'در انتظار بررسی',
         'ownerTypeTitle': 'نماینده',
         'subscription': false,
         'isGaranty': true,
@@ -194,7 +196,7 @@ class EmdadgarInvoiceService {
         'companyTotalPrice': 16450000,
         'emdadgarTotalPrice': 16450000,
         'insertUserName': 'رضا اکبری',
-        'insertDateTimeJalali': '1405/05/18 - 14:28',
+        'insertDateTimeJalali': '1405/05/18 14:28:00',
       },
       {
         'id': 3,
@@ -202,13 +204,14 @@ class EmdadgarInvoiceService {
         'serviceRequestId': 12003,
         'requestTrackCode': 14020175003,
         'evaluationId': 81003,
-        'requestDateTimeJalali': '1405/05/17 - 09:10',
+        'requestDateTimeJalali': '1405/05/17 09:10:00',
+        'customerInvoiceDateTimeJalali': '1405/05/17 09:14:00',
         'emdadkhahFirstName': 'حسین',
         'emdadkhahLastName': 'کریمی',
         'agencyName': 'نمایندگی مرکزی',
         'agencyCode': '105',
         'emdadgarName': 'سعید محمدی',
-        'invoiceStatusTitle': '$stageTitle - تایید شده',
+        'invoiceStatusTitle': 'تایید شده',
         'ownerTypeTitle': 'نماینده',
         'subscription': true,
         'isGaranty': false,
@@ -216,7 +219,7 @@ class EmdadgarInvoiceService {
         'companyTotalPrice': 39700000,
         'emdadgarTotalPrice': 39700000,
         'insertUserName': 'مهدی احمدپور',
-        'insertDateTimeJalali': '1405/05/17 - 09:16',
+        'insertDateTimeJalali': '1405/05/17 09:16:00',
       },
     ];
 

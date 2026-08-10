@@ -1,6 +1,7 @@
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/emdadgar_invoice_record_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/utils/invoice_presentation_formatter.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/models/emdadgar_invoice_status_style.dart';
+import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
 import 'package:eks_sana_plus_org/src/shared/extensions/color_extension.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/theme/app_semantic_colors.dart';
@@ -44,8 +45,8 @@ class EmdadgarInvoiceSummaryCard extends StatelessWidget {
     final successColor = theme.colorScheme.onError;
 
     return AppSummaryCard(
-      titleLabel: 'شماره درخواست',
       title: _requestTitle,
+      subtitle: _headerDate,
       leading: selectionEnabled
           ? Checkbox(
               value: selected,
@@ -80,9 +81,10 @@ class EmdadgarInvoiceSummaryCard extends StatelessWidget {
           icon: Icons.business_outlined,
         ),
         SummaryCardInfo(
-          label: 'تاریخ',
-          value: _requestDate,
+          label: 'تاریخ فاکتور',
+          value: _invoiceDate,
           icon: Icons.calendar_today_outlined,
+          textDirection: TextDirection.rtl,
         ),
       ],
       afterInfo: Column(
@@ -122,8 +124,10 @@ class EmdadgarInvoiceSummaryCard extends StatelessWidget {
         SummaryCardMeta(
           label: 'ثبت‌کننده',
           value: item.audit?.insertUserName,
-          date: item.audit?.insertDateTimeJalali,
-          dateTextDirection: TextDirection.ltr,
+          date: JalaliDateHelper.formatStringJalaliDateTime(
+            item.audit?.insertDateTimeJalali,
+          ),
+          dateTextDirection: TextDirection.rtl,
         ),
       ],
       primaryActionFlex: 50,
@@ -172,11 +176,18 @@ class EmdadgarInvoiceSummaryCard extends StatelessWidget {
     return '$normalizedName ($normalizedCode)';
   }
 
-  String get _requestDate {
-    return item.identity?.requestDateTimeJalali ??
-        item.identity?.serviceRequestInsertDataTimeJalali ??
-        item.audit?.insertDateTimeJalali ??
-        '---';
+  String get _headerDate {
+    return JalaliDateHelper.formatStringJalaliDateTime(
+      item.audit?.insertDateTimeJalali ??
+          item.identity?.serviceRequestInsertDataTimeJalali ??
+          item.identity?.requestDateTimeJalali,
+    );
+  }
+
+  String get _invoiceDate {
+    return JalaliDateHelper.formatStringJalaliDateTime(
+      item.identity?.customerInvoiceDateTimeJalali,
+    );
   }
 
   int? get _representativeAmount {

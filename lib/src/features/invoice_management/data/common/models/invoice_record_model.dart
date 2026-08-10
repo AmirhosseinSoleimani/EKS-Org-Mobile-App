@@ -341,8 +341,9 @@ class InvoiceAuditModel extends InvoiceAuditEntity {
       insertUserId: JsonValueReader.intValue(json['insertUserId']),
       insertUserName: JsonValueReader.stringValue(json['insertUserName']),
       insertDateTime: JsonValueReader.dateTimeValue(json['insertDateTime']),
-      insertDateTimeJalali:
-          JsonValueReader.stringValue(json['insertDateTimeJalali']),
+      insertDateTimeJalali: JsonValueReader.stringValue(
+        json['insertDateTimeJalali'] ?? json['insertJalaliDate'],
+      ),
       updateUserId: JsonValueReader.intValue(json['updateUserId']),
       updateUserName: JsonValueReader.stringValue(json['updateUserName']),
       updateDateTime: JsonValueReader.dateTimeValue(json['updateDateTime']),

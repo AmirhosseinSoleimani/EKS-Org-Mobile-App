@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/agency_invoice_objections/entities/invoice_agency_objection_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/agency_invoice_objections/utils/invoice_agency_objection_formatter.dart';
+import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/entities/excel_export_column.dart';
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/entities/excel_export_request.dart';
 
@@ -55,12 +56,16 @@ class InvoiceAgencyObjectionExcelReportFactory {
         ),
         ExcelExportColumn(
           title: 'تاریخ بررسی',
-          valueBuilder: (item, _) => item.review?.checkAuthorDateTimeJalali,
+          valueBuilder: (item, _) => JalaliDateHelper.formatStringJalaliDateTime(
+            item.review?.checkAuthorDateTimeJalali,
+          ),
           width: 22,
         ),
         ExcelExportColumn(
           title: 'تاریخ ثبت',
-          valueBuilder: (item, _) => item.audit?.insertDateTimeJalali,
+          valueBuilder: (item, _) => JalaliDateHelper.formatStringJalaliDateTime(
+            item.audit?.insertDateTimeJalali,
+          ),
           width: 22,
         ),
       ],

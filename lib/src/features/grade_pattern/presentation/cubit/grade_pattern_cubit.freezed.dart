@@ -12,11 +12,17 @@ part of 'grade_pattern_cubit.dart';
 // dart format off
 T _$identity<T>(T value) => value;
 /// @nodoc
-mixin _$GradePatternState {
+mixin _$GradePatternState implements DiagnosticableTreeMixin {
 
 
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'GradePatternState'))
+    ;
+}
 
 @override
 bool operator ==(Object other) {
@@ -28,7 +34,7 @@ bool operator ==(Object other) {
 int get hashCode => runtimeType.hashCode;
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'GradePatternState()';
 }
 
@@ -240,7 +246,7 @@ return connectionError(_that.filter,_that.items);case _:
 /// @nodoc
 
 
-class _Initial implements GradePatternState {
+class _Initial with DiagnosticableTreeMixin implements GradePatternState {
   const _Initial();
   
 
@@ -248,6 +254,12 @@ class _Initial implements GradePatternState {
 
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'GradePatternState.initial'))
+    ;
+}
 
 @override
 bool operator ==(Object other) {
@@ -259,7 +271,7 @@ bool operator ==(Object other) {
 int get hashCode => runtimeType.hashCode;
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'GradePatternState.initial()';
 }
 
@@ -272,7 +284,7 @@ String toString() {
 /// @nodoc
 
 
-class _Loading implements GradePatternState {
+class _Loading with DiagnosticableTreeMixin implements GradePatternState {
   const _Loading({required this.filter});
   
 
@@ -285,6 +297,12 @@ class _Loading implements GradePatternState {
 _$LoadingCopyWith<_Loading> get copyWith => __$LoadingCopyWithImpl<_Loading>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'GradePatternState.loading'))
+    ..add(DiagnosticsProperty('filter', filter));
+}
 
 @override
 bool operator ==(Object other) {
@@ -296,7 +314,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,filter);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'GradePatternState.loading(filter: $filter)';
 }
 
@@ -338,7 +356,7 @@ as GradePatternFilterParamEntity,
 /// @nodoc
 
 
-class _Loaded implements GradePatternState {
+class _Loaded with DiagnosticableTreeMixin implements GradePatternState {
   const _Loaded({required final  List<GradePatternEntity> items, required this.totalCount, required this.hasMore, required this.filter}): _items = items;
   
 
@@ -360,6 +378,12 @@ class _Loaded implements GradePatternState {
 _$LoadedCopyWith<_Loaded> get copyWith => __$LoadedCopyWithImpl<_Loaded>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'GradePatternState.loaded'))
+    ..add(DiagnosticsProperty('items', items))..add(DiagnosticsProperty('totalCount', totalCount))..add(DiagnosticsProperty('hasMore', hasMore))..add(DiagnosticsProperty('filter', filter));
+}
 
 @override
 bool operator ==(Object other) {
@@ -371,7 +395,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),totalCount,hasMore,filter);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'GradePatternState.loaded(items: $items, totalCount: $totalCount, hasMore: $hasMore, filter: $filter)';
 }
 
@@ -416,7 +440,7 @@ as GradePatternFilterParamEntity,
 /// @nodoc
 
 
-class _Empty implements GradePatternState {
+class _Empty with DiagnosticableTreeMixin implements GradePatternState {
   const _Empty({required this.filter});
   
 
@@ -429,6 +453,12 @@ class _Empty implements GradePatternState {
 _$EmptyCopyWith<_Empty> get copyWith => __$EmptyCopyWithImpl<_Empty>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'GradePatternState.empty'))
+    ..add(DiagnosticsProperty('filter', filter));
+}
 
 @override
 bool operator ==(Object other) {
@@ -440,7 +470,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,filter);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'GradePatternState.empty(filter: $filter)';
 }
 
@@ -482,7 +512,7 @@ as GradePatternFilterParamEntity,
 /// @nodoc
 
 
-class _LoadingMore implements GradePatternState {
+class _LoadingMore with DiagnosticableTreeMixin implements GradePatternState {
   const _LoadingMore({required final  List<GradePatternEntity> items, required this.totalCount, required this.filter}): _items = items;
   
 
@@ -503,6 +533,12 @@ class _LoadingMore implements GradePatternState {
 _$LoadingMoreCopyWith<_LoadingMore> get copyWith => __$LoadingMoreCopyWithImpl<_LoadingMore>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'GradePatternState.loadingMore'))
+    ..add(DiagnosticsProperty('items', items))..add(DiagnosticsProperty('totalCount', totalCount))..add(DiagnosticsProperty('filter', filter));
+}
 
 @override
 bool operator ==(Object other) {
@@ -514,7 +550,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items),totalCount,filter);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'GradePatternState.loadingMore(items: $items, totalCount: $totalCount, filter: $filter)';
 }
 
@@ -558,7 +594,7 @@ as GradePatternFilterParamEntity,
 /// @nodoc
 
 
-class _DetailLoading implements GradePatternState {
+class _DetailLoading with DiagnosticableTreeMixin implements GradePatternState {
   const _DetailLoading({final  List<GradePatternEntity> items = const []}): _items = items;
   
 
@@ -577,6 +613,12 @@ class _DetailLoading implements GradePatternState {
 _$DetailLoadingCopyWith<_DetailLoading> get copyWith => __$DetailLoadingCopyWithImpl<_DetailLoading>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'GradePatternState.detailLoading'))
+    ..add(DiagnosticsProperty('items', items));
+}
 
 @override
 bool operator ==(Object other) {
@@ -588,7 +630,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_items));
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'GradePatternState.detailLoading(items: $items)';
 }
 
@@ -630,7 +672,7 @@ as List<GradePatternEntity>,
 /// @nodoc
 
 
-class _DetailLoaded implements GradePatternState {
+class _DetailLoaded with DiagnosticableTreeMixin implements GradePatternState {
   const _DetailLoaded({required this.item});
   
 
@@ -643,6 +685,12 @@ class _DetailLoaded implements GradePatternState {
 _$DetailLoadedCopyWith<_DetailLoaded> get copyWith => __$DetailLoadedCopyWithImpl<_DetailLoaded>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'GradePatternState.detailLoaded'))
+    ..add(DiagnosticsProperty('item', item));
+}
 
 @override
 bool operator ==(Object other) {
@@ -654,7 +702,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,item);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'GradePatternState.detailLoaded(item: $item)';
 }
 
@@ -696,7 +744,7 @@ as GradePatternEntity,
 /// @nodoc
 
 
-class _FormReady implements GradePatternState {
+class _FormReady with DiagnosticableTreeMixin implements GradePatternState {
   const _FormReady({required this.item});
   
 
@@ -709,6 +757,12 @@ class _FormReady implements GradePatternState {
 _$FormReadyCopyWith<_FormReady> get copyWith => __$FormReadyCopyWithImpl<_FormReady>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'GradePatternState.formReady'))
+    ..add(DiagnosticsProperty('item', item));
+}
 
 @override
 bool operator ==(Object other) {
@@ -720,7 +774,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,item);
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'GradePatternState.formReady(item: $item)';
 }
 
@@ -762,7 +816,7 @@ as GradePatternEntity,
 /// @nodoc
 
 
-class _ReferencesLoaded implements GradePatternState {
+class _ReferencesLoaded with DiagnosticableTreeMixin implements GradePatternState {
   const _ReferencesLoaded({required final  List<GradePatternEntity> patterns, required final  List<GradePatternReferenceEntity> references}): _patterns = patterns,_references = references;
   
 
@@ -788,6 +842,12 @@ class _ReferencesLoaded implements GradePatternState {
 _$ReferencesLoadedCopyWith<_ReferencesLoaded> get copyWith => __$ReferencesLoadedCopyWithImpl<_ReferencesLoaded>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'GradePatternState.referencesLoaded'))
+    ..add(DiagnosticsProperty('patterns', patterns))..add(DiagnosticsProperty('references', references));
+}
 
 @override
 bool operator ==(Object other) {
@@ -799,7 +859,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,const DeepCollectionEquality().hash(_patterns),const DeepCollectionEquality().hash(_references));
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'GradePatternState.referencesLoaded(patterns: $patterns, references: $references)';
 }
 
@@ -842,7 +902,7 @@ as List<GradePatternReferenceEntity>,
 /// @nodoc
 
 
-class _Submitting implements GradePatternState {
+class _Submitting with DiagnosticableTreeMixin implements GradePatternState {
   const _Submitting({this.item, final  List<GradePatternEntity> items = const []}): _items = items;
   
 
@@ -862,6 +922,12 @@ class _Submitting implements GradePatternState {
 _$SubmittingCopyWith<_Submitting> get copyWith => __$SubmittingCopyWithImpl<_Submitting>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'GradePatternState.submitting'))
+    ..add(DiagnosticsProperty('item', item))..add(DiagnosticsProperty('items', items));
+}
 
 @override
 bool operator ==(Object other) {
@@ -873,7 +939,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,item,const DeepCollectionEquality().hash(_items));
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'GradePatternState.submitting(item: $item, items: $items)';
 }
 
@@ -916,7 +982,7 @@ as List<GradePatternEntity>,
 /// @nodoc
 
 
-class _Success implements GradePatternState {
+class _Success with DiagnosticableTreeMixin implements GradePatternState {
   const _Success({required this.action, required this.message, final  List<GradePatternEntity> items = const []}): _items = items;
   
 
@@ -937,6 +1003,12 @@ class _Success implements GradePatternState {
 _$SuccessCopyWith<_Success> get copyWith => __$SuccessCopyWithImpl<_Success>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'GradePatternState.success'))
+    ..add(DiagnosticsProperty('action', action))..add(DiagnosticsProperty('message', message))..add(DiagnosticsProperty('items', items));
+}
 
 @override
 bool operator ==(Object other) {
@@ -948,7 +1020,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,action,message,const DeepCollectionEquality().hash(_items));
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'GradePatternState.success(action: $action, message: $message, items: $items)';
 }
 
@@ -992,7 +1064,7 @@ as List<GradePatternEntity>,
 /// @nodoc
 
 
-class _Failure implements GradePatternState {
+class _Failure with DiagnosticableTreeMixin implements GradePatternState {
   const _Failure({required this.message, final  List<GradePatternEntity> items = const []}): _items = items;
   
 
@@ -1012,6 +1084,12 @@ class _Failure implements GradePatternState {
 _$FailureCopyWith<_Failure> get copyWith => __$FailureCopyWithImpl<_Failure>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'GradePatternState.failure'))
+    ..add(DiagnosticsProperty('message', message))..add(DiagnosticsProperty('items', items));
+}
 
 @override
 bool operator ==(Object other) {
@@ -1023,7 +1101,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,message,const DeepCollectionEquality().hash(_items));
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'GradePatternState.failure(message: $message, items: $items)';
 }
 
@@ -1066,7 +1144,7 @@ as List<GradePatternEntity>,
 /// @nodoc
 
 
-class _ConnectionError implements GradePatternState {
+class _ConnectionError with DiagnosticableTreeMixin implements GradePatternState {
   const _ConnectionError({required this.filter, final  List<GradePatternEntity> items = const []}): _items = items;
   
 
@@ -1086,6 +1164,12 @@ class _ConnectionError implements GradePatternState {
 _$ConnectionErrorCopyWith<_ConnectionError> get copyWith => __$ConnectionErrorCopyWithImpl<_ConnectionError>(this, _$identity);
 
 
+@override
+void debugFillProperties(DiagnosticPropertiesBuilder properties) {
+  properties
+    ..add(DiagnosticsProperty('type', 'GradePatternState.connectionError'))
+    ..add(DiagnosticsProperty('filter', filter))..add(DiagnosticsProperty('items', items));
+}
 
 @override
 bool operator ==(Object other) {
@@ -1097,7 +1181,7 @@ bool operator ==(Object other) {
 int get hashCode => Object.hash(runtimeType,filter,const DeepCollectionEquality().hash(_items));
 
 @override
-String toString() {
+String toString({ DiagnosticLevel minLevel = DiagnosticLevel.info }) {
   return 'GradePatternState.connectionError(filter: $filter, items: $items)';
 }
 

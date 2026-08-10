@@ -13,6 +13,12 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
     required this.invoiceStatusApprovedBackground,
     required this.invoiceStatusFinalizedText,
     required this.invoiceStatusFinalizedBackground,
+    required this.agencyCorrectionStatusRegisteredText,
+    required this.agencyCorrectionStatusRegisteredBackground,
+    required this.agencyCorrectionStatusApprovedText,
+    required this.agencyCorrectionStatusApprovedBackground,
+    required this.agencyCorrectionStatusCancelledText,
+    required this.agencyCorrectionStatusCancelledBackground,
   });
 
   static const light = AppSemanticColors(
@@ -29,6 +35,18 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
     invoiceStatusFinalizedText: ColorLightManager.invoiceStatusFinalizedText,
     invoiceStatusFinalizedBackground:
         ColorLightManager.invoiceStatusFinalizedBackground,
+    agencyCorrectionStatusRegisteredText:
+        ColorLightManager.agencyCorrectionStatusRegisteredText,
+    agencyCorrectionStatusRegisteredBackground:
+        ColorLightManager.agencyCorrectionStatusRegisteredBackground,
+    agencyCorrectionStatusApprovedText:
+        ColorLightManager.agencyCorrectionStatusApprovedText,
+    agencyCorrectionStatusApprovedBackground:
+        ColorLightManager.agencyCorrectionStatusApprovedBackground,
+    agencyCorrectionStatusCancelledText:
+        ColorLightManager.agencyCorrectionStatusCancelledText,
+    agencyCorrectionStatusCancelledBackground:
+        ColorLightManager.agencyCorrectionStatusCancelledBackground,
   );
 
   final Color confirmation;
@@ -45,6 +63,15 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
   final Color invoiceStatusFinalizedText;
   final Color invoiceStatusFinalizedBackground;
 
+  final Color agencyCorrectionStatusRegisteredText;
+  final Color agencyCorrectionStatusRegisteredBackground;
+
+  final Color agencyCorrectionStatusApprovedText;
+  final Color agencyCorrectionStatusApprovedBackground;
+
+  final Color agencyCorrectionStatusCancelledText;
+  final Color agencyCorrectionStatusCancelledBackground;
+
   @override
   AppSemanticColors copyWith({
     Color? confirmation,
@@ -56,6 +83,12 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
     Color? invoiceStatusApprovedBackground,
     Color? invoiceStatusFinalizedText,
     Color? invoiceStatusFinalizedBackground,
+    Color? agencyCorrectionStatusRegisteredText,
+    Color? agencyCorrectionStatusRegisteredBackground,
+    Color? agencyCorrectionStatusApprovedText,
+    Color? agencyCorrectionStatusApprovedBackground,
+    Color? agencyCorrectionStatusCancelledText,
+    Color? agencyCorrectionStatusCancelledBackground,
   }) {
     return AppSemanticColors(
       confirmation: confirmation ?? this.confirmation,
@@ -75,6 +108,23 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
           invoiceStatusFinalizedText ?? this.invoiceStatusFinalizedText,
       invoiceStatusFinalizedBackground: invoiceStatusFinalizedBackground ??
           this.invoiceStatusFinalizedBackground,
+      agencyCorrectionStatusRegisteredText:
+          agencyCorrectionStatusRegisteredText ??
+              this.agencyCorrectionStatusRegisteredText,
+      agencyCorrectionStatusRegisteredBackground:
+          agencyCorrectionStatusRegisteredBackground ??
+              this.agencyCorrectionStatusRegisteredBackground,
+      agencyCorrectionStatusApprovedText: agencyCorrectionStatusApprovedText ??
+          this.agencyCorrectionStatusApprovedText,
+      agencyCorrectionStatusApprovedBackground:
+          agencyCorrectionStatusApprovedBackground ??
+              this.agencyCorrectionStatusApprovedBackground,
+      agencyCorrectionStatusCancelledText:
+          agencyCorrectionStatusCancelledText ??
+              this.agencyCorrectionStatusCancelledText,
+      agencyCorrectionStatusCancelledBackground:
+          agencyCorrectionStatusCancelledBackground ??
+              this.agencyCorrectionStatusCancelledBackground,
     );
   }
 
@@ -87,8 +137,11 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
 
     return AppSemanticColors(
       confirmation: Color.lerp(confirmation, other.confirmation, t)!,
-      invoiceStatusInitialText:
-          Color.lerp(invoiceStatusInitialText, other.invoiceStatusInitialText, t)!,
+      invoiceStatusInitialText: Color.lerp(
+        invoiceStatusInitialText,
+        other.invoiceStatusInitialText,
+        t,
+      )!,
       invoiceStatusInitialBackground: Color.lerp(
         invoiceStatusInitialBackground,
         other.invoiceStatusInitialBackground,
@@ -104,8 +157,11 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
         other.invoiceStatusEvaluatedBackground,
         t,
       )!,
-      invoiceStatusApprovedText:
-          Color.lerp(invoiceStatusApprovedText, other.invoiceStatusApprovedText, t)!,
+      invoiceStatusApprovedText: Color.lerp(
+        invoiceStatusApprovedText,
+        other.invoiceStatusApprovedText,
+        t,
+      )!,
       invoiceStatusApprovedBackground: Color.lerp(
         invoiceStatusApprovedBackground,
         other.invoiceStatusApprovedBackground,
@@ -119,6 +175,36 @@ class AppSemanticColors extends ThemeExtension<AppSemanticColors> {
       invoiceStatusFinalizedBackground: Color.lerp(
         invoiceStatusFinalizedBackground,
         other.invoiceStatusFinalizedBackground,
+        t,
+      )!,
+      agencyCorrectionStatusRegisteredText: Color.lerp(
+        agencyCorrectionStatusRegisteredText,
+        other.agencyCorrectionStatusRegisteredText,
+        t,
+      )!,
+      agencyCorrectionStatusRegisteredBackground: Color.lerp(
+        agencyCorrectionStatusRegisteredBackground,
+        other.agencyCorrectionStatusRegisteredBackground,
+        t,
+      )!,
+      agencyCorrectionStatusApprovedText: Color.lerp(
+        agencyCorrectionStatusApprovedText,
+        other.agencyCorrectionStatusApprovedText,
+        t,
+      )!,
+      agencyCorrectionStatusApprovedBackground: Color.lerp(
+        agencyCorrectionStatusApprovedBackground,
+        other.agencyCorrectionStatusApprovedBackground,
+        t,
+      )!,
+      agencyCorrectionStatusCancelledText: Color.lerp(
+        agencyCorrectionStatusCancelledText,
+        other.agencyCorrectionStatusCancelledText,
+        t,
+      )!,
+      agencyCorrectionStatusCancelledBackground: Color.lerp(
+        agencyCorrectionStatusCancelledBackground,
+        other.agencyCorrectionStatusCancelledBackground,
         t,
       )!,
     );

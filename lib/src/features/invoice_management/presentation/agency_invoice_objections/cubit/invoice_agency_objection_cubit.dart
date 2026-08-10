@@ -1,9 +1,14 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/agency_invoice_objections/entities/invoice_agency_objection_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/agency_invoice_objections/entities/invoice_agency_objection_page_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/agency_invoice_objections/entities/params/invoice_agency_objection_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/agency_invoice_objections/use_cases/get_invoice_agency_objections_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/agency_invoice_objections/models/invoice_agency_objection_filter_value.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/agency_invoice_objections/utils/invoice_agency_objection_excel_report_factory.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/usecases/set_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
@@ -18,12 +23,14 @@ class InvoiceAgencyObjectionCubit extends Cubit<InvoiceAgencyObjectionState> {
   InvoiceAgencyObjectionCubit(
     this._getObjectionsUseCase,
     this._exportExcelUseCase,
+    this._setSelectedRequestItemUseCase,
   ) : super(const InvoiceAgencyObjectionState.idle());
 
   static const int pageSize = 25;
 
   final GetInvoiceAgencyObjectionsUseCase _getObjectionsUseCase;
   final ExportExcelUseCase _exportExcelUseCase;
+  final SetSelectedRequestItemUseCase _setSelectedRequestItemUseCase;
 
   final ValueNotifier<List<InvoiceAgencyObjectionEntity>> itemsNotifier =
       ValueNotifier<List<InvoiceAgencyObjectionEntity>>(
@@ -122,6 +129,44 @@ class InvoiceAgencyObjectionCubit extends Cubit<InvoiceAgencyObjectionState> {
     filter = InvoiceAgencyObjectionFilterValue.withDefaultDateRange();
     _clearList();
     await fetchList(refresh: true);
+  }
+
+  Future<int?> cacheSelectedRequest(InvoiceAgencyObjectionEntity item) async {
+    final request = _mapToServiceRequest(item);
+    if (request == null) {
+      _emitError('اطلاعات درخواست برای نمایش جزئیات کامل نیست.');
+      return null;
+    }
+
+    try {
+      await _setSelectedRequestItemUseCase(request);
+      return request.id;
+    } catch (_) {
+      _emitError('ذخیره درخواست انتخاب‌شده با خطا مواجه شد.');
+      return null;
+    }
+  }
+
+  BaseRequestEntity? _mapToServiceRequest(InvoiceAgencyObjectionEntity item) {
+    final requestId = item.identity?.serviceRequestId;
+    final serviceTypeValue = item.identity?.serviceType;
+    if (requestId == null || serviceTypeValue == null) return null;
+
+    if (serviceTypeValue == ServiceType.homeService.value) {
+      return HomeServiceRequestEntity(
+        id: requestId,
+        serviceType: ServiceType.homeService,
+      );
+    }
+
+    if (serviceTypeValue == ServiceType.reliefService.value) {
+      return ReliefRequestEntity(
+        id: requestId,
+        serviceType: ServiceType.reliefService,
+      );
+    }
+
+    return null;
   }
 
   Future<void> exportReport() async {

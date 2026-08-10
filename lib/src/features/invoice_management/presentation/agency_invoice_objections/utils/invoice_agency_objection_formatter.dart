@@ -23,18 +23,4 @@ class InvoiceAgencyObjectionFormatter {
     if (code == null || code.isEmpty) return name;
     return '$name ($code)';
   }
-
-  static String dateTime(String? jalaliDate, DateTime? dateTime) {
-    final date = display(jalaliDate);
-    if (date == '---' && dateTime == null) return date;
-    if (date != '---' && date.contains(':')) return date;
-
-    final time = dateTime == null
-        ? null
-        : '${dateTime.hour.toString().padLeft(2, '0')}:${dateTime.minute.toString().padLeft(2, '0')}';
-
-    if (date == '---') return time ?? '---';
-    if (time == null) return date;
-    return '$date - $time';
-  }
 }

@@ -1,6 +1,8 @@
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/agency_invoice_objections/entities/invoice_agency_objection_entity.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/agency_invoice_objections/models/agency_correction_request_status_style.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/agency_invoice_objections/utils/invoice_agency_objection_formatter.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/agency_invoice_objections/widgets/invoice_agency_objection_review_panel.dart';
+import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/theme/app_semantic_colors.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
@@ -22,24 +24,30 @@ class InvoiceAgencyObjectionCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final semanticColors = theme.extension<AppSemanticColors>();
-    final statusStyle = _statusStyle(theme, semanticColors);
+    final semanticColors = theme.extension<AppSemanticColors>()!;
+    final statusType = AgencyCorrectionRequestStatusType.resolve(
+      status: item.identity?.status,
+      title: item.identity?.statusTitle,
+    );
+    final statusPalette = statusType.palette(
+      semanticColors: semanticColors,
+      colorScheme: theme.colorScheme,
+    );
 
     return AppSummaryCard(
       title: InvoiceAgencyObjectionFormatter.requestCode(
         item.request?.serviceRequestTrackCode,
       ),
-      subtitle: InvoiceAgencyObjectionFormatter.dateTime(
+      subtitle: JalaliDateHelper.formatStringJalaliDateTime(
         item.audit?.insertDateTimeJalali,
-        item.audit?.insertDateTime,
       ),
       badges: [
         StatusLabel(
           text: InvoiceAgencyObjectionFormatter.display(
             item.identity?.statusTitle,
           ),
-          color: statusStyle.$1,
-          backgroundColor: statusStyle.$2,
+          color: statusPalette.textColor,
+          backgroundColor: statusPalette.backgroundColor,
           fontSize: 11,
         ),
       ],
@@ -77,33 +85,6 @@ class InvoiceAgencyObjectionCard extends StatelessWidget {
       ),
     );
   }
-
-  (Color, Color) _statusStyle(
-    ThemeData theme,
-    AppSemanticColors? semanticColors,
-  ) {
-    final title = item.identity?.statusTitle?.trim() ?? '';
-
-    if (title.contains('تایید')) {
-      return (
-        semanticColors?.invoiceStatusApprovedText ?? theme.colorScheme.primary,
-        semanticColors?.invoiceStatusApprovedBackground ??
-            theme.colorScheme.primaryContainer,
-      );
-    }
-
-    if (title.contains('رد')) {
-      return (
-        theme.colorScheme.error,
-        theme.colorScheme.errorContainer,
-      );
-    }
-
-    return (
-      theme.colorScheme.primary,
-      theme.colorScheme.primaryContainer,
-    );
-  }
 }
 
 class _Description extends StatelessWidget {
@@ -135,6 +116,8 @@ class _Description extends StatelessWidget {
           ),
         ],
       ),
+      textAlign: TextAlign.start,
+      textDirection: TextDirection.rtl,
       maxLines: 2,
       overflow: TextOverflow.ellipsis,
     );

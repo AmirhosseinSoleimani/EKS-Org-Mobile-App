@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/agency_invoice_objections/entities/invoice_agency_objection_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/agency_invoice_objections/utils/invoice_agency_objection_formatter.dart';
+import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:flutter/material.dart';
 
@@ -25,6 +26,7 @@ class InvoiceAgencyObjectionReviewPanel extends StatelessWidget {
         border: Border.all(color: theme.dividerColor),
       ),
       child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
             children: [
@@ -33,6 +35,7 @@ class InvoiceAgencyObjectionReviewPanel extends StatelessWidget {
                   'بررسی کننده: ${InvoiceAgencyObjectionFormatter.display(review?.checkAuthorFullName)}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
+                  textAlign: TextAlign.start,
                   style: theme.textTheme.bodySmall?.copyWith(
                     color: textColor,
                     fontWeight: FontWeight.w400,
@@ -42,7 +45,7 @@ class InvoiceAgencyObjectionReviewPanel extends StatelessWidget {
               Space.w8,
               Expanded(
                 child: Text(
-                  'تاریخ بررسی: ${InvoiceAgencyObjectionFormatter.dateTime(review?.checkAuthorDateTimeJalali, review?.checkAuthorDateTime)}',
+                  'تاریخ بررسی: ${JalaliDateHelper.formatStringJalaliDateTime(review?.checkAuthorDateTimeJalali)}',
                   maxLines: 1,
                   overflow: TextOverflow.ellipsis,
                   textAlign: TextAlign.end,
@@ -62,7 +65,8 @@ class InvoiceAgencyObjectionReviewPanel extends StatelessWidget {
             InvoiceAgencyObjectionFormatter.display(
               review?.checkAuthorDescription,
             ),
-            textAlign: TextAlign.center,
+            textAlign: TextAlign.start,
+            textDirection: TextDirection.rtl,
             style: theme.textTheme.bodySmall?.copyWith(
               color: theme.colorScheme.onSurfaceVariant,
               height: 1.6,

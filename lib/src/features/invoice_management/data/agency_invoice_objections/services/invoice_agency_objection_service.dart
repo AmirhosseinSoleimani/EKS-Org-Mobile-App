@@ -51,7 +51,7 @@ class InvoiceAgencyObjectionService {
             invoiceId: 9101,
             objectionType: 1,
             status: 0,
-            statusTitle: 'در انتظار بررسی',
+            statusTitle: 'ثبت',
           ),
           request: InvoiceAgencyObjectionRequestModel(
             serviceRequestTrackCode: 140501,
@@ -73,11 +73,13 @@ class InvoiceAgencyObjectionService {
             cityName: 'تهران',
           ),
           review: InvoiceAgencyObjectionReviewModel(
-            checkAuthorFullName: '---',
-            checkAuthorDescription: 'در انتظار بررسی کارشناس',
+            checkAuthorId: 70,
+            checkAuthorFullName: 'حسین رجب نژاد',
+            checkAuthorDateTimeJalali: '1405/05/18 10:15:00',
+            checkAuthorDescription: 'درخواست برای بررسی و تایید ثبت شده است.',
           ),
           audit: InvoiceAgencyObjectionAuditModel(
-            insertDateTimeJalali: '1405/05/18 - 09:15',
+            insertDateTimeJalali: '1405/05/18 09:15:00',
           ),
         ),
         InvoiceAgencyObjectionModel(
@@ -89,7 +91,7 @@ class InvoiceAgencyObjectionService {
             invoiceId: 9102,
             objectionType: 1,
             status: 1,
-            statusTitle: 'تایید شده',
+            statusTitle: 'تایید',
           ),
           request: InvoiceAgencyObjectionRequestModel(
             serviceRequestTrackCode: 140502,
@@ -113,11 +115,11 @@ class InvoiceAgencyObjectionService {
           review: InvoiceAgencyObjectionReviewModel(
             checkAuthorId: 71,
             checkAuthorFullName: 'کارشناس مالی',
-            checkAuthorDateTimeJalali: '1405/05/18 - 11:40',
+            checkAuthorDateTimeJalali: '1405/05/18 11:40:00',
             checkAuthorDescription: 'درخواست بررسی و تایید شد.',
           ),
           audit: InvoiceAgencyObjectionAuditModel(
-            insertDateTimeJalali: '1405/05/17 - 16:20',
+            insertDateTimeJalali: '1405/05/17 16:20:00',
           ),
         ),
         InvoiceAgencyObjectionModel(
@@ -129,7 +131,7 @@ class InvoiceAgencyObjectionService {
             invoiceId: 9103,
             objectionType: 2,
             status: 2,
-            statusTitle: 'رد شده',
+            statusTitle: 'لغو',
           ),
           request: InvoiceAgencyObjectionRequestModel(
             serviceRequestTrackCode: 140503,
@@ -153,11 +155,11 @@ class InvoiceAgencyObjectionService {
           review: InvoiceAgencyObjectionReviewModel(
             checkAuthorId: 72,
             checkAuthorFullName: 'کارشناس ارزیابی',
-            checkAuthorDateTimeJalali: '1405/05/18 - 13:05',
+            checkAuthorDateTimeJalali: '1405/05/18 13:05:00',
             checkAuthorDescription: 'اطلاعات درخواست با ارزیابی ثبت شده مطابقت ندارد.',
           ),
           audit: InvoiceAgencyObjectionAuditModel(
-            insertDateTimeJalali: '1405/05/16 - 10:30',
+            insertDateTimeJalali: '1405/05/16 10:30:00',
           ),
         ),
       ],

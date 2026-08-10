@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/emdadgar_invoice_record_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/entities/excel_export_column.dart';
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/entities/excel_export_request.dart';
 
@@ -7,8 +8,8 @@ class EmdadgarInvoiceExcelReportFactory {
 
   static ExcelExportRequest create(List<EmdadgarInvoiceRecordEntity> items) {
     return ExcelExportRequest.fromItems<EmdadgarInvoiceRecordEntity>(
-      fileNamePrefix: 'emdadgar_initial_invoice_report',
-      sheetName: 'صورت وضعیت های اولیه',
+      fileNamePrefix: 'emdadgar_invoice_report',
+      sheetName: 'صورت وضعیت ها',
       items: items,
       columns: [
         ExcelExportColumn(
@@ -71,7 +72,9 @@ class EmdadgarInvoiceExcelReportFactory {
         ),
         ExcelExportColumn(
           title: 'تاریخ ثبت',
-          valueBuilder: (item, _) => item.audit?.insertDateTimeJalali,
+          valueBuilder: (item, _) => JalaliDateHelper.formatStringJalaliDateTime(
+            item.audit?.insertDateTimeJalali,
+          ),
           width: 22,
         ),
       ],

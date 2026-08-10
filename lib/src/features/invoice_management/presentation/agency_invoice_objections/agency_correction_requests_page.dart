@@ -3,9 +3,10 @@ import 'package:eks_sana_plus_org/src/features/invoice_management/domain/agency_
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/agency_invoice_objections/use_cases/get_invoice_agency_objections_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/agency_invoice_objections/cubit/invoice_agency_objection_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/agency_invoice_objections/widgets/invoice_agency_objection_card.dart';
-import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/agency_invoice_objections/widgets/invoice_agency_objection_details_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/agency_invoice_objections/widgets/invoice_agency_objection_filter_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/agency_invoice_objections/widgets/invoice_agency_objection_header.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/usecases/set_selected_request_item_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/request_detail_page.dart';
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
@@ -16,6 +17,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class AgencyCorrectionRequestsPage extends StatelessWidget {
   const AgencyCorrectionRequestsPage({super.key});
@@ -29,6 +31,7 @@ class AgencyCorrectionRequestsPage extends StatelessWidget {
       create: (_) => InvoiceAgencyObjectionCubit(
         getIt<GetInvoiceAgencyObjectionsUseCase>(),
         getIt<ExportExcelUseCase>(),
+        getIt<SetSelectedRequestItemUseCase>(),
       )..initialize(),
       child: const _AgencyCorrectionRequestsView(),
     );
@@ -172,7 +175,7 @@ class _AgencyCorrectionRequestsViewState
             final item = items[index];
             return InvoiceAgencyObjectionCard(
               item: item,
-              onDetailsTap: () => _showDetails(context, item),
+              onDetailsTap: () => _openRequestDetails(context, cubit, item),
             );
           },
         ),
@@ -233,15 +236,17 @@ class _AgencyCorrectionRequestsViewState
     );
   }
 
-  Future<void> _showDetails(
+  Future<void> _openRequestDetails(
     BuildContext context,
+    InvoiceAgencyObjectionCubit cubit,
     InvoiceAgencyObjectionEntity item,
-  ) {
-    return BottomSheetMessage.showCustom(
-      context: context,
-      maxHeight: .72,
-      content: InvoiceAgencyObjectionDetailsSheet(item: item),
-      actionWidget: const SizedBox.shrink(),
+  ) async {
+    final requestId = await cubit.cacheSelectedRequest(item);
+    if (requestId == null || !context.mounted) return;
+
+    await context.push(
+      RequestDetailPage.path,
+      extra: requestId,
     );
   }
 

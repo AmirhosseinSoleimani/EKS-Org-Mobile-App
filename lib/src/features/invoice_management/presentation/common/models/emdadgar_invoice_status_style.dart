@@ -12,8 +12,16 @@ enum EmdadgarInvoiceStatusType {
     required int? status,
     required String? title,
   }) {
-    final normalizedTitle = title?.trim() ?? '';
+    final byCode = switch (status) {
+      0 => EmdadgarInvoiceStatusType.initial,
+      1 => EmdadgarInvoiceStatusType.evaluated,
+      2 => EmdadgarInvoiceStatusType.approved,
+      3 => EmdadgarInvoiceStatusType.finalized,
+      _ => null,
+    };
+    if (byCode != null) return byCode;
 
+    final normalizedTitle = title?.trim() ?? '';
     if (normalizedTitle.contains('نهایی')) {
       return EmdadgarInvoiceStatusType.finalized;
     }
@@ -27,13 +35,7 @@ enum EmdadgarInvoiceStatusType {
       return EmdadgarInvoiceStatusType.initial;
     }
 
-    return switch (status) {
-      0 => EmdadgarInvoiceStatusType.initial,
-      1 => EmdadgarInvoiceStatusType.evaluated,
-      2 => EmdadgarInvoiceStatusType.approved,
-      3 => EmdadgarInvoiceStatusType.finalized,
-      _ => EmdadgarInvoiceStatusType.unknown,
-    };
+    return EmdadgarInvoiceStatusType.unknown;
   }
 
   EmdadgarInvoiceStatusPalette palette({

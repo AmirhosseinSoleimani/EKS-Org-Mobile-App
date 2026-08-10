@@ -70,4 +70,13 @@ class ColorLightManager {
 
   static const invoiceStatusFinalizedText = Color(0xFF8F25DB);
   static const invoiceStatusFinalizedBackground = Color(0xFFFDEAFC);
+
+  static const agencyCorrectionStatusRegisteredText = Color(0xFF717171);
+  static const agencyCorrectionStatusRegisteredBackground = Color(0xFFF2F2F2);
+
+  static const agencyCorrectionStatusApprovedText = Color(0xFF15803D);
+  static const agencyCorrectionStatusApprovedBackground = Color(0xFFDCFCE7);
+
+  static const agencyCorrectionStatusCancelledText = Color(0xFFC30000);
+  static const agencyCorrectionStatusCancelledBackground = Color(0xFFFFF2F2);
 }

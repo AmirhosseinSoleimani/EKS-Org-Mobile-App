@@ -6,6 +6,7 @@ import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/a
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/agency_invoice_objections/widgets/invoice_agency_objection_details_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/agency_invoice_objections/widgets/invoice_agency_objection_filter_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/agency_invoice_objections/widgets/invoice_agency_objection_header.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/usecases/set_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
@@ -29,6 +30,8 @@ class InvoiceAgencyObjectionPage extends StatelessWidget {
       create: (_) => InvoiceAgencyObjectionCubit(
         getIt<GetInvoiceAgencyObjectionsUseCase>(),
         getIt<ExportExcelUseCase>(),
+        getIt<SetSelectedRequestItemUseCase>(),
+
       )..initialize(),
       child: const _InvoiceAgencyObjectionView(),
     );
@@ -79,8 +82,8 @@ class _InvoiceAgencyObjectionViewState
             },
           ),
           child: BlocBuilder<
-            InvoiceAgencyObjectionCubit,
-            InvoiceAgencyObjectionState
+              InvoiceAgencyObjectionCubit,
+              InvoiceAgencyObjectionState
           >(
             builder: (context, state) {
               return state.when(
@@ -100,10 +103,10 @@ class _InvoiceAgencyObjectionViewState
   }
 
   Widget _buildContent(
-    BuildContext context,
-    InvoiceAgencyObjectionCubit cubit, {
-    bool listLoading = false,
-  }) {
+      BuildContext context,
+      InvoiceAgencyObjectionCubit cubit, {
+        bool listLoading = false,
+      }) {
     return Column(
       children: [
         InvoiceAgencyObjectionHeader(
@@ -114,23 +117,23 @@ class _InvoiceAgencyObjectionViewState
           child: listLoading
               ? const Center(child: CircularProgressIndicator())
               : ValueListenableBuilder<List<InvoiceAgencyObjectionEntity>>(
-                  valueListenable: cubit.itemsNotifier,
-                  builder: (_, items, __) => _buildList(
-                    context,
-                    cubit,
-                    items,
-                  ),
-                ),
+            valueListenable: cubit.itemsNotifier,
+            builder: (_, items, __) => _buildList(
+              context,
+              cubit,
+              items,
+            ),
+          ),
         ),
       ],
     );
   }
 
   Widget _buildList(
-    BuildContext context,
-    InvoiceAgencyObjectionCubit cubit,
-    List<InvoiceAgencyObjectionEntity> items,
-  ) {
+      BuildContext context,
+      InvoiceAgencyObjectionCubit cubit,
+      List<InvoiceAgencyObjectionEntity> items,
+      ) {
     if (items.isEmpty) {
       return RefreshIndicator(
         onRefresh: () => cubit.fetchList(refresh: true),
@@ -181,10 +184,10 @@ class _InvoiceAgencyObjectionViewState
   }
 
   void _listenState(
-    BuildContext context,
-    InvoiceAgencyObjectionCubit cubit,
-    InvoiceAgencyObjectionState state,
-  ) {
+      BuildContext context,
+      InvoiceAgencyObjectionCubit cubit,
+      InvoiceAgencyObjectionState state,
+      ) {
     state.whenOrNull(
       error: (message) {
         BottomSheetMessage.showErrorWithAction(
@@ -214,9 +217,9 @@ class _InvoiceAgencyObjectionViewState
   }
 
   void _showFilter(
-    BuildContext context,
-    InvoiceAgencyObjectionCubit cubit,
-  ) {
+      BuildContext context,
+      InvoiceAgencyObjectionCubit cubit,
+      ) {
     showModalBottomSheet<void>(
       context: context,
       isScrollControlled: true,
@@ -234,9 +237,9 @@ class _InvoiceAgencyObjectionViewState
   }
 
   Future<void> _showDetails(
-    BuildContext context,
-    InvoiceAgencyObjectionEntity item,
-  ) {
+      BuildContext context,
+      InvoiceAgencyObjectionEntity item,
+      ) {
     return BottomSheetMessage.showCustom(
       context: context,
       maxHeight: .72,
