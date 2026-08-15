@@ -2,6 +2,8 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/emdadgar_invoice_record_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/enums/emdadgar_invoice_stage.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/widgets/invoice_filter_sheet.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoice_details/emdadgar_invoice_details_page.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoice_details/models/emdadgar_invoice_details_args.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoices/cubit/emdadgar_invoice_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/request_detail_page.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/policies/current_session_access_policy.dart';
@@ -249,9 +251,13 @@ class _EmdadgarInvoiceViewState extends State<_EmdadgarInvoiceView> {
     EmdadgarInvoiceCubit cubit,
     EmdadgarInvoiceRecordEntity item,
   ) async {
-    final id = await cubit.cacheSelectedRequest(item);
-    if (id == null || !context.mounted) return;
-    await context.push(EmdadgarInvoicePage.path);
+    await context.push(
+      EmdadgarInvoiceDetailsPage.path,
+      extra: EmdadgarInvoiceDetailsArgs(
+        stage: cubit.selectedStage,
+        item: item,
+      ),
+    );
   }
 
   Future<void> _showOperations(

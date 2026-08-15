@@ -2,6 +2,8 @@ import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadga
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/agency_invoice_objections/agency_correction_requests_page.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_invoices/customer_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_pre_invoices/customer_pre_invoice_page.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoice_details/emdadgar_invoice_details_page.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoice_details/models/emdadgar_invoice_details_args.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoices/emdadgar_invoice_page.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
@@ -44,6 +46,17 @@ class InvoiceManagementRoutes {
               ),
               state: state,
             ),
+      ),
+
+      GoRoute(
+        path: EmdadgarInvoiceDetailsPage.path,
+        name: EmdadgarInvoiceDetailsPage.name,
+        pageBuilder: (context, state) => getPage(
+          child: EmdadgarInvoiceDetailsPage(
+            args: state.extra as EmdadgarInvoiceDetailsArgs,
+          ),
+          state: state,
+        ),
       ),
 
       GoRoute(
