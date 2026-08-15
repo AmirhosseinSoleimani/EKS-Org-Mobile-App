@@ -68,5 +68,11 @@ abstract class EvaluationRepository {
       ApiResult<PostEvaluationResponseEntity>> submitEvaluationForAidService(
       AidServiceEvaluationSubmitParamEntity param);
 
+  Future<ApiResult<void>> submitHesabdariEvaluation(
+      AidServiceEvaluationSubmitParamEntity param);
+
+  Future<ApiResult<void>> submitDaraeiEvaluation(
+      AidServiceEvaluationSubmitParamEntity param);
+
   Future<ApiResult<List<RepresentationEntity>>> getRepresentationList(RepresentationParamEntity param);
 }

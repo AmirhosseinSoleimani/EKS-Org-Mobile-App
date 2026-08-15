@@ -5,13 +5,11 @@ class EmdadgarInvoiceOperationsSheet extends StatelessWidget {
   const EmdadgarInvoiceOperationsSheet({
     super.key,
     required this.onDetailsTap,
-    required this.onCorrectionTap,
-    this.correctionEnabled = true,
+    this.onCorrectionTap,
   });
 
   final VoidCallback onDetailsTap;
-  final VoidCallback onCorrectionTap;
-  final bool correctionEnabled;
+  final VoidCallback? onCorrectionTap;
 
   @override
   Widget build(BuildContext context) {
@@ -23,12 +21,12 @@ class EmdadgarInvoiceOperationsSheet extends StatelessWidget {
           title: 'مشاهده جزئیات',
           onTap: onDetailsTap,
         ),
-        BottomSheetActionTile(
-          icon: Icons.edit_outlined,
-          title: 'اصلاح صورت وضعیت',
-          enabled: correctionEnabled,
-          onTap: onCorrectionTap,
-        ),
+        if (onCorrectionTap != null)
+          BottomSheetActionTile(
+            icon: Icons.edit_outlined,
+            title: 'اصلاح صورت وضعیت',
+            onTap: onCorrectionTap!,
+          ),
       ],
     );
   }

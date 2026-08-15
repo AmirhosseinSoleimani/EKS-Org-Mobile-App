@@ -31,6 +31,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/complete_ur
 import 'package:eks_sana_plus_org/src/features/services/presentation/control_info_page/control_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/emdadgar_invoice_page/emdadgar_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/evaluation_aid_service_request_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/enums/evaluation_aid_service_page_mode.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_history/evaluation_history_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/followup_register_page/follow_up_register_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/home_service_request_list_page/home_service_request_list_page.dart';
@@ -318,7 +319,11 @@ class Routes {
           name: EvaluationAidServiceRequestPage.name,
           pageBuilder: (context, state) =>
               getPage(
-                child: const EvaluationAidServiceRequestPage(),
+                child: EvaluationAidServiceRequestPage(
+                  args: state.extra is EvaluationAidServicePageArgs
+                      ? state.extra! as EvaluationAidServicePageArgs
+                      : const EvaluationAidServicePageArgs(),
+                ),
                 state: state,
               ),
         ),

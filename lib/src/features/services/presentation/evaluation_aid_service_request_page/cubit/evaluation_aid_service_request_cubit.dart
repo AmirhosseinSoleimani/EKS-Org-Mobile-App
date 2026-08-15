@@ -38,6 +38,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/controllers/evaluation_labor_part_controller.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/cubit/evaluation_transport_Information_form_controller.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/enums/add_part_and_labor_sheet_mode.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/enums/evaluation_aid_service_page_mode.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/enums/evaluation_service_category_view_type.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
@@ -442,8 +443,10 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     return fetchResult;
   }
 
-  Future<void> submitEvaluationForAidService() async {
-    _retryAction = submitEvaluationForAidService;
+  Future<void> submitEvaluationForAidService({
+    EvaluationAidServiceSubmitFlow flow = EvaluationAidServiceSubmitFlow.standard,
+  }) async {
+    _retryAction = () => submitEvaluationForAidService(flow: flow);
 
     final validationMessage = _validateEvaluationForm();
 
@@ -476,7 +479,14 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
       selectedDefect: selectedDefect.value,
     );
 
-    final result = await _submitEvaluationForAidServiceUseCase(param);
+    final result = switch (flow) {
+      EvaluationAidServiceSubmitFlow.standard =>
+        await _submitEvaluationForAidServiceUseCase(param),
+      EvaluationAidServiceSubmitFlow.hesabdari =>
+        await _submitEvaluationForAidServiceUseCase.hesabdari(param),
+      EvaluationAidServiceSubmitFlow.daraei =>
+        await _submitEvaluationForAidServiceUseCase.daraei(param),
+    };
 
     result.whenOrNull(
       success: (data, failures, resultCode) {

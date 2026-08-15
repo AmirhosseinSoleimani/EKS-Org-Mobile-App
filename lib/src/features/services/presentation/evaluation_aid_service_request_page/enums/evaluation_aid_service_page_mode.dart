@@ -28,3 +28,19 @@ enum EvaluationAidServicePageMode {
   final bool showDynamicSections;
   final bool openInvoiceAfterSubmit;
 }
+
+enum EvaluationAidServiceSubmitFlow {
+  standard,
+  hesabdari,
+  daraei,
+}
+
+class EvaluationAidServicePageArgs {
+  const EvaluationAidServicePageArgs({
+    this.mode = EvaluationAidServicePageMode.registration,
+    this.submitFlow = EvaluationAidServiceSubmitFlow.standard,
+  });
+
+  final EvaluationAidServicePageMode mode;
+  final EvaluationAidServiceSubmitFlow submitFlow;
+}

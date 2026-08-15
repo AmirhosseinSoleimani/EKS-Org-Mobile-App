@@ -14,10 +14,12 @@ import '../../../../evaluation/domain/entities/defect_entity.dart';
 
 class ServiceDetailSection extends StatelessWidget {
   final EvaluationAidServiceRequestCubit cubit;
+  final bool showServiceField;
 
   const ServiceDetailSection({
     super.key,
     required this.cubit,
+    this.showServiceField = true,
   });
 
   @override
@@ -51,16 +53,18 @@ class ServiceDetailSection extends StatelessWidget {
             itemTitleBuilder: (item) => item.title ?? '',
             onSelect: (item) => cubit.setSelectedServiceCategory(item),
           ),
-          Space.h16,
-          TextFormFieldWidget(
-            controller: cubit.mainForm.serviceController,
-            labelText: 'سرویس',
-            textInputType: TextInputType.none,
-            focusNode: AlwaysDisabledFocusNode(),
-            readOnly: true,
-            borderColor: Theme.of(context).dividerColor,
-            backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
-          ),
+          if (showServiceField) ...[
+            Space.h16,
+            TextFormFieldWidget(
+              controller: cubit.mainForm.serviceController,
+              labelText: 'سرویس',
+              textInputType: TextInputType.none,
+              focusNode: AlwaysDisabledFocusNode(),
+              readOnly: true,
+              borderColor: Theme.of(context).dividerColor,
+              backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+            ),
+          ],
           Space.h16,
           TextFormFieldWidget(
             labelText: 'توضیحات',

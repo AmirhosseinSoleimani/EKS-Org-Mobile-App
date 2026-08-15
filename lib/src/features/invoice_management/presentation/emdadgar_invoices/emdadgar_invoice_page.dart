@@ -5,6 +5,8 @@ import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/c
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoice_details/emdadgar_invoice_details_page.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoice_details/models/emdadgar_invoice_details_args.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoices/cubit/emdadgar_invoice_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/evaluation_aid_service_request_page.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/enums/evaluation_aid_service_page_mode.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/request_detail_page.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/policies/current_session_access_policy.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/presentation/widgets/current_session_access_builder.dart';
@@ -269,15 +271,55 @@ class _EmdadgarInvoiceViewState extends State<_EmdadgarInvoiceView> {
       context: context,
       maxHeight: .32,
       content: EmdadgarInvoiceOperationsSheet(
-        correctionEnabled: false,
         onDetailsTap: () {
           Navigator.of(context).pop();
           _openRequestDetails(context, cubit, item);
         },
-        onCorrectionTap: () {},
+        onCorrectionTap: _correctionFlow(item) == null
+            ? null
+            : () {
+                Navigator.of(context).pop();
+                _openCorrection(context, cubit, item);
+              },
       ),
       actionWidget: const SizedBox.shrink(),
     );
+  }
+
+  EvaluationAidServiceSubmitFlow? _correctionFlow(
+    EmdadgarInvoiceRecordEntity item,
+  ) {
+    if (item.checkAmendmentHesabdari == true) {
+      return EvaluationAidServiceSubmitFlow.hesabdari;
+    }
+    if (item.checkAmendmentDaraei == true) {
+      return EvaluationAidServiceSubmitFlow.daraei;
+    }
+    return null;
+  }
+
+  Future<void> _openCorrection(
+    BuildContext context,
+    EmdadgarInvoiceCubit cubit,
+    EmdadgarInvoiceRecordEntity item,
+  ) async {
+    final flow = _correctionFlow(item);
+    if (flow == null) return;
+
+    final id = await cubit.cacheSelectedRequest(item);
+    if (id == null || !context.mounted) return;
+
+    final changed = await context.push<bool>(
+      EvaluationAidServiceRequestPage.path,
+      extra: EvaluationAidServicePageArgs(
+        mode: EvaluationAidServicePageMode.statementCorrection,
+        submitFlow: flow,
+      ),
+    );
+
+    if (changed == true && context.mounted) {
+      await cubit.fetchList(refresh: true);
+    }
   }
 
   Future<void> _openRequestDetails(

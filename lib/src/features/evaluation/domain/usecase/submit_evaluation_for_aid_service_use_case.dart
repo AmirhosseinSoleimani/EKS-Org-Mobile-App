@@ -12,14 +12,52 @@ class SubmitEvaluationForAidServiceUseCase
           ApiResult<PostEvaluationResponseEntity>,
           AidServiceEvaluationSubmitParamEntity
         > {
-  EvaluationRepository evaluationRepository;
-
   SubmitEvaluationForAidServiceUseCase(this.evaluationRepository);
+
+  final EvaluationRepository evaluationRepository;
 
   @override
   Future<ApiResult<PostEvaluationResponseEntity>> call(
     AidServiceEvaluationSubmitParamEntity arg,
   ) async {
-    return await evaluationRepository.submitEvaluationForAidService(arg);
+    return evaluationRepository.submitEvaluationForAidService(arg);
+  }
+
+  Future<ApiResult<PostEvaluationResponseEntity>> hesabdari(
+    AidServiceEvaluationSubmitParamEntity arg,
+  ) async {
+    return _mapCorrectionResult(
+      await evaluationRepository.submitHesabdariEvaluation(arg),
+    );
+  }
+
+  Future<ApiResult<PostEvaluationResponseEntity>> daraei(
+    AidServiceEvaluationSubmitParamEntity arg,
+  ) async {
+    return _mapCorrectionResult(
+      await evaluationRepository.submitDaraeiEvaluation(arg),
+    );
+  }
+
+  ApiResult<PostEvaluationResponseEntity> _mapCorrectionResult(
+    ApiResult<void> result,
+  ) {
+    return result.when(
+      success: (_, failures, resultCode) =>
+          ApiResult<PostEvaluationResponseEntity>.success(
+            data: PostEvaluationResponseEntity(id: '0'),
+            failures: failures,
+            resultCode: resultCode,
+          ),
+      failure: (error, failures) =>
+          ApiResult<PostEvaluationResponseEntity>.failure(
+            error: error,
+            failures: failures,
+          ),
+      expireToken: () =>
+          const ApiResult<PostEvaluationResponseEntity>.expireToken(),
+      connectionError: () =>
+          const ApiResult<PostEvaluationResponseEntity>.connectionError(),
+    );
   }
 }
