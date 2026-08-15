@@ -249,7 +249,6 @@ class _EmdadgarInvoiceViewState extends State<_EmdadgarInvoiceView> {
     EmdadgarInvoiceCubit cubit,
     EmdadgarInvoiceRecordEntity item,
   ) async {
-    print("onEvaluationClicked....");
     final id = await cubit.cacheSelectedRequest(item);
     if (id == null || !context.mounted) return;
     await context.push(EmdadgarInvoicePage.path);

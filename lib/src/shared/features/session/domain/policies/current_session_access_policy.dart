@@ -160,6 +160,14 @@ class CurrentSessionAccessPolicy {
     ]);
   }
 
+  bool canShowAnyEmdadgarInvoiceStageMenu() {
+    return canShowEmdadgarPreInvoiceMenu() ||
+        canShowEmdadgarInvoiceMenu() ||
+        canShowEmdadgarAmaliatFinalInvoiceMenu() ||
+        canShowEmdadgarFinalInvoiceMenu() ||
+        canShowEmdadgarDefiniteInvoiceMenu();
+  }
+
   bool canShowCustomerPreInvoiceMenu() {
     return canShowMenu(CurrentSessionMenuKeys.customerPreInvoice);
   }

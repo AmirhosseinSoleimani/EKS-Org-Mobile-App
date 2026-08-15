@@ -25,7 +25,7 @@ class AppConstants {
   static const String appImagesUrl = "https://emdadapi.emdadsaipa.ir/content/mobile-app-images/";
 
   ///test server
-  static const String baseApiUrl = "http://172.16.4.97:4131";
+  //static const String baseApiUrl = "http://172.16.4.97:4131";
 
 
   ///amir system test server
@@ -44,7 +44,10 @@ class AppConstants {
 
 
   ///karimi
-  //static const String baseApiUrl = "http://172.16.170.40:5253";
+  //static const String baseApiUrl = "http://172.16.170.40:11002";
+
+  ///rauf
+  static const String baseApiUrl = "http://172.16.170.93:11002";
 
 
   static bool isIOS = false;

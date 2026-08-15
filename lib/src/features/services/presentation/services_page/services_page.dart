@@ -207,7 +207,7 @@ class ServicesPage extends StatelessWidget {
                 icon: Icons.receipt_long_outlined,
                 onTap: () => context.pushNamed(CustomerInvoicePage.name),
               ),
-          //  if (access.canShowAnyEmdadgarInvoiceStageMenu())
+           if (access.canShowAnyEmdadgarInvoiceStageMenu())
               _ServiceMenuItemData(
                 title: 'صورت وضعیت‌ها',
                 icon: Icons.article_outlined,
