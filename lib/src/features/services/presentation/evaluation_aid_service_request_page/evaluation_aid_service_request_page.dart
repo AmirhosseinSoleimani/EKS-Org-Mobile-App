@@ -5,6 +5,7 @@ import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/servic
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/evaluation_invoice_page/evaluation_invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/bottom_sheet/add_part_and_labor_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/cubit/evaluation_aid_service_request_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/enums/evaluation_aid_service_page_mode.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/widgets/evaluation_service_category_dynamic_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/widgets/selected_labor_and_part_section.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/widgets/service_detail_section.dart';
@@ -29,19 +30,26 @@ class EvaluationAidServiceRequestPage extends StatelessWidget {
   static const path = "/evaluation-aid-service-request-page";
   static const name = "evaluation-aid-service-request-page";
 
-  const EvaluationAidServiceRequestPage({super.key});
+  const EvaluationAidServiceRequestPage({
+    super.key,
+    this.args = const EvaluationAidServicePageArgs(),
+  });
+
+  final EvaluationAidServicePageArgs args;
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) => getIt<EvaluationAidServiceRequestCubit>()..init(),
-      child: const _View(),
+      child: _View(args: args),
     );
   }
 }
 
 class _View extends StatelessWidget {
-  const _View();
+  const _View({required this.args});
+
+  final EvaluationAidServicePageArgs args;
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +60,16 @@ class _View extends StatelessWidget {
     >(
       listener: (context, state) {
         state.whenOrNull(
-          submitSuccess: (id) => context.push(EvaluationInvoicePage.path, extra: int.tryParse(id)),
+          submitSuccess: (id) {
+            if (args.mode.openInvoiceAfterSubmit) {
+              context.push(
+                EvaluationInvoicePage.path,
+                extra: int.tryParse(id),
+              );
+            } else {
+              context.pop(true);
+            }
+          },
           error: (message) {
             BottomSheetMessage.showErrorWithAction(
               context: context,
@@ -76,7 +93,7 @@ class _View extends StatelessWidget {
         );
       },
       child: Scaffold(
-        appBar: SimpleAppBar(title: 'ثبت فاکتور'),
+        appBar: SimpleAppBar(title: args.mode.title),
         body:
             BlocBuilder<
               EvaluationAidServiceRequestCubit,
@@ -92,7 +109,7 @@ class _View extends StatelessWidget {
                           ServiceType.reliefService.serviceColor,
                     ),
                   ),
-                  orElse: () => _LoadedView(),
+                  orElse: () => _LoadedView(mode: args.mode),
                 );
               },
             ),
@@ -112,11 +129,13 @@ class _View extends StatelessWidget {
                     loading: () => const SizedBox.shrink(),
                     orElse: () =>
                         InkwellButtonWidget(
-                          title: 'ثبت فاکتور',
+                          title: args.mode.submitTitle,
                           backgroundColor: ServiceType.reliefService
                               .serviceColor,
                           showLoading: isLoading,
-                          onTap: cubit.submitEvaluationForAidService,
+                          onTap: () => cubit.submitEvaluationForAidService(
+                            flow: args.submitFlow,
+                          ),
                         )
                 );
               },
@@ -128,7 +147,9 @@ class _View extends StatelessWidget {
 }
 
 class _LoadedView extends StatelessWidget {
-  const _LoadedView();
+  const _LoadedView({required this.mode});
+
+  final EvaluationAidServicePageMode mode;
 
   @override
   Widget build(BuildContext context) {
@@ -173,61 +194,58 @@ class _LoadedView extends StatelessWidget {
               onArriveTimeChange: cubit.mainForm.setArriveTime,
             ),
             _formElementGap(),
-            ServiceDetailSection(cubit: cubit),
-            _formElementGap(),
-            ValueListenableBuilder<ServiceCategoryEntity?>(
-              valueListenable: cubit.selectedServiceCategory,
-              builder: (context, selectedServiceCategory, _) {
-                return EvaluationServiceCategoryDynamicSection(
-                  selectedServiceCategory: selectedServiceCategory,
-                  transportSection:  TransportInformationSection<RepresentationEntity>(
-                    controller: cubit.transportForm,
-                    representationTitleBuilder: (item) => item.label,
-                    onSelectRepresentation: cubit.transportForm.setSelectedRepresentation,
-                  ),
-                  laborAndPartSection: SelectedLaborAndPartSection(
-                    selectedLaborsListenable: cubit.selectedLaborsNotifier,
-                    expandedLaborIdsListenable: cubit
-                        .expandedLaborPartListIdsNotifier,
-                    onAddLabor: () {
-                      cubit.prepareCreateLaborAndPartSheet();
-
-                      cubit.markBottomSheetOpen();
-                      showAddPartAndLaborBottomSheet(context).whenComplete(() {
-                        cubit.markBottomSheetClosed();
-                      });
-                    },
-                    onAddPart: (labor) async {
-                      final canOpen = await cubit.addPartToSelectedLabor(labor);
-
-                      if (!context.mounted) return;
-
-                      if (canOpen) {
+            ServiceDetailSection(cubit: cubit, showServiceField: mode.showServiceField),
+            if (mode.showDynamicSections) ...[
+              _formElementGap(),
+              ValueListenableBuilder<ServiceCategoryEntity?>(
+                valueListenable: cubit.selectedServiceCategory,
+                builder: (context, selectedServiceCategory, _) {
+                  return EvaluationServiceCategoryDynamicSection(
+                    selectedServiceCategory: selectedServiceCategory,
+                    transportSection: TransportInformationSection<RepresentationEntity>(
+                      controller: cubit.transportForm,
+                      representationTitleBuilder: (item) => item.label,
+                      onSelectRepresentation: cubit.transportForm.setSelectedRepresentation,
+                    ),
+                    laborAndPartSection: SelectedLaborAndPartSection(
+                      selectedLaborsListenable: cubit.selectedLaborsNotifier,
+                      expandedLaborIdsListenable:
+                          cubit.expandedLaborPartListIdsNotifier,
+                      onAddLabor: () {
+                        cubit.prepareCreateLaborAndPartSheet();
                         cubit.markBottomSheetOpen();
                         showAddPartAndLaborBottomSheet(context).whenComplete(() {
                           cubit.markBottomSheetClosed();
                         });
-                      }
-                    },
-                    onEditLabor: (labor) async {
-                      final canOpen = await cubit.editSelectedLabor(labor);
-
-                      if (!context.mounted) return;
-
-                      if (canOpen) {
-                        cubit.markBottomSheetOpen();
-                        showAddPartAndLaborBottomSheet(context).whenComplete(() {
-                          cubit.markBottomSheetClosed();
-                        });
-                      }
-                    },
-                    onDeleteLabor: cubit.removeSelectedLabor,
-                    onToggleShowMoreParts: cubit
-                        .toggleSelectedLaborPartsVisibility,
-                  ),
-                );
-              },
-            ),
+                      },
+                      onAddPart: (labor) async {
+                        final canOpen = await cubit.addPartToSelectedLabor(labor);
+                        if (!context.mounted) return;
+                        if (canOpen) {
+                          cubit.markBottomSheetOpen();
+                          showAddPartAndLaborBottomSheet(context).whenComplete(() {
+                            cubit.markBottomSheetClosed();
+                          });
+                        }
+                      },
+                      onEditLabor: (labor) async {
+                        final canOpen = await cubit.editSelectedLabor(labor);
+                        if (!context.mounted) return;
+                        if (canOpen) {
+                          cubit.markBottomSheetOpen();
+                          showAddPartAndLaborBottomSheet(context).whenComplete(() {
+                            cubit.markBottomSheetClosed();
+                          });
+                        }
+                      },
+                      onDeleteLabor: cubit.removeSelectedLabor,
+                      onToggleShowMoreParts:
+                          cubit.toggleSelectedLaborPartsVisibility,
+                    ),
+                  );
+                },
+              ),
+            ],
           ],
         ),
       ),

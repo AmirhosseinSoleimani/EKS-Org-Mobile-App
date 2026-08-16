@@ -74,34 +74,19 @@ import '../features/authentication/data/data_sources/auth_remote_data_source.dar
     as _i479;
 import '../features/authentication/data/data_sources/auth_remote_data_source_impl.dart'
     as _i51;
-import '../features/authentication/data/data_sources/profile_remote_data_source.dart'
-    as _i532;
-import '../features/authentication/data/data_sources/profile_remote_data_source_impl.dart'
-    as _i224;
 import '../features/authentication/data/repositories/auth_repository_impl.dart'
     as _i781;
-import '../features/authentication/data/repositories/profile_repository_impl.dart'
-    as _i1015;
 import '../features/authentication/data/service/auth_service.dart' as _i626;
-import '../features/authentication/data/service/profile_service.dart' as _i1053;
 import '../features/authentication/domain/repositories/auth_repository.dart'
     as _i716;
-import '../features/authentication/domain/repositories/profile_repository.dart'
-    as _i373;
-import '../features/authentication/domain/use_cases/change_password_use_case.dart'
-    as _i958;
 import '../features/authentication/domain/use_cases/get_current_session.dart'
     as _i424;
-import '../features/authentication/domain/use_cases/log_off_use_case.dart'
-    as _i845;
 import '../features/authentication/domain/use_cases/login_use_case.dart'
     as _i139;
 import '../features/authentication/domain/use_cases/phone_number_validator_use_case.dart'
     as _i826;
 import '../features/authentication/presentation/login/cubit/login_cubit.dart'
     as _i566;
-import '../features/authentication/presentation/profile/cubit/profile_cubit.dart'
-    as _i440;
 import '../features/bottom_navigation_bar/data/remote/data_soures/main_remote_data_source.dart'
     as _i475;
 import '../features/bottom_navigation_bar/data/remote/data_soures/main_remote_data_source_impl.dart'
@@ -430,6 +415,94 @@ import '../features/indicator_report/domain/use_cases/fetch_indicator_report_use
     as _i375;
 import '../features/indicator_report/presentation/indicator_report_page/cubit/indicator_report_cubit.dart'
     as _i951;
+import '../features/invoice_management/data/agency_invoice_objections/data_sources/invoice_agency_objection_data_source.dart'
+    as _i1001;
+import '../features/invoice_management/data/agency_invoice_objections/data_sources/invoice_agency_objection_data_source_impl.dart'
+    as _i268;
+import '../features/invoice_management/data/agency_invoice_objections/repositories/invoice_agency_objection_repository_impl.dart'
+    as _i720;
+import '../features/invoice_management/data/agency_invoice_objections/services/invoice_agency_objection_service.dart'
+    as _i640;
+import '../features/invoice_management/data/common/data_sources/invoice_common_data_source.dart'
+    as _i424;
+import '../features/invoice_management/data/common/data_sources/invoice_common_data_source_impl.dart'
+    as _i623;
+import '../features/invoice_management/data/common/repositories/invoice_common_repository_impl.dart'
+    as _i377;
+import '../features/invoice_management/data/common/services/invoice_common_service.dart'
+    as _i854;
+import '../features/invoice_management/data/customer_invoices/data_sources/customer_invoice_data_source.dart'
+    as _i49;
+import '../features/invoice_management/data/customer_invoices/data_sources/customer_invoice_data_source_impl.dart'
+    as _i499;
+import '../features/invoice_management/data/customer_invoices/repositories/customer_invoice_repository_impl.dart'
+    as _i604;
+import '../features/invoice_management/data/customer_invoices/services/customer_invoice_service.dart'
+    as _i1058;
+import '../features/invoice_management/data/emdadgar_invoices/data_sources/emdadgar_invoice_data_source.dart'
+    as _i403;
+import '../features/invoice_management/data/emdadgar_invoices/data_sources/emdadgar_invoice_data_source_impl.dart'
+    as _i218;
+import '../features/invoice_management/data/emdadgar_invoices/repositories/emdadgar_invoice_repository_impl.dart'
+    as _i1019;
+import '../features/invoice_management/data/emdadgar_invoices/services/emdadgar_invoice_service.dart'
+    as _i503;
+import '../features/invoice_management/domain/agency_invoice_objections/repositories/invoice_agency_objection_repository.dart'
+    as _i1047;
+import '../features/invoice_management/domain/agency_invoice_objections/use_cases/get_emdadgar_by_service_request_use_case.dart'
+    as _i842;
+import '../features/invoice_management/domain/agency_invoice_objections/use_cases/get_invoice_agency_objection_use_case.dart'
+    as _i138;
+import '../features/invoice_management/domain/agency_invoice_objections/use_cases/get_invoice_agency_objections_use_case.dart'
+    as _i548;
+import '../features/invoice_management/domain/agency_invoice_objections/use_cases/get_service_request_compact_use_case.dart'
+    as _i278;
+import '../features/invoice_management/domain/agency_invoice_objections/use_cases/get_service_request_operation_access_use_case.dart'
+    as _i1009;
+import '../features/invoice_management/domain/common/repositories/invoice_common_repository.dart'
+    as _i1012;
+import '../features/invoice_management/domain/common/use_cases/get_customer_invoice_document_urls_use_case.dart'
+    as _i129;
+import '../features/invoice_management/domain/common/use_cases/get_emdad_categories_use_case.dart'
+    as _i700;
+import '../features/invoice_management/domain/common/use_cases/get_emdadgar_invoice_document_urls_use_case.dart'
+    as _i865;
+import '../features/invoice_management/domain/common/use_cases/get_invoice_operation_access_use_case.dart'
+    as _i866;
+import '../features/invoice_management/domain/customer_invoices/repositories/customer_invoice_repository.dart'
+    as _i332;
+import '../features/invoice_management/domain/customer_invoices/use_cases/finalize_customer_invoice_use_case.dart'
+    as _i74;
+import '../features/invoice_management/domain/customer_invoices/use_cases/get_customer_invoice_details_use_case.dart'
+    as _i245;
+import '../features/invoice_management/domain/customer_invoices/use_cases/get_customer_invoices_use_case.dart'
+    as _i61;
+import '../features/invoice_management/domain/customer_invoices/use_cases/get_customer_pre_invoices_use_case.dart'
+    as _i138;
+import '../features/invoice_management/domain/emdadgar_invoices/repositories/emdadgar_invoice_repository.dart'
+    as _i840;
+import '../features/invoice_management/domain/emdadgar_invoices/use_cases/accept_emdadgar_invoices_use_case.dart'
+    as _i729;
+import '../features/invoice_management/domain/emdadgar_invoices/use_cases/accept_initial_emdadgar_invoices_use_case.dart'
+    as _i952;
+import '../features/invoice_management/domain/emdadgar_invoices/use_cases/get_definite_emdadgar_invoices_use_case.dart'
+    as _i322;
+import '../features/invoice_management/domain/emdadgar_invoices/use_cases/get_emdadgar_invoices_use_case.dart'
+    as _i694;
+import '../features/invoice_management/domain/emdadgar_invoices/use_cases/get_final_approval_emdadgar_invoices_use_case.dart'
+    as _i762;
+import '../features/invoice_management/domain/emdadgar_invoices/use_cases/get_final_correction_emdadgar_invoices_use_case.dart'
+    as _i631;
+import '../features/invoice_management/domain/emdadgar_invoices/use_cases/get_initial_emdadgar_invoice_details_use_case.dart'
+    as _i1017;
+import '../features/invoice_management/domain/emdadgar_invoices/use_cases/get_initial_emdadgar_invoices_use_case.dart'
+    as _i476;
+import '../features/invoice_management/presentation/customer_invoices/cubit/customer_invoice_cubit.dart'
+    as _i105;
+import '../features/invoice_management/presentation/customer_pre_invoices/cubit/customer_pre_invoice_cubit.dart'
+    as _i47;
+import '../features/invoice_management/presentation/emdadgar_invoices/cubit/emdadgar_invoice_cubit.dart'
+    as _i487;
 import '../features/leave/data/data_sources/leave_data_source.dart' as _i1017;
 import '../features/leave/data/data_sources/leave_data_source_impl.dart'
     as _i336;
@@ -1065,9 +1138,6 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i427.AgencyInfoService>(
     () => _i427.AgencyInfoService(gh<_i361.Dio>()),
   );
-  gh.lazySingleton<_i1053.ProfileService>(
-    () => _i1053.ProfileService(gh<_i361.Dio>()),
-  );
   gh.lazySingleton<_i86.DeploymentLocationService>(
     () => _i86.DeploymentLocationService(gh<_i361.Dio>()),
   );
@@ -1081,6 +1151,18 @@ _i174.GetIt $initGetIt(
     () => _i300.GradePatternService(gh<_i361.Dio>()),
   );
   gh.lazySingleton<_i587.ImeiService>(() => _i587.ImeiService(gh<_i361.Dio>()));
+  gh.lazySingleton<_i640.InvoiceAgencyObjectionService>(
+    () => _i640.InvoiceAgencyObjectionService(gh<_i361.Dio>()),
+  );
+  gh.lazySingleton<_i854.InvoiceCommonService>(
+    () => _i854.InvoiceCommonService(gh<_i361.Dio>()),
+  );
+  gh.lazySingleton<_i1058.CustomerInvoiceService>(
+    () => _i1058.CustomerInvoiceService(gh<_i361.Dio>()),
+  );
+  gh.lazySingleton<_i503.EmdadgarInvoiceService>(
+    () => _i503.EmdadgarInvoiceService(gh<_i361.Dio>()),
+  );
   gh.lazySingleton<_i584.NavganService>(
     () => _i584.NavganService(gh<_i361.Dio>()),
   );
@@ -1104,6 +1186,10 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i515.PickUploadFileUseCase>(
     () => _i515.PickUploadFileUseCase(gh<_i436.UploadFileRepository>()),
+  );
+  gh.lazySingleton<_i403.EmdadgarInvoiceDataSource>(
+    () =>
+        _i218.EmdadgarInvoiceDataSourceImpl(gh<_i503.EmdadgarInvoiceService>()),
   );
   gh.lazySingleton<_i691.IndicatorReportDataSource>(
     () =>
@@ -1178,9 +1264,6 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i49.PlanInfoDataSource>(
     () => _i722.PlanInfoDataSourceImpl(gh<_i131.PlanInfoService>()),
   );
-  gh.lazySingleton<_i532.ProfileRemoteDataSource>(
-    () => _i224.ProfileRemoteDataSourceImpl(gh<_i1053.ProfileService>()),
-  );
   gh.lazySingleton<_i670.DateTimeInfoDataSource>(
     () => _i940.DateTimeInfoDataSourceImpl(gh<_i99.DateTimeService>()),
   );
@@ -1194,6 +1277,11 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i123.AgencyInfoDataSource>(
     () => _i392.AgencyInfoDataSourceImpl(gh<_i427.AgencyInfoService>()),
+  );
+  gh.lazySingleton<_i49.CustomerInvoiceDataSource>(
+    () => _i499.CustomerInvoiceDataSourceImpl(
+      gh<_i1058.CustomerInvoiceService>(),
+    ),
   );
   gh.lazySingleton<_i375.FetchIndicatorReportUseCase>(
     () => _i375.FetchIndicatorReportUseCase(
@@ -1221,9 +1309,6 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i577.GradePatternRepository>(
     () => _i864.GradePatternRepositoryImpl(gh<_i480.GradePatternDataSource>()),
-  );
-  gh.lazySingleton<_i373.ProfileRepository>(
-    () => _i1015.ProfileRepositoryImpl(gh<_i532.ProfileRemoteDataSource>()),
   );
   gh.lazySingleton<_i565.UrgentRequestUseCase>(
     () => _i565.UrgentRequestUseCase(gh<_i854.MainRepository>()),
@@ -1272,6 +1357,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i603.RequestRepository>(
     () => _i794.RequestRepositoryImpl(gh<_i1016.RequestDataSource>()),
   );
+  gh.lazySingleton<_i424.InvoiceCommonDataSource>(
+    () => _i623.InvoiceCommonDataSourceImpl(gh<_i854.InvoiceCommonService>()),
+  );
   gh.lazySingleton<_i1017.LeaveDataSource>(
     () => _i336.LeaveDataSourceImpl(gh<_i233.LeaveService>()),
   );
@@ -1292,6 +1380,11 @@ _i174.GetIt $initGetIt(
     () =>
         _i16.ObserveNetworkRepositoryImpl(gh<_i333.ObserveNetworkDataSource>()),
   );
+  gh.lazySingleton<_i840.EmdadgarInvoiceRepository>(
+    () => _i1019.EmdadgarInvoiceRepositoryImpl(
+      gh<_i403.EmdadgarInvoiceDataSource>(),
+    ),
+  );
   gh.lazySingleton<_i6.DeploymentLocationRepository>(
     () => _i879.DeploymentLocationRepositoryImpl(
       gh<_i557.DeploymentLocationDataSource>(),
@@ -1311,6 +1404,11 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i347.HomeServiceEvaluationRepository>(
     () => _i1063.HomeServiceEvaluationRepositoryImpl(
       gh<_i999.HomeServiceEvaluationDataSource>(),
+    ),
+  );
+  gh.lazySingleton<_i1001.InvoiceAgencyObjectionDataSource>(
+    () => _i268.InvoiceAgencyObjectionDataSourceImpl(
+      gh<_i640.InvoiceAgencyObjectionService>(),
     ),
   );
   gh.factory<_i110.AddRescuerUseCase>(
@@ -1453,6 +1551,11 @@ _i174.GetIt $initGetIt(
       gh<_i392.AddGeneralContentTargetUseCase>(),
       gh<_i311.DeleteGeneralContentUseCase>(),
       gh<_i1058.CurrentSessionManager>(),
+    ),
+  );
+  gh.lazySingleton<_i332.CustomerInvoiceRepository>(
+    () => _i604.CustomerInvoiceRepositoryImpl(
+      gh<_i49.CustomerInvoiceDataSource>(),
     ),
   );
   gh.lazySingleton<_i815.RepresentationRepository>(
@@ -1616,11 +1719,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i180.UpdateServiceRequestUseCase>(
     () => _i180.UpdateServiceRequestUseCase(gh<_i603.RequestRepository>()),
   );
-  gh.lazySingleton<_i845.LogOffUseCase>(
-    () => _i845.LogOffUseCase(
-      gh<_i373.ProfileRepository>(),
-      gh<_i308.SessionStorage>(),
-      gh<_i1058.CurrentSessionManager>(),
+  gh.lazySingleton<_i1047.InvoiceAgencyObjectionRepository>(
+    () => _i720.InvoiceAgencyObjectionRepositoryImpl(
+      gh<_i1001.InvoiceAgencyObjectionDataSource>(),
     ),
   );
   gh.lazySingleton<_i630.SpecialPlanRepository>(
@@ -1631,9 +1732,6 @@ _i174.GetIt $initGetIt(
       gh<_i14.GetRescuerByIdUseCase>(),
       gh<_i708.DeleteRescuerUseCase>(),
     ),
-  );
-  gh.lazySingleton<_i958.ChangePasswordUseCase>(
-    () => _i958.ChangePasswordUseCase(gh<_i373.ProfileRepository>()),
   );
   gh.lazySingleton<_i100.GetServerDateTimeUseCase>(
     () => _i100.GetServerDateTimeUseCase(gh<_i489.DateTimeInfoRepository>()),
@@ -1943,6 +2041,31 @@ _i174.GetIt $initGetIt(
       gh<_i470.ExportExcelUseCase>(),
     ),
   );
+  gh.factory<_i842.GetEmdadgarByServiceRequestUseCase>(
+    () => _i842.GetEmdadgarByServiceRequestUseCase(
+      gh<_i1047.InvoiceAgencyObjectionRepository>(),
+    ),
+  );
+  gh.factory<_i138.GetInvoiceAgencyObjectionUseCase>(
+    () => _i138.GetInvoiceAgencyObjectionUseCase(
+      gh<_i1047.InvoiceAgencyObjectionRepository>(),
+    ),
+  );
+  gh.factory<_i548.GetInvoiceAgencyObjectionsUseCase>(
+    () => _i548.GetInvoiceAgencyObjectionsUseCase(
+      gh<_i1047.InvoiceAgencyObjectionRepository>(),
+    ),
+  );
+  gh.factory<_i278.GetServiceRequestCompactUseCase>(
+    () => _i278.GetServiceRequestCompactUseCase(
+      gh<_i1047.InvoiceAgencyObjectionRepository>(),
+    ),
+  );
+  gh.factory<_i1009.GetServiceRequestOperationAccessUseCase>(
+    () => _i1009.GetServiceRequestOperationAccessUseCase(
+      gh<_i1047.InvoiceAgencyObjectionRepository>(),
+    ),
+  );
   gh.factory<_i751.SkillsCertificatesCubit>(
     () => _i751.SkillsCertificatesCubit(
       gh<_i974.GetSkillsCertificatesUseCase>(),
@@ -2050,6 +2173,45 @@ _i174.GetIt $initGetIt(
       gh<_i672.GetReliefRequestByIdUseCase>(),
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
       gh<_i786.GetEmdadgarInfoUseCase>(),
+    ),
+  );
+  gh.factory<_i729.AcceptEmdadgarInvoicesUseCase>(
+    () => _i729.AcceptEmdadgarInvoicesUseCase(
+      gh<_i840.EmdadgarInvoiceRepository>(),
+    ),
+  );
+  gh.factory<_i952.AcceptInitialEmdadgarInvoicesUseCase>(
+    () => _i952.AcceptInitialEmdadgarInvoicesUseCase(
+      gh<_i840.EmdadgarInvoiceRepository>(),
+    ),
+  );
+  gh.factory<_i322.GetDefiniteEmdadgarInvoicesUseCase>(
+    () => _i322.GetDefiniteEmdadgarInvoicesUseCase(
+      gh<_i840.EmdadgarInvoiceRepository>(),
+    ),
+  );
+  gh.factory<_i694.GetEmdadgarInvoicesUseCase>(
+    () =>
+        _i694.GetEmdadgarInvoicesUseCase(gh<_i840.EmdadgarInvoiceRepository>()),
+  );
+  gh.factory<_i762.GetFinalApprovalEmdadgarInvoicesUseCase>(
+    () => _i762.GetFinalApprovalEmdadgarInvoicesUseCase(
+      gh<_i840.EmdadgarInvoiceRepository>(),
+    ),
+  );
+  gh.factory<_i631.GetFinalCorrectionEmdadgarInvoicesUseCase>(
+    () => _i631.GetFinalCorrectionEmdadgarInvoicesUseCase(
+      gh<_i840.EmdadgarInvoiceRepository>(),
+    ),
+  );
+  gh.factory<_i1017.GetInitialEmdadgarInvoiceDetailsUseCase>(
+    () => _i1017.GetInitialEmdadgarInvoiceDetailsUseCase(
+      gh<_i840.EmdadgarInvoiceRepository>(),
+    ),
+  );
+  gh.factory<_i476.GetInitialEmdadgarInvoicesUseCase>(
+    () => _i476.GetInitialEmdadgarInvoicesUseCase(
+      gh<_i840.EmdadgarInvoiceRepository>(),
     ),
   );
   gh.lazySingleton<_i1025.NavganRepository>(
@@ -2214,6 +2376,29 @@ _i174.GetIt $initGetIt(
       gh<_i347.HomeServiceEvaluationRepository>(),
     ),
   );
+  gh.factory<_i74.FinalizeCustomerInvoiceUseCase>(
+    () => _i74.FinalizeCustomerInvoiceUseCase(
+      gh<_i332.CustomerInvoiceRepository>(),
+    ),
+  );
+  gh.factory<_i245.GetCustomerInvoiceDetailsUseCase>(
+    () => _i245.GetCustomerInvoiceDetailsUseCase(
+      gh<_i332.CustomerInvoiceRepository>(),
+    ),
+  );
+  gh.factory<_i61.GetCustomerInvoicesUseCase>(
+    () =>
+        _i61.GetCustomerInvoicesUseCase(gh<_i332.CustomerInvoiceRepository>()),
+  );
+  gh.factory<_i138.GetCustomerPreInvoicesUseCase>(
+    () => _i138.GetCustomerPreInvoicesUseCase(
+      gh<_i332.CustomerInvoiceRepository>(),
+    ),
+  );
+  gh.lazySingleton<_i1012.InvoiceCommonRepository>(
+    () =>
+        _i377.InvoiceCommonRepositoryImpl(gh<_i424.InvoiceCommonDataSource>()),
+  );
   gh.factory<_i154.EvaluationHistoryCubit>(
     () => _i154.EvaluationHistoryCubit(
       gh<_i467.GetEvaluationHistoryListUseCase>(),
@@ -2250,11 +2435,22 @@ _i174.GetIt $initGetIt(
   gh.factory<_i705.AddAgencyContractCubit>(
     () => _i705.AddAgencyContractCubit(gh<_i853.AddAgencyContractUseCase>()),
   );
-  gh.factory<_i440.ProfileCubit>(
-    () => _i440.ProfileCubit(
-      gh<_i958.ChangePasswordUseCase>(),
-      gh<_i845.LogOffUseCase>(),
-      gh<_i1058.CurrentSessionManager>(),
+  gh.factory<_i129.GetCustomerInvoiceDocumentUrlsUseCase>(
+    () => _i129.GetCustomerInvoiceDocumentUrlsUseCase(
+      gh<_i1012.InvoiceCommonRepository>(),
+    ),
+  );
+  gh.factory<_i700.GetEmdadCategoriesUseCase>(
+    () => _i700.GetEmdadCategoriesUseCase(gh<_i1012.InvoiceCommonRepository>()),
+  );
+  gh.factory<_i865.GetEmdadgarInvoiceDocumentUrlsUseCase>(
+    () => _i865.GetEmdadgarInvoiceDocumentUrlsUseCase(
+      gh<_i1012.InvoiceCommonRepository>(),
+    ),
+  );
+  gh.factory<_i866.GetInvoiceOperationAccessUseCase>(
+    () => _i866.GetInvoiceOperationAccessUseCase(
+      gh<_i1012.InvoiceCommonRepository>(),
     ),
   );
   gh.factory<_i1038.CompleteUrgentRequestCubit>(
@@ -2403,6 +2599,14 @@ _i174.GetIt $initGetIt(
       gh<_i955.GetRequestStatusHistoryUseCase>(),
     ),
   );
+  gh.factory<_i47.CustomerPreInvoiceCubit>(
+    () => _i47.CustomerPreInvoiceCubit(
+      gh<_i138.GetCustomerPreInvoicesUseCase>(),
+      gh<_i700.GetEmdadCategoriesUseCase>(),
+      gh<_i470.ExportExcelUseCase>(),
+      gh<_i369.SetSelectedRequestItemUseCase>(),
+    ),
+  );
   gh.factory<_i772.VehicleInfoCubit>(
     () => _i772.VehicleInfoCubit(
       gh<_i579.GetVehicleInfoListUseCase>(),
@@ -2534,6 +2738,14 @@ _i174.GetIt $initGetIt(
       gh<_i91.GetReusablePriceUseCase>(),
     ),
   );
+  gh.factory<_i105.CustomerInvoiceCubit>(
+    () => _i105.CustomerInvoiceCubit(
+      gh<_i61.GetCustomerInvoicesUseCase>(),
+      gh<_i700.GetEmdadCategoriesUseCase>(),
+      gh<_i470.ExportExcelUseCase>(),
+      gh<_i369.SetSelectedRequestItemUseCase>(),
+    ),
+  );
   gh.factory<_i757.AppCubit>(
     () => _i757.AppCubit(
       gh<_i695.SyncCurrentSessionUseCase>(),
@@ -2634,6 +2846,20 @@ _i174.GetIt $initGetIt(
       gh<_i657.AddAgencyVehicleUseCase>(),
       gh<_i1058.CurrentSessionManager>(),
       gh<_i695.SyncCurrentSessionUseCase>(),
+    ),
+  );
+  gh.factory<_i487.EmdadgarInvoiceCubit>(
+    () => _i487.EmdadgarInvoiceCubit(
+      gh<_i476.GetInitialEmdadgarInvoicesUseCase>(),
+      gh<_i694.GetEmdadgarInvoicesUseCase>(),
+      gh<_i762.GetFinalApprovalEmdadgarInvoicesUseCase>(),
+      gh<_i631.GetFinalCorrectionEmdadgarInvoicesUseCase>(),
+      gh<_i322.GetDefiniteEmdadgarInvoicesUseCase>(),
+      gh<_i952.AcceptInitialEmdadgarInvoicesUseCase>(),
+      gh<_i729.AcceptEmdadgarInvoicesUseCase>(),
+      gh<_i700.GetEmdadCategoriesUseCase>(),
+      gh<_i369.SetSelectedRequestItemUseCase>(),
+      gh<_i470.ExportExcelUseCase>(),
     ),
   );
   gh.factory<_i93.NavganCubit>(

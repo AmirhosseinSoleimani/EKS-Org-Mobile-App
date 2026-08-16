@@ -111,10 +111,7 @@ return referencesLoaded(_that);case _Submitting():
 return submitting(_that);case _Success():
 return success(_that);case _Failure():
 return failure(_that);case _ConnectionError():
-return connectionError(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return connectionError(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -209,10 +206,7 @@ return referencesLoaded(_that.patterns,_that.references);case _Submitting():
 return submitting(_that.item,_that.items);case _Success():
 return success(_that.action,_that.message,_that.items);case _Failure():
 return failure(_that.message,_that.items);case _ConnectionError():
-return connectionError(_that.filter,_that.items);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return connectionError(_that.filter,_that.items);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///

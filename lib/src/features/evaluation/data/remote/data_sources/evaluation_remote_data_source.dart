@@ -65,5 +65,11 @@ abstract class EvaluationRemoteDataSource {
   Future<BaseSingleResponse<PostEvaluationResponseModel>> submitEvaluationForAidService(
       AidServiceEvaluationSubmitParamModel param);
 
+  Future<BaseSingleResponse<dynamic>> submitHesabdariEvaluation(
+      AidServiceEvaluationSubmitParamModel param);
+
+  Future<BaseSingleResponse<dynamic>> submitDaraeiEvaluation(
+      AidServiceEvaluationSubmitParamModel param);
+
   Future<BaseListResponse<RepresentationModel>> getRepresentationList(RepresentationParamModel param);
 }

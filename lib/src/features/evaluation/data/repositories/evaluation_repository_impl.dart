@@ -194,4 +194,32 @@ class EvaluationRepositoryImpl extends EvaluationRepository {
       return e.toApiResult(s);
     }
   }
+  @override
+  Future<ApiResult<void>> submitHesabdariEvaluation(
+    AidServiceEvaluationSubmitParamEntity param,
+  ) async {
+    try {
+      final result = await _remoteDataSource.submitHesabdariEvaluation(
+        param.toModel(),
+      );
+      return result.toApiResult<void>();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<void>> submitDaraeiEvaluation(
+    AidServiceEvaluationSubmitParamEntity param,
+  ) async {
+    try {
+      final result = await _remoteDataSource.submitDaraeiEvaluation(
+        param.toModel(),
+      );
+      return result.toApiResult<void>();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
 }

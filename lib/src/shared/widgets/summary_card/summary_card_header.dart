@@ -6,6 +6,7 @@ class SummaryCardHeader extends StatelessWidget {
   const SummaryCardHeader({
     super.key,
     required this.title,
+    this.titleLabel,
     this.subtitle,
     this.leading,
     this.badges = const [],
@@ -14,6 +15,7 @@ class SummaryCardHeader extends StatelessWidget {
   });
 
   final String title;
+  final String? titleLabel;
   final String? subtitle;
   final Widget? leading;
   final List<Widget> badges;
@@ -31,6 +33,7 @@ class SummaryCardHeader extends StatelessWidget {
           Space.h12,
           _TitleRow(
             title: title,
+            titleLabel: titleLabel,
             subtitle: subtitle,
             leading: leading,
             titleMaxLines: titleMaxLines,
@@ -42,26 +45,21 @@ class SummaryCardHeader extends StatelessWidget {
     return LayoutBuilder(
       builder: (context, constraints) {
         final badgeMaxWidth = constraints.maxWidth.isFinite
-            ? constraints.maxWidth * 0.45
+            ? constraints.maxWidth * 0.42
             : 160.0;
 
         return Row(
-          crossAxisAlignment: CrossAxisAlignment.start
-          ,
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Row(children: [
-              if (leading != null) ...[
-                leading!,
-                Space.w12,
-              ],
-              _TitleBlock(
+            Expanded(
+              child: _TitleRow(
                 title: title,
+                titleLabel: titleLabel,
                 subtitle: subtitle,
+                leading: leading,
                 titleMaxLines: titleMaxLines,
-              )
-            ],),
-
+              ),
+            ),
             if (badges.isNotEmpty) ...[
               Space.w8,
               ConstrainedBox(
@@ -79,12 +77,14 @@ class SummaryCardHeader extends StatelessWidget {
 class _TitleRow extends StatelessWidget {
   const _TitleRow({
     required this.title,
+    required this.titleLabel,
     required this.subtitle,
     required this.leading,
     required this.titleMaxLines,
   });
 
   final String title;
+  final String? titleLabel;
   final String? subtitle;
   final Widget? leading;
   final int titleMaxLines;
@@ -101,6 +101,7 @@ class _TitleRow extends StatelessWidget {
         Expanded(
           child: _TitleBlock(
             title: title,
+            titleLabel: titleLabel,
             subtitle: subtitle,
             titleMaxLines: titleMaxLines,
           ),
@@ -113,29 +114,44 @@ class _TitleRow extends StatelessWidget {
 class _TitleBlock extends StatelessWidget {
   const _TitleBlock({
     required this.title,
+    required this.titleLabel,
     required this.subtitle,
     required this.titleMaxLines,
   });
 
   final String title;
+  final String? titleLabel;
   final String? subtitle;
   final int titleMaxLines;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final normalizedLabel = titleLabel?.trim();
     final normalizedSubtitle = subtitle?.trim();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
+        if (normalizedLabel != null && normalizedLabel.isNotEmpty) ...[
+          Text(
+            normalizedLabel,
+            maxLines: 1,
+            overflow: TextOverflow.ellipsis,
+            style: theme.textTheme.bodySmall?.copyWith(
+              color: theme.colorScheme.onSurfaceVariant,
+              fontWeight: FontWeight.w400,
+            ),
+          ),
+          Space.h2,
+        ],
         Text(
           _display(title),
           maxLines: titleMaxLines,
           overflow: TextOverflow.ellipsis,
           style: theme.textTheme.bodyMedium?.copyWith(
             color: theme.colorScheme.onSurface,
-            fontWeight: FontWeight.w600,
+            fontWeight: FontWeight.w700,
             fontSize: AppSize.s16,
           ),
         ),

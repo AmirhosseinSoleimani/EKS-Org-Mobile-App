@@ -10,12 +10,17 @@ import 'service_invoice_model.dart';
 class InvoiceModel extends InvoiceEntity {
   const InvoiceModel({
     super.invoiceTitle,
+    super.invoiceGuid,
+    super.paymentTypeTitle,
+    super.paymentType,
     super.sumAllInvoice,
     super.detailsInvoice,
     super.laborInvoice,
     super.partInvoice,
     super.options,
+    super.otherCostInvoice,
     super.otherCosts,
+    super.optionServiceInvoice,
     super.emdadgarEvaluationId,
     super.serviceInvoice,
     super.services,
@@ -23,43 +28,61 @@ class InvoiceModel extends InvoiceEntity {
 
   factory InvoiceModel.fromJson(Map<String, dynamic> json) {
     return InvoiceModel(
-      invoiceTitle: json['invoiceTitle'],
-      emdadgarEvaluationId: json['emdadgarEvaluationId'],
-      sumAllInvoice: json['sumAllInvoice'] != null
-          ? SumAllInvoiceModel.fromJson(json['sumAllInvoice'])
-          : null,
-      detailsInvoice: json['detailInvoice'] != null
-          ? DetailsInvoiceModel.fromJson(json['detailInvoice'])
-          : null,
-      serviceInvoice: json['serviceInvoice'] != null
-          ? ServiceInvoiceModel.fromJson(json['serviceInvoice'])
-          : null,
-      laborInvoice: json['laborInvoice'] != null
-          ? LaborInvoiceModel.fromJson(json['laborInvoice'])
-          : null,
-      partInvoice: json['partInvoice'] != null
-          ? PartInvoiceModel.fromJson(json['partInvoice'])
-          : null,
-      otherCosts: json['otherCosts'] != null
-          ? OtherCostInvoiceModel.fromJson(json['otherCosts'])
-          : null,
-      services: json['services'] != null
-          ? (json['services'] as List)
-              .map((e) => ServiceReceptionModel.fromJson(e))
-              .toList()
-          : null,
+      invoiceTitle: json['invoiceTitle']?.toString(),
+      invoiceGuid: json['invoiceGuid']?.toString(),
+      paymentTypeTitle: json['paymentTypeTitle']?.toString(),
+      paymentType: (json['paymentType'] as num?)?.toInt(),
+      emdadgarEvaluationId: (json['emdadgarEvaluationId'] as num?)?.toInt(),
+      sumAllInvoice: _model(
+        json['sumAllInvoice'],
+        SumAllInvoiceModel.fromJson,
+      ),
+      detailsInvoice: _model(
+        json['detailInvoice'],
+        DetailsInvoiceModel.fromJson,
+      ),
+      serviceInvoice: _model(
+        json['serviceInvoice'],
+        ServiceInvoiceModel.fromJson,
+      ),
+      laborInvoice: _model(
+        json['laborInvoice'],
+        LaborInvoiceModel.fromJson,
+      ),
+      partInvoice: _model(
+        json['partInvoice'],
+        PartInvoiceModel.fromJson,
+      ),
+      otherCostInvoice: _model(
+        json['otherCostInvoice'],
+        OtherCostInvoiceModel.fromJson,
+      ),
+      otherCosts: _model(
+        json['otherCosts'],
+        OtherCostInvoiceModel.fromJson,
+      ),
+      optionServiceInvoice: _model(
+        json['optionServiceInvoice'],
+        ServiceInvoiceModel.fromJson,
+      ),
+      services: (json['services'] as List?)
+          ?.whereType<Map>()
+          .map(
+            (item) => ServiceReceptionModel.fromJson(
+              Map<String, dynamic>.from(item),
+            ),
+          )
+          .toList(),
       options: json['options'] as List<dynamic>?,
     );
   }
+
+  static T? _model<T>(
+    dynamic value,
+    T Function(Map<String, dynamic>) fromJson,
+  ) {
+    if (value is Map<String, dynamic>) return fromJson(value);
+    if (value is Map) return fromJson(Map<String, dynamic>.from(value));
+    return null;
+  }
 }
-
-
-
-
-
-
-
-
-
-
-

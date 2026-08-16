@@ -28,3 +28,13 @@ extension IterableToMapX<T> on Iterable<T> {
     return map;
   }
 }
+
+extension ColorExtension on Color {
+  Color darken([double factor = 0.8]) {
+    final hsl = HSLColor.fromColor(this);
+
+    return hsl
+        .withLightness((hsl.lightness * factor).clamp(0.0, 1.0))
+        .toColor();
+  }
+}

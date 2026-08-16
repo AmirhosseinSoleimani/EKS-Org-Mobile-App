@@ -160,6 +160,46 @@ class CurrentSessionAccessPolicy {
     ]);
   }
 
+  bool canShowAnyEmdadgarInvoiceStageMenu() {
+    return canShowEmdadgarPreInvoiceMenu() ||
+        canShowEmdadgarInvoiceMenu() ||
+        canShowEmdadgarAmaliatFinalInvoiceMenu() ||
+        canShowEmdadgarFinalInvoiceMenu() ||
+        canShowEmdadgarDefiniteInvoiceMenu();
+  }
+
+  bool canShowCustomerPreInvoiceMenu() {
+    return canShowMenu(CurrentSessionMenuKeys.customerPreInvoice);
+  }
+
+  bool canShowCustomerInvoiceMenu() {
+    return canShowMenu(CurrentSessionMenuKeys.customerInvoice);
+  }
+
+  bool canShowEmdadgarPreInvoiceMenu() {
+    return canShowMenu(CurrentSessionMenuKeys.emdadgarPreInvoice);
+  }
+
+  bool canShowEmdadgarInvoiceMenu() {
+    return canShowMenu(CurrentSessionMenuKeys.emdadgarInvoice);
+  }
+
+  bool canShowEmdadgarAmaliatFinalInvoiceMenu() {
+    return canShowMenu(CurrentSessionMenuKeys.emdadgarAmaliatFinalInvoice);
+  }
+
+  bool canShowEmdadgarFinalInvoiceMenu() {
+    return canShowMenu(CurrentSessionMenuKeys.emdadgarFinalInvoice);
+  }
+
+  bool canShowEmdadgarDefiniteInvoiceMenu() {
+    return canShowMenu(CurrentSessionMenuKeys.emdadgarDefiniteInvoice);
+  }
+
+  bool canShowEmdadgarInvoiceObjectionMenu() {
+    return canShowMenu(CurrentSessionMenuKeys.emdadgarInvoiceObjection);
+  }
+
   bool canShowSanMenus() {
     return canShowAnyMenu([
       CurrentSessionMenuKeys.sanMenus,

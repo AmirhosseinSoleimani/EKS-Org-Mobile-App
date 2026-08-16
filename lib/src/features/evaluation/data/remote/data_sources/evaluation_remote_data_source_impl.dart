@@ -125,6 +125,16 @@ class FinalizeInvoiceRemoteDataSourceImpl extends EvaluationRemoteDataSource {
   async => await _service.aidServiceEvaluationPost(param.toJson());
 
   @override
+  Future<BaseSingleResponse<dynamic>> submitHesabdariEvaluation(
+    AidServiceEvaluationSubmitParamModel param,
+  ) async => await _service.insertHesabdariEvaluation(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<dynamic>> submitDaraeiEvaluation(
+    AidServiceEvaluationSubmitParamModel param,
+  ) async => await _service.insertDaraeiEvaluation(param.toJson());
+
+  @override
   Future<BaseListResponse<RepresentationModel>> getRepresentationList(RepresentationParamModel param)
   async => await _service.getRepresentationList(param.toJson());
 

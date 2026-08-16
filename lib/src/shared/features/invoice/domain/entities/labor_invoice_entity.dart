@@ -77,6 +77,10 @@ class LaborReceptionEntity {
       price: price,
       basePrice: basePrice,
       discountPrice: discountPrice,
+      laborTotalPriceRial: laborTotalPriceRial,
+      overLapCode: overLapCode,
+      isCausing: isCausing,
+      isActive: isActive,
     );
   }
 }

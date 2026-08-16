@@ -56,4 +56,27 @@ class ColorLightManager {
   static const surfaceContainer = Color(0xFFE7F6FF);
   static const secondaryContainer = Color(0xFFF2F2F2);
   static const shadow = Color(0xff000000);
+
+  static const confirmation = Color(0xFF5FAF5D);
+
+  static const invoiceStatusInitialText = Color(0xFF5E5E5E);
+  static const invoiceStatusInitialBackground = Color(0xFFE7E7E7);
+
+  static const invoiceStatusEvaluatedText = Color(0xFF254EDB);
+  static const invoiceStatusEvaluatedBackground = Color(0xFFEAF2FD);
+
+  static const invoiceStatusApprovedText = Color(0xFF1B6D24);
+  static const invoiceStatusApprovedBackground = Color(0xFFDCFADB);
+
+  static const invoiceStatusFinalizedText = Color(0xFF8F25DB);
+  static const invoiceStatusFinalizedBackground = Color(0xFFFDEAFC);
+
+  static const agencyCorrectionStatusRegisteredText = Color(0xFF717171);
+  static const agencyCorrectionStatusRegisteredBackground = Color(0xFFF2F2F2);
+
+  static const agencyCorrectionStatusApprovedText = Color(0xFF15803D);
+  static const agencyCorrectionStatusApprovedBackground = Color(0xFFDCFCE7);
+
+  static const agencyCorrectionStatusCancelledText = Color(0xFFC30000);
+  static const agencyCorrectionStatusCancelledBackground = Color(0xFFFFF2F2);
 }

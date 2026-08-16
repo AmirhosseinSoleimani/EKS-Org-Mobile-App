@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/shared/resources/color_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/font_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/style_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/theme/app_semantic_colors.dart';
 import 'package:flutter/material.dart';
 
 
@@ -14,6 +15,7 @@ class LightThemeData extends AppThemeData {
   @override
   ThemeData get materialThemeData => ThemeData(
       useMaterial3: true,
+      extensions: const [AppSemanticColors.light],
       brightness: Brightness.light,
       dividerColor: const Color(0xFFE3E2E2),
       colorScheme: const ColorScheme(
@@ -64,7 +66,7 @@ class LightThemeData extends AppThemeData {
         surfaceBright: ColorLightManager.surfaceBright,
         surfaceContainer: ColorLightManager.surfaceContainer,
         secondaryContainer: ColorLightManager.secondaryContainer ,
-        onSurfaceVariant:Color(0xFFA4A4A4),
+        onSurfaceVariant:Color(0xFF555555),
 
         brightness: Brightness.light,
       ),
