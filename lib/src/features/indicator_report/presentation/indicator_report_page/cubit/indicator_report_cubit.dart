@@ -23,9 +23,10 @@ class IndicatorReportCubit extends Cubit<IndicatorReportState> {
   IndicatorReportEntity? indicatorReport;
 
   /// selected filters
-  final selectedServiceTypeNotifier = ValueNotifier<ServiceType>(ServiceType.reliefService);
-  final selectedFromDateNotifier = ValueNotifier<DateTime?>(null);
-  final selectedToDateNotifier = ValueNotifier<DateTime?>(null);
+  final selectedServiceTypeNotifier =
+      ValueNotifier<ServiceType>(ServiceType.reliefService);
+  final selectedFromDateNotifier = ValueNotifier<DateTime?>(_today());
+  final selectedToDateNotifier = ValueNotifier<DateTime?>(_today());
 
   ServiceType get selectedServiceType => selectedServiceTypeNotifier.value;
   DateTime? get selectedFromDate => selectedFromDateNotifier.value;
@@ -40,7 +41,7 @@ class IndicatorReportCubit extends Cubit<IndicatorReportState> {
       toDateTime: selectedToDate,
     );
 
-   final result = await _fetchReportListUseCase(param);
+    final result = await _fetchReportListUseCase(param);
 
     result.whenOrNull(
       success: (data, failures, resultCode) async {
@@ -75,9 +76,16 @@ class IndicatorReportCubit extends Cubit<IndicatorReportState> {
   }
 
   void clearFilters() {
+    final today = _today();
+
     selectedServiceTypeNotifier.value = ServiceType.reliefService;
-    selectedFromDateNotifier.value = null;
-    selectedToDateNotifier.value = null;
+    selectedFromDateNotifier.value = today;
+    selectedToDateNotifier.value = today;
+  }
+
+  static DateTime _today() {
+    final now = DateTime.now();
+    return DateTime(now.year, now.month, now.day);
   }
 
   @override
@@ -87,6 +95,7 @@ class IndicatorReportCubit extends Cubit<IndicatorReportState> {
     selectedToDateNotifier.dispose();
     return super.close();
   }
+
   void _safeEmit(IndicatorReportState state) {
     if (!isClosed) emit(state);
   }

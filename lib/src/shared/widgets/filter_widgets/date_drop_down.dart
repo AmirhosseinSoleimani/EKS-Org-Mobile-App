@@ -11,6 +11,7 @@ class DateDropdown extends StatefulWidget {
   final void Function(Jalali? from, Jalali? to) onApply;
   final Jalali? initialFromDate;
   final Jalali? initialToDate;
+  final bool requireDateRange;
 
   const DateDropdown({
     super.key,
@@ -20,6 +21,7 @@ class DateDropdown extends StatefulWidget {
     required this.onApply,
     this.initialFromDate,
     this.initialToDate,
+    this.requireDateRange = false,
   });
 
   @override
@@ -27,14 +29,16 @@ class DateDropdown extends StatefulWidget {
 }
 
 class _DateDropdownState extends State<DateDropdown> {
+  final _formKey = GlobalKey<FormState>();
+
   late final _fromController = TextEditingController(
     text: widget.initialFromDate != null
-        ? '${widget.initialFromDate!.year}/${widget.initialFromDate!.month}/${widget.initialFromDate!.day}'
+        ? _formatDate(widget.initialFromDate!)
         : '',
   );
   late final _toController = TextEditingController(
     text: widget.initialToDate != null
-        ? '${widget.initialToDate!.year}/${widget.initialToDate!.month}/${widget.initialToDate!.day}'
+        ? _formatDate(widget.initialToDate!)
         : '',
   );
   late Jalali? _fromDate = widget.initialFromDate;
@@ -65,37 +69,53 @@ class _DateDropdownState extends State<DateDropdown> {
             borderRadius: BorderRadius.circular(AppSize.s8),
             child: Padding(
               padding: const EdgeInsets.all(AppPadding.p12),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  DatePickerWidget(
-                    controller: _fromController,
-                    labelText: 'از تاریخ',
-                    hintText: 'انتخاب تاریخ',
-                    initialDate: _fromDate,
-                    lastDate: _toDate,
-                    onTap: (picked) => _fromDate = picked,
-                  ),
-                  Space.h8,
-                  DatePickerWidget(
-                    controller: _toController,
-                    labelText: 'تا تاریخ',
-                    hintText: 'انتخاب تاریخ',
-                    initialDate: _fromDate,
-                    onTap: (picked) => _toDate = picked,
-                  ),
-                  Space.h12,
-                  SizedBox(
-                    width: double.infinity,
-                    child: InkwellButtonWidget(
-                      title: 'اعمال فیلتر',
-                      onTap: () {
-                        widget.onApply(_fromDate, _toDate);
-                        widget.onDismiss();
-                      },
+              child: Form(
+                key: _formKey,
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    DatePickerWidget(
+                      controller: _fromController,
+                      labelText: 'از تاریخ',
+                      hintText: 'انتخاب تاریخ',
+                      initialDate: _fromDate,
+                      lastDate: _toDate,
+                      mandatory: widget.requireDateRange,
+                      validator: widget.requireDateRange
+                          ? _requiredDateValidator
+                          : null,
+                      onTap: (picked) => _fromDate = picked,
                     ),
-                  ),
-                ],
+                    Space.h8,
+                    DatePickerWidget(
+                      controller: _toController,
+                      labelText: 'تا تاریخ',
+                      hintText: 'انتخاب تاریخ',
+                      initialDate: _toDate,
+                      mandatory: widget.requireDateRange,
+                      validator: widget.requireDateRange
+                          ? _requiredDateValidator
+                          : null,
+                      onTap: (picked) => _toDate = picked,
+                    ),
+                    Space.h12,
+                    SizedBox(
+                      width: double.infinity,
+                      child: InkwellButtonWidget(
+                        title: 'اعمال فیلتر',
+                        onTap: () {
+                          if (widget.requireDateRange &&
+                              !(_formKey.currentState?.validate() ?? false)) {
+                            return;
+                          }
+
+                          widget.onApply(_fromDate, _toDate);
+                          widget.onDismiss();
+                        },
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
@@ -105,3 +125,17 @@ class _DateDropdownState extends State<DateDropdown> {
   }
 }
 
+String? _requiredDateValidator(String? value) {
+  if (value == null || value.trim().isEmpty) {
+    return 'وارد کردن تاریخ الزامی است';
+  }
+
+  return null;
+}
+
+String _formatDate(Jalali value) {
+  final month = value.month.toString().padLeft(2, '0');
+  final day = value.day.toString().padLeft(2, '0');
+
+  return '${value.year}/$month/$day';
+}

@@ -29,6 +29,11 @@ class IndicatorReportViewer extends StatelessWidget {
     return ValueListenableBuilder<ServiceType>(
       valueListenable: cubit.selectedServiceTypeNotifier,
       builder: (context, serviceType, _) {
+        final isReliefService = serviceType == ServiceType.reliefService;
+        final categoryTitle = isReliefService
+            ? 'آمار دسته‌بندی درخواست‌های امدادی'
+            : 'آمار دسته‌بندی درخواست‌های خدمت در محل';
+
         return Column(
           children: [
             StatRowCard(
@@ -41,36 +46,24 @@ class IndicatorReportViewer extends StatelessWidget {
               value: report.totalRegisterServiceRequest.toString(),
               serviceType: serviceType,
             ),
-            StatRowCard(
-              title: 'تعداد کل درخواست‌های اضطراری',
-              value: report.totalUrgentServiceRequest.toString(),
-              serviceType: serviceType,
-            ),
+            if (isReliefService)
+              StatRowCard(
+                title: 'تعداد کل درخواست‌های اضطراری',
+                value: report.totalUrgentServiceRequest.toString(),
+                serviceType: serviceType,
+              ),
             StatRowCard(
               title: 'تعداد درخواست‌های اعزام شده',
               value: report.totalServiceRequestHaveAssignDateCount.toString(),
               serviceType: serviceType,
             ),
-            StatRowCard(
-              title: 'تعداد درخواست‌های تکمیل شده',
-              value: report.totalCompeletedServiceRequestCount.toString(),
-              serviceType: serviceType,
-            ),
-            StatRowCard(
-              title: 'تعداد درخواست‌های حمل آزاد',
-              value: report.totalHamlAzadServiceRequestCount.toString(),
-              serviceType: serviceType,
-            ),
-            StatRowCard(
-              title: 'درصد درخواست‌های حمل آزاد',
-              value: '${report.totalHamlAzadServiceRequestPercent}%',
-              serviceType: serviceType,
-            ),
-            StatRowCard(
-              title: 'تعداد درخواست‌های انجام شده و کنسل مجاز',
-              value: report
-                  .totalAllAllowdCancelationOrClosedServiceRequestsCount
-                  .toString(),
+            _ParsedMultiRow(
+              title: 'تعداد درخواست‌های منجر به امداد',
+              rawValue: isReliefService
+                  ? 'تعداد کل: ${report.totalCompeletedServiceRequestCount}, '
+                  'تعداد سرویس خارج از ناوگان: ${report.totalHamlAzadServiceRequestCount} '
+                  '(${report.totalHamlAzadServiceRequestPercent})'
+                  : 'تعداد کل: ${report.totalCompeletedServiceRequestCount}',
               serviceType: serviceType,
             ),
             _ParsedMultiRow(
@@ -102,6 +95,13 @@ class IndicatorReportViewer extends StatelessWidget {
               serviceType: serviceType,
             ),
             StatRowCard(
+              title: 'تعداد درخواست‌های انجام شده و کنسل مجاز',
+              value: report
+                  .totalAllAllowdCancelationOrClosedServiceRequestsCount
+                  .toString(),
+              serviceType: serviceType,
+            ),
+            StatRowCard(
               title: 'تعداد کل عدم همکاری‌ها',
               value: report.totalLackofCooperationCount.toString(),
               serviceType: serviceType,
@@ -120,7 +120,7 @@ class IndicatorReportViewer extends StatelessWidget {
             ),
             StatRowCard(
               title:
-                  'درصد عدم همکاری‌های با وزن بیشتر از صفر\nنسبت به درخواست‌های اعزام شده',
+              'درصد عدم همکاری‌های با وزن بیشتر از صفر نسبت به درخواست‌های اعزام شده',
               value: '${report.lackofCooperationPercent}%',
               serviceType: serviceType,
             ),
@@ -145,29 +145,33 @@ class IndicatorReportViewer extends StatelessWidget {
               serviceType: serviceType,
             ),
             StatRowCard(
-              title: 'میانگین زمان ثبت درخواست نسبت به ورود به صفحه ثبت',
+              title:
+              'میانگین زمان ثبت درخواست نسبت به ورود به صفحه ثبت درخواست',
               value: report.averageServiceRequestInsertDateToEntryPageDate,
               serviceType: serviceType,
             ),
+            if (isReliefService) ...[
+              StatRowCard(
+                title: 'میانگین زمان تکمیل آدرس از طریق لینک',
+                value: report.averageServiceRequestAddressLinkCompleteDate,
+                serviceType: serviceType,
+              ),
+              StatRowCard(
+                title: 'میانگین زمان تکمیل آدرس نسبت به درخواست‌های اعزام شده',
+                value: report
+                    .averageServiceRequestAddressLinkCompleteDateHasAssignDate,
+                serviceType: serviceType,
+              ),
+            ],
             StatRowCard(
-              title: 'میانگین زمان تکمیل آدرس از طریق لینک',
-              value: report.averageServiceRequestAddressLinkCompleteDate,
-              serviceType: serviceType,
-            ),
-            StatRowCard(
-              title: 'میانگین زمان تکمیل آدرس نسبت به درخواست‌های اعزام شده',
-              value: report
-                  .averageServiceRequestAddressLinkCompleteDateHasAssignDate,
-              serviceType: serviceType,
-            ),
-            StatRowCard(
-              title: 'میانگین زمان اعزام توسط اعزامگر نسبت به ثبت درخواست',
+              title:
+              'میانگین زمان اعزام امدادرسان توسط اعزامگر نسبت به ثبت درخواست',
               value: report
                   .serviceRequestAverageInsertDateToAssingEmdadgarAssignDate,
               serviceType: serviceType,
             ),
             StatRowCard(
-              title: 'میانگین زمان اعزام واقعی نسبت به ثبت درخواست',
+              title: 'میانگین زمان اعزام واقعی امدادرسان نسبت به ثبت درخواست',
               value: report.averageServiceRequestAssignToInsertDate,
               serviceType: serviceType,
             ),
@@ -177,32 +181,24 @@ class IndicatorReportViewer extends StatelessWidget {
               serviceType: serviceType,
             ),
             StatRowCard(
-              title: 'تعداد درخواست‌های پیگیری شده با تبلت',
-              value: report.serviceRequestEmdadgarFollowUpWithTabletCount
-                  .toString(),
-              serviceType: serviceType,
-            ),
-            StatRowCard(
-              title: 'درصد پیگیری با تبلت',
-              value:
-                  '${report.serviceRequestEmdadgarFollowUpWithTabletPercent}%',
-              serviceType: serviceType,
-            ),
-            StatRowCard(
-              title: 'تعداد درخواست‌های ثبت فاکتور شده با تبلت',
-              value: report.serviceRequestEmdadgarInvoicedWithTabletCount
-                  .toString(),
-              serviceType: serviceType,
-            ),
-            StatRowCard(
-              title: 'درصد ثبت فاکتور با تبلت',
-              value:
-                  '${report.serviceRequestEmdadgarInvoicedWithTabletPercent}%',
-              serviceType: serviceType,
-            ),
-            StatRowCard(
-              title: 'آمار دسته‌بندی درخواست‌های امدادی',
+              title: categoryTitle,
               value: report.serviceRequestCategoriesPercent,
+              serviceType: serviceType,
+            ),
+            _ParsedMultiRow(
+              title:
+              'تعداد و درصد درخواست‌های پیگیری شده با تبلت نسبت به درخواست‌های انجام شده و کنسل مجاز',
+              rawValue:
+              'تعداد: ${report.serviceRequestEmdadgarFollowUpWithTabletCount}, '
+                  'درصد: ${report.serviceRequestEmdadgarFollowUpWithTabletPercent}',
+              serviceType: serviceType,
+            ),
+            _ParsedMultiRow(
+              title:
+              'تعداد و درصد درخواست‌های ثبت فاکتور شده با تبلت نسبت به درخواست‌های انجام شده و کنسل مجاز',
+              rawValue:
+              'تعداد: ${report.serviceRequestEmdadgarInvoicedWithTabletCount}, '
+                  'درصد: ${report.serviceRequestEmdadgarInvoicedWithTabletPercent}',
               serviceType: serviceType,
             ),
             const SizedBox(height: AppSize.s16),
@@ -226,7 +222,7 @@ class _ParsedMultiRow extends StatelessWidget {
 
   List<ParsedSegment> _parse(String raw) {
     final parts =
-        raw.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
+    raw.split(',').map((e) => e.trim()).where((e) => e.isNotEmpty).toList();
 
     return parts.map((part) {
       final colonIdx = part.lastIndexOf(':');
@@ -236,7 +232,7 @@ class _ParsedMultiRow extends StatelessWidget {
       final valueRaw = part.substring(colonIdx + 1).trim();
 
       final parenMatch =
-          RegExp(r'^(.*?)\s*\(([^)]+)\)\s*$').firstMatch(valueRaw);
+      RegExp(r'^(.*?)\s*\(([^)]+)\)\s*$').firstMatch(valueRaw);
       if (parenMatch != null) {
         return ParsedSegment(
           label: label,
@@ -259,13 +255,16 @@ class _ParsedMultiRow extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           Row(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               BulletPoint(color: serviceType.serviceColor),
               Space.w8,
-              Text(
-                title,
-                style: textTheme.bodySmall,
-                textAlign: TextAlign.right,
+              Expanded(
+                child: Text(
+                  title,
+                  style: textTheme.bodySmall,
+                  textAlign: TextAlign.right,
+                ),
               ),
               const SizedBox(width: AppSize.s8),
             ],
@@ -276,10 +275,12 @@ class _ParsedMultiRow extends StatelessWidget {
             runSpacing: AppSize.s4,
             alignment: WrapAlignment.spaceBetween,
             children: segments
-                .map((seg) => SegmentChip(
-                      segment: seg,
-                      serviceType: serviceType,
-                    ))
+                .map(
+                  (seg) => SegmentChip(
+                segment: seg,
+                serviceType: serviceType,
+              ),
+            )
                 .toList(),
           ),
         ],
@@ -287,5 +288,3 @@ class _ParsedMultiRow extends StatelessWidget {
     );
   }
 }
-
-

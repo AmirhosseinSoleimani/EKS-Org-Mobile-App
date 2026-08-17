@@ -6,6 +6,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../shared/widgets/app_bar_widget/main_app_bar.dart';
 import 'cubit/indicator_report_cubit.dart';
@@ -39,7 +40,10 @@ class _IndicatorReportView extends StatelessWidget {
             BottomSheetMessage.showErrorWithAction(
               context: context,
               data: message,
-              onPositive: cubit.loadReports,
+              onPositive: () {
+                context.pop();
+                cubit.loadReports();
+              },
             );
           },
           connectionError: () {

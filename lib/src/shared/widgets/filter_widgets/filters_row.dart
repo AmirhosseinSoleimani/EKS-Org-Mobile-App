@@ -2,11 +2,13 @@ import 'package:flutter/material.dart';
 class FiltersRow extends StatelessWidget {
   final List<Widget> filters;
   final double spacing;
+  final double? itemHeight;
 
   const FiltersRow({
     super.key,
     required this.filters,
     this.spacing = 8,
+    this.itemHeight,
   });
 
   @override
@@ -31,6 +33,7 @@ class FiltersRow extends StatelessWidget {
           children: filters.map((filter) {
             return SizedBox(
               width: itemWidth,
+              height: itemHeight,
               child: filter,
             );
           }).toList(),

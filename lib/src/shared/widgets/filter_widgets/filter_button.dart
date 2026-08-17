@@ -9,6 +9,9 @@ class FilterButton extends StatefulWidget {
   final TextStyle? labelStyle;
   final bool enabled;
   final VoidCallback? onTap;
+  final int titleMaxLines;
+  final TextDirection? titleTextDirection;
+  final bool fitTitleToAvailableWidth;
 
   final Widget Function(
       BuildContext context,
@@ -28,6 +31,9 @@ class FilterButton extends StatefulWidget {
     this.labelStyle,
     this.enabled = true,
     this.onTap,
+    this.titleMaxLines = 1,
+    this.titleTextDirection,
+    this.fitTitleToAvailableWidth = false,
   });
 
   @override
@@ -72,6 +78,27 @@ class _FilterButtonState extends State<FilterButton> {
     super.dispose();
   }
 
+  Widget _buildTitle(String text) {
+    final textDirection = widget.titleTextDirection ?? TextDirection.rtl;
+    final title = BodyMediumText(
+      text: text,
+      maxLines: widget.fitTitleToAvailableWidth ? 1 : widget.titleMaxLines,
+      textDirection: textDirection,
+    );
+
+    if (!widget.fitTitleToAvailableWidth) {
+      return title;
+    }
+
+    return FittedBox(
+      fit: BoxFit.scaleDown,
+      alignment: textDirection == TextDirection.ltr
+          ? Alignment.centerLeft
+          : Alignment.centerRight,
+      child: title,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -95,10 +122,7 @@ class _FilterButtonState extends State<FilterButton> {
           child: Row(
             children: [
               Expanded(
-                child: BodyMediumText(
-                  text: widget.title,
-                  maxLines: 1,
-                ),
+                child: _buildTitle(widget.title),
               ),
               const SizedBox(width: 4),
               Icon(widget.icon, size: 20),
@@ -145,10 +169,7 @@ class _FilterButtonState extends State<FilterButton> {
         child: Row(
           children: [
             Expanded(
-              child: BodyMediumText(
-                text: hasValue ? widget.title : "",
-                maxLines: 1,
-              ),
+              child: _buildTitle(hasValue ? widget.title : ""),
             ),
             Icon(widget.icon, size: 20),
           ],
