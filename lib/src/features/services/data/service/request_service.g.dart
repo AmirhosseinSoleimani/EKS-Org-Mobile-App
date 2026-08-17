@@ -32,7 +32,7 @@ class _RequestService implements RequestService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/AidServiceRequest/GetAidServiceRequestList',
+            '/api/AidServiceRequest/GetByFilterJson',
             queryParameters: queryParameters,
             data: _data,
           )
@@ -98,7 +98,7 @@ class _RequestService implements RequestService {
           Options(method: 'POST', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/HomeServiceRequest/GetHomeServiceRequestList',
+                '/api/HomeServiceRequest/GetByFilterJson',
                 queryParameters: queryParameters,
                 data: _data,
               )

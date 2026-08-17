@@ -1,4 +1,3 @@
-import 'package:eks_sana_plus_org/src/common/constants/request_status.dart';
 import 'package:eks_sana_plus_org/src/common/constants/time_period.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_home_service_request_list_use_case.dart';
@@ -13,30 +12,27 @@ import 'package:injectable/injectable.dart';
 import '../../../domain/entities/abstract/base_request_entity.dart';
 
 part 'home_service_request_list_cubit.freezed.dart';
-
 part 'home_service_request_list_state.dart';
 
 @injectable
 class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
-  HomeServiceRequestListCubit(this._getHomeServiceRequestListUseCase,
-      this._setSelectedRequestItemUseCase)
-      : super(const HomeServiceRequestListState.idle());
+  HomeServiceRequestListCubit(
+    this._getHomeServiceRequestListUseCase,
+    this._setSelectedRequestItemUseCase,
+  ) : super(const HomeServiceRequestListState.idle());
 
   final GetHomeServiceRequestListUseCase _getHomeServiceRequestListUseCase;
   final SetSelectedRequestItemUseCase _setSelectedRequestItemUseCase;
 
   final List<BaseRequestEntity> requestList = <BaseRequestEntity>[];
 
-  final ValueNotifier<RequestStatus?> _selectedStatusNotifier =
-      ValueNotifier(null);
+  final ValueNotifier<int> _selectedStatusNotifier = ValueNotifier(-100);
 
-  ValueNotifier<RequestStatus?> get selectedStatusNotifier =>
-      _selectedStatusNotifier;
+  ValueNotifier<int> get selectedStatusNotifier => _selectedStatusNotifier;
 
-  RequestStatus? get selectedStatus => _selectedStatusNotifier.value;
+  int get selectedStatus => _selectedStatusNotifier.value;
 
   final selectedTimePeriodNotifier = ValueNotifier<TimePeriod>(TimePeriod.all);
-
 
   TimePeriod get selectedTimePeriod => selectedTimePeriodNotifier.value;
 
@@ -47,9 +43,8 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
   final cityController = TextEditingController();
   final provinceController = TextEditingController();
 
-
   int _page = 1;
-  final int _pageSize = 20;
+  final int _pageSize = 100;
   int _totalCount = 0;
   bool _isLoadingMore = false;
 
@@ -57,7 +52,7 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
 
   bool get hasMore => requestList.length < _totalCount;
 
-  void setSelectedStatus(RequestStatus status) {
+  void setSelectedStatus(int status) {
     _selectedStatusNotifier.value = status;
   }
 
@@ -65,7 +60,7 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
     selectedTimePeriodNotifier.value = timePeriod;
   }
 
-  void fetchRequestList() async {
+  Future<void> fetchRequestList() async {
     _page = 1;
     requestList.clear();
 
@@ -74,7 +69,7 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
     final result = await _getHomeServiceRequestListUseCase(params);
 
     result.whenOrNull(
-      success: (data, failures, resultCode) async {
+      success: (data, _, _) {
         _totalCount = data.totalCount;
         requestList.addAll(data.items);
 
@@ -114,15 +109,19 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
       },
       failure: (error, msg) {
         _page--;
-        _safeEmit(HomeServiceRequestListState.loadingMoreError(
-          message: msg ?? error.toString(),
-        ));
+        _safeEmit(
+          HomeServiceRequestListState.loadingMoreError(
+            message: msg ?? error.toString(),
+          ),
+        );
       },
       connectionError: () {
         _page--;
-        _safeEmit(const HomeServiceRequestListState.loadingMoreError(
-          message: 'اتصال اینترنت خود را بررسی کنید',
-        ));
+        _safeEmit(
+          const HomeServiceRequestListState.loadingMoreError(
+            message: 'اتصال اینترنت خود را بررسی کنید',
+          ),
+        );
       },
     );
     _isLoadingMore = false;
@@ -137,10 +136,23 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
       callMobileNumber: phoneController.text,
       cityName: cityController.text,
       provinceName: provinceController.text,
-      requestStatus: selectedStatus ?? RequestStatus.openRequests,
+      requestStatus: selectedStatus,
       rescuerName: rescuerNameController.text,
       timePeriod: selectedTimePeriod,
     );
+  }
+
+  Future<void> clearFilters() async {
+    requestNumberController.clear();
+    phoneController.clear();
+    chassisNumberController.clear();
+    rescuerNameController.clear();
+    cityController.clear();
+    provinceController.clear();
+    _selectedStatusNotifier.value = -1;
+    selectedTimePeriodNotifier.value = TimePeriod.all;
+
+    await fetchRequestList();
   }
 
   void _safeEmit(HomeServiceRequestListState state) {
@@ -151,7 +163,7 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
     try {
       await _setSelectedRequestItemUseCase(request);
     } catch (e) {
-      debugPrint("cacheSelectedRequest ERROR → $e");
+      debugPrint('cacheSelectedRequest ERROR -> $e');
     }
   }
 

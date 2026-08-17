@@ -36,7 +36,7 @@ abstract class RequestService {
   @factoryMethod
   factory RequestService(Dio dio) = _RequestService;
 
-  @POST('/api/AidServiceRequest/GetAidServiceRequestList')
+  @POST('/api/AidServiceRequest/GetByFilterJson')
   Future<BaseSingleResponse<ReliefRequestListModel>> getReliefRequestList(
       @Body() Map<String, dynamic> body);
 
@@ -44,7 +44,7 @@ abstract class RequestService {
   Future<BaseSingleResponse<ReliefRequestModel>> getReliefRequestById(
       @Queries() Map<String, dynamic> query);
 
-  @POST('/api/HomeServiceRequest/GetHomeServiceRequestList')
+  @POST('/api/HomeServiceRequest/GetByFilterJson')
   Future<BaseSingleResponse<HomeServiceRequestListModel>>
       getHomeServiceRequestList(@Body() Map<String, dynamic> body);
 

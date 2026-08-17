@@ -4,8 +4,8 @@ import '../../shared/widgets/filter_widgets/interfaces/dropdown_item.dart';
 
 enum RequestStatus implements DropdownItem {
   openRequests(-100, 'درخواست های باز'),
-  waitingPreInvoiceApproval(-4, 'در انتظار تایید پیش‌فاکتور'),
-  waitingAddress(-3, 'در انتظار ثبت آدرس'),
+  waitingPreInvoiceApproval(-3, 'در انتظار تایید پیش‌فاکتور مشتری'),
+  waitingAddress(-2, 'در انتظار ثبت آدرس'),
   waitingForDetails(-1, 'در انتظار تکمیل اطلاعات'),
   waitingAssignment(1, 'در انتظار تخصیص'),
   canceled(2, 'لغو'),

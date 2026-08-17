@@ -56,7 +56,7 @@ class RequestDataSourceImpl extends RequestDataSource {
 
   @override
   Future<BaseSingleResponse<ReliefRequestListModel>> getReliefRequestList(RequestFilterParamModel param) async =>
-      await _service.getReliefRequestList(param.toJson());
+      await _service.getReliefRequestList(param.toAidServiceJson());
 
   @override
   Future<BaseSingleResponse<ReliefRequestModel>> getReliefRequestById(
@@ -65,7 +65,7 @@ class RequestDataSourceImpl extends RequestDataSource {
 
   @override
   Future<BaseSingleResponse<HomeServiceRequestListModel>> getHomeServiceRequestList(RequestFilterParamModel param) async =>
-      await _service.getHomeServiceRequestList(param.toJson());
+      await _service.getHomeServiceRequestList(param.toHomeServiceJson());
 
   @override
   Future<BaseSingleResponse<HomeServiceRequestModel>> getHomeServiceRequestById(

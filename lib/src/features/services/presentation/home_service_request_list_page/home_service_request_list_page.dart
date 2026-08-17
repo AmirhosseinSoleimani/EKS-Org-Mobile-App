@@ -1,6 +1,8 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_list_viewer.dart';
+import 'package:eks_sana_plus_org/src/shared/features/session/domain/policies/current_session_access_policy.dart';
+import 'package:eks_sana_plus_org/src/shared/features/session/presentation/widgets/current_session_access_builder.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
@@ -12,28 +14,38 @@ import 'cubit/home_service_request_list_cubit.dart';
 import 'widgets/filters_box.dart';
 
 class HomeServiceRequestListPage extends StatelessWidget {
-  static const path = "/home-service-page";
-  static const name = "home-service-page";
+  static const path = '/home-service-page';
+  static const name = 'home-service-page';
 
   const HomeServiceRequestListPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<HomeServiceRequestListCubit>()..fetchRequestList(),
-      child: const _SelectedServicesView(),
+    return CurrentSessionAccessBuilder(
+      emptyBuilder: (_) => const _AccessDeniedView(),
+      builder: (context, access) {
+        if (!access.canViewHomeServiceRequest()) {
+          return const _AccessDeniedView();
+        }
+
+        return BlocProvider(
+          create: (_) => getIt<HomeServiceRequestListCubit>()..fetchRequestList(),
+          child: _SelectedServicesView(access: access),
+        );
+      },
     );
   }
 }
 
 class _SelectedServicesView extends StatelessWidget {
-  const _SelectedServicesView();
+  const _SelectedServicesView({required this.access});
+
+  final CurrentSessionAccessPolicy access;
 
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<HomeServiceRequestListCubit>();
-    return BlocListener<HomeServiceRequestListCubit,
-        HomeServiceRequestListState>(
+    return BlocListener<HomeServiceRequestListCubit, HomeServiceRequestListState>(
       listener: (context, state) {
         state.whenOrNull(
           error: (message) {
@@ -68,8 +80,9 @@ class _SelectedServicesView extends StatelessWidget {
           child: Column(
             children: [
               Padding(
-                  padding: const EdgeInsets.all(16),
-                  child: FiltersBox(cubit: cubit)),
+                padding: const EdgeInsets.all(16),
+                child: FiltersBox(cubit: cubit),
+              ),
               Expanded(
                 child: BlocBuilder<HomeServiceRequestListCubit,
                     HomeServiceRequestListState>(
@@ -86,40 +99,51 @@ class _SelectedServicesView extends StatelessWidget {
                       idle: () => const SizedBox.shrink(),
                       loading: () => Center(
                         child: CircularProgressIndicator(
-                            color: ServiceType.homeService.serviceColor),
+                          color: ServiceType.homeService.serviceColor,
+                        ),
                       ),
-                      loaded: () => RequestListViewer(
-                        items: cubit.requestList,
-                        onSelected: cubit.cacheSelectedRequest,
-                        onLoadMore: cubit.loadMore,
-                        hasMore: cubit.hasMore,
-                        totalCount: cubit.requestCount,
-                            onRefreshAfterReturn: cubit.fetchRequestList,
-                          ),
-                      loadingMore: () => RequestListViewer(
-                        items: cubit.requestList,
-                        onSelected: cubit.cacheSelectedRequest,
-                        onLoadMore: cubit.loadMore,
-                        hasMore: cubit.hasMore,
-                        totalCount: cubit.requestCount,
-                            onRefreshAfterReturn: cubit.fetchRequestList,
-                          ),
-                      orElse: () {
-                        return  RequestListViewer(
-                          items: cubit.requestList,
-                          onSelected: cubit.cacheSelectedRequest,
-                          onLoadMore: cubit.loadMore,
-                          hasMore: false,
-                          totalCount: cubit.requestCount,
-                              onRefreshAfterReturn: cubit.fetchRequestList,
-                            );
-                      },
+                      loaded: () => _buildList(cubit),
+                      loadingMore: () => _buildList(cubit),
+                      orElse: () => _buildList(cubit, hasMore: false),
                     );
                   },
                 ),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildList(
+    HomeServiceRequestListCubit cubit, {
+    bool? hasMore,
+  }) {
+    return RequestListViewer(
+      items: cubit.requestList,
+      onSelected: cubit.cacheSelectedRequest,
+      onLoadMore: cubit.loadMore,
+      hasMore: hasMore ?? cubit.hasMore,
+      totalCount: cubit.requestCount,
+      access: access,
+      onRefreshAfterReturn: cubit.fetchRequestList,
+    );
+  }
+}
+
+class _AccessDeniedView extends StatelessWidget {
+  const _AccessDeniedView();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: const SimpleAppBar(title: 'درخواست های خدمت در محل'),
+      body: Center(
+        child: Text(
+          'شما دسترسی لازم برای مشاهده درخواست های خدمت در محل را ندارید.',
+          style: Theme.of(context).textTheme.bodyMedium,
+          textAlign: TextAlign.center,
         ),
       ),
     );

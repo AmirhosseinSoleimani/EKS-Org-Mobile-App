@@ -122,6 +122,8 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
     super.insertDateTime,
     super.insertDateTimeJalali,
     super.invoiceDocumentGuid,
+    super.cancelReasonId,
+    super.addressHasBeenSet,
     super.isSaipa,
     super.personType,
     super.planningId,
@@ -184,6 +186,9 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
       vipConditionTitle: vipConditionTitle,
       emdadProductTitle: emdadProductTitle,
       serviceType: serviceType,
+      cancelReasonId: cancelReasonId,
+      addressHasBeenSet: addressHasBeenSet,
+      invoiceDocumentGuid: invoiceDocumentGuid,
     );
   }
 }

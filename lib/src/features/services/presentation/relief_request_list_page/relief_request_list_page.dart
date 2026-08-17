@@ -1,6 +1,8 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/relief_request_list_page/widgets/filters_box.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_list_viewer.dart';
+import 'package:eks_sana_plus_org/src/shared/features/session/domain/policies/current_session_access_policy.dart';
+import 'package:eks_sana_plus_org/src/shared/features/session/presentation/widgets/current_session_access_builder.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
@@ -12,22 +14,33 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'cubit/relief_request_list_cubit.dart';
 
 class ReliefRequestListPage extends StatelessWidget {
-  static const path = "/relief-request-page";
-  static const name = "relief-request-services";
+  static const path = '/relief-request-page';
+  static const name = 'relief-request-services';
 
   const ReliefRequestListPage({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => getIt<ReliefRequestListCubit>()..fetchRequestList(),
-      child: const _SelectedServicesView(),
+    return CurrentSessionAccessBuilder(
+      emptyBuilder: (_) => const _AccessDeniedView(),
+      builder: (context, access) {
+        if (!access.canViewServiceRequest()) {
+          return const _AccessDeniedView();
+        }
+
+        return BlocProvider(
+          create: (_) => getIt<ReliefRequestListCubit>()..fetchRequestList(),
+          child: _SelectedServicesView(access: access),
+        );
+      },
     );
   }
 }
 
 class _SelectedServicesView extends StatelessWidget {
-  const _SelectedServicesView();
+  const _SelectedServicesView({required this.access});
+
+  final CurrentSessionAccessPolicy access;
 
   @override
   Widget build(BuildContext context) {
@@ -59,7 +72,7 @@ class _SelectedServicesView extends StatelessWidget {
         );
       },
       child: Scaffold(
-        appBar: const SimpleAppBar(title: "درخواست های امدادی"),
+        appBar: const SimpleAppBar(title: 'درخواست های امدادی'),
         body: ScrollConfiguration(
           behavior: ScrollConfiguration.of(context).copyWith(
             dragDevices: {
@@ -74,8 +87,7 @@ class _SelectedServicesView extends StatelessWidget {
                 child: FiltersBox(cubit: cubit),
               ),
               Expanded(
-                child:
-                    BlocBuilder<ReliefRequestListCubit, ReliefRequestListState>(
+                child: BlocBuilder<ReliefRequestListCubit, ReliefRequestListState>(
                   buildWhen: (previous, current) {
                     return current.maybeWhen(
                       loadingMoreError: (message) => false,
@@ -90,38 +102,48 @@ class _SelectedServicesView extends StatelessWidget {
                       loading: () => const Center(
                         child: CircularProgressIndicator(),
                       ),
-                      loaded: () => RequestListViewer(
-                        items: cubit.items,
-                        onSelected: cubit.cacheSelectedRequest,
-                        onLoadMore: cubit.loadMore,
-                        hasMore: cubit.hasMore,
-                        totalCount: cubit.requestCount,
-                        onRefreshAfterReturn: cubit.fetchRequestList,
-                      ),
-                      loadingMore: () => RequestListViewer(
-                        items: cubit.items,
-                        onSelected: cubit.cacheSelectedRequest,
-                        onLoadMore: cubit.loadMore,
-                        hasMore: cubit.hasMore,
-                        totalCount: cubit.requestCount,
-                        onRefreshAfterReturn: cubit.fetchRequestList,
-                      ),
-                      orElse: () {
-                        return  RequestListViewer(
-                          items: cubit.items,
-                          onSelected: cubit.cacheSelectedRequest,
-                          onLoadMore: cubit.loadMore,
-                          hasMore: false,
-                          totalCount: cubit.requestCount,
-                          onRefreshAfterReturn: cubit.fetchRequestList,
-                        );
-                      },
+                      loaded: () => _buildList(cubit),
+                      loadingMore: () => _buildList(cubit),
+                      orElse: () => _buildList(cubit, hasMore: false),
                     );
                   },
                 ),
               ),
             ],
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildList(
+    ReliefRequestListCubit cubit, {
+    bool? hasMore,
+  }) {
+    return RequestListViewer(
+      items: cubit.items,
+      onSelected: cubit.cacheSelectedRequest,
+      onLoadMore: cubit.loadMore,
+      hasMore: hasMore ?? cubit.hasMore,
+      totalCount: cubit.requestCount,
+      access: access,
+      onRefreshAfterReturn: cubit.fetchRequestList,
+    );
+  }
+}
+
+class _AccessDeniedView extends StatelessWidget {
+  const _AccessDeniedView();
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: const SimpleAppBar(title: 'درخواست های امدادی'),
+      body: Center(
+        child: Text(
+          'شما دسترسی لازم برای مشاهده درخواست های امدادی را ندارید.',
+          style: Theme.of(context).textTheme.bodyMedium,
+          textAlign: TextAlign.center,
         ),
       ),
     );

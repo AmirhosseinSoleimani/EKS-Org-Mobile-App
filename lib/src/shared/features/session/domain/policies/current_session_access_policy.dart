@@ -447,6 +447,12 @@ class CurrentSessionAccessPolicy {
     ]);
   }
 
+  bool canCompleteUrgentServiceRequest() {
+    return hasAuthorization(
+      CurrentSessionAuthorizationKeys.urgentServiceRequestCompleted,
+    );
+  }
+
   bool canViewHomeServiceRequest() {
     return hasAnyAuthorization([
       CurrentSessionAuthorizationKeys.homeServiceRequest,

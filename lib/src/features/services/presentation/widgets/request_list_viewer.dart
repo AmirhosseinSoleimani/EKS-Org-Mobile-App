@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract/base_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/features/session/domain/policies/current_session_access_policy.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:flutter/material.dart';
 
@@ -15,6 +16,7 @@ class RequestListViewer extends StatefulWidget {
   final VoidCallback onLoadMore;
   final bool hasMore;
   final int totalCount;
+  final CurrentSessionAccessPolicy access;
   final FutureOr<void> Function()? onRefreshAfterReturn;
 
   const RequestListViewer({
@@ -24,6 +26,7 @@ class RequestListViewer extends StatefulWidget {
     required this.onLoadMore,
     required this.hasMore,
     required this.totalCount,
+    required this.access,
     required this.onRefreshAfterReturn,
   });
 
@@ -94,6 +97,7 @@ class _RequestListViewerState extends State<RequestListViewer> {
           serviceColor: item.serviceType?.serviceColor ??
               ServiceType.reliefService.serviceColor,
           serviceIcon: Icons.build,
+          access: widget.access,
           onSelected: widget.onSelected,
           onRefreshAfterReturn: widget.onRefreshAfterReturn,
         );

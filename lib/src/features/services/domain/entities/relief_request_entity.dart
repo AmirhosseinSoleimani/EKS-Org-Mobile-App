@@ -34,6 +34,7 @@ class ReliefRequestEntity extends BaseRequestEntity {
   final String? defectTitle;
 
   final bool? isUrgentRequest;
+  final bool? isUrgentRequestCompleted;
 
   final String? emdadServiceTitle;
   final int? emdadServiceCategoryId;
@@ -90,6 +91,7 @@ class ReliefRequestEntity extends BaseRequestEntity {
     this.defectId,
     this.defectTitle,
     this.isUrgentRequest,
+    this.isUrgentRequestCompleted,
     this.emdadServiceTitle,
     this.hamlReasonTitle,
     this.wheelQuestionTitle,
@@ -123,6 +125,8 @@ class ReliefRequestEntity extends BaseRequestEntity {
     super.insertDateTime,
     super.insertDateTimeJalali,
     super.invoiceDocumentGuid,
+    super.cancelReasonId,
+    super.addressHasBeenSet,
     super.isSaipa,
     super.personType,
     super.planningId,
@@ -157,6 +161,7 @@ class ReliefRequestEntity extends BaseRequestEntity {
       defectId: defectId,
       defectTitle: defectTitle,
       isUrgentRequest: isUrgentRequest,
+      isUrgentRequestCompleted: isUrgentRequestCompleted,
       emdadServiceTitle: emdadServiceTitle,
       customerMobileNumber: customerMobileNumber,
       description: description,
@@ -185,6 +190,9 @@ class ReliefRequestEntity extends BaseRequestEntity {
       hamlReasonTitle: hamlReasonTitle,
       wheelQuestionTitle: wheelQuestionTitle,
       serviceType: serviceType,
+      cancelReasonId: cancelReasonId,
+      addressHasBeenSet: addressHasBeenSet,
+      invoiceDocumentGuid: invoiceDocumentGuid,
       agencyCode: agencyCode,
       agencyName:agencyName,
       requestDateTime:requestDateTime,

@@ -1,10 +1,9 @@
-
 import 'package:eks_sana_plus_org/src/common/constants/request_status.dart';
-import 'package:eks_sana_plus_org/src/common/constants/time_period.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_relief_request_list_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/set_selected_request_item_use_case.dart';
-import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart' show ApiResultPatterns;
+import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart'
+    show ApiResultPatterns;
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,8 +11,6 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
 
 import '../../../domain/entities/abstract/base_request_entity.dart';
-
-
 
 part 'relief_request_list_cubit.freezed.dart';
 part 'relief_request_list_state.dart';
@@ -33,23 +30,19 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
   List<BaseRequestEntity> get items => List.unmodifiable(_items);
 
   int _page = 1;
-  final int _pageSize = 20;
+  final int _pageSize = 50;
   int _totalCount = 0;
   bool _isLoadingMore = false;
 
   bool get hasMore => _items.length < _totalCount;
 
-  final ValueNotifier<RequestStatus?> _selectedStatusNotifier =
-      ValueNotifier(null);
+  final ValueNotifier<RequestStatus> _selectedStatusNotifier =
+      ValueNotifier(RequestStatus.openRequests);
 
-  ValueNotifier<RequestStatus?> get selectedStatusNotifier =>
+  ValueNotifier<RequestStatus> get selectedStatusNotifier =>
       _selectedStatusNotifier;
 
-  RequestStatus? get selectedStatus => _selectedStatusNotifier.value;
-
-  final selectedTimePeriodNotifier = ValueNotifier<TimePeriod>(TimePeriod.all);
-
-  TimePeriod get selectedTimePeriod => selectedTimePeriodNotifier.value;
+  RequestStatus get selectedStatus => _selectedStatusNotifier.value;
 
   final requestNumberController = TextEditingController();
   final phoneController = TextEditingController();
@@ -62,10 +55,6 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
 
   void setSelectedStatus(RequestStatus status) {
     _selectedStatusNotifier.value = status;
-  }
-
-  void setSelectedTimePeriod(TimePeriod timePeriod) {
-    selectedTimePeriodNotifier.value = timePeriod;
   }
 
   Future<void> fetchRequestList() async {
@@ -118,15 +107,19 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
       },
       failure: (error, msg) {
         _page--;
-        _safeEmit(ReliefRequestListState.loadingMoreError(
-          message: msg ?? error.toString(),
-        ));
+        _safeEmit(
+          ReliefRequestListState.loadingMoreError(
+            message: msg ?? error.toString(),
+          ),
+        );
       },
       connectionError: () {
         _page--;
-        _safeEmit(const ReliefRequestListState.loadingMoreError(
-          message: 'اتصال اینترنت خود را بررسی کنید',
-        ));
+        _safeEmit(
+          const ReliefRequestListState.loadingMoreError(
+            message: 'اتصال اینترنت خود را بررسی کنید',
+          ),
+        );
       },
     );
     _isLoadingMore = false;
@@ -145,17 +138,27 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
       callMobileNumber: phoneController.text,
       cityName: cityController.text,
       provinceName: provinceController.text,
-      requestStatus: selectedStatus ?? RequestStatus.openRequests,
+      requestStatus: selectedStatus.value,
       rescuerName: rescuerNameController.text,
-      timePeriod: selectedTimePeriod,
     );
+  }
+
+  Future<void> clearFilters() async {
+    requestNumberController.clear();
+    phoneController.clear();
+    chassisNumberController.clear();
+    rescuerNameController.clear();
+    cityController.clear();
+    provinceController.clear();
+
+    await fetchRequestList();
   }
 
   Future<void> cacheSelectedRequest(BaseRequestEntity request) async {
     try {
       await _setSelectedRequestItemUseCase(request);
     } catch (e) {
-      debugPrint("cacheSelectedRequest ERROR → $e");
+      debugPrint('cacheSelectedRequest ERROR -> $e');
     }
   }
 
@@ -168,7 +171,6 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
     cityController.dispose();
     provinceController.dispose();
     _selectedStatusNotifier.dispose();
-    selectedTimePeriodNotifier.dispose();
     return super.close();
   }
 }

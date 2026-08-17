@@ -97,6 +97,8 @@ class HomeServiceRequestModel extends HomeServiceRequestEntity {
     super.insertDateTime,
     super.insertDateTimeJalali,
     super.invoiceDocumentGuid,
+    super.cancelReasonId,
+    super.addressHasBeenSet,
     super.isSaipa,
     super.personType,
     super.planningId,
@@ -218,6 +220,8 @@ class HomeServiceRequestModel extends HomeServiceRequestEntity {
       garantySiteDescription: json['garanty_SiteDescription'],
 
       invoiceDocumentGuid: json['invoiceDocumentGuid'],
+      cancelReasonId: json['cancelReasonId'],
+      addressHasBeenSet: json['addressHasBeenSet'],
 
       requestDateTimeJalali: json['requestDateTimeJalali'],
 
