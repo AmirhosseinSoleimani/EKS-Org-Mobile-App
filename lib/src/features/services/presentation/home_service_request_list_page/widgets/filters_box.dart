@@ -41,51 +41,11 @@ class FiltersBox extends StatelessWidget {
               title: 'فیلتر ها',
               expand: true,
               overlayBuilder: (context, position, width, dismiss) {
-                WidgetsBinding.instance.addPostFrameCallback((_) {
-                  BottomSheetMessage.showCustom(
-                    context: context,
-                    content: SearchRequestForm(
-                      requestNumberController: cubit.requestNumberController,
-                      phoneController: cubit.phoneController,
-                      chassisNumberController: cubit.chassisNumberController,
-                      rescuerNameController: cubit.rescuerNameController,
-                      cityController: cubit.cityController,
-                      provinceController: cubit.provinceController,
-                      serviceType: ServiceType.homeService,
-                    ),
-                    actionWidget: Row(
-                      children: [
-                        Expanded(
-                          child: InkwellButtonWidget(
-                            title: 'اعمال فیلتر',
-                            backgroundColor: Theme.of(context).colorScheme.primary,
-                            onTap: () {
-                              cubit.fetchRequestList();
-                              context.pop();
-                            },
-                          ),
-                        ),
-                        const SizedBox(width: 8),
-                        Expanded(
-                          child: InkwellButtonWidget(
-                            title: 'پاک کردن فیلتر',
-                            backgroundColor: Theme.of(context).colorScheme.onPrimary,
-                            borderColor: Theme.of(context).colorScheme.outline,
-                            titleColor: Theme.of(context).colorScheme.onSurface,
-                            onTap: () {
-                              cubit.clearFilters();
-                              context.pop();
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                    isDismissible: true,
-                    enableDrag: true,
-                  );
-
-                  dismiss();
-                });
+                _showFilterBottomSheet(
+                  context: context,
+                  serviceType: ServiceType.homeService,
+                  dismissOverlay: dismiss,
+                );
 
                 return const SizedBox.shrink();
               },
@@ -139,6 +99,58 @@ class FiltersBox extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  void _showFilterBottomSheet({
+    required BuildContext context,
+    required ServiceType serviceType,
+    required VoidCallback dismissOverlay,
+  }) {
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      BottomSheetMessage.showCustom(
+        context: context,
+        content: SearchRequestForm(
+          requestNumberController: cubit.requestNumberController,
+          phoneController: cubit.phoneController,
+          chassisNumberController: cubit.chassisNumberController,
+          rescuerNameController: cubit.rescuerNameController,
+          cityController: cubit.cityController,
+          provinceController: cubit.provinceController,
+          serviceType: serviceType,
+        ),
+        actionWidget: Row(
+          children: [
+            Expanded(
+              child: InkwellButtonWidget(
+                title: 'اعمال فیلتر',
+                backgroundColor: serviceType.serviceColor,
+                onTap: () {
+                  cubit.fetchRequestList();
+                  context.pop();
+                },
+              ),
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: InkwellButtonWidget(
+                title: 'پاک کردن فیلتر',
+                backgroundColor: Theme.of(context).colorScheme.onPrimary,
+                borderColor: Theme.of(context).colorScheme.outline,
+                titleColor: Theme.of(context).colorScheme.onSurface,
+                onTap: () {
+                  cubit.clearFilters();
+                  context.pop();
+                },
+              ),
+            ),
+          ],
+        ),
+        isDismissible: true,
+        enableDrag: true,
+      );
+
+      dismissOverlay();
+    });
   }
 
   String _statusLabel(int value) {

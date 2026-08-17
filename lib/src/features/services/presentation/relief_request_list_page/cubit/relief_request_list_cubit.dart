@@ -1,6 +1,9 @@
 import 'package:eks_sana_plus_org/src/common/constants/request_status.dart';
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_filter_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/request_operation_access_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_relief_request_list_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_request_operation_access_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/set_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart'
     show ApiResultPatterns;
@@ -19,11 +22,19 @@ part 'relief_request_list_state.dart';
 class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
   ReliefRequestListCubit(
     this._getReliefRequestListUseCase,
+    this._getRequestOperationAccessUseCase,
     this._setSelectedRequestItemUseCase,
   ) : super(const ReliefRequestListState.idle());
 
   final GetReliefRequestListUseCase _getReliefRequestListUseCase;
+  final GetRequestOperationAccessUseCase _getRequestOperationAccessUseCase;
   final SetSelectedRequestItemUseCase _setSelectedRequestItemUseCase;
+
+  RequestOperationAccessEntity? _operationAccess;
+
+  RequestOperationAccessEntity? get operationAccess => _operationAccess;
+
+  bool get canViewRequests => _operationAccess?.canView == true;
 
   final List<BaseRequestEntity> _items = [];
 
@@ -63,6 +74,14 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
 
     _safeEmit(const ReliefRequestListState.loading());
 
+    final hasOperationAccess = await _ensureOperationAccess();
+    if (!hasOperationAccess) return;
+
+    if (!canViewRequests) {
+      _safeEmit(const ReliefRequestListState.loaded());
+      return;
+    }
+
     final param = _buildFilterParam();
     final result = await _getReliefRequestListUseCase(param);
 
@@ -86,6 +105,38 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
         _safeEmit(const ReliefRequestListState.connectionError());
       },
     );
+  }
+
+  Future<bool> _ensureOperationAccess() async {
+    if (_operationAccess != null) return true;
+
+    final result = await _getRequestOperationAccessUseCase(
+      ServiceType.reliefService,
+    );
+    var loaded = false;
+
+    result.when(
+      success: (data, _, _) {
+        _operationAccess = data;
+        loaded = true;
+      },
+      failure: (error, message) {
+        _safeEmit(
+          ReliefRequestListState.error(
+            message: BottomSheetMessageModel(
+              message: message ?? error?.toString() ?? 'خطای غیرمنتظره',
+              title: '',
+            ),
+          ),
+        );
+      },
+      expireToken: () {},
+      connectionError: () {
+        _safeEmit(const ReliefRequestListState.connectionError());
+      },
+    );
+
+    return loaded;
   }
 
   Future<void> loadMore() async {

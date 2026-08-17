@@ -1,6 +1,9 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/common/constants/time_period.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_filter_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/request_operation_access_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_home_service_request_list_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_request_operation_access_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/set_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
@@ -18,11 +21,19 @@ part 'home_service_request_list_state.dart';
 class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
   HomeServiceRequestListCubit(
     this._getHomeServiceRequestListUseCase,
+    this._getRequestOperationAccessUseCase,
     this._setSelectedRequestItemUseCase,
   ) : super(const HomeServiceRequestListState.idle());
 
   final GetHomeServiceRequestListUseCase _getHomeServiceRequestListUseCase;
+  final GetRequestOperationAccessUseCase _getRequestOperationAccessUseCase;
   final SetSelectedRequestItemUseCase _setSelectedRequestItemUseCase;
+
+  RequestOperationAccessEntity? _operationAccess;
+
+  RequestOperationAccessEntity? get operationAccess => _operationAccess;
+
+  bool get canViewRequests => _operationAccess?.canView == true;
 
   final List<BaseRequestEntity> requestList = <BaseRequestEntity>[];
 
@@ -65,6 +76,15 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
     requestList.clear();
 
     _safeEmit(const HomeServiceRequestListState.loading());
+
+    final hasOperationAccess = await _ensureOperationAccess();
+    if (!hasOperationAccess) return;
+
+    if (!canViewRequests) {
+      _safeEmit(const HomeServiceRequestListState.loaded());
+      return;
+    }
+
     final params = _buildFilterParam();
     final result = await _getHomeServiceRequestListUseCase(params);
 
@@ -88,6 +108,38 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
       connectionError: () =>
           _safeEmit(const HomeServiceRequestListState.connectionError()),
     );
+  }
+
+  Future<bool> _ensureOperationAccess() async {
+    if (_operationAccess != null) return true;
+
+    final result = await _getRequestOperationAccessUseCase(
+      ServiceType.homeService,
+    );
+    var loaded = false;
+
+    result.when(
+      success: (data, _, _) {
+        _operationAccess = data;
+        loaded = true;
+      },
+      failure: (error, message) {
+        _safeEmit(
+          HomeServiceRequestListState.error(
+            message: BottomSheetMessageModel(
+              message: message ?? error?.toString() ?? 'خطای غیرمنتظره',
+              title: '',
+            ),
+          ),
+        );
+      },
+      expireToken: () {},
+      connectionError: () {
+        _safeEmit(const HomeServiceRequestListState.connectionError());
+      },
+    );
+
+    return loaded;
   }
 
   Future<void> loadMore() async {

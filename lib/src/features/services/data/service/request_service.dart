@@ -41,7 +41,7 @@ abstract class RequestService {
   Future<BaseSingleResponse<ReliefRequestListModel>> getReliefRequestList(
       @Body() Map<String, dynamic> body);
 
-  @GET('/api/AidServiceRequest/GetAidServiceRequestById')
+  @GET('/api/AidServiceRequest/GetAidServiceRequest')
   Future<BaseSingleResponse<ReliefRequestModel>> getReliefRequestById(
       @Queries() Map<String, dynamic> query);
 

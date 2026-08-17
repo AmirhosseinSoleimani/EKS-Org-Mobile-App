@@ -74,19 +74,34 @@ import '../features/authentication/data/data_sources/auth_remote_data_source.dar
     as _i479;
 import '../features/authentication/data/data_sources/auth_remote_data_source_impl.dart'
     as _i51;
+import '../features/authentication/data/data_sources/profile_remote_data_source.dart'
+    as _i532;
+import '../features/authentication/data/data_sources/profile_remote_data_source_impl.dart'
+    as _i224;
 import '../features/authentication/data/repositories/auth_repository_impl.dart'
     as _i781;
+import '../features/authentication/data/repositories/profile_repository_impl.dart'
+    as _i1015;
 import '../features/authentication/data/service/auth_service.dart' as _i626;
+import '../features/authentication/data/service/profile_service.dart' as _i1053;
 import '../features/authentication/domain/repositories/auth_repository.dart'
     as _i716;
+import '../features/authentication/domain/repositories/profile_repository.dart'
+    as _i373;
+import '../features/authentication/domain/use_cases/change_password_use_case.dart'
+    as _i958;
 import '../features/authentication/domain/use_cases/get_current_session.dart'
     as _i424;
+import '../features/authentication/domain/use_cases/log_off_use_case.dart'
+    as _i845;
 import '../features/authentication/domain/use_cases/login_use_case.dart'
     as _i139;
 import '../features/authentication/domain/use_cases/phone_number_validator_use_case.dart'
     as _i826;
 import '../features/authentication/presentation/login/cubit/login_cubit.dart'
     as _i566;
+import '../features/authentication/presentation/profile/cubit/profile_cubit.dart'
+    as _i440;
 import '../features/bottom_navigation_bar/data/remote/data_soures/main_remote_data_source.dart'
     as _i475;
 import '../features/bottom_navigation_bar/data/remote/data_soures/main_remote_data_source_impl.dart'
@@ -670,6 +685,8 @@ import '../features/services/domain/usecases/get_request_control_info_use_case.d
     as _i543;
 import '../features/services/domain/usecases/get_request_followup_history_use_case.dart'
     as _i67;
+import '../features/services/domain/usecases/get_request_operation_access_use_case.dart'
+    as _i385;
 import '../features/services/domain/usecases/get_request_status_history_use_case.dart'
     as _i955;
 import '../features/services/domain/usecases/service_assign_use_case.dart'
@@ -1138,6 +1155,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i427.AgencyInfoService>(
     () => _i427.AgencyInfoService(gh<_i361.Dio>()),
   );
+  gh.lazySingleton<_i1053.ProfileService>(
+    () => _i1053.ProfileService(gh<_i361.Dio>()),
+  );
   gh.lazySingleton<_i86.DeploymentLocationService>(
     () => _i86.DeploymentLocationService(gh<_i361.Dio>()),
   );
@@ -1264,6 +1284,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i49.PlanInfoDataSource>(
     () => _i722.PlanInfoDataSourceImpl(gh<_i131.PlanInfoService>()),
   );
+  gh.lazySingleton<_i532.ProfileRemoteDataSource>(
+    () => _i224.ProfileRemoteDataSourceImpl(gh<_i1053.ProfileService>()),
+  );
   gh.lazySingleton<_i670.DateTimeInfoDataSource>(
     () => _i940.DateTimeInfoDataSourceImpl(gh<_i99.DateTimeService>()),
   );
@@ -1309,6 +1332,9 @@ _i174.GetIt $initGetIt(
   );
   gh.lazySingleton<_i577.GradePatternRepository>(
     () => _i864.GradePatternRepositoryImpl(gh<_i480.GradePatternDataSource>()),
+  );
+  gh.lazySingleton<_i373.ProfileRepository>(
+    () => _i1015.ProfileRepositoryImpl(gh<_i532.ProfileRemoteDataSource>()),
   );
   gh.lazySingleton<_i565.UrgentRequestUseCase>(
     () => _i565.UrgentRequestUseCase(gh<_i854.MainRepository>()),
@@ -1710,6 +1736,9 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i67.GetRequestFollowupHistoryUseCase>(
     () => _i67.GetRequestFollowupHistoryUseCase(gh<_i603.RequestRepository>()),
   );
+  gh.lazySingleton<_i385.GetRequestOperationAccessUseCase>(
+    () => _i385.GetRequestOperationAccessUseCase(gh<_i603.RequestRepository>()),
+  );
   gh.lazySingleton<_i955.GetRequestStatusHistoryUseCase>(
     () => _i955.GetRequestStatusHistoryUseCase(gh<_i603.RequestRepository>()),
   );
@@ -1724,6 +1753,13 @@ _i174.GetIt $initGetIt(
       gh<_i1001.InvoiceAgencyObjectionDataSource>(),
     ),
   );
+  gh.lazySingleton<_i845.LogOffUseCase>(
+    () => _i845.LogOffUseCase(
+      gh<_i373.ProfileRepository>(),
+      gh<_i308.SessionStorage>(),
+      gh<_i1058.CurrentSessionManager>(),
+    ),
+  );
   gh.lazySingleton<_i630.SpecialPlanRepository>(
     () => _i922.SpecialPlanRepositoryImpl(gh<_i407.SpecialPlanDataSource>()),
   );
@@ -1732,6 +1768,9 @@ _i174.GetIt $initGetIt(
       gh<_i14.GetRescuerByIdUseCase>(),
       gh<_i708.DeleteRescuerUseCase>(),
     ),
+  );
+  gh.lazySingleton<_i958.ChangePasswordUseCase>(
+    () => _i958.ChangePasswordUseCase(gh<_i373.ProfileRepository>()),
   );
   gh.lazySingleton<_i100.GetServerDateTimeUseCase>(
     () => _i100.GetServerDateTimeUseCase(gh<_i489.DateTimeInfoRepository>()),
@@ -2260,6 +2299,13 @@ _i174.GetIt $initGetIt(
       gh<_i786.GetEmdadgarInfoUseCase>(),
     ),
   );
+  gh.factory<_i1048.ReliefRequestListCubit>(
+    () => _i1048.ReliefRequestListCubit(
+      gh<_i192.GetReliefRequestListUseCase>(),
+      gh<_i385.GetRequestOperationAccessUseCase>(),
+      gh<_i369.SetSelectedRequestItemUseCase>(),
+    ),
+  );
   gh.lazySingleton<_i139.EmdadVehicleRepository>(
     () => _i77.EmdadVehicleRepositoryImpl(gh<_i639.EmdadVehicleDataSource>()),
   );
@@ -2426,12 +2472,6 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i918.RollbackLeaveRequestUseCase>(
     () => _i918.RollbackLeaveRequestUseCase(gh<_i217.LeaveRepository>()),
   );
-  gh.factory<_i1013.HomeServiceRequestListCubit>(
-    () => _i1013.HomeServiceRequestListCubit(
-      gh<_i809.GetHomeServiceRequestListUseCase>(),
-      gh<_i369.SetSelectedRequestItemUseCase>(),
-    ),
-  );
   gh.factory<_i705.AddAgencyContractCubit>(
     () => _i705.AddAgencyContractCubit(gh<_i853.AddAgencyContractUseCase>()),
   );
@@ -2451,6 +2491,13 @@ _i174.GetIt $initGetIt(
   gh.factory<_i866.GetInvoiceOperationAccessUseCase>(
     () => _i866.GetInvoiceOperationAccessUseCase(
       gh<_i1012.InvoiceCommonRepository>(),
+    ),
+  );
+  gh.factory<_i440.ProfileCubit>(
+    () => _i440.ProfileCubit(
+      gh<_i958.ChangePasswordUseCase>(),
+      gh<_i845.LogOffUseCase>(),
+      gh<_i1058.CurrentSessionManager>(),
     ),
   );
   gh.factory<_i1038.CompleteUrgentRequestCubit>(
@@ -2529,9 +2576,10 @@ _i174.GetIt $initGetIt(
       gh<_i678.GetRouteUseCase>(),
     ),
   );
-  gh.factory<_i1048.ReliefRequestListCubit>(
-    () => _i1048.ReliefRequestListCubit(
-      gh<_i192.GetReliefRequestListUseCase>(),
+  gh.factory<_i1013.HomeServiceRequestListCubit>(
+    () => _i1013.HomeServiceRequestListCubit(
+      gh<_i809.GetHomeServiceRequestListUseCase>(),
+      gh<_i385.GetRequestOperationAccessUseCase>(),
       gh<_i369.SetSelectedRequestItemUseCase>(),
     ),
   );

@@ -1,14 +1,14 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_list_viewer.dart';
-import 'package:eks_sana_plus_org/src/shared/features/session/domain/policies/current_session_access_policy.dart';
-import 'package:eks_sana_plus_org/src/shared/features/session/presentation/widgets/current_session_access_builder.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'cubit/home_service_request_list_cubit.dart';
 import 'widgets/filters_box.dart';
@@ -21,26 +21,17 @@ class HomeServiceRequestListPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return CurrentSessionAccessBuilder(
-      emptyBuilder: (_) => const _AccessDeniedView(),
-      builder: (context, access) {
-        if (!access.canViewHomeServiceRequest()) {
-          return const _AccessDeniedView();
-        }
-
-        return BlocProvider(
-          create: (_) => getIt<HomeServiceRequestListCubit>()..fetchRequestList(),
-          child: _SelectedServicesView(access: access),
-        );
-      },
+    return BlocProvider(
+      create: (_) =>
+      getIt<HomeServiceRequestListCubit>()
+        ..fetchRequestList(),
+      child: const _SelectedServicesView(),
     );
   }
 }
 
 class _SelectedServicesView extends StatelessWidget {
-  const _SelectedServicesView({required this.access});
-
-  final CurrentSessionAccessPolicy access;
+  const _SelectedServicesView();
 
   @override
   Widget build(BuildContext context) {
@@ -52,7 +43,10 @@ class _SelectedServicesView extends StatelessWidget {
             BottomSheetMessage.showErrorWithAction(
               context: context,
               data: message,
-              onPositive: cubit.fetchRequestList,
+              onPositive: () {
+                context.pop();
+                cubit.fetchRequestList();
+              },
             );
           },
           connectionError: () {
@@ -70,32 +64,34 @@ class _SelectedServicesView extends StatelessWidget {
       },
       child: Scaffold(
         appBar: const SimpleAppBar(title: 'درخواست های خدمت در محل'),
-        body: ScrollConfiguration(
-          behavior: ScrollConfiguration.of(context).copyWith(
-            dragDevices: {
-              PointerDeviceKind.touch,
-              PointerDeviceKind.mouse,
-            },
-          ),
-          child: Column(
-            children: [
-              Padding(
-                padding: const EdgeInsets.all(16),
-                child: FiltersBox(cubit: cubit),
+        body: BlocBuilder<HomeServiceRequestListCubit,
+            HomeServiceRequestListState>(
+          buildWhen: (previous, current) {
+            return current.maybeWhen(
+              loadingMoreError: (message) => false,
+              orElse: () => true,
+            );
+          },
+          builder: (context, state) {
+            if (cubit.operationAccess != null && !cubit.canViewRequests) {
+              return const _AccessDeniedBody();
+            }
+
+            return ScrollConfiguration(
+              behavior: ScrollConfiguration.of(context).copyWith(
+                dragDevices: {
+                  PointerDeviceKind.touch,
+                  PointerDeviceKind.mouse,
+                },
               ),
-              Expanded(
-                child: BlocBuilder<HomeServiceRequestListCubit,
-                    HomeServiceRequestListState>(
-                  buildWhen: (previous, current) {
-                    return current.maybeWhen(
-                      loadingMoreError: (message) => false,
-                      connectionError: () => false,
-                      error: (message) => false,
-                      orElse: () => true,
-                    );
-                  },
-                  builder: (context, state) {
-                    return state.maybeWhen(
+              child: Column(
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.all(16),
+                    child: FiltersBox(cubit: cubit),
+                  ),
+                  Expanded(
+                    child: state.maybeWhen(
                       idle: () => const SizedBox.shrink(),
                       loading: () => Center(
                         child: CircularProgressIndicator(
@@ -104,13 +100,15 @@ class _SelectedServicesView extends StatelessWidget {
                       ),
                       loaded: () => _buildList(cubit),
                       loadingMore: () => _buildList(cubit),
+                      error: (message) => const _EmptyRequestListBody(),
+                      connectionError: () => const _EmptyRequestListBody(),
                       orElse: () => _buildList(cubit, hasMore: false),
-                    );
-                  },
-                ),
+                    ),
+                  ),
+                ],
               ),
-            ],
-          ),
+            );
+          },
         ),
       ),
     );
@@ -120,31 +118,47 @@ class _SelectedServicesView extends StatelessWidget {
     HomeServiceRequestListCubit cubit, {
     bool? hasMore,
   }) {
+    final operationAccess = cubit.operationAccess;
+    if (operationAccess == null) return const SizedBox.shrink();
+
     return RequestListViewer(
       items: cubit.requestList,
       onSelected: cubit.cacheSelectedRequest,
       onLoadMore: cubit.loadMore,
       hasMore: hasMore ?? cubit.hasMore,
       totalCount: cubit.requestCount,
-      access: access,
+      operationAccess: operationAccess,
       onRefreshAfterReturn: cubit.fetchRequestList,
     );
   }
 }
 
-class _AccessDeniedView extends StatelessWidget {
-  const _AccessDeniedView();
+class _EmptyRequestListBody extends StatelessWidget {
+  const _EmptyRequestListBody();
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: const SimpleAppBar(title: 'درخواست های خدمت در محل'),
-      body: Center(
-        child: Text(
-          'شما دسترسی لازم برای مشاهده درخواست های خدمت در محل را ندارید.',
-          style: Theme.of(context).textTheme.bodyMedium,
-          textAlign: TextAlign.center,
-        ),
+    return const SizedBox.expand(
+      child: Center(
+        child: EmptyListWidget(),
+      ),
+    );
+  }
+}
+
+class _AccessDeniedBody extends StatelessWidget {
+  const _AccessDeniedBody();
+
+  @override
+  Widget build(BuildContext context) {
+    return Center(
+      child: Text(
+        'شما دسترسی لازم برای مشاهده درخواست های خدمت در محل را ندارید.',
+        style: Theme
+            .of(context)
+            .textTheme
+            .bodyMedium,
+        textAlign: TextAlign.center,
       ),
     );
   }

@@ -78,7 +78,7 @@ class NoInternetBottomSheet extends StatelessWidget {
           height: buttonHeight,
           title: 'تلاش دوباره',
           backgroundColor: theme.primaryColor,
-          onTap: (){
+          onTap: () {
             Navigator.of(context).pop();
           onRetry();
           }

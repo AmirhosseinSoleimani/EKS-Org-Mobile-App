@@ -22,7 +22,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/request_sta
 import 'package:eks_sana_plus_org/src/features/services/presentation/update_request_page/update_request_page.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/enums/invoice_type.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/presentation/pages/invoice_page.dart';
-import 'package:eks_sana_plus_org/src/shared/features/session/domain/policies/current_session_access_policy.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/request_operation_access_entity.dart';
 import 'package:flutter/material.dart';
 
 enum RequestCardOperation {
@@ -175,7 +175,7 @@ enum RequestCardOperation {
 extension OperationItemVisibility on RequestCardOperation {
   bool isVisible(
     BaseRequestEntity request,
-    CurrentSessionAccessPolicy access,
+    RequestOperationAccessEntity operationAccess,
   ) {
     final status = RequestStatus.fromValue(request.requestStatus);
     final rawStatus = request.requestStatus;
@@ -187,24 +187,24 @@ extension OperationItemVisibility on RequestCardOperation {
     switch (this) {
       case RequestCardOperation.requestDetail:
         return isRelief
-            ? access.canViewServiceRequest()
-            : isHome && access.canViewHomeServiceRequest();
+            ? operationAccess.canView
+            : isHome && operationAccess.canView;
 
       case RequestCardOperation.nonCooperationList:
         if (rawStatus == null || rawStatus < 1 || rawStatus > 9) return false;
         return isRelief
-            ? access.canShowServiceRequestLackOfCooperationButton()
-            : isHome && access.canShowHomeServiceRequestLackOfCooperationButton();
+            ? operationAccess.lackOfCooperation
+            : isHome && operationAccess.lackOfCooperation;
 
       case RequestCardOperation.kartableCycle:
         return isRelief
-            ? access.canShowServiceRequestCartableCycleButton()
-            : isHome && access.canShowHomeServiceRequestCartableCycleButton();
+            ? operationAccess.cartableCycle
+            : isHome && operationAccess.cartableCycle;
 
       case RequestCardOperation.requestStatusHistory:
         return isRelief
-            ? access.canViewServiceRequest()
-            : isHome && access.canViewHomeServiceRequest();
+            ? operationAccess.canView
+            : isHome && operationAccess.canView;
 
       case RequestCardOperation.onlineMap:
         if (isRelief) {
@@ -220,14 +220,14 @@ extension OperationItemVisibility on RequestCardOperation {
 
       case RequestCardOperation.evaluationHistory:
         return isRelief
-            ? access.canShowServiceRequestEvaluationHistoryButton()
-            : isHome && access.canShowHomeServiceRequestEvaluationHistoryButton();
+            ? operationAccess.evaluationHistory
+            : isHome && operationAccess.evaluationHistory;
 
       case RequestCardOperation.chassisRequestHistory:
         return true;
 
       case RequestCardOperation.requestPreInvoice:
-        return isHome && access.canShowHomeServiceRequestCustomerInvoiceButton();
+        return isHome && operationAccess.customerInvoice;
 
       case RequestCardOperation.customerInvoice:
         if (!hasInvoiceDocument ||
@@ -235,8 +235,8 @@ extension OperationItemVisibility on RequestCardOperation {
           return false;
         }
         return isRelief
-            ? access.canShowServiceRequestCustomerInvoiceButton()
-            : isHome && access.canShowHomeServiceRequestCustomerInvoiceButton();
+            ? operationAccess.customerInvoice
+            : isHome && operationAccess.customerInvoice;
 
       case RequestCardOperation.emdadgarInvoice:
         if (!hasInvoiceDocument ||
@@ -244,8 +244,8 @@ extension OperationItemVisibility on RequestCardOperation {
           return false;
         }
         return isRelief
-            ? access.canShowServiceRequestEmdadgarInvoiceButton()
-            : isHome && access.canShowHomeServiceRequestEmdadgarInvoiceButton();
+            ? operationAccess.emdadgarInvoice
+            : isHome && operationAccess.emdadgarInvoice;
 
       case RequestCardOperation.updateRequest:
         return isRelief &&
@@ -258,33 +258,33 @@ extension OperationItemVisibility on RequestCardOperation {
             return false;
           }
           if (rawStatus < RequestStatus.canceled.value) {
-            return access.canShowServiceRequestCancelBeforeAssignButton();
+            return operationAccess.cancelBeforeAssign;
           }
           if (rawStatus > RequestStatus.canceled.value) {
-            return access.canShowServiceRequestCancelAfterAssignButton();
+            return operationAccess.cancelAfterAssign;
           }
           return false;
         }
         return isHome &&
             status != RequestStatus.canceled &&
             status != RequestStatus.closed &&
-            access.canShowHomeServiceRequestCancelButton();
+            operationAccess.cancel;
 
       case RequestCardOperation.completeUrgentRequest:
         return request is ReliefRequestEntity &&
             (request.isUrgentRequest ?? false) &&
             !(request.isUrgentRequestCompleted ?? false) &&
-            access.canCompleteUrgentServiceRequest();
+            operationAccess.urgentServiceRequestCompleted;
 
       case RequestCardOperation.changeHomeServiceRequestTime:
         return isHome &&
-            access.canUpdateHomeServiceRequest() &&
+            operationAccess.canUpdate &&
             (status == RequestStatus.waitingAssignment ||
                 status == RequestStatus.reserved);
 
       case RequestCardOperation.changeHomeServiceRequestAddress:
         return isHome &&
-            access.canUpdateHomeServiceRequest() &&
+            operationAccess.canUpdate &&
             status == RequestStatus.waitingAssignment;
 
       case RequestCardOperation.followUpRegister:
@@ -293,10 +293,10 @@ extension OperationItemVisibility on RequestCardOperation {
               rawStatus >= RequestStatus.dispatched.value &&
               rawStatus < RequestStatus.closed.value &&
               (request.addressHasBeenSet ?? false) &&
-              access.canShowServiceRequestFollowUpButton();
+              operationAccess.followUp;
         }
         return isHome &&
-            ((access.canShowHomeServiceRequestFollowUpButton() &&
+            ((operationAccess.followUp &&
                     rawStatus != null &&
                     rawStatus >= RequestStatus.dispatched.value &&
                     rawStatus <= RequestStatus.completed.value) ||
@@ -305,37 +305,37 @@ extension OperationItemVisibility on RequestCardOperation {
       case RequestCardOperation.aidServiceFactorRegister:
         return isRelief &&
             status == RequestStatus.completed &&
-            access.canShowServiceRequestInvoiceRegistrationButton();
+            operationAccess.invoiceRegistration;
 
       case RequestCardOperation.homeServiceFactorRegister:
         return isHome &&
             status == RequestStatus.completed &&
-            access.canShowHomeServiceRequestInvoiceRegistrationButton();
+            operationAccess.invoiceRegistration;
 
       case RequestCardOperation.assignEmdadgar:
         if (isRelief) {
           return status == RequestStatus.waitingAssignment &&
               (request.addressHasBeenSet ?? false) &&
-              access.canShowServiceRequestAssignButton();
+              operationAccess.assign;
         }
         return isHome &&
             (status == RequestStatus.waitingAssignment ||
                 status == RequestStatus.reserved) &&
-            access.canShowHomeServiceRequestAssignButton();
+            operationAccess.assign;
 
       case RequestCardOperation.cancelEmdadgar:
         if (isRelief) {
           return rawStatus != null &&
               rawStatus >= RequestStatus.dispatched.value &&
               rawStatus <= RequestStatus.inProgress.value &&
-              access.canShowServiceRequestAssignCancelButton();
+              operationAccess.assignCancel;
         }
         return isHome &&
             (status == RequestStatus.reserved ||
                 (rawStatus != null &&
                     rawStatus >= RequestStatus.dispatched.value &&
                     rawStatus <= RequestStatus.inProgress.value)) &&
-            access.canShowHomeServiceRequestAssignCancelButton();
+            operationAccess.assignCancel;
     }
   }
 }

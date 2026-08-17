@@ -4,7 +4,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract
 import 'package:eks_sana_plus_org/src/features/services/presentation/enums/request_card_operation.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/request_detail_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/bottom_sheet/request_operations_bottom_sheet.dart';
-import 'package:eks_sana_plus_org/src/shared/features/session/domain/policies/current_session_access_policy.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/request_operation_access_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card_actions.dart';
@@ -19,7 +19,7 @@ class RequestCard extends StatelessWidget {
   final String serviceTitle;
   final Color serviceColor;
   final IconData serviceIcon;
-  final CurrentSessionAccessPolicy access;
+  final RequestOperationAccessEntity operationAccess;
   final FutureOr<void> Function(BaseRequestEntity) onSelected;
   final FutureOr<void> Function()? onRefreshAfterReturn;
 
@@ -29,7 +29,7 @@ class RequestCard extends StatelessWidget {
     required this.serviceTitle,
     required this.serviceColor,
     required this.serviceIcon,
-    required this.access,
+    required this.operationAccess,
     required this.onSelected,
     required this.onRefreshAfterReturn,
   });
@@ -124,7 +124,7 @@ class RequestCard extends StatelessWidget {
 
   Future<void> _showOperationsBottomSheet(BuildContext context) async {
     final operations = RequestCardOperation.values
-        .where((operation) => operation.isVisible(request, access))
+        .where((operation) => operation.isVisible(request, operationAccess))
         .toList(growable: false);
 
     if (operations.isEmpty) return;
