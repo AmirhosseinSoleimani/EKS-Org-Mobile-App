@@ -23,6 +23,7 @@ import 'package:eks_sana_plus_org/src/features/services/data/models/post_follow_
 import 'package:eks_sana_plus_org/src/features/services/data/models/reference_car_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/relief_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/request_status_history_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/request_operation_access_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/update_service_response_model.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 import 'package:injectable/injectable.dart';
@@ -51,6 +52,14 @@ abstract class RequestService {
   @GET('/api/HomeServiceRequest/GetHomeServiceRequest')
   Future<BaseSingleResponse<HomeServiceRequestModel>> getHomeServiceRequestById(
       @Queries() Map<String, dynamic> query);
+
+  @GET('/api/AidServiceRequest/GetServiceRequestOperationAccess')
+  Future<BaseSingleResponse<RequestOperationAccessModel>>
+      getAidServiceRequestOperationAccess();
+
+  @GET('/api/HomeServiceRequest/GetHomeServiceRequestOperationAccess')
+  Future<BaseSingleResponse<RequestOperationAccessModel>>
+      getHomeServiceRequestOperationAccess();
 
 
   @POST('/api/LackOfCooperation/getLackOfCooperationList')

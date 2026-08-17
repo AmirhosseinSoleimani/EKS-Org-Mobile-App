@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/Followup_Model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/cancel_request_reason_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/car_covers_model.dart';
@@ -40,6 +41,7 @@ import 'package:eks_sana_plus_org/src/features/services/data/models/post_follow_
 import 'package:eks_sana_plus_org/src/features/services/data/models/reference_car_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/relief_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/request_status_history_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/request_operation_access_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/update_service_response_model.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 
@@ -54,6 +56,9 @@ abstract class RequestDataSource {
   Future<BaseSingleResponse<HomeServiceRequestListModel>> getHomeServiceRequestList(RequestFilterParamModel param);
 
   Future<BaseSingleResponse<HomeServiceRequestModel>> getHomeServiceRequestById(int id);
+
+  Future<BaseSingleResponse<RequestOperationAccessModel>> getRequestOperationAccess(
+      ServiceType serviceType);
 
   Future<BaseSingleResponse<NonCooperationListModel>> getNonCooperationList(
       RequestOperationParamModel param);

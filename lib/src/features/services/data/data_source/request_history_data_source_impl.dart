@@ -42,6 +42,7 @@ import 'package:eks_sana_plus_org/src/features/services/data/models/post_follow_
 import 'package:eks_sana_plus_org/src/features/services/data/models/reference_car_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/relief_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/request_status_history_model.dart';
+import 'package:eks_sana_plus_org/src/features/services/data/models/request_operation_access_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/update_service_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/service/request_service.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
@@ -70,6 +71,13 @@ class RequestDataSourceImpl extends RequestDataSource {
   @override
   Future<BaseSingleResponse<HomeServiceRequestModel>> getHomeServiceRequestById(
       int id) async => await _service.getHomeServiceRequestById({"id": id});
+
+  @override
+  Future<BaseSingleResponse<RequestOperationAccessModel>> getRequestOperationAccess(
+          ServiceType serviceType) async =>
+      serviceType == ServiceType.reliefService
+          ? await _service.getAidServiceRequestOperationAccess()
+          : await _service.getHomeServiceRequestOperationAccess();
 
   @override
   Future<BaseSingleResponse<NonCooperationListModel>> getNonCooperationList(

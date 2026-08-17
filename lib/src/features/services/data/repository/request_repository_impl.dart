@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/data_source/request_history_data_source.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/cancel_request_reason_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/car_covers_entity.dart';
@@ -42,6 +43,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/post_fol
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/reference_car_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/request_status_history_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/request_operation_access_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/update_service_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/repository/request_repository.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
@@ -91,6 +93,17 @@ class RequestRepositoryImpl extends RequestRepository {
       int id) async {
     try {
       final result = await _dataSource.getHomeServiceRequestById(id);
+      return result.toApiResult();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<RequestOperationAccessEntity>> getRequestOperationAccess(
+      ServiceType serviceType) async {
+    try {
+      final result = await _dataSource.getRequestOperationAccess(serviceType);
       return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);

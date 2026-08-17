@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/cancel_request_reason_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/car_covers_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/cartable_cycle_entity.dart';
@@ -41,6 +42,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/post_fol
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/reference_car_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/request_status_history_entity.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/request_operation_access_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/update_service_response_entity.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 
@@ -54,6 +56,9 @@ abstract class RequestRepository {
       RequestFilterParamEntity param);
 
   Future<ApiResult<HomeServiceRequestEntity?>> getHomeServiceRequestById(int id);
+
+  Future<ApiResult<RequestOperationAccessEntity>> getRequestOperationAccess(
+      ServiceType serviceType);
 
   Future<ApiResult<NonCooperationListEntity?>> getNonCooperationList(
       RequestOperationParamEntity param);
