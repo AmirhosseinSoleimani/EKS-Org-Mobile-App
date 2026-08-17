@@ -105,7 +105,7 @@ class EmdadgarInfoModel extends EmdadgarInfoEntity {
       nLong: (json['nLong'] as num?)?.toDouble(),
       irancellMobile: json['irancellMobile'],
       allEmdadgarIrancellMobile: json['allEmdadgarIrancellMobile'],
-      mobile: json['mobile'],
+      mobile: json['mobile'] ?? json['irancellMobile'],
       allEmdadgarMobile: json['allEmdadgarMobile'],
       mahalId: json['mahalId'],
       ostanNamayandegiText: json['ostanNamayandegiText'],

@@ -61,7 +61,8 @@ class EvaluationHistoryItemModel extends EvaluationHistoryItemEntity {
       hasImage: json['hasImage'],
       description: json['description'],
       cancelReasonTitle: json['cancelReasonTitle'],
-      cancelReasonDetailTitle: json['cancelReasonDetailTitle'],
+      cancelReasonDetailTitle:
+          json['cancelReasonDetailTitle'] ?? json['CancelReasonDetailTitle'],
     );
   }
 }

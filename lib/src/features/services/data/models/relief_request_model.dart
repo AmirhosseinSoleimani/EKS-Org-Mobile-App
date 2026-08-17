@@ -59,6 +59,7 @@ class ReliefRequestModel extends ReliefRequestEntity {
     super.emVehicleSubType,
     super.emRepresentationName,
     super.emRepresentationCode,
+    super.distanceToCustomer,
     super.isGuaranty,
     super.isSubscription,
     super.dispatcher,
@@ -152,7 +153,9 @@ class ReliefRequestModel extends ReliefRequestEntity {
 
       dispatcher: json['dispatcher'],
 
-      isGuaranty: json['isGuaranty'] ?? false,
+      isGuaranty: json['isGuaranty'] ??
+          json['isGaranty'] ??
+          json['garanty_IsGaranty'],
       isSubscription: json['subscription'] ?? json['isSubscription'] ?? false,
 
       emFullName: json['emdadgarName'] ?? json['emFullName'],
@@ -163,6 +166,7 @@ class ReliefRequestModel extends ReliefRequestEntity {
       emVehicleSubType: json['emVehicleSubType'],
       emRepresentationName: json['emRepresentationName'],
       emRepresentationCode:  json['emRepresentationCode'],
+      distanceToCustomer: (json['distanceToCustomer'] as num?)?.toDouble(),
 
       agencyVehicleLabelCode: json['agencyVehicleLabelCode'],
 

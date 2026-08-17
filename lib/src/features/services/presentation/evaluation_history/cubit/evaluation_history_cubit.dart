@@ -41,8 +41,18 @@ class EvaluationHistoryCubit extends Cubit<EvaluationHistoryState> {
       EvaluationIsAcceptedFilter>(EvaluationIsAcceptedFilter.accepted);
 
   BaseRequestEntity? selectedBaseRequest;
-  final List<EvaluationHistoryItemEntity> items = [];
   final List<EvaluationHistoryItemEntity> _fullItems = [];
+
+  List<EvaluationHistoryItemEntity> get items {
+    switch (selectedEvaluationIsisAcceptedNotifier.value) {
+      case EvaluationIsAcceptedFilter.accepted:
+        return _fullItems
+            .where((item) => item.isAccepted == true)
+            .toList(growable: false);
+      case EvaluationIsAcceptedFilter.all:
+        return List<EvaluationHistoryItemEntity>.unmodifiable(_fullItems);
+    }
+  }
 
   EmdadgarInfoEntity? emdadgarInfo;
   String? _errorMessage;
@@ -52,11 +62,13 @@ class EvaluationHistoryCubit extends Cubit<EvaluationHistoryState> {
           : 'درخواست شما با خطا مواجه شد، لطفا با پشتیبانی تماس بگیرید';
 
   Future<void> init() async {
+    _errorMessage = null;
+    emdadgarInfo = null;
+
     final result = await _initializeData();
 
     switch (result) {
       case FetchResultType.success:
-        _applyFilter();
         _safeEmit(const EvaluationHistoryState.loaded());
         break;
 
@@ -87,27 +99,33 @@ class EvaluationHistoryCubit extends Cubit<EvaluationHistoryState> {
       return requestResult;
     }
 
-    if (_shouldFetchEmdadgarInfo) {
-      final emdadgarResult = await _fetchEmdadgarInfo();
-      if (emdadgarResult != FetchResultType.success) {
-        return emdadgarResult;
-      }
-    }
-
     final listResult = await _loadEvaluationHistoryList();
     if (listResult != FetchResultType.success) {
       return listResult;
+    }
+
+    if (_shouldFetchEmdadgarInfo) {
+      final emdadgarResult = await _fetchEmdadgarInfo();
+      if (emdadgarResult == FetchResultType.expireToken) {
+        return emdadgarResult;
+      }
+      if (emdadgarResult != FetchResultType.success) {
+        emdadgarInfo = null;
+      }
     }
 
     return FetchResultType.success;
   }
 
   bool get _shouldFetchEmdadgarInfo {
-    return (selectedBaseRequest?.requestStatus ?? 0) > 1;
+    if (selectedBaseRequest?.serviceType == ServiceType.homeService) {
+      return selectedBaseRequest?.hasEmdadgar == true;
+    }
+
+    return (selectedBaseRequest?.planningId ?? 0) > 0;
   }
 
   Future<FetchResultType> _loadEvaluationHistoryList() async {
-    items.clear();
     final result = await _getEvaluationHistoryListUseCase(
       ServiceRequestParamEntity(
         serviceType: selectedBaseRequest?.serviceType?.value ?? ServiceType.reliefService.value,
@@ -212,29 +230,10 @@ class EvaluationHistoryCubit extends Cubit<EvaluationHistoryState> {
     );
   }
 
-  void _applyFilter() {
-    final filter = selectedEvaluationIsisAcceptedNotifier.value;
-
-    items
-      ..clear()
-      ..addAll(
-        _fullItems.where((item) {
-          switch (filter) {
-            case EvaluationIsAcceptedFilter.accepted:
-              return item.isAccepted == true;
-            case EvaluationIsAcceptedFilter.all:
-              return true;
-          }
-        }),
-      );
-  }
-
-
-  void setSelectedEvaluationIsAccept(EvaluationIsAcceptedFilter isAcceptedFilter) {
+  void setSelectedEvaluationIsAccept(
+    EvaluationIsAcceptedFilter isAcceptedFilter,
+  ) {
     selectedEvaluationIsisAcceptedNotifier.value = isAcceptedFilter;
-    _applyFilter();
-    _safeEmit(const EvaluationHistoryState.loaded());
-
   }
 
   void _safeEmit(EvaluationHistoryState state) {

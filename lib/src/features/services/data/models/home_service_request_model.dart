@@ -66,6 +66,7 @@ class HomeServiceRequestModel extends HomeServiceRequestEntity {
     super.emVehicleSubType,
     super.emRepresentationName,
     super.emRepresentationCode,
+    super.distanceToCustomer,
     super.isGuaranty,
     super.isSubscription,
     super.requestDateTime,
@@ -169,8 +170,11 @@ class HomeServiceRequestModel extends HomeServiceRequestEntity {
       emVehicleSubType: json['emVehicleSubType'],
       emRepresentationName:  json['emRepresentationName'],
       emRepresentationCode: json['emRepresentationCode'],
+      distanceToCustomer: (json['distanceToCustomer'] as num?)?.toDouble(),
 
-      isGuaranty: json['isGuaranty'] ?? json['isGaranty'],
+      isGuaranty: json['isGuaranty'] ??
+          json['isGaranty'] ??
+          json['garanty_IsGaranty'],
       isSubscription: json['subscription'] ?? json['isSubscription'],
 
       requestDateTime: json['requestDateTime'],

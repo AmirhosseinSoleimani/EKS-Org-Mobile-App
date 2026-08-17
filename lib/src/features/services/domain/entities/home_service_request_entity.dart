@@ -84,6 +84,7 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
     super.emVehicleSubType,
     super.emRepresentationName,
     super.emRepresentationCode,
+    super.distanceToCustomer,
     super.isGuaranty,
     super.isSubscription,
     this.requestDay,
@@ -189,6 +190,7 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
       cancelReasonId: cancelReasonId,
       addressHasBeenSet: addressHasBeenSet,
       invoiceDocumentGuid: invoiceDocumentGuid,
+      distanceToCustomer: distanceToCustomer,
     );
   }
 }

@@ -85,6 +85,7 @@ class ReliefRequestEntity extends BaseRequestEntity {
     super.emVehicleSubType,
     super.emRepresentationName,
     super.emRepresentationCode,
+    super.distanceToCustomer,
     super.isGuaranty,
     super.isSubscription,
     super.dispatcher,
@@ -198,6 +199,7 @@ class ReliefRequestEntity extends BaseRequestEntity {
       requestDateTime:requestDateTime,
       emdadServiceCategoryId: emdadServiceCategoryId,
       emdadServiceId: emdadServiceId,
+      distanceToCustomer: distanceToCustomer,
     );
   }
 }

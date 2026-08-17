@@ -79,6 +79,7 @@ abstract class BaseRequestEntity {
   final int? emVehicleSubType;
   final String? emRepresentationName;
   final String? emRepresentationCode;
+  final double? distanceToCustomer;
 
   bool get isHomeService => serviceType == ServiceType.homeService;
 
@@ -159,6 +160,7 @@ abstract class BaseRequestEntity {
     this.emVehicleSubType,
     this.emRepresentationName,
     this.emRepresentationCode,
+    this.distanceToCustomer,
   });
 
 
