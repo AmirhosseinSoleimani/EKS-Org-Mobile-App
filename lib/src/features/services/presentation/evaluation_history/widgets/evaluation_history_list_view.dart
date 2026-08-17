@@ -1,9 +1,9 @@
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/evaluation_history_item_entity.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/key_value_row.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_wiget_row.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/vertical_line_indicator.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/key_value_row.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 
@@ -124,24 +124,18 @@ class EvaluationListView extends StatelessWidget {
                       children: [
                         KeyValueRow(
                           label: "وضعیت",
-                          value: item.statusTitle ?? "-",
+                          value: hasInvoice(item)
+                              ? "دارای فاکتور"
+                              : "فاقد فاکتور",
                         ),
                         KeyValueWidgetRow(
                           label: "نوع فاکتور",
                           value: StatusLabel(
-                            text:hasInvoice(item)
-                                ? "دارای فاکتور"
-                                : "فاقد فاکتور",
+                            text: item.statusTitle ?? "-",
                             color:  hasInvoice(item)
                                 ?Theme.of(context).colorScheme.primary:Colors.grey,
                             variant: StatusLabelVariant.filledWhiteText,
                           ),
-                        ),
-                        KeyValueRow(
-                          label: "نوع فاکتور",
-                          value: hasInvoice(item)
-                              ? "دارای فاکتور"
-                              : "فاقد فاکتور",
                         ),
                         KeyValueRow(
                           label: "نام و نام خانوادگی",
