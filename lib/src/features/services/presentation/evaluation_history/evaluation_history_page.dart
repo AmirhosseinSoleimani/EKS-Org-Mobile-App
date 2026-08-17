@@ -119,13 +119,9 @@ class _LoadedView extends StatelessWidget {
         child: Column(
           children: [
             FilterBox(cubit: cubit),
-            const Align(
-              alignment: Alignment.centerRight,
-              child: BodyMediumText(text: "اطلاعات درخواست"),
-            ),
             ExpandableSection(
               isExpanded: false,
-              header: RequestStatusSection(request: cubit.selectedBaseRequest),
+              header: RequestStatusSection(showTitle: true,request: cubit.selectedBaseRequest),
               child: RequestDetailSection(
                 selectedRequest: cubit.selectedBaseRequest,
                 showCustomerInfo: true,

@@ -20,11 +20,12 @@ class AgentInfoDetailSection extends StatelessWidget {
       children: [
         KeyValueRow(
           label: "نام",
-          value: agentInfo.agencyName ?? "-",
+          value: selectedRequest?.emFullName ?? agentInfo.aidPerName1 ?? "-",
         ),
         KeyValueRow(
           label: "شماره موبایل",
-          value: agentInfo.mobile ?? agentInfo.mobile?.toLocalMobile() ?? "-",
+          value: (agentInfo.mobile ?? agentInfo.irancellMobile)?.toLocalMobile() ??
+              "-",
         ),
         KeyValueRow(
           label: "نوع ناوگان",
@@ -37,9 +38,11 @@ class AgentInfoDetailSection extends StatelessWidget {
         ),
         KeyValueRow(
           label: "مسافت طی شده",
-          value: agentInfo.distanceKmToOrigin != null
-              ? "${agentInfo.distanceKmToOrigin}"
-              : "-",
+          value: selectedRequest?.distanceToCustomer != null
+              ? "${selectedRequest?.distanceToCustomer}"
+              : agentInfo.distanceKmToOrigin != null
+                  ? "${agentInfo.distanceKmToOrigin}"
+                  : "-",
         ),
         KeyValueRow(
           label: "اعزام کننده",

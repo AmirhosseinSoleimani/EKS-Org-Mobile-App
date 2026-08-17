@@ -68,19 +68,19 @@ class _TimelineCardContainer extends StatelessWidget {
               ...children,
               if (expandedChildren.isNotEmpty) ...[
                 if (!isExpanded)
-                  ExpandToggleButton(
-                    label: "جزئیات بیشتر",
-                    icon: Icons.expand_more,
-                    onTap: () => expanded.value = true,
-                    color: colorScheme.secondary,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: ExpandToggleButton(
+                      label: "جزئیات بیشتر",
+                      icon: Icons.expand_more,
+                      onTap: () => expanded.value = true,
+                      color: colorScheme.secondary,
+                    ),
                   ),
                 AnimatedContainer(
                   duration: const Duration(milliseconds: 250),
                   curve: Curves.easeInOut,
                   height: isExpanded ? null : 0,
-                  padding: isExpanded
-                      ? const EdgeInsets.only(top: 12)
-                      : EdgeInsets.zero,
                   child: isExpanded
                       ? Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -89,11 +89,14 @@ class _TimelineCardContainer extends StatelessWidget {
                       : null,
                 ),
                 if (isExpanded)
-                  ExpandToggleButton(
-                    label: "جزئیات کمتر",
-                    icon: Icons.expand_less,
-                    onTap: () => expanded.value = false,
-                    color: colorScheme.secondary,
+                  Padding(
+                    padding: const EdgeInsets.only(top: 8.0),
+                    child: ExpandToggleButton(
+                      label: "جزئیات کمتر",
+                      icon: Icons.expand_less,
+                      onTap: () => expanded.value = false,
+                      color: colorScheme.secondary,
+                    ),
                   ),
               ],
             ],

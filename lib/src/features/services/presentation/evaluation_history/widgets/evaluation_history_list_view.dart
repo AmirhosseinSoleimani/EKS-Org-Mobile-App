@@ -6,6 +6,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/key_value_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/timeline_item_card.dart';
@@ -132,13 +133,40 @@ class _EvaluationListViewState extends State<EvaluationListView> {
                             label: "علت در محل نبودن امدادخواه",
                             value: item.cancelReasonDetailTitle ?? "-",
                           ),
-                          KeyValueRow(
-                            label: "توضیحات",
-                            value: item.description ?? "-",
+
+                          FittedBox(
+                            child: BodySmallText(
+                              text: "توضیحات:",
+                            ),
+                          ),
+                          Space.h8,
+                          FittedBox(
+                            child: BodySmallText(
+                              text: item.description ?? "-",
+                            ),
                           ),
                         ],
                         children: [
+                          KeyValueRow(
+                            label: "وضعیت",
+                            value: hasInvoice(item)
+                                ? "دارای فاکتور"
+                                : "فاقد فاکتور",
+                          ),
                           KeyValueWidgetRow(
+                            label: "نوع فاکتور",
+                            value: StatusLabel(
+                              text: item.statusTitle ?? "-",
+                              color: hasInvoice(item)
+                                  ? Theme
+                                  .of(context)
+                                  .colorScheme
+                                  .primary : Colors.grey,
+                              variant: StatusLabelVariant.filledWhiteText,
+                            ),
+                          ),
+
+                          /*    KeyValueWidgetRow(
                             label: "وضعیت",
                             value: StatusLabel(
                               text: item.isAccepted == true
@@ -152,7 +180,7 @@ class _EvaluationListViewState extends State<EvaluationListView> {
                           KeyValueRow(
                             label: "نوع فاکتور",
                             value: item.statusTitle ?? "-",
-                          ),
+                          ),*/
                           KeyValueRow(
                             label: "نام و نام خانوادگی",
                             value: _insertUserTitle(item),
@@ -201,6 +229,9 @@ class _EvaluationListViewState extends State<EvaluationListView> {
       ),
     );
   }
+
+  bool hasInvoice(EvaluationHistoryItemEntity item) =>
+      (item.invoiceId != null && item.invoiceId != -1);
 
   String _insertUserTitle(EvaluationHistoryItemEntity item) {
     final insertUserName = item.insertUserName?.trim();
