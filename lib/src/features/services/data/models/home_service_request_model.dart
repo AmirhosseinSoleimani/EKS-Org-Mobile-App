@@ -110,8 +110,6 @@ class HomeServiceRequestModel extends HomeServiceRequestEntity {
     super.weightGroupTitle,
   });
   factory HomeServiceRequestModel.fromJson(Map<String, dynamic>? json) {
-    print('xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx');
-    print(json);
     if (json == null) return const HomeServiceRequestModel();
 
     return HomeServiceRequestModel(
