@@ -420,7 +420,7 @@ class _RequestService implements RequestService {
       Options(method: 'POST', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/NewEmdadgar/GetEmdadgarByServiceRequestId',
+            '/api/Emdadgar/GetEmdadgarByServiceRequestId',
             queryParameters: queryParameters,
             data: _data,
           )
