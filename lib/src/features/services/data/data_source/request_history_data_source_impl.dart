@@ -62,7 +62,7 @@ class RequestDataSourceImpl extends RequestDataSource {
   @override
   Future<BaseSingleResponse<ReliefRequestModel>> getReliefRequestById(
       int id) async =>
-      await _service.getReliefRequestById({"id": id});
+      await _service.getReliefRequestById({"Id": id});
 
   @override
   Future<BaseSingleResponse<HomeServiceRequestListModel>> getHomeServiceRequestList(RequestFilterParamModel param) async =>
@@ -70,7 +70,7 @@ class RequestDataSourceImpl extends RequestDataSource {
 
   @override
   Future<BaseSingleResponse<HomeServiceRequestModel>> getHomeServiceRequestById(
-      int id) async => await _service.getHomeServiceRequestById({"id": id});
+      int id) async => await _service.getHomeServiceRequestById({"Id": id});
 
   @override
   Future<BaseSingleResponse<RequestOperationAccessModel>> getRequestOperationAccess(

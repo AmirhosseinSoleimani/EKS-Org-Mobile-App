@@ -43,7 +43,7 @@ class _RequestService implements RequestService {
     try {
       _value = BaseSingleResponse<ReliefRequestListModel>.fromJson(
         _result.data!,
-        (json) => ReliefRequestListModel.fromJson(json),
+        (json) => ReliefRequestListModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
@@ -135,7 +135,7 @@ class _RequestService implements RequestService {
           Options(method: 'GET', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/HomeServiceRequest/GetHomeServiceRequest',
+                '/api/HomeServiceRequest/GetById',
                 queryParameters: queryParameters,
                 data: _data,
               )
@@ -183,9 +183,8 @@ class _RequestService implements RequestService {
     try {
       _value = BaseSingleResponse<RequestOperationAccessModel>.fromJson(
         _result.data!,
-        (json) => RequestOperationAccessModel.fromJson(
-          json as Map<String, dynamic>,
-        ),
+        (json) =>
+            RequestOperationAccessModel.fromJson(json as Map<String, dynamic>),
       );
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);

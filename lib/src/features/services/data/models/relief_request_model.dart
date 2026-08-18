@@ -60,6 +60,8 @@ class ReliefRequestModel extends ReliefRequestEntity {
     super.emRepresentationName,
     super.emRepresentationCode,
     super.distanceToCustomer,
+    super.emdadgarPriority,
+    super.emdadgarEvaluationDescription,
     super.isGuaranty,
     super.isSubscription,
     super.dispatcher,
@@ -167,6 +169,8 @@ class ReliefRequestModel extends ReliefRequestEntity {
       emRepresentationName: json['emRepresentationName'],
       emRepresentationCode:  json['emRepresentationCode'],
       distanceToCustomer: (json['distanceToCustomer'] as num?)?.toDouble(),
+      emdadgarPriority: (json['emdadgarPriority'] as num?)?.toInt(),
+      emdadgarEvaluationDescription: json['emdadgarEvaluationDescription'],
 
       agencyVehicleLabelCode: json['agencyVehicleLabelCode'],
 

@@ -49,7 +49,7 @@ abstract class RequestService {
   Future<BaseSingleResponse<HomeServiceRequestListModel>>
       getHomeServiceRequestList(@Body() Map<String, dynamic> body);
 
-  @GET('/api/HomeServiceRequest/GetHomeServiceRequest')
+  @GET('/api/HomeServiceRequest/GetById')
   Future<BaseSingleResponse<HomeServiceRequestModel>> getHomeServiceRequestById(
       @Queries() Map<String, dynamic> query);
 

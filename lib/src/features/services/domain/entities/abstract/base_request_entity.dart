@@ -80,6 +80,8 @@ abstract class BaseRequestEntity {
   final String? emRepresentationName;
   final String? emRepresentationCode;
   final double? distanceToCustomer;
+  final int? emdadgarPriority;
+  final String? emdadgarEvaluationDescription;
 
   bool get isHomeService => serviceType == ServiceType.homeService;
 
@@ -161,6 +163,8 @@ abstract class BaseRequestEntity {
     this.emRepresentationName,
     this.emRepresentationCode,
     this.distanceToCustomer,
+    this.emdadgarPriority,
+    this.emdadgarEvaluationDescription,
   });
 
 

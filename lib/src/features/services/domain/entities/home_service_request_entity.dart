@@ -85,6 +85,8 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
     super.emRepresentationName,
     super.emRepresentationCode,
     super.distanceToCustomer,
+    super.emdadgarPriority,
+    super.emdadgarEvaluationDescription,
     super.isGuaranty,
     super.isSubscription,
     this.requestDay,
@@ -191,6 +193,8 @@ class HomeServiceRequestEntity extends BaseRequestEntity {
       addressHasBeenSet: addressHasBeenSet,
       invoiceDocumentGuid: invoiceDocumentGuid,
       distanceToCustomer: distanceToCustomer,
+      emdadgarPriority: emdadgarPriority,
+      emdadgarEvaluationDescription: emdadgarEvaluationDescription,
     );
   }
 }

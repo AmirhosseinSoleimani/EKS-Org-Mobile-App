@@ -99,7 +99,7 @@ class _StepRow extends StatelessWidget {
     final s = item.step;
 
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         // آیکن
         Container(

@@ -86,6 +86,8 @@ class ReliefRequestEntity extends BaseRequestEntity {
     super.emRepresentationName,
     super.emRepresentationCode,
     super.distanceToCustomer,
+    super.emdadgarPriority,
+    super.emdadgarEvaluationDescription,
     super.isGuaranty,
     super.isSubscription,
     super.dispatcher,
@@ -200,6 +202,8 @@ class ReliefRequestEntity extends BaseRequestEntity {
       emdadServiceCategoryId: emdadServiceCategoryId,
       emdadServiceId: emdadServiceId,
       distanceToCustomer: distanceToCustomer,
+      emdadgarPriority: emdadgarPriority,
+      emdadgarEvaluationDescription: emdadgarEvaluationDescription,
     );
   }
 }

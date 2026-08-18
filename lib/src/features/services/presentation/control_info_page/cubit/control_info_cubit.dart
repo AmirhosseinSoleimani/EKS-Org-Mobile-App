@@ -37,6 +37,10 @@ class ControlInfoCubit extends Cubit<ControlInfoState> {
   BaseRequestEntity? selectedRequest;
   ControlInfoEntity? controlInfoEntity;
 
+  bool get hasAssignedAgent => selectedRequest?.isHomeService == true
+      ? selectedRequest?.hasEmdadgar == true
+      : (selectedRequest?.planningId ?? 0) > 0;
+
   Future<void> init() async {
     selectedRequest = await _fetchSelectedRequestItemUseCase();
 
@@ -53,25 +57,56 @@ class ControlInfoCubit extends Cubit<ControlInfoState> {
     }
     _safeEmit(const ControlInfoState.loading());
 
-    await _refreshRequestData();
-
-    if ((selectedRequest?.requestStatus ?? 0) > 1) {
+    final requestLoaded = await _refreshRequestData();
+    if (!requestLoaded) return;
+    print('sdjkfhsdkfj');
+    await _fetchEmdadgarInfo();
+    if (hasAssignedAgent) {
+      print('xxxxxxxxxxxxxxxxx');
       await _fetchEmdadgarInfo();
     }
     await _loadRequestControlInfo();
   }
 
-  Future<void> _refreshRequestData() async {
+  Future<bool> _refreshRequestData() async {
     final id = selectedRequest?.id ?? 0;
     final result = selectedRequest!.isHomeService
         ? await _getHomeServiceRequestByIdUseCase(id)
         : await _getReliefRequestByIdUseCase(id);
 
+    var loaded = false;
     result.whenOrNull(
       success: (data, _, _) {
         selectedRequest = data;
+        loaded = data != null;
+
+        if (!loaded) {
+          _safeEmit(
+            const ControlInfoState.error(
+              message: BottomSheetMessageModel(
+                title: 'خطا',
+                message: 'در دریافت اطلاعات درخواست مشکلی رخ داد.',
+              ),
+            ),
+          );
+        }
+      },
+      failure: (error, message) {
+        _safeEmit(
+          ControlInfoState.error(
+            message: BottomSheetMessageModel(
+              title: '',
+              message: message ?? error.toString(),
+            ),
+          ),
+        );
+      },
+      connectionError: () {
+        _safeEmit(const ControlInfoState.connectionError());
       },
     );
+
+    return loaded;
   }
 
   Future<void> _fetchEmdadgarInfo() async {

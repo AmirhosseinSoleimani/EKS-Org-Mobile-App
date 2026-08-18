@@ -13,6 +13,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_te
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import '../../../../shared/resources/value_manager.dart';
 import 'widgets/control_time_line_section.dart';
@@ -47,14 +48,20 @@ class _View extends StatelessWidget {
             BottomSheetMessage.showErrorWithAction(
               context: context,
               data: message,
-              onPositive: cubit.init,
+              onPositive: () {
+                context.pop();
+                cubit.init();
+              },
             );
           },
           connectionError: () {
             BottomSheetMessage.showCustom(
               context: context,
               content: NoInternetBottomSheet(
-                onRetry: cubit.init,
+                onRetry: () {
+                  context.pop();
+                  cubit.init();
+                },
               ),
               actionWidget: const SizedBox.shrink(),
               isDismissible: false,
@@ -114,25 +121,31 @@ class _LoadedView extends StatelessWidget {
           children: [
             ExpandableSection(
               isExpanded: true,
-              header: RequestStatusSection(request: cubit.selectedRequest),
+              header: RequestStatusSection(
+                request: cubit.selectedRequest,
+                showTitle: true,
+              ),
               child: RequestDetailSection(
                 selectedRequest: cubit.selectedRequest,
                 showCustomerInfo: true,
               ),
             ),
-            if (cubit.emdadgarInfo != null) ...[
-              ExpandableSection(
-                brief: BodySmallText(
-                  text:
-                      "${cubit.emdadgarInfo?.agencyName ?? ''} | ${cubit.emdadgarInfo?.mobile ?? ""}",
-                ),
-                isExpanded: false,
-                header: const BodyMediumText(text: "اطلاعات امداد رسان"),
-                child: AgentInfoDetailSection(
-                  agentInfo: cubit.emdadgarInfo!,
-                ),
+            ExpandableSection(
+              brief: BodySmallText(
+                text:
+                    "${cubit.selectedRequest?.emRepresentationName ?? cubit.emdadgarInfo?.agencyName ?? ''} | ${cubit.selectedRequest?.emMobileNumber1 ?? cubit.emdadgarInfo?.mobile ?? ''}",
               ),
-            ],
+              isExpanded: false,
+              header: BodyMediumText(
+                text: cubit.selectedRequest?.isHomeService == true
+                    ? 'اطلاعات خدمت رسان'
+                    : 'اطلاعات امدادرسان',
+              ),
+              child: AgentInfoDetailSection(
+                agentInfo: cubit.emdadgarInfo,
+                selectedRequest: cubit.selectedRequest,
+              ),
+            ),
             Space.h8,
             ExpandableSection(
               isExpanded: false,
@@ -154,7 +167,7 @@ class _LoadedView extends StatelessWidget {
             Space.h8,
             ExpandableSection(
               isExpanded: false,
-              header: const BodyMediumText(text: "امداد رسان"),
+              header: const BodyMediumText(text: 'امدادرسان'),
               child: ControlTimelineSection(
                 data: cubit.controlInfoEntity?.emdadgar,
                 activeColor: const Color(0xFFE4A321),

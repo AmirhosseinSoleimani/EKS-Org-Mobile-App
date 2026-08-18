@@ -20,55 +20,71 @@ class RequestDetailSection extends StatelessWidget {
     return Column(
       children: [
         KeyValueRow(
-          label: "شماره درخواست",
-        value: selectedRequest?.trackCode.toString() ?? '-',
-      ),
-        KeyValueRow(
-          label: "زمان ثبت",
-          value:
-            "${selectedRequest?.requestDateJalali ?? '-'} - ${selectedRequest?.requestTime ?? '-'}",
-      ),
-        KeyValueRow(
-        label: isRelief ? "ایراد خودرو" : "سرویس انتخاب شده",
-        value: isRelief
-            ? (selectedRequest as ReliefRequestEntity).defectTitle ?? '-'
-            : (selectedRequest as HomeServiceRequestEntity).emdadProductTitle ??
-                "-",
+          label: 'شماره درخواست',
+          value: selectedRequest?.trackCode.toString() ?? '-',
         ),
-      if (selectedRequest is ReliefRequestEntity)
         KeyValueRow(
-            label: "وضعیت خودرو",
+          label: 'زمان ثبت',
           value:
-              (selectedRequest as ReliefRequestEntity).hamlReasonTitle ?? "-",
+              '${selectedRequest?.requestDateJalali ?? '-'} - ${selectedRequest?.requestTime ?? '-'}',
+        ),
+        if (selectedRequest is ReliefRequestEntity) ...[
+          KeyValueRow(
+            label: 'ایراد خودرو',
+            value: reliefRequest?.defectTitle ?? '-',
           ),
-      if (selectedRequest is ReliefRequestEntity)
-        KeyValueRow(
-            label: "وضعیت چرخ‌ها",
-          value: (selectedRequest as ReliefRequestEntity).wheelQuestionTitle ??
-              "-",
+          KeyValueRow(
+            label: 'سرویس خودرو',
+            value: reliefRequest?.emdadServiceTitle ?? '-',
           ),
-      if (showCustomerInfo) ...[
+          if (reliefRequest?.emdadServiceCategoryId == 21) ...[
+            KeyValueRow(
+              label: 'وضعیت خودرو',
+              value: reliefRequest?.hamlReasonTitle ?? '-',
+            ),
+            KeyValueRow(
+              label: 'وضعیت چرخ‌ها',
+              value: reliefRequest?.wheelQuestionTitle ?? '-',
+            ),
+          ],
+        ] else if (selectedRequest is HomeServiceRequestEntity)
+          KeyValueRow(
+            label: 'سرویس درخواستی',
+            value: homeServiceRequest?.emdadProductTitle ??
+                homeServiceRequest?.emdadServiceCategoryTitle ??
+                '-',
+          ),
+        if (showCustomerInfo) ...[
+          KeyValueRow(
+            label: 'نام مشتری',
+            value:
+                '${selectedRequest?.firstName ?? '-'} ${selectedRequest?.lastName ?? ''}'
+                    .trim(),
+          ),
+          KeyValueRow(
+            label: 'شماره تماس مشتری',
+            value: selectedRequest?.customerMobileNumber?.toLocalMobile() ?? '-',
+          ),
+          KeyValueRow(
+            label: 'آدرس',
+            value: selectedRequest?.aidAddress ?? '-',
+          ),
+        ],
         KeyValueRow(
-          label: "نام مشتری",
-          value:
-              "${selectedRequest?.firstName ?? "-"} ${selectedRequest?.lastName ?? ""}"
-                  .trim(),
-        ),
-        KeyValueRow(
-          label: "شماره تماس مشتری",
-          value: selectedRequest?.customerMobileNumber?.toLocalMobile() ?? "-",
-        ),
-        KeyValueRow(
-          label: "آدرس",
-          value: selectedRequest?.aidAddress ?? "-",
+          label: 'توضیحات مشتری',
+          value: selectedRequest?.description ?? '-',
         ),
       ],
-      KeyValueRow(
-          label: "توضیحات مشتری",
-        value: selectedRequest?.description ?? "-",
-      ),
-    ]);
+    );
   }
 
-  bool get isRelief => selectedRequest is ReliefRequestEntity;
+  ReliefRequestEntity? get reliefRequest =>
+      selectedRequest is ReliefRequestEntity
+          ? selectedRequest as ReliefRequestEntity
+          : null;
+
+  HomeServiceRequestEntity? get homeServiceRequest =>
+      selectedRequest is HomeServiceRequestEntity
+          ? selectedRequest as HomeServiceRequestEntity
+          : null;
 }

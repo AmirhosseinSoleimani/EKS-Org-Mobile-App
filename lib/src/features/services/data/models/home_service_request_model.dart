@@ -67,6 +67,8 @@ class HomeServiceRequestModel extends HomeServiceRequestEntity {
     super.emRepresentationName,
     super.emRepresentationCode,
     super.distanceToCustomer,
+    super.emdadgarPriority,
+    super.emdadgarEvaluationDescription,
     super.isGuaranty,
     super.isSubscription,
     super.requestDateTime,
@@ -171,6 +173,8 @@ class HomeServiceRequestModel extends HomeServiceRequestEntity {
       emRepresentationName:  json['emRepresentationName'],
       emRepresentationCode: json['emRepresentationCode'],
       distanceToCustomer: (json['distanceToCustomer'] as num?)?.toDouble(),
+      emdadgarPriority: (json['emdadgarPriority'] as num?)?.toInt(),
+      emdadgarEvaluationDescription: json['emdadgarEvaluationDescription'],
 
       isGuaranty: json['isGuaranty'] ??
           json['isGaranty'] ??
@@ -182,7 +186,7 @@ class HomeServiceRequestModel extends HomeServiceRequestEntity {
 
       vip: json['vip'],
       vipConditionTitle: json['vipConditionTitle'],
-      emdadProductTitle: json['emdadProductTitle'],
+      emdadProductTitle: json['emdadProductTitle'] ?? _extractSelectedServiceTitle(json),
 
       // ===== NEW BASE FIELDS =====
 
@@ -232,4 +236,47 @@ class HomeServiceRequestModel extends HomeServiceRequestEntity {
       serviceType: ServiceType.homeService,
     );
   }
+  static String? _extractSelectedServiceTitle(Map<String, dynamic> json) {
+    final rawCategories = json['serviceCategories'] ?? json['services'];
+    if (rawCategories is! List) {
+      return json['emdadServiceCategoryTitle']?.toString();
+    }
+
+    final categoryTexts = <String>[];
+
+    for (final rawCategory in rawCategories) {
+      if (rawCategory is! Map) continue;
+      final category = Map<String, dynamic>.from(rawCategory);
+      final categoryTitle = category['serviceCategoryTitle']?.toString().trim();
+      final rawServices = category['services'] ?? category['packageServices'];
+
+      final serviceTitles = <String>[];
+      if (rawServices is List) {
+        for (final rawService in rawServices) {
+          if (rawService is! Map) continue;
+          final title = rawService['serviceTitle']?.toString().trim();
+          if (title != null && title.isNotEmpty) {
+            serviceTitles.add(title);
+          }
+        }
+      }
+
+      if (serviceTitles.isNotEmpty) {
+        categoryTexts.add(
+          categoryTitle != null && categoryTitle.isNotEmpty
+              ? '$categoryTitle: ${serviceTitles.join('، ')}'
+              : serviceTitles.join('، '),
+        );
+      } else if (categoryTitle != null && categoryTitle.isNotEmpty) {
+        categoryTexts.add(categoryTitle);
+      }
+    }
+
+    if (categoryTexts.isNotEmpty) {
+      return categoryTexts.join(' | ');
+    }
+
+    return json['emdadServiceCategoryTitle']?.toString();
+  }
+
 }

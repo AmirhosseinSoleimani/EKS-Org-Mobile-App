@@ -17,9 +17,9 @@ class ControlTimelineSection extends StatelessWidget {
     required this.data,
     required this.activeColor,
     this.inactiveColor = Colors.grey,
-    this.titleStart = "حرکت کرده",
-    this.titleArrived = "رسیده",
-    this.titleFinished = "اتمام کار",
+    this.titleStart = 'حرکت کرده',
+    this.titleArrived = 'رسیده است',
+    this.titleFinished = 'اتمام کار',
     super.key,
   });
 
@@ -43,6 +43,11 @@ class ControlTimelineSection extends StatelessWidget {
       ),
     ];
 
+    final timesBetween = [
+      data?.durationFromStartDrivingToArrived,
+      data?.durationFromArrivedToJobDone,
+    ];
+
     return Column(
       children: List.generate(steps.length * 2 - 1, (index) {
         final isStep = index.isEven;
@@ -53,21 +58,21 @@ class ControlTimelineSection extends StatelessWidget {
             item: steps[stepIndex],
             activeColor: activeColor,
           );
-        } else {
-          final lineIndex = (index - 1) ~/ 2;
-
-          final prevActive = steps[lineIndex].event != null;
-          final nextActive = steps[lineIndex + 1].event != null;
-
-          return Padding(
-            padding: const EdgeInsets.symmetric(vertical: 6),
-            child: _LineRow(
-              isActive: prevActive && nextActive,
-              activeColor: activeColor,
-              inactiveColor: inactiveColor,
-            ),
-          );
         }
+
+        final lineIndex = (index - 1) ~/ 2;
+        final prevActive = steps[lineIndex].event != null;
+        final nextActive = steps[lineIndex + 1].event != null;
+
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 6),
+          child: _LineRow(
+            isActive: prevActive && nextActive,
+            activeColor: activeColor,
+            inactiveColor: inactiveColor,
+            text: timesBetween[lineIndex],
+          ),
+        );
       }),
     );
   }
@@ -129,11 +134,11 @@ class _StepRow extends StatelessWidget {
               if (item.hasValue)
                 BodySmallText(
                   text:
-                      "${event?.authorFullName ?? ""} | ${event?.followUpDateJalali ?? ""} - ${event?.followUpTime ?? ""}",
+                      "${event?.authorFullName ?? ''} | ${event?.followUpDateJalali ?? ''} - ${event?.followUpTime ?? ''}",
                 ),
               if (item.hasValue) Space.h4,
               TitleLargeText(
-                text: item.hasValue ? item.title : "ثبت نشده",
+                text: item.hasValue ? item.title : 'ثبت نشده',
                 fontSize: 14,
               ),
             ],
@@ -148,15 +153,19 @@ class _LineRow extends StatelessWidget {
   final bool isActive;
   final Color activeColor;
   final Color inactiveColor;
+  final String? text;
 
   const _LineRow({
     required this.isActive,
     required this.activeColor,
     required this.inactiveColor,
+    required this.text,
   });
 
   @override
   Widget build(BuildContext context) {
+    final color = isActive ? activeColor : inactiveColor;
+
     return Row(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
@@ -167,15 +176,45 @@ class _LineRow extends StatelessWidget {
               width: 2,
               height: 36,
               decoration: BoxDecoration(
-                color: isActive ? activeColor : inactiveColor,
+                color: color,
                 borderRadius: BorderRadius.circular(12),
               ),
             ),
           ),
         ),
         const SizedBox(width: 12),
-        const Expanded(child: SizedBox(height: 36)),
+        _TimeLabel(text: text, color: color),
       ],
+    );
+  }
+}
+
+class _TimeLabel extends StatelessWidget {
+  final String? text;
+  final Color color;
+
+  const _TimeLabel({required this.text, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
+    if (text == null || text!.isEmpty) {
+      return const SizedBox(height: 36);
+    }
+
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+      decoration: BoxDecoration(
+        border: Border.all(color: Colors.grey.shade200),
+        borderRadius: BorderRadius.circular(4),
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Icon(Icons.hourglass_bottom, size: 14, color: color),
+          const SizedBox(width: 4),
+          BodySmallText(text: text!),
+        ],
+      ),
     );
   }
 }

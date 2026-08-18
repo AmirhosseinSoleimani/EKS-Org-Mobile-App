@@ -6,6 +6,8 @@ class ControlGroupModel extends ControlGroupEntity {
     super.emdadgarStartedDriving,
     super.emdadgarArrived,
     super.jobDone,
+    super.durationFromStartDrivingToArrived,
+    super.durationFromArrivedToJobDone,
   });
 
   factory ControlGroupModel.fromJson(Map<String, dynamic> json) {
@@ -19,6 +21,9 @@ class ControlGroupModel extends ControlGroupEntity {
       jobDone: json['jobDone'] != null
           ? ControlEventModel.fromJson(json['jobDone'])
           : null,
+      durationFromStartDrivingToArrived:
+          json['durationFromStartDrivingToArrived'],
+      durationFromArrivedToJobDone: json['durationFromArrivedToJobDone'],
     );
   }
 }
