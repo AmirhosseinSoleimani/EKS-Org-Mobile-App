@@ -15,6 +15,7 @@ class RequestOperationsBottomSheet extends StatelessWidget {
   });
 
   static const List<RequestCardOperation> _primaryOrder = [
+    RequestCardOperation.requestDetail,
     RequestCardOperation.followUpRegister,
     RequestCardOperation.updateRequest,
     RequestCardOperation.evaluationHistory,
@@ -26,7 +27,6 @@ class RequestOperationsBottomSheet extends StatelessWidget {
     RequestCardOperation.homeServiceFactorRegister,
     RequestCardOperation.assignEmdadgar,
     RequestCardOperation.completeUrgentRequest,
-    RequestCardOperation.requestDetail,
     RequestCardOperation.requestControlInfo,
   ];
 
