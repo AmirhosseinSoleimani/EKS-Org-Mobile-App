@@ -26,7 +26,7 @@ class EvaluationListView extends StatefulWidget {
 }
 
 class _EvaluationListViewState extends State<EvaluationListView> {
-  static const int _initialVisibleCount = 3;
+  static const int _initialVisibleCount = 1;
 
   bool _showAll = false;
 
@@ -165,22 +165,6 @@ class _EvaluationListViewState extends State<EvaluationListView> {
                               variant: StatusLabelVariant.filledWhiteText,
                             ),
                           ),
-
-                          /*    KeyValueWidgetRow(
-                            label: "وضعیت",
-                            value: StatusLabel(
-                              text: item.isAccepted == true
-                                  ? "تایید شده"
-                                  : "تایید نشده",
-                              color: item.isAccepted == true
-                                  ? Colors.green
-                                  : Colors.red,
-                            ),
-                          ),
-                          KeyValueRow(
-                            label: "نوع فاکتور",
-                            value: item.statusTitle ?? "-",
-                          ),*/
                           KeyValueRow(
                             label: "نام و نام خانوادگی",
                             value: _insertUserTitle(item),
@@ -213,12 +197,12 @@ class _EvaluationListViewState extends State<EvaluationListView> {
                     children: [
                       BodyMediumText(
                         text: _showAll ? 'مشاهده کمتر' : 'مشاهده بیشتر',
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                       Space.w4,
                       Icon(
                         _showAll ? Icons.expand_less : Icons.expand_more,
-                        color: Theme.of(context).colorScheme.secondary,
+                        color: Theme.of(context).colorScheme.primary,
                       ),
                     ],
                   ),
