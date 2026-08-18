@@ -28,6 +28,24 @@ class DeploymentLocationFiltersRow extends StatelessWidget {
     return FiltersRow(
       filters: [
         FilterButton(
+          title: selectedStatus.label == 'همه'
+              ? 'وضعیت'
+              : selectedStatus.label,
+          expand: true,
+          overlayBuilder: (context, position, width, dismiss) {
+            return OverlayDropdownMenu<DeploymentLocationStatusFilterItem>(
+              position: position,
+              width: width,
+              items: DeploymentLocationStatusFilterItem.values,
+              onDismiss: dismiss,
+              onSelect: (item) {
+                cubit.setPageStatusFilter(item.value);
+                dismiss();
+              },
+            );
+          },
+        ),
+        FilterButton(
           title: 'فیلترها',
           expand: true,
           overlayBuilder: (context, position, width, dismiss) {
@@ -63,24 +81,6 @@ class DeploymentLocationFiltersRow extends StatelessWidget {
               dismiss();
             });
             return const SizedBox.shrink();
-          },
-        ),
-        FilterButton(
-          title: selectedStatus.label == 'همه'
-              ? 'وضعیت'
-              : selectedStatus.label,
-          expand: true,
-          overlayBuilder: (context, position, width, dismiss) {
-            return OverlayDropdownMenu<DeploymentLocationStatusFilterItem>(
-              position: position,
-              width: width,
-              items: DeploymentLocationStatusFilterItem.values,
-              onDismiss: dismiss,
-              onSelect: (item) {
-                cubit.setPageStatusFilter(item.value);
-                dismiss();
-              },
-            );
           },
         ),
       ],

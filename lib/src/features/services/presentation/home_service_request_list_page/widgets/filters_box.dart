@@ -37,19 +37,6 @@ class FiltersBox extends StatelessWidget {
       children: [
         FiltersRow(
           filters: [
-            FilterButton(
-              title: 'فیلتر ها',
-              expand: true,
-              overlayBuilder: (context, position, width, dismiss) {
-                _showFilterBottomSheet(
-                  context: context,
-                  serviceType: ServiceType.homeService,
-                  dismissOverlay: dismiss,
-                );
-
-                return const SizedBox.shrink();
-              },
-            ),
             ValueListenableBuilder<int>(
               valueListenable: cubit.selectedStatusNotifier,
               builder: (_, status, _) {
@@ -70,6 +57,19 @@ class FiltersBox extends StatelessWidget {
                     );
                   },
                 );
+              },
+            ),
+            FilterButton(
+              title: 'فیلتر ها',
+              expand: true,
+              overlayBuilder: (context, position, width, dismiss) {
+                _showFilterBottomSheet(
+                  context: context,
+                  serviceType: ServiceType.homeService,
+                  dismissOverlay: dismiss,
+                );
+
+                return const SizedBox.shrink();
               },
             ),
           ],

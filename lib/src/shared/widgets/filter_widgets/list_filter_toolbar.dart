@@ -31,16 +31,16 @@ class ListFilterToolbar<T> extends StatelessWidget {
     return FiltersRow(
       spacing: spacing,
       filters: [
-        FilterButton(
-          title: filterTitle,
-          icon: filterIcon,
-          onTap: onFilterTap,
-        ),
         StatusFilterDropdown<T>(
           value: statusValue,
           options: statusOptions,
           placeholder: statusPlaceholder,
           onChanged: onStatusChanged,
+        ),
+        FilterButton(
+          title: filterTitle,
+          icon: filterIcon,
+          onTap: onFilterTap,
         ),
       ],
     );

@@ -29,6 +29,22 @@ class VehicleModelFiltersRow extends StatelessWidget {
     return FiltersRow(
       filters: [
         FilterButton(
+          title: selectedStatus.label == 'همه' ? 'وضعیت' : selectedStatus.label,
+          expand: true,
+          overlayBuilder: (context, position, width, dismiss) {
+            return OverlayDropdownMenu<VehicleModelStatusFilterItem>(
+              position: position,
+              width: width,
+              items: VehicleModelStatusFilterItem.values,
+              onDismiss: dismiss,
+              onSelect: (item) {
+                cubit.setPageStatusFilter(item.value);
+                dismiss();
+              },
+            );
+          },
+        ),
+        FilterButton(
           title: 'فیلترها',
           expand: true,
           overlayBuilder: (context, position, width, dismiss) {
@@ -72,22 +88,6 @@ class VehicleModelFiltersRow extends StatelessWidget {
             });
 
             return const SizedBox.shrink();
-          },
-        ),
-        FilterButton(
-          title: selectedStatus.label == 'همه' ? 'وضعیت' : selectedStatus.label,
-          expand: true,
-          overlayBuilder: (context, position, width, dismiss) {
-            return OverlayDropdownMenu<VehicleModelStatusFilterItem>(
-              position: position,
-              width: width,
-              items: VehicleModelStatusFilterItem.values,
-              onDismiss: dismiss,
-              onSelect: (item) {
-                cubit.setPageStatusFilter(item.value);
-                dismiss();
-              },
-            );
           },
         ),
       ],

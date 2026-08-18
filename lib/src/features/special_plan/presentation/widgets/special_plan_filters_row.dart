@@ -31,18 +31,6 @@ class SpecialPlanFiltersRow extends StatelessWidget {
     return FiltersRow(
       filters: [
         FilterButton(
-          title: 'فیلترها',
-          expand: true,
-          overlayBuilder: (context, position, width, dismiss) {
-            WidgetsBinding.instance.addPostFrameCallback((_) {
-              _showFilterSheet(context);
-              dismiss();
-            });
-
-            return const SizedBox.shrink();
-          },
-        ),
-        FilterButton(
           title: selectedStatus.label == 'همه'
               ? 'وضعیت'
               : selectedStatus.label,
@@ -58,6 +46,18 @@ class SpecialPlanFiltersRow extends StatelessWidget {
                 dismiss();
               },
             );
+          },
+        ),
+        FilterButton(
+          title: 'فیلترها',
+          expand: true,
+          overlayBuilder: (context, position, width, dismiss) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              _showFilterSheet(context);
+              dismiss();
+            });
+
+            return const SizedBox.shrink();
           },
         ),
       ],

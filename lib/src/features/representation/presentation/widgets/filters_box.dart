@@ -19,6 +19,28 @@ class FiltersBox extends StatelessWidget {
     return FiltersRow(
       filters: [
         ValueListenableBuilder(
+          valueListenable: cubit.selectedServiceTypeNotifier,
+          builder: (_, serviceType, _) {
+            return FilterButton(
+              title: serviceType.label,
+              expand: true,
+              overlayBuilder: (context, position, width, dismiss) {
+                return OverlayDropdownMenu<ServiceType>(
+                  position: position,
+                  width: width,
+                  items: ServiceType.values,
+                  onDismiss: dismiss,
+                  onSelect: (value) {
+                    cubit.setServiceType(value);
+                    cubit.loadDashboardData();
+                    dismiss();
+                  },
+                );
+              },
+            );
+          },
+        ),
+        ValueListenableBuilder(
           valueListenable: cubit.selectedFromDateNotifier,
           builder: (_, fromDate, _) {
             return ValueListenableBuilder(
@@ -47,28 +69,6 @@ class FiltersBox extends StatelessWidget {
             );
           },
         ),
-        ValueListenableBuilder(
-          valueListenable: cubit.selectedServiceTypeNotifier,
-          builder: (_, serviceType, _) {
-            return FilterButton(
-              title: serviceType.label,
-              expand: true,
-              overlayBuilder: (context, position, width, dismiss) {
-                return OverlayDropdownMenu<ServiceType>(
-                  position: position,
-                  width: width,
-                  items: ServiceType.values,
-                  onDismiss: dismiss,
-                  onSelect: (value) {
-                    cubit.setServiceType(value);
-                    cubit.loadDashboardData();
-                    dismiss();
-                  },
-                );
-              },
-            );
-          },
-        )
       ],
     );
   }

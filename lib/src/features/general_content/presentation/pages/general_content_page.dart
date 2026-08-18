@@ -91,13 +91,13 @@ class _GeneralContentView extends StatelessWidget {
                     children: [
                       FiltersRow(
                         filters: [
-                          FilterButton(
-                            title: 'فیلترها',
-                            onTap: () => _openFilterSheet(context, state),
-                          ),
                           GeneralContentStatusFilterDropDown(
                             value: state.statusFilter,
                             onChanged: cubit.changeStatusFilter,
+                          ),
+                          FilterButton(
+                            title: 'فیلترها',
+                            onTap: () => _openFilterSheet(context, state),
                           ),
                         ],
                       ),

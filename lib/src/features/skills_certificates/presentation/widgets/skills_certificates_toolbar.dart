@@ -30,11 +30,6 @@ class SkillsCertificatesToolbar extends StatelessWidget {
         FiltersRow(
           spacing: AppSize.s12,
           filters: [
-            FilterButton(
-              title: 'فیلترها',
-              icon: Icons.filter_alt_outlined,
-              onTap: onFilterTap,
-            ),
             StatusFilterDropdown<bool?>(
               value: activeFilter,
               options: const [
@@ -43,6 +38,11 @@ class SkillsCertificatesToolbar extends StatelessWidget {
                 StatusFilterOption(value: false, label: 'غیرفعال'),
               ],
               onChanged: onStatusChanged,
+            ),
+            FilterButton(
+              title: 'فیلترها',
+              icon: Icons.filter_alt_outlined,
+              onTap: onFilterTap,
             ),
           ],
         ),

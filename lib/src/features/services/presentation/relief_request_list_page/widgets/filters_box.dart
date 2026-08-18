@@ -22,6 +22,28 @@ class FiltersBox extends StatelessWidget {
   Widget build(BuildContext context) {
     return FiltersRow(
       filters: [
+        ValueListenableBuilder<RequestStatus>(
+          valueListenable: cubit.selectedStatusNotifier,
+          builder: (_, status, _) {
+            return FilterButton(
+              title: status.label,
+              expand: true,
+              overlayBuilder: (context, position, width, dismiss) {
+                return OverlayDropdownMenu<RequestStatus>(
+                  position: position,
+                  width: width,
+                  items: RequestStatus.values,
+                  onDismiss: dismiss,
+                  onSelect: (value) {
+                    cubit.setSelectedStatus(value);
+                    cubit.fetchRequestList();
+                    dismiss();
+                  },
+                );
+              },
+            );
+          },
+        ),
         FilterButton(
           title: 'فیلتر ها',
           expand: true,
@@ -73,28 +95,6 @@ class FiltersBox extends StatelessWidget {
             });
 
             return const SizedBox.shrink();
-          },
-        ),
-        ValueListenableBuilder<RequestStatus>(
-          valueListenable: cubit.selectedStatusNotifier,
-          builder: (_, status, _) {
-            return FilterButton(
-              title: status.label,
-              expand: true,
-              overlayBuilder: (context, position, width, dismiss) {
-                return OverlayDropdownMenu<RequestStatus>(
-                  position: position,
-                  width: width,
-                  items: RequestStatus.values,
-                  onDismiss: dismiss,
-                  onSelect: (value) {
-                    cubit.setSelectedStatus(value);
-                    cubit.fetchRequestList();
-                    dismiss();
-                  },
-                );
-              },
-            );
           },
         ),
       ],

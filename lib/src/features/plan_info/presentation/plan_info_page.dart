@@ -291,13 +291,6 @@ class _PlanToolbar extends StatelessWidget {
       children: [
         FiltersRow(
           filters: [
-            FilterButton(
-              title: 'جستجو و فیلتر',
-              onTap: () => PlanInfoBottomSheets.showFilterSheet(
-                context: context,
-                cubit: cubit,
-              ),
-            ),
             StatusFilterDropdown<bool?>(
               value: activeFilter,
               options: const [
@@ -306,6 +299,13 @@ class _PlanToolbar extends StatelessWidget {
                 StatusFilterOption(value: false, label: 'غیرفعال'),
               ],
               onChanged: cubit.changeActiveFilter,
+            ),
+            FilterButton(
+              title: 'جستجو و فیلتر',
+              onTap: () => PlanInfoBottomSheets.showFilterSheet(
+                context: context,
+                cubit: cubit,
+              ),
             ),
           ],
         ),

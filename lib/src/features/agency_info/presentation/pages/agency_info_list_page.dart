@@ -149,11 +149,6 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
                   builder: (context, state) {
                     return FiltersRow(
                       filters: [
-                        FilterButton(
-                          title: 'فیلترها',
-                          icon: Icons.filter_alt_outlined,
-                          onTap: () => _showFilter(context, cubit),
-                        ),
                         StatusFilterDropdown<bool?>(
                           value: cubit.pageStatusFilter,
                           options: const [
@@ -162,6 +157,11 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
                             StatusFilterOption(value: false, label: 'غیرفعال'),
                           ],
                           onChanged: cubit.setPageStatusFilter,
+                        ),
+                        FilterButton(
+                          title: 'فیلترها',
+                          icon: Icons.filter_alt_outlined,
+                          onTap: () => _showFilter(context, cubit),
                         ),
                       ],
                     );

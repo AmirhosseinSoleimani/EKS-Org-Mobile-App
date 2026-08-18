@@ -30,6 +30,29 @@ class RescuerFiltersBox extends StatelessWidget {
       children: [
         FiltersRow(
           filters: [
+            ValueListenableBuilder<RescuerStatusFilter>(
+              valueListenable: cubit.selectedStatusNotifier,
+              builder: (context, status, _) {
+                return FilterButton(
+                  title: status == RescuerStatusFilter.all
+                      ? 'وضعیت'
+                      : status.label,
+                  expand: true,
+                  overlayBuilder: (context, position, width, dismiss) {
+                    return OverlayDropdownMenu<RescuerStatusFilter>(
+                      position: position,
+                      width: width,
+                      items: RescuerStatusFilter.values,
+                      onDismiss: dismiss,
+                      onSelect: (value) {
+                        cubit.setSelectedStatus(value);
+                        dismiss();
+                      },
+                    );
+                  },
+                );
+              },
+            ),
             FilterButton(
               title: 'فیلترها',
               expand: true,
@@ -54,29 +77,6 @@ class RescuerFiltersBox extends StatelessWidget {
                   dismiss();
                 });
                 return const SizedBox.shrink();
-              },
-            ),
-            ValueListenableBuilder<RescuerStatusFilter>(
-              valueListenable: cubit.selectedStatusNotifier,
-              builder: (context, status, _) {
-                return FilterButton(
-                  title: status == RescuerStatusFilter.all
-                      ? 'وضعیت'
-                      : status.label,
-                  expand: true,
-                  overlayBuilder: (context, position, width, dismiss) {
-                    return OverlayDropdownMenu<RescuerStatusFilter>(
-                      position: position,
-                      width: width,
-                      items: RescuerStatusFilter.values,
-                      onDismiss: dismiss,
-                      onSelect: (value) {
-                        cubit.setSelectedStatus(value);
-                        dismiss();
-                      },
-                    );
-                  },
-                );
               },
             ),
           ],
