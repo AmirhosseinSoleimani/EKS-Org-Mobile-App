@@ -43,7 +43,7 @@ class _InvoiceFilterSheetState
   late final TextEditingController _fromDateController;
   late final TextEditingController _toDateController;
 
-  ServiceType? _serviceType;
+  late ServiceType _serviceType;
   EmdadServiceCategoryEntity? _category;
   Jalali? _fromDate;
   Jalali? _toDate;
@@ -65,7 +65,7 @@ class _InvoiceFilterSheetState
       text: filter.emdadgarName ?? '',
     );
 
-    _serviceType = filter.serviceType;
+    _serviceType = filter.serviceType ?? ServiceType.reliefService;
     _category = _findCategory(filter.givenCode);
     _fromDate = _jalaliFromApiDate(filter.fromDate);
     _toDate = _jalaliFromApiDate(filter.toDate);
@@ -126,9 +126,9 @@ class _InvoiceFilterSheetState
                 child: Column(
                   children: [
                     EkDropDown(
-                      [_all, ...ServiceType.values.map((item) => item.label)],
+                      ServiceType.values.map((item) => item.label).toList(),
                       label: 'نوع خدمت',
-                      selectedItem: _serviceType?.label ?? _all,
+                      selectedItem: _serviceType.label,
                       onItemValue: _onServiceTypeChanged,
                     ),
                     Space.h12,
@@ -140,7 +140,7 @@ class _InvoiceFilterSheetState
                             .whereType<String>()
                             .where((item) => item.isNotEmpty),
                       ],
-                      key: ValueKey(_serviceType?.value),
+                      key: ValueKey(_serviceType.value),
                       label: 'دسته خدمت',
                       selectedItem: _category?.title?.trim() ?? _all,
                       onItemValue: _onCategoryChanged,
@@ -244,26 +244,20 @@ class _InvoiceFilterSheetState
   }
 
   List<EmdadServiceCategoryEntity> get _filteredCategories {
-    final serviceType = _serviceType;
-    if (serviceType == null) return widget.categories;
-
     return widget.categories
-        .where((item) => item.serviceTypeId == serviceType.value)
+        .where((item) => item.serviceTypeId == _serviceType.value)
         .toList();
   }
 
   void _onServiceTypeChanged(String value) {
     setState(() {
-      _serviceType = value == _all
-          ? null
-          : ServiceType.values.firstWhere(
-              (item) => item.label == value,
-            );
+      _serviceType = ServiceType.values.firstWhere(
+        (item) => item.label == value,
+      );
 
       final category = _category;
       if (category != null &&
-          _serviceType != null &&
-          category.serviceTypeId != _serviceType!.value) {
+          category.serviceTypeId != _serviceType.value) {
         _category = null;
       }
     });

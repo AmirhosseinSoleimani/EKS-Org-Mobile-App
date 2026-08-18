@@ -34,6 +34,7 @@ class InvoiceListFilterParamEntity {
 
   factory InvoiceListFilterParamEntity.withDefaultDateRange({
     DateTime? now,
+    ServiceType serviceType = ServiceType.reliefService,
     int? pageSize,
     int? skip,
   }) {
@@ -41,6 +42,7 @@ class InvoiceListFilterParamEntity {
     final fromDate = today.subtract(const Duration(days: 7));
 
     return InvoiceListFilterParamEntity(
+      serviceType: serviceType,
       fromDate: _formatApiDate(fromDate),
       toDate: _formatApiDate(today),
       pageSize: pageSize,

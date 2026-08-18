@@ -12,7 +12,7 @@ class MapLookupService {
 
   Future<BaseSingleResponse<List<ProvinceLookupModel>>>
       getProvinceLookupList() async {
-    final response = await _dio.get<dynamic>('/City/GetListProvince');
+    final response = await _dio.get<dynamic>('/api/City/GetListProvince');
     return _listResponse(
       response.data,
       ProvinceLookupModel.fromJson,
