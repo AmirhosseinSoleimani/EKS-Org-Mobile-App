@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_menu_entity.dart';
 
 import '../constants/current_session_authorization_keys.dart';
 import '../constants/current_session_menu_keys.dart';
@@ -41,6 +42,29 @@ class CurrentSessionAccessPolicy {
   bool hasMenu(String menuCode) {
     if (menuCode.trim().isEmpty) return false;
     return _session?.hasMenu(menuCode) ?? false;
+  }
+
+  List<CurrentSessionMenuEntity> menuChildren(String menuCode) {
+    if (menuCode.trim().isEmpty) {
+      return const <CurrentSessionMenuEntity>[];
+    }
+
+    final menu = _findMenuByCode(_session?.menus, menuCode);
+    return menu?.children ?? const <CurrentSessionMenuEntity>[];
+  }
+
+  CurrentSessionMenuEntity? _findMenuByCode(
+    List<CurrentSessionMenuEntity>? menus,
+    String code,
+  ) {
+    for (final menu in menus ?? const <CurrentSessionMenuEntity>[]) {
+      if (menu.code == code) return menu;
+
+      final child = _findMenuByCode(menu.children, code);
+      if (child != null) return child;
+    }
+
+    return null;
   }
 
   bool canShowByAuthorization(String authorizationCode) {

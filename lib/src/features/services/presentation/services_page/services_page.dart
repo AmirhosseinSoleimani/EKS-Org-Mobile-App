@@ -21,6 +21,8 @@ import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/
 import 'package:eks_sana_plus_org/src/features/special_plan/presentation/pages/special_plan_page.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/pages/vehicle_info_list_page.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/pages/vehicle_model_page.dart';
+import 'package:eks_sana_plus_org/src/shared/features/session/domain/constants/current_session_menu_keys.dart';
+import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_menu_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/presentation/widgets/current_session_access_builder.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
@@ -71,155 +73,15 @@ class ServicesPage extends StatelessWidget {
               ),
           ];
 
-          final agencyServices = <_ServiceMenuItemData>[
-            if (access.canShowHomeServiceRequestsMenu())
-              _ServiceMenuItemData(
-                title: 'برنامه‌ریزی',
-                icon: Icons.calendar_month_outlined,
-                onTap: () {
-                  context.pushNamed(PlanInfoPage.name);
-                },
-              ),
-            if (access.canShowHomeServiceRequestsMenu())
-              _ServiceMenuItemData(
-                title: 'خودروی امدادی',
-                icon: Icons.local_shipping_outlined,
-                onTap: () {
-                  context.pushNamed(VehicleInfoListPage.name);
-                },
-              ),
-            if (access.canShowHomeServiceRequestsMenu())
-              _ServiceMenuItemData(
-                title: 'واحد امدادی',
-                icon: Icons.groups_outlined,
-                onTap: () {
-                  context.pushNamed(EmdadUnitListPage.name);
-                },
-              ),
-            if (access.canShowHomeServiceRequestsMenu())
-              _ServiceMenuItemData(
-                title: 'نمایندگی',
-                icon: Icons.storefront_outlined,
-                onTap: () {
-                  context.pushNamed(AgencyInfoListPage.name);
-                },
-              ),
-            if (access.canShowHomeServiceRequestsMenu())
-              _ServiceMenuItemData(
-                title: 'مرخصی‌ها',
-                icon: Icons.event_busy_outlined,
-                onTap: () {
-                  context.pushNamed(LeavePage.name);
-                },
-              ),
-            if (access.canShowSkillsCertificateButton())
-              _ServiceMenuItemData(
-                title: 'گواهینامه',
-                icon: Icons.card_membership_outlined,
-                onTap: () {
-                  context.pushNamed(SkillsCertificatesPage.name);
-                },
-              ),
-            if (access.canShowSanRescuerInfoMenu())
-              _ServiceMenuItemData(
-                title: 'امدادرسان',
-                icon: Icons.person_3_outlined,
-                onTap: () {
-                  context.pushNamed(RescuerListPage.name);
-                },
-              ),
-            if (access.canShowHomeServiceRequestsMenu())
-              _ServiceMenuItemData(
-                title: 'الگوی گرید',
-                icon: Icons.grading_outlined,
-                onTap: () {
-                  context.pushNamed(GradePatternListPage.name);
-                },
-              ),
-            if (access.canShowIMEI())
-              _ServiceMenuItemData(
-                title: 'IMEI',
-                icon: Icons.router_outlined,
-                onTap: () {
-                  context.pushNamed(ImeiPage.name);
-                },
-              ),
-            if (access.canShowShift())
-              _ServiceMenuItemData(
-                title: 'شیفت',
-                icon: Symbols.swap_driving_apps,
-                onTap: () {
-                  context.pushNamed(ShiftListPage.name);
-                },
-              ),
-            if (access.canShowNavganButton())
-              _ServiceMenuItemData(
-                title: 'ناوگان',
-                icon: Icons.commute_outlined,
-                onTap: () {
-                  context.pushNamed(NavganPage.name);
-                },
-              ),
-            if (access.canShowDeploymentLocationButton())
-              _ServiceMenuItemData(
-                title: 'محل استقرار',
-                icon: Icons.pin_drop_outlined,
-                onTap: () {
-                  context.pushNamed(DeploymentLocationPage.name);
-                },
-              ),
-            if (access.canShowSanGeneralContent())
-              _ServiceMenuItemData(
-                title: 'بخش نامه',
-                icon: Symbols.developer_guide,
-                onTap: () {
-                  context.pushNamed(GeneralContentPage.name);
-                },
-              ),
-            if (access.canShowNavganTypeButton())
-              _ServiceMenuItemData(
-                title: 'نوع خودرو',
-                icon: Symbols.auto_towing,
-                onTap: () {
-                  context.pushNamed(VehicleModelPage.name);
-                },
-              ),
-            if (access.canShowSpecialPlanButton())
-              _ServiceMenuItemData(
-                title: 'طرح',
-                icon: Symbols.domain_verification,
-                onTap: () {
-                  context.pushNamed(SpecialPlanPage.name);
-                },
-              ),
-          ];
+          final agencyServices = _buildAgencyServices(
+            context,
+            access.menuChildren(CurrentSessionMenuKeys.sanMenus),
+          );
 
-          final invoiceServices = <_ServiceMenuItemData>[
-            if (access.canShowCustomerPreInvoiceMenu())
-              _ServiceMenuItemData(
-                title: 'پیش فاکتورهای مشتری',
-                icon: Icons.request_quote_outlined,
-                onTap: () =>  context.pushNamed(CustomerPreInvoicePage.name),
-              ),
-            if (access.canShowCustomerInvoiceMenu())
-              _ServiceMenuItemData(
-                title: 'فاکتورهای مشتری',
-                icon: Icons.receipt_long_outlined,
-                onTap: () => context.pushNamed(CustomerInvoicePage.name),
-              ),
-           if (access.canShowAnyEmdadgarInvoiceStageMenu())
-              _ServiceMenuItemData(
-                title: 'صورت وضعیت‌ها',
-                icon: Icons.article_outlined,
-                onTap: () => context.pushNamed(EmdadgarInvoicePage.name),
-              ),
-            if (access.canShowEmdadgarInvoiceObjectionMenu())
-              _ServiceMenuItemData(
-                title: 'درخواست‌های اصلاحی (نماینده)',
-                icon: Icons.edit_note_outlined,
-                onTap: () => context.pushNamed(AgencyCorrectionRequestsPage.name),
-              ),
-          ];
+          final invoiceServices = _buildInvoiceServices(
+            context,
+            access.menuChildren(CurrentSessionMenuKeys.invoices),
+          );
 
           if (mainServices.isEmpty &&
               agencyServices.isEmpty &&
@@ -239,6 +101,191 @@ class ServicesPage extends StatelessWidget {
       ),
     );
   }
+
+  List<_ServiceMenuItemData> _buildAgencyServices(
+    BuildContext context,
+    List<CurrentSessionMenuEntity> menus,
+  ) {
+    final items = <_ServiceMenuItemData>[];
+
+    for (final menu in menus) {
+      final item = _agencyServiceForMenu(context, menu.code);
+      if (item != null) {
+        items.add(item);
+      }
+    }
+
+    return items;
+  }
+
+  _ServiceMenuItemData? _agencyServiceForMenu(
+    BuildContext context,
+    String? menuCode,
+  ) {
+    switch (menuCode) {
+      case CurrentSessionMenuKeys.sanPlan:
+        return _ServiceMenuItemData(
+          title: 'برنامه‌ریزی',
+          icon: Icons.calendar_month_outlined,
+          onTap: () => context.pushNamed(PlanInfoPage.name),
+        );
+      case CurrentSessionMenuKeys.sanVehicleInfo:
+        return _ServiceMenuItemData(
+          title: 'خودروی امدادی',
+          icon: Icons.local_shipping_outlined,
+          onTap: () => context.pushNamed(VehicleInfoListPage.name),
+        );
+      case CurrentSessionMenuKeys.sanEmdadUnit:
+        return _ServiceMenuItemData(
+          title: 'واحد امدادی',
+          icon: Icons.groups_outlined,
+          onTap: () => context.pushNamed(EmdadUnitListPage.name),
+        );
+      case CurrentSessionMenuKeys.sanAgencyInfo:
+        return _ServiceMenuItemData(
+          title: 'نمایندگی',
+          icon: Icons.storefront_outlined,
+          onTap: () => context.pushNamed(AgencyInfoListPage.name),
+        );
+      case CurrentSessionMenuKeys.sanLeave:
+        return _ServiceMenuItemData(
+          title: 'مرخصی‌ها',
+          icon: Icons.event_busy_outlined,
+          onTap: () => context.pushNamed(LeavePage.name),
+        );
+      case CurrentSessionMenuKeys.sanSkillsCertificate:
+        return _ServiceMenuItemData(
+          title: 'گواهینامه',
+          icon: Icons.card_membership_outlined,
+          onTap: () => context.pushNamed(SkillsCertificatesPage.name),
+        );
+      case CurrentSessionMenuKeys.sanRescuerInfo:
+        return _ServiceMenuItemData(
+          title: 'امدادرسان',
+          icon: Icons.person_3_outlined,
+          onTap: () => context.pushNamed(RescuerListPage.name),
+        );
+      case CurrentSessionMenuKeys.sanGradePattern:
+        return _ServiceMenuItemData(
+          title: 'الگوی گرید',
+          icon: Icons.grading_outlined,
+          onTap: () => context.pushNamed(GradePatternListPage.name),
+        );
+      case CurrentSessionMenuKeys.sanImei:
+        return _ServiceMenuItemData(
+          title: 'IMEI',
+          icon: Icons.router_outlined,
+          onTap: () => context.pushNamed(ImeiPage.name),
+        );
+      case CurrentSessionMenuKeys.sanShift:
+        return _ServiceMenuItemData(
+          title: 'شیفت',
+          icon: Symbols.swap_driving_apps,
+          onTap: () => context.pushNamed(ShiftListPage.name),
+        );
+      case CurrentSessionMenuKeys.sanNavganServices:
+        return _ServiceMenuItemData(
+          title: 'ناوگان',
+          icon: Icons.commute_outlined,
+          onTap: () => context.pushNamed(NavganPage.name),
+        );
+      case CurrentSessionMenuKeys.sanLocation:
+        return _ServiceMenuItemData(
+          title: 'محل استقرار',
+          icon: Icons.pin_drop_outlined,
+          onTap: () => context.pushNamed(DeploymentLocationPage.name),
+        );
+      case CurrentSessionMenuKeys.sanGeneralContent:
+        return _ServiceMenuItemData(
+          title: 'بخش نامه',
+          icon: Symbols.developer_guide,
+          onTap: () => context.pushNamed(GeneralContentPage.name),
+        );
+      case CurrentSessionMenuKeys.sanVehicleModel:
+        return _ServiceMenuItemData(
+          title: 'نوع خودرو',
+          icon: Symbols.auto_towing,
+          onTap: () => context.pushNamed(VehicleModelPage.name),
+        );
+      case CurrentSessionMenuKeys.sanSpecialPlan:
+        return _ServiceMenuItemData(
+          title: 'طرح',
+          icon: Symbols.domain_verification,
+          onTap: () => context.pushNamed(SpecialPlanPage.name),
+        );
+      default:
+        return null;
+    }
+  }
+
+  List<_ServiceMenuItemData> _buildInvoiceServices(
+    BuildContext context,
+    List<CurrentSessionMenuEntity> menus,
+  ) {
+    final items = <_ServiceMenuItemData>[];
+    var emdadgarInvoiceAdded = false;
+
+    for (final menu in menus) {
+      final menuCode = menu.code;
+
+      if (_emdadgarInvoiceStageMenuCodes.contains(menuCode)) {
+        if (!emdadgarInvoiceAdded) {
+          items.add(
+            _ServiceMenuItemData(
+              title: 'صورت وضعیت‌ها',
+              icon: Icons.article_outlined,
+              onTap: () => context.pushNamed(EmdadgarInvoicePage.name),
+            ),
+          );
+          emdadgarInvoiceAdded = true;
+        }
+        continue;
+      }
+
+      final item = _invoiceServiceForMenu(context, menuCode);
+      if (item != null) {
+        items.add(item);
+      }
+    }
+
+    return items;
+  }
+
+  _ServiceMenuItemData? _invoiceServiceForMenu(
+    BuildContext context,
+    String? menuCode,
+  ) {
+    switch (menuCode) {
+      case CurrentSessionMenuKeys.customerPreInvoice:
+        return _ServiceMenuItemData(
+          title: 'پیش فاکتورهای مشتری',
+          icon: Icons.request_quote_outlined,
+          onTap: () => context.pushNamed(CustomerPreInvoicePage.name),
+        );
+      case CurrentSessionMenuKeys.customerInvoice:
+        return _ServiceMenuItemData(
+          title: 'فاکتورهای مشتری',
+          icon: Icons.receipt_long_outlined,
+          onTap: () => context.pushNamed(CustomerInvoicePage.name),
+        );
+      case CurrentSessionMenuKeys.emdadgarInvoiceObjection:
+        return _ServiceMenuItemData(
+          title: 'درخواست‌های اصلاحی (نماینده)',
+          icon: Icons.edit_note_outlined,
+          onTap: () => context.pushNamed(AgencyCorrectionRequestsPage.name),
+        );
+      default:
+        return null;
+    }
+  }
+
+  static const Set<String> _emdadgarInvoiceStageMenuCodes = {
+    CurrentSessionMenuKeys.emdadgarPreInvoice,
+    CurrentSessionMenuKeys.emdadgarInvoice,
+    CurrentSessionMenuKeys.emdadgarAmaliatFinalInvoice,
+    CurrentSessionMenuKeys.emdadgarFinalInvoice,
+    CurrentSessionMenuKeys.emdadgarDefiniteInvoice,
+  };
 }
 
 class _ServicesPageContent extends StatelessWidget {
