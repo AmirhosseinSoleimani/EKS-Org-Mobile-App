@@ -9,8 +9,10 @@ import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filter_dropdown.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -72,27 +74,24 @@ class LeavePageView extends StatelessWidget {
                     padding: const EdgeInsets.fromLTRB(16, 16, 16, 8),
                     child: Column(
                       children: [
-                        Row(
-                          children: [
-                            Expanded(
-                              child: _FilterButton(
-                                onTap: () => _showFilters(context),
-                              ),
+                        FiltersRow(
+                          spacing: AppSize.s12,
+                          filters: [
+                            StatusFilterDropdown<LeaveStatus>(
+                              value: state.selectedStatus,
+                              options: LeaveCubit.statusOptions
+                                  .map(
+                                    (item) => StatusFilterOption(
+                                      value: item.status,
+                                      label: item.title,
+                                    ),
+                                  )
+                                  .toList(),
+                              onChanged: cubit.onStatusChanged,
                             ),
-                            Space.w12,
-                            Expanded(
-                              child: StatusFilterDropdown<LeaveStatus>(
-                                value: state.selectedStatus,
-                                options: LeaveCubit.statusOptions
-                                    .map(
-                                      (item) => StatusFilterOption(
-                                        value: item.status,
-                                        label: item.title,
-                                      ),
-                                    )
-                                    .toList(),
-                                onChanged: cubit.onStatusChanged,
-                              ),
+                            FilterButton(
+                              title: 'فیلترها',
+                                              onTap: () => _showFilters(context),
                             ),
                           ],
                         ),
@@ -181,47 +180,11 @@ class LeavePageView extends StatelessWidget {
   }
 
   void _showFilters(BuildContext context) {
-    showModalBottomSheet<void>(
+    showFilterBottomSheet<void>(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
-      ),
-      builder: (_) {
-        return BlocProvider.value(
-          value: context.read<LeaveCubit>(),
-          child: const LeaveFilterSheet(),
-        );
-      },
-    );
-  }
-}
-
-class _FilterButton extends StatelessWidget {
-  const _FilterButton({required this.onTap});
-
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    return InkWell(
-      borderRadius: BorderRadius.circular(8),
-      onTap: onTap,
-      child: Container(
-        height: 40,
-        padding: const EdgeInsets.symmetric(horizontal: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(8),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: const [
-            BodyMediumText(text: 'فیلترها'),
-            Icon(Icons.keyboard_arrow_down_rounded),
-          ],
-        ),
+      builder: (_) => BlocProvider.value(
+        value: context.read<LeaveCubit>(),
+        child: const LeaveFilterSheet(),
       ),
     );
   }

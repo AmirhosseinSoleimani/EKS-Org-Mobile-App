@@ -6,7 +6,8 @@ import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/drop_down_map_items_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/material.dart';
@@ -17,10 +18,8 @@ class PlanInfoBottomSheets {
     required BuildContext context,
     required PlanInfoCubit cubit,
   }) {
-    showModalBottomSheet<void>(
-      backgroundColor: Colors.white,
+    showFilterBottomSheet<void>(
       context: context,
-      isScrollControlled: true,
       builder: (_) => BlocProvider.value(
         value: cubit,
         child: const _PlanFilterSheet(),
@@ -127,77 +126,63 @@ class _PlanFilterSheetState extends State<_PlanFilterSheet> {
   @override
   Widget build(BuildContext context) {
     final cubit = context.read<PlanInfoCubit>();
-    final bottomInset = MediaQuery.viewInsetsOf(context).bottom;
-    final colorScheme = Theme.of(context).colorScheme;
 
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.fromLTRB(
-          AppPadding.p16,
-          AppPadding.p16,
-          AppPadding.p16,
-          bottomInset + AppPadding.p16,
-        ),
-        child: SingleChildScrollView(
-          child: BlocBuilder<PlanInfoCubit, PlanInfoState>(
-            builder: (context, state) {
-              return Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Space.h8,
-                  Text('جستجو و فیلتر', style: Theme.of(context).textTheme.titleMedium),
-                  Space.h24,
-                  _TextField(controller: cubit.titleController, label: 'عنوان', maxLength: 20),
-                  _TextField(controller: cubit.emdadUnitController, label: 'واحد امدادی'),
-                  _TextField(controller: cubit.shiftController, label: 'شیفت'),
-                  _TextField(controller: cubit.specialPlanController, label: 'طرح'),
-                  Space.h8,
-                  _LookupField(
-                    label: 'نوع مقر',
-                    value: seatType,
-                    items: state.seatTypes,
-                    includeEmpty: true,
-                    onChanged: (value) => setState(() => seatType = value),
-                  ),
-                  _TextField(controller: cubit.locationController, label: 'محل استقرار'),
-                  _TextField(controller: cubit.fromDateController, label: 'تاریخ شروع'),
-                  _TextField(controller: cubit.toDateController, label: 'تاریخ پایان'),
-                  Space.h16,
-                  Row(
-                    children: [
-                      Expanded(
-                        child: InkwellButtonWidget(
-                          title: 'اعمال فیلتر',
-                          onTap: () {
-                            cubit
-                              ..setSeatTypeFilter(seatType)
-                              ..fetchPlans();
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ),
-                      Space.w12,
-                      Expanded(
-                        child: InkwellButtonWidget(
-                          backgroundColor: Colors.transparent,
-                          title: 'پاک کردن فیلتر',
-                          titleColor: colorScheme.onTertiaryFixed,
-                          onTap: () {
-                            cubit.clearFilters();
-                            Navigator.of(context).pop();
-                          },
-                        ),
-                      ),
-
-                    ],
-                  ),
-                ],
-              );
-            },
+    return BlocBuilder<PlanInfoCubit, PlanInfoState>(
+      builder: (context, state) {
+        return FilterBottomSheetScaffold(
+          title: 'فیلترها',
+          onApply: () {
+            cubit
+              ..setSeatTypeFilter(seatType)
+              ..fetchPlans();
+            Navigator.of(context).pop();
+          },
+          onClear: () {
+            cubit.clearFilters();
+            Navigator.of(context).pop();
+          },
+          child: Column(
+            children: [
+              _TextField(
+                controller: cubit.titleController,
+                label: 'عنوان',
+                maxLength: 20,
+              ),
+              _TextField(
+                controller: cubit.emdadUnitController,
+                label: 'واحد امدادی',
+              ),
+              _TextField(
+                controller: cubit.shiftController,
+                label: 'شیفت',
+              ),
+              _TextField(
+                controller: cubit.specialPlanController,
+                label: 'طرح',
+              ),
+              _LookupField(
+                label: 'نوع مقر',
+                value: seatType,
+                items: state.seatTypes,
+                includeEmpty: true,
+                onChanged: (value) => setState(() => seatType = value),
+              ),
+              _TextField(
+                controller: cubit.locationController,
+                label: 'محل استقرار',
+              ),
+              _TextField(
+                controller: cubit.fromDateController,
+                label: 'تاریخ شروع',
+              ),
+              _TextField(
+                controller: cubit.toDateController,
+                label: 'تاریخ پایان',
+              ),
+            ],
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
@@ -442,50 +427,41 @@ class _LookupField extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final validItems = items
-        .where((item) => item.resolvedId != null)
-        .toList();
+    final validItems = items.where((item) => item.resolvedId != null).toList();
+    final titles = <String>[
+      if (includeEmpty) 'همه',
+      ...validItems.map((item) => item.displayTitle),
+    ];
 
-    final dropdownItems = <String, int>{
-      if (includeEmpty) 'همه': -1,
-      for (final item in validItems)
-        item.displayTitle: item.resolvedId!,
-    };
+    if (titles.isEmpty) return const SizedBox.shrink();
 
-    String? selectedTitle;
-
-    if (value == null && includeEmpty) {
-      selectedTitle = 'همه';
-    } else {
-      for (final item in validItems) {
-        if (item.resolvedId == value) {
-          selectedTitle = item.displayTitle;
-          break;
-        }
+    var selectedTitle = includeEmpty ? 'همه' : titles.first;
+    for (final item in validItems) {
+      if (item.resolvedId == value) {
+        selectedTitle = item.displayTitle;
+        break;
       }
     }
 
-    if (dropdownItems.isEmpty) {
-      return const SizedBox.shrink();
-    }
-
     return Padding(
-      padding: const EdgeInsets.only(
-        bottom: AppPadding.p12,
-      ),
-      child: DropDownMapItemsWidget(
-        labelText: label,
-        items: dropdownItems,
-        initialValue: selectedTitle,
-        onChange: (selectedTitle) {
-          final selectedId = dropdownItems[selectedTitle];
-
-          if (selectedId == null || selectedId == -1) {
+      padding: const EdgeInsets.only(bottom: AppPadding.p12),
+      child: EkDropDown(
+        titles,
+        key: ValueKey('$label-${titles.join('|')}'),
+        label: label,
+        selectedItem: selectedTitle,
+        onItemValue: (selected) {
+          if (selected == 'همه') {
             onChanged(null);
             return;
           }
-
-          onChanged(selectedId);
+          for (final item in validItems) {
+            if (item.displayTitle == selected) {
+              onChanged(item.resolvedId);
+              return;
+            }
+          }
+          onChanged(null);
         },
       ),
     );

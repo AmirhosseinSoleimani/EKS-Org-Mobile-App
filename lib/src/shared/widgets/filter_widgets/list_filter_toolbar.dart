@@ -13,7 +13,6 @@ class ListFilterToolbar<T> extends StatelessWidget {
     required this.onStatusChanged,
     this.filterTitle = 'فیلترها',
     this.statusPlaceholder = 'وضعیت',
-    this.filterIcon = Icons.keyboard_arrow_down_rounded,
     this.spacing = AppSize.s12,
   });
 
@@ -23,7 +22,6 @@ class ListFilterToolbar<T> extends StatelessWidget {
   final ValueChanged<T> onStatusChanged;
   final String filterTitle;
   final String statusPlaceholder;
-  final IconData filterIcon;
   final double spacing;
 
   @override
@@ -39,7 +37,6 @@ class ListFilterToolbar<T> extends StatelessWidget {
         ),
         FilterButton(
           title: filterTitle,
-          icon: filterIcon,
           onTap: onFilterTap,
         ),
       ],

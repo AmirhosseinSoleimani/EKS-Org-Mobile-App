@@ -18,6 +18,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filte
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:flutter/gestures.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -245,25 +246,15 @@ class _CustomerInvoiceViewState extends State<_CustomerInvoiceView> {
     CustomerInvoiceCubit cubit,
     CustomerInvoiceState state,
   ) {
-    showModalBottomSheet<void>(
+    showFilterBottomSheet<void>(
       context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(AppSize.s20),
-        ),
+      builder: (_) => InvoiceFilterSheet(
+        title: 'فیلتر فاکتورهای مشتری',
+        initialFilter: state.filter,
+        categories: state.categories,
+        onApply: cubit.applyFilter,
+        onClear: cubit.clearFilter,
       ),
-      builder: (_) {
-        return InvoiceFilterSheet(
-          title: 'فیلتر فاکتورهای مشتری',
-          initialFilter: state.filter,
-          categories: state.categories,
-          onApply: cubit.applyFilter,
-          onClear: cubit.clearFilter,
-        );
-      },
     );
   }
 

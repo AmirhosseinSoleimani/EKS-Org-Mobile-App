@@ -1,7 +1,7 @@
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/agency_info_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -140,62 +140,11 @@ class _AgencyInfoFilterSheetState extends State<AgencyInfoFilterSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final mediaQuery = MediaQuery.of(context);
-
-    final availableHeight = mediaQuery.size.height -
-        mediaQuery.viewInsets.bottom -
-        mediaQuery.padding.top;
-
-    return SizedBox(
-      height: availableHeight * 0.68,
-      child: SafeArea(
-        top: false,
-        child: Padding(
-          padding: const EdgeInsets.fromLTRB(
-            AppPadding.p8,
-            AppPadding.p8,
-            AppPadding.p8,
-            AppPadding.p0,
-          ),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              _buildTitle(theme),
-              Space.h16,
-
-              /// فقط فیلدها اسکرول می‌شوند.
-              Expanded(
-                child: SingleChildScrollView(
-                  keyboardDismissBehavior:
-                  ScrollViewKeyboardDismissBehavior.onDrag,
-                  physics: const BouncingScrollPhysics(),
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppPadding.p8,
-                  ),
-                  child: _buildFields(),
-                ),
-              ),
-
-              _buildBottomActions(theme),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTitle(ThemeData theme) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppPadding.p8,
-      ),
-      child: Text(
-        'فیلتر نمایندگی',
-        style: theme.textTheme.titleMedium?.copyWith(
-          fontWeight: FontWeight.w800,
-        ),
-      ),
+    return FilterBottomSheetScaffold(
+      title: 'فیلترها',
+      onApply: _apply,
+      onClear: _clear,
+      child: _buildFields(),
     );
   }
 
@@ -316,45 +265,6 @@ class _AgencyInfoFilterSheetState extends State<AgencyInfoFilterSheet> {
         ),
         Space.h16,
       ],
-    );
-  }
-
-  Widget _buildBottomActions(ThemeData theme) {
-    return Container(
-      padding: const EdgeInsets.fromLTRB(
-        AppPadding.p8,
-        AppPadding.p12,
-        AppPadding.p8,
-        AppPadding.p8,
-      ),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.surface,
-        border: Border(
-          top: BorderSide(
-            color: theme.colorScheme.outline.withAlpha(25),
-          ),
-        ),
-      ),
-      child: Row(
-        children: [
-          Expanded(
-            child: InkwellButtonWidget(
-              title: 'اعمال فیلتر',
-              onTap: _apply,
-            ),
-          ),
-          Space.w12,
-          Expanded(
-            child: InkwellButtonWidget(
-              title: 'پاک کردن',
-              backgroundColor: theme.colorScheme.onPrimary,
-              borderColor: theme.colorScheme.outline.withOpacity(0.65),
-              titleColor: theme.colorScheme.onSurface,
-              onTap: _clear,
-            ),
-          ),
-        ],
-      ),
     );
   }
 

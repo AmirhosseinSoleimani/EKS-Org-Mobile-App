@@ -191,7 +191,7 @@ const markerStyleResolver = EmdadgarMarkerStyleResolver();
                 children: [
                   SearchAndFilterBox(
                     isLoading: false,
-                    onOpenFilter: () => showFilterBottomSheet(context),
+                    onOpenFilter: () => showAssignFilterBottomSheet(context),
                     onRefresh: () => cubit.getEmdadgarList(),
                   ),
                   Space.h16,

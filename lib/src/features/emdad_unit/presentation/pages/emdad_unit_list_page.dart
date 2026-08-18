@@ -14,10 +14,13 @@ import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/e
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filter_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/gestures.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -81,26 +84,21 @@ class _EmdadUnitListView extends StatelessWidget {
                 ),
                 child: BlocBuilder<EmdadUnitCubit, EmdadUnitState>(
                   builder: (context, state) {
-                    return Row(
-                      children: [
-                        Expanded(
-                          child: _TopFilterButton(
-                            title: 'فیلترها',
-                            isActive: state.filter.hasTextFilters,
-                            onTap: () => _showFilters(context, cubit),
-                          ),
+                    return FiltersRow(
+                      spacing: AppSize.s12,
+                      filters: [
+                        StatusFilterDropdown<bool?>(
+                          value: cubit.pageStatusFilter,
+                          options: const [
+                            StatusFilterOption(value: null, label: 'همه'),
+                            StatusFilterOption(value: true, label: 'فعال'),
+                            StatusFilterOption(value: false, label: 'غیرفعال'),
+                          ],
+                          onChanged: cubit.setPageStatusFilter,
                         ),
-                        Space.w12,
-                        Expanded(
-                          child: StatusFilterDropdown<bool?>(
-                            value: cubit.pageStatusFilter,
-                            options: const [
-                              StatusFilterOption(value: null, label: 'همه'),
-                              StatusFilterOption(value: true, label: 'فعال'),
-                              StatusFilterOption(value: false, label: 'غیرفعال'),
-                            ],
-                            onChanged: cubit.setPageStatusFilter,
-                          ),
+                        FilterButton(
+                          title: 'فیلترها',
+                                      onTap: () => _showFilters(context, cubit),
                         ),
                       ],
                     );
@@ -192,14 +190,8 @@ class _EmdadUnitListView extends StatelessWidget {
   }
 
   void _showFilters(BuildContext context, EmdadUnitCubit cubit) {
-    showModalBottomSheet<void>(
+    showFilterBottomSheet<void>(
       context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
-      ),
       builder: (_) => EmdadUnitFilterSheet(
         initialFilter: cubit.state.filter,
         onApply: cubit.applyFilter,
@@ -301,70 +293,6 @@ class _EmdadUnitListView extends StatelessWidget {
               if (ok && context.mounted) Navigator.of(context).pop(true);
             },
           ),
-        ),
-      ),
-    );
-  }
-}
-
-class _TopFilterButton extends StatelessWidget {
-  const _TopFilterButton({
-    required this.title,
-    required this.isActive,
-    required this.onTap,
-  });
-
-  final String title;
-  final bool isActive;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return InkWell(
-      borderRadius: BorderRadius.circular(AppSize.s8),
-      onTap: onTap,
-      child: Container(
-        height: AppSize.s48,
-        padding: const EdgeInsets.symmetric(horizontal: AppPadding.p14),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.onPrimary,
-          borderRadius: BorderRadius.circular(AppSize.s8),
-          border: Border.all(
-            color: isActive
-                ? theme.colorScheme.primary.withOpacity(0.45)
-                : Colors.transparent,
-          ),
-        ),
-        child: Row(
-          children: [
-            Text(
-              title,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: isActive
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.onSurface,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const Spacer(),
-            Icon(
-              Icons.keyboard_arrow_down_rounded,
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-
-            if (isActive) ...[
-              Space.w8,
-              Container(
-                width: AppSize.s6,
-                height: AppSize.s6,
-                decoration: BoxDecoration(
-                  color: theme.colorScheme.primary,
-                  shape: BoxShape.circle,
-                ),
-              ),
-            ],
-          ],
         ),
       ),
     );

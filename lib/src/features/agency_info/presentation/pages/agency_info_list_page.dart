@@ -16,6 +16,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filter_dropdown.dart';
@@ -160,8 +161,7 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
                         ),
                         FilterButton(
                           title: 'فیلترها',
-                          icon: Icons.filter_alt_outlined,
-                          onTap: () => _showFilter(context, cubit),
+                                      onTap: () => _showFilter(context, cubit),
                         ),
                       ],
                     );
@@ -305,19 +305,13 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
   }
 
   void _showFilter(BuildContext context, AgencyInfoCubit cubit) {
-    BottomSheetMessage.showCustom(
+    showFilterBottomSheet<void>(
       context: context,
-      content: AgencyInfoFilterSheet(
+      builder: (_) => AgencyInfoFilterSheet(
         initialFilter: cubit.state.data.filter,
         onApply: cubit.applyFilter,
         onClear: cubit.clearFilter,
       ),
-      actionWidget: const SizedBox.shrink(),
-      backgroundColor: Theme
-          .of(context)
-          .colorScheme
-          .onPrimary,
-      maxHeight: 0.9,
     );
   }
 

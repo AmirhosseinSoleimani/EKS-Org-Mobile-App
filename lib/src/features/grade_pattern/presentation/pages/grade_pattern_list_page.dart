@@ -11,6 +11,9 @@ import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_b
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filter_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
@@ -79,28 +82,21 @@ class _GradePatternListView extends StatelessWidget {
                     AppPadding.p16,
                     AppPadding.p8,
                   ),
-                  child: Row(
-                    children: [
-                      Expanded(
-                        child: _TopFilterButton(
-                          title: 'فیلترها',
-                          isActive:
-                              cubit.filter.name?.trim().isNotEmpty == true,
-                          icon: Icons.tune_rounded,
-                          onTap: () => _showSearchSheet(context, cubit),
-                        ),
+                  child: FiltersRow(
+                    spacing: AppSize.s12,
+                    filters: [
+                      StatusFilterDropdown<bool?>(
+                        value: pageStatusFilter,
+                        options: const [
+                          StatusFilterOption(value: null, label: 'همه'),
+                          StatusFilterOption(value: true, label: 'فعال'),
+                          StatusFilterOption(value: false, label: 'غیرفعال'),
+                        ],
+                        onChanged: cubit.setPageStatusFilter,
                       ),
-                      Space.w12,
-                      Expanded(
-                        child: StatusFilterDropdown<bool?>(
-                          value: pageStatusFilter,
-                          options: const [
-                            StatusFilterOption(value: null, label: 'همه'),
-                            StatusFilterOption(value: true, label: 'فعال'),
-                            StatusFilterOption(value: false, label: 'غیرفعال'),
-                          ],
-                          onChanged: cubit.setPageStatusFilter,
-                        ),
+                      FilterButton(
+                        title: 'فیلترها',
+                        onTap: () => _showSearchSheet(context, cubit),
                       ),
                     ],
                   ),
@@ -313,62 +309,28 @@ class _GradePatternListView extends StatelessWidget {
 
   void _showSearchSheet(BuildContext context, GradePatternCubit cubit) {
     final controller = TextEditingController(text: cubit.filter.name);
-    showModalBottomSheet<void>(
+
+    showFilterBottomSheet<void>(
       context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
-      ),
-      builder: (context) => SafeArea(
-        child: Padding(
-          padding: EdgeInsets.fromLTRB(
-            AppPadding.p16,
-            AppPadding.p16,
-            AppPadding.p16,
-            MediaQuery.of(context).viewInsets.bottom + AppPadding.p16,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              TextFormFieldWidget(
-                controller: controller,
-                labelText: 'نام الگوی گرید',
-                hintText: 'جستجو بر اساس نام',
-              ),
-              Space.h16,
-              Row(
-                children: [
-                  Expanded(
-                    child: _SheetButton(
-                      title: 'پاک کردن',
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        cubit.applyFilter(cubit.filter.copyWith(name: '', skip: 0));
-                      },
-                    ),
-                  ),
-                  Space.w12,
-                  Expanded(
-                    child: _SheetButton(
-                      title: 'اعمال',
-                      filled: true,
-                      onTap: () {
-                        Navigator.of(context).pop();
-                        cubit.applyFilter(
-                          cubit.filter.copyWith(name: controller.text, skip: 0),
-                        );
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
+      builder: (sheetContext) => FilterBottomSheetScaffold(
+        title: 'فیلترها',
+        onApply: () {
+          Navigator.of(sheetContext).pop();
+          cubit.applyFilter(
+            cubit.filter.copyWith(name: controller.text, skip: 0),
+          );
+        },
+        onClear: () {
+          Navigator.of(sheetContext).pop();
+          cubit.applyFilter(cubit.filter.copyWith(name: '', skip: 0));
+        },
+        child: TextFormFieldWidget(
+          controller: controller,
+          labelText: 'نام الگوی گرید',
+          hintText: 'جستجو بر اساس نام',
         ),
       ),
-    );
+    ).whenComplete(controller.dispose);
   }
 
   Future<void> _showDetails(
@@ -436,97 +398,6 @@ class _GradePatternListView extends StatelessWidget {
       if (item.id == fallback.id) return item;
     }
     return fallback;
-  }
-}
-
-class _TopFilterButton extends StatelessWidget {
-  const _TopFilterButton({
-    required this.title,
-    required this.isActive,
-    required this.icon,
-    required this.onTap,
-  });
-
-  final String title;
-  final bool isActive;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final color = isActive ? theme.colorScheme.primary : theme.colorScheme.onSurface;
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(AppSize.s8),
-      child: Container(
-        height: AppSize.s48,
-        padding: const EdgeInsets.symmetric(horizontal: AppPadding.p12),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.onPrimary,
-          borderRadius: BorderRadius.circular(AppSize.s8),
-          border: Border.all(
-            color: isActive ? theme.colorScheme.primary : theme.dividerColor,
-          ),
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(icon, size: AppSize.s18, color: color),
-            Space.w8,
-            Flexible(
-              child: Text(
-                title,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: color,
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _SheetButton extends StatelessWidget {
-  const _SheetButton({
-    required this.title,
-    required this.onTap,
-    this.filled = false,
-  });
-
-  final String title;
-  final VoidCallback onTap;
-  final bool filled;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return InkWell(
-      onTap: onTap,
-      borderRadius: BorderRadius.circular(AppSize.s8),
-      child: Container(
-        height: AppSize.s48,
-        alignment: Alignment.center,
-        decoration: BoxDecoration(
-          color: filled ? theme.colorScheme.primary : theme.colorScheme.onPrimary,
-          borderRadius: BorderRadius.circular(AppSize.s8),
-          border: Border.all(
-            color: filled ? theme.colorScheme.primary : theme.dividerColor,
-          ),
-        ),
-        child: Text(
-          title,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: filled ? theme.colorScheme.onPrimary : theme.colorScheme.onSurface,
-            fontWeight: FontWeight.w800,
-          ),
-        ),
-      ),
-    );
   }
 }
 

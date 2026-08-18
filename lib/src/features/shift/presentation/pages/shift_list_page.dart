@@ -12,10 +12,13 @@ import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filter_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/gestures.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -85,29 +88,24 @@ class _ShiftListView extends StatelessWidget {
                       AppPadding.p16,
                       AppPadding.p8,
                     ),
-                    child: Row(
-                      children: [
-                        Expanded(
-                          child: _TopFilterButton(
-                            title: 'فیلترها',
-                            isActive: cubit.filter.hasSearchFilters,
-                            onTap: () => _showFilters(context, cubit),
-                          ),
+                    child: FiltersRow(
+                      spacing: AppSize.s12,
+                      filters: [
+                        StatusFilterDropdown<bool?>(
+                          value: pageStatusFilter,
+                          options: const [
+                            StatusFilterOption(value: null, label: 'همه'),
+                            StatusFilterOption(value: true, label: 'فعال'),
+                            StatusFilterOption(
+                              value: false,
+                              label: 'غیرفعال',
+                            ),
+                          ],
+                          onChanged: cubit.setPageStatusFilter,
                         ),
-                        Space.w12,
-                        Expanded(
-                          child: StatusFilterDropdown<bool?>(
-                            value: pageStatusFilter,
-                            options: const [
-                              StatusFilterOption(value: null, label: 'همه'),
-                              StatusFilterOption(value: true, label: 'فعال'),
-                              StatusFilterOption(
-                                value: false,
-                                label: 'غیرفعال',
-                              ),
-                            ],
-                            onChanged: cubit.setPageStatusFilter,
-                          ),
+                        FilterButton(
+                          title: 'فیلترها',
+                                      onTap: () => _showFilters(context, cubit),
                         ),
                       ],
                     ),
@@ -234,14 +232,8 @@ class _ShiftListView extends StatelessWidget {
   }
 
   void _showFilters(BuildContext context, ShiftListCubit cubit) {
-    showModalBottomSheet<void>(
+    showFilterBottomSheet<void>(
       context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
-      ),
       builder: (_) => ShiftFilterSheet(
         initialFilter: cubit.filter,
         shiftTypes: cubit.shiftTypes,
@@ -344,58 +336,6 @@ class _ShiftListView extends StatelessWidget {
     );
   }
 
-}
-
-class _TopFilterButton extends StatelessWidget {
-  const _TopFilterButton({
-    required this.title,
-    required this.isActive,
-    required this.onTap,
-  });
-
-  final String title;
-  final bool isActive;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return InkWell(
-      borderRadius: BorderRadius.circular(AppSize.s8),
-      onTap: onTap,
-      child: Container(
-        height: AppSize.s48,
-        padding: const EdgeInsets.symmetric(horizontal: AppPadding.p14),
-        decoration: BoxDecoration(
-          color: theme.colorScheme.onPrimary,
-          borderRadius: BorderRadius.circular(AppSize.s8),
-          border: Border.all(
-            color: isActive
-                ? theme.colorScheme.primary.withValues(alpha: 0.45)
-                : Colors.transparent,
-          ),
-        ),
-        child: Row(
-          children: [
-            Text(
-              title,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: isActive
-                    ? theme.colorScheme.primary
-                    : theme.colorScheme.onSurface,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-            const Spacer(),
-            Icon(
-              Icons.keyboard_arrow_down_rounded,
-              color: theme.colorScheme.onSurfaceVariant,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }
 
 class _MessageState extends StatelessWidget {

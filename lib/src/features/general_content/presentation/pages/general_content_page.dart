@@ -16,6 +16,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
@@ -173,11 +174,9 @@ class _GeneralContentView extends StatelessWidget {
 
   void _openFilterSheet(BuildContext context, GeneralContentState state) {
     final cubit = context.read<GeneralContentCubit>();
-    BottomSheetMessage.showCustom(
+    showFilterBottomSheet<void>(
       context: context,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      maxHeight: MediaQuery.of(context).size.height * 0.76,
-      content: GeneralContentFilterSheet(
+      builder: (_) => GeneralContentFilterSheet(
         contentTypes: state.contentTypeOptions,
         initialTitle: state.titleFilter,
         initialContentType: state.contentTypeFilter,
@@ -186,7 +185,6 @@ class _GeneralContentView extends StatelessWidget {
           contentType: type,
         ),
       ),
-      actionWidget: const SizedBox.shrink(),
     );
   }
 

@@ -41,7 +41,6 @@ class SkillsCertificatesToolbar extends StatelessWidget {
             ),
             FilterButton(
               title: 'فیلترها',
-              icon: Icons.filter_alt_outlined,
               onTap: onFilterTap,
             ),
           ],

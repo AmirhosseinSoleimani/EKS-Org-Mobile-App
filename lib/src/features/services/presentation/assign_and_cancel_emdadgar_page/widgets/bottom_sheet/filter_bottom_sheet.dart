@@ -3,47 +3,29 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/filter/emdadgar_filter_form.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/filter/saipa_yadak_agency_filter_form.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart';
 
 enum AssignFilterType { emdadgar, agency }
 
-Future<void> showFilterBottomSheet(BuildContext context) async {
+Future<void> showAssignFilterBottomSheet(BuildContext context) async {
   final cubit = context.read<AssignAndCancelEmdadgarCubit>();
-  final colorScheme = Theme.of(context).colorScheme;
-  BottomSheetMessage.showCustom(
-    backgroundColor: Colors.white,
+
+  await showFilterBottomSheet<void>(
     context: context,
-    content: AssignFilterBottomSheetContent(cubit: cubit),
-    actionWidget: Row(
-      children: [
-        Expanded(
-          flex: 60,
-          child: InkwellButtonWidget(
-            title: 'اعمال فیلتر',
-            backgroundColor: cubit.selectedRequest?.serviceType?.serviceColor,
-            onTap: () {
-              context.pop();
-              cubit.applyFilterOnEmdadgarList();
-            },
-          ),
-        ),
-        const SizedBox(width: 16),
-        Expanded(
-          flex: 60,
-          child: InkwellButtonWidget(
-            title: 'پاک کردن همه',
-            backgroundColor: Colors.transparent,
-            borderColor: colorScheme.onPrimaryFixed,
-            titleColor: colorScheme.onPrimaryFixed,
-            onTap: cubit.clearFilterFields,
-          ),
-        ),
-      ],
+    builder: (sheetContext) => FilterBottomSheetScaffold(
+      title: 'فیلترها',
+      applyButtonColor: cubit.selectedRequest?.serviceType?.serviceColor,
+      onApply: () {
+        Navigator.of(sheetContext).pop();
+        cubit.applyFilterOnEmdadgarList();
+      },
+      onClear: () {
+        cubit.clearFilterFields();
+        Navigator.of(sheetContext).pop();
+      },
+      child: AssignFilterBottomSheetContent(cubit: cubit),
     ),
   );
 }
@@ -69,8 +51,6 @@ class _AssignFilterBottomSheetContentState
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        TitleLargeText(text: 'جستجو و فیلتر', fontSize: 15),
-        Space.h16,
         AssignFilterSwitchBox(
           cubit: widget.cubit,
           selectedType: selectedType,
@@ -80,7 +60,7 @@ class _AssignFilterBottomSheetContentState
             });
           },
         ),
-        Space.h24,
+        Space.h12,
         Stack(
           children: [
             _AnimatedFilterFormVisibility(

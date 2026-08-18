@@ -12,8 +12,11 @@ import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filter_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -232,24 +235,14 @@ class _VehicleInfoListViewState extends State<_VehicleInfoListView> {
     BuildContext context,
     VehicleInfoCubit cubit,
   ) {
-    showModalBottomSheet<void>(
+    showFilterBottomSheet<void>(
       context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(
-          top: Radius.circular(AppSize.s20),
-        ),
+      builder: (_) => VehicleInfoFilterSheet(
+        initialFilter: cubit.state.data.filter,
+        vehicleModels: cubit.state.data.vehicleModels,
+        onApply: cubit.applyFilter,
+        onClear: cubit.clearFilter,
       ),
-      builder: (_) {
-        return VehicleInfoFilterSheet(
-          initialFilter: cubit.state.data.filter,
-          vehicleModels: cubit.state.data.vehicleModels,
-          onApply: cubit.applyFilter,
-          onClear: cubit.clearFilter,
-        );
-      },
     );
   }
 
@@ -291,29 +284,23 @@ class _VehicleInfoTopControls extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
     return Column(
       children: [
-        Row(
-          children: [
-            Expanded(
-              child: _HeaderButton(
-                title: 'فیلترها',
-                icon: Icons.keyboard_arrow_down_rounded,
-                onTap: onFilter,
-              ),
+        FiltersRow(
+          spacing: AppSize.s12,
+          filters: [
+            StatusFilterDropdown<bool?>(
+              value: activeFilter,
+              options: const [
+                StatusFilterOption(value: null, label: 'همه'),
+                StatusFilterOption(value: true, label: 'فعال'),
+                StatusFilterOption(value: false, label: 'غیرفعال'),
+              ],
+              onChanged: onStatusChanged,
             ),
-            Space.w12,
-            Expanded(
-              child: StatusFilterDropdown<bool?>(
-                value: activeFilter,
-                options: const [
-                  StatusFilterOption(value: null, label: 'همه'),
-                  StatusFilterOption(value: true, label: 'فعال'),
-                  StatusFilterOption(value: false, label: 'غیرفعال'),
-                ],
-                onChanged: onStatusChanged,
-              ),
+            FilterButton(
+              title: 'فیلترها',
+              onTap: onFilter,
             ),
           ],
         ),
@@ -329,56 +316,4 @@ class _VehicleInfoTopControls extends StatelessWidget {
     );
   }
 
-}
-
-class _HeaderButton extends StatelessWidget {
-  const _HeaderButton({
-    required this.title,
-    required this.icon,
-    required this.onTap,
-  });
-
-  final String title;
-  final IconData icon;
-  final VoidCallback onTap;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return InkWell(
-      borderRadius: BorderRadius.circular(AppSize.s8),
-      onTap: onTap,
-      child: Container(
-        height: AppSize.s48,
-        padding: const EdgeInsets.symmetric(
-          horizontal: AppPadding.p14,
-        ),
-        decoration: BoxDecoration(
-          color: colorScheme.onPrimary,
-          borderRadius: BorderRadius.circular(AppSize.s8),
-        ),
-        child: Row(
-          children: [
-            Text(
-              title,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurface,
-                fontWeight: FontWeight.w600,
-              ),
-            ),
-
-            const Spacer(),
-
-            Icon(
-              icon,
-              size: AppSize.s22,
-              color: colorScheme.onSurfaceVariant,
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 }

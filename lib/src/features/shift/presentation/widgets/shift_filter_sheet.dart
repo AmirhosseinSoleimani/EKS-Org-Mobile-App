@@ -1,8 +1,8 @@
 import 'package:eks_sana_plus_org/src/features/shift/domain/entities/params/shift_filter_param_entity.dart';
-import 'package:eks_sana_plus_org/src/features/shift/presentation/widgets/shift_dropdown_field.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_enum_item_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -43,100 +43,62 @@ class _ShiftFilterSheetState extends State<ShiftFilterSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.only(
-          left: AppPadding.p20,
-          right: AppPadding.p20,
-          top: AppPadding.p8,
-          bottom: MediaQuery.viewInsetsOf(context).bottom + AppPadding.p16,
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: AppSize.s48,
-                  height: AppSize.s4,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.outlineVariant.withOpacity(0.25),
-                    borderRadius: BorderRadius.circular(AppSize.s8),
-                  ),
-                ),
-              ),
-              Space.h24,
-              Text(
-                'جستجو و فیلتر',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              Space.h24,
-              _TextField(controller: _titleController, label: 'عنوان'),
-              Padding(
-                padding: const EdgeInsets.only(bottom: AppPadding.p18),
-                child: ShiftDropdownField<int>(
-                  label: 'نوع',
-                  value: _type,
-                  items: widget.shiftTypes
-                      .where((item) => item.value != null)
-                      .map((item) => ShiftDropdownField.item<int>(
-                            item.value!,
-                            item.title ?? item.name ?? item.value.toString(),
-                          ))
-                      .toList(),
-                  onChanged: (value) => setState(() => _type = value),
-                ),
-              ),
-              _TextField(
-                controller: _startTimeController,
-                label: 'از ساعت',
-                inputFormatters: [_TimeInputFormatter()],
-              ),
-              _TextField(
-                controller: _endTimeController,
-                label: 'تا ساعت',
-                inputFormatters: [_TimeInputFormatter()],
-              ),
-              Space.h8,
-              Row(
-                children: [
-                  Expanded(
-                    child: InkwellButtonWidget(
-                      title: 'اعمال فیلتر',
-                      onTap: _apply,
-                    ),
-                  ),
-                  Space.w16,
-                  Expanded(
-                    child: InkwellButtonWidget(
-                      title: 'پاک کردن همه',
-                      backgroundColor: theme.colorScheme.onPrimary,
-                      borderColor: theme.colorScheme.outline.withOpacity(0.65),
-                      titleColor: theme.colorScheme.onSurface,
-                      onTap: _clear,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+    final typeItems = widget.shiftTypes.where((item) => item.value != null).toList();
+
+    return FilterBottomSheetScaffold(
+      title: 'فیلترها',
+      onApply: _apply,
+      onClear: _clear,
+      child: Column(
+        children: [
+          TextFormFieldWidget(
+            controller: _titleController,
+            labelText: 'عنوان',
+            textInputAction: TextInputAction.next,
+            maxLength: 30,
           ),
-        ),
+          Space.h12,
+          EkDropDown(
+            ['همه', ...typeItems.map(_typeLabel)],
+            label: 'نوع',
+            selectedItem: _selectedTypeLabel(typeItems),
+            onItemValue: (value) {
+              setState(() {
+                _type = value == 'همه' ? null : _typeValue(typeItems, value);
+              });
+            },
+          ),
+          Space.h12,
+          TextFormFieldWidget(
+            controller: _startTimeController,
+            labelText: 'از ساعت',
+            textInputAction: TextInputAction.next,
+            maxLength: 5,
+            textInputFormatter: [_TimeInputFormatter()],
+          ),
+          Space.h12,
+          TextFormFieldWidget(
+            controller: _endTimeController,
+            labelText: 'تا ساعت',
+            textInputAction: TextInputAction.done,
+            maxLength: 5,
+            textInputFormatter: [_TimeInputFormatter()],
+          ),
+        ],
       ),
     );
   }
 
   void _apply() {
-    widget.onApply(ShiftFilterParamEntity(
-      title: _titleController.text,
-      type: _type,
-      startTime: _startTimeController.text,
-      endTime: _endTimeController.text,
-      skip: 0,
-    ));
+    widget.onApply(
+      ShiftFilterParamEntity(
+        title: _titleController.text,
+        type: _type,
+        startTime: _startTimeController.text,
+        endTime: _endTimeController.text,
+        skip: 0,
+      ),
+    );
     Navigator.of(context).pop();
   }
 
@@ -145,40 +107,31 @@ class _ShiftFilterSheetState extends State<ShiftFilterSheet> {
     Navigator.of(context).pop();
   }
 
+  String _typeLabel(CurrentSessionEnumItemEntity item) {
+    return item.title ?? item.name ?? item.value.toString();
+  }
+
+  String _selectedTypeLabel(List<CurrentSessionEnumItemEntity> items) {
+    if (_type == null) return 'همه';
+    for (final item in items) {
+      if (item.value == _type) return _typeLabel(item);
+    }
+    return 'همه';
+  }
+
+  int? _typeValue(List<CurrentSessionEnumItemEntity> items, String label) {
+    for (final item in items) {
+      if (_typeLabel(item) == label) return item.value;
+    }
+    return null;
+  }
+
   @override
   void dispose() {
     _titleController.dispose();
     _startTimeController.dispose();
     _endTimeController.dispose();
     super.dispose();
-  }
-}
-
-class _TextField extends StatelessWidget {
-  const _TextField({
-    required this.controller,
-    required this.label,
-    this.inputFormatters,
-  });
-
-  final TextEditingController controller;
-  final String label;
-  final List<TextInputFormatter>? inputFormatters;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppPadding.p18),
-      child: TextFormFieldWidget(
-        controller: controller,
-        textInputAction: TextInputAction.next,
-        labelText: label,
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        borderRadius: AppSize.s8,
-        maxLength: label == 'عنوان' ? 30 : 5,
-        textInputFormatter: inputFormatters,
-      ),
-    );
   }
 }
 

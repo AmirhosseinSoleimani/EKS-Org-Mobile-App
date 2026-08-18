@@ -1,7 +1,6 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -33,8 +32,6 @@ class SearchRequestForm extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        const BodyMediumText(text: 'فیلتر ها'),
-        Space.h16,
         TextFormFieldWidget(
           labelText: 'شماره درخواست',
           controller: requestNumberController,
@@ -47,7 +44,7 @@ class SearchRequestForm extends StatelessWidget {
             LengthLimitingTextInputFormatter(9),
           ],
         ),
-        Space.h8,
+        Space.h12,
         TextFormFieldWidget(
           labelText: 'شماره تماس',
           controller: phoneController,
@@ -61,7 +58,7 @@ class SearchRequestForm extends StatelessWidget {
             LengthLimitingTextInputFormatter(13),
           ],
         ),
-        Space.h8,
+        Space.h12,
         TextFormFieldWidget(
           labelText: 'شماره شاسی',
           controller: chassisNumberController,
@@ -73,9 +70,9 @@ class SearchRequestForm extends StatelessWidget {
             LengthLimitingTextInputFormatter(17),
           ],
         ),
-        Space.h8,
+        Space.h12,
         TextFormFieldWidget(
-          labelText: _isHomeService ? 'نام خدمت رسان' : 'نام امداد رسان',
+          labelText: _isHomeService ? 'نام خدمت رسان' : 'نام امدادرسان',
           controller: rescuerNameController,
           textInputType: TextInputType.text,
           maxLength: 40,
@@ -85,7 +82,7 @@ class SearchRequestForm extends StatelessWidget {
             LengthLimitingTextInputFormatter(40),
           ],
         ),
-        Space.h8,
+        Space.h12,
         TextFormFieldWidget(
           labelText: 'شهر',
           controller: cityController,
@@ -97,7 +94,7 @@ class SearchRequestForm extends StatelessWidget {
             LengthLimitingTextInputFormatter(20),
           ],
         ),
-        Space.h8,
+        Space.h12,
         TextFormFieldWidget(
           labelText: 'استان',
           controller: provinceController,
@@ -109,7 +106,7 @@ class SearchRequestForm extends StatelessWidget {
             LengthLimitingTextInputFormatter(20),
           ],
         ),
-        Space.h8,
+        Space.h12,
       ],
     );
   }

@@ -301,7 +301,7 @@ class _PlanToolbar extends StatelessWidget {
               onChanged: cubit.changeActiveFilter,
             ),
             FilterButton(
-              title: 'جستجو و فیلتر',
+              title: 'فیلترها',
               onTap: () => PlanInfoBottomSheets.showFilterSheet(
                 context: context,
                 cubit: cubit,

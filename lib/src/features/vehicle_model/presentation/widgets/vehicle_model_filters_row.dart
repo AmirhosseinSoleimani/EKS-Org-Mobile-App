@@ -2,7 +2,7 @@ import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/cubit/
 import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/cubit/vehicle_model_state.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/widgets/vehicle_model_filter_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/widgets/vehicle_model_status_filter_item.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/overlay_drop_down_menu.dart';
@@ -49,9 +49,9 @@ class VehicleModelFiltersRow extends StatelessWidget {
           expand: true,
           overlayBuilder: (context, position, width, dismiss) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              BottomSheetMessage.showCustom(
+              showFilterBottomSheet<void>(
                 context: context,
-                content: BlocBuilder<VehicleModelCubit, VehicleModelState>(
+                builder: (_) => BlocBuilder<VehicleModelCubit, VehicleModelState>(
                   bloc: cubit,
                   builder: (context, state) {
                     return VehicleModelFilterSheet(
@@ -68,8 +68,7 @@ class VehicleModelFiltersRow extends StatelessWidget {
                         isActive,
                         navganTypeTitle,
                         hasDepot,
-                      ) =>
-                          cubit.applyFilter(
+                      ) => cubit.applyFilter(
                         code: code,
                         name: name,
                         isActive: isActive,
@@ -79,10 +78,6 @@ class VehicleModelFiltersRow extends StatelessWidget {
                     );
                   },
                 ),
-                actionWidget: const SizedBox.shrink(),
-                backgroundColor: Theme.of(context).colorScheme.onPrimary,
-                isDismissible: true,
-                enableDrag: true,
               );
               dismiss();
             });

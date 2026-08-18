@@ -1,7 +1,7 @@
 import 'package:eks_sana_plus_org/src/features/imei/presentation/cubit/imei_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/imei/presentation/widgets/imei_filter_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/imei/presentation/widgets/imei_status_filter_item.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/overlay_drop_down_menu.dart';
@@ -42,13 +42,9 @@ class ImeiFiltersRow extends StatelessWidget {
           expand: true,
           overlayBuilder: (context, position, width, dismiss) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              BottomSheetMessage.showCustom(
+              showFilterBottomSheet<void>(
                 context: context,
-                content: ImeiFilterSheet(cubit: cubit),
-                actionWidget: const SizedBox.shrink(),
-                backgroundColor: Theme.of(context).colorScheme.onPrimary,
-                isDismissible: true,
-                enableDrag: true,
+                builder: (_) => ImeiFilterSheet(cubit: cubit),
               );
               dismiss();
             });

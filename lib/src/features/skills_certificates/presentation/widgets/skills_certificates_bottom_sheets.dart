@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/
 import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/widgets/bottom_sheets/skills_certificates_filter_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/widgets/bottom_sheets/skills_certificates_services_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -12,15 +13,12 @@ class SkillsCertificatesBottomSheets {
     required BuildContext context,
     required SkillsCertificatesCubit cubit,
   }) {
-    BottomSheetMessage.showCustom(
+    showFilterBottomSheet<void>(
       context: context,
-      content: BlocProvider.value(
+      builder: (_) => BlocProvider.value(
         value: cubit,
         child: const SkillsCertificatesFilterSheet(),
       ),
-      actionWidget: const SizedBox.shrink(),
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      maxHeight: 0.68,
     );
   }
 

@@ -1,11 +1,10 @@
 import 'package:eks_sana_plus_org/src/features/special_plan/presentation/cubit/special_plan_list_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/special_plan/presentation/cubit/special_plan_list_state.dart';
-import 'package:eks_sana_plus_org/src/features/special_plan/presentation/widgets/special_plan_filter_actions.dart';
 import 'package:eks_sana_plus_org/src/features/special_plan/presentation/widgets/special_plan_filter_controller.dart';
 import 'package:eks_sana_plus_org/src/features/special_plan/presentation/widgets/special_plan_filter_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/special_plan/presentation/widgets/special_plan_filter_value.dart';
 import 'package:eks_sana_plus_org/src/features/special_plan/presentation/widgets/special_plan_status_filter_item.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/overlay_drop_down_menu.dart';
@@ -82,23 +81,18 @@ class SpecialPlanFiltersRow extends StatelessWidget {
       ),
     );
 
-    BottomSheetMessage.showCustom(
+    showFilterBottomSheet<void>(
       context: context,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      isDismissible: true,
-      enableDrag: true,
-      content: SpecialPlanFilterSheet(
+      builder: (sheetContext) => SpecialPlanFilterSheet(
         products: state.products,
         provinces: state.provinces,
         controller: controller,
-      ),
-      actionWidget: SpecialPlanFilterActions(
-        onApply: (sheetContext) {
+        onApply: () {
           final value = controller.value;
           Navigator.of(sheetContext).pop();
           _applyFilter(value);
         },
-        onClear: (sheetContext) {
+        onClear: () {
           Navigator.of(sheetContext).pop();
           _applyFilter(const SpecialPlanFilterValue());
         },

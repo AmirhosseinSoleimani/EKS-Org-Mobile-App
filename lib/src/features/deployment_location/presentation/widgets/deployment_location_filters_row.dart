@@ -2,7 +2,7 @@ import 'package:eks_sana_plus_org/src/features/deployment_location/presentation/
 import 'package:eks_sana_plus_org/src/features/deployment_location/presentation/cubit/deployment_location_state.dart';
 import 'package:eks_sana_plus_org/src/features/deployment_location/presentation/widgets/deployment_location_filter_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/deployment_location/presentation/widgets/deployment_location_status_filter_item.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/overlay_drop_down_menu.dart';
@@ -50,9 +50,9 @@ class DeploymentLocationFiltersRow extends StatelessWidget {
           expand: true,
           overlayBuilder: (context, position, width, dismiss) {
             WidgetsBinding.instance.addPostFrameCallback((_) {
-              BottomSheetMessage.showCustom(
+              showFilterBottomSheet<void>(
                 context: context,
-                content: DeploymentLocationFilterSheet(
+                builder: (_) => DeploymentLocationFilterSheet(
                   initialTitle: state.titleFilter,
                   initialProvinceTitle: state.provinceTitleFilter,
                   initialCityTitle: state.cityTitleFilter,
@@ -64,8 +64,7 @@ class DeploymentLocationFiltersRow extends StatelessWidget {
                     cityTitle,
                     address,
                     isActive,
-                  ) =>
-                      cubit.applyFilter(
+                  ) => cubit.applyFilter(
                     title: title,
                     provinceTitle: provinceTitle,
                     cityTitle: cityTitle,
@@ -73,10 +72,6 @@ class DeploymentLocationFiltersRow extends StatelessWidget {
                     isActive: isActive,
                   ),
                 ),
-                actionWidget: const SizedBox.shrink(),
-                backgroundColor: Theme.of(context).colorScheme.onPrimary,
-                isDismissible: true,
-                enableDrag: true,
               );
               dismiss();
             });

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 class FilterButton extends StatefulWidget {
   final String title;
   final String? label;
-  final IconData icon;
   final bool expand;
   final bool hasFloatingLabel;
   final TextStyle? labelStyle;
@@ -24,7 +23,6 @@ class FilterButton extends StatefulWidget {
     super.key,
     required this.title,
     this.label,
-    this.icon = Icons.keyboard_arrow_down,
     this.expand = false,
     this.hasFloatingLabel = false,
     this.overlayBuilder,
@@ -125,7 +123,7 @@ class _FilterButtonState extends State<FilterButton> {
                 child: _buildTitle(widget.title),
               ),
               const SizedBox(width: 4),
-              Icon(widget.icon, size: 20),
+              const Icon(Icons.keyboard_arrow_down, size: 20),
             ],
           ),
         ),
@@ -171,7 +169,7 @@ class _FilterButtonState extends State<FilterButton> {
             Expanded(
               child: _buildTitle(hasValue ? widget.title : ""),
             ),
-            Icon(widget.icon, size: 20),
+            const Icon(Icons.keyboard_arrow_down, size: 20),
           ],
         ),
       ),

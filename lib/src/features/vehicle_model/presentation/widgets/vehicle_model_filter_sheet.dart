@@ -1,12 +1,9 @@
 import 'package:eks_sana_plus_org/src/features/vehicle_model/domain/entities/vehicle_navgan_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/overlay_dropdown_form_field.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_medium_text.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class VehicleModelFilterSheet extends StatefulWidget {
   const VehicleModelFilterSheet({
@@ -77,93 +74,84 @@ class _VehicleModelFilterSheetState extends State<VehicleModelFilterSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: SafeArea(
-        child: Padding(
-          padding: const EdgeInsets.all(AppPadding.p16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TitleMediumText(
-                text: 'فیلتر نوع خودرو',
-                color: theme.colorScheme.onSurface,
-                fontWeight: FontWeight.w800,
-              ),
-              Space.h16,
-              TextFormFieldWidget(controller: _codeController, labelText: 'کد'),
-              Space.h12,
-              TextFormFieldWidget(controller: _nameController, labelText: 'نام'),
-              Space.h12,
-              OverlayDropdownFormField<VehicleNavganEntity>(
-                key: ValueKey(
-                  'filter-navgan-${_selectedNavgan?.id}-${widget.navgans.length}',
-                ),
-                labelText: 'نوع ناوگان',
-                items: widget.navgans,
-                value: _selectedNavgan,
-                hintText: widget.isNavgansLoading
-                    ? 'در حال دریافت...'
-                    : 'انتخاب کنید',
-                enabled: widget.navgans.isNotEmpty,
-                onChanged: (item) => setState(() => _selectedNavgan = item),
-              ),
-              Space.h12,
-              EkDropDown(
-                const ['همه', 'فعال', 'غیرفعال'],
-                label: 'وضعیت',
-                selectedItem: _boolTitle(_isActive),
-                onItemValue: (value) =>
-                    setState(() => _isActive = _boolValue(value)),
-              ),
-              Space.h12,
-              EkDropDown(
-                const ['همه', 'دارد', 'ندارد'],
-                label: 'مجهز به انبارک',
-                selectedItem: _depotTitle(_hasDepot),
-                onItemValue: (value) =>
-                    setState(() => _hasDepot = _depotValue(value)),
-              ),
-              Space.h20,
-              Row(
-                children: [
-                  Expanded(
-                    child: InkwellButtonWidget(
-                      title: 'اعمال فیلتر',
-                      onTap: () {
-                        widget.onSubmit(
-                          _codeController.text,
-                          _nameController.text,
-                          _isActive,
-                          _selectedNavgan?.title,
-                          _hasDepot,
-                        );
-                        context.pop();
-                      },
-                    ),
-                  ),
-                  Space.w12,
-                  Expanded(
-                    child: InkwellButtonWidget(
-                      title: 'حذف فیلتر',
-                      backgroundColor: theme.colorScheme.onPrimary,
-                      borderColor: theme.colorScheme.outline,
-                      titleColor: theme.colorScheme.onSurface,
-                      onTap: () {
-                        widget.onSubmit(null, null, null, null, null);
-                        context.pop();
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ],
+    final navganItems = <String>['همه', ...widget.navgans.map((item) => item.label)];
+
+    return FilterBottomSheetScaffold(
+      title: 'فیلترها',
+      onApply: _apply,
+      onClear: _clear,
+      child: Column(
+        children: [
+          TextFormFieldWidget(
+            controller: _codeController,
+            labelText: 'کد',
+            textInputAction: TextInputAction.next,
           ),
-        ),
+          Space.h12,
+          TextFormFieldWidget(
+            controller: _nameController,
+            labelText: 'نام',
+            textInputAction: TextInputAction.next,
+          ),
+          Space.h12,
+          EkDropDown(
+            navganItems,
+            key: ValueKey(
+              'vehicle-model-navgans-${widget.navgans.map((item) => item.id).join('-')}',
+            ),
+            label: 'نوع ناوگان',
+            selectedItem: _selectedNavgan?.label ?? 'همه',
+            onItemValue: (value) {
+              setState(() {
+                _selectedNavgan = value == 'همه' ? null : _findNavgan(value);
+              });
+            },
+          ),
+          Space.h12,
+          EkDropDown(
+            const ['همه', 'فعال', 'غیرفعال'],
+            label: 'وضعیت',
+            selectedItem: _boolTitle(_isActive),
+            onItemValue: (value) => setState(() => _isActive = _boolValue(value)),
+          ),
+          Space.h12,
+          EkDropDown(
+            const ['همه', 'دارد', 'ندارد'],
+            label: 'مجهز به انبارک',
+            selectedItem: _depotTitle(_hasDepot),
+            onItemValue: (value) => setState(() => _hasDepot = _depotValue(value)),
+          ),
+        ],
       ),
     );
+  }
+
+  void _apply() {
+    widget.onSubmit(
+      _normalized(_codeController.text),
+      _normalized(_nameController.text),
+      _isActive,
+      _selectedNavgan?.title,
+      _hasDepot,
+    );
+    Navigator.of(context).pop();
+  }
+
+  void _clear() {
+    widget.onSubmit(null, null, null, null, null);
+    Navigator.of(context).pop();
+  }
+
+  String? _normalized(String value) {
+    final normalized = value.trim();
+    return normalized.isEmpty ? null : normalized;
+  }
+
+  VehicleNavganEntity? _findNavgan(String label) {
+    for (final item in widget.navgans) {
+      if (item.label == label) return item;
+    }
+    return null;
   }
 
   String _boolTitle(bool? value) {

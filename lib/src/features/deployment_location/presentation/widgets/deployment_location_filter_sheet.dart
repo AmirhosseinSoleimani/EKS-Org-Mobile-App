@@ -1,8 +1,7 @@
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
@@ -66,76 +65,42 @@ class _DeploymentLocationFilterSheetState
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: SafeArea(
-        child: SingleChildScrollView(
-          padding: const EdgeInsets.all(AppPadding.p16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TitleMediumText(
-                text: 'فیلتر محل استقرار',
-                color: theme.colorScheme.onSurface,
-                fontWeight: FontWeight.w800,
-              ),
-              Space.h16,
-              TextFormFieldWidget(
-                controller: _titleController,
-                labelText: 'عنوان',
-              ),
-              Space.h12,
-              TextFormFieldWidget(
-                controller: _provinceController,
-                labelText: 'استان',
-              ),
-              Space.h12,
-              TextFormFieldWidget(
-                controller: _cityController,
-                labelText: 'شهر',
-              ),
-              Space.h12,
-              TextFormFieldWidget(
-                controller: _addressController,
-                labelText: 'آدرس',
-                maxLines: 2,
-              ),
-              Space.h12,
-              EkDropDown(
-                const ['همه', 'فعال', 'غیرفعال'],
-                label: 'وضعیت',
-                selectedItem: _statusTitle(_isActive),
-                onItemValue: (value) {
-                  setState(() => _isActive = _statusValue(value));
-                },
-              ),
-              Space.h20,
-              Row(
-                children: [
-                  Expanded(
-                    child: InkwellButtonWidget(
-                      title: 'اعمال فیلتر',
-                      onTap: _submit,
-                    ),
-                  ),
-                  Space.w12,
-                  Expanded(
-                    child: InkwellButtonWidget(
-                      title: 'حذف فیلتر',
-                      backgroundColor: theme.colorScheme.onPrimary,
-                      borderColor: theme.colorScheme.outline,
-                      titleColor: theme.colorScheme.onSurface,
-                      onTap: _clear,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+    return FilterBottomSheetScaffold(
+      title: 'فیلترها',
+      onApply: _submit,
+      onClear: _clear,
+      child: Column(
+        children: [
+          TextFormFieldWidget(
+            controller: _titleController,
+            labelText: 'عنوان',
           ),
-        ),
+          Space.h12,
+          TextFormFieldWidget(
+            controller: _provinceController,
+            labelText: 'استان',
+          ),
+          Space.h12,
+          TextFormFieldWidget(
+            controller: _cityController,
+            labelText: 'شهر',
+          ),
+          Space.h12,
+          TextFormFieldWidget(
+            controller: _addressController,
+            labelText: 'آدرس',
+            maxLines: 2,
+          ),
+          Space.h12,
+          EkDropDown(
+            const ['همه', 'فعال', 'غیرفعال'],
+            label: 'وضعیت',
+            selectedItem: _statusTitle(_isActive),
+            onItemValue: (value) {
+              setState(() => _isActive = _statusValue(value));
+            },
+          ),
+        ],
       ),
     );
   }

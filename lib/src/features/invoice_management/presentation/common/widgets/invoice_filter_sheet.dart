@@ -2,9 +2,9 @@ import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/emdad_service_category_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/params/invoice_list_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/date_picker_widget/date_picker_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/switch_widgets/labeled_switch_field.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
@@ -91,154 +91,86 @@ class _InvoiceFilterSheetState
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final filteredCategories = _filteredCategories;
 
-    return SafeArea(
-      top: false,
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height * 0.78,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppPadding.p16,
-                AppPadding.p16,
-                AppPadding.p16,
-                AppPadding.p8,
-              ),
-              child: Text(
-                widget.title,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
-            ),
-            Expanded(
-              child: SingleChildScrollView(
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppPadding.p16,
-                  vertical: AppPadding.p8,
-                ),
-                child: Column(
-                  children: [
-                    EkDropDown(
-                      ServiceType.values.map((item) => item.label).toList(),
-                      label: 'نوع خدمت',
-                      selectedItem: _serviceType.label,
-                      onItemValue: _onServiceTypeChanged,
-                    ),
-                    Space.h12,
-                    EkDropDown(
-                      [
-                        _all,
-                        ...filteredCategories
-                            .map((item) => item.title?.trim())
-                            .whereType<String>()
-                            .where((item) => item.isNotEmpty),
-                      ],
-                      key: ValueKey(_serviceType.value),
-                      label: 'دسته خدمت',
-                      selectedItem: _category?.title?.trim() ?? _all,
-                      onItemValue: _onCategoryChanged,
-                    ),
-                    Space.h12,
-                    TextFormFieldWidget(
-                      controller: _requestTrackCodeController,
-                      labelText: 'شماره درخواست',
-                      textInputType: TextInputType.number,
-                      textInputAction: TextInputAction.next,
-                    ),
-                    Space.h12,
-                    DatePickerWidget(
-                      controller: _fromDateController,
-                      labelText: 'از تاریخ',
-                      hintText: 'انتخاب تاریخ',
-                      initialDate: _fromDate,
-                      lastDate: _toDate,
-                      onTap: (value) {
-                        setState(() => _fromDate = value);
-                      },
-                    ),
-                    Space.h12,
-                    DatePickerWidget(
-                      controller: _toDateController,
-                      labelText: 'تا تاریخ',
-                      hintText: 'انتخاب تاریخ',
-                      initialDate: _toDate,
-                      firstDate: _fromDate,
-                      onTap: (value) {
-                        setState(() => _toDate = value);
-                      },
-                    ),
-                    Space.h12,
-                    TextFormFieldWidget(
-                      controller: _agencyCodeController,
-                      labelText: 'کد نمایندگی',
-                      textInputAction: TextInputAction.next,
-                    ),
-                    Space.h12,
-                    TextFormFieldWidget(
-                      controller: _emdadgarNameController,
-                      labelText: 'نام امدادگر',
-                      textInputAction: TextInputAction.done,
-                    ),
-                    Space.h12,
-                    if (widget.showSubscriptionField) ...[
-                      LabeledSwitchField(
-                        label: 'فقط درخواست‌های اشتراکی',
-                        value: _showSubscription,
-                        onChanged: (value) {
-                          setState(() => _showSubscription = value);
-                        },
-                      ),
-                      Space.h16,
-                    ],
-                  ],
-                ),
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.fromLTRB(
-                AppPadding.p16,
-                AppPadding.p12,
-                AppPadding.p16,
-                AppPadding.p16,
-              ),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surface,
-                border: Border(
-                  top: BorderSide(
-                    color: theme.dividerColor,
-                  ),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: InkwellButtonWidget(
-                      title: 'اعمال فیلتر',
-                      onTap: _apply,
-                    ),
-                  ),
-                  Space.w12,
-                  Expanded(
-                    child: InkwellButtonWidget(
-                      title: 'پاک کردن',
-                      backgroundColor: theme.colorScheme.onPrimary,
-                      borderColor: theme.colorScheme.outline.withOpacity(0.6),
-                      titleColor: theme.colorScheme.onSurface,
-                      onTap: _clear,
-                    ),
-                  ),
-                ],
-              ),
+    return FilterBottomSheetScaffold(
+      title: widget.title,
+      onApply: _apply,
+      onClear: _clear,
+      child: Column(
+        children: [
+          EkDropDown(
+            ServiceType.values.map((item) => item.label).toList(),
+            label: 'نوع خدمت',
+            selectedItem: _serviceType.label,
+            onItemValue: _onServiceTypeChanged,
+          ),
+          Space.h12,
+          EkDropDown(
+            [
+              _all,
+              ...filteredCategories
+                  .map((item) => item.title?.trim())
+                  .whereType<String>()
+                  .where((item) => item.isNotEmpty),
+            ],
+            key: ValueKey(_serviceType.value),
+            label: 'دسته خدمت',
+            selectedItem: _category?.title?.trim() ?? _all,
+            onItemValue: _onCategoryChanged,
+          ),
+          Space.h12,
+          TextFormFieldWidget(
+            controller: _requestTrackCodeController,
+            labelText: 'شماره درخواست',
+            textInputType: TextInputType.number,
+            textInputAction: TextInputAction.next,
+          ),
+          Space.h12,
+          DatePickerWidget(
+            controller: _fromDateController,
+            labelText: 'از تاریخ',
+            hintText: 'انتخاب تاریخ',
+            initialDate: _fromDate,
+            lastDate: _toDate,
+            onTap: (value) {
+              setState(() => _fromDate = value);
+            },
+          ),
+          Space.h12,
+          DatePickerWidget(
+            controller: _toDateController,
+            labelText: 'تا تاریخ',
+            hintText: 'انتخاب تاریخ',
+            initialDate: _toDate,
+            firstDate: _fromDate,
+            onTap: (value) {
+              setState(() => _toDate = value);
+            },
+          ),
+          Space.h12,
+          TextFormFieldWidget(
+            controller: _agencyCodeController,
+            labelText: 'کد نمایندگی',
+            textInputAction: TextInputAction.next,
+          ),
+          Space.h12,
+          TextFormFieldWidget(
+            controller: _emdadgarNameController,
+            labelText: 'نام امدادگر',
+            textInputAction: TextInputAction.done,
+          ),
+          if (widget.showSubscriptionField) ...[
+            Space.h12,
+            LabeledSwitchField(
+              label: 'فقط درخواست‌های اشتراکی',
+              value: _showSubscription,
+              onChanged: (value) {
+                setState(() => _showSubscription = value);
+              },
             ),
           ],
-        ),
+        ],
       ),
     );
   }

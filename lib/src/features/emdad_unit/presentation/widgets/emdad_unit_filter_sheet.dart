@@ -1,6 +1,7 @@
 import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/params/emdad_unit_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 
@@ -44,104 +45,73 @@ class _EmdadUnitFilterSheetState extends State<EmdadUnitFilterSheet> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return SafeArea(
-      child: Padding(
-        padding: EdgeInsets.only(
-          left: AppPadding.p20,
-          right: AppPadding.p20,
-          top: AppPadding.p8,
-          bottom: MediaQuery.viewInsetsOf(context).bottom + AppPadding.p16,
-        ),
-        child: SingleChildScrollView(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Center(
-                child: Container(
-                  width: AppSize.s48,
-                  height: AppSize.s4,
-                  decoration: BoxDecoration(
-                    color: theme.colorScheme.outlineVariant.withOpacity(0.16),
-                    borderRadius: BorderRadius.circular(AppSize.s8),
-                  ),
-                ),
-              ),
-              Space.h24,
-              Text(
-                'جستجو و فیلتر',
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
-              ),
-              Space.h24,
-              _TextField(controller: _nameController, label: 'عنوان'),
-              _TextField(controller: _personController, label: 'امدادرسان'),
-              _TextField(controller: _agencyController, label: 'نمایندگی'),
-              _TextField(controller: _vehicleController, label: 'خودرو'),
-              _SelectField<int>(
-                label: 'نوع مقر',
-                value: _seatType,
-                items: const [
-                  DropdownMenuItem(value: 1, child: Text('نوع ۱')),
-                  DropdownMenuItem(value: 2, child: Text('نوع ۲')),
-                ],
-                onChanged: (value) => setState(() => _seatType = value),
-              ),
-              _TextField(controller: _locationController, label: 'محل استقرار'),
-              _SelectField<int>(
-                label: 'گرید',
-                value: _grade,
-                items: const [
-                  DropdownMenuItem(value: 1, child: Text('۱')),
-                  DropdownMenuItem(value: 2, child: Text('۲')),
-                  DropdownMenuItem(value: 3, child: Text('۳')),
-                  DropdownMenuItem(value: 4, child: Text('۴')),
-                  DropdownMenuItem(value: 5, child: Text('۵')),
-                ],
-                onChanged: (value) => setState(() => _grade = value),
-              ),
-              Space.h24,
-              Row(
-                children: [
-                  Expanded(
-                    child: InkwellButtonWidget(
-                      title: 'اعمال فیلتر',
-                      onTap: _apply,
-                    ),
-                  ),
-                  Space.w16,
-                  Expanded(
-                    child: InkwellButtonWidget(
-                      title: 'پاک کردن همه',
-                      backgroundColor: theme.colorScheme.onPrimary,
-                      borderColor: theme.colorScheme.outline.withOpacity(0.65),
-                      titleColor: theme.colorScheme.onSurface,
-                      onTap: _clear,
-                    ),
-                  ),
-                ],
-              ),
-            ],
+    return FilterBottomSheetScaffold(
+      title: 'فیلترها',
+      onApply: _apply,
+      onClear: _clear,
+      child: Column(
+        children: [
+          TextFormFieldWidget(
+            controller: _nameController,
+            labelText: 'عنوان',
+            textInputAction: TextInputAction.next,
           ),
-        ),
+          Space.h12,
+          TextFormFieldWidget(
+            controller: _personController,
+            labelText: 'امدادرسان',
+            textInputAction: TextInputAction.next,
+          ),
+          Space.h12,
+          TextFormFieldWidget(
+            controller: _agencyController,
+            labelText: 'نمایندگی',
+            textInputAction: TextInputAction.next,
+          ),
+          Space.h12,
+          TextFormFieldWidget(
+            controller: _vehicleController,
+            labelText: 'خودرو',
+            textInputAction: TextInputAction.next,
+          ),
+          Space.h12,
+          EkDropDown(
+            const ['همه', 'نوع ۱', 'نوع ۲'],
+            label: 'نوع مقر',
+            selectedItem: _seatTypeTitle(_seatType),
+            onItemValue: (value) => setState(() => _seatType = _seatTypeValue(value)),
+          ),
+          Space.h12,
+          TextFormFieldWidget(
+            controller: _locationController,
+            labelText: 'محل استقرار',
+            textInputAction: TextInputAction.next,
+          ),
+          Space.h12,
+          EkDropDown(
+            const ['همه', '۱', '۲', '۳', '۴', '۵'],
+            label: 'گرید',
+            selectedItem: _gradeTitle(_grade),
+            onItemValue: (value) => setState(() => _grade = _gradeValue(value)),
+          ),
+        ],
       ),
     );
   }
 
   void _apply() {
-    widget.onApply(EmdadUnitFilterParamEntity(
-      name: _nameController.text,
-      personInfoFullName: _personController.text,
-      agencyInfoName: _agencyController.text,
-      vehicleInfoTitle: _vehicleController.text,
-      locationTitle: _locationController.text,
-      seatType: _seatType,
-      grade: _grade,
-      skip: 0,
-    ));
+    widget.onApply(
+      EmdadUnitFilterParamEntity(
+        name: _nameController.text,
+        personInfoFullName: _personController.text,
+        agencyInfoName: _agencyController.text,
+        vehicleInfoTitle: _vehicleController.text,
+        locationTitle: _locationController.text,
+        seatType: _seatType,
+        grade: _grade,
+        skip: 0,
+      ),
+    );
     Navigator.of(context).pop();
   }
 
@@ -149,6 +119,22 @@ class _EmdadUnitFilterSheetState extends State<EmdadUnitFilterSheet> {
     widget.onClear();
     Navigator.of(context).pop();
   }
+
+  String _seatTypeTitle(int? value) {
+    if (value == 1) return 'نوع ۱';
+    if (value == 2) return 'نوع ۲';
+    return 'همه';
+  }
+
+  int? _seatTypeValue(String value) {
+    if (value == 'نوع ۱') return 1;
+    if (value == 'نوع ۲') return 2;
+    return null;
+  }
+
+  String _gradeTitle(int? value) => value?.toString() ?? 'همه';
+
+  int? _gradeValue(String value) => value == 'همه' ? null : int.tryParse(value);
 
   @override
   void dispose() {
@@ -158,128 +144,5 @@ class _EmdadUnitFilterSheetState extends State<EmdadUnitFilterSheet> {
     _vehicleController.dispose();
     _locationController.dispose();
     super.dispose();
-  }
-}
-
-class _TextField extends StatelessWidget {
-  const _TextField({
-    required this.controller,
-    required this.label,
-  });
-
-  final TextEditingController controller;
-  final String label;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(bottom: AppPadding.p18),
-      child: TextFormFieldWidget(
-        controller: controller,
-        textInputAction: TextInputAction.next,
-        labelText: label,
-        floatingLabelBehavior: FloatingLabelBehavior.always,
-        borderRadius: AppSize.s8,
-      ),
-    );
-  }
-}
-
-class _SelectField<T> extends StatelessWidget {
-  const _SelectField({
-    required this.label,
-    required this.value,
-    required this.items,
-    required this.onChanged,
-  });
-
-  final String label;
-  final T? value;
-  final List<DropdownMenuItem<T>> items;
-  final ValueChanged<T?> onChanged;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-    final textTheme = theme.textTheme;
-
-    final textStyle = textTheme.bodyMedium?.copyWith(
-      color: colorScheme.onSurface,
-    );
-
-    final borderRadius = BorderRadius.circular(
-      AppSize.s8,
-    );
-
-    return Padding(
-      padding: const EdgeInsets.only(
-        bottom: AppPadding.p18,
-      ),
-      child: SizedBox(
-        height: 52,
-        child: DropdownButtonFormField<T>(
-          value: value,
-          isExpanded: true,
-          icon: const Icon(
-            Icons.keyboard_arrow_down,
-            size: 20,
-          ),
-          style: textStyle,
-          decoration: InputDecoration(
-            labelText: label,
-            hintText: 'انتخاب کنید',
-
-            floatingLabelBehavior:
-            FloatingLabelBehavior.always,
-
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 14,
-            ),
-
-            labelStyle: textStyle?.copyWith(
-              color: colorScheme.onSurfaceVariant,
-            ),
-
-            floatingLabelStyle: textStyle?.copyWith(
-              color: colorScheme.onSurfaceVariant,
-            ),
-
-            hintStyle: textStyle?.copyWith(
-              color: colorScheme.onSurface.withAlpha(140),
-            ),
-
-            border: OutlineInputBorder(
-              borderRadius: borderRadius,
-            ),
-
-            enabledBorder: OutlineInputBorder(
-              borderRadius: borderRadius,
-              borderSide: BorderSide(
-                color: Colors.grey.shade300,
-              ),
-            ),
-
-            disabledBorder: OutlineInputBorder(
-              borderRadius: borderRadius,
-              borderSide: BorderSide(
-                color: Colors.grey.shade300,
-              ),
-            ),
-
-            focusedBorder: OutlineInputBorder(
-              borderRadius: borderRadius,
-              borderSide: BorderSide(
-                color: colorScheme.primary,
-                width: 1.5,
-              ),
-            ),
-          ),
-          items: items,
-          onChanged: onChanged,
-        ),
-      ),
-    );
   }
 }

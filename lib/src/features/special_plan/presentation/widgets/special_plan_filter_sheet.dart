@@ -4,7 +4,8 @@ import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/province
 import 'package:eks_sana_plus_org/src/shared/input_formatter/persian_arabic_digits_to_english_formatter.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/date_picker_widget/date_picker_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/overlay_dropdown_form_field.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -16,55 +17,70 @@ class SpecialPlanFilterSheet extends StatelessWidget {
     required this.products,
     required this.provinces,
     required this.controller,
+    required this.onApply,
+    required this.onClear,
   });
-
-  static const List<SimpleDropdownItem<bool?>> _booleanItems = [
-    SimpleDropdownItem<bool?>(value: null, label: 'همه'),
-    SimpleDropdownItem<bool?>(value: true, label: 'بله'),
-    SimpleDropdownItem<bool?>(value: false, label: 'خیر'),
-  ];
-
-  static const List<SimpleDropdownItem<bool?>> _statusItems = [
-    SimpleDropdownItem<bool?>(value: null, label: 'همه'),
-    SimpleDropdownItem<bool?>(value: true, label: 'فعال'),
-    SimpleDropdownItem<bool?>(value: false, label: 'غیرفعال'),
-  ];
 
   final List<SpecialPlanProductEntity> products;
   final List<ProvinceLookupEntity> provinces;
   final SpecialPlanFilterController controller;
+  final VoidCallback onApply;
+  final VoidCallback onClear;
 
   @override
   Widget build(BuildContext context) {
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: AnimatedBuilder(
-        animation: controller,
-        builder: (context, child) {
-          return Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+    return AnimatedBuilder(
+      animation: controller,
+      builder: (context, child) {
+        return FilterBottomSheetScaffold(
+          title: 'فیلترها',
+          onApply: onApply,
+          onClear: onClear,
+          child: Column(
             children: [
               TextFormFieldWidget(
                 controller: controller.titleController,
                 labelText: 'عنوان',
               ),
               Space.h12,
-              OverlayDropdownFormField<SpecialPlanProductEntity>(
-                labelText: 'محصول',
-                items: products,
-                value: controller.product,
-                onChanged: controller.selectProduct,
+              EkDropDown(
+                ['همه', ...products.map((item) => item.label)],
+                label: 'محصول',
+                selectedItem: controller.product?.label ?? 'همه',
+                onItemValue: (value) => controller.selectProduct(
+                  value == 'همه' ? null : _findProduct(value),
+                ),
               ),
               Space.h12,
-              OverlayDropdownFormField<SimpleDropdownItem<bool?>>(
-                labelText: 'اولویت بالا',
-                items: _booleanItems,
-                value: _booleanItem(controller.hasHighPriority),
-                onChanged: (item) => controller.selectHighPriority(item?.value),
+              EkDropDown(
+                const ['همه', 'بله', 'خیر'],
+                label: 'اولویت بالا',
+                selectedItem: _booleanTitle(controller.hasHighPriority),
+                onItemValue: (value) =>
+                    controller.selectHighPriority(_booleanValue(value)),
               ),
               Space.h12,
-              _SpecialPlanFilterDateFields(controller: controller),
+              DatePickerWidget(
+                controller: controller.startDateController,
+                labelText: 'تاریخ شروع',
+                hintText: 'انتخاب تاریخ',
+                initialDate: controller.startDate == null
+                    ? null
+                    : Jalali.fromDateTime(controller.startDate!),
+                lastDate: Jalali(1500, 12, 29),
+                onTap: controller.selectStartDate,
+              ),
+              Space.h12,
+              DatePickerWidget(
+                controller: controller.endDateController,
+                labelText: 'تاریخ پایان',
+                hintText: 'انتخاب تاریخ',
+                initialDate: controller.endDate == null
+                    ? null
+                    : Jalali.fromDateTime(controller.endDate!),
+                lastDate: Jalali(1500, 12, 29),
+                onTap: controller.selectEndDate,
+              ),
               Space.h12,
               TextFormFieldWidget(
                 controller: controller.orderController,
@@ -76,11 +92,13 @@ class SpecialPlanFilterSheet extends StatelessWidget {
                 ],
               ),
               Space.h12,
-              OverlayDropdownFormField<ProvinceLookupEntity>(
-                labelText: 'استان',
-                items: provinces,
-                value: controller.province,
-                onChanged: controller.selectProvince,
+              EkDropDown(
+                ['همه', ...provinces.map((item) => item.label)],
+                label: 'استان',
+                selectedItem: controller.province?.label ?? 'همه',
+                onItemValue: (value) => controller.selectProvince(
+                  value == 'همه' ? null : _findProvince(value),
+                ),
               ),
               Space.h12,
               TextFormFieldWidget(
@@ -88,73 +106,63 @@ class SpecialPlanFilterSheet extends StatelessWidget {
                 labelText: 'شهر',
               ),
               Space.h12,
-              OverlayDropdownFormField<SimpleDropdownItem<bool?>>(
-                labelText: 'وضعیت',
-                items: _statusItems,
-                value: _statusItem(controller.isActive),
-                onChanged: (item) => controller.selectStatus(item?.value),
+              EkDropDown(
+                const ['همه', 'فعال', 'غیرفعال'],
+                label: 'وضعیت',
+                selectedItem: _statusTitle(controller.isActive),
+                onItemValue: (value) =>
+                    controller.selectStatus(_statusValue(value)),
               ),
               Space.h12,
-              OverlayDropdownFormField<SimpleDropdownItem<bool?>>(
-                labelText: 'فقط خودروهای سایپایی',
-                items: _booleanItems,
-                value: _booleanItem(controller.onlySaipaCars),
-                onChanged: (item) =>
-                    controller.selectOnlySaipaCars(item?.value),
+              EkDropDown(
+                const ['همه', 'بله', 'خیر'],
+                label: 'فقط خودروهای سایپایی',
+                selectedItem: _booleanTitle(controller.onlySaipaCars),
+                onItemValue: (value) =>
+                    controller.selectOnlySaipaCars(_booleanValue(value)),
               ),
             ],
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 
-  SimpleDropdownItem<bool?> _booleanItem(bool? value) {
-    return _booleanItems.firstWhere((item) => item.value == value);
+  SpecialPlanProductEntity? _findProduct(String label) {
+    for (final item in products) {
+      if (item.label == label) return item;
+    }
+    return null;
   }
 
-  SimpleDropdownItem<bool?> _statusItem(bool? value) {
-    return _statusItems.firstWhere((item) => item.value == value);
+  ProvinceLookupEntity? _findProvince(String label) {
+    for (final item in provinces) {
+      if (item.label == label) return item;
+    }
+    return null;
   }
-}
 
-class _SpecialPlanFilterDateFields extends StatelessWidget {
-  const _SpecialPlanFilterDateFields({required this.controller});
+  String _booleanTitle(bool? value) {
+    if (value == true) return 'بله';
+    if (value == false) return 'خیر';
+    return 'همه';
+  }
 
-  final SpecialPlanFilterController controller;
+  bool? _booleanValue(String value) {
+    if (value == 'بله') return true;
+    if (value == 'خیر') return false;
+    return null;
+  }
 
-  @override
-  Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: DatePickerWidget(
-            controller: controller.startDateController,
-            labelText: 'تاریخ شروع',
-            hintText: 'انتخاب کنید',
-            initialDate: controller.startDate == null
-                ? null
-                : Jalali.fromDateTime(controller.startDate!),
-            lastDate: Jalali(1500, 12, 29),
-            suffixIcon: const Icon(Icons.calendar_month_outlined),
-            onTap: controller.selectStartDate,
-          ),
-        ),
-        Space.w12,
-        Expanded(
-          child: DatePickerWidget(
-            controller: controller.endDateController,
-            labelText: 'تاریخ پایان',
-            hintText: 'انتخاب کنید',
-            initialDate: controller.endDate == null
-                ? null
-                : Jalali.fromDateTime(controller.endDate!),
-            lastDate: Jalali(1500, 12, 29),
-            suffixIcon: const Icon(Icons.calendar_month_outlined),
-            onTap: controller.selectEndDate,
-          ),
-        ),
-      ],
-    );
+  String _statusTitle(bool? value) {
+    if (value == true) return 'فعال';
+    if (value == false) return 'غیرفعال';
+    return 'همه';
+  }
+
+  bool? _statusValue(String value) {
+    if (value == 'فعال') return true;
+    if (value == 'غیرفعال') return false;
+    return null;
   }
 }

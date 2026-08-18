@@ -2,10 +2,9 @@ import 'package:eks_sana_plus_org/src/features/imei/domain/entities/device_info_
 import 'package:eks_sana_plus_org/src/features/imei/presentation/cubit/imei_cubit.dart';
 import 'package:eks_sana_plus_org/src/shared/input_formatter/persian_arabic_digits_to_english_formatter.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/overlay_dropdown_form_field.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:go_router/go_router.dart';
@@ -17,119 +16,88 @@ class ImeiFilterSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
     final devices = cubit.state.deviceTypes;
+    final deviceItems = <String>['همه', ...devices.map((item) => item.label)];
 
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: ColoredBox(
-        color: theme.colorScheme.onPrimary,
-        child: Padding(
-          padding: EdgeInsets.only(
-            left: AppPadding.p16,
-            right: AppPadding.p16,
-            top: AppPadding.p8,
-            bottom: MediaQuery.of(context).viewInsets.bottom + AppPadding.p4,
+    return FilterBottomSheetScaffold(
+      title: 'فیلترها',
+      onApply: () => _apply(context),
+      onClear: () => _clear(context),
+      child: Column(
+        children: [
+          EkDropDown(
+            deviceItems,
+            label: 'نوع دستگاه',
+            selectedItem: cubit.selectedFilterDevice?.label ?? 'همه',
+            onItemValue: (value) {
+              cubit.setFilterDevice(
+                value == 'همه' ? null : _findDevice(devices, value),
+              );
+            },
           ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              TitleLargeText(
-                text: 'فیلترها',
-                color: theme.colorScheme.onSurface,
-                fontSize: AppSize.s18,
-              ),
-              Space.h16,
-              OverlayDropdownFormField<DeviceInfoEntity>(
-                key: ValueKey('filter-device-${cubit.selectedFilterDevice?.id}-${devices.length}'),
-                labelText: 'نوع دستگاه',
-                items: devices,
-                value: cubit.selectedFilterDevice,
-                hintText: devices.isEmpty ? 'در حال دریافت...' : 'انتخاب کنید',
-                enabled: devices.isNotEmpty,
-                onChanged: cubit.setFilterDevice,
-              ),
-              Space.h16,
-              TextFormFieldWidget(
-                controller: cubit.filterSimNumberController,
-                labelText: 'شماره سیم کارت',
-                backgroundColor: theme.colorScheme.onPrimary,
-                textInputType: TextInputType.phone,
-                textInputFormatter: [
-                  PersianArabicDigitsToEnglishFormatter(),
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-              ),
-              Space.h16,
-              TextFormFieldWidget(
-                controller: cubit.filterAvlSerialController,
-                labelText: 'سریال دستگاه',
-                backgroundColor: theme.colorScheme.onPrimary,
-              ),
-              Space.h16,
-              TextFormFieldWidget(
-                controller: cubit.filterImeiController,
-                labelText: 'IMEI',
-                backgroundColor: theme.colorScheme.onPrimary,
-                textInputType: TextInputType.number,
-                textInputFormatter: [
-                  PersianArabicDigitsToEnglishFormatter(),
-                  FilteringTextInputFormatter.digitsOnly,
-                ],
-              ),
-              Space.h16,
-              OverlayDropdownFormField<SimpleDropdownItem<bool>>(
-                key: ValueKey('filter-status-${cubit.selectedFilterStatus}'),
-                labelText: 'وضعیت',
-                items: _statusItems,
-                value: _selectedStatusItem(cubit.selectedFilterStatus),
-                onChanged: (item) => cubit.setFilterStatus(item?.value),
-              ),
-              Space.h24,
-              Row(
-                children: [
-                  Expanded(
-                    child: InkwellButtonWidget(
-                      title: 'فیلتر',
-                      onTap: () async {
-                        await cubit.applyFilters();
-                        if (context.mounted) context.pop();
-                      },
-                    ),
-                  ),
-                  Space.w12,
-                  Expanded(
-                    child: InkwellButtonWidget(
-                      title: 'پاک کردن همه فیلترها',
-                      backgroundColor: theme.colorScheme.onPrimary,
-                      titleColor: theme.colorScheme.onSurface,
-                      borderColor: theme.colorScheme.outline,
-                      onTap: () async {
-                        await cubit.clearFilters();
-                        if (context.mounted) context.pop();
-                      },
-                    ),
-                  ),
-                ],
-              ),
+          Space.h12,
+          TextFormFieldWidget(
+            controller: cubit.filterSimNumberController,
+            labelText: 'شماره سیم کارت',
+            textInputType: TextInputType.phone,
+            textInputFormatter: [
+              PersianArabicDigitsToEnglishFormatter(),
+              FilteringTextInputFormatter.digitsOnly,
             ],
           ),
-        ),
+          Space.h12,
+          TextFormFieldWidget(
+            controller: cubit.filterAvlSerialController,
+            labelText: 'سریال دستگاه',
+          ),
+          Space.h12,
+          TextFormFieldWidget(
+            controller: cubit.filterImeiController,
+            labelText: 'IMEI',
+            textInputType: TextInputType.number,
+            textInputFormatter: [
+              PersianArabicDigitsToEnglishFormatter(),
+              FilteringTextInputFormatter.digitsOnly,
+            ],
+          ),
+          Space.h12,
+          EkDropDown(
+            const ['همه', 'فعال', 'غیرفعال'],
+            label: 'وضعیت',
+            selectedItem: _statusTitle(cubit.selectedFilterStatus),
+            onItemValue: (value) => cubit.setFilterStatus(_statusValue(value)),
+          ),
+        ],
       ),
     );
   }
 
-  SimpleDropdownItem<bool>? _selectedStatusItem(bool? value) {
-    if (value == null) return null;
-    for (final item in _statusItems) {
-      if (item.value == value) return item;
+  Future<void> _apply(BuildContext context) async {
+    await cubit.applyFilters();
+    if (context.mounted) context.pop();
+  }
+
+  Future<void> _clear(BuildContext context) async {
+    await cubit.clearFilters();
+    if (context.mounted) context.pop();
+  }
+
+  DeviceInfoEntity? _findDevice(List<DeviceInfoEntity> items, String label) {
+    for (final item in items) {
+      if (item.label == label) return item;
     }
     return null;
   }
 
-  static const _statusItems = [
-    SimpleDropdownItem<bool>(value: true, label: 'فعال'),
-    SimpleDropdownItem<bool>(value: false, label: 'غیرفعال'),
-  ];
+  String _statusTitle(bool? value) {
+    if (value == true) return 'فعال';
+    if (value == false) return 'غیرفعال';
+    return 'همه';
+  }
+
+  bool? _statusValue(String value) {
+    if (value == 'فعال') return true;
+    if (value == 'غیرفعال') return false;
+    return null;
+  }
 }

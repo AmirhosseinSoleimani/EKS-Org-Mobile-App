@@ -2,13 +2,12 @@ import 'package:eks_sana_plus_org/src/features/rescuer/presentation/cubit/list/r
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/enums/rescuer_status_filter.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/filter/rescuer_filter_form.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/overlay_drop_down_menu.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class RescuerFiltersBox extends StatelessWidget {
   final RescuerListCubit cubit;
@@ -58,21 +57,20 @@ class RescuerFiltersBox extends StatelessWidget {
               expand: true,
               overlayBuilder: (overlayContext, position, width, dismiss) {
                 WidgetsBinding.instance.addPostFrameCallback((_) {
-                  BottomSheetMessage.showCustom(
+                  showFilterBottomSheet<void>(
                     context: overlayContext,
-                    content: RescuerFilterForm(
+                    builder: (sheetContext) => RescuerFilterForm(
                       cubit: cubit,
                       onApply: () {
-                        FocusScope.of(overlayContext).unfocus();
+                        FocusScope.of(sheetContext).unfocus();
                         cubit.applyFilters();
-                        overlayContext.pop();
+                        Navigator.of(sheetContext).pop();
                       },
                       onClear: () {
                         cubit.clearFilters();
-                        overlayContext.pop();
+                        Navigator.of(sheetContext).pop();
                       },
                     ),
-                    actionWidget: const SizedBox.shrink(),
                   );
                   dismiss();
                 });
