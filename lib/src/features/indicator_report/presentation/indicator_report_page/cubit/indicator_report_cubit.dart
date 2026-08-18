@@ -27,10 +27,12 @@ class IndicatorReportCubit extends Cubit<IndicatorReportState> {
       ValueNotifier<ServiceType>(ServiceType.reliefService);
   final selectedFromDateNotifier = ValueNotifier<DateTime?>(_today());
   final selectedToDateNotifier = ValueNotifier<DateTime?>(_today());
+  final selectedDateFilterActiveNotifier = ValueNotifier<bool>(false);
 
   ServiceType get selectedServiceType => selectedServiceTypeNotifier.value;
   DateTime? get selectedFromDate => selectedFromDateNotifier.value;
   DateTime? get selectedToDate => selectedToDateNotifier.value;
+  bool get isDateFilterActive => selectedDateFilterActiveNotifier.value;
 
   Future<void> loadReports() async {
     _safeEmit(const IndicatorReportState.loading());
@@ -75,12 +77,28 @@ class IndicatorReportCubit extends Cubit<IndicatorReportState> {
     selectedToDateNotifier.value = date;
   }
 
+  Future<void> applyDateRange(DateTime from, DateTime to) async {
+    setFromDate(from);
+    setToDate(to);
+    selectedDateFilterActiveNotifier.value = true;
+    await loadReports();
+  }
+
+  Future<void> resetDateRangeToToday() async {
+    final today = _today();
+    setFromDate(today);
+    setToDate(today);
+    selectedDateFilterActiveNotifier.value = false;
+    await loadReports();
+  }
+
   void clearFilters() {
     final today = _today();
 
     selectedServiceTypeNotifier.value = ServiceType.reliefService;
     selectedFromDateNotifier.value = today;
     selectedToDateNotifier.value = today;
+    selectedDateFilterActiveNotifier.value = false;
   }
 
   static DateTime _today() {
@@ -93,6 +111,7 @@ class IndicatorReportCubit extends Cubit<IndicatorReportState> {
     selectedServiceTypeNotifier.dispose();
     selectedFromDateNotifier.dispose();
     selectedToDateNotifier.dispose();
+    selectedDateFilterActiveNotifier.dispose();
     return super.close();
   }
 

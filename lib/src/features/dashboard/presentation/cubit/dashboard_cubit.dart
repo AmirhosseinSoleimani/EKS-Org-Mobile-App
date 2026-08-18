@@ -28,12 +28,15 @@ class DashboardCubit extends Cubit<DashboardState> {
       ValueNotifier<ServiceType>(ServiceType.reliefService);
   final selectedFromDateNotifier = ValueNotifier<DateTime?>(null);
   final selectedToDateNotifier = ValueNotifier<DateTime?>(null);
+  final selectedDateFilterActiveNotifier = ValueNotifier<bool>(false);
 
   ServiceType get selectedServiceType => selectedServiceTypeNotifier.value;
 
   DateTime? get selectedFromDate => selectedFromDateNotifier.value;
 
   DateTime? get selectedToDate => selectedToDateNotifier.value;
+
+  bool get isDateFilterActive => selectedDateFilterActiveNotifier.value;
 
   Future<void> loadDashboardData() async {
     _safeEmit(const DashboardState.loading());
@@ -117,10 +120,25 @@ class DashboardCubit extends Cubit<DashboardState> {
     selectedToDateNotifier.value = date;
   }
 
+  Future<void> applyDateRange(DateTime from, DateTime to) async {
+    setFromDate(from);
+    setToDate(to);
+    selectedDateFilterActiveNotifier.value = true;
+    await loadDashboardData();
+  }
+
+  Future<void> resetDateRangeToToday() async {
+    selectedDateFilterActiveNotifier.value = false;
+    _safeEmit(const DashboardState.loading());
+    await _loadServerDateOrFallback();
+    await _loadDashboard();
+  }
+
   void clearFilters() {
     selectedServiceTypeNotifier.value = ServiceType.reliefService;
     selectedFromDateNotifier.value = null;
     selectedToDateNotifier.value = null;
+    selectedDateFilterActiveNotifier.value = false;
   }
 
   @override
@@ -128,6 +146,7 @@ class DashboardCubit extends Cubit<DashboardState> {
     selectedServiceTypeNotifier.dispose();
     selectedFromDateNotifier.dispose();
     selectedToDateNotifier.dispose();
+    selectedDateFilterActiveNotifier.dispose();
     return super.close();
   }
 

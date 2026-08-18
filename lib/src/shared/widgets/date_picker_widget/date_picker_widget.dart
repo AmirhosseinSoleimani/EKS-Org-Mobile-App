@@ -21,6 +21,13 @@ class DatePickerWidget extends StatelessWidget {
     this.suffixIcon,
     this.mandatory = false,
     this.validator,
+    this.focusNode,
+    this.onFieldTap,
+    this.openPickerOnTap = true,
+    this.border,
+    this.focusBorder,
+    this.textDirection = TextDirection.ltr,
+    this.textAlign = TextAlign.right,
   });
 
   final TextEditingController controller;
@@ -33,6 +40,13 @@ class DatePickerWidget extends StatelessWidget {
   final String hintText;
   final bool mandatory;
   final String? Function(String?)? validator;
+  final FocusNode? focusNode;
+  final VoidCallback? onFieldTap;
+  final bool openPickerOnTap;
+  final InputBorder? border;
+  final InputBorder? focusBorder;
+  final TextDirection textDirection;
+  final TextAlign textAlign;
 
   @override
   Widget build(BuildContext context) {
@@ -53,12 +67,15 @@ class DatePickerWidget extends StatelessWidget {
         fontSize: 13,
       ),
       controller: controller,
+      focusNode: focusNode,
       hintText: hintText,
-      textAlign: TextAlign.right,
-      textDirection: TextDirection.ltr,
+      textAlign: textAlign,
+      textDirection: textDirection,
       floatingLabelBehavior: FloatingLabelBehavior.always,
-      onTap: () => _pickDate(context),
+      onTap: openPickerOnTap ? () => _pickDate(context) : onFieldTap,
       suffixIcon: suffixIcon,
+      border: border,
+      focusBorder: focusBorder,
     );
   }
 

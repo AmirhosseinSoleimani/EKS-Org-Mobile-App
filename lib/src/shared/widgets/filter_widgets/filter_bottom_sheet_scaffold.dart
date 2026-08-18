@@ -87,7 +87,7 @@ class FilterBottomSheetScaffold extends StatelessWidget {
                     child: InkwellButtonWidget(
                       title: clearTitle,
                       backgroundColor: theme.colorScheme.onPrimary,
-                      borderColor: theme.colorScheme.outline.withOpacity(0.6),
+                      borderColor: theme.colorScheme.outline.withAlpha(153),
                       titleColor: theme.colorScheme.onSurface,
                       onTap: onClear,
                     ),
@@ -105,12 +105,14 @@ class FilterBottomSheetScaffold extends StatelessWidget {
 Future<T?> showFilterBottomSheet<T>({
   required BuildContext context,
   required WidgetBuilder builder,
+  bool showDragHandle = false,
 }) {
   return showModalBottomSheet<T>(
     context: context,
     isScrollControlled: true,
     useSafeArea: true,
     backgroundColor: Theme.of(context).colorScheme.onPrimary,
+    showDragHandle: showDragHandle,
     shape: const RoundedRectangleBorder(
       borderRadius: BorderRadius.vertical(
         top: Radius.circular(AppSize.s20),
