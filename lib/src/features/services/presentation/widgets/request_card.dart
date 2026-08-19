@@ -106,12 +106,12 @@ class RequestCard extends StatelessWidget {
         const SizedBox(height: 8),
         RequestInfoRow(
           icon: Icons.location_on,
-          text: request.aidAddress ?? '',
+          text: _requestAddress,
         ),
         const SizedBox(height: 8),
         RequestInfoRow(
           icon: Icons.check_circle,
-          text: '${request.carName} - ${request.licensePlate}',
+          text: _vehicleDisplayText,
         ),
         const SizedBox(height: 8),
         RequestInfoRow(
@@ -120,6 +120,29 @@ class RequestCard extends StatelessWidget {
         ),
       ],
     );
+  }
+
+
+  String get _requestAddress {
+    return [
+      request.provinceName?.trim(),
+      request.cityName?.trim(),
+      request.aidAddress?.trim(),
+    ]
+        .whereType<String>()
+        .where((value) => value.isNotEmpty)
+        .join('، ');
+  }
+
+  String get _vehicleDisplayText {
+    final carName = _rtlIsolate(request.carName?.trim());
+    final licensePlate = _rtlIsolate(request.licensePlate?.trim());
+    return '$carName - $licensePlate';
+  }
+
+  String _rtlIsolate(String? value) {
+    final text = value?.isNotEmpty == true ? value! : '-';
+    return '\u2067$text\u2069';
   }
 
   Future<void> _showOperationsBottomSheet(BuildContext context) async {
@@ -156,8 +179,8 @@ class RequestCard extends StatelessWidget {
     await Future.sync(() => onSelected(request));
     if (!pageContext.mounted) return;
 
-    await pageContext.push(
-      operation.route,
+    await pageContext.pushNamed(
+      operation.routeName,
       extra: operation.routeExtra(request.id),
     );
     if (!pageContext.mounted) return;

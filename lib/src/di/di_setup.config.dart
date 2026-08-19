@@ -2214,6 +2214,14 @@ _i174.GetIt $initGetIt(
       gh<_i786.GetEmdadgarInfoUseCase>(),
     ),
   );
+  gh.factory<_i1048.ReliefRequestListCubit>(
+    () => _i1048.ReliefRequestListCubit(
+      gh<_i192.GetReliefRequestListUseCase>(),
+      gh<_i385.GetRequestOperationAccessUseCase>(),
+      gh<_i369.SetSelectedRequestItemUseCase>(),
+      gh<_i1058.CurrentSessionManager>(),
+    ),
+  );
   gh.factory<_i729.AcceptEmdadgarInvoicesUseCase>(
     () => _i729.AcceptEmdadgarInvoicesUseCase(
       gh<_i840.EmdadgarInvoiceRepository>(),
@@ -2297,13 +2305,6 @@ _i174.GetIt $initGetIt(
       gh<_i376.FetchSelectedRequestItemUseCase>(),
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
       gh<_i786.GetEmdadgarInfoUseCase>(),
-    ),
-  );
-  gh.factory<_i1048.ReliefRequestListCubit>(
-    () => _i1048.ReliefRequestListCubit(
-      gh<_i192.GetReliefRequestListUseCase>(),
-      gh<_i385.GetRequestOperationAccessUseCase>(),
-      gh<_i369.SetSelectedRequestItemUseCase>(),
     ),
   );
   gh.lazySingleton<_i139.EmdadVehicleRepository>(
@@ -2472,6 +2473,14 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i918.RollbackLeaveRequestUseCase>(
     () => _i918.RollbackLeaveRequestUseCase(gh<_i217.LeaveRepository>()),
   );
+  gh.factory<_i1013.HomeServiceRequestListCubit>(
+    () => _i1013.HomeServiceRequestListCubit(
+      gh<_i809.GetHomeServiceRequestListUseCase>(),
+      gh<_i385.GetRequestOperationAccessUseCase>(),
+      gh<_i369.SetSelectedRequestItemUseCase>(),
+      gh<_i1058.CurrentSessionManager>(),
+    ),
+  );
   gh.factory<_i705.AddAgencyContractCubit>(
     () => _i705.AddAgencyContractCubit(gh<_i853.AddAgencyContractUseCase>()),
   );
@@ -2574,13 +2583,6 @@ _i174.GetIt $initGetIt(
       gh<_i63.GetHomeServiceRequestByIdUseCase>(),
       gh<_i786.GetEmdadgarInfoUseCase>(),
       gh<_i678.GetRouteUseCase>(),
-    ),
-  );
-  gh.factory<_i1013.HomeServiceRequestListCubit>(
-    () => _i1013.HomeServiceRequestListCubit(
-      gh<_i809.GetHomeServiceRequestListUseCase>(),
-      gh<_i385.GetRequestOperationAccessUseCase>(),
-      gh<_i369.SetSelectedRequestItemUseCase>(),
     ),
   );
   gh.factory<_i70.ImeiCubit>(

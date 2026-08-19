@@ -109,5 +109,7 @@ class RequestFilterParamModel extends RequestFilterParamEntity {
     filters.add(_filter(field, 'contains', value));
   }
 
-  String _normalized(String? value) => value?.trim() ?? '';
+  String _normalized(String? value) {
+    return value?.trim().replaceAll(RegExp(r'\s+'), ' ') ?? '';
+  }
 }

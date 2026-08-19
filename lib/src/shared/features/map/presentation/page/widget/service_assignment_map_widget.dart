@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/cubit/assign_and_cancel_emdadgar_cubit.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/core/app_map_marker.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/EmdadgarMapMarkerConfig.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/emdadgar_marker_style_resolver.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/map_pin_marker.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/multi_location_map_widget.dart';
@@ -35,9 +36,6 @@ class ServiceAssignmentMapWidget extends StatelessWidget {
   final VoidCallback? onCurrentLocationTap;
   final bool isFullScreen;
 
-  static const Color _purple = Color(0xff6C35D4);
-  static const Color _orange = Color(0xffF59E0B);
-  static const Color _green = Color(0xff22C55E);
 
   LatLng get _customerPoint => LatLng(customerLatitude, customerLongitude);
 
@@ -174,18 +172,18 @@ class _AssignmentMapLegend extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             _LegendItem(
-              color: ServiceAssignmentMapWidget._purple,
+              color: MapMarkerConfig.customerColor,
               title: 'مشتری',
             ),
             _DividerText(),
             _LegendItem(
-              color: ServiceAssignmentMapWidget._orange,
-              title: 'درحال خدمت',
+              color: MapMarkerConfig.readyColor,
+              title: 'آماده خدمت',
             ),
             _DividerText(),
             _LegendItem(
-              color: ServiceAssignmentMapWidget._green,
-              title: 'درحال ماموریت',
+              color: MapMarkerConfig.allocatedColor,
+              title: 'در حال خدمت',
             ),
           ],
         ),

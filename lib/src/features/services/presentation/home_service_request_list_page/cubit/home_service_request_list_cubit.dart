@@ -6,6 +6,8 @@ import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_home
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_request_operation_access_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/set_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_enum_item_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/features/session/domain/manager/current_session_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:eks_sana_plus_org/src/shared/request/latest_request_guard.dart';
 import 'package:flutter/material.dart';
@@ -24,11 +26,13 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> wit
     this._getHomeServiceRequestListUseCase,
     this._getRequestOperationAccessUseCase,
     this._setSelectedRequestItemUseCase,
+    this._currentSessionManager,
   ) : super(const HomeServiceRequestListState.idle());
 
   final GetHomeServiceRequestListUseCase _getHomeServiceRequestListUseCase;
   final GetRequestOperationAccessUseCase _getRequestOperationAccessUseCase;
   final SetSelectedRequestItemUseCase _setSelectedRequestItemUseCase;
+  final CurrentSessionManager _currentSessionManager;
 
   RequestOperationAccessEntity? _operationAccess;
 
@@ -38,11 +42,52 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> wit
 
   final List<BaseRequestEntity> requestList = <BaseRequestEntity>[];
 
+  static const CurrentSessionEnumItemEntity _allStatus =
+      CurrentSessionEnumItemEntity(
+        name: 'All',
+        title: 'همه',
+        value: -1,
+      );
+
+  static const CurrentSessionEnumItemEntity _openRequestsStatus =
+      CurrentSessionEnumItemEntity(
+        name: 'OpenRequests',
+        title: 'درخواست های باز',
+        value: -100,
+      );
+
   final ValueNotifier<int> _selectedStatusNotifier = ValueNotifier(-100);
 
   ValueNotifier<int> get selectedStatusNotifier => _selectedStatusNotifier;
 
   int get selectedStatus => _selectedStatusNotifier.value;
+
+  List<CurrentSessionEnumItemEntity> get requestStatusItems {
+    final items = _currentSessionManager
+            .currentSession?.enums?.serviceRequestStatus ??
+        const <CurrentSessionEnumItemEntity>[];
+    final seenValues = <int>{-1, -100};
+
+    return [
+      _allStatus,
+      _openRequestsStatus,
+      ...items.where((item) {
+        final value = item.value;
+        return value != null && seenValues.add(value);
+      }),
+    ];
+  }
+
+  String requestStatusTitle(int value) {
+    for (final item in requestStatusItems) {
+      if (item.value == value) {
+        return item.title?.trim().isNotEmpty == true
+            ? item.title!.trim()
+            : '-';
+      }
+    }
+    return _openRequestsStatus.title!;
+  }
 
   final selectedTimePeriodNotifier = ValueNotifier<TimePeriod>(TimePeriod.all);
 

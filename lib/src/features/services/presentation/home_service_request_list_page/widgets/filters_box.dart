@@ -1,7 +1,7 @@
-import 'package:eks_sana_plus_org/src/common/constants/request_status.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/common/constants/time_period.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/home_service_request_list_page/cubit/home_service_request_list_cubit.dart';
+import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_enum_item_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
@@ -19,16 +19,6 @@ class FiltersBox extends StatelessWidget {
     required this.cubit,
   });
 
-  static final List<_RequestStatusFilterItem> _statusItems = [
-    const _RequestStatusFilterItem(value: -1, label: 'همه'),
-    ...RequestStatus.values.map(
-      (status) => _RequestStatusFilterItem(
-        value: status.value,
-        label: status.label,
-      ),
-    ),
-  ];
-
   @override
   Widget build(BuildContext context) {
     return Column(
@@ -38,14 +28,18 @@ class FiltersBox extends StatelessWidget {
             ValueListenableBuilder<int>(
               valueListenable: cubit.selectedStatusNotifier,
               builder: (_, status, _) {
+                final statusItems = cubit.requestStatusItems
+                    .map(_RequestStatusFilterItem.fromSessionItem)
+                    .toList(growable: false);
+
                 return FilterButton(
-                  title: _statusLabel(status),
+                  title: cubit.requestStatusTitle(status),
                   expand: true,
                   overlayBuilder: (context, position, width, dismiss) {
                     return OverlayDropdownMenu<_RequestStatusFilterItem>(
                       position: position,
                       width: width,
-                      items: _statusItems,
+                      items: statusItems,
                       onDismiss: dismiss,
                       onSelect: (value) {
                         cubit.setSelectedStatus(value.value);
@@ -109,6 +103,7 @@ class FiltersBox extends StatelessWidget {
         context: context,
         builder: (sheetContext) => FilterBottomSheetScaffold(
           title: 'فیلترها',
+          shrinkWrapContent: true,
           applyButtonColor: serviceType.serviceColor,
           onApply: () {
             cubit.fetchRequestList();
@@ -133,18 +128,6 @@ class FiltersBox extends StatelessWidget {
       dismissOverlay();
     });
   }
-
-  String _statusLabel(int value) {
-    return _statusItems
-        .firstWhere(
-          (item) => item.value == value,
-          orElse: () => const _RequestStatusFilterItem(
-            value: -100,
-            label: 'درخواست های باز',
-          ),
-        )
-        .label;
-  }
 }
 
 class _RequestStatusFilterItem implements DropdownItem<int> {
@@ -152,6 +135,15 @@ class _RequestStatusFilterItem implements DropdownItem<int> {
     required this.value,
     required this.label,
   });
+
+  factory _RequestStatusFilterItem.fromSessionItem(
+    CurrentSessionEnumItemEntity item,
+  ) {
+    return _RequestStatusFilterItem(
+      value: item.value!,
+      label: item.title?.trim().isNotEmpty == true ? item.title!.trim() : '-',
+    );
+  }
 
   @override
   final int value;

@@ -178,20 +178,29 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> w
       return emdadgarListResult;
     }
 
-    if (selectedRequest?.hasEmdadGar ?? false) {
-      selectedEmdadgar =  emdadgarList.first;
-      final start = LocationParamEntity(
-          latitude: emdadgarList.first.lastLocationLatitude ?? 0,
-          longitude: emdadgarList.first.lastLocationLongitude ?? 0);
+    final assignedEmdadgar = _findAssignedEmdadgar();
+    if (assignedEmdadgar != null) {
+      selectedEmdadgar = assignedEmdadgar;
 
-      final destination = LocationParamEntity(
+      final latitude = assignedEmdadgar.lastLocationLatitude;
+      final longitude = assignedEmdadgar.lastLocationLongitude;
+      if (_hasValidLocation(latitude, longitude)) {
+        final start = LocationParamEntity(
+          latitude: latitude!,
+          longitude: longitude!,
+        );
+        final destination = LocationParamEntity(
           latitude: selectedRequest?.latitude ?? 0,
-          longitude: selectedRequest?.longitude ?? 0);
+          longitude: selectedRequest?.longitude ?? 0,
+        );
 
-      final routeResult = await _getRoutes(
-          start: start, destination: destination);
-      if (routeResult != FetchResultType.success) {
-        return routeResult;
+        final routeResult = await _getRoutes(
+          start: start,
+          destination: destination,
+        );
+        if (routeResult != FetchResultType.success) {
+          return routeResult;
+        }
       }
     }
 
@@ -275,7 +284,7 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> w
     final emdadServiceId = (selectedRequest is ReliefRequestEntity) ? (
         selectedRequest as ReliefRequestEntity
     ).emdadServiceId : null;
-    final int? aidDistanceKm = int.tryParse(aidDistanceKmController.text);
+    final aidDistanceKm = _resolveAidDistanceKm();
     final param = EmdadgarListParamEntity(
       serviceRequestId: selectedRequest?.id ?? 0,
       serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
@@ -283,7 +292,7 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> w
       isActive: true,
       aidPerName: emdadgarNameController.text,
       aidPerCode: aidPerCodeController.text,
-      aidDistanceKm: (aidDistanceKm == null ) ? 50: aidDistanceKm,
+      aidDistanceKm: aidDistanceKm,
       onlyReadyEmdadgar: onlyReadyEmdadgar.value,
       requestCityEmdadgar: requestCityEmdadgar.value,
       requestProvinceEmdadgar: requestProvinceEmdadgar.value,
@@ -295,8 +304,12 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> w
 
     result.whenOrNull(
       success: (data, _, _) {
-        emdadgarList.clear();
-        emdadgarList.addAll(data);
+        final sortedItems = List<EmdadgarEntity>.from(data)
+          ..sort(_compareEmdadgarPriority);
+        final visibleItems = _filterAssignedRequestItems(sortedItems);
+        emdadgarList
+          ..clear()
+          ..addAll(visibleItems);
         fetchResult = FetchResultType.success;
       },
       failure: (_, msg) {
@@ -308,6 +321,83 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> w
       },
     );
     return fetchResult;
+  }
+
+  int _resolveAidDistanceKm() {
+    final enteredDistance = int.tryParse(aidDistanceKmController.text.trim());
+    if (enteredDistance != null) return enteredDistance;
+
+    return selectedRequest?.cityName?.trim() == 'تهران' ? 50 : 100;
+  }
+
+  int _compareEmdadgarPriority(EmdadgarEntity a, EmdadgarEntity b) {
+    return (a.priority ?? 0).compareTo(b.priority ?? 0);
+  }
+
+  List<EmdadgarEntity> _filterAssignedRequestItems(
+    List<EmdadgarEntity> items,
+  ) {
+    final planningId = selectedRequest?.planningId;
+    if (planningId == null || planningId <= 0) return items;
+
+    for (final item in items) {
+      if (item.isActive != false && item.planningId == planningId) {
+        _prioritizeAidPerson(item, selectedRequest?.emdadgarId);
+        return [item];
+      }
+    }
+
+    return items;
+  }
+
+  void _prioritizeAidPerson(EmdadgarEntity item, int? aidPerCode) {
+    final emdadgars = item.emdadgars;
+    if (aidPerCode == null || emdadgars == null || emdadgars.length < 2) {
+      return;
+    }
+
+    final index = emdadgars.indexWhere(
+      (emdadgar) => emdadgar.aidPerCode == aidPerCode,
+    );
+    if (index <= 0) return;
+
+    final selected = emdadgars.removeAt(index);
+    emdadgars.insert(0, selected);
+  }
+
+  EmdadgarEntity? _findAssignedEmdadgar() {
+    final planningId = selectedRequest?.planningId;
+    if (planningId != null && planningId > 0) {
+      for (final item in emdadgarList) {
+        if (item.isActive != false && item.planningId == planningId) {
+          _prioritizeAidPerson(item, selectedRequest?.emdadgarId);
+          return item;
+        }
+      }
+    }
+
+    final emdadgarId = selectedRequest?.emdadgarId;
+    if (emdadgarId != null && emdadgarId > 0) {
+      for (final item in emdadgarList) {
+        final containsAssignedEmdadgar = item.emdadgars?.any(
+              (emdadgar) => emdadgar.aidPerCode == emdadgarId,
+            ) ??
+            false;
+        if (item.isActive != false && containsAssignedEmdadgar) {
+          _prioritizeAidPerson(item, emdadgarId);
+          return item;
+        }
+      }
+    }
+
+    return null;
+  }
+
+  bool _hasValidLocation(double? latitude, double? longitude) {
+    return latitude != null &&
+        longitude != null &&
+        latitude != 0 &&
+        longitude != 0;
   }
 
   Future<void> applyFilterOnEmdadgarList() async {
@@ -327,6 +417,13 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> w
 
   Future<void> setSelectedEmdadgar(EmdadgarEntity value) async {
     selectedEmdadgar = value;
+  }
+
+  void setSelectedAidPerson(EmdadgarEntity entity, int aidPerCode) {
+    _prioritizeAidPerson(entity, aidPerCode);
+    if (selectedEmdadgar?.id == entity.id) {
+      selectedEmdadgar = entity;
+    }
   }
 
 

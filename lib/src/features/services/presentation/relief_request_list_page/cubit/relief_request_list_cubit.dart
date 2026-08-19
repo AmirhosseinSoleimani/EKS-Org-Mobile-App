@@ -1,4 +1,3 @@
-import 'package:eks_sana_plus_org/src/common/constants/request_status.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/params/request_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/request_operation_access_entity.dart';
@@ -7,6 +6,8 @@ import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_requ
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/set_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart'
     show ApiResultPatterns;
+import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_enum_item_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/features/session/domain/manager/current_session_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:eks_sana_plus_org/src/shared/request/latest_request_guard.dart';
 import 'package:flutter/material.dart';
@@ -25,11 +26,13 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> with LatestRe
     this._getReliefRequestListUseCase,
     this._getRequestOperationAccessUseCase,
     this._setSelectedRequestItemUseCase,
+    this._currentSessionManager,
   ) : super(const ReliefRequestListState.idle());
 
   final GetReliefRequestListUseCase _getReliefRequestListUseCase;
   final GetRequestOperationAccessUseCase _getRequestOperationAccessUseCase;
   final SetSelectedRequestItemUseCase _setSelectedRequestItemUseCase;
+  final CurrentSessionManager _currentSessionManager;
 
   RequestOperationAccessEntity? _operationAccess;
 
@@ -48,13 +51,44 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> with LatestRe
 
   bool get hasMore => _items.length < _totalCount;
 
-  final ValueNotifier<RequestStatus> _selectedStatusNotifier =
-      ValueNotifier(RequestStatus.openRequests);
+  static const CurrentSessionEnumItemEntity _openRequestsStatus =
+      CurrentSessionEnumItemEntity(
+        name: 'OpenRequests',
+        title: 'درخواست های باز',
+        value: -100,
+      );
 
-  ValueNotifier<RequestStatus> get selectedStatusNotifier =>
-      _selectedStatusNotifier;
+  final ValueNotifier<int> _selectedStatusNotifier = ValueNotifier(-100);
 
-  RequestStatus get selectedStatus => _selectedStatusNotifier.value;
+  ValueNotifier<int> get selectedStatusNotifier => _selectedStatusNotifier;
+
+  int get selectedStatus => _selectedStatusNotifier.value;
+
+  List<CurrentSessionEnumItemEntity> get requestStatusItems {
+    final items = _currentSessionManager
+            .currentSession?.enums?.serviceRequestStatus ??
+        const <CurrentSessionEnumItemEntity>[];
+    final seenValues = <int>{-100};
+
+    return [
+      _openRequestsStatus,
+      ...items.where((item) {
+        final value = item.value;
+        return value != null && seenValues.add(value);
+      }),
+    ];
+  }
+
+  String requestStatusTitle(int value) {
+    for (final item in requestStatusItems) {
+      if (item.value == value) {
+        return item.title?.trim().isNotEmpty == true
+            ? item.title!.trim()
+            : '-';
+      }
+    }
+    return _openRequestsStatus.title!;
+  }
 
   final requestNumberController = TextEditingController();
   final phoneController = TextEditingController();
@@ -65,7 +99,7 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> with LatestRe
 
   int get requestCount => _totalCount;
 
-  void setSelectedStatus(RequestStatus status) {
+  void setSelectedStatus(int status) {
     _selectedStatusNotifier.value = status;
   }
 
@@ -193,7 +227,7 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> with LatestRe
       callMobileNumber: phoneController.text,
       cityName: cityController.text,
       provinceName: provinceController.text,
-      requestStatus: selectedStatus.value,
+      requestStatus: selectedStatus,
       rescuerName: rescuerNameController.text,
     );
   }

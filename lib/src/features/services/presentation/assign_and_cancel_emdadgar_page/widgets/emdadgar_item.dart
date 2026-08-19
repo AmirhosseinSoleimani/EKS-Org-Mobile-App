@@ -1,9 +1,11 @@
 import 'package:eks_sana_plus_org/src/common/constants/emdadgar_status.dart';
 import 'package:eks_sana_plus_org/src/common/constants/request_status.dart';
+import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_brief_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/emdadgar/emdadgar_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/cubit/assign_and_cancel_emdadgar_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/assign_and_non_cooperation_buttons.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/assign_and_cancel_emdadgar_page/widgets/cancel_mission_button.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/color_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
@@ -41,7 +43,7 @@ class EmdadgarItem extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildHeader(context, brief, colorScheme),
+          _buildHeader(context, brief, colorScheme, cubit),
           Space.h12,
           _buildInfoRows(colorScheme),
           Space.h16,
@@ -52,8 +54,12 @@ class EmdadgarItem extends StatelessWidget {
   }
 
   // بخش هدر آیتم
-  Widget _buildHeader(BuildContext context, dynamic brief,
-      ColorScheme colorScheme) {
+  Widget _buildHeader(
+    BuildContext context,
+    EmdadgarBriefInfoEntity? brief,
+    ColorScheme colorScheme,
+    AssignAndCancelEmdadgarCubit cubit,
+  ) {
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -61,7 +67,7 @@ class EmdadgarItem extends StatelessWidget {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              TitleLargeText(text: brief?.aidPerName ?? ""),
+              _buildAidPersonField(brief, cubit),
               Space.h16,
               StatusLabel(
                 text: entity.statusTitle ?? '',
@@ -90,6 +96,41 @@ class EmdadgarItem extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  Widget _buildAidPersonField(
+    EmdadgarBriefInfoEntity? brief,
+    AssignAndCancelEmdadgarCubit cubit,
+  ) {
+    final emdadgars = entity.emdadgars ?? const <EmdadgarBriefInfoEntity>[];
+    if (emdadgars.length < 2) {
+      return TitleLargeText(text: brief?.aidPerName ?? '');
+    }
+
+    final labels = emdadgars.map(_aidPersonLabel).toList(growable: false);
+    return EkDropDown(
+      labels,
+      label: 'امدادرسان',
+      selectedItem: _aidPersonLabel(emdadgars.first),
+      onItemValue: (value) {
+        int? selectedAidPerCode;
+        for (final emdadgar in emdadgars) {
+          if (_aidPersonLabel(emdadgar) == value) {
+            selectedAidPerCode = emdadgar.aidPerCode;
+            break;
+          }
+        }
+        if (selectedAidPerCode != null) {
+          cubit.setSelectedAidPerson(entity, selectedAidPerCode);
+        }
+      },
+    );
+  }
+
+  String _aidPersonLabel(EmdadgarBriefInfoEntity emdadgar) {
+    final name = emdadgar.aidPerName?.trim() ?? '';
+    final code = emdadgar.aidPerCode;
+    return code == null ? name : '$name ($code)';
   }
 
   Widget _buildInfoRows(ColorScheme colorScheme) {
@@ -131,7 +172,7 @@ class EmdadgarItem extends StatelessWidget {
       return CancelMissionButton(entity: entity);
     }
 
-    if (entity.status == EmdadgarStatus.available.value ||
+    if (entity.status != EmdadgarStatus.busy.value &&
         requestStatus != RequestStatus.completed) {
       return AssignAndNonCooperationButtons(entity: entity);
     }

@@ -30,142 +30,142 @@ enum RequestCardOperation {
     label: 'جزئیات درخواست',
     icon: Icons.search_outlined,
     color: Color(0xFF8a63e6),
-    route: RequestDetailPage.path,
+    routeName: RequestDetailPage.name,
   ),
   nonCooperationList(
     label: 'لیست عدم همکاری',
     icon: Icons.menu_outlined,
     color: Color(0xFFbf0000),
-    route: NonCooperationPage.path,
+    routeName: NonCooperationPage.name,
   ),
   kartableCycle(
     label: 'چرخه کارتابل',
     icon: Icons.repeat_outlined,
     color: Color(0xFFff9305),
-    route: CartableCyclePage.path,
+    routeName: CartableCyclePage.name,
   ),
   requestStatusHistory(
     label: 'تاریخچه وضعیت',
     icon: Icons.history_outlined,
     color: Color(0xFF6d6a66),
-    route: RequestStatusHistoryPage.path,
+    routeName: RequestStatusHistoryPage.name,
   ),
   onlineMap(
     label: 'نقشه آنلاین',
     icon: Icons.map_outlined,
     color: Color(0xFF8b64e6),
-    route: OnlineMapPage.path,
+    routeName: OnlineMapPage.name,
   ),
   requestControlInfo(
     label: 'اطلاعات کنترلی',
     icon: Icons.apps_outlined,
     color: Color(0xFFffd000),
-    route: ControlInfoPage.path,
+    routeName: ControlInfoPage.name,
   ),
   evaluationHistory(
     label: 'تاریخچه ارزیابی',
     icon: Icons.calendar_today_outlined,
     color: Color(0xFF1bc4bc),
-    route: EvaluationHistoryPage.path,
+    routeName: EvaluationHistoryPage.name,
   ),
   chassisRequestHistory(
     label: 'تاریخچه درخواست شاسی',
     icon: Icons.car_crash_outlined,
     color: Color(0xFF8a63e6),
-    route: ChassisRequestHistoryPage.path,
+    routeName: ChassisRequestHistoryPage.name,
   ),
   requestPreInvoice(
     label: 'پیش فاکتور',
     icon: Icons.description_outlined,
     color: Color(0xFFff9305),
-    route: InvoicePage.path,
+    routeName: InvoicePage.name,
     invoiceType: InvoiceType.preInvoice,
   ),
   customerInvoice(
     label: 'فاکتور مشتری',
     icon: Icons.description_outlined,
     color: Color(0xFFff7a0c),
-    route: InvoicePage.path,
+    routeName: InvoicePage.name,
     invoiceType: InvoiceType.invoice,
   ),
   emdadgarInvoice(
     label: 'صورت وضعیت',
     icon: Icons.description_outlined,
     color: Color(0xFF3eb021),
-    route: EmdadgarInvoicePage.path,
+    routeName: EmdadgarInvoicePage.name,
   ),
   updateRequest(
     label: 'ویرایش درخواست',
     icon: Icons.edit_outlined,
     color: Color(0xFF369aff),
-    route: UpdateRequestPage.path,
+    routeName: UpdateRequestPage.name,
   ),
   cancelRequest(
     label: 'لغو درخواست',
     icon: Icons.close_outlined,
     color: Color(0xFFbf0000),
-    route: CancelRequestPage.path,
+    routeName: CancelRequestPage.name,
   ),
   completeUrgentRequest(
     label: 'تکمیل درخواست اضطراری',
     icon: Icons.open_in_new_outlined,
     color: Color(0xFFbf0000),
-    route: CompleteUrgentRequestPage.path,
+    routeName: CompleteUrgentRequestPage.name,
   ),
   changeHomeServiceRequestTime(
     label: 'ویرایش زمان درخواست',
     icon: Icons.access_time_outlined,
     color: Color(0xFFff9b00),
-    route: ChangeHomeServiceRequestTimePage.path,
+    routeName: ChangeHomeServiceRequestTimePage.name,
   ),
   changeHomeServiceRequestAddress(
     label: 'ویرایش آدرس درخواست',
     icon: Icons.location_on_outlined,
     color: Color(0xFF1bc5bd),
-    route: ChangeHomeServiceRequestAddressPage.path,
+    routeName: ChangeHomeServiceRequestAddressPage.name,
   ),
   followUpRegister(
     label: 'ثبت پیگیری',
     icon: Icons.headset_outlined,
     color: Color(0xFF864a1e),
-    route: FollowUpRegisterPage.path,
+    routeName: FollowUpRegisterPage.name,
   ),
   aidServiceFactorRegister(
     label: 'ثبت فاکتور',
     icon: Icons.insert_drive_file_outlined,
     color: Color(0xFF3699FF),
-    route: EvaluationAidServiceRequestPage.path,
+    routeName: EvaluationAidServiceRequestPage.name,
   ),
   homeServiceFactorRegister(
     label: 'ثبت فاکتور',
     icon: Icons.insert_drive_file_outlined,
     color: Color(0xFF3699FF),
-    route: HomeServiceEvaluationFirstStep.path,
+    routeName: HomeServiceEvaluationFirstStep.name,
   ),
   assignEmdadgar(
     label: 'تخصیص',
     icon: Icons.person_add_alt_outlined,
     color: Color(0xFF3eb122),
-    route: AssignAndCancelEmdadgarPage.path,
+    routeName: AssignAndCancelEmdadgarPage.name,
   ),
   cancelEmdadgar(
     label: 'لغو امداد رسان',
     icon: Icons.person_add_alt_outlined,
     color: Color(0xFFE9408F),
-    route: AssignAndCancelEmdadgarPage.path,
+    routeName: AssignAndCancelEmdadgarPage.name,
   );
 
   final String label;
   final IconData icon;
   final Color color;
-  final String route;
+  final String routeName;
   final InvoiceType? invoiceType;
 
   const RequestCardOperation({
     required this.label,
     required this.icon,
     required this.color,
-    required this.route,
+    required this.routeName,
     this.invoiceType,
   });
 
