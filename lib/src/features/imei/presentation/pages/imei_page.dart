@@ -187,7 +187,9 @@ class _ImeiList extends StatelessWidget {
 
     if (state.status == ImeiViewStatus.connectionError ||
         state.status == ImeiViewStatus.failure) {
-      return _ErrorView(onRetry: onRetry);
+      return const SizedBox.expand(
+        child: Center(child: EmptyListWidget()),
+      );
     }
 
     final records = state.visibleRecords;
@@ -225,26 +227,6 @@ class _ImeiList extends StatelessWidget {
               onDelete: () => onDelete(item),
             );
           },
-        ),
-      ),
-    );
-  }
-}
-
-class _ErrorView extends StatelessWidget {
-  const _ErrorView({required this.onRetry});
-
-  final VoidCallback onRetry;
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: IconButton(
-        onPressed: onRetry,
-        icon: Icon(
-          Icons.refresh,
-          color: Theme.of(context).colorScheme.primary,
-          size: AppSize.s32,
         ),
       ),
     );

@@ -13,10 +13,12 @@ import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_
 import 'package:eks_sana_plus_org/src/features/emdad_unit/presentation/widgets/emdad_unit_filter_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filter_dropdown.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/gestures.dart';
@@ -55,6 +57,15 @@ class _EmdadUnitListView extends StatelessWidget {
         }
         if (state.status == EmdadUnitViewStatus.success && state.message != null) {
           SnakeBarWidget.showSuccess(context: context, message: state.message!);
+        }
+        if (state.status == EmdadUnitViewStatus.connectionError) {
+          BottomSheetMessage.showCustom(
+            context: context,
+            content: NoInternetBottomSheet(onRetry: cubit.retryLastAction),
+            actionWidget: const SizedBox.shrink(),
+            isDismissible: false,
+            enableDrag: false,
+          );
         }
       },
       child: Scaffold(
@@ -111,12 +122,13 @@ class _EmdadUnitListView extends StatelessWidget {
                     if (state.status == EmdadUnitViewStatus.loading) {
                       return const Center(child: CircularProgressIndicator());
                     }
-                    if (state.status == EmdadUnitViewStatus.connectionError) {
-                      return _MessageState(
-                        icon: Icons.wifi_off_rounded,
-                        title: 'اتصال به اینترنت برقرار نیست',
-                        actionTitle: 'تلاش مجدد',
-                        onAction: cubit.retryLastAction,
+                    final hasInitialLoadError =
+                        (state.status == EmdadUnitViewStatus.failure ||
+                            state.status == EmdadUnitViewStatus.connectionError) &&
+                        state.items.isEmpty;
+                    if (hasInitialLoadError) {
+                      return const SizedBox.expand(
+                        child: Center(child: EmptyListWidget()),
                       );
                     }
                     final items = cubit.visibleItems;

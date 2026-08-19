@@ -39,8 +39,8 @@ class FiltersBox extends StatelessWidget {
                   onDismiss: dismiss,
                   onSelect: (value) {
                     cubit.setSelectedStatus(value.value);
-                    cubit.fetchRequestList();
                     dismiss();
+                    cubit.fetchRequestList();
                   },
                 );
               },
@@ -58,12 +58,12 @@ class FiltersBox extends StatelessWidget {
                   title: 'فیلترها',
                   shrinkWrapContent: true,
                   onApply: () {
-                    cubit.fetchRequestList();
                     Navigator.of(sheetContext).pop();
+                    cubit.fetchRequestList();
                   },
                   onClear: () {
-                    cubit.clearFilters();
                     Navigator.of(sheetContext).pop();
+                    cubit.clearFilters();
                   },
                   child: SearchRequestForm(
                     requestNumberController: cubit.requestNumberController,

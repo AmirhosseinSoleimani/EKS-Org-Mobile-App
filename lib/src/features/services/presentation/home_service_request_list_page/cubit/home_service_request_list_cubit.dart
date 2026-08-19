@@ -137,7 +137,7 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> wit
     final result = await _getHomeServiceRequestListUseCase(params);
     if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
 
-    result.whenOrNull(
+    result.when(
       success: (data, _, _) {
         _totalCount = data.totalCount;
         requestList.addAll(data.items);
@@ -150,6 +150,16 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> wit
             message: BottomSheetMessageModel(
               message: msg ?? error.toString(),
               title: '',
+            ),
+          ),
+        );
+      },
+      expireToken: () {
+        _safeEmit(
+          HomeServiceRequestListState.error(
+            message: const BottomSheetMessageModel(
+              message: 'نشست کاربری منقضی شده است. لطفا دوباره وارد شوید',
+              title: 'خطا',
             ),
           ),
         );
@@ -182,7 +192,16 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> wit
           ),
         );
       },
-      expireToken: () {},
+      expireToken: () {
+        _safeEmit(
+          HomeServiceRequestListState.error(
+            message: const BottomSheetMessageModel(
+              message: 'نشست کاربری منقضی شده است. لطفا دوباره وارد شوید',
+              title: 'خطا',
+            ),
+          ),
+        );
+      },
       connectionError: () {
         _safeEmit(const HomeServiceRequestListState.connectionError());
       },
@@ -201,7 +220,7 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> wit
 
     final param = _buildFilterParam();
     final result = await _getHomeServiceRequestListUseCase(param);
-    result.whenOrNull(
+    result.when(
       success: (data, _, _) {
         _totalCount = data.totalCount;
         requestList.addAll(data.items);
@@ -213,6 +232,14 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> wit
         _safeEmit(
           HomeServiceRequestListState.loadingMoreError(
             message: msg ?? error.toString(),
+          ),
+        );
+      },
+      expireToken: () {
+        _page--;
+        _safeEmit(
+          const HomeServiceRequestListState.loadingMoreError(
+            message: 'نشست کاربری منقضی شده است. لطفا دوباره وارد شوید',
           ),
         );
       },

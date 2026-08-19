@@ -93,8 +93,16 @@ class _InvoiceAgencyObjectionViewState
                     ? _buildContent(context, cubit, listLoading: true)
                     : const Center(child: CircularProgressIndicator()),
                 loaded: () => _buildContent(context, cubit),
-                error: (_) => _buildContent(context, cubit),
-                connectionError: () => _buildContent(context, cubit),
+                error: (_) => cubit.itemsNotifier.value.isEmpty
+                    ? const SizedBox.expand(
+                        child: Center(child: EmptyListWidget()),
+                      )
+                    : _buildContent(context, cubit),
+                connectionError: () => cubit.itemsNotifier.value.isEmpty
+                    ? const SizedBox.expand(
+                        child: Center(child: EmptyListWidget()),
+                      )
+                    : _buildContent(context, cubit),
               );
             },
           ),

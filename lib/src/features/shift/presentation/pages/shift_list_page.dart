@@ -15,6 +15,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filter_dropdown.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/gestures.dart';
@@ -53,6 +54,17 @@ class _ShiftListView extends StatelessWidget {
           },
           success: (action, message) {
             SnakeBarWidget.showSuccess(context: context, message: message);
+          },
+          connectionError: (_, __) {
+            BottomSheetMessage.showCustom(
+              context: context,
+              content: NoInternetBottomSheet(
+                onRetry: () => cubit.fetchList(refresh: true),
+              ),
+              actionWidget: const SizedBox.shrink(),
+              isDismissible: false,
+              enableDrag: false,
+            );
           },
         );
       },
@@ -130,14 +142,20 @@ class _ShiftListView extends StatelessWidget {
                   Expanded(
                     child: BlocBuilder<ShiftListCubit, ShiftListState>(
                       builder: (context, state) {
+                        final hasInitialLoadError = state.maybeWhen(
+                          failure: (_, items) => items.isEmpty,
+                          connectionError: (_, items) => items.isEmpty,
+                          orElse: () => false,
+                        );
+                        if (hasInitialLoadError) {
+                          return const SizedBox.expand(
+                            child: Center(child: EmptyListWidget()),
+                          );
+                        }
+
                         return state.maybeWhen(
                           loading: (_) => const Center(
                             child: CircularProgressIndicator(),
-                          ),
-                          connectionError: (_, __) => _MessageState(
-                            title: 'اتصال به اینترنت برقرار نیست',
-                            actionTitle: 'تلاش مجدد',
-                            onAction: () => cubit.fetchList(refresh: true),
                           ),
                           empty: (filter) => _MessageState(
                             title: filter.hasActiveFilters

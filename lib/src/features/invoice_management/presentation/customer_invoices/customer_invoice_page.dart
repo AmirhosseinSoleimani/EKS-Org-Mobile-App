@@ -155,6 +155,14 @@ class _CustomerInvoiceViewState extends State<_CustomerInvoiceView> {
       return const Center(child: CircularProgressIndicator());
     }
 
+    if ((state.status == CustomerInvoiceViewStatus.error ||
+            state.status == CustomerInvoiceViewStatus.connectionError) &&
+        state.items.isEmpty) {
+      return const SizedBox.expand(
+        child: Center(child: EmptyListWidget()),
+      );
+    }
+
     if (state.items.isEmpty) {
       return RefreshIndicator(
         onRefresh: () => cubit.fetchList(refresh: true),

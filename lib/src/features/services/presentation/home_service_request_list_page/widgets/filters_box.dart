@@ -81,8 +81,8 @@ class FiltersBox extends StatelessWidget {
                   onDismiss: dismiss,
                   onSelect: (value) {
                     cubit.setSelectedTimePeriod(value);
-                    cubit.fetchRequestList();
                     dismiss();
+                    cubit.fetchRequestList();
                   },
                 );
               },

@@ -214,22 +214,13 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
       return const Center(child: CircularProgressIndicator());
     }
 
-    if (state.status == AgencyInfoViewStatus.connectionError &&
-        data.items.isEmpty) {
-      return _MessageState(
-        title: 'اتصال به اینترنت برقرار نیست',
-        actionTitle: 'تلاش مجدد',
-        onAction: cubit.retryLastAction,
-      );
-    }
-
-    if ((state.status == AgencyInfoViewStatus.pageError ||
-        state.status == AgencyInfoViewStatus.actionError) &&
-        data.items.isEmpty) {
-      return _MessageState(
-        title: data.errorMessage ?? 'عملیات با خطا مواجه شد.',
-        actionTitle: 'تلاش مجدد',
-        onAction: cubit.retryLastAction,
+    final hasInitialLoadError =
+        (state.status == AgencyInfoViewStatus.connectionError ||
+            state.status == AgencyInfoViewStatus.pageError) &&
+        data.items.isEmpty;
+    if (hasInitialLoadError) {
+      return const SizedBox.expand(
+        child: Center(child: EmptyListWidget()),
       );
     }
 

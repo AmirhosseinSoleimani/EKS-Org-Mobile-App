@@ -7,6 +7,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/request_sta
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
@@ -90,6 +91,16 @@ class _Body extends StatelessWidget {
             child: CircularProgressIndicator(
                 color: cubit.selectedBaseRequest?.serviceType?.serviceColor),
           ),
+          error: (_) => cubit.items.isEmpty
+              ? const SizedBox.expand(
+                  child: Center(child: EmptyListWidget()),
+                )
+              : const _LoadedView(),
+          connectionError: () => cubit.items.isEmpty
+              ? const SizedBox.expand(
+                  child: Center(child: EmptyListWidget()),
+                )
+              : const _LoadedView(),
           orElse: () => const _LoadedView(),
         );
       },

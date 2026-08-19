@@ -95,6 +95,9 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> w
   VoidCallback? _retryAction;
 
   bool isBottomSheetOpen = false;
+  bool _hasLoadedContent = false;
+
+  bool get hasLoadedContent => _hasLoadedContent;
 
   void markBottomSheetOpen() {
     isBottomSheetOpen = true;
@@ -110,6 +113,7 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> w
 
     switch (result) {
       case FetchResultType.success:
+        _hasLoadedContent = true;
         _safeEmit(const AssignAndCancelEmdadgarState.loaded());
         break;
 
@@ -302,7 +306,7 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> w
 
     late FetchResultType fetchResult;
 
-    result.whenOrNull(
+    result.when(
       success: (data, _, _) {
         final sortedItems = List<EmdadgarEntity>.from(data)
           ..sort(_compareEmdadgarPriority);
@@ -315,6 +319,10 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> w
       failure: (_, msg) {
         _errorMessage = _fallbackError(msg);
         fetchResult = FetchResultType.failure;
+      },
+      expireToken: () {
+        _errorMessage = 'نشست شما منقضی شده است. لطفا دوباره وارد شوید';
+        fetchResult = FetchResultType.expireToken;
       },
       connectionError: () {
         fetchResult = FetchResultType.connectionError;

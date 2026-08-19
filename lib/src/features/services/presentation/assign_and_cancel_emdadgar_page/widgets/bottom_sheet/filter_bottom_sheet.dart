@@ -24,6 +24,7 @@ Future<void> showAssignFilterBottomSheet(BuildContext context) async {
       onClear: () {
         cubit.clearFilterFields();
         Navigator.of(sheetContext).pop();
+        cubit.applyFilterOnEmdadgarList();
       },
       child: AssignFilterBottomSheetContent(cubit: cubit),
     ),

@@ -123,7 +123,7 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> with LatestRe
     final result = await _getReliefRequestListUseCase(param);
     if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
 
-    result.whenOrNull(
+    result.when(
       success: (data, _, _) {
         _totalCount = data.totalCount;
         _items.addAll(data.items);
@@ -135,6 +135,16 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> with LatestRe
             message: BottomSheetMessageModel(
               message: msg ?? error.toString(),
               title: '',
+            ),
+          ),
+        );
+      },
+      expireToken: () {
+        _safeEmit(
+          ReliefRequestListState.error(
+            message: const BottomSheetMessageModel(
+              message: 'نشست کاربری منقضی شده است. لطفا دوباره وارد شوید',
+              title: 'خطا',
             ),
           ),
         );
@@ -168,7 +178,16 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> with LatestRe
           ),
         );
       },
-      expireToken: () {},
+      expireToken: () {
+        _safeEmit(
+          ReliefRequestListState.error(
+            message: const BottomSheetMessageModel(
+              message: 'نشست کاربری منقضی شده است. لطفا دوباره وارد شوید',
+              title: 'خطا',
+            ),
+          ),
+        );
+      },
       connectionError: () {
         _safeEmit(const ReliefRequestListState.connectionError());
       },
@@ -187,7 +206,7 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> with LatestRe
 
     final param = _buildFilterParam();
     final result = await _getReliefRequestListUseCase(param);
-    result.whenOrNull(
+    result.when(
       success: (data, _, _) {
         _totalCount = data.totalCount;
         _items.addAll(data.items);
@@ -199,6 +218,14 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> with LatestRe
         _safeEmit(
           ReliefRequestListState.loadingMoreError(
             message: msg ?? error.toString(),
+          ),
+        );
+      },
+      expireToken: () {
+        _page--;
+        _safeEmit(
+          const ReliefRequestListState.loadingMoreError(
+            message: 'نشست کاربری منقضی شده است. لطفا دوباره وارد شوید',
           ),
         );
       },

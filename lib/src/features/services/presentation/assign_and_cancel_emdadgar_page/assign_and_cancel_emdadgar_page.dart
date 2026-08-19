@@ -23,6 +23,7 @@ import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_overlay_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -62,14 +63,14 @@ class _View extends StatelessWidget {
               data: message,
               onPositive: () {
                 context.pop();
-                cubit.init();
+                cubit.retryLastAction();
               },
             );
           },
           connectionError: () {
             BottomSheetMessage.showCustom(
               context: context,
-              content: NoInternetBottomSheet(onRetry: cubit.init),
+              content: NoInternetBottomSheet(onRetry: cubit.retryLastAction),
               actionWidget: const SizedBox.shrink(),
               isDismissible: false,
               enableDrag: false,
@@ -135,19 +136,32 @@ class _View extends StatelessWidget {
                   orElse: () => null,
                 );
 
-                return state.maybeWhen(
-                  idle: () => const SizedBox.shrink(),
-                  loading: () => Center(
-                    child: CircularProgressIndicator(
-                      color:
-                          cubit.selectedRequest?.serviceType?.serviceColor ??
-                          ServiceType.reliefService.serviceColor,
-                    ),
-                  ),
-                  orElse: () => _LoadedView(
+                final serviceColor =
+                    cubit.selectedRequest?.serviceType?.serviceColor ??
+                    ServiceType.reliefService.serviceColor;
+                final isLoading = state.maybeWhen(
+                  loading: () => true,
+                  orElse: () => false,
+                );
+
+                if (state.maybeWhen(idle: () => true, orElse: () => false)) {
+                  return const SizedBox.shrink();
+                }
+
+                if (isLoading && !cubit.hasLoadedContent) {
+                  return Center(
+                    child: CircularProgressIndicator(color: serviceColor),
+                  );
+                }
+
+                return LoadingOverlayWidget(
+                  isLoading: isLoading,
+                  indicatorColor: serviceColor,
+                  child: _LoadedView(
                     operationSuccessResponse: operationSuccessResponse,
                     operationAction: operationActionResponse,
-                  ));
+                  ),
+                );
               },
             ),
       ),
@@ -196,7 +210,7 @@ const markerStyleResolver = EmdadgarMarkerStyleResolver();
                   SearchAndFilterBox(
                     isLoading: false,
                     onOpenFilter: () => showAssignFilterBottomSheet(context),
-                    onRefresh: () => cubit.getEmdadgarList(),
+                    onRefresh: cubit.applyFilterOnEmdadgarList,
                   ),
                   Space.h16,
                   if (canShowRouteMap)

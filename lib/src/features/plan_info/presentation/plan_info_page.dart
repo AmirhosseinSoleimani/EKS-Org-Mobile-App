@@ -15,7 +15,6 @@ import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filter_dropdown.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -105,8 +104,11 @@ class _PlanInfoView extends StatelessWidget {
               Expanded(
                 child: BlocBuilder<PlanInfoCubit, PlanInfoState>(
                   builder: (context, state) {
-                    if (state.status == PlanInfoStatus.connectionError) {
-                      return NoInternetBottomSheet(onRetry: cubit.fetchPlans);
+                    if (state.status == PlanInfoStatus.connectionError &&
+                        state.items.isEmpty) {
+                      return const SizedBox.expand(
+                        child: Center(child: EmptyListWidget()),
+                      );
                     }
 
                     if (state.isFirstLoading) {

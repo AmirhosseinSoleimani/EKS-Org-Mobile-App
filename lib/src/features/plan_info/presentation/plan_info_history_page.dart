@@ -51,8 +51,31 @@ class _PlanInfoHistoryView extends StatelessWidget {
     final cubit = context.read<PlanInfoCubit>();
 
     return BlocListener<PlanInfoCubit, PlanInfoState>(
-      listenWhen: (previous, current) => previous.message != current.message,
+      listenWhen: (previous, current) {
+        final messageChanged = previous.message != current.message;
+        final connectionErrorStarted =
+            previous.status != PlanInfoStatus.connectionError &&
+                current.status == PlanInfoStatus.connectionError;
+        return messageChanged || connectionErrorStarted;
+      },
       listener: (context, state) {
+        if (state.status == PlanInfoStatus.connectionError) {
+          BottomSheetMessage.showCustom(
+            context: context,
+            content: NoInternetBottomSheet(
+              onRetry: () {
+                final id = item.resolvedId;
+                if (id == null) return;
+                cubit.loadHistory(refId: id);
+              },
+            ),
+            actionWidget: const SizedBox.shrink(),
+            isDismissible: false,
+            enableDrag: false,
+          );
+          return;
+        }
+
         final message = state.message?.trim();
         if (message == null || message.isEmpty) return;
 
@@ -73,6 +96,7 @@ class _PlanInfoHistoryView extends StatelessWidget {
               }
             },
           );
+          return;
         }
       },
       child: Directionality(
@@ -83,12 +107,8 @@ class _PlanInfoHistoryView extends StatelessWidget {
           body: BlocBuilder<PlanInfoCubit, PlanInfoState>(
             builder: (context, state) {
               if (state.status == PlanInfoStatus.connectionError) {
-                return NoInternetBottomSheet(
-                  onRetry: () {
-                    final id = item.resolvedId;
-                    if (id == null) return;
-                    cubit.loadHistory(refId: id);
-                  },
+                return const SizedBox.expand(
+                  child: Center(child: EmptyListWidget()),
                 );
               }
 

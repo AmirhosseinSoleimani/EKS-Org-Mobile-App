@@ -9,10 +9,12 @@ import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filter_dropdown.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -37,13 +39,30 @@ class LeavePageView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cubit = context.read<LeaveCubit>();
+
     return BlocConsumer<LeaveCubit, LeaveState>(
       listenWhen: (previous, current) {
-        return previous.lastMessage != current.lastMessage &&
+        final messageChanged = previous.lastMessage != current.lastMessage &&
             current.lastMessage != null;
+        final connectionErrorStarted =
+            !previous.hasConnectionError && current.hasConnectionError;
+        return messageChanged || connectionErrorStarted;
       },
       listener: (context, state) async {
-        final message = state.lastMessage!;
+        if (state.hasConnectionError) {
+          await BottomSheetMessage.showCustom(
+            context: context,
+            content: NoInternetBottomSheet(onRetry: cubit.refresh),
+            actionWidget: const SizedBox.shrink(),
+            isDismissible: false,
+            enableDrag: false,
+          );
+          return;
+        }
+
+        final message = state.lastMessage;
+        if (message == null) return;
         if (message.title.contains('خطا')) {
           await BottomSheetMessage.showError(
             context: context,
@@ -60,8 +79,6 @@ class LeavePageView extends StatelessWidget {
         );
       },
       builder: (context, state) {
-        final cubit = context.read<LeaveCubit>();
-
         return Scaffold(
           backgroundColor: const Color(0xFFF6F4F3),
           appBar: const SimpleAppBar(title: 'مرخصی ها'),
@@ -106,9 +123,7 @@ class LeavePageView extends StatelessWidget {
                 else if (state.filteredItems.isEmpty)
                   const SliverFillRemaining(
                     hasScrollBody: false,
-                    child: Center(
-                      child: Text('مرخصی‌ای برای نمایش وجود ندارد.'),
-                    ),
+                    child: Center(child: EmptyListWidget()),
                   )
                 else
                   SliverPadding(

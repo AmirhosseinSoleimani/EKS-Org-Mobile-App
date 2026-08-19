@@ -12,6 +12,8 @@ import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_actio
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/list_widgets/list_section_header.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/list_item_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
@@ -60,6 +62,15 @@ class _AgencyContractsView extends StatelessWidget {
           if (message?.isNotEmpty == true) {
             SnakeBarWidget.showError(context: context, message: message!);
           }
+          if (state.status == AgencyInfoViewStatus.connectionError) {
+            BottomSheetMessage.showCustom(
+              context: context,
+              content: NoInternetBottomSheet(onRetry: cubit.retryLastAction),
+              actionWidget: const SizedBox.shrink(),
+              isDismissible: false,
+              enableDrag: false,
+            );
+          }
         },
         builder: (context, state) {
           final loading = state.status == AgencyInfoViewStatus.actionLoading &&
@@ -68,8 +79,19 @@ class _AgencyContractsView extends StatelessWidget {
               ? state.data.actionData! as AgencyContractPageEntity
               : const AgencyContractPageEntity(records: [], count: 0);
 
+          final hasInitialLoadError =
+              (state.status == AgencyInfoViewStatus.actionError ||
+                      state.status == AgencyInfoViewStatus.connectionError) &&
+                  (contracts.records ?? const []).isEmpty;
+
           if (loading && (contracts.records ?? const []).isEmpty) {
             return const Center(child: CircularProgressIndicator());
+          }
+
+          if (hasInitialLoadError) {
+            return const SizedBox.expand(
+              child: Center(child: EmptyListWidget()),
+            );
           }
 
           return RefreshIndicator(

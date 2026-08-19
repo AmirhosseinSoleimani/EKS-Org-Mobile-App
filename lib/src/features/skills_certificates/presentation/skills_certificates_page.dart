@@ -55,6 +55,15 @@ class _SkillsCertificatesView extends StatelessWidget {
               if (message == null || message.trim().isEmpty) return;
               SnakeBarWidget.showSuccess(context: context, message: message);
             },
+            connectionError: (_) {
+              BottomSheetMessage.showCustom(
+                context: context,
+                content: NoInternetBottomSheet(onRetry: cubit.fetchSkills),
+                actionWidget: const SizedBox.shrink(),
+                isDismissible: false,
+                enableDrag: false,
+              );
+            },
           );
         },
         child: Scaffold(
@@ -105,8 +114,10 @@ class _SkillsCertificatesView extends StatelessWidget {
                         orElse: () => false,
                       );
 
-                      if (hasConnectionError) {
-                        return NoInternetBottomSheet(onRetry: cubit.fetchSkills);
+                      if (hasConnectionError && data.items.isEmpty) {
+                        return const SizedBox.expand(
+                          child: Center(child: EmptyListWidget()),
+                        );
                       }
 
                       if (data.isInitialLoading && data.items.isEmpty) {

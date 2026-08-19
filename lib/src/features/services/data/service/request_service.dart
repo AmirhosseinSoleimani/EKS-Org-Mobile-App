@@ -169,7 +169,7 @@ abstract class RequestService {
   Future<BaseSingleResponse<MessageModel>> changeAddressHomeServiceRequest(
       @Body() Map<String, dynamic> body);
 
-  @POST('/api/Emdadgar/GetEmdadgarList')
+  @POST('/api/NewEmdadgar/GetEmdadgarList')
   Future<BaseListResponse<EmdadgarModel>> getEmdadgarList(
       @Body() Map<String, dynamic> body);
 
