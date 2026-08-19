@@ -17,6 +17,7 @@ import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_enum_item_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/manager/current_session_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/request/latest_request_guard.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -35,7 +36,7 @@ enum GradePatternAction {
 }
 
 @injectable
-class GradePatternCubit extends Cubit<GradePatternState> {
+class GradePatternCubit extends Cubit<GradePatternState> with LatestRequestGuard {
   GradePatternCubit(
     this._getListUseCase,
     this._getByIdUseCase,
@@ -89,6 +90,7 @@ class GradePatternCubit extends Cubit<GradePatternState> {
   }
 
   Future<void> fetchList({bool refresh = false}) async {
+    final requestVersion = beginLatestRequest('list');
     final nextSkip = refresh ? 0 : items.length;
     filter = filter.copyWith(skip: nextSkip, pageSize: _pageSize);
 
@@ -103,6 +105,7 @@ class GradePatternCubit extends Cubit<GradePatternState> {
     }
 
     final result = await _getListUseCase(filter);
+    if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
     result.when(
       success: (page, failures, resultCode) {
         items = refresh ? page.records : [...items, ...page.records];

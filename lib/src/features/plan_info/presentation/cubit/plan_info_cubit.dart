@@ -11,6 +11,7 @@ import 'package:eks_sana_plus_org/src/features/plan_info/presentation/utils/plan
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/manager/current_session_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/request/latest_request_guard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -18,7 +19,7 @@ import 'package:injectable/injectable.dart';
 import 'plan_info_state.dart';
 
 @injectable
-class PlanInfoCubit extends Cubit<PlanInfoState> {
+class PlanInfoCubit extends Cubit<PlanInfoState> with LatestRequestGuard {
   PlanInfoCubit(
       this._getPlanListUseCase,
       this._getPlanByIdUseCase,
@@ -94,12 +95,14 @@ class PlanInfoCubit extends Cubit<PlanInfoState> {
   }
 
   Future<void> fetchPlans({bool reset = true}) async {
+    final requestVersion = beginLatestRequest('list');
     if (reset) {
       _skip = 0;
       emit(state.copyWith(status: PlanInfoStatus.loading, clearMessage: true));
     }
 
     final result = await _getPlanListUseCase(_buildFilterParam());
+    if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
 
     result.when(
       success: (data, _, __) {

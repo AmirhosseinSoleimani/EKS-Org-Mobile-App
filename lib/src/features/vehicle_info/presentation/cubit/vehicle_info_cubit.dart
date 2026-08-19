@@ -10,6 +10,7 @@ import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/use_cases/veh
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/utils/vehicle_info_excel_report_factory.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
+import 'package:eks_sana_plus_org/src/shared/request/latest_request_guard.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -20,7 +21,7 @@ part 'vehicle_info_cubit.freezed.dart';
 part 'vehicle_info_state.dart';
 
 @injectable
-class VehicleInfoCubit extends Cubit<VehicleInfoState> {
+class VehicleInfoCubit extends Cubit<VehicleInfoState> with LatestRequestGuard {
   VehicleInfoCubit(
     this._getListUseCase,
     this._getByIdUseCase,
@@ -70,9 +71,13 @@ class VehicleInfoCubit extends Cubit<VehicleInfoState> {
   void retryLastAction() => _retryAction?.call();
 
   Future<void> fetchList({bool refresh = false}) async {
-    if (_data.isInitialLoading || _data.isPaginationLoading || _data.isRefreshing) {
+    if (!refresh &&
+        (_data.isInitialLoading ||
+            _data.isPaginationLoading ||
+            _data.isRefreshing)) {
       return;
     }
+    final requestVersion = beginLatestRequest('list');
     _retryAction = () => fetchList(refresh: refresh);
     final nextSkip = refresh ? 0 : _data.items.length;
     final filter = _data.filter.copyWith(skip: nextSkip, pageSize: _pageSize);
@@ -86,6 +91,7 @@ class VehicleInfoCubit extends Cubit<VehicleInfoState> {
     )));
 
     final result = await _getListUseCase(filter);
+    if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
     result.when(
       success: (page, failures, resultCode) {
         final records = refresh ? page.records : [..._data.items, ...page.records];

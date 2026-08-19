@@ -20,6 +20,7 @@ import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/use_cases/get_e
 import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/use_cases/get_emdad_unit_persons_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/use_cases/update_emdad_unit_image_use_case.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/request/latest_request_guard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -27,7 +28,7 @@ import 'package:injectable/injectable.dart';
 part 'emdad_unit_state.dart';
 
 @injectable
-class EmdadUnitCubit extends Cubit<EmdadUnitState> {
+class EmdadUnitCubit extends Cubit<EmdadUnitState> with LatestRequestGuard {
   EmdadUnitCubit(
     this._getListUseCase,
     this._getByIdUseCase,
@@ -78,10 +79,12 @@ class EmdadUnitCubit extends Cubit<EmdadUnitState> {
   void retryLastAction() => _retryAction?.call();
 
   Future<void> fetchList({bool refresh = false}) async {
-    if (state.status == EmdadUnitViewStatus.loading ||
-        state.status == EmdadUnitViewStatus.loadingMore) {
+    if (!refresh &&
+        (state.status == EmdadUnitViewStatus.loading ||
+            state.status == EmdadUnitViewStatus.loadingMore)) {
       return;
     }
+    final requestVersion = beginLatestRequest('list');
 
     _retryAction = () => fetchList(refresh: refresh);
     final nextSkip = refresh ? 0 : state.items.length;
@@ -96,6 +99,7 @@ class EmdadUnitCubit extends Cubit<EmdadUnitState> {
     ));
 
     final result = await _getListUseCase(filter);
+    if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
     result.when(
       success: (page, failures, resultCode) {
         final records = refresh ? page.records : [...state.items, ...page.records];

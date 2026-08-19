@@ -7,13 +7,14 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/use_cases/sear
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/add_person/add_agency_person_state.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
+import 'package:eks_sana_plus_org/src/shared/request/latest_request_guard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
 @injectable
-class AddAgencyPersonCubit extends Cubit<AddAgencyPersonState> {
+class AddAgencyPersonCubit extends Cubit<AddAgencyPersonState> with LatestRequestGuard {
   AddAgencyPersonCubit(
     this._searchPersonInfoUseCase,
     this._addAgencyPersonUseCase,
@@ -48,7 +49,8 @@ class AddAgencyPersonCubit extends Cubit<AddAgencyPersonState> {
 
   Future<void> search() async {
     final query = searchController.text.trim();
-    if (query.isEmpty || state.isSearching) return;
+    if (query.isEmpty) return;
+    final requestVersion = beginLatestRequest('search');
 
     emit(state.copyWith(
       status: AddAgencyPersonStatus.searching,
@@ -58,6 +60,7 @@ class AddAgencyPersonCubit extends Cubit<AddAgencyPersonState> {
     final result = await _searchPersonInfoUseCase(
       PersonInfoSearchParamEntity(searchValue: query),
     );
+    if (!isLatestRequest(requestVersion, 'search') || isClosed) return;
 
     result.when(
       success: (data, failures, resultCode) {

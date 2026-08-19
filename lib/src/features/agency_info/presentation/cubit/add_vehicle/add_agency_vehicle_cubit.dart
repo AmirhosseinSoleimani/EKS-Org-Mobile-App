@@ -13,13 +13,14 @@ import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/curr
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_enum_item_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/manager/current_session_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/use_cases/sync_current_session_use_case.dart';
+import 'package:eks_sana_plus_org/src/shared/request/latest_request_guard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
 @injectable
-class AddAgencyVehicleCubit extends Cubit<AddAgencyVehicleState> {
+class AddAgencyVehicleCubit extends Cubit<AddAgencyVehicleState> with LatestRequestGuard {
   AddAgencyVehicleCubit(
     this._searchVehicleInfoUseCase,
     this._addAgencyVehicleUseCase,
@@ -118,7 +119,8 @@ class AddAgencyVehicleCubit extends Cubit<AddAgencyVehicleState> {
 
   Future<void> search() async {
     final query = searchController.text.trim();
-    if (query.isEmpty || state.isSearching) return;
+    if (query.isEmpty) return;
+    final requestVersion = beginLatestRequest('search');
 
     emit(state.copyWith(
       status: AddAgencyVehicleStatus.searching,
@@ -128,6 +130,7 @@ class AddAgencyVehicleCubit extends Cubit<AddAgencyVehicleState> {
     final result = await _searchVehicleInfoUseCase(
       VehicleInfoSearchParamEntity(searchValue: query),
     );
+    if (!isLatestRequest(requestVersion, 'search') || isClosed) return;
 
     result.when(
       success: (data, failures, resultCode) {

@@ -9,11 +9,12 @@ import 'package:eks_sana_plus_org/src/features/special_plan/domain/usecases/get_
 import 'package:eks_sana_plus_org/src/features/special_plan/presentation/cubit/special_plan_list_state.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/usecase/get_province_lookup_list_use_case.dart';
+import 'package:eks_sana_plus_org/src/shared/request/latest_request_guard.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
-class SpecialPlanListCubit extends Cubit<SpecialPlanListState> {
+class SpecialPlanListCubit extends Cubit<SpecialPlanListState> with LatestRequestGuard {
   SpecialPlanListCubit(
     this._getListUseCase,
     this._getProductsUseCase,
@@ -35,9 +36,11 @@ class SpecialPlanListCubit extends Cubit<SpecialPlanListState> {
   }
 
   Future<void> fetchList({bool reset = false}) async {
-    if (state.isInitialLoading || state.isLoadingMore || state.isRefreshing) {
+    if (!reset &&
+        (state.isInitialLoading || state.isLoadingMore || state.isRefreshing)) {
       return;
     }
+    final requestVersion = beginLatestRequest('list');
 
     final nextSkip = reset ? 0 : state.records.length;
     emit(
@@ -53,6 +56,7 @@ class SpecialPlanListCubit extends Cubit<SpecialPlanListState> {
     final result = await _getListUseCase(
       _buildFilterParam(skip: nextSkip, pageSize: state.pageSize),
     );
+    if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
     result.when(
       success: (page, failures, resultCode) {
         final records = reset
@@ -94,6 +98,7 @@ class SpecialPlanListCubit extends Cubit<SpecialPlanListState> {
     if (state.isInitialLoading || state.isLoadingMore || state.isRefreshing) {
       return;
     }
+    final requestVersion = beginLatestRequest('list');
 
     final requestedPageSize = math.max(
       state.pageSize,
@@ -110,6 +115,7 @@ class SpecialPlanListCubit extends Cubit<SpecialPlanListState> {
     final result = await _getListUseCase(
       _buildFilterParam(skip: 0, pageSize: requestedPageSize),
     );
+    if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
     result.when(
       success: (page, failures, resultCode) => emit(
         state.copyWith(

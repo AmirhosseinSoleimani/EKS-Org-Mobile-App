@@ -8,6 +8,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/usecases/set_sele
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart'
     show ApiResultPatterns;
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
+import 'package:eks_sana_plus_org/src/shared/request/latest_request_guard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -19,7 +20,7 @@ part 'relief_request_list_cubit.freezed.dart';
 part 'relief_request_list_state.dart';
 
 @injectable
-class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
+class ReliefRequestListCubit extends Cubit<ReliefRequestListState> with LatestRequestGuard {
   ReliefRequestListCubit(
     this._getReliefRequestListUseCase,
     this._getRequestOperationAccessUseCase,
@@ -69,12 +70,14 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
   }
 
   Future<void> fetchRequestList() async {
+    final requestVersion = beginLatestRequest('list');
     _page = 1;
     _items.clear();
 
     _safeEmit(const ReliefRequestListState.loading());
 
     final hasOperationAccess = await _ensureOperationAccess();
+    if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
     if (!hasOperationAccess) return;
 
     if (!canViewRequests) {
@@ -84,6 +87,7 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> {
 
     final param = _buildFilterParam();
     final result = await _getReliefRequestListUseCase(param);
+    if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
 
     result.whenOrNull(
       success: (data, _, _) {

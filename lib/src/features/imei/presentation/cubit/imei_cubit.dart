@@ -13,12 +13,13 @@ import 'package:eks_sana_plus_org/src/features/imei/presentation/cubit/imei_stat
 import 'package:eks_sana_plus_org/src/features/imei/presentation/util/imei_excel_report_factory.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
+import 'package:eks_sana_plus_org/src/shared/request/latest_request_guard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
-class ImeiCubit extends Cubit<ImeiState> {
+class ImeiCubit extends Cubit<ImeiState> with LatestRequestGuard {
   ImeiCubit(
       this._getListUseCase,
       this._getDeviceInfoListUseCase,
@@ -101,7 +102,8 @@ class ImeiCubit extends Cubit<ImeiState> {
   }
 
   Future<void> fetchList({bool refresh = false}) async {
-    if (state.isInitialLoading || state.isLoadingMore) return;
+    if (!refresh && (state.isInitialLoading || state.isLoadingMore)) return;
+    final requestVersion = beginLatestRequest('list');
 
     final skip = refresh ? 0 : state.records.length;
     final filter = state.filter.copyWith(
@@ -120,6 +122,7 @@ class ImeiCubit extends Cubit<ImeiState> {
     ));
 
     final result = await _getListUseCase(filter);
+    if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
     result.when(
       success: (page, failures, resultCode) {
         final records = refresh

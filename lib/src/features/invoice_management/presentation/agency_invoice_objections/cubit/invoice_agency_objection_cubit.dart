@@ -70,7 +70,7 @@ class InvoiceAgencyObjectionCubit extends Cubit<InvoiceAgencyObjectionState> {
   }
 
   Future<void> fetchList({bool refresh = false}) async {
-    if (paginationLoadingNotifier.value) return;
+    if (paginationLoadingNotifier.value && !refresh) return;
 
     _retryAction = () => fetchList(refresh: refresh);
 

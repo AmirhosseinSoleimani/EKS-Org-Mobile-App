@@ -16,11 +16,12 @@ import 'package:eks_sana_plus_org/src/features/general_content/presentation/fake
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_enum_item_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/manager/current_session_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/request/latest_request_guard.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
-class GeneralContentCubit extends Cubit<GeneralContentState> {
+class GeneralContentCubit extends Cubit<GeneralContentState> with LatestRequestGuard {
   GeneralContentCubit(
     this._getListUseCase,
     this._getTargetsUseCase,
@@ -123,7 +124,8 @@ class GeneralContentCubit extends Cubit<GeneralContentState> {
 
 
   Future<void> fetchList({bool reset = false}) async {
-    if (state.isInitialLoading || state.isLoadingMore) return;
+    if (!reset && (state.isInitialLoading || state.isLoadingMore)) return;
+    final requestVersion = beginLatestRequest('list');
 
     final nextSkip = reset ? 0 : state.records.length;
     emit(state.copyWith(
@@ -142,6 +144,7 @@ class GeneralContentCubit extends Cubit<GeneralContentState> {
         contentType: state.contentTypeFilter?.value,
       ),
     );
+    if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
 
     result.when(
       success: (page, failures, resultCode) {

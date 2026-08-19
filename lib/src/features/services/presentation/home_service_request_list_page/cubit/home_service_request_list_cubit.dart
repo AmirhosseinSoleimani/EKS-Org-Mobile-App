@@ -7,6 +7,7 @@ import 'package:eks_sana_plus_org/src/features/services/domain/usecases/get_requ
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/set_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
+import 'package:eks_sana_plus_org/src/shared/request/latest_request_guard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -18,7 +19,7 @@ part 'home_service_request_list_cubit.freezed.dart';
 part 'home_service_request_list_state.dart';
 
 @injectable
-class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
+class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> with LatestRequestGuard {
   HomeServiceRequestListCubit(
     this._getHomeServiceRequestListUseCase,
     this._getRequestOperationAccessUseCase,
@@ -72,12 +73,14 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
   }
 
   Future<void> fetchRequestList() async {
+    final requestVersion = beginLatestRequest('list');
     _page = 1;
     requestList.clear();
 
     _safeEmit(const HomeServiceRequestListState.loading());
 
     final hasOperationAccess = await _ensureOperationAccess();
+    if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
     if (!hasOperationAccess) return;
 
     if (!canViewRequests) {
@@ -87,6 +90,7 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> {
 
     final params = _buildFilterParam();
     final result = await _getHomeServiceRequestListUseCase(params);
+    if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
 
     result.whenOrNull(
       success: (data, _, _) {

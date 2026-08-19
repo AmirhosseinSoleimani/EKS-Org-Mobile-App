@@ -21,6 +21,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/use_cases/sear
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/util/agency_info_excel_report_factory.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
+import 'package:eks_sana_plus_org/src/shared/request/latest_request_guard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -28,7 +29,7 @@ import 'package:injectable/injectable.dart';
 part 'agency_info_state.dart';
 
 @injectable
-class AgencyInfoCubit extends Cubit<AgencyInfoState> {
+class AgencyInfoCubit extends Cubit<AgencyInfoState> with LatestRequestGuard {
   AgencyInfoCubit(
     this._getListUseCase,
     this._getByIdUseCase,
@@ -83,9 +84,13 @@ class AgencyInfoCubit extends Cubit<AgencyInfoState> {
   void retryLastAction() => _retryAction?.call();
 
   Future<void> fetchList({bool refresh = false}) async {
-    if (_data.isInitialLoading || _data.isPaginationLoading || _data.isRefreshing) {
+    if (!refresh &&
+        (_data.isInitialLoading ||
+            _data.isPaginationLoading ||
+            _data.isRefreshing)) {
       return;
     }
+    final requestVersion = beginLatestRequest('list');
 
     _retryAction = () => fetchList(refresh: refresh);
     final nextSkip = refresh ? 0 : _data.items.length;
@@ -107,6 +112,7 @@ class AgencyInfoCubit extends Cubit<AgencyInfoState> {
     ));
 
     final result = await _getListUseCase(filter);
+    if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
     result.when(
       success: (page, failures, resultCode) {
         final records = refresh ? page.records : [..._data.items, ...page.records];

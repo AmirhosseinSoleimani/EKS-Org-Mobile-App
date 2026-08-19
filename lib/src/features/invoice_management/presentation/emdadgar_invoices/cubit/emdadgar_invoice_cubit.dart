@@ -152,7 +152,7 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
   }
 
   Future<void> fetchList({bool refresh = false}) async {
-    if (paginationLoadingNotifier.value) return;
+    if (paginationLoadingNotifier.value && !refresh) return;
 
     _retryAction = () => fetchList(refresh: refresh);
 

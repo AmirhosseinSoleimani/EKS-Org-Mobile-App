@@ -14,11 +14,12 @@ import 'package:eks_sana_plus_org/src/features/deployment_location/presentation/
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/usecase/get_province_with_city_list_use_case.dart';
+import 'package:eks_sana_plus_org/src/shared/request/latest_request_guard.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
-class DeploymentLocationCubit extends Cubit<DeploymentLocationState> {
+class DeploymentLocationCubit extends Cubit<DeploymentLocationState> with LatestRequestGuard {
   DeploymentLocationCubit(
     this._getListUseCase,
     this._getByIdUseCase,
@@ -71,9 +72,11 @@ class DeploymentLocationCubit extends Cubit<DeploymentLocationState> {
   }
 
   Future<void> fetchList({bool reset = false}) async {
-    if (state.isInitialLoading || state.isLoadingMore || state.isRefreshing) {
+    if (!reset &&
+        (state.isInitialLoading || state.isLoadingMore || state.isRefreshing)) {
       return;
     }
+    final requestVersion = beginLatestRequest('list');
 
     final nextSkip = reset ? 0 : state.records.length;
     emit(
@@ -89,6 +92,7 @@ class DeploymentLocationCubit extends Cubit<DeploymentLocationState> {
     final result = await _getListUseCase(
       _buildFilterParam(skip: nextSkip, pageSize: state.pageSize),
     );
+    if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
 
     result.when(
       success: (page, failures, resultCode) {
@@ -138,6 +142,7 @@ class DeploymentLocationCubit extends Cubit<DeploymentLocationState> {
     if (state.isInitialLoading || state.isLoadingMore || state.isRefreshing) {
       return;
     }
+    final requestVersion = beginLatestRequest('list');
 
     final requestedPageSize = math.max(
       state.pageSize,
@@ -155,6 +160,7 @@ class DeploymentLocationCubit extends Cubit<DeploymentLocationState> {
     final result = await _getListUseCase(
       _buildFilterParam(skip: 0, pageSize: requestedPageSize),
     );
+    if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
 
     result.when(
       success: (page, failures, resultCode) => emit(

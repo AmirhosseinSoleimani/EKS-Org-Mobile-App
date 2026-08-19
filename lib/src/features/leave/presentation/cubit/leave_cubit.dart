@@ -14,6 +14,7 @@ import 'package:eks_sana_plus_org/src/features/leave/domain/use_cases/rollback_l
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/error_handling/user_facing_error_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
+import 'package:eks_sana_plus_org/src/shared/request/latest_request_guard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -21,7 +22,7 @@ import 'package:injectable/injectable.dart';
 import 'leave_state.dart';
 
 @injectable
-class LeaveCubit extends Cubit<LeaveState> {
+class LeaveCubit extends Cubit<LeaveState> with LatestRequestGuard {
   LeaveCubit(
     this._getLeaveReportsUseCase,
     this._getLeaveDetailsUseCase,
@@ -97,6 +98,7 @@ class LeaveCubit extends Cubit<LeaveState> {
   }
 
   Future<void> getLeaveReports() async {
+    final requestVersion = beginLatestRequest('list');
     emit(
       state.copyWith(
         isListLoading: true,
@@ -106,6 +108,7 @@ class LeaveCubit extends Cubit<LeaveState> {
     );
 
     final result = await _getLeaveReportsUseCase(_buildFilterParam());
+    if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
 
     result.when(
       success: (items, failures, resultCode) {

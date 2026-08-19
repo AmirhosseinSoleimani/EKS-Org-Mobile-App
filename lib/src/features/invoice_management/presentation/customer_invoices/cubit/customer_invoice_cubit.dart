@@ -11,13 +11,14 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_r
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/set_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
+import 'package:eks_sana_plus_org/src/shared/request/latest_request_guard.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 part 'customer_invoice_state.dart';
 
 @injectable
-class CustomerInvoiceCubit extends Cubit<CustomerInvoiceState> {
+class CustomerInvoiceCubit extends Cubit<CustomerInvoiceState> with LatestRequestGuard {
   CustomerInvoiceCubit(
     this._getCustomerInvoicesUseCase,
     this._getEmdadCategoriesUseCase,
@@ -67,7 +68,8 @@ class CustomerInvoiceCubit extends Cubit<CustomerInvoiceState> {
   }
 
   Future<void> fetchList({bool refresh = false}) async {
-    if (state.isInitialLoading || state.isPaginationLoading) return;
+    if (!refresh && (state.isInitialLoading || state.isPaginationLoading)) return;
+    final requestVersion = beginLatestRequest('list');
 
     _retryAction = () => fetchList(refresh: refresh);
 
@@ -94,6 +96,7 @@ class CustomerInvoiceCubit extends Cubit<CustomerInvoiceState> {
     );
 
     final result = await _getCustomerInvoicesUseCase(requestFilter);
+    if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
 
     result.when(
       success: (page, failures, resultCode) {

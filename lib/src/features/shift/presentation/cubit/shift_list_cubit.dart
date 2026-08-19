@@ -7,6 +7,7 @@ import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_enum_item_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/manager/current_session_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/request/latest_request_guard.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -18,7 +19,7 @@ part 'shift_list_state.dart';
 enum ShiftListAction { delete, report }
 
 @injectable
-class ShiftListCubit extends Cubit<ShiftListState> {
+class ShiftListCubit extends Cubit<ShiftListState> with LatestRequestGuard {
   ShiftListCubit(
     this._getListUseCase,
     this._deleteUseCase,
@@ -61,7 +62,8 @@ class ShiftListCubit extends Cubit<ShiftListState> {
   }
 
   Future<void> fetchList({bool refresh = false}) async {
-    if (_isFetching) return;
+    if (_isFetching && !refresh) return;
+    final requestVersion = beginLatestRequest('list');
     _isFetching = true;
 
     final nextSkip = refresh ? 0 : items.length;
@@ -78,6 +80,7 @@ class ShiftListCubit extends Cubit<ShiftListState> {
     }
 
     final result = await _getListUseCase(filter);
+    if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
     result.when(
       success: (page, failures, resultCode) {
         items = refresh ? page.records : [...items, ...page.records];

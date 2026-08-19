@@ -19,11 +19,12 @@ import 'package:eks_sana_plus_org/src/features/vehicle_model/domain/usecases/sub
 import 'package:eks_sana_plus_org/src/features/vehicle_model/domain/usecases/update_vehicle_model_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/cubit/vehicle_model_state.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/request/latest_request_guard.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
 
 @injectable
-class VehicleModelCubit extends Cubit<VehicleModelState> {
+class VehicleModelCubit extends Cubit<VehicleModelState> with LatestRequestGuard {
   VehicleModelCubit(
     this._getListUseCase,
     this._getNavgansUseCase,
@@ -55,9 +56,11 @@ class VehicleModelCubit extends Cubit<VehicleModelState> {
   }
 
   Future<void> fetchList({bool reset = false}) async {
-    if (state.isInitialLoading || state.isLoadingMore || state.isRefreshing) {
+    if (!reset &&
+        (state.isInitialLoading || state.isLoadingMore || state.isRefreshing)) {
       return;
     }
+    final requestVersion = beginLatestRequest('list');
 
     final nextSkip = reset ? 0 : state.records.length;
     emit(
@@ -73,6 +76,7 @@ class VehicleModelCubit extends Cubit<VehicleModelState> {
     final result = await _getListUseCase(
       _buildFilterParam(skip: nextSkip, pageSize: state.pageSize),
     );
+    if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
 
     result.when(
       success: (page, failures, resultCode) {
@@ -123,6 +127,7 @@ class VehicleModelCubit extends Cubit<VehicleModelState> {
     if (state.isInitialLoading || state.isLoadingMore || state.isRefreshing) {
       return;
     }
+    final requestVersion = beginLatestRequest('list');
 
     final requestedPageSize = math.max(
       state.pageSize,
@@ -140,6 +145,7 @@ class VehicleModelCubit extends Cubit<VehicleModelState> {
     final result = await _getListUseCase(
       _buildFilterParam(skip: 0, pageSize: requestedPageSize),
     );
+    if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
 
     result.when(
       success: (page, failures, resultCode) => emit(

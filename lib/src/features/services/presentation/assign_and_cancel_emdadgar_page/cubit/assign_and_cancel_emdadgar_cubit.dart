@@ -30,6 +30,7 @@ import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/params/r
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/usecase/get_area_base_info_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/usecase/get_route_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
+import 'package:eks_sana_plus_org/src/shared/request/latest_request_guard.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:injectable/injectable.dart';
@@ -39,7 +40,7 @@ part 'assign_and_cancel_emdadgar_state.dart';
 
 
 @injectable
-class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
+class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> with LatestRequestGuard {
 
   AssignAndCancelEmdadgarCubit(this._getEmdadgarListUseCase,
       this._serviceAssignUseCase,
@@ -310,9 +311,11 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> {
   }
 
   Future<void> applyFilterOnEmdadgarList() async {
+    final requestVersion = beginLatestRequest('emdadgarFilter');
     _retryAction = applyFilterOnEmdadgarList;
     _safeEmit(AssignAndCancelEmdadgarState.loading());
     final emdadgarListResult = await getEmdadgarList();
+    if (!isLatestRequest(requestVersion, 'emdadgarFilter') || isClosed) return;
     _emitFetchResultState(emdadgarListResult,
       successState: AssignAndCancelEmdadgarState.loaded(),
     );

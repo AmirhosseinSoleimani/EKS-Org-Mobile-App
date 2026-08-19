@@ -8,6 +8,7 @@ import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
+import 'package:eks_sana_plus_org/src/shared/request/latest_request_guard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -17,7 +18,7 @@ part 'skills_certificates_cubit.freezed.dart';
 part 'skills_certificates_state.dart';
 
 @injectable
-class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> {
+class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> with LatestRequestGuard {
   SkillsCertificatesCubit(
     this._getSkillsCertificatesUseCase,
     this._getSkillCertificateByIdUseCase,
@@ -63,6 +64,7 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> {
   void retryLastAction() => _retryAction?.call();
 
   Future<void> fetchSkills({bool reset = true}) async {
+    final requestVersion = beginLatestRequest('list');
     if (reset) {
       _skip = 0;
       _retryAction = () => fetchSkills(reset: true);
@@ -73,6 +75,7 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> {
     }
 
     final result = await _getSkillsCertificatesUseCase(_buildFilterParam());
+    if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
 
     result.when(
       success: (data, _, __) {

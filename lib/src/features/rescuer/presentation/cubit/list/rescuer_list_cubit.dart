@@ -14,6 +14,7 @@ import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_
     show ApiResultPatterns;
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
+import 'package:eks_sana_plus_org/src/shared/request/latest_request_guard.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -23,7 +24,7 @@ part 'rescuer_list_cubit.freezed.dart';
 part 'rescuer_list_state.dart';
 
 @injectable
-class RescuerListCubit extends Cubit<RescuerListState> {
+class RescuerListCubit extends Cubit<RescuerListState> with LatestRequestGuard {
   RescuerListCubit(
     this._getRescuersUseCase,
     this._deleteRescuerUseCase,
@@ -70,12 +71,14 @@ class RescuerListCubit extends Cubit<RescuerListState> {
   void retryLastAction() => _retryAction?.call();
 
   Future<void> fetchRescuers() async {
+    final requestVersion = beginLatestRequest('list');
     _retryAction = fetchRescuers;
     emit(RescuerListState.loading(data: state.data));
 
     final result = await _getRescuersUseCase(
       const GetRescuersParamEntity(pageSize: pageSize),
     );
+    if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
 
     result.whenOrNull(
       success: (data, failures, resultCode) {
