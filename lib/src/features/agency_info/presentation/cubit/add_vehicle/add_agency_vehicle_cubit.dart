@@ -8,6 +8,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/use_cases/add_
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/use_cases/search_vehicle_info_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/add_vehicle/add_agency_vehicle_state.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_enum_item_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/manager/current_session_manager.dart';
@@ -164,27 +165,27 @@ class AddAgencyVehicleCubit extends Cubit<AddAgencyVehicleState> {
 
   void setContractStartDate(Jalali? value) {
     if (value == null) return;
-    contractStartDateApi = _apiDate(value.toDateTime());
+    contractStartDateApi = JalaliDateHelper.formatServerDateOnly(value.toDateTime());
   }
 
   void setContractEndDate(Jalali? value) {
     if (value == null) return;
-    contractEndDateApi = _apiDate(value.toDateTime());
+    contractEndDateApi = JalaliDateHelper.formatServerDateOnly(value.toDateTime());
   }
 
   void setStartBimeDate(Jalali? value) {
     if (value == null) return;
-    startBimeDateApi = _apiDate(value.toDateTime());
+    startBimeDateApi = JalaliDateHelper.formatServerDateOnly(value.toDateTime());
   }
 
   void setEndBimeDate(Jalali? value) {
     if (value == null) return;
-    endBimeDateApi = _apiDate(value.toDateTime());
+    endBimeDateApi = JalaliDateHelper.formatServerDateOnly(value.toDateTime());
   }
 
   void setReplacementDate(Jalali? value) {
     if (value == null) return;
-    replacementDateApi = _apiDate(value.toDateTime());
+    replacementDateApi = JalaliDateHelper.formatServerDateOnly(value.toDateTime());
   }
 
   void setContractType(int value) {
@@ -274,12 +275,5 @@ class AddAgencyVehicleCubit extends Cubit<AddAgencyVehicleState> {
     replacementDateController.dispose();
     labelAgencyCodeController.dispose();
     return super.close();
-  }
-
-  String _apiDate(DateTime date) {
-    final year = date.year.toString().padLeft(4, '0');
-    final month = date.month.toString().padLeft(2, '0');
-    final day = date.day.toString().padLeft(2, '0');
-    return '$year-$month-$day';
   }
 }

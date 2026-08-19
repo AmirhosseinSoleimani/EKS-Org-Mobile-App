@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/special_plan/domain/entities/params/special_plan_filter_param_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
 
 class SpecialPlanFilterRequestModel {
   const SpecialPlanFilterRequestModel({required this.param});
@@ -14,8 +15,18 @@ class SpecialPlanFilterRequestModel {
     _add(filters, 'title', 'contains', param.title);
     _add(filters, 'productId', 'eq', param.productId);
     _add(filters, 'hasHighPriority', 'eq', param.hasHighPriority);
-    _add(filters, 'startDate', 'eq', _date(param.startDate));
-    _add(filters, 'endDate', 'eq', _date(param.endDate));
+    _add(
+      filters,
+      'startDate',
+      'eq',
+      JalaliDateHelper.formatServerDateOnly(param.startDate),
+    );
+    _add(
+      filters,
+      'endDate',
+      'eq',
+      JalaliDateHelper.formatServerDateOnly(param.endDate),
+    );
     _add(filters, 'orderNo', 'eq', param.orderNo);
     _add(filters, 'provinceTitle', 'contains', param.provinceTitle);
     _add(filters, 'cityTitle', 'contains', param.cityTitle);
@@ -47,6 +58,4 @@ class SpecialPlanFilterRequestModel {
       'Value': value,
     });
   }
-
-  String? _date(DateTime? value) => value?.toUtc().toIso8601String();
 }

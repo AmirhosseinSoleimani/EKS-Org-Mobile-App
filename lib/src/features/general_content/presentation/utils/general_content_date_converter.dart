@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
 class GeneralContentDateConverter {
@@ -20,13 +21,7 @@ class GeneralContentDateConverter {
   }
 
   static String? toGregorianString(String? jalaliValue) {
-    final jalali = tryParseJalali(jalaliValue);
-    if (jalali == null) return null;
-
-    final gregorian = jalali.toGregorian();
-    return '${gregorian.year.toString().padLeft(4, '0')}-'
-        '${gregorian.month.toString().padLeft(2, '0')}-'
-        '${gregorian.day.toString().padLeft(2, '0')}';
+    return JalaliDateHelper.formatServerDate(jalaliValue);
   }
 
   static bool isApplyDateBeforeStartDate({

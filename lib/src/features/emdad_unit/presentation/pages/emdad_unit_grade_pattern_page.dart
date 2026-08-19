@@ -12,6 +12,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_b
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/drop_down_map_items_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/list_widgets/list_section_header.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
@@ -118,17 +119,9 @@ class _EmdadUnitGradePatternViewState
                     onSave: () => _assign(cubit),
                   ),
                   Space.h24,
-                  Row(
-                    children: [
-                      Text(
-                        'الگوهای ثبت‌شده',
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      const Spacer(),
-                      _CountBadge(count: cubit.references.length),
-                    ],
+                  ListSectionHeader(
+                    title: 'الگوهای ثبت‌شده',
+                    countText: '${cubit.references.length} مورد',
                   ),
                   Space.h12,
                   if (cubit.references.isEmpty)
@@ -455,33 +448,6 @@ class _RoundIconButton extends StatelessWidget {
   }
 }
 
-class _CountBadge extends StatelessWidget {
-  const _CountBadge({required this.count});
-
-  final int count;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppPadding.p10,
-        vertical: AppPadding.p4,
-      ),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primary.withOpacity(0.10),
-        borderRadius: BorderRadius.circular(AppSize.s20),
-      ),
-      child: Text(
-        '$count مورد',
-        style: theme.textTheme.bodySmall?.copyWith(
-          color: theme.colorScheme.primary,
-          fontWeight: FontWeight.w800,
-        ),
-      ),
-    );
-  }
-}
 
 class _EmptyCard extends StatelessWidget {
   const _EmptyCard({required this.message});

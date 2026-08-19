@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/data/common/models/invoice_list_filter_request_model.dart';
+import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
 
 class InvoiceListFilterParamEntity {
   const InvoiceListFilterParamEntity({
@@ -43,19 +44,12 @@ class InvoiceListFilterParamEntity {
 
     return InvoiceListFilterParamEntity(
       serviceType: serviceType,
-      fromDate: _formatApiDate(fromDate),
-      toDate: _formatApiDate(today),
+      fromDate: JalaliDateHelper.formatServerDateOnly(fromDate),
+      toDate: JalaliDateHelper.formatServerDateOnly(today),
       pageSize: pageSize,
       skip: skip,
     );
   }
-
-  static String _formatApiDate(DateTime value) {
-    final month = value.month.toString().padLeft(2, '0');
-    final day = value.day.toString().padLeft(2, '0');
-    return '${value.year}-$month-$day';
-  }
-
   InvoiceListFilterRequestModel toModel() {
     return InvoiceListFilterRequestModel(
       serviceType: serviceType,

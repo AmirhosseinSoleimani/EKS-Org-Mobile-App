@@ -9,6 +9,7 @@ import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_src.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/list_item_text.dart';
 import 'package:flutter/material.dart';
 
 typedef CartableItemActionTap =
@@ -104,9 +105,6 @@ class _HeaderSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
     return Column(
       children: [
         Row(
@@ -114,27 +112,17 @@ class _HeaderSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              child: Text(
-                _resolveSubject(item),
+              child: ListItemTitleText(
+                text: _resolveSubject(item),
                 maxLines: 2,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.bodyMedium?.copyWith(
-                  color: colorScheme.onSurface,
-                  fontWeight: FontWeight.w700,
-                  height: 1.5,
-                ),
               ),
             ),
 
             const SizedBox(width: AppSize.s16),
 
-            Text(
-              _resolveDateAndTime(item),
+            ListItemMetaText(
+              text: _resolveDateAndTime(item),
               textDirection: TextDirection.ltr,
-              style: theme.textTheme.bodySmall?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-                fontWeight: FontWeight.w500,
-              ),
             ),
           ],
         ),
@@ -146,29 +134,19 @@ class _HeaderSection extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Expanded(
-              child: Text(
-                'شماره درخواست: ${item.serviceRequestTrackCode ?? '-'}',
-                maxLines: 1,
-                overflow: TextOverflow.ellipsis,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: colorScheme.onSurfaceVariant,
-                  fontWeight: FontWeight.w400,
-                ),
+              child: ListItemLabelValueText(
+                label: 'شماره درخواست',
+                value: item.serviceRequestTrackCode?.toString(),
               ),
             ),
 
             const SizedBox(width: AppSize.s12),
 
             Flexible(
-              child: Text(
-                _resolveStatus(item),
+              child: ListItemValueText(
+                text: _resolveStatus(item),
                 maxLines: 1,
-                overflow: TextOverflow.ellipsis,
                 textAlign: TextAlign.end,
-                style: theme.textTheme.bodySmall?.copyWith(
-                  color: colorScheme.onSurface,
-                  fontWeight: FontWeight.w600,
-                ),
               ),
             ),
           ],
@@ -185,8 +163,6 @@ class _SenderReceiverSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
     return Row(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.center,
@@ -220,32 +196,19 @@ class _PersonInformation extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          title,
+        ListItemLabelText(
+          text: title,
           maxLines: 1,
-          overflow: TextOverflow.ellipsis,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: colorScheme.onSurfaceVariant,
-            fontWeight: FontWeight.w400,
-          ),
         ),
 
         const SizedBox(height: AppSize.s8),
 
-        Text(
-          name,
+        ListItemValueText(
+          text: name,
           maxLines: 2,
-          overflow: TextOverflow.ellipsis,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: colorScheme.onSurfaceVariant,
-            fontWeight: FontWeight.w600,
-          ),
         ),
       ],
     );
@@ -303,35 +266,10 @@ class _InformationRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          title,
-          style: theme.textTheme.bodySmall?.copyWith(
-            color: colorScheme.onSurface,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-
-        const SizedBox(width: AppSize.s8),
-
-        Expanded(
-          child: Text(
-            value,
-            maxLines: 2,
-            overflow: TextOverflow.ellipsis,
-            textAlign: TextAlign.start,
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: colorScheme.onSurfaceVariant,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-      ],
+    return ListItemLabelValueText(
+      label: title.replaceFirst(RegExp(r':$'), ''),
+      value: value,
+      maxLines: 2,
     );
   }
 }

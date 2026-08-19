@@ -1,5 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/utils/invoice_presentation_formatter.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/list_widgets/list_section_header.dart';
 import 'package:flutter/material.dart';
 
 class InvoiceListSectionHeader extends StatelessWidget {
@@ -16,29 +16,10 @@ class InvoiceListSectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            title,
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: theme.colorScheme.onSurface,
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-        ),
-        StatusLabel(
-          text: '${InvoicePresentationFormatter.number(count)} مورد',
-          color: accentColor,
-          fontSize: 11,
-          padding: const EdgeInsets.symmetric(
-            horizontal: 10,
-            vertical: 4,
-          ),
-        ),
-      ],
+    return ListSectionHeader(
+      title: title,
+      countText: '${InvoicePresentationFormatter.number(count)} مورد',
+      accentColor: accentColor,
     );
   }
 }

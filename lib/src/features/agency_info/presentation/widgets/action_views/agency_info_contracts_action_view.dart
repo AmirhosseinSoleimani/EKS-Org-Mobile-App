@@ -7,6 +7,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/list_item_text.dart';
 import 'package:flutter/material.dart';
 
 class AgencyInfoContractsActionView extends StatelessWidget {
@@ -72,15 +73,9 @@ class _AgencyContractItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Text(
-                  AgencyInfoActionFormatter.valueOrDash(contract.title),
+                child: ListItemTitleText(
+                  text: AgencyInfoActionFormatter.valueOrDash(contract.title),
                   maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    color: colorScheme.onSurface,
-                    fontWeight: FontWeight.w800,
-                    fontSize: AppSize.s16,
-                  ),
                 ),
               ),
               Space.w8,

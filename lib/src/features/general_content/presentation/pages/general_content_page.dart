@@ -19,11 +19,10 @@ import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/list_widgets/list_section_header.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -103,19 +102,10 @@ class _GeneralContentView extends StatelessWidget {
                         ],
                       ),
                       Space.h24,
-                      Row(
-                        children: [
-                          const Expanded(
-                            child: TitleLargeText(
-                              text: 'بخشنامه‌های فعلی',
-                              textAlign: TextAlign.start,
-                            ),
-                          ),
-                          StatusLabel(
-                            text: '${state.visibleRecords.length} مورد',
-                            color: theme.colorScheme.primary,
-                          ),
-                        ],
+                      ListSectionHeader(
+                        title: 'بخشنامه‌های فعلی',
+                        countText: '${state.visibleRecords.length} مورد',
+                        accentColor: theme.colorScheme.primary,
                       ),
                       Space.h16,
                       Expanded(

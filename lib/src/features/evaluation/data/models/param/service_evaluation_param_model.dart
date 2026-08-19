@@ -1,6 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/services_and_labors_and_parts_evaluation_payload_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/service_evaluation_param_entity.dart';
-import 'package:intl/intl.dart';
+import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
 
 class ServiceEvaluationParamModel extends ServiceEvaluationParamEntity {
   const ServiceEvaluationParamModel({
@@ -19,7 +19,8 @@ class ServiceEvaluationParamModel extends ServiceEvaluationParamEntity {
   });
 
   factory ServiceEvaluationParamModel.fromEntity(
-      ServiceEvaluationParamEntity entity) {
+    ServiceEvaluationParamEntity entity,
+  ) {
     return ServiceEvaluationParamModel(
       assignDate: entity.assignDate,
       cancelReasonDetailId: entity.cancelReasonDetailId,
@@ -33,34 +34,29 @@ class ServiceEvaluationParamModel extends ServiceEvaluationParamEntity {
       productId: entity.productId,
       garantyStartDate: entity.garantyStartDate,
       servicesAndLaborsAndPartsEvaluationPayload:
-      entity.servicesAndLaborsAndPartsEvaluationPayload,
+          entity.servicesAndLaborsAndPartsEvaluationPayload,
     );
-  }
-
-  String? _formatDate(DateTime? date) {
-    if (date == null) return null;
-    return DateFormat('yyyy-MM-dd HH:mm').format(date);
   }
 
   Map<String, dynamic> toJson() {
     return {
-      "assignDate": _formatDate(assignDate),
+      "assignDate": JalaliDateHelper.formatServerDateTime(assignDate),
       "cancelReasonDetailId": cancelReasonDetailId,
       "cancelReasonId": cancelReasonId,
       "customerKilometer": customerKilometer,
       "description": description ?? "",
       "distanceToCustomer": distanceToCustomer ?? "",
-      "endWorkDate": _formatDate(endWorkDate),
+      "endWorkDate": JalaliDateHelper.formatServerDateTime(endWorkDate),
       "serviceRequestId": serviceRequestId,
       "serviceType": serviceType?.value,
       "productId": productId,
       "garantyStartDate": garantyStartDate,
       "servicesAndLaborsAndPartsEvaluationPayload":
-      servicesAndLaborsAndPartsEvaluationPayload == null
-          ? null
-          : ServicesAndLaborsAndPartsEvaluationPayloadModel.fromEntity(
-          servicesAndLaborsAndPartsEvaluationPayload!)
-          .toJson(),
+          servicesAndLaborsAndPartsEvaluationPayload == null
+              ? null
+              : ServicesAndLaborsAndPartsEvaluationPayloadModel.fromEntity(
+                  servicesAndLaborsAndPartsEvaluationPayload!,
+                ).toJson(),
     };
   }
 }

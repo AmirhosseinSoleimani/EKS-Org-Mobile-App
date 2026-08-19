@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card_models.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/list_item_text.dart';
 import 'package:flutter/material.dart';
 
 class SummaryCardMetaRow extends StatelessWidget {
@@ -12,31 +13,18 @@ class SummaryCardMetaRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final style = theme.textTheme.bodyMedium?.copyWith(
-      color: theme.colorScheme.onPrimaryFixed,
-      fontSize: 13,
-      fontWeight: FontWeight.w400,
-    );
-
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Expanded(
-          child: Text(
-            '${item.label}: ${_display(item.value)}',
-            maxLines: 1,
-            overflow: TextOverflow.ellipsis,
-            style: style,
+          child: ListItemMetaText(
+            text: '${item.label}: ${_display(item.value)}',
           ),
         ),
         Space.w8,
-        Text(
-          _display(item.date),
-          maxLines: 1,
-          overflow: TextOverflow.ellipsis,
+        ListItemMetaText(
+          text: _display(item.date),
           textDirection: item.dateTextDirection,
-          style: style,
         ),
       ],
     );

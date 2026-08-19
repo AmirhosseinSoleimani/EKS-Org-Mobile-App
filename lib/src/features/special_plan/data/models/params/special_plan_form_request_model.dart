@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/special_plan/domain/entities/params/special_plan_form_param_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
 
 class SpecialPlanFormRequestModel {
   const SpecialPlanFormRequestModel({required this.param});
@@ -12,8 +13,8 @@ class SpecialPlanFormRequestModel {
   Map<String, dynamic> toCreateJson() => {
         'title': param.title,
         'productId': param.productId,
-        'startDate': param.startDate.toUtc().toIso8601String(),
-        'endDate': param.endDate.toUtc().toIso8601String(),
+        'startDate': JalaliDateHelper.formatServerUtcIsoDateTime(param.startDate),
+        'endDate': JalaliDateHelper.formatServerUtcIsoDateTime(param.endDate),
         'areaBaseInfoId': param.areaBaseInfoId,
         'hasHighPriority': param.hasHighPriority,
         'message': '',

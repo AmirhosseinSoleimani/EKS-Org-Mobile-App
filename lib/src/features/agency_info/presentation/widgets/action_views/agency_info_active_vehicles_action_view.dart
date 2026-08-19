@@ -7,6 +7,7 @@ import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/car_license_plate_widget/vehicle_license_plate_view.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/list_item_text.dart';
 import 'package:flutter/material.dart';
 
 class AgencyInfoActiveVehiclesActionView extends StatelessWidget {
@@ -73,15 +74,9 @@ class _AgencyVehicleItem extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: Text(
-                  _vehicleTitle(vehicle),
+                child: ListItemTitleText(
+                  text: _vehicleTitle(vehicle),
                   maxLines: 2,
-                  overflow: TextOverflow.ellipsis,
-                  style: theme.textTheme.titleSmall?.copyWith(
-                    color: colorScheme.onSurface,
-                    fontWeight: FontWeight.w800,
-                    fontSize: AppSize.s16,
-                  ),
                 ),
               ),
               Space.w8,

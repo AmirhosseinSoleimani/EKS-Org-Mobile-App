@@ -6,6 +6,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/use_cases/add_
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/use_cases/search_person_info_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/add_person/add_agency_person_state.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -94,12 +95,12 @@ class AddAgencyPersonCubit extends Cubit<AddAgencyPersonState> {
 
   void setContractStartDate(Jalali? value) {
     if (value == null) return;
-    contractStartDateApi = _apiDate(value.toDateTime());
+    contractStartDateApi = JalaliDateHelper.formatServerDateOnly(value.toDateTime());
   }
 
   void setContractEndDate(Jalali? value) {
     if (value == null) return;
-    contractEndDateApi = _apiDate(value.toDateTime());
+    contractEndDateApi = JalaliDateHelper.formatServerDateOnly(value.toDateTime());
   }
 
   void setIssuanceOnIdCard(bool value) {
@@ -199,12 +200,5 @@ class AddAgencyPersonCubit extends Cubit<AddAgencyPersonState> {
   String? _emptyToNull(String value) {
     final trimmed = value.trim();
     return trimmed.isEmpty ? null : trimmed;
-  }
-
-  String _apiDate(DateTime date) {
-    final year = date.year.toString().padLeft(4, '0');
-    final month = date.month.toString().padLeft(2, '0');
-    final day = date.day.toString().padLeft(2, '0');
-    return '$year-$month-$day';
   }
 }

@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card_models.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/list_item_text.dart';
 import 'package:flutter/material.dart';
 
 class SummaryCardHeader extends StatelessWidget {
@@ -145,15 +146,9 @@ class _TitleBlock extends StatelessWidget {
           ),
           Space.h2,
         ],
-        Text(
-          _display(title),
+        ListItemTitleText(
+          text: _display(title),
           maxLines: titleMaxLines,
-          overflow: TextOverflow.ellipsis,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: theme.colorScheme.onSurface,
-            fontWeight: FontWeight.w700,
-            fontSize: AppSize.s16,
-          ),
         ),
         if (normalizedSubtitle != null && normalizedSubtitle.isNotEmpty) ...[
           Space.h4,

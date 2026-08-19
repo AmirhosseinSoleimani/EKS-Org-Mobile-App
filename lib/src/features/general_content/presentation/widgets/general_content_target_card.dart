@@ -3,7 +3,7 @@ import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/list_item_text.dart';
 import 'package:flutter/material.dart';
 
 class GeneralContentTargetCard extends StatelessWidget {
@@ -39,13 +39,13 @@ class GeneralContentTargetCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              TitleMediumText(
-                text: item.targetTitle ?? '---',
-                color: theme.colorScheme.onSurface,
-                fontWeight: FontWeight.w800,
-                fontSize: 16,
+              Expanded(
+                child: ListItemTitleText(
+                  text: item.targetTitle ?? '---',
+                  maxLines: 2,
+                ),
               ),
-              const Spacer(),
+              Space.w8,
               StatusLabel(
                 text: 'شرط: ${item.operatorText ?? '---'}',
                 color: theme.colorScheme.onTertiaryFixed,
@@ -67,10 +67,8 @@ class GeneralContentTargetCard extends StatelessWidget {
                       color: theme.colorScheme.onTertiaryFixed,
                     ),
                     Space.h4,
-                    BodyMediumText(
+                    ListItemValueText(
                       text: item.targetCategoryTitle ?? '---',
-                      color: theme.colorScheme.onSurface,
-                      fontWeight: FontWeight.w700,
                       textAlign: TextAlign.end,
                     ),
                   ],

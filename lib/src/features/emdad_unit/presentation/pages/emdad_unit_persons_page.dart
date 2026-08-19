@@ -10,6 +10,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_b
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/drop_down_map_items_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/list_widgets/list_section_header.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:flutter/material.dart';
@@ -108,17 +109,9 @@ class _EmdadUnitPersonsViewState extends State<_EmdadUnitPersonsView> {
                     onSubmit: () => _assignPerson(context, cubit),
                   ),
                   Space.h24,
-                  Row(
-                    children: [
-                      Text(
-                        'امدادرسان‌های ثبت‌شده',
-                        style: theme.textTheme.titleSmall?.copyWith(
-                          fontWeight: FontWeight.w800,
-                        ),
-                      ),
-                      const Spacer(),
-                      _CountBadge(count: state.persons.length),
-                    ],
+                  ListSectionHeader(
+                    title: 'امدادرسان‌های ثبت‌شده',
+                    countText: '${state.persons.length} مورد',
                   ),
                   Space.h12,
                   if (state.persons.isEmpty)
@@ -407,53 +400,6 @@ class _InfoLine extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-}
-
-class _CountBadge extends StatelessWidget {
-  const _CountBadge({required this.count});
-
-  final int count;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.symmetric(
-        horizontal: AppPadding.p12,
-        vertical: AppPadding.p6,
-      ),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.primary.withAlpha(25),
-        borderRadius: BorderRadius.circular(AppSize.s20),
-      ),
-      child: Text(
-        '$count مورد',
-        style: theme.textTheme.bodySmall?.copyWith(
-          color: theme.colorScheme.primary,
-          fontWeight: FontWeight.w800,
-        ),
-      ),
-    );
-  }
-}
-
-class _EmptyCard extends StatelessWidget {
-  const _EmptyCard({required this.message});
-
-  final String message;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    return Container(
-      padding: const EdgeInsets.all(AppPadding.p16),
-      decoration: BoxDecoration(
-        color: theme.colorScheme.onPrimary,
-        borderRadius: BorderRadius.circular(AppSize.s8),
-      ),
-      child: Text(message, style: theme.textTheme.bodyMedium),
     );
   }
 }

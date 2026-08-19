@@ -1,6 +1,7 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/emdad_service_category_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/params/invoice_list_filter_param_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/date_picker_widget/date_picker_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
@@ -211,8 +212,8 @@ class _InvoiceFilterSheetState
         serviceType: _serviceType,
         givenCode: _category?.id,
         requestTrackCode: _normalized(_requestTrackCodeController.text),
-        fromDate: _apiDate(_fromDate),
-        toDate: _apiDate(_toDate),
+        fromDate: JalaliDateHelper.formatServerDateOnly(_fromDate?.toDateTime()),
+        toDate: JalaliDateHelper.formatServerDateOnly(_toDate?.toDateTime()),
         invoiceStatus: widget.initialFilter.invoiceStatus,
         showSubscription: widget.showSubscriptionField
             ? (_showSubscription ? true : null)
@@ -266,16 +267,6 @@ class _InvoiceFilterSheetState
     } catch (_) {
       return null;
     }
-  }
-
-  String? _apiDate(Jalali? value) {
-    if (value == null) return null;
-
-    final gregorian = value.toGregorian();
-    final month = gregorian.month.toString().padLeft(2, '0');
-    final day = gregorian.day.toString().padLeft(2, '0');
-
-    return '${gregorian.year}-$month-$day';
   }
 
   String _formatJalali(Jalali? value) {

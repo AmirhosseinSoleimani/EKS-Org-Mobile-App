@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card_models.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/list_item_text.dart';
 import 'package:flutter/material.dart';
 
 class SummaryCardInfoRow extends StatelessWidget {
@@ -13,7 +14,6 @@ class SummaryCardInfoRow extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = theme.colorScheme.onTertiaryFixed;
     final iconColor = theme.colorScheme.onPrimaryFixed;
     final value = _display(item.value, item.fallback);
 
@@ -34,29 +34,11 @@ class SummaryCardInfoRow extends StatelessWidget {
           ),
           Space.w8,
           Expanded(
-            child: Text.rich(
-              TextSpan(
-                children: [
-                  TextSpan(
-                    text: '${item.label}: ',
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: color,
-                      fontWeight: FontWeight.w700,
-                    ),
-                  ),
-                  TextSpan(
-                    text: value,
-                    style: theme.textTheme.bodyMedium?.copyWith(
-                      color: color,
-                      fontWeight: FontWeight.w500,
-                    ),
-                  ),
-                ],
-              ),
-              textAlign: TextAlign.start,
-              textDirection: item.textDirection,
+            child: ListItemLabelValueText(
+              label: item.label,
+              value: value,
               maxLines: item.maxLines,
-              overflow: TextOverflow.ellipsis,
+              textDirection: item.textDirection,
             ),
           ),
         ],

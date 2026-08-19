@@ -2,9 +2,15 @@ import 'package:shamsi_date/shamsi_date.dart';
 
 class JalaliDateHelper {
   static Jalali? _parseJalali(String? date) {
-    if (date == null || date.isEmpty) return null;
+    final raw = date?.trim();
+    if (raw == null || raw.isEmpty) return null;
+
     try {
-      final parts = date.split('/');
+      final normalized = _toEnglishDigits(raw)
+          .split(RegExp(r'[ T]'))
+          .first
+          .replaceAll('-', '/');
+      final parts = normalized.split('/');
       if (parts.length != 3) return null;
       final year = int.parse(parts[0]);
       final month = int.parse(parts[1]);
@@ -94,28 +100,32 @@ class JalaliDateHelper {
     );
   }
 
+  static String? formatServerDateOnly(DateTime? dateTime) {
+    final gregorianDateTime = jalaliDateTimeToGregorianDateTime(dateTime);
+    if (gregorianDateTime == null) return null;
+    return _formatGregorianDate(gregorianDateTime);
+  }
+
   static String? formatServerDateTime(DateTime? dateTime) {
     final gregorianDateTime = jalaliDateTimeToGregorianDateTime(dateTime);
     if (gregorianDateTime == null) return null;
 
-    final year = gregorianDateTime.year.toString().padLeft(4, '0');
-    final month = gregorianDateTime.month.toString().padLeft(2, '0');
-    final day = gregorianDateTime.day.toString().padLeft(2, '0');
+    final date = _formatGregorianDate(gregorianDateTime);
     final hour = gregorianDateTime.hour.toString().padLeft(2, '0');
     final minute = gregorianDateTime.minute.toString().padLeft(2, '0');
 
-    return '$year-$month-$day $hour:$minute';
+    return '$date $hour:$minute';
+  }
+
+  static String? formatServerUtcIsoDateTime(DateTime? dateTime) {
+    if (dateTime == null) return null;
+    return dateTime.toUtc().toIso8601String();
   }
 
   static String? formatServerDate(String? jalaliDate) {
     final gregorianDate = _parseJalali(jalaliDate)?.toGregorian();
     if (gregorianDate == null) return null;
-
-    final year = gregorianDate.year.toString().padLeft(4, '0');
-    final month = gregorianDate.month.toString().padLeft(2, '0');
-    final day = gregorianDate.day.toString().padLeft(2, '0');
-
-    return '$year-$month-$day';
+    return _formatGregorianDate(gregorianDate.toDateTime());
   }
 
   static String? formatServerIsoDateTime(DateTime? dateTime) {
@@ -146,6 +156,27 @@ class JalaliDateHelper {
     final minute = timeParts.length > 1 ? timeParts[1].padLeft(2, '0') : '00';
 
     return '${_toPersianDigits('$hour:$minute')} - ${_toPersianDigits(date)}';
+  }
+
+  static String _formatGregorianDate(DateTime value) {
+    final year = value.year.toString().padLeft(4, '0');
+    final month = value.month.toString().padLeft(2, '0');
+    final day = value.day.toString().padLeft(2, '0');
+    return '$year-$month-$day';
+  }
+
+
+  static String _toEnglishDigits(String value) {
+    const persian = '۰۱۲۳۴۵۶۷۸۹';
+    const arabic = '٠١٢٣٤٥٦٧٨٩';
+
+    var result = value;
+    for (var index = 0; index < 10; index++) {
+      result = result
+          .replaceAll(persian[index], index.toString())
+          .replaceAll(arabic[index], index.toString());
+    }
+    return result;
   }
 
   static String _toPersianDigits(String value) {

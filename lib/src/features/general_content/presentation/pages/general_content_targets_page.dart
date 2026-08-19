@@ -11,10 +11,10 @@ import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/list_widgets/list_section_header.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -91,9 +91,8 @@ class _GeneralContentTargetsView extends StatelessWidget {
                     children: [
                       GeneralContentTargetHeaderCard(item: content),
                       Space.h24,
-                      const TitleLargeText(
-                        text: 'شرایط گیرندگان',
-                        textAlign: TextAlign.start,
+                      const ListSectionHeader(
+                        title: 'شرایط گیرندگان',
                       ),
                       Space.h16,
                       _TargetsBody(

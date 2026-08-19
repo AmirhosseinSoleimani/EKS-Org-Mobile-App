@@ -1,7 +1,9 @@
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/list_widgets/list_section_header.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card_info_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card_models.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/list_item_text.dart';
 import 'package:flutter/material.dart';
 
 class AgencyInfoActionSectionHeader extends StatelessWidget {
@@ -16,39 +18,10 @@ class AgencyInfoActionSectionHeader extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            title,
-            style: theme.textTheme.titleMedium?.copyWith(
-              color: colorScheme.onSurface,
-              fontWeight: FontWeight.w800,
-            ),
-          ),
-        ),
-        Space.w8,
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppPadding.p10,
-            vertical: AppPadding.p4,
-          ),
-          decoration: BoxDecoration(
-            color: colorScheme.primary.withOpacity(0.08),
-            borderRadius: BorderRadius.circular(AppSize.s8),
-          ),
-          child: Text(
-            '${AgencyInfoActionFormatter.toPersianDigits(count.toString())} مورد',
-            style: theme.textTheme.bodySmall?.copyWith(
-              color: colorScheme.primary,
-              fontWeight: FontWeight.w700,
-            ),
-          ),
-        ),
-      ],
+    return ListSectionHeader(
+      title: title,
+      countText:
+          '${AgencyInfoActionFormatter.toPersianDigits(count.toString())} مورد',
     );
   }
 }
@@ -98,33 +71,12 @@ class AgencyInfoActionLabelValueRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final colorScheme = theme.colorScheme;
-
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppPadding.p4),
-      child: Row(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(
-            label,
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: colorScheme.onTertiaryFixed,
-              fontWeight: FontWeight.w500,
-            ),
-          ),
-          Space.w12,
-          Flexible(
-            child: Text(
-              AgencyInfoActionFormatter.valueOrDash(value),
-              textAlign: TextAlign.left,
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: colorScheme.onSurfaceVariant,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ),
-        ],
+      child: ListItemLabelValueText(
+        label: label.replaceFirst(RegExp(r':$'), ''),
+        value: AgencyInfoActionFormatter.valueOrDash(value),
+        maxLines: 2,
       ),
     );
   }

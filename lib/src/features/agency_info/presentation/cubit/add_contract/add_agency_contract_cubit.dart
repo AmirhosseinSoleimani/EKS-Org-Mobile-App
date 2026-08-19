@@ -5,6 +5,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/param
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/use_cases/add_agency_contract_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/add_contract/add_agency_contract_state.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
 import 'package:eks_sana_plus_org/src/shared/features/upload_file/domain/entities/uploaded_file_entity.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -43,12 +44,12 @@ class AddAgencyContractCubit extends Cubit<AddAgencyContractState> {
 
   void setStartDate(Jalali? value) {
     if (value == null) return;
-    startDateApi = _apiDate(value.toDateTime());
+    startDateApi = JalaliDateHelper.formatServerDateOnly(value.toDateTime());
   }
 
   void setExpireDate(Jalali? value) {
     if (value == null) return;
-    expireDateApi = _apiDate(value.toDateTime());
+    expireDateApi = JalaliDateHelper.formatServerDateOnly(value.toDateTime());
   }
 
   Future<void> submit(AgencyInfoEntity agency) async {
@@ -117,13 +118,6 @@ class AddAgencyContractCubit extends Cubit<AddAgencyContractState> {
     startDateController.dispose();
     expireDateController.dispose();
     return super.close();
-  }
-
-  String _apiDate(DateTime date) {
-    final year = date.year.toString().padLeft(4, '0');
-    final month = date.month.toString().padLeft(2, '0');
-    final day = date.day.toString().padLeft(2, '0');
-    return '$year-$month-$day';
   }
 
   String _fileType(String? extension) {

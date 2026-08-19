@@ -11,10 +11,11 @@ import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/list_widgets/list_section_header.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/list_item_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -83,7 +84,10 @@ class _AgencyContractsView extends StatelessWidget {
               children: [
                 AgencyInfoActionAgencyHeader(item: agency),
                 Space.h24,
-                _ContractsTitle(count: _count(contracts)),
+                ListSectionHeader(
+                  title: 'قراردادهای ثبت‌شده',
+                  countText: '${_count(contracts)} مورد',
+                ),
                 Space.h16,
                 _ContractsList(contracts: contracts),
               ],
@@ -124,39 +128,6 @@ class _AgencyContractsView extends StatelessWidget {
   }
 }
 
-class _ContractsTitle extends StatelessWidget {
-  const _ContractsTitle({required this.count});
-
-  final int count;
-
-  @override
-  Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-
-    return Row(
-      children: [
-        const Expanded(
-          child: TitleMediumText(text: 'قراردادهای ثبت‌شده'),
-        ),
-        Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: AppPadding.p10,
-            vertical: AppPadding.p4,
-          ),
-          decoration: BoxDecoration(
-            color: colorScheme.primary.withOpacity(0.08),
-            borderRadius: BorderRadius.circular(AppSize.s8),
-          ),
-          child: BodyMediumText(
-            text: '$count مورد',
-            color: colorScheme.primary,
-            fontWeight: FontWeight.w700,
-          ),
-        ),
-      ],
-    );
-  }
-}
 
 class _ContractsList extends StatelessWidget {
   const _ContractsList({required this.contracts});
@@ -204,7 +175,7 @@ class _AgencyContractCard extends StatelessWidget {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Expanded(
-                child: TitleMediumText(
+                child: ListItemTitleText(
                   text: AgencyInfoActionFormatter.valueOrDash(contract.title),
                 ),
               ),

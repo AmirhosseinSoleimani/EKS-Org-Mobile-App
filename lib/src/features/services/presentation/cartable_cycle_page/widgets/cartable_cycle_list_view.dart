@@ -6,6 +6,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_labe
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/vertical_line_indicator.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/list_widgets/list_section_header.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/material.dart';
@@ -43,9 +44,9 @@ class CartableCycleListView extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8.0),
-            child: const BodyMediumText(text: "لیست چرخه کارتابل"),
+          const Padding(
+            padding: EdgeInsets.symmetric(horizontal: 8.0),
+            child: ListSectionHeader(title: 'لیست چرخه کارتابل'),
           ),
           const SizedBox(height: 8),
           if (isEmpty)

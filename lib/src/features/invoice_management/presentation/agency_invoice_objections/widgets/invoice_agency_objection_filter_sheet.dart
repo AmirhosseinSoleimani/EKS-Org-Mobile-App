@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/agency_invoice_objections/models/invoice_agency_objection_filter_value.dart';
+import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/date_picker_widget/date_picker_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
@@ -118,8 +119,8 @@ class _InvoiceAgencyObjectionFilterSheetState
     widget.onApply(
       InvoiceAgencyObjectionFilterValue(
         requestTrackCode: _normalized(_requestTrackCodeController.text),
-        fromDate: _apiDate(_fromDate),
-        toDate: _apiDate(_toDate),
+        fromDate: JalaliDateHelper.formatServerDateOnly(_fromDate?.toDateTime()),
+        toDate: JalaliDateHelper.formatServerDateOnly(_toDate?.toDateTime()),
         agencyCode: _normalized(_agencyCodeController.text),
         aidPerName: _normalized(_aidPerNameController.text),
       ),
@@ -154,14 +155,6 @@ class _InvoiceAgencyObjectionFilterSheetState
     } catch (_) {
       return null;
     }
-  }
-
-  String? _apiDate(Jalali? value) {
-    if (value == null) return null;
-    final gregorian = value.toGregorian();
-    final month = gregorian.month.toString().padLeft(2, '0');
-    final day = gregorian.day.toString().padLeft(2, '0');
-    return '${gregorian.year}-$month-$day';
   }
 
   String _formatJalali(Jalali? value) {
