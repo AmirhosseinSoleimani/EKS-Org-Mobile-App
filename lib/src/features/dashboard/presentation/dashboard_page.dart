@@ -6,6 +6,7 @@ import 'package:eks_sana_plus_org/src/features/dashboard/presentation/widgets/fi
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/main_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/stat_row_card/stat_row_card.dart';
 import 'package:flutter/gestures.dart';
@@ -85,6 +86,9 @@ class _DashboardView extends StatelessWidget {
                       loading: () => const Center(
                         child: CircularProgressIndicator(),
                       ),
+                      error: (_) => const Center(child: EmptyListWidget()),
+                      connectionError: () =>
+                          const Center(child: EmptyListWidget()),
                       loaded: () => SingleChildScrollView(
                         padding: const EdgeInsets.all(AppSize.s16),
                         child: Column(

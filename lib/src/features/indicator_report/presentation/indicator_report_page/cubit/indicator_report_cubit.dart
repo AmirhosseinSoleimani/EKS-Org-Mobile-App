@@ -22,6 +22,7 @@ class IndicatorReportCubit extends Cubit<IndicatorReportState> {
   final FetchIndicatorReportUseCase _fetchReportListUseCase;
 
   IndicatorReportEntity? indicatorReport;
+  int _requestVersion = 0;
 
   /// selected filters
   final selectedServiceTypeNotifier =
@@ -37,6 +38,7 @@ class IndicatorReportCubit extends Cubit<IndicatorReportState> {
 
   Future<void> loadReports() async {
     _ensureValidSelectedDateRange();
+    final requestVersion = ++_requestVersion;
     _safeEmit(const IndicatorReportState.loading());
 
     final param = ReportParamEntity(
@@ -46,6 +48,8 @@ class IndicatorReportCubit extends Cubit<IndicatorReportState> {
     );
 
     final result = await _fetchReportListUseCase(param);
+
+    if (requestVersion != _requestVersion || isClosed) return;
 
     result.whenOrNull(
       success: (data, failures, resultCode) async {
@@ -125,6 +129,7 @@ class IndicatorReportCubit extends Cubit<IndicatorReportState> {
 
   @override
   Future<void> close() {
+    _requestVersion++;
     selectedServiceTypeNotifier.dispose();
     selectedFromDateNotifier.dispose();
     selectedToDateNotifier.dispose();

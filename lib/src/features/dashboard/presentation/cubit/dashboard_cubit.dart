@@ -23,6 +23,7 @@ class DashboardCubit extends Cubit<DashboardState> {
   final GetServerDateTimeUseCase _getServerDateTimeUseCase;
 
   DashboardEntity? dashboardData;
+  int _requestVersion = 0;
 
   /// selected filters
   final selectedServiceTypeNotifier =
@@ -84,6 +85,8 @@ class DashboardCubit extends Cubit<DashboardState> {
   }
 
   Future<void> _loadDashboard() async {
+    final requestVersion = ++_requestVersion;
+
     final param = DashboardParamEntity(
       serviceType: selectedServiceType,
       fromDateTime: selectedFromDate,
@@ -91,6 +94,8 @@ class DashboardCubit extends Cubit<DashboardState> {
     );
 
     final result = await _getDashboardDataUseCase(param);
+
+    if (requestVersion != _requestVersion || isClosed) return;
 
     result.whenOrNull(
       success: (data, failures, code) {
@@ -157,6 +162,7 @@ class DashboardCubit extends Cubit<DashboardState> {
 
   @override
   Future<void> close() {
+    _requestVersion++;
     selectedServiceTypeNotifier.dispose();
     selectedFromDateNotifier.dispose();
     selectedToDateNotifier.dispose();

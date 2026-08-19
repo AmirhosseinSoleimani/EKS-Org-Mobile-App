@@ -1,3 +1,4 @@
+import 'package:dio/dio.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/data/data_sources/dashboard_data_source.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/data/models/dashboard_model.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/data/models/dashboard_param_model.dart';
@@ -8,12 +9,26 @@ import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: DashboardDataSource)
 class DashboardDataSourceImpl extends DashboardDataSource {
-  final DashboardService _service;
-
   DashboardDataSourceImpl(this._service);
+
+  final DashboardService _service;
+  CancelToken? _activeRequestToken;
 
   @override
   Future<BaseSingleResponse<DashboardModel?>> getDashboardData(
-          DashboardParamModel param) async =>
-      await _service.getDashboardData(param.toJson());
+    DashboardParamModel param,
+  ) async {
+    _activeRequestToken?.cancel('Superseded by a newer dashboard request');
+
+    final requestToken = CancelToken();
+    _activeRequestToken = requestToken;
+
+    try {
+      return await _service.getDashboardData(param.toJson(), requestToken);
+    } finally {
+      if (identical(_activeRequestToken, requestToken)) {
+        _activeRequestToken = null;
+      }
+    }
+  }
 }

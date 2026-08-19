@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/indicator_report/presentation/indicator_report_page/widgets/filters_box.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -90,6 +91,8 @@ class _IndicatorReportView extends StatelessWidget {
                         ),
                       ),
 
+                      error: (_) => _buildEmptyState(context),
+                      connectionError: () => _buildEmptyState(context),
                       loaded: () => IndicatorReportViewer(
                         indicatorReport: cubit.indicatorReport,
                       ),
@@ -102,6 +105,14 @@ class _IndicatorReportView extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildEmptyState(BuildContext context) {
+    return SizedBox(
+      height: MediaQuery.sizeOf(context).height * 0.7,
+      width: double.infinity,
+      child: const Center(child: EmptyListWidget()),
     );
   }
 }

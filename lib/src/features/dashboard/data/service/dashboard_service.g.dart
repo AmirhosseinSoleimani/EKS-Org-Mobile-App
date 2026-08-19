@@ -22,6 +22,7 @@ class _DashboardService implements DashboardService {
   @override
   Future<BaseSingleResponse<DashboardModel?>> getDashboardData(
     Map<String, dynamic> body,
+    CancelToken cancelToken,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -35,6 +36,7 @@ class _DashboardService implements DashboardService {
             '/api/IndexReport/IndexDashboard',
             queryParameters: queryParameters,
             data: _data,
+            cancelToken: cancelToken,
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );

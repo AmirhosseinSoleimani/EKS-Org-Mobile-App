@@ -14,5 +14,8 @@ abstract class DashboardService {
   factory DashboardService(Dio dio) = _DashboardService;
 
   @POST('/api/IndexReport/IndexDashboard')
-  Future<BaseSingleResponse<DashboardModel?>> getDashboardData(@Body() Map<String, dynamic> body);
+  Future<BaseSingleResponse<DashboardModel?>> getDashboardData(
+    @Body() Map<String, dynamic> body,
+    @CancelRequest() CancelToken cancelToken,
+  );
 }
