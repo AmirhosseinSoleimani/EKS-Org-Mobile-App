@@ -92,8 +92,14 @@ class _TitleRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final hasTitleLabel = titleLabel?.trim().isNotEmpty == true;
+    final hasSubtitle = subtitle?.trim().isNotEmpty == true;
+    final shouldCenterVertically = !hasTitleLabel && !hasSubtitle;
+
     return Row(
-      crossAxisAlignment: CrossAxisAlignment.start,
+      crossAxisAlignment: shouldCenterVertically
+          ? CrossAxisAlignment.center
+          : CrossAxisAlignment.start,
       children: [
         if (leading != null) ...[
           leading!,

@@ -339,31 +339,38 @@ class _CalendarDay extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
     final isBoundary = isStart || isEnd;
 
-    return InkWell(
-      borderRadius: BorderRadius.circular(AppSize.s24),
-      onTap: enabled ? onTap : null,
-      child: ColoredBox(
-        color: isInRange ? colorScheme.primary.withAlpha(25) : Colors.transparent,
-        child: Center(
-          child: AnimatedContainer(
-            duration: DurationConstant.d100,
-            width: AppSize.s40,
-            height: AppSize.s40,
-            alignment: Alignment.center,
-            decoration: BoxDecoration(
-              shape: BoxShape.circle,
-              color: isBoundary ? colorScheme.primary : Colors.transparent,
-            ),
-            child: BodyMediumText(
-              text: date.day.toString(),
-              textAlign: TextAlign.center,
-              textDirection: TextDirection.ltr,
-              color: !enabled
-                  ? colorScheme.onSurface.withAlpha(70)
-                  : isBoundary
-                      ? colorScheme.onPrimary
-                      : colorScheme.onSurface,
-              fontWeight: isBoundary ? FontWeight.w700 : FontWeight.w400,
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 1),
+      child: InkWell(
+        borderRadius: BorderRadius.circular(AppSize.s8),
+        onTap: enabled ? onTap : null,
+        child: DecoratedBox(
+          decoration: BoxDecoration(
+            color:
+                isInRange ? colorScheme.primary.withAlpha(25) : Colors.transparent,
+            borderRadius: BorderRadius.circular(AppSize.s8),
+          ),
+          child: Center(
+            child: AnimatedContainer(
+              duration: DurationConstant.d100,
+              width: AppSize.s40,
+              height: AppSize.s40,
+              alignment: Alignment.center,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                color: isBoundary ? colorScheme.primary : Colors.transparent,
+              ),
+              child: BodyMediumText(
+                text: date.day.toString(),
+                textAlign: TextAlign.center,
+                textDirection: TextDirection.ltr,
+                color: !enabled
+                    ? colorScheme.onSurface.withAlpha(70)
+                    : isBoundary
+                        ? colorScheme.onPrimary
+                        : colorScheme.onSurface,
+                fontWeight: isBoundary ? FontWeight.w700 : FontWeight.w400,
+              ),
             ),
           ),
         ),
