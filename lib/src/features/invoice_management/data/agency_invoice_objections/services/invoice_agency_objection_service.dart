@@ -29,7 +29,7 @@ class InvoiceAgencyObjectionService {
     ServiceRequestParamModel request,
   ) async {
     final response = await _dio.post<dynamic>(
-      '/api/Emdadgar/GetEmdadgarByServiceRequestId',
+      '/api/NewEmdadgar/GetEmdadgarByServiceRequestId',
       data: request.toJson(),
     );
     final data = ResponseJsonReader.object(response.data);

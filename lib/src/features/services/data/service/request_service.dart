@@ -82,7 +82,7 @@ abstract class RequestService {
   Future<BaseSingleResponse<RequestStatusHistoryListModel>> getRequestStatusHistory(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/Emdadgar/GetEmdadgarByServiceRequestId')
+  @POST('/api/NewEmdadgar/GetEmdadgarByServiceRequestId')
   Future<BaseSingleResponse<EmdadgarInfoModel>> getEmdadgarInfo(
       @Body() Map<String, dynamic> query);
 
