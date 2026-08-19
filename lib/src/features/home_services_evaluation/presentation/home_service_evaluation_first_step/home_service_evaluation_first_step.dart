@@ -16,6 +16,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/request_sta
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'cubit/home_service_evaluation_first_step_cubit.dart';
 import 'cubit/home_service_evaluation_first_step_state.dart';
@@ -61,6 +62,7 @@ class _HomeServiceEvaluationFirstStepView extends StatelessWidget {
               data: message,
               isDismissible: true,
               enableDrag: true,
+              onButtonTap: () => context.pop(),
             );
           },
           error: (message) {

@@ -5,6 +5,7 @@ import 'package:eks_sana_plus_org/src/features/dashboard/domain/entities/dashboa
 import 'package:eks_sana_plus_org/src/features/dashboard/domain/use_cases/get_dashboard_data_use_case.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/features/server_date_time/domain/use_cases/get_server_date_time_use_case.dart';
+import 'package:eks_sana_plus_org/src/shared/validator/date_range_filter_rules.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -39,8 +40,12 @@ class DashboardCubit extends Cubit<DashboardState> {
   bool get isDateFilterActive => selectedDateFilterActiveNotifier.value;
 
   Future<void> loadDashboardData() async {
-    _safeEmit(const DashboardState.loading());
+    if (!_hasValidSelectedDateRange) {
+      await resetDateRangeToToday();
+      return;
+    }
 
+    _safeEmit(const DashboardState.loading());
     await _loadDashboard();
   }
 
@@ -121,6 +126,8 @@ class DashboardCubit extends Cubit<DashboardState> {
   }
 
   Future<void> applyDateRange(DateTime from, DateTime to) async {
+    if (!DateRangeFilterRules.isValid(from, to)) return;
+
     setFromDate(from);
     setToDate(to);
     selectedDateFilterActiveNotifier.value = true;
@@ -139,6 +146,13 @@ class DashboardCubit extends Cubit<DashboardState> {
     selectedFromDateNotifier.value = null;
     selectedToDateNotifier.value = null;
     selectedDateFilterActiveNotifier.value = false;
+  }
+
+  bool get _hasValidSelectedDateRange {
+    final from = selectedFromDate;
+    final to = selectedToDate;
+    if (from == null || to == null) return false;
+    return DateRangeFilterRules.isValid(from, to);
   }
 
   @override

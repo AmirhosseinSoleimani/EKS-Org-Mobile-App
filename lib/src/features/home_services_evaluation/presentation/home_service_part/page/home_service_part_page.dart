@@ -17,6 +17,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class HomeServicePartPage extends StatelessWidget {
   const HomeServicePartPage({
@@ -70,6 +71,7 @@ class HomeServicePartPage extends StatelessWidget {
                         isDismissible: true,
                         context: context,
                         data: bottomSheetMessageModel,
+                        onButtonTap: () => context.pop(),
                       );
                     },
                     notice: (bottomSheetMessageModel) {

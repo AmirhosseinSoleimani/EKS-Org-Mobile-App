@@ -13,6 +13,7 @@ class FilterBottomSheetScaffold extends StatelessWidget {
     this.clearTitle = 'پاک کردن',
     this.applyButtonColor,
     this.heightFactor = 0.78,
+    this.shrinkWrapContent = false,
   });
 
   final String title;
@@ -23,80 +24,107 @@ class FilterBottomSheetScaffold extends StatelessWidget {
   final String clearTitle;
   final Color? applyButtonColor;
   final double heightFactor;
+  final bool shrinkWrapContent;
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final sheet = Column(
+      mainAxisSize:
+          shrinkWrapContent ? MainAxisSize.min : MainAxisSize.max,
+      crossAxisAlignment: CrossAxisAlignment.stretch,
+      children: [
+        _buildHeader(theme),
+        if (shrinkWrapContent)
+          Flexible(
+            fit: FlexFit.loose,
+            child: _buildScrollableContent(),
+          )
+        else
+          Expanded(child: _buildScrollableContent()),
+        _buildActions(theme),
+      ],
+    );
+
     return SafeArea(
       top: false,
-      child: SizedBox(
-        height: MediaQuery.sizeOf(context).height * heightFactor,
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Padding(
-              padding: const EdgeInsets.fromLTRB(
-                AppPadding.p16,
-                AppPadding.p16,
-                AppPadding.p16,
-                AppPadding.p8,
+      child: shrinkWrapContent
+          ? ConstrainedBox(
+              constraints: BoxConstraints(
+                maxHeight: MediaQuery.sizeOf(context).height * heightFactor,
               ),
-              child: Text(
-                title,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  fontWeight: FontWeight.w800,
-                ),
-              ),
+              child: sheet,
+            )
+          : SizedBox(
+              height: MediaQuery.sizeOf(context).height * heightFactor,
+              child: sheet,
             ),
-            Expanded(
-              child: SingleChildScrollView(
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                padding: const EdgeInsets.symmetric(
-                  horizontal: AppPadding.p16,
-                  vertical: AppPadding.p8,
-                ),
-                child: child,
-              ),
-            ),
-            Container(
-              padding: const EdgeInsets.fromLTRB(
-                AppPadding.p16,
-                AppPadding.p12,
-                AppPadding.p16,
-                AppPadding.p16,
-              ),
-              decoration: BoxDecoration(
-                color: theme.colorScheme.surface,
-                border: Border(
-                  top: BorderSide(color: theme.dividerColor),
-                ),
-              ),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: InkwellButtonWidget(
-                      title: applyTitle,
-                      backgroundColor: applyButtonColor,
-                      onTap: onApply,
-                    ),
-                  ),
-                  Space.w12,
-                  Expanded(
-                    child: InkwellButtonWidget(
-                      title: clearTitle,
-                      backgroundColor: theme.colorScheme.onPrimary,
-                      borderColor: theme.colorScheme.outline.withAlpha(153),
-                      titleColor: theme.colorScheme.onSurface,
-                      onTap: onClear,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ],
+    );
+  }
+
+  Widget _buildHeader(ThemeData theme) {
+    return Padding(
+      padding: const EdgeInsets.fromLTRB(
+        AppPadding.p16,
+        AppPadding.p16,
+        AppPadding.p16,
+        AppPadding.p8,
+      ),
+      child: Text(
+        title,
+        style: theme.textTheme.titleMedium?.copyWith(
+          fontWeight: FontWeight.w800,
         ),
+      ),
+    );
+  }
+
+  Widget _buildScrollableContent() {
+    return SingleChildScrollView(
+      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppPadding.p16,
+        vertical: AppPadding.p8,
+      ),
+      child: child,
+    );
+  }
+
+  Widget _buildActions(ThemeData theme) {
+    return Container(
+      padding: const EdgeInsets.fromLTRB(
+        AppPadding.p16,
+        AppPadding.p12,
+        AppPadding.p16,
+        AppPadding.p16,
+      ),
+      decoration: BoxDecoration(
+        color: theme.colorScheme.surface,
+        border: Border(
+          top: BorderSide(color: theme.dividerColor),
+        ),
+      ),
+      child: Row(
+        children: [
+          Expanded(
+            child: InkwellButtonWidget(
+              title: applyTitle,
+              backgroundColor: applyButtonColor,
+              onTap: onApply,
+            ),
+          ),
+          Space.w12,
+          Expanded(
+            child: InkwellButtonWidget(
+              title: clearTitle,
+              backgroundColor: theme.colorScheme.onPrimary,
+              borderColor: theme.colorScheme.outline.withAlpha(153),
+              titleColor: theme.colorScheme.onSurface,
+              onTap: onClear,
+            ),
+          ),
+        ],
       ),
     );
   }

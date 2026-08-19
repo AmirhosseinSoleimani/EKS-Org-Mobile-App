@@ -54,7 +54,10 @@ class _View extends StatelessWidget {
             BottomSheetMessage.showErrorWithAction(
               context: context,
               data: message,
-              onPositive: cubit.init,
+              onPositive: () {
+                context.pop();
+                cubit.init();
+              },
             );
           },
           connectionError: () {
@@ -73,9 +76,9 @@ class _View extends StatelessWidget {
                 title: '',
                 message: data.message ?? 'درخواست با موفقیت ثبت شد',
               ),
-              onPositive: (){
-                context.pop;
-                context.pop;
+              onPositive: () {
+                context.pop();
+                context.pop();
               },
             );
           },

@@ -11,6 +11,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class ServiceAddedContainerWidget extends StatelessWidget {
   const ServiceAddedContainerWidget({
@@ -134,6 +135,7 @@ class ServiceAddedContainerWidget extends StatelessWidget {
         data: BottomSheetMessageModel(
             title: '', message: 'آیا از حذف این سرویس اطمینان دارید؟'),
         onPositive: () {
+          context.pop();
           onTapDelete?.call();
         });
   }

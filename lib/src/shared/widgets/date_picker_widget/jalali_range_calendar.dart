@@ -160,8 +160,8 @@ class _MonthHeader extends StatelessWidget {
       children: [
         IconButton(
           visualDensity: VisualDensity.compact,
-          onPressed: canGoNext ? onNext : null,
-          icon: const Icon(Icons.chevron_right_rounded),
+          onPressed: canGoPrevious ? onPrevious : null,
+          icon: const Icon(Icons.chevron_left_rounded),
         ),
         Expanded(
           child: BodyMediumText(
@@ -174,8 +174,8 @@ class _MonthHeader extends StatelessWidget {
         ),
         IconButton(
           visualDensity: VisualDensity.compact,
-          onPressed: canGoPrevious ? onPrevious : null,
-          icon: const Icon(Icons.chevron_left_rounded),
+          onPressed: canGoNext ? onNext : null,
+          icon: const Icon(Icons.chevron_right_rounded),
         ),
       ],
     );

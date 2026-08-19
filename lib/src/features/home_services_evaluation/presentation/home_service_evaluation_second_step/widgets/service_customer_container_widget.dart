@@ -78,9 +78,8 @@ class ServiceCustomerContainerWidget extends StatelessWidget {
           title: '', message: 'آیا از حذف این سرویس اطمینان دارید؟',),
         positiveText: 'حذف',
         onButtonTap: () {
-
-         onTapDelete?.call();
-         Navigator.pop(context);
+          Navigator.pop(context);
+          onTapDelete?.call();
         });
 
   }
@@ -120,9 +119,13 @@ class ServiceCustomerContainerWidget extends StatelessWidget {
             title: '', message: 'آیا از حذف این قطعه اطمینان دارید؟'),
         positiveText: 'حذف',
         onPositive: () {
-          _handleDeletePart(
-              context, entity, laborIndex, isEditablePart);
           Navigator.pop(context);
+          _handleDeletePart(
+            context,
+            entity,
+            laborIndex,
+            isEditablePart,
+          );
         });
   }
 

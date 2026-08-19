@@ -66,8 +66,8 @@ class _HomeServiceEvaluationSecondStepView extends StatelessWidget {
               enableDrag: true,
               onButtonTap: (){
                 final cubit = context.read<HomeServiceEvaluationSecondStepCubit>();
-                cubit.retryLastAction();
                 context.pop();
+                cubit.retryLastAction();
               }
             );
           },

@@ -15,6 +15,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class RescuerDetailPage extends StatelessWidget {
   static const path = '/rescuer-details';
@@ -47,7 +48,10 @@ class _RescuerDetailView extends StatelessWidget {
             BottomSheetMessage.showErrorWithAction(
               context: context,
               data: message,
-              onPositive: cubit.retryLastAction,
+              onPositive: () {
+                context.pop();
+                cubit.retryLastAction();
+              },
             );
           },
           actionError: (data, message) {

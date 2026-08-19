@@ -14,6 +14,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_tex
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'widgets/request_status_history_list_view.dart';
 
@@ -45,7 +46,10 @@ class _View extends StatelessWidget {
             BottomSheetMessage.showErrorWithAction(
               context: context,
               data: message,
-              onPositive: cubit.init,
+              onPositive: () {
+                context.pop();
+                cubit.init();
+              },
             );
           },
           connectionError: () {

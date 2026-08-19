@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/date_picker_widget/date_picker_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/validator/date_range_filter_rules.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/date_picker_widget/jalali_date_text_formatter.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/date_picker_widget/jalali_range_calendar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
@@ -71,7 +72,8 @@ class _DateRangeFilterSheetState extends State<DateRangeFilterSheet> {
   Widget build(BuildContext context) {
     return FilterBottomSheetScaffold(
       title: widget.title,
-      heightFactor: 0.72,
+      heightFactor: 0.86,
+      shrinkWrapContent: true,
       onApply: _apply,
       onClear: _clear,
       child: Column(
@@ -113,8 +115,10 @@ class _DateRangeFilterSheetState extends State<DateRangeFilterSheet> {
             initialVisibleDate: _visibleDate,
             selectedFromDate: _fromDate,
             selectedToDate: _toDate,
+            lastDate: _maxSelectableToDate,
             onDateSelected: _selectDate,
           ),
+          Space.h12,
         ],
       ),
     );
@@ -147,7 +151,9 @@ class _DateRangeFilterSheetState extends State<DateRangeFilterSheet> {
       _fromController.text = _dateText(value);
       _errorMessage = null;
 
-      if (_toDate != null && _compareDates(_toDate!, value) < 0) {
+      if (_toDate != null &&
+          (_compareDates(_toDate!, value) < 0 ||
+              _exceedsMaxRange(value, _toDate!))) {
         _toDate = null;
         _toController.clear();
       }
@@ -173,6 +179,13 @@ class _DateRangeFilterSheetState extends State<DateRangeFilterSheet> {
     if (_compareDates(value, fromDate) < 0) {
       setState(() {
         _errorMessage = 'تاریخ پایان نمی‌تواند قبل از تاریخ شروع باشد';
+      });
+      return;
+    }
+
+    if (_exceedsMaxRange(fromDate, value)) {
+      setState(() {
+        _errorMessage = 'بازه زمانی نمی‌تواند بیشتر از ۳۰ روز باشد';
       });
       return;
     }
@@ -203,6 +216,13 @@ class _DateRangeFilterSheetState extends State<DateRangeFilterSheet> {
       return;
     }
 
+    if (_exceedsMaxRange(fromDate, toDate)) {
+      setState(() {
+        _errorMessage = 'بازه زمانی نمی‌تواند بیشتر از ۳۰ روز باشد';
+      });
+      return;
+    }
+
     Navigator.of(context).pop();
     widget.onApply(fromDate.toDateTime(), toDate.toDateTime());
   }
@@ -214,6 +234,21 @@ class _DateRangeFilterSheetState extends State<DateRangeFilterSheet> {
 
   FocusNode _focusNode(_DateRangePart part) {
     return part == _DateRangePart.from ? _fromFocusNode : _toFocusNode;
+  }
+
+  Jalali? get _maxSelectableToDate {
+    if (_activePart != _DateRangePart.to || _fromDate == null) return null;
+
+    return Jalali.fromDateTime(
+      DateRangeFilterRules.maxToDate(_fromDate!.toDateTime()),
+    );
+  }
+
+  bool _exceedsMaxRange(Jalali from, Jalali to) {
+    return DateRangeFilterRules.exceedsMaxRange(
+      from.toDateTime(),
+      to.toDateTime(),
+    );
   }
 
   int _compareDates(Jalali first, Jalali second) {

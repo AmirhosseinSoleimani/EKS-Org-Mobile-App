@@ -20,6 +20,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'widget/animated_location_button.dart';
 
@@ -77,7 +78,10 @@ class _MapViewState extends State<_MapView> with AutomaticKeepAliveClientMixin{
         state.whenOrNull(
           locationToAddressSuccess: () => _openAnimatedBottomSheet(context, widget.serviceType),
           error: (messageModel) => BottomSheetMessage.showError(
-              context: context, data: messageModel),
+            context: context,
+            data: messageModel,
+            onButtonTap: () => context.pop(),
+          ),
           permissionError: (messageModel) => SnakeBarWidget.showError(
               context: context, message: messageModel.message),
           connectionError: () {

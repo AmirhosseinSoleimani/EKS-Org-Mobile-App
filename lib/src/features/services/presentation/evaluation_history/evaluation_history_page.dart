@@ -57,10 +57,7 @@ class _View extends StatelessWidget {
             BottomSheetMessage.showCustom(
               context: context,
               content: NoInternetBottomSheet(
-                onRetry: () {
-                  context.pop();
-                  cubit.init();
-                },
+                onRetry: cubit.init,
               ),
               actionWidget: const SizedBox.shrink(),
               isDismissible: false,
@@ -119,9 +116,13 @@ class _LoadedView extends StatelessWidget {
         child: Column(
           children: [
             FilterBox(cubit: cubit),
+            const Align(
+              alignment: Alignment.centerRight,
+              child: BodyMediumText(text: "اطلاعات درخواست"),
+            ),
             ExpandableSection(
               isExpanded: false,
-              header: RequestStatusSection(showTitle: true,request: cubit.selectedBaseRequest),
+              header: RequestStatusSection(request: cubit.selectedBaseRequest),
               child: RequestDetailSection(
                 selectedRequest: cubit.selectedBaseRequest,
                 showCustomerInfo: true,

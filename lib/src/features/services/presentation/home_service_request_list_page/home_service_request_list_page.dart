@@ -22,9 +22,7 @@ class HomeServiceRequestListPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-      getIt<HomeServiceRequestListCubit>()
-        ..fetchRequestList(),
+      create: (_) => getIt<HomeServiceRequestListCubit>()..fetchRequestList(),
       child: const _SelectedServicesView(),
     );
   }
@@ -154,10 +152,7 @@ class _AccessDeniedBody extends StatelessWidget {
     return Center(
       child: Text(
         'شما دسترسی لازم برای مشاهده درخواست های خدمت در محل را ندارید.',
-        style: Theme
-            .of(context)
-            .textTheme
-            .bodyMedium,
+        style: Theme.of(context).textTheme.bodyMedium,
         textAlign: TextAlign.center,
       ),
     );

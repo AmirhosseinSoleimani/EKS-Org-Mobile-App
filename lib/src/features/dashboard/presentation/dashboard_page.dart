@@ -11,6 +11,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/stat_row_card/stat_row_card
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'widgets/chart/chart_container_wrapper.dart';
 
@@ -42,7 +43,10 @@ class _DashboardView extends StatelessWidget {
             BottomSheetMessage.showErrorWithAction(
               context: context,
               data: message,
-              onPositive: cubit.loadDashboardData,
+              onPositive: () {
+                context.pop();
+                cubit.loadDashboardData();
+              },
             );
           },
           connectionError: () {

@@ -25,6 +25,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_tex
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class FollowUpRegisterPage extends StatelessWidget {
   static const path = "/follow-up-register-page";
@@ -54,7 +55,10 @@ class _View extends StatelessWidget {
             BottomSheetMessage.showErrorWithAction(
               context: context,
               data: message,
-              onPositive: cubit.retryLastAction,
+              onPositive: () {
+                context.pop();
+                cubit.retryLastAction();
+              },
             );
           },
           connectionError: () {

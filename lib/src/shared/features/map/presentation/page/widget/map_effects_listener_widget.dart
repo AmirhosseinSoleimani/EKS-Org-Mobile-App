@@ -9,6 +9,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 class MapEffectsListenerWidget extends StatefulWidget {
@@ -48,8 +49,10 @@ class _MapEffectsListenerWidgetState extends State<MapEffectsListenerWidget> {
         case ShowError(:final message):
           if (!mounted) return;
           BottomSheetMessage.showError(
-              context: context,
-              data: BottomSheetMessageModel(title: '', message: message));
+            context: context,
+            data: BottomSheetMessageModel(title: '', message: message),
+            onButtonTap: () => context.pop(),
+          );
           break;
       }
     });
@@ -64,6 +67,7 @@ class _MapEffectsListenerWidgetState extends State<MapEffectsListenerWidget> {
               'برای ادامه، از تنظیمات سیستم دسترسی موقعیت مکانی را فعال کنید.'),
       positiveText: 'رفتن به تنظیمات',
       onPositive: () async {
+        context.pop();
         await _openAppSettings();
         if (mounted) {
           context.read<MapCubit>().ensureAndCenterOnUser();

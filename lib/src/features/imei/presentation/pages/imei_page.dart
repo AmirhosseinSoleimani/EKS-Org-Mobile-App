@@ -156,7 +156,6 @@ class _ImeiView extends StatelessWidget {
       positiveText: 'حذف',
       cancelTxt: 'انصراف',
       buttonColor: Theme.of(context).colorScheme.error,
-      cancelFunc: () => context.pop(),
       onPositive: () {
         context.pop();
         cubit.deleteItem(item);

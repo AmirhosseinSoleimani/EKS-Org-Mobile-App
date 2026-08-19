@@ -13,6 +13,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 class NonCooperationPage extends StatelessWidget {
   static const path = "/non-cooperation-page";
@@ -43,7 +44,10 @@ class _View extends StatelessWidget {
             BottomSheetMessage.showErrorWithAction(
               context: context,
               data: message,
-              onPositive: cubit.init,
+              onPositive: () {
+                context.pop();
+                cubit.init();
+              },
             );
           },
           connectionError: () {

@@ -329,6 +329,8 @@ class CartablePageView extends StatelessWidget {
       positiveText: 'بله',
       cancelTxt: 'خیر',
       onPositive: () async {
+        context.pop();
+
         final result = await cubit.archiveCartableMessage(
           messageGuid: messageGuid,
         );
@@ -337,15 +339,10 @@ class CartablePageView extends StatelessWidget {
           return;
         }
 
-        context.pop();
-
         await _handleArchiveResult(
           context: context,
           result: result,
         );
-      },
-      cancelFunc: () {
-        context.pop();
       },
     );
   }

@@ -7,6 +7,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_b
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:go_router/go_router.dart';
 
 import 'labor_registration_page.dart';
 
@@ -45,6 +46,7 @@ class SearchLaborHomeServicePage extends StatelessWidget {
                 data: bottomSheetMessage,
                 isDismissible: true,
                 enableDrag: true,
+                onButtonTap: () => context.pop(),
               );
             },
           ),

@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/features/indicator_report/domain/entity/in
 import 'package:eks_sana_plus_org/src/features/indicator_report/domain/entity/report_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/indicator_report/domain/use_cases/fetch_indicator_report_use_case.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/validator/date_range_filter_rules.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
@@ -35,6 +36,7 @@ class IndicatorReportCubit extends Cubit<IndicatorReportState> {
   bool get isDateFilterActive => selectedDateFilterActiveNotifier.value;
 
   Future<void> loadReports() async {
+    _ensureValidSelectedDateRange();
     _safeEmit(const IndicatorReportState.loading());
 
     final param = ReportParamEntity(
@@ -78,6 +80,8 @@ class IndicatorReportCubit extends Cubit<IndicatorReportState> {
   }
 
   Future<void> applyDateRange(DateTime from, DateTime to) async {
+    if (!DateRangeFilterRules.isValid(from, to)) return;
+
     setFromDate(from);
     setToDate(to);
     selectedDateFilterActiveNotifier.value = true;
@@ -96,6 +100,19 @@ class IndicatorReportCubit extends Cubit<IndicatorReportState> {
     final today = _today();
 
     selectedServiceTypeNotifier.value = ServiceType.reliefService;
+    selectedFromDateNotifier.value = today;
+    selectedToDateNotifier.value = today;
+    selectedDateFilterActiveNotifier.value = false;
+  }
+
+  void _ensureValidSelectedDateRange() {
+    final from = selectedFromDate;
+    final to = selectedToDate;
+    if (from != null && to != null && DateRangeFilterRules.isValid(from, to)) {
+      return;
+    }
+
+    final today = _today();
     selectedFromDateNotifier.value = today;
     selectedToDateNotifier.value = today;
     selectedDateFilterActiveNotifier.value = false;
