@@ -199,7 +199,7 @@ class ReliefRequestModel extends ReliefRequestEntity {
       emdadgarPriority: (json['emdadgarPriority'] as num?)?.toInt(),
       emdadgarEvaluationDescription: json['emdadgarEvaluationDescription'],
       emdadgarEvaluationKilometer:
-          (json['emdadgarEvaluationKilometer'] as num?)?.toInt(),
+      _toInt(json['emdadgarEvaluationKilometer']),
       isNewCar: json['isNewCar'] ?? false,
       vip: json['vip'] ?? false,
       vipConditionTitle: json['vipConditionTitle'],
@@ -293,6 +293,24 @@ class ReliefRequestModel extends ReliefRequestEntity {
 
       serviceType: ServiceType.reliefService,
     );
+
   }
+
+  static int? _toInt(dynamic value) {
+    if (value == null) return null;
+
+    if (value is int) return value;
+
+    if (value is num) {
+      return value.toInt();
+    }
+
+    if (value is String) {
+      return int.tryParse(value);
+    }
+
+    return null;
+  }
+
 
 }

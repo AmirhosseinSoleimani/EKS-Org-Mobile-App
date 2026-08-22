@@ -95,10 +95,13 @@ class EvaluationHistoryCubit extends Cubit<EvaluationHistoryState> {
     _safeEmit(const EvaluationHistoryState.loading());
 
     final requestResult = await _fetchServiceRequestData();
-    if (requestResult != FetchResultType.success) {
+    if (requestResult == FetchResultType.expireToken) {
       return requestResult;
     }
 
+    // SanaPlus loads the request information and evaluation history
+    // independently. A failure while refreshing the request details must not
+    // prevent the evaluation list from being loaded from its own endpoint.
     final listResult = await _loadEvaluationHistoryList();
     if (listResult != FetchResultType.success) {
       return listResult;
@@ -151,9 +154,13 @@ class EvaluationHistoryCubit extends Cubit<EvaluationHistoryState> {
     return fetchResult;
   }
 
-  Future<FetchResultType> _fetchSelectedServiceRequest() async{
-    try{
+  Future<FetchResultType> _fetchSelectedServiceRequest() async {
+    try {
       selectedBaseRequest = await _fetchSelectedRequestItemUseCase.call();
+      if (selectedBaseRequest == null) {
+        _errorMessage = 'در دریافت اطلاعات اولیه درخواست مشکلی رخ داد.';
+        return FetchResultType.failure;
+      }
       return FetchResultType.success;
     } catch (_) {
       _errorMessage = _fallbackError();

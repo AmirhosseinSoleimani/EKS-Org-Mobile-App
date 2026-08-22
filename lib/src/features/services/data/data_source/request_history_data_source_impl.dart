@@ -82,11 +82,11 @@ class RequestDataSourceImpl extends RequestDataSource {
   @override
   Future<BaseSingleResponse<NonCooperationListModel>> getNonCooperationList(
       RequestOperationParamModel param) async =>
-      await _service.getNonCooperationList(param.toJson());
+      await _service.getNonCooperationList(param.toOperationJson());
 
   @override
   Future<BaseListResponse<CartableCycleItemModel>> getCartableCycleList(RequestOperationParamModel param)async =>
-      await _service.getCartableCycleList(param.toJson());
+      await _service.getCartableCycleList(param.toOperationJson());
 
   @override
   Future<BaseListResponse<EvaluationHistoryItemModel>> getEvaluationHistory(
@@ -121,7 +121,7 @@ class RequestDataSourceImpl extends RequestDataSource {
 
   @override
   Future<BaseSingleResponse<FollowupModel>> getRequestFollowUp(RequestOperationParamModel param) async =>
-      await _service.getRequestFollowUp(param.toJson());
+      await _service.getRequestFollowUp(param.toOperationJson());
 
   @override
   Future<BaseSingleResponse<UpdateServiceResponseModel>> updateServiceRequest(UpdateServiceRequestParamModel param) async =>

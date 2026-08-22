@@ -78,7 +78,7 @@ abstract class RequestService {
   Future<BaseListResponse<EvaluationHistoryItemModel>> getHomeServiceServiceEvaluationHistory(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/ServiceRequestHistory/GetServiceRequestHistoryList')
+  @POST('/api/ServiceRequestHistory/GetByFilterJson')
   Future<BaseSingleResponse<RequestStatusHistoryListModel>> getRequestStatusHistory(
       @Body() Map<String, dynamic> query);
 

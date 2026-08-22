@@ -383,7 +383,7 @@ class _RequestService implements RequestService {
           Options(method: 'POST', headers: _headers, extra: _extra)
               .compose(
                 _dio.options,
-                '/api/ServiceRequestHistory/GetServiceRequestHistoryList',
+                '/api/ServiceRequestHistory/GetByFilterJson',
                 queryParameters: queryParameters,
                 data: _data,
               )

@@ -21,11 +21,28 @@ class RequestOperationParamModel extends RequestOperationParamEntity {
 
   Map<String, dynamic> toJson() {
     return {
-      "serviceType": serviceType.value,
-      "serviceRequestId": requestId,
-      "serviceRequestTrackCode": serviceRequestTrackCode,
-      "pageSize": pageSize,
-      "page": page,
+      'Sort': <Map<String, dynamic>>[],
+      'Filter': {
+        'Logic': 'and',
+        'Filters': [
+          {
+            'Field': 'ServiceRequestId',
+            'Operator': 'eq',
+            'Value': requestId?.toString(),
+          },
+        ],
+      },
+      'serviceType': serviceType.value,
+    };
+  }
+
+  Map<String, dynamic> toOperationJson() {
+    return {
+      'serviceType': serviceType.value,
+      'serviceRequestId': requestId,
+      'serviceRequestTrackCode': serviceRequestTrackCode,
+      'pageSize': pageSize,
+      'page': page,
     };
   }
 }

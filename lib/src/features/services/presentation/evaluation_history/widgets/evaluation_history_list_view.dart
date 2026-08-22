@@ -3,10 +3,10 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/request_det
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/vertical_line_indicator.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/list_widgets/list_section_header.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/key_value_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/timeline_item_card.dart';
@@ -52,7 +52,7 @@ class _EvaluationListViewState extends State<EvaluationListView> {
         borderRadius: BorderRadius.circular(6),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withOpacity(0.05),
+            color: Colors.black.withAlpha(13),
             blurRadius: 10,
             offset: const Offset(0, 4),
           ),
@@ -63,15 +63,13 @@ class _EvaluationListViewState extends State<EvaluationListView> {
         children: [
           const Padding(
             padding: EdgeInsets.symmetric(horizontal: 8),
-            child: BodyMediumText(text: "تاریخچه ارزیابی"),
+            child: ListSectionHeader(title: 'تاریخچه ارزیابی'),
           ),
           const SizedBox(height: 8),
           if (isEmpty)
             SizedBox(
               height: MediaQuery.of(context).size.height * 0.62,
-              child: const Center(
-                child: EmptyListWidget(),
-              ),
+              child: const Center(child: EmptyListWidget()),
             ),
           if (!isEmpty) ...[
             Stack(
@@ -94,92 +92,77 @@ class _EvaluationListViewState extends State<EvaluationListView> {
                       return TimelineItemCard(
                         expandedChildren: [
                           KeyValueRow(
-                            label: "ایراد",
-                            value: item.defectInfoTitle ?? "-",
+                            label: 'ایراد',
+                            value: _displayText(item.defectInfoTitle),
                           ),
                           KeyValueRow(
-                            label: "مسافت طی شده",
-                            value: "${item.distanceToCustomer ?? 0}",
+                            label: 'مسافت طی شده',
+                            value: _displayNumber(item.distanceToCustomer),
                           ),
                           KeyValueRow(
-                            label: "مسافت حمل",
-                            value: "${item.distanceHamlCustomer ?? 0}",
+                            label: 'مسافت حمل',
+                            value: _displayNumber(item.distanceHamlCustomer),
                           ),
                           KeyValueRow(
-                            label: "زمان توقف (دقیقه)",
-                            value: "${item.stopTime ?? 0}",
+                            label: 'زمان توقف (دقیقه)',
+                            value: _displayNumber(item.stopTime),
                           ),
                           KeyValueRow(
-                            label: "استفاده از دکل",
-                            value: (item.useDakal ?? false) ? "بله" : "خیر",
+                            label: 'استفاده از دکل',
+                            value: _displayBool(item.useDakal),
                           ),
                           KeyValueRow(
-                            label: "عوارض آزادراهی",
-                            value: (item.payAvarezi ?? false) ? "بله" : "خیر",
+                            label: 'عوارض آزادراهی',
+                            value: _displayBool(item.payAvarezi),
                           ),
                           KeyValueRow(
-                            label: "زمان حضور",
-                            value: item.arriveDateTimeJalali ?? "-",
+                            label: 'زمان حضور',
+                            value: _displayText(item.arriveDateTimeJalali),
                           ),
                           KeyValueRow(
-                            label: "زمان اتمام",
-                            value: item.endWorkDateTimeJalali ?? "-",
+                            label: 'زمان اتمام',
+                            value: _displayText(item.endWorkDateTimeJalali),
                           ),
                           KeyValueRow(
-                            label: "علت کنسل مجاز",
-                            value: item.cancelReasonTitle ?? "-",
+                            label: 'علت کنسل مجاز',
+                            value: _displayText(item.cancelReasonTitle),
                           ),
                           KeyValueRow(
-                            label: "علت در محل نبودن امدادخواه",
-                            value: item.cancelReasonDetailTitle ?? "-",
+                            label: 'علت در محل نبودن امدادخواه',
+                            value: _displayText(item.cancelReasonDetailTitle),
                           ),
-
-                          FittedBox(
-                            child: BodySmallText(
-                              text: "توضیحات:",
-                            ),
-                          ),
-                          Space.h8,
-                          FittedBox(
-                            child: BodySmallText(
-                              text: item.description ?? "-",
-                            ),
+                          KeyValueRow(
+                            label: 'توضیحات',
+                            value: _displayText(item.description),
                           ),
                         ],
                         children: [
-                          KeyValueRow(
-                            label: "وضعیت",
-                            value: hasInvoice(item)
-                                ? "دارای فاکتور"
-                                : "فاقد فاکتور",
-                          ),
                           KeyValueWidgetRow(
-                            label: "نوع فاکتور",
+                            label: 'وضعیت',
                             value: StatusLabel(
-                              text: item.statusTitle ?? "-",
-                              color: hasInvoice(item)
-                                  ? Theme
-                                  .of(context)
-                                  .colorScheme
-                                  .primary : Colors.grey,
-                              variant: StatusLabelVariant.filledWhiteText,
+                              text: _evaluationStatusText(item.isAccepted),
+                              color: _evaluationStatusColor(item.isAccepted),
                             ),
                           ),
                           KeyValueRow(
-                            label: "نام و نام خانوادگی",
+                            label: 'نوع فاکتور',
+                            value: _displayText(item.statusTitle),
+                          ),
+                          KeyValueRow(
+                            label: 'نام و نام خانوادگی',
                             value: _insertUserTitle(item),
                           ),
                           KeyValueRow(
-                            label: "تاریخ و ساعت ثبت",
-                            value: item.insertDateTimeJalali ?? "-",
+                            label: 'تاریخ و ساعت ثبت',
+                            value: _displayText(item.insertDateTimeJalali),
                           ),
                           KeyValueRow(
-                            label: "نوع ناوگان",
-                            value: item.emdadgarNavganTypeTitle ?? "-",
+                            label: 'نوع ناوگان',
+                            value: _displayText(item.emdadgarNavganTypeTitle),
                           ),
                           KeyValueRow(
-                            label: "نوع امداد",
-                            value: item.emdadServiceCategoryTitle ?? "-",
+                            label: 'نوع امداد',
+                            value: _displayText(item.emdadServiceCategoryTitle),
                           ),
                         ],
                       );
@@ -188,7 +171,7 @@ class _EvaluationListViewState extends State<EvaluationListView> {
                 ),
               ],
             ),
-            if (widget.items.length > _initialVisibleCount)
+            if (widget.items.length > 1)
               Center(
                 child: TextButton(
                   onPressed: () => setState(() => _showAll = !_showAll),
@@ -197,12 +180,12 @@ class _EvaluationListViewState extends State<EvaluationListView> {
                     children: [
                       BodyMediumText(
                         text: _showAll ? 'مشاهده کمتر' : 'مشاهده بیشتر',
-                        color: Theme.of(context).colorScheme.primary,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                       Space.w4,
                       Icon(
                         _showAll ? Icons.expand_less : Icons.expand_more,
-                        color: Theme.of(context).colorScheme.primary,
+                        color: Theme.of(context).colorScheme.secondary,
                       ),
                     ],
                   ),
@@ -214,9 +197,6 @@ class _EvaluationListViewState extends State<EvaluationListView> {
     );
   }
 
-  bool hasInvoice(EvaluationHistoryItemEntity item) =>
-      (item.invoiceId != null && item.invoiceId != -1);
-
   String _insertUserTitle(EvaluationHistoryItemEntity item) {
     final insertUserName = item.insertUserName?.trim();
     if (insertUserName?.isNotEmpty == true) {
@@ -224,6 +204,34 @@ class _EvaluationListViewState extends State<EvaluationListView> {
     }
 
     final fullName = '${item.firstName ?? ''} ${item.lastName ?? ''}'.trim();
-    return fullName.isEmpty ? '-' : fullName;
+    return fullName.isEmpty ? '---' : fullName;
+  }
+
+  String _evaluationStatusText(bool? isAccepted) {
+    if (isAccepted == null) return '---';
+    return isAccepted ? 'تایید شده' : 'تایید نشده';
+  }
+
+  Color _evaluationStatusColor(bool? isAccepted) {
+    if (isAccepted == null) return Colors.grey;
+    return isAccepted ? Colors.green : Colors.red;
+  }
+
+  String _displayText(String? value) {
+    final normalized = value?.trim() ?? '';
+    return normalized.isEmpty ? '---' : normalized;
+  }
+
+  String _displayNumber(num? value) {
+    if (value == null) return '---';
+    if (value is int || value == value.roundToDouble()) {
+      return value.toInt().toString();
+    }
+    return value.toString();
+  }
+
+  String _displayBool(bool? value) {
+    if (value == null) return '---';
+    return value ? 'بله' : 'خیر';
   }
 }

@@ -128,7 +128,10 @@ class RequestStatusHistoryLoadedView extends StatelessWidget {
           children: [
             ExpandableSection(
               isExpanded: false,
-              header: RequestStatusSection(request: cubit.selectedRequest),
+              header: RequestStatusSection(
+                request: cubit.selectedRequest,
+                showTitle: true,
+              ),
               child: RequestDetailSection(
                 selectedRequest: cubit.selectedRequest,
                 showCustomerInfo: true,
