@@ -39,7 +39,6 @@ class ChassisRequestHistoryListViewer extends StatelessWidget {
 
               return ChassisRequestHistoryCard(
                 chassisRequest: item,
-                serviceIcon: Icons.build,
                 onSelected: (item) {
                   final requestId = item.id;
                   if (requestId == null) return;

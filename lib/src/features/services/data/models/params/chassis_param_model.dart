@@ -7,10 +7,10 @@ class ChassisParamModel extends ChassisParamEntity {
 
   factory ChassisParamModel.fromJson(Map<String, dynamic> json) {
     return ChassisParamModel(
-      chassisNumber: json['chassisNumber'],
+      chassisNumber: json['ChassisNumber'] ?? json['chassisNumber'],
     );
   }
 
-  Map<String, dynamic> toJson() => {"chassisNumber": chassisNumber};
+  Map<String, dynamic> toJson() => {"ChassisNumber": chassisNumber};
 
 }

@@ -1,6 +1,7 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/chassis_request_history_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 
@@ -12,44 +13,26 @@ class ChassisRequestHeader extends StatelessWidget {
     required this.request,
   });
 
-  IconData _resolveServiceIcon(int? type) {
-    switch (type) {
-      case 1:
-        return Icons.build;
-      case 2:
-        return Icons.home_repair_service;
-      default:
-        return Icons.miscellaneous_services;
-    }
-  }
-
-  Color _resolveServiceColor(int? type) {
-    switch (type) {
-      case 1:
-        return Colors.orange;
-      case 2:
-        return Colors.blue;
-      default:
-        return Colors.grey;
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
-    final icon = _resolveServiceIcon(request.type);
-    final color = _resolveServiceColor(request.type);
+    final serviceType = request.serviceType;
 
     return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Container(
-          padding: const EdgeInsets.all(16),
+          width: 54,
+          height: 54,
+          padding: const EdgeInsets.all(12),
           decoration: BoxDecoration(
-            color: color,
+            color: serviceType.serviceColor.withAlpha(40),
             borderRadius: BorderRadius.circular(12),
           ),
-          child: Icon(
-            icon,
-            color: Colors.white,
+          child: Image.asset(
+            serviceType == ServiceType.reliefService
+                ? ImageManager.emdadServece
+                : ImageManager.locationService,
+            fit: BoxFit.contain,
           ),
         ),
         const SizedBox(width: 12),
@@ -59,29 +42,43 @@ class ChassisRequestHeader extends StatelessWidget {
             children: [
               BodyMediumText(text: request.typeTitle ?? '-'),
               const SizedBox(height: 8),
-              Row(
+              Wrap(
+                spacing: 8,
+                runSpacing: 8,
                 children: [
                   StatusLabel(
                     text: request.statusTitle ?? '-',
                     color: Colors.purple,
                   ),
-                  Space.w8,
                   StatusLabel(
                     text: request.isGauranty == true
-                        ? "گارانتی دارد"
-                        : "گارانتی ندارد",
+                        ? 'گارانتی دارد'
+                        : 'گارانتی ندارد',
                     color: request.isGauranty == true
                         ? Colors.greenAccent
                         : Colors.red,
                   ),
-                  Space.w8,
-                  StatusLabel(
-                    text:
-                        request.isSubscription == true ? "مشترک" : "غیر مشترک",
-                    color: request.isSubscription == true
-                        ? Colors.greenAccent
-                        : Colors.red,
-                  ),
+                  if (request.shouldShowSubscriptionStatus)
+                    StatusLabel(
+                      text: request.isSubscription == true
+                          ? 'مشترک'
+                          : 'غیر مشترک',
+                      color: request.isSubscription == true
+                          ? Colors.greenAccent
+                          : Colors.red,
+                    ),
+                  if (request.shouldShowVipStatus)
+                    StatusLabel(
+                      text: request.vipConditionTitle?.trim().isNotEmpty == true
+                          ? 'شرایط خاص: ${request.vipConditionTitle!.trim()}'
+                          : 'شرایط خاص',
+                      color: Colors.cyan,
+                    ),
+                  if (request.shouldShowOutOfFleetPermit)
+                    const StatusLabel(
+                      text: 'مجوز امداد خارج از ناوگان',
+                      color: Colors.indigo,
+                    ),
                 ],
               ),
             ],

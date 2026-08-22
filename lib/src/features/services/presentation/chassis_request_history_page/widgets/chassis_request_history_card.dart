@@ -10,13 +10,11 @@ import 'package:flutter/material.dart';
 
 class ChassisRequestHistoryCard extends StatelessWidget {
   final ChassisRequestHistoryEntity chassisRequest;
-  final IconData serviceIcon;
   final Function(ChassisRequestHistoryEntity) onSelected;
 
   const ChassisRequestHistoryCard({
     super.key,
     required this.chassisRequest,
-    required this.serviceIcon,
     required this.onSelected,
   });
 

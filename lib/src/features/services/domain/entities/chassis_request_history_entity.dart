@@ -19,6 +19,7 @@ class ChassisRequestHistoryEntity {
   final String? mobileNumber;
   final String? description;
   final bool? hamlAzad;
+  final int? reasonHamlAzadId;
   final bool? vip;
   final String? vipConditionTitle;
   final String? chassisNumber;
@@ -43,12 +44,21 @@ class ChassisRequestHistoryEntity {
     this.mobileNumber,
     this.description,
     this.hamlAzad,
+    this.reasonHamlAzadId,
     this.vip,
     this.vipConditionTitle,
     this.chassisNumber,
     this.carName,
     required this.serviceType,
   });
+
+  bool get shouldShowSubscriptionStatus =>
+      serviceType == ServiceType.reliefService;
+
+  bool get shouldShowVipStatus => vip == true;
+
+  bool get shouldShowOutOfFleetPermit =>
+      hamlAzad == true && reasonHamlAzadId != null && status != 2;
 
   ChassisRequestHistoryEntity copyWith({
     int? id,
@@ -68,6 +78,7 @@ class ChassisRequestHistoryEntity {
     String? mobileNumber,
     String? description,
     bool? hamlAzad,
+    int? reasonHamlAzadId,
     bool? vip,
     String? vipConditionTitle,
     String? chassisNumber,
@@ -79,7 +90,7 @@ class ChassisRequestHistoryEntity {
       trackingCode: trackingCode ?? this.trackingCode,
       insertDateTime: insertDateTime ?? this.insertDateTime,
       insertDateTimeJalali:
-      insertDateTimeJalali ?? this.insertDateTimeJalali,
+          insertDateTimeJalali ?? this.insertDateTimeJalali,
       isSubscription: isSubscription ?? this.isSubscription,
       subscriptionId: subscriptionId ?? this.subscriptionId,
       isGauranty: isGauranty ?? this.isGauranty,
@@ -93,6 +104,7 @@ class ChassisRequestHistoryEntity {
       mobileNumber: mobileNumber ?? this.mobileNumber,
       description: description ?? this.description,
       hamlAzad: hamlAzad ?? this.hamlAzad,
+      reasonHamlAzadId: reasonHamlAzadId ?? this.reasonHamlAzadId,
       vip: vip ?? this.vip,
       vipConditionTitle: vipConditionTitle ?? this.vipConditionTitle,
       chassisNumber: chassisNumber ?? this.chassisNumber,
@@ -121,6 +133,7 @@ class ChassisRequestHistoryEntity {
       mobileNumber: mobileNumber,
       description: description,
       hamlAzad: hamlAzad,
+      reasonHamlAzadId: reasonHamlAzadId,
       vip: vip,
       vipConditionTitle: vipConditionTitle,
       chassisNumber: chassisNumber,
