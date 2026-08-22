@@ -55,7 +55,10 @@ class SummaryCardActions extends StatelessWidget {
 
     return OperationButton(
       isLoading: isOperationLoading,
-      onTap: isOperationLoading ? () {} : onOperation!,
+      onTap: () {
+        if (isOperationLoading) return;
+        onOperation!.call();
+      },
     );
   }
 }

@@ -40,7 +40,12 @@ class SubmitCancelButtons extends StatelessWidget {
           Expanded(
             flex: 40,
             child: TextButton(
-              onPressed: isLoading ? null : onCancel,
+              onPressed: onCancel == null
+                  ? null
+                  : () {
+                      if (isLoading) return;
+                      onCancel?.call();
+                    },
               style: TextButton.styleFrom(
                 foregroundColor: Colors.grey.shade600,
                 backgroundColor: Colors.transparent,

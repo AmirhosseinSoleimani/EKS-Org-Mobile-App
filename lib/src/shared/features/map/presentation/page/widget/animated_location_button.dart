@@ -48,6 +48,7 @@ class _LoadingFab extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final cubit = context.read<MapCubit>();
     final colorScheme = Theme.of(context).colorScheme;
     return FloatingActionButton(
       elevation: 0,
@@ -55,7 +56,10 @@ class _LoadingFab extends StatelessWidget {
       focusElevation: 0,
       hoverElevation: 0,
       disabledElevation: 0,
-      onPressed: null,
+      onPressed: () {
+        if (cubit.findCurrentLocationLoading.value) return;
+        cubit.ensureAndCenterOnUser();
+      },
       backgroundColor: colorScheme.onPrimary,
       child: CircularProgressIndicator(
         color: loadingColor ?? colorScheme.primary,

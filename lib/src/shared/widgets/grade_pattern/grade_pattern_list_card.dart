@@ -62,7 +62,10 @@ class GradePatternListCard extends StatelessWidget {
       primaryAction: InkwellButtonWidget(
         title: 'مشاهده جزئیات',
         showLoading: isDetailsLoading,
-        onTap: isDetailsLoading ? null : onDetails,
+        onTap: () {
+          if (isDetailsLoading) return;
+          onDetails();
+        },
         prefixIcon: Icon(
           Icons.visibility_outlined,
           color: theme.colorScheme.onPrimary,

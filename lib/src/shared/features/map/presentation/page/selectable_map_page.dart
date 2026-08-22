@@ -210,7 +210,10 @@ class _LocationActionButton extends StatelessWidget {
     );
     return InkwellButtonWidget(
       showLoading: loading,
-      onTap: loading ? () {} : () => context.read<MapCubit>().fetchLocationToAddress(),
+      onTap: () {
+        if (loading) return;
+        context.read<MapCubit>().fetchLocationToAddress();
+      },
       title: 'ثبت موقعیت مکانی',
       borderColor: color ?? Theme.of(context).colorScheme.primary,
       backgroundColor: color ?? Theme.of(context).colorScheme.primary,

@@ -40,7 +40,12 @@ class DottedFilePickerBox extends StatelessWidget {
     final colorScheme = Theme.of(context).colorScheme;
 
     return InkWell(
-      onTap: selected || isLoading ? null : onTap,
+      onTap: selected || onTap == null
+          ? null
+          : () {
+              if (isLoading) return;
+              onTap?.call();
+            },
       borderRadius: BorderRadius.circular(AppSize.s12),
       child: DottedBorder(
         options: RoundedRectDottedBorderOptions(

@@ -189,11 +189,12 @@ class BottomSheetWidget extends StatelessWidget {
           backgroundColor: buttonColor ?? theme.colorScheme.primary,
           foregroundColor: theme.colorScheme.onPrimary,
         ),
-        onPressed: loading
+        onPressed: positiveFunc == null
             ? null
             : () {
-          positiveFunc?.call();
-        },
+                if (loading) return;
+                positiveFunc?.call();
+              },
         child: loading
             ? const SizedBox(
           width: AppSize.s20,
