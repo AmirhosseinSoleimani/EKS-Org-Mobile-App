@@ -2,7 +2,6 @@ import 'package:eks_sana_plus_org/src/app/cubit/app_cubit/app_cubit.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/agency_info_routes.dart';
 import 'package:eks_sana_plus_org/src/features/authentication/presentation/login/login_page.dart';
-import 'package:eks_sana_plus_org/src/features/authentication/presentation/profile/profile_page.dart';
 import 'package:eks_sana_plus_org/src/features/bottom_navigation_bar/presentation/pages/bottom_nav_page.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/presentation/cartable_page.dart';
 import 'package:eks_sana_plus_org/src/features/dashboard/presentation/dashboard_page.dart';
@@ -97,19 +96,9 @@ class Routes {
           name: LoginPage.name,
           pageBuilder: (context, state) =>
               getPage(
-                child: LoginPage(
-                  successMessage: state.extra is String ? state.extra as String : null,
-                ),
+                child: const LoginPage(),
                 state: state,
               ),
-        ),
-        GoRoute(
-          path: ProfilePage.path,
-          name: ProfilePage.name,
-          pageBuilder: (context, state) => getPage(
-            child: const ProfilePage(),
-            state: state,
-          ),
         ),
         StatefulShellRoute.indexedStack(
           builder: (context, state, navigationShell) {
@@ -186,9 +175,15 @@ class Routes {
           path: RequestDetailPage.path,
           name: RequestDetailPage.name,
           pageBuilder: (context, state) {
-            final int? id = state.extra as int?;
+            final extra = state.extra;
+            final args = extra is RequestDetailRouteArgs ? extra : null;
+            final id = args?.requestId ?? (extra is int ? extra : null);
+
             return getPage(
-              child: RequestDetailPage(id: id),
+              child: RequestDetailPage(
+                id: id,
+                serviceType: args?.serviceType,
+              ),
               state: state,
             );
           },

@@ -21,6 +21,7 @@ import 'package:injectable/injectable.dart';
 
 part 'request_detail_cubit.freezed.dart';
 part 'request_detail_state.dart';
+
 @injectable
 class RequestDetailCubit extends Cubit<RequestDetailState> {
   RequestDetailCubit(
@@ -44,149 +45,186 @@ class RequestDetailCubit extends Cubit<RequestDetailState> {
   List<RequestStatusHistoryItemEntity> requestStatusHistory = [];
   EmdadgarInfoEntity? emdadgarInfo;
 
-  final int _pageSize = 10;
+  static const int _pageSize = 10;
 
-
-
-  Future<void> init() async {
+  Future<void> init({
+    int? requestId,
+    ServiceType? serviceType,
+  }) async {
     try {
-      selectedRequest = await _fetchSelectedRequestItemUseCase();
-      if (selectedRequest == null) {
-        _safeEmit(const RequestDetailState.error(
-            message: BottomSheetMessageModel(
-                title: '',
-                message: "درخواستی برای نمایش جزئیات انتخاب نشده است.")));
+      final cachedRequest = await _fetchSelectedRequestItemUseCase();
+      final resolvedRequestId = requestId ?? cachedRequest?.id;
+      final resolvedServiceType = serviceType ?? cachedRequest?.serviceType;
+
+      // Route arguments are the source of truth when opening a specific
+      // history row. Do not render a previously cached request while the
+      // explicitly selected request is being loaded.
+      selectedRequest = requestId == null && serviceType == null
+          ? cachedRequest
+          : null;
+      followups = [];
+      requestStatusHistory = [];
+      emdadgarInfo = null;
+
+      if (resolvedRequestId == null || resolvedServiceType == null) {
+        _emitMissingRequestError();
         return;
       }
-
-      bool  isRelief  = selectedRequest?.serviceType == ServiceType.reliefService;
 
       _safeEmit(const RequestDetailState.loading());
 
-      final int? requestId = selectedRequest?.id;
+      final requestLoaded = await _loadRequestDetails(
+        requestId: resolvedRequestId,
+        serviceType: resolvedServiceType,
+      );
+      if (!requestLoaded || selectedRequest == null) return;
 
-      if (requestId == null) {
-        _safeEmit(const RequestDetailState.error(
-          message: BottomSheetMessageModel(
-              title: '',
-              message: "درخواستی برای نمایش جزئیات انتخاب نشده است."),
-        ));
-        return;
+      if (_shouldLoadEmdadgarInfo) {
+        await _fetchEmdadgarInfo();
       }
 
-      if (isRelief) {
-        final result = await _getReliefRequestByIdUseCase(requestId);
-
-        result.whenOrNull(
-          success: (data, failures, resultCode) {
-            if (data != null) selectedRequest = data;
-          },
-          failure: (error, msg) {
-            _safeEmit(
-              RequestDetailState.error(
-                message: BottomSheetMessageModel(
-                  message: msg ?? error.toString(),
-                  title: '',
-                ),
-              ),
-            );
-          },
-          connectionError: () =>
-              _safeEmit(const RequestDetailState.connectionError()),
-        );
-      } else {
-        final result = await _getHomeServiceRequestByIdUseCase(requestId);
-
-        result.whenOrNull(
-          success: (data, failures, resultCode) {
-            if (data != null) selectedRequest = data;
-          },
-          failure: (error, msg) {
-            _safeEmit(
-              RequestDetailState.error(
-                message: BottomSheetMessageModel(
-                  message: msg ?? error.toString(),
-                  title: '',
-                ),
-              ),
-            );
-          },
-          connectionError: () =>
-              _safeEmit(const RequestDetailState.connectionError()),
-        );
-      }
-
-      await _fetchEmdadgarInfo();
-
-      final RequestOperationParamEntity param = RequestOperationParamEntity(
-        serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
-        requestId: requestId,
+      final param = RequestOperationParamEntity(
+        serviceType: selectedRequest?.serviceType ?? resolvedServiceType,
+        requestId: resolvedRequestId,
         pageSize: _pageSize,
       );
-      final followupResult = await _getRequestFollowupHistoryUseCase(param);
 
-      followupResult.whenOrNull(
-        success: (data, failures, resultCode) {
-          followups = data.followUpList ?? [];
-        },
-        failure: (error, msg) {
-          _safeEmit(
-            RequestDetailState.error(
-              message: BottomSheetMessageModel(
-                message: msg ?? error.toString(),
-                title: '',
-              ),
-            ),
-          );
-        },
-        connectionError: () =>
-            _safeEmit(const RequestDetailState.connectionError()),
-      );
+      final followupLoaded = await _fetchFollowups(param);
+      if (!followupLoaded) return;
 
-      final requestStatusHistoryResult = await _getRequestStatusHistoryUseCase(param);
-
-      requestStatusHistoryResult.whenOrNull(
-        success: (data, failures, resultCode) {
-          requestStatusHistory = data.records;
-        },
-        failure: (error, msg) {
-          _safeEmit(
-            RequestDetailState.error(
-              message: BottomSheetMessageModel(
-                message: msg ?? error.toString(),
-                title: '',
-              ),
-            ),
-          );
-        },
-        connectionError: () =>
-            _safeEmit(const RequestDetailState.connectionError()),
-      );
+      final statusHistoryLoaded = await _fetchRequestStatusHistory(param);
+      if (!statusHistoryLoaded) return;
 
       _safeEmit(const RequestDetailState.loaded());
     } catch (e, st) {
-      debugPrint("RequestDetailCubit.init error: $e\n$st");
-      _safeEmit(const RequestDetailState.error(
-        message:BottomSheetMessageModel(
+      debugPrint('RequestDetailCubit.init error: $e\n$st');
+      _safeEmit(
+        RequestDetailState.error(
+          message: BottomSheetMessageModel(
             title: '',
-            message: "درخواستی برای نمایش جزئیات انتخاب نشده است."),
-      ));
+            message: e.toString(),
+          ),
+        ),
+      );
     }
   }
 
+  Future<bool> _loadRequestDetails({
+    required int requestId,
+    required ServiceType serviceType,
+  }) async {
+    final result = serviceType == ServiceType.reliefService
+        ? await _getReliefRequestByIdUseCase(requestId)
+        : await _getHomeServiceRequestByIdUseCase(requestId);
+
+    return result.when(
+      success: (data, _, __) {
+        selectedRequest = data;
+        return data != null;
+      },
+      failure: (error, message) {
+        _emitError(message ?? error.toString());
+        return false;
+      },
+      expireToken: () {
+        _emitError('نشست کاربری منقضی شده است.');
+        return false;
+      },
+      connectionError: () {
+        _safeEmit(const RequestDetailState.connectionError());
+        return false;
+      },
+    );
+  }
+
+  Future<bool> _fetchFollowups(RequestOperationParamEntity param) async {
+    final result = await _getRequestFollowupHistoryUseCase(param);
+
+    return result.when(
+      success: (data, _, __) {
+        followups = data.followUpList ?? [];
+        return true;
+      },
+      failure: (error, message) {
+        _emitError(message ?? error.toString());
+        return false;
+      },
+      expireToken: () {
+        _emitError('نشست کاربری منقضی شده است.');
+        return false;
+      },
+      connectionError: () {
+        _safeEmit(const RequestDetailState.connectionError());
+        return false;
+      },
+    );
+  }
+
+  Future<bool> _fetchRequestStatusHistory(
+    RequestOperationParamEntity param,
+  ) async {
+    final result = await _getRequestStatusHistoryUseCase(param);
+
+    return result.when(
+      success: (data, _, __) {
+        requestStatusHistory = data.records;
+        return true;
+      },
+      failure: (error, message) {
+        _emitError(message ?? error.toString());
+        return false;
+      },
+      expireToken: () {
+        _emitError('نشست کاربری منقضی شده است.');
+        return false;
+      },
+      connectionError: () {
+        _safeEmit(const RequestDetailState.connectionError());
+        return false;
+      },
+    );
+  }
+
+  bool get _shouldLoadEmdadgarInfo =>
+      (selectedRequest?.planningId ?? 0) > 0 ||
+      (selectedRequest?.emdadgarId ?? 0) > 0;
 
   Future<void> _fetchEmdadgarInfo() async {
+    final request = selectedRequest;
+    if (request?.id == null || request?.serviceType == null) return;
+
     final param = ServiceRequestParamEntity(
-      serviceRequestId: selectedRequest!.id,
-      serviceType: selectedRequest!.serviceType?.value ?? 1,
+      serviceRequestId: request!.id,
+      serviceType: request.serviceType!.value,
     );
 
     final result = await _getEmdadgarInfoUseCase(param);
-
     result.whenOrNull(
-      success: (data, _, _) {
+      success: (data, _, __) {
         emdadgarInfo = data;
       },
+    );
+  }
+
+  void _emitMissingRequestError() {
+    _safeEmit(
+      const RequestDetailState.error(
+        message: BottomSheetMessageModel(
+          title: '',
+          message: 'درخواستی برای نمایش جزئیات انتخاب نشده است.',
+        ),
+      ),
+    );
+  }
+
+  void _emitError(String message) {
+    _safeEmit(
+      RequestDetailState.error(
+        message: BottomSheetMessageModel(
+          title: '',
+          message: message,
+        ),
+      ),
     );
   }
 

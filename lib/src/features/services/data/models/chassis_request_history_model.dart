@@ -38,7 +38,7 @@ class ChassisRequestHistoryModel extends ChassisRequestHistoryEntity {
       isGauranty: json['isGauranty'],
       status: json['status'],
       statusTitle: json['statusTitle'],
-      type: json['type'],
+      type: json['type'] ?? json['serviceType'],
       typeTitle: json['typeTitle'],
       agencyCode: json['agencyCode'],
       defectTitle: json['defectTitle'],
@@ -50,7 +50,9 @@ class ChassisRequestHistoryModel extends ChassisRequestHistoryEntity {
       vipConditionTitle: json['vipConditionTitle'],
       chassisNumber: json['chassisNumber'],
       carName: json['carName'],
-      serviceType: ServiceType.fromValue(json['type']),
+      serviceType: ServiceType.fromValue(
+        json['type'] ?? json['serviceType'],
+      ),
     );
   }
 }

@@ -44,6 +44,10 @@ class ReliefRequestEntity extends BaseRequestEntity {
 
   final String? emdadgarAssignDistanceTitle;
   final String? emdadgarAssignDurationTitle;
+  final double? distanceHamlCustomer;
+  final String? emdadServiceCategoryGivenTitle;
+  final String? emdadServiceGivenTitle;
+  final String? emdadgarEvaluationDefectTitle;
 
   @override
   final String? assignDate;
@@ -88,6 +92,29 @@ class ReliefRequestEntity extends BaseRequestEntity {
     super.distanceToCustomer,
     super.emdadgarPriority,
     super.emdadgarEvaluationDescription,
+    super.emdadgarEvaluationKilometer,
+    super.isNewCar,
+    super.vip,
+    super.vipConditionTitle,
+    super.hasTrafficOrPollutionPlan,
+    super.hasSpecialPlan,
+    super.specialPlanTitle,
+    super.specialPlanZoneTitle,
+    super.hamlAzad,
+    super.reasonHamlAzadId,
+    super.reasonHamlAzadTitle,
+    super.reasonHamlAzadDesc,
+    super.foreigner,
+    super.insertUserName,
+    super.updateUserName,
+    super.cancelReasonTitle,
+    super.cancelReasonDetailTitle,
+    super.cancelReasonDescription,
+    super.cancelAssignDescription,
+    super.nightOrHoliday,
+    super.nightOrHolidayDescription,
+    super.customerDisability,
+    super.customerDisabilityDesc,
     super.isGuaranty,
     super.isSubscription,
     super.dispatcher,
@@ -100,6 +127,10 @@ class ReliefRequestEntity extends BaseRequestEntity {
     this.wheelQuestionTitle,
     this.emdadgarAssignDistanceTitle,
     this.emdadgarAssignDurationTitle,
+    this.distanceHamlCustomer,
+    this.emdadServiceCategoryGivenTitle,
+    this.emdadServiceGivenTitle,
+    this.emdadgarEvaluationDefectTitle,
     this.assignDate,
     this.assignTime,
     this.emdadServiceCategoryId,
@@ -190,6 +221,10 @@ class ReliefRequestEntity extends BaseRequestEntity {
       emRepresentationName: emRepresentationName,
       emVehicleSubType: emVehicleSubType,
       emdadgarAssignDurationTitle: emdadgarAssignDurationTitle,
+      distanceHamlCustomer: distanceHamlCustomer,
+      emdadServiceCategoryGivenTitle: emdadServiceCategoryGivenTitle,
+      emdadServiceGivenTitle: emdadServiceGivenTitle,
+      emdadgarEvaluationDefectTitle: emdadgarEvaluationDefectTitle,
       hamlReasonTitle: hamlReasonTitle,
       wheelQuestionTitle: wheelQuestionTitle,
       serviceType: serviceType,
@@ -204,6 +239,29 @@ class ReliefRequestEntity extends BaseRequestEntity {
       distanceToCustomer: distanceToCustomer,
       emdadgarPriority: emdadgarPriority,
       emdadgarEvaluationDescription: emdadgarEvaluationDescription,
+      emdadgarEvaluationKilometer: emdadgarEvaluationKilometer,
+      isNewCar: isNewCar,
+      vip: vip,
+      vipConditionTitle: vipConditionTitle,
+      hasTrafficOrPollutionPlan: hasTrafficOrPollutionPlan,
+      hasSpecialPlan: hasSpecialPlan,
+      specialPlanTitle: specialPlanTitle,
+      specialPlanZoneTitle: specialPlanZoneTitle,
+      hamlAzad: hamlAzad,
+      reasonHamlAzadId: reasonHamlAzadId,
+      reasonHamlAzadTitle: reasonHamlAzadTitle,
+      reasonHamlAzadDesc: reasonHamlAzadDesc,
+      foreigner: foreigner,
+      insertUserName: insertUserName,
+      updateUserName: updateUserName,
+      cancelReasonTitle: cancelReasonTitle,
+      cancelReasonDetailTitle: cancelReasonDetailTitle,
+      cancelReasonDescription: cancelReasonDescription,
+      cancelAssignDescription: cancelAssignDescription,
+      nightOrHoliday: nightOrHoliday,
+      nightOrHolidayDescription: nightOrHolidayDescription,
+      customerDisability: customerDisability,
+      customerDisabilityDesc: customerDisabilityDesc,
     );
   }
 }

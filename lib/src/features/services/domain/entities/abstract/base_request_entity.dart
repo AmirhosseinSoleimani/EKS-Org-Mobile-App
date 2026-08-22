@@ -82,6 +82,29 @@ abstract class BaseRequestEntity {
   final double? distanceToCustomer;
   final int? emdadgarPriority;
   final String? emdadgarEvaluationDescription;
+  final int? emdadgarEvaluationKilometer;
+  final bool? isNewCar;
+  final bool? vip;
+  final String? vipConditionTitle;
+  final bool? hasTrafficOrPollutionPlan;
+  final bool? hasSpecialPlan;
+  final String? specialPlanTitle;
+  final String? specialPlanZoneTitle;
+  final bool? hamlAzad;
+  final int? reasonHamlAzadId;
+  final String? reasonHamlAzadTitle;
+  final String? reasonHamlAzadDesc;
+  final bool? foreigner;
+  final String? insertUserName;
+  final String? updateUserName;
+  final String? cancelReasonTitle;
+  final String? cancelReasonDetailTitle;
+  final String? cancelReasonDescription;
+  final String? cancelAssignDescription;
+  final bool? nightOrHoliday;
+  final String? nightOrHolidayDescription;
+  final int? customerDisability;
+  final String? customerDisabilityDesc;
 
   bool get isHomeService => serviceType == ServiceType.homeService;
 
@@ -165,6 +188,29 @@ abstract class BaseRequestEntity {
     this.distanceToCustomer,
     this.emdadgarPriority,
     this.emdadgarEvaluationDescription,
+    this.emdadgarEvaluationKilometer,
+    this.isNewCar,
+    this.vip,
+    this.vipConditionTitle,
+    this.hasTrafficOrPollutionPlan,
+    this.hasSpecialPlan,
+    this.specialPlanTitle,
+    this.specialPlanZoneTitle,
+    this.hamlAzad,
+    this.reasonHamlAzadId,
+    this.reasonHamlAzadTitle,
+    this.reasonHamlAzadDesc,
+    this.foreigner,
+    this.insertUserName,
+    this.updateUserName,
+    this.cancelReasonTitle,
+    this.cancelReasonDetailTitle,
+    this.cancelReasonDescription,
+    this.cancelAssignDescription,
+    this.nightOrHoliday,
+    this.nightOrHolidayDescription,
+    this.customerDisability,
+    this.customerDisabilityDesc,
   });
 
 

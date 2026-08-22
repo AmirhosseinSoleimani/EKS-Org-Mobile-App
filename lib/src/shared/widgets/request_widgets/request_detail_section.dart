@@ -21,13 +21,27 @@ class RequestDetailSection extends StatelessWidget {
       children: [
         KeyValueRow(
           label: 'شماره درخواست',
-          value: selectedRequest?.trackCode.toString() ?? '-',
+          value: selectedRequest?.trackCode?.toString() ?? '-',
         ),
         KeyValueRow(
           label: 'زمان ثبت',
-          value:
-              '${selectedRequest?.requestDateJalali ?? '-'} - ${selectedRequest?.requestTime ?? '-'}',
+          value: _requestDateTime,
         ),
+        if (homeServiceRequest?.bookedDateTimeJalali?.trim().isNotEmpty == true)
+          KeyValueRow(
+            label: 'زمان رزرو شده',
+            value: homeServiceRequest!.bookedDateTimeJalali!,
+          ),
+        if (selectedRequest?.insertUserName?.trim().isNotEmpty == true)
+          KeyValueRow(
+            label: 'ثبت کننده',
+            value: selectedRequest!.insertUserName!,
+          ),
+        if (selectedRequest?.updateUserName?.trim().isNotEmpty == true)
+          KeyValueRow(
+            label: 'ویرایش کننده',
+            value: selectedRequest!.updateUserName!,
+          ),
         if (selectedRequest is ReliefRequestEntity) ...[
           KeyValueRow(
             label: 'ایراد خودرو',
@@ -54,6 +68,51 @@ class RequestDetailSection extends StatelessWidget {
                 homeServiceRequest?.emdadServiceCategoryTitle ??
                 '-',
           ),
+        if (selectedRequest?.hamlAzad == true &&
+            selectedRequest?.reasonHamlAzadId != null) ...[
+          if (selectedRequest?.reasonHamlAzadTitle?.trim().isNotEmpty == true)
+            KeyValueRow(
+              label: 'دلیل امداد خارج از ناوگان',
+              value: selectedRequest!.reasonHamlAzadTitle!,
+            ),
+          if (selectedRequest?.reasonHamlAzadDesc?.trim().isNotEmpty == true)
+            KeyValueRow(
+              label: 'توضیحات امداد خارج از ناوگان',
+              value: selectedRequest!.reasonHamlAzadDesc!,
+            ),
+        ],
+        if (selectedRequest?.cancelReasonTitle?.trim().isNotEmpty == true)
+          KeyValueRow(
+            label: 'علت لغو',
+            value: selectedRequest!.cancelReasonTitle!,
+          ),
+        if (selectedRequest?.cancelReasonDetailTitle?.trim().isNotEmpty == true)
+          KeyValueRow(
+            label: 'جزئیات لغو',
+            value: selectedRequest!.cancelReasonDetailTitle!,
+          ),
+        if (selectedRequest?.cancelReasonDescription?.trim().isNotEmpty == true)
+          KeyValueRow(
+            label: 'توضیحات لغو',
+            value: selectedRequest!.cancelReasonDescription!,
+          ),
+        if (selectedRequest?.cancelAssignDescription?.trim().isNotEmpty == true)
+          KeyValueRow(
+            label: 'توضیحات لغو درخواست',
+            value: selectedRequest!.cancelAssignDescription!,
+          ),
+        if (selectedRequest?.garantyDescription?.trim().isNotEmpty == true)
+          KeyValueRow(
+            label: 'توضیحات گارانتی',
+            value: selectedRequest!.garantyDescription!,
+          ),
+        if (selectedRequest?.nightOrHoliday == true &&
+            selectedRequest?.nightOrHolidayDescription?.trim().isNotEmpty == true)
+          KeyValueRow(
+            label: 'شرایط زمانی درخواست',
+            value:
+                '${selectedRequest!.nightOrHolidayDescription!} - شامل افزایش هزینه',
+          ),
         if (showCustomerInfo) ...[
           KeyValueRow(
             label: 'نام مشتری',
@@ -63,7 +122,7 @@ class RequestDetailSection extends StatelessWidget {
           ),
           KeyValueRow(
             label: 'شماره تماس مشتری',
-            value: selectedRequest?.customerMobileNumber?.toLocalMobile() ?? '-',
+            value: _customerMobile,
           ),
           KeyValueRow(
             label: 'آدرس',
@@ -76,6 +135,26 @@ class RequestDetailSection extends StatelessWidget {
         ),
       ],
     );
+  }
+
+  String get _requestDateTime {
+    final date = selectedRequest?.requestDateJalali?.trim();
+    final time = selectedRequest?.requestTime?.trim();
+
+    if ((date == null || date.isEmpty) && (time == null || time.isEmpty)) {
+      return selectedRequest?.insertDateTimeJalali ?? '-';
+    }
+
+    if (date == null || date.isEmpty) return time ?? '-';
+    if (time == null || time.isEmpty) return date;
+    return '$date - $time';
+  }
+
+  String get _customerMobile {
+    final mobile = selectedRequest?.customerMobileNumber?.trim().isNotEmpty == true
+        ? selectedRequest!.customerMobileNumber
+        : selectedRequest?.callMobileNumber;
+    return mobile?.toLocalMobile() ?? '-';
   }
 
   ReliefRequestEntity? get reliefRequest =>

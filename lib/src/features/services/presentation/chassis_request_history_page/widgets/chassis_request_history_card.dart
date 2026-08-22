@@ -1,8 +1,10 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/chassis_request_history_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/chassis_request_history_page/widgets/chassis_request_header.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/key_value_row.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/widgets/key_value_wiget_row.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/request_details_button.dart';
+import 'package:eks_sana_plus_org/src/shared/extensions/string_extensions.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:flutter/material.dart';
 
@@ -67,13 +69,17 @@ class ChassisRequestHistoryCard extends StatelessWidget {
           ),
 
           KeyValueRow(
-            label: "نوع ایراد",
-            value: chassisRequest.defectTitle ?? "-",
+            label: chassisRequest.serviceType == ServiceType.homeService
+                ? 'سرویس درخواستی'
+                : 'نوع ایراد',
+            value: chassisRequest.serviceType == ServiceType.homeService
+                ? (chassisRequest.service ?? '-')
+                : (chassisRequest.defectTitle ?? '-'),
           ),
 
           KeyValueRow(
             label: "تلفن همراه",
-            value: chassisRequest.mobileNumber ?? "-",
+            value: chassisRequest.mobileNumber?.toLocalMobile() ?? "-",
           ),
           const SizedBox(height: 12),
           Divider(
