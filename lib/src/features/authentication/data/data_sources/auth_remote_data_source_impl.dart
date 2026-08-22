@@ -13,14 +13,13 @@ class AuthRemoteDataSourceImpl extends AuthRemoteDataSource {
 
   AuthRemoteDataSourceImpl(this._service);
 
-
   @override
   Future<HttpResponse<BaseSingleResponse<LoginResponseModel?>>> login(LoginRequestModel model) async {
     return await _service.login(model.toJson());
   }
 
   @override
-  Future<BaseSingleResponse<CurrentSessionModel?>> getCurrentSession()async {
+  Future<BaseSingleResponse<CurrentSessionModel?>> getCurrentSession() async {
     return await _service.getCurrentSession({});
   }
 }

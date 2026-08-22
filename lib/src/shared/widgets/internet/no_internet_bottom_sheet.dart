@@ -1,9 +1,8 @@
-import 'dart:io' show Platform;
-
-import 'package:app_settings/app_settings.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/internet/internet_settings_launcher.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 
 class NoInternetBottomSheet extends StatelessWidget {
@@ -26,7 +25,9 @@ class NoInternetBottomSheet extends StatelessWidget {
         children: [
           _buildImage(screenSize),
           const SizedBox(height: AppSize.s24),
-          _buildSubtitle(context),
+          BodyMediumText(
+            text: 'اتصال اینترنت خود را بررسی کرده و دوباره تلاش کنید.',
+          ),
           const SizedBox(height: AppSize.s24),
           _buildActionButtons(context, screenSize.width),
         ],
@@ -37,34 +38,12 @@ class NoInternetBottomSheet extends StatelessWidget {
   Widget _buildImage(Size size) {
     return Image.asset(
       ImageManager.noInternetIcon,
-
       height: AppSize.s100,
       width: AppSize.s120,
       fit: BoxFit.fitWidth,
     );
   }
 
-  Widget _buildSubtitle(BuildContext context) {
-    final theme = Theme.of(context).textTheme.bodyMedium;
-
-    return RichText(
-      textAlign: TextAlign.start,
-      text: TextSpan(
-        style: theme,
-        children: [
-          const TextSpan(
-            text:
-                'اتصال به اینترنت را بررسی و دوباره تلاش کنید.\nدر صورت دسترسی نداشتن به اینترنت، ',
-          ),
-          TextSpan(
-            text: 'برای درخواست تلفنی امداد با 096550',
-            style: theme?.copyWith(fontWeight: FontWeight.bold),
-          ),
-          const TextSpan(text: ' تماس بگیرید.'),
-        ],
-      ),
-    );
-  }
 
   Widget _buildActionButtons(BuildContext context, double width) {
     final theme = Theme.of(context);
@@ -74,44 +53,29 @@ class NoInternetBottomSheet extends StatelessWidget {
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: [
         _buildButton(
-          width: (width * 0.42),
+          width: width * 0.42,
           height: buttonHeight,
           title: 'تلاش دوباره',
           backgroundColor: theme.primaryColor,
           onTap: () {
             Navigator.of(context).pop();
-          onRetry();
-          }
+            onRetry();
+          },
         ),
-        const SizedBox(height: AppSize.s12),
+        const SizedBox(width: AppSize.s12),
         _buildButton(
-          width: (width * 0.42),
+          width: width * 0.42,
           height: buttonHeight,
           title: 'فعال‌سازی اینترنت',
           backgroundColor: theme.colorScheme.surface,
           borderColor: theme.primaryColor,
           titleColor: theme.primaryColor,
           onTap: () {
-            openInternetSettings();
+            InternetSettingsLauncher.open();
           },
         ),
       ],
     );
-  }
-
-  Future<void> openInternetSettings() async {
-    try {
-      if (Platform.isAndroid) {
-        await AppSettings.openAppSettingsPanel(
-          AppSettingsPanelType.internetConnectivity,
-        );
-        return;
-      }
-
-      await AppSettings.openAppSettings(type: AppSettingsType.wifi);
-    } catch (_) {
-      await AppSettings.openAppSettings(type: AppSettingsType.wifi);
-    }
   }
 
   Widget _buildButton({

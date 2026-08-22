@@ -2295,6 +2295,14 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i562.UpdateVehicleModelUseCase>(
     () => _i562.UpdateVehicleModelUseCase(gh<_i913.VehicleModelRepository>()),
   );
+  gh.factory<_i566.LoginCubit>(
+    () => _i566.LoginCubit(
+      gh<_i139.LoginUseCase>(),
+      gh<_i424.GetCurrentSessionUseCase>(),
+      gh<_i845.LogOffUseCase>(),
+      gh<_i1058.CurrentSessionManager>(),
+    ),
+  );
   gh.factory<_i317.HomeServiceEvaluationFirstStepCubit>(
     () => _i317.HomeServiceEvaluationFirstStepCubit(
       gh<_i1059.GetLastEvaluationHomeServiceUseCase>(),
@@ -2756,14 +2764,6 @@ _i174.GetIt $initGetIt(
       gh<_i283.ChangeLeaveStatusUseCase>(),
       gh<_i918.RollbackLeaveRequestUseCase>(),
       gh<_i680.DeleteLeaveRequestUseCase>(),
-    ),
-  );
-  gh.factory<_i566.LoginCubit>(
-    () => _i566.LoginCubit(
-      gh<_i139.LoginUseCase>(),
-      gh<_i826.PhoneNumberValidatorUseCase>(),
-      gh<_i424.GetCurrentSessionUseCase>(),
-      gh<_i1058.CurrentSessionManager>(),
     ),
   );
   gh.factory<_i551.HomeServicePartCubit>(

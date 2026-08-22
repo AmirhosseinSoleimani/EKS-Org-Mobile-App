@@ -20,6 +20,9 @@ class ChassisRequestHistoryCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final isHomeService =
+        chassisRequest.type == ServiceType.homeService.value;
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -67,10 +70,8 @@ class ChassisRequestHistoryCard extends StatelessWidget {
           ),
 
           KeyValueRow(
-            label: chassisRequest.serviceType == ServiceType.homeService
-                ? 'سرویس درخواستی'
-                : 'نوع ایراد',
-            value: chassisRequest.serviceType == ServiceType.homeService
+            label: isHomeService ? 'سرویس درخواستی' : 'نوع ایراد',
+            value: isHomeService
                 ? (chassisRequest.service ?? '-')
                 : (chassisRequest.defectTitle ?? '-'),
           ),

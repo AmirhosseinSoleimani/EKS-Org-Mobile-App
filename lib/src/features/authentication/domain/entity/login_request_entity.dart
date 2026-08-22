@@ -4,18 +4,26 @@ class LoginRequestEntity {
   const LoginRequestEntity({
     this.userName,
     this.password,
+    this.captchaGuid,
+    this.captchaCode,
   });
 
   final String? userName;
   final String? password;
+  final String? captchaGuid;
+  final String? captchaCode;
 
   LoginRequestEntity copyWith({
-    String? otpCode,
-    String? fcmToken,
+    String? userName,
+    String? password,
+    String? captchaGuid,
+    String? captchaCode,
   }) {
     return LoginRequestEntity(
-      userName: otpCode ?? userName,
-      password: fcmToken ?? password,
+      userName: userName ?? this.userName,
+      password: password ?? this.password,
+      captchaGuid: captchaGuid ?? this.captchaGuid,
+      captchaCode: captchaCode ?? this.captchaCode,
     );
   }
 
@@ -23,6 +31,8 @@ class LoginRequestEntity {
     return LoginRequestModel(
       userName: userName,
       password: password,
+      captchaGuid: captchaGuid,
+      captchaCode: captchaCode,
     );
   }
 }

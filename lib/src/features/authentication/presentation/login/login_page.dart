@@ -55,7 +55,7 @@ class _LoginPageState extends State<LoginPage> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<LoginCubit>(
-      create: (_) => getIt<LoginCubit>(),
+      create: (_) => getIt<LoginCubit>()..init(),
       child: const SafeArea(
         child: Scaffold(
           body: SafeArea(
@@ -133,7 +133,7 @@ class _LoginFormCardState extends State<_LoginFormCard> {
             BottomSheetMessage.showCustom(
               context: context,
               content: NoInternetBottomSheet(
-                onRetry: cubit.login,
+                onRetry: cubit.retry,
               ),
               actionWidget: const SizedBox.shrink(),
               isDismissible: false,
@@ -183,7 +183,7 @@ class _LoginFormCardState extends State<_LoginFormCard> {
                 formKey: _formKey,
                 controller: cubit.passwordController,
               ),
-              Space.h80,
+              Space.h32,
               SubmitButtonWidget(formKey: _formKey),
               Space.h20,
             ],

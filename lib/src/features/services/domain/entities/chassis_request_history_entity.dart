@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/common/constants/request_status.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/chassis_request_history_model.dart';
 
@@ -24,7 +25,6 @@ class ChassisRequestHistoryEntity {
   final String? vipConditionTitle;
   final String? chassisNumber;
   final String? carName;
-  final ServiceType serviceType;
 
   const ChassisRequestHistoryEntity({
     this.id,
@@ -49,16 +49,19 @@ class ChassisRequestHistoryEntity {
     this.vipConditionTitle,
     this.chassisNumber,
     this.carName,
-    required this.serviceType,
   });
 
+  ServiceType get serviceType => ServiceType.fromValue(type);
+
   bool get shouldShowSubscriptionStatus =>
-      serviceType == ServiceType.reliefService;
+      type == ServiceType.reliefService.value;
 
   bool get shouldShowVipStatus => vip == true;
 
   bool get shouldShowOutOfFleetPermit =>
-      hamlAzad == true && reasonHamlAzadId != null && status != 2;
+      hamlAzad == true &&
+      reasonHamlAzadId != null &&
+      status != RequestStatus.canceled.value;
 
   ChassisRequestHistoryEntity copyWith({
     int? id,
@@ -83,7 +86,6 @@ class ChassisRequestHistoryEntity {
     String? vipConditionTitle,
     String? chassisNumber,
     String? carName,
-    ServiceType? serviceType,
   }) {
     return ChassisRequestHistoryEntity(
       id: id ?? this.id,
@@ -109,14 +111,12 @@ class ChassisRequestHistoryEntity {
       vipConditionTitle: vipConditionTitle ?? this.vipConditionTitle,
       chassisNumber: chassisNumber ?? this.chassisNumber,
       carName: carName ?? this.carName,
-      serviceType: serviceType ?? this.serviceType,
     );
   }
 
   ChassisRequestHistoryModel toModel() {
     return ChassisRequestHistoryModel(
       id: id,
-      serviceType: serviceType,
       trackingCode: trackingCode,
       insertDateTime: insertDateTime,
       insertDateTimeJalali: insertDateTimeJalali,

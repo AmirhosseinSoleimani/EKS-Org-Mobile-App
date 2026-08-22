@@ -16,6 +16,8 @@ class ChassisRequestHeader extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final serviceType = request.serviceType;
+    final isReliefService =
+        request.type == ServiceType.reliefService.value;
 
     return Row(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -29,7 +31,7 @@ class ChassisRequestHeader extends StatelessWidget {
             borderRadius: BorderRadius.circular(12),
           ),
           child: Image.asset(
-            serviceType == ServiceType.reliefService
+            isReliefService
                 ? ImageManager.emdadServece
                 : ImageManager.locationService,
             fit: BoxFit.contain,
