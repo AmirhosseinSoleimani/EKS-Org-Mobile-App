@@ -1,5 +1,5 @@
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/sticky_form_action_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
@@ -61,7 +61,7 @@ class ServiceSelectionPage<TGroup, TItem> extends StatelessWidget {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor: theme.colorScheme.surface,
-        appBar: SimpleActionBar(title: title, onBack: onCancel),
+        appBar: SimpleAppBar(title: title, onBack: onCancel),
         body: SafeArea(
           top: false,
           child: isLoading

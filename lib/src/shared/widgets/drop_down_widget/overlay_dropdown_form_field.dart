@@ -131,7 +131,11 @@ class _OverlayDropdownFormFieldState<T extends DropdownItem>
                   floatingLabelBehavior: FloatingLabelBehavior.always,
                   errorText: null,
                   enabled: widget.enabled,
-                  suffixIcon: const Icon(Icons.keyboard_arrow_down_outlined),
+                  suffixIcon: Icon(
+                    Icons.keyboard_arrow_down_outlined,
+                    size: AppSize.s22,
+                    color: theme.colorScheme.onPrimaryFixed,
+                  ),
                   border: OutlineInputBorder(
                     borderRadius: BorderRadius.circular(AppSize.s8),
                   ),

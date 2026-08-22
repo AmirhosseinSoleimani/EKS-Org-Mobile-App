@@ -8,7 +8,7 @@ import 'package:eks_sana_plus_org/src/features/imei/presentation/pages/imei_form
 import 'package:eks_sana_plus_org/src/features/imei/presentation/widgets/imei_filters_row.dart';
 import 'package:eks_sana_plus_org/src/features/imei/presentation/widgets/imei_info_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
@@ -64,7 +64,7 @@ class _ImeiView extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             backgroundColor: theme.colorScheme.surface,
-            appBar: const SimpleActionBar(title: 'IMEI'),
+            appBar: const SimpleAppBar(title: 'IMEI'),
             floatingActionButton: FloatingActionButtonWidget(
               title: 'IMEI جدید',
               onPressed: () => _openAddPage(context, cubit),

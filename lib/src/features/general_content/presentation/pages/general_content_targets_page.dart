@@ -8,7 +8,8 @@ import 'package:eks_sana_plus_org/src/features/general_content/presentation/page
 import 'package:eks_sana_plus_org/src/features/general_content/presentation/widgets/general_content_target_card.dart';
 import 'package:eks_sana_plus_org/src/features/general_content/presentation/widgets/general_content_target_header_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
+
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/list_widgets/list_section_header.dart';
@@ -64,7 +65,7 @@ class _GeneralContentTargetsView extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             backgroundColor: theme.colorScheme.surface,
-            appBar: const SimpleActionBar(title: 'گیرندگان بخشنامه'),
+            appBar: const SimpleAppBar(title: 'گیرندگان بخشنامه'),
             floatingActionButton: FloatingActionButtonWidget(
               title: 'گیرنده جدید',
               onPressed: () => _openTargetForm(context, cubit),

@@ -119,6 +119,29 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
     super.dispose();
   }
 
+  Widget? _styleInputIcon(Widget? icon, ColorScheme colorScheme) {
+    if (icon == null) return null;
+
+    if (icon is Icon) {
+      return Icon(
+        icon.icon,
+        key: icon.key,
+        size: AppSize.s22,
+        color: colorScheme.onPrimaryFixed,
+        semanticLabel: icon.semanticLabel,
+        textDirection: icon.textDirection,
+      );
+    }
+
+    return IconTheme.merge(
+      data: IconThemeData(
+        size: AppSize.s22,
+        color: colorScheme.onPrimaryFixed,
+      ),
+      child: icon,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
@@ -130,7 +153,6 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
       first: _isFocused,
       second: _controller,
       builder: (context, isFocus, textValue, _) {
-        final hasText = textValue.text.isNotEmpty;
         final defaultLabelColor =
             isFocus ? colorScheme.primary : colorScheme.onSurface;
         final effectiveLabelColor = widget.labelColor ?? defaultLabelColor;
@@ -152,7 +174,8 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
           maxLength: widget.maxLength,
           keyboardType: widget.textInputType,
           textInputAction: widget.textInputAction,
-          textCapitalization: widget.textCapitalization ?? TextCapitalization.none,
+          textCapitalization:
+              widget.textCapitalization ?? TextCapitalization.none,
           style: widget.textStyle ?? textTheme.bodyMedium,
           decoration: InputDecoration(
             counterText: '',
@@ -185,32 +208,37 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
                       ],
                     ),
                   ),
-
             labelStyle: widget.labelStyle ??
                 textTheme.labelMedium?.copyWith(
-                color: effectiveLabelColor,
+                  color: effectiveLabelColor,
                 ),
             hintTextDirection: widget.textDirection,
             floatingLabelBehavior: widget.floatingLabelBehavior,
             hintText: widget.hintText,
             hintStyle: widget.hintStyle ??
                 textTheme.bodyMedium?.copyWith(color: widget.hintColor),
-            prefixIcon: widget.prefixIcon,
-            suffixIcon: widget.suffixIcon,
-            enabledBorder: widget.border ?? OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(widget.borderRadius ?? AppSize.s8),
-                    borderSide: BorderSide(
-                        width: AppSize.s1,
-                        color: hasText ? colorScheme.onSecondaryFixed : colorScheme.inverseSurface,
-                    ),
+            prefixIcon: _styleInputIcon(widget.prefixIcon, colorScheme),
+            suffixIcon: _styleInputIcon(widget.suffixIcon, colorScheme),
+            enabledBorder: widget.border ??
+                OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(
+                    widget.borderRadius ?? AppSize.s8,
+                  ),
+                  borderSide: BorderSide(
+                    width: AppSize.s1,
+                    color: colorScheme.inverseSurface,
+                  ),
                 ),
-            focusedBorder: widget.focusBorder ?? OutlineInputBorder(
-                    borderRadius: BorderRadius.circular(widget.borderRadius ?? AppSize.s8),
-                    borderSide: BorderSide(
-                        width: AppSize.s1,
-                        color: (widget.borderColor ?? colorScheme.primary),
-                    ),
-            ),
+            focusedBorder: widget.focusBorder ??
+                OutlineInputBorder(
+                  borderRadius: BorderRadius.circular(
+                    widget.borderRadius ?? AppSize.s8,
+                  ),
+                  borderSide: BorderSide(
+                    width: AppSize.s1,
+                    color: widget.borderColor ?? colorScheme.primary,
+                  ),
+                ),
             errorBorder: widget.errorBorder ?? OutlineInputBorder(
               borderRadius: BorderRadius.circular(widget.borderRadius ?? AppSize.s8),
               borderSide: BorderSide(

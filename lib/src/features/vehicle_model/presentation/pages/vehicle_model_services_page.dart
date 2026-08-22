@@ -10,7 +10,8 @@ import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/widget
 import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/widgets/vehicle_model_service_header_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/full_screen_bottom_sheet_app_bar.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
+
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/sticky_form_action_bar.dart';
@@ -110,7 +111,7 @@ class _VehicleModelServicesViewState
             ),
             child: Scaffold(
               backgroundColor: Theme.of(context).colorScheme.surface,
-              appBar: SimpleActionBar(
+              appBar: SimpleAppBar(
                 title: 'سرویس های نوع خودرو',
                 onBack: state.isServicesSubmitting
                     ? () {}

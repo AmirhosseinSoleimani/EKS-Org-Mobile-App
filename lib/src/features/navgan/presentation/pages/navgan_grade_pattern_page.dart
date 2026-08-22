@@ -8,7 +8,7 @@ import 'package:eks_sana_plus_org/src/features/navgan/presentation/pages/navgan_
 import 'package:eks_sana_plus_org/src/features/navgan/presentation/widgets/navgan_grade_pattern_action_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/presentation/widgets/navgan_grade_pattern_ui_mapper.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
@@ -68,7 +68,7 @@ class _NavganGradePatternView extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             backgroundColor: const Color(0xFFF6F6F6),
-            appBar: const SimpleActionBar(title: 'الگوی گرید'),
+            appBar: const SimpleAppBar(title: 'الگوی گرید'),
             floatingActionButton: FloatingActionButtonWidget(
               title: 'ثبت الگوی جدید',
               onPressed: () {

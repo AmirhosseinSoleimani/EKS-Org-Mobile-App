@@ -51,7 +51,7 @@ class CurrentSessionMenuKeys {
   static const String sanVehicleModel = 'EKS-SAN-Menus-VehicleModel';
   static const String sanSkillsCertificate =
       'EKS-SAN-Menus-SkillsCertificate';
-  static const String sanLeave = 'EKS-SAN-leave';
+  static const String sanLeave = 'EKS-SAN-Leave';
   static const String sanAgencyRequest =
       'EKS-SAN-Menus-AgencyRequest';
 

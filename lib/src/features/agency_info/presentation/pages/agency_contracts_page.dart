@@ -8,7 +8,8 @@ import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_agency_header.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_content_widgets.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
+
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/list_widgets/list_section_header.dart';
@@ -51,7 +52,7 @@ class _AgencyContractsView extends StatelessWidget {
 
     return Scaffold(
       backgroundColor: Theme.of(context).colorScheme.surface,
-      appBar: const SimpleActionBar(title: 'قراردادها'),
+      appBar: const SimpleAppBar(title: 'قراردادها'),
       floatingActionButton: FloatingActionButtonWidget(
         title: 'قرار داد جدید',
         onPressed: () => _openAddContract(context, cubit),

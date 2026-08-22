@@ -9,7 +9,7 @@ import 'package:eks_sana_plus_org/src/features/navgan/presentation/pages/navgan_
 import 'package:eks_sana_plus_org/src/features/navgan/presentation/widgets/navgan_action_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/navgan/presentation/widgets/navgan_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
@@ -62,7 +62,7 @@ class _NavganView extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             backgroundColor: theme.colorScheme.surface,
-            appBar: const SimpleActionBar(title: 'ناوگان'),
+            appBar: const SimpleAppBar(title: 'ناوگان'),
             body: SafeArea(
               top: false,
               child: ScrollConfiguration(

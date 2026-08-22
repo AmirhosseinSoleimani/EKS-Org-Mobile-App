@@ -11,7 +11,8 @@ import 'package:eks_sana_plus_org/src/features/general_content/presentation/widg
 import 'package:eks_sana_plus_org/src/features/general_content/presentation/widgets/general_content_filter_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/general_content/presentation/widgets/general_content_status_filter.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
+
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
@@ -70,7 +71,7 @@ class _GeneralContentView extends StatelessWidget {
         builder: (context, state) {
           return Scaffold(
             backgroundColor: theme.colorScheme.surface,
-            appBar: const SimpleActionBar(title: 'بخشنامه‌ها'),
+            appBar: const SimpleAppBar(title: 'بخشنامه‌ها'),
             floatingActionButton: FloatingActionButtonWidget(
               title: 'بخشنامه جدید',
               onPressed: () => _openCreateForm(context, cubit),

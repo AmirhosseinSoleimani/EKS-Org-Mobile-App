@@ -65,7 +65,7 @@ class _RequestService implements RequestService {
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
-            '/api/AidServiceRequest/GetAidServiceRequest',
+            '/api/AidServiceRequest/GetById',
             queryParameters: queryParameters,
             data: _data,
           )

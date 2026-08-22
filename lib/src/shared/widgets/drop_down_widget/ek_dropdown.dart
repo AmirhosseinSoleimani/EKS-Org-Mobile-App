@@ -147,10 +147,24 @@ class _EkDropDownState extends State<EkDropDown> {
                 vertical: 14,
               ),
 
-              suffixIcon: widget.postfixIcon ??
-                  const Icon(Icons.keyboard_arrow_down_rounded),
+              suffixIcon: IconTheme.merge(
+                data: IconThemeData(
+                  size: 22,
+                  color: Theme.of(context).colorScheme.onPrimaryFixed,
+                ),
+                child: widget.postfixIcon ??
+                    const Icon(Icons.keyboard_arrow_down_rounded),
+              ),
 
-              prefixIcon: widget.prefixIcon,
+              prefixIcon: widget.prefixIcon == null
+                  ? null
+                  : IconTheme.merge(
+                      data: IconThemeData(
+                        size: 22,
+                        color: Theme.of(context).colorScheme.onPrimaryFixed,
+                      ),
+                      child: widget.prefixIcon!,
+                    ),
             ),
 
             isEmpty: _selectedItem == null || _selectedItem!.isEmpty,

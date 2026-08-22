@@ -8,7 +8,8 @@ import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/add_vehicle/add_agency_vehicle_form_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/add_vehicle/agency_vehicle_summary_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
+
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
@@ -59,7 +60,7 @@ class _AgencyAddVehicleView extends StatelessWidget {
 
           return Scaffold(
             backgroundColor: theme.colorScheme.surface,
-            appBar: const SimpleActionBar(title: 'ثبت خودرو جدید'),
+            appBar: const SimpleAppBar(title: 'ثبت خودرو جدید'),
             body: SafeArea(
               top: false,
               child: Padding(

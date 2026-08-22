@@ -3,7 +3,8 @@ import 'package:eks_sana_plus_org/src/features/imei/domain/entities/imei_info_en
 import 'package:eks_sana_plus_org/src/features/imei/presentation/cubit/imei_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/imei/presentation/cubit/imei_state.dart';
 import 'package:eks_sana_plus_org/src/features/imei/presentation/widgets/imei_form_view.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
+
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:flutter/material.dart';
@@ -59,7 +60,7 @@ class _ImeiFormPageView extends StatelessWidget {
           return Directionality(
             textDirection: TextDirection.rtl,
             child: Scaffold(
-              appBar: SimpleActionBar(title: 'ویرایش IMEI'),
+              appBar: SimpleAppBar(title: 'ویرایش IMEI'),
               body: const Center(child: LoadingWidget()),
             ),
           );

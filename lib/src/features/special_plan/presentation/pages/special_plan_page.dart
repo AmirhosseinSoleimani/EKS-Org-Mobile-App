@@ -12,7 +12,7 @@ import 'package:eks_sana_plus_org/src/features/special_plan/presentation/widgets
 import 'package:eks_sana_plus_org/src/features/special_plan/presentation/widgets/special_plan_filters_row.dart';
 import 'package:eks_sana_plus_org/src/features/special_plan/presentation/widgets/special_plan_list_header.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
@@ -105,7 +105,7 @@ class _SpecialPlanViewState extends State<_SpecialPlanView> {
             final theme = Theme.of(context);
             return Scaffold(
               backgroundColor: theme.colorScheme.surface,
-              appBar: const SimpleActionBar(title: 'طرح‌ها'),
+              appBar: const SimpleAppBar(title: 'طرح‌ها'),
               floatingActionButton: FloatingActionButtonWidget(
                 title: 'طرح جدید',
                 onPressed: () => _openCreateForm(context, cubit),

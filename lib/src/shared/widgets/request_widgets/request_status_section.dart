@@ -208,7 +208,6 @@ class _AdaptiveStatusLabels extends StatelessWidget {
   final List<_RequestStatusLabelData> labels;
 
   static const double _spacing = 8;
-  static const double _minimumReadableScale = 0.82;
 
   @override
   Widget build(BuildContext context) {
@@ -216,72 +215,25 @@ class _AdaptiveStatusLabels extends StatelessWidget {
 
     return LayoutBuilder(
       builder: (context, constraints) {
-        final requiredWidth = _estimateRequiredWidth(context);
-        final availableWidth = constraints.maxWidth;
-        final scale = availableWidth > 0 && requiredWidth > 0
-            ? availableWidth / requiredWidth
-            : 1.0;
-
-        final labelsRow = _buildRow();
-
-        if (requiredWidth <= availableWidth) {
-          return labelsRow;
-        }
-
-        if (scale >= _minimumReadableScale) {
-          return SizedBox(
-            width: double.infinity,
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: AlignmentDirectional.centerStart,
-              child: labelsRow,
-            ),
-          );
-        }
-
-        return SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: labelsRow,
+        return Wrap(
+          spacing: _spacing,
+          runSpacing: _spacing,
+          alignment: WrapAlignment.start,
+          runAlignment: WrapAlignment.start,
+          crossAxisAlignment: WrapCrossAlignment.start,
+          children: [
+            for (final label in labels)
+              ConstrainedBox(
+                constraints: BoxConstraints(maxWidth: constraints.maxWidth),
+                child: StatusLabel(
+                  text: label.text,
+                  color: label.color,
+                ),
+              ),
+          ],
         );
       },
     );
-  }
-
-  Widget _buildRow() {
-    return Row(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        for (var index = 0; index < labels.length; index++) ...[
-          if (index > 0) const SizedBox(width: _spacing),
-          StatusLabel(
-            text: labels[index].text,
-            color: labels[index].color,
-          ),
-        ],
-      ],
-    );
-  }
-
-  double _estimateRequiredWidth(BuildContext context) {
-    final textStyle = Theme.of(context).textTheme.bodySmall?.copyWith(
-          fontSize: 12,
-          fontWeight: FontWeight.w500,
-        );
-    final textDirection = Directionality.of(context);
-
-    var width = _spacing * (labels.length - 1);
-    for (final label in labels) {
-      final painter = TextPainter(
-        text: TextSpan(text: label.text, style: textStyle),
-        textDirection: textDirection,
-        maxLines: 1,
-      )..layout();
-
-      // StatusLabel default horizontal padding is 8 on each side.
-      width += painter.width + 16;
-    }
-
-    return width;
   }
 }
 

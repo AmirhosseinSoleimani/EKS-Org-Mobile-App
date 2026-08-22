@@ -6,11 +6,11 @@ import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan
 import 'package:eks_sana_plus_org/src/features/plan_info/presentation/cubit/plan_info_state.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/cubit/map_cubit.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/map_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/features/map/presentation/view_model/marker_style.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/presentation/page/widget/single_location_map_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/features/map/presentation/view_model/marker_style.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/date_picker_widget/date_picker_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/overlay_dropdown_form_field.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/form_section_container.dart';
@@ -113,7 +113,7 @@ class _PlanInfoCreateViewState extends State<_PlanInfoCreateView> {
 
           return Scaffold(
             backgroundColor: colorScheme.surface,
-            appBar: SimpleActionBar(title: _pageTitle),
+            appBar: SimpleAppBar(title: _pageTitle),
             body: _isInitialLoading(state)
                 ? const Center(child: LoadingWidget())
                 : SafeArea(

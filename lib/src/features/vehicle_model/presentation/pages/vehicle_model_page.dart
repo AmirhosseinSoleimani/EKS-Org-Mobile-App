@@ -10,7 +10,8 @@ import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/widget
 import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/widgets/vehicle_model_card.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/widgets/vehicle_model_filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
+
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
@@ -81,7 +82,7 @@ class _VehicleModelViewState extends State<_VehicleModelView> {
         builder: (context, state) {
           return Scaffold(
             backgroundColor: Theme.of(context).colorScheme.surface,
-            appBar: const SimpleActionBar(title: 'نوع خودرو'),
+            appBar: const SimpleAppBar(title: 'نوع خودرو'),
             floatingActionButton: FloatingActionButtonWidget(
               title: 'نوع خودرو جدید',
               onPressed: () => _openCreateForm(context, cubit),

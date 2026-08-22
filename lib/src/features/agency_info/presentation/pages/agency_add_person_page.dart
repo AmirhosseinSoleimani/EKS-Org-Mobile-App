@@ -7,7 +7,8 @@ import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/add_person/add_agency_person_search_card.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/add_person/add_agency_person_search_results.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
+
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
@@ -57,7 +58,7 @@ class _AgencyAddPersonView extends StatelessWidget {
           final theme = Theme.of(context);
           return Scaffold(
             backgroundColor: Theme.of(context).colorScheme.surface,
-            appBar: const SimpleActionBar(title: 'ثبت امدادرسان جدید'),
+            appBar: const SimpleAppBar(title: 'ثبت امدادرسان جدید'),
             body: SafeArea(
               top: false,
               child: Padding(

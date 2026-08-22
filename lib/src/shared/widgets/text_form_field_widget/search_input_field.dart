@@ -47,7 +47,12 @@ class SearchInputField extends StatelessWidget {
           top: AppPadding.p12,
           bottom: AppPadding.p12,
         ),
-        child: SvgWidget(src: SvgAsset(SvgManager.searchIcon)),
+        child: SvgWidget(
+          src: SvgAsset(SvgManager.searchIcon),
+          width: AppSize.s22,
+          height: AppSize.s22,
+          color: colorScheme.onPrimaryFixed,
+        ),
       ),
     );
   }

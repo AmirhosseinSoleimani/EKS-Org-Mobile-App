@@ -7,7 +7,7 @@ import 'package:eks_sana_plus_org/src/features/vehicle_model/domain/entities/veh
 import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/cubit/vehicle_model_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_model/presentation/cubit/vehicle_model_state.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/overlay_dropdown_form_field.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/form_section_container.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/sticky_form_action_bar.dart';
@@ -93,7 +93,7 @@ class _VehicleModelFormViewState extends State<_VehicleModelFormView> {
           _selectedNavgan ??= _initialNavgan(state.navgans);
           return Scaffold(
             backgroundColor: theme.colorScheme.surface,
-            appBar: SimpleActionBar(
+            appBar: SimpleAppBar(
               title: isEdit ? 'ویرایش نوع خودرو' : 'نوع خودرو جدید',
             ),
             body: SafeArea(

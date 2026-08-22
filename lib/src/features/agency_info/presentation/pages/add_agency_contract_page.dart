@@ -4,7 +4,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/ad
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/add_contract/add_agency_contract_state.dart';
 import 'package:eks_sana_plus_org/src/shared/features/upload_file/upload_file.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_action_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/date_picker_widget/date_picker_widget.dart';
@@ -53,7 +53,7 @@ class _AddAgencyContractView extends StatelessWidget {
       builder: (context, state) {
         return Scaffold(
           backgroundColor: const Color(0xFFF6F6F6),
-          appBar: const SimpleActionBar(title: 'ثبت قرار داد جدید'),
+          appBar: const SimpleAppBar(title: 'ثبت قرار داد جدید'),
           body: SingleChildScrollView(
             padding: const EdgeInsets.fromLTRB(
               AppPadding.p16,
