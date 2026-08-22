@@ -406,7 +406,10 @@ class _ShiftFormActions extends StatelessWidget {
                   title: isNew ? 'ثبت' : 'ویرایش',
                   showLoading: isSubmitting,
                   borderRadius: AppSize.s8,
-                  onTap: isSubmitting ? null : onSubmit,
+                  onTap: () {
+                    if (isSubmitting) return;
+                    onSubmit();
+                  },
                 ),
               ),
               Space.w12,
@@ -416,7 +419,10 @@ class _ShiftFormActions extends StatelessWidget {
                   backgroundColor: theme.colorScheme.onPrimary,
                   titleColor: theme.colorScheme.onSurfaceVariant,
                   borderRadius: AppSize.s8,
-                  onTap: isSubmitting ? null : onCancel,
+                  onTap: () {
+                    if (isSubmitting) return;
+                    onCancel();
+                  },
                 ),
               ),
             ],

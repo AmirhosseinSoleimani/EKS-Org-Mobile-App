@@ -21,7 +21,12 @@ class CartableChangeButton extends StatelessWidget {
     return Material(
       color: Colors.transparent,
       child: InkWell(
-        onTap: isLoading ? () {} : onTap,
+        onTap: onTap == null
+            ? null
+            : () {
+                if (isLoading) return;
+                onTap?.call();
+              },
         borderRadius: BorderRadius.circular(AppSize.s8),
         child: Container(
           constraints: const BoxConstraints(

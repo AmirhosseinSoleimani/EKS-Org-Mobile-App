@@ -26,8 +26,10 @@ class SpecialPlanActionSheet extends StatelessWidget {
             BottomSheetActionTile(
               icon: Icons.edit_outlined,
               title: 'ویرایش',
-              enabled: !isDeleting,
-              onTap: onEdit,
+              onTap: () {
+                if (isDeleting) return;
+                onEdit();
+              },
             ),
             Divider(color: Theme.of(context).dividerColor),
             BottomSheetActionTile(
@@ -35,8 +37,10 @@ class SpecialPlanActionSheet extends StatelessWidget {
               title: 'حذف',
               isDestructive: true,
               isLoading: isDeleting,
-              enabled: !isDeleting,
-              onTap: onDelete,
+              onTap: () {
+                if (isDeleting) return;
+                onDelete();
+              },
             ),
           ],
         ),

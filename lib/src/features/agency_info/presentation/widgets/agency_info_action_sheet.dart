@@ -28,21 +28,18 @@ class AgencyInfoActionSheet extends StatelessWidget {
             icon: Icons.article_outlined,
             title: 'قراردادها',
             isLoading: _isLoading(AgencyInfoActionType.contracts),
-            enabled: !_hasLoading,
             onTap: () => _select(AgencyInfoActionType.contracts),
           ),
           AgencyInfoActionSheetItem(
             icon: Icons.group_outlined,
             title: 'امدادرسان‌های فعلی',
             isLoading: _isLoading(AgencyInfoActionType.activeReliefWorkers),
-            enabled: !_hasLoading,
             onTap: () => _select(AgencyInfoActionType.activeReliefWorkers),
           ),
           AgencyInfoActionSheetItem(
             icon: Icons.local_shipping_outlined,
             title: 'خودروهای فعلی',
             isLoading: _isLoading(AgencyInfoActionType.activeVehicles),
-            enabled: !_hasLoading,
             onTap: () => _select(AgencyInfoActionType.activeVehicles),
           ),
           AgencyInfoActionSheetItem(
@@ -51,21 +48,18 @@ class AgencyInfoActionSheet extends StatelessWidget {
                 ? 'تغییر وضعیت به فعال'
                 : 'تغییر وضعیت به غیر فعال',
             isLoading: _isLoading(AgencyInfoActionType.changeStatus),
-            enabled: !_hasLoading,
             onTap: () => _select(AgencyInfoActionType.changeStatus),
           ),
           AgencyInfoActionSheetItem(
             icon: Icons.build_circle_outlined,
             title: 'نوع خدمات',
             isLoading: _isLoading(AgencyInfoActionType.serviceType),
-            enabled: !_hasLoading,
             onTap: () => _select(AgencyInfoActionType.serviceType),
           ),
           AgencyInfoActionSheetItem(
             icon: Icons.speaker_notes_outlined,
             title: 'اطلاعات تکمیلی',
             isLoading: _isLoading(AgencyInfoActionType.complementaryInfo),
-            enabled: !_hasLoading,
             onTap: () => _select(AgencyInfoActionType.complementaryInfo),
           ),
           Divider(
@@ -77,7 +71,6 @@ class AgencyInfoActionSheet extends StatelessWidget {
             icon: Icons.history_rounded,
             title: 'تاریخچه',
             isLoading: _isLoading(AgencyInfoActionType.history),
-            enabled: !_hasLoading,
             onTap: () => _select(AgencyInfoActionType.history),
           ),
           Divider(
@@ -90,7 +83,6 @@ class AgencyInfoActionSheet extends StatelessWidget {
             title: 'حذف',
             isDestructive: true,
             isLoading: _isLoading(AgencyInfoActionType.delete),
-            enabled: !_hasLoading,
             onTap: () => _select(AgencyInfoActionType.delete),
           ),
         ],
@@ -105,6 +97,7 @@ class AgencyInfoActionSheet extends StatelessWidget {
   }
 
   void _select(AgencyInfoActionType actionType) {
+    if (_hasLoading) return;
     onActionSelected(actionType);
   }
 }

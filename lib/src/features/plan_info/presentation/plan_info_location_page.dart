@@ -90,7 +90,10 @@ class _PlanInfoLocationViewState extends State<_PlanInfoLocationView> {
             child: InkwellButtonWidget(
               title: 'ثبت تغییرات',
               showLoading: isSubmitting,
-              onTap: isSubmitting ? (){} :()=>  _submit(cubit: context.read<PlanInfoCubit>()),
+              onTap: () {
+                if (isSubmitting) return;
+                _submit(cubit: context.read<PlanInfoCubit>());
+              },
             ),
           ),
         );

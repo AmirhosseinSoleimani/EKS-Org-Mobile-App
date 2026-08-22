@@ -70,7 +70,6 @@ class _RescuerActionsContentState extends State<_RescuerActionsContent> {
           title: 'گواهینامه مهارت‌ها',
           icon: Icons.card_membership_outlined,
           isLoading: _loadingAction == _RescuerActionType.certificates,
-          enabled: !_isLoading,
           onTap: () => _runAction(
             _RescuerActionType.certificates,
             widget.onSkillCertificates,
@@ -81,7 +80,6 @@ class _RescuerActionsContentState extends State<_RescuerActionsContent> {
           title: 'تاریخچه',
           icon: Icons.history,
           isLoading: _loadingAction == _RescuerActionType.history,
-          enabled: !_isLoading,
           onTap: () => _runAction(_RescuerActionType.history, widget.onHistory),
         ),
         Divider(height: 1, color: Theme.of(context).dividerColor),
@@ -90,7 +88,6 @@ class _RescuerActionsContentState extends State<_RescuerActionsContent> {
           icon: Icons.delete_outline,
           color: colorScheme.error,
           isLoading: _loadingAction == _RescuerActionType.delete,
-          enabled: !_isLoading,
           onTap: () => _runAction(_RescuerActionType.delete, widget.onDelete),
         ),
       ],
@@ -102,7 +99,6 @@ class _ActionRow extends StatelessWidget {
   final String title;
   final IconData icon;
   final VoidCallback onTap;
-  final bool enabled;
   final bool isLoading;
   final Color? color;
 
@@ -110,7 +106,6 @@ class _ActionRow extends StatelessWidget {
     required this.title,
     required this.icon,
     required this.onTap,
-    required this.enabled,
     required this.isLoading,
     this.color,
   });
@@ -121,7 +116,10 @@ class _ActionRow extends StatelessWidget {
         color ?? Theme.of(context).colorScheme.onTertiaryFixed;
 
     return InkWell(
-      onTap: enabled ? onTap : null,
+      onTap: () {
+        if (isLoading) return;
+        onTap();
+      },
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 14),
         child: Row(

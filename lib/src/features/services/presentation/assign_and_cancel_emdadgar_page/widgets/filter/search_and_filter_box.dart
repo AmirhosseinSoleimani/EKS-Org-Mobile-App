@@ -101,7 +101,10 @@ class _AnimatedRefreshButton extends StatelessWidget {
         borderRadius: BorderRadius.circular(6),
         child: InkWell(
           borderRadius: BorderRadius.circular(6),
-          onTap: isLoading ? null : onTap,
+          onTap: () {
+            if (isLoading) return;
+            onTap();
+          },
           child: Center(
             child: AnimatedRotation(
               turns: isLoading ? 1 : 0,

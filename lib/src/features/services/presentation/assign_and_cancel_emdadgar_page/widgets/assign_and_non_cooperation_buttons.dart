@@ -41,12 +41,11 @@ class AssignAndNonCooperationButtons extends StatelessWidget {
                 showLoading: isAssignLoading,
                 backgroundColor:
                     cubit.selectedRequest?.serviceType?.serviceColor,
-                onTap: isAnyLoading
-                    ? () {}
-                    : () {
-                        cubit.setSelectedEmdadgar(entity);
-                        cubit.getCheckDepotAndRoute();
-                      },
+                onTap: () {
+                  if (isAnyLoading) return;
+                  cubit.setSelectedEmdadgar(entity);
+                  cubit.getCheckDepotAndRoute();
+                },
                 title: "تخصیص",
                 textStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
                   color: Colors.white,
@@ -67,14 +66,13 @@ class AssignAndNonCooperationButtons extends StatelessWidget {
                   fontSize: 15,
                 ),
                 title: "عدم همکاری",
-                onTap: isAnyLoading
-                    ? () {}
-                    : () {
-                        cubit.setSelectedEmdadgar(entity);
-                        cubit.getCancelReasons(
-                          action: ServiceAssignAction.nonCooperation,
-                        );
-                      },
+                onTap: () {
+                  if (isAnyLoading) return;
+                  cubit.setSelectedEmdadgar(entity);
+                  cubit.getCancelReasons(
+                    action: ServiceAssignAction.nonCooperation,
+                  );
+                },
               ),
             ),
           ],

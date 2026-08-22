@@ -111,7 +111,10 @@ class _HomeServiceEvaluationSecondStepView extends StatelessWidget {
                 child: InkwellButtonWidget(
                   title: 'ذخیره و ادامه',
                   showLoading: isSubmitting,
-                  onTap: isSubmitting ? () {}: cubit.postEvaluation,
+                  onTap: () {
+                    if (isSubmitting) return;
+                    cubit.postEvaluation();
+                  },
                   backgroundColor: ServiceType.homeService.serviceColor,
                 ),
               );

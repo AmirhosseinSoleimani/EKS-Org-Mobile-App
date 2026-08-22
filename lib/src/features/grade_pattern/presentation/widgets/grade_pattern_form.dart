@@ -242,7 +242,10 @@ class _GradePatternFormActions extends StatelessWidget {
                   title: isNew ? 'افزودن' : 'ثبت تغییرات',
                   showLoading: isSubmitting,
                   borderRadius: AppSize.s8,
-                  onTap: isSubmitting ? null : onSubmit,
+                  onTap: () {
+                    if (isSubmitting) return;
+                    onSubmit();
+                  },
                 ),
               ),
               Space.w12,
@@ -252,7 +255,10 @@ class _GradePatternFormActions extends StatelessWidget {
                   backgroundColor: theme.colorScheme.onPrimary,
                   titleColor: theme.colorScheme.onSurfaceVariant,
                   borderRadius: AppSize.s8,
-                  onTap: isSubmitting ? null : onCancel,
+                  onTap: () {
+                    if (isSubmitting) return;
+                    onCancel();
+                  },
                 ),
               ),
             ],

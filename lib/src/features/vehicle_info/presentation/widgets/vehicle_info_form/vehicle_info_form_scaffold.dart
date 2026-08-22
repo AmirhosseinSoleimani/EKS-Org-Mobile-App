@@ -45,7 +45,10 @@ class VehicleInfoFormActions extends StatelessWidget {
               Expanded(
                 flex: 3,
                 child: TextButton(
-                  onPressed: isSubmitting ? null : onCancel,
+                  onPressed: () {
+                    if (isSubmitting) return;
+                    onCancel();
+                  },
                   child: Text(
                     cancelTitle,
                     style: theme.textTheme.bodyMedium?.copyWith(

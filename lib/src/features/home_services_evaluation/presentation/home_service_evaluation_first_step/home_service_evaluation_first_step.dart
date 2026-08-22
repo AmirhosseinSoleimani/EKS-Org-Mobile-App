@@ -112,7 +112,10 @@ class _HomeServiceEvaluationFirstStepView extends StatelessWidget {
                   title: 'ذخیره و ادامه',
                   showLoading: isSubmitting,
                   backgroundColor: ServiceType.homeService.serviceColor,
-                  onTap: isSubmitting ? null : cubit.submit,
+                  onTap: () {
+                    if (isSubmitting) return;
+                    cubit.submit();
+                  },
                 ),
               );
             },

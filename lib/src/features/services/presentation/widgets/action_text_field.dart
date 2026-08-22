@@ -69,7 +69,12 @@ class ActionTextField extends StatelessWidget {
 
   Widget _buildAction(bool loading) {
     return InkWell(
-      onTap: loading ? null : onActionTap,
+      onTap: onActionTap == null
+          ? null
+          : () {
+              if (loading) return;
+              onActionTap?.call();
+            },
       borderRadius: BorderRadius.circular(AppSize.s8),
       child: Container(
         margin: const EdgeInsets.all(AppSize.s6),

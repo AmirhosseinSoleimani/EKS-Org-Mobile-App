@@ -112,7 +112,10 @@ class RescuerCard extends StatelessWidget {
           size: AppSize.s20,
         ),
         showLoading: isDeleting,
-        onTap: isDeleting ? null : onViewDetails,
+        onTap: () {
+          if (isDeleting) return;
+          onViewDetails();
+        },
       ),
       onOperation: onOperations,
     );

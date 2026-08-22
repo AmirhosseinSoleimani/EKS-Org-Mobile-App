@@ -33,14 +33,18 @@ class VehicleModelActionSheet extends StatelessWidget {
               icon: Icons.miscellaneous_services_outlined,
               title: 'سرویس‌ها',
               isLoading: isServicesLoading,
-              enabled: !isDeleting,
-              onTap: onServices,
+              onTap: () {
+                if (isBusy) return;
+                onServices();
+              },
             ),
             BottomSheetActionTile(
               icon: Icons.edit_outlined,
               title: 'ویرایش',
-              enabled: !isBusy,
-              onTap: onEdit,
+              onTap: () {
+                if (isBusy) return;
+                onEdit();
+              },
             ),
             Divider(color: Theme.of(context).dividerColor),
             BottomSheetActionTile(
@@ -48,8 +52,10 @@ class VehicleModelActionSheet extends StatelessWidget {
               title: 'حذف',
               isDestructive: true,
               isLoading: isDeleting,
-              enabled: !isBusy,
-              onTap: onDelete,
+              onTap: () {
+                if (isBusy) return;
+                onDelete();
+              },
             ),
           ],
         ),

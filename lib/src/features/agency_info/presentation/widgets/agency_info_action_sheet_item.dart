@@ -47,7 +47,12 @@ class AgencyInfoActionSheetItem extends StatelessWidget {
           fontWeight: FontWeight.w700,
         ),
       ),
-      onTap: enabled && !isLoading ? onTap : null,
+      onTap: enabled
+          ? () {
+              if (isLoading) return;
+              onTap();
+            }
+          : null,
     );
   }
 }

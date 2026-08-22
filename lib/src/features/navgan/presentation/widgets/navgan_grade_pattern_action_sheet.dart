@@ -28,9 +28,10 @@ class NavganGradePatternActionSheet extends StatelessWidget {
             title: 'حذف',
             isDestructive: true,
             isLoading: _isLoading(NavganGradePatternOperation.delete),
-            enabled: !_hasLoading,
-            onTap: () =>
-                onActionSelected(NavganGradePatternOperation.delete),
+            onTap: () {
+              if (_hasLoading) return;
+              onActionSelected(NavganGradePatternOperation.delete);
+            },
           ),
         ],
       ),

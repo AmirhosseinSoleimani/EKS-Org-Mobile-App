@@ -42,7 +42,6 @@ class GeneralContentActionSheet extends StatelessWidget {
               title: 'حذف',
               isDestructive: true,
               isLoading: isDeleting,
-              enabled: !isDeleting,
               onTap: onDelete,
             ),
           ],

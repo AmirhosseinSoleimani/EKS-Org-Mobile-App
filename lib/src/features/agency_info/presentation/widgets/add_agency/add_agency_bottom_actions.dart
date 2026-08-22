@@ -52,7 +52,10 @@ class AgencyFormBottomActions extends StatelessWidget {
               Expanded(
               flex: 3,
               child: TextButton(
-                onPressed: isLoading ? null : onCancel,
+                onPressed: () {
+                  if (isLoading) return;
+                  onCancel();
+                },
                 child: BodyMediumText(
                     text: cancelTitle,
                     color: theme.colorScheme.onPrimaryFixed,

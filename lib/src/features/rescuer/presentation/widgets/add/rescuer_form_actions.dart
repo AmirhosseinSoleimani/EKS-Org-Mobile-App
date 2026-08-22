@@ -35,7 +35,10 @@ class RescuerFormActions extends StatelessWidget {
                 backgroundColor: Colors.white,
                 titleColor: colorScheme.onPrimaryFixed,
                 borderColor:colorScheme.onPrimaryFixed,
-                onTap: loading ? null : onPrevious,
+                onTap: () {
+                  if (loading) return;
+                  onPrevious();
+                },
                 prefixIcon: Icon(Icons.arrow_back_rounded, color: colorScheme.onPrimaryFixed,),
               ),
             ),
@@ -47,7 +50,10 @@ class RescuerFormActions extends StatelessWidget {
                 showLoading: loading,
                 backgroundColor: Theme.of(context).colorScheme.primary,
                 suffixIcon: Icon(Icons.arrow_forward_rounded, color: colorScheme.onPrimary,),
-                onTap: loading ? null : onNext,
+                onTap: () {
+                  if (loading) return;
+                  onNext();
+                },
               ),
             ),
 

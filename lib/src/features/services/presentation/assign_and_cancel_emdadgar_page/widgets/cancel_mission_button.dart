@@ -39,14 +39,13 @@ class CancelMissionButton extends StatelessWidget {
             fontSize: 15,
           ),
           title: "لغو ماموریت",
-          onTap: isLoading
-              ? () {}
-              : () {
-                  cubit.setSelectedEmdadgar(entity);
-                  cubit.getCancelReasons(
-                    action: ServiceAssignAction.cancelMission,
-                  );
-                },
+          onTap: () {
+            if (isLoading) return;
+            cubit.setSelectedEmdadgar(entity);
+            cubit.getCancelReasons(
+              action: ServiceAssignAction.cancelMission,
+            );
+          },
         );
       },
     );

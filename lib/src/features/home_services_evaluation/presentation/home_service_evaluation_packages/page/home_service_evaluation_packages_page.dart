@@ -104,7 +104,10 @@ class _InsertHomeServiceServiceInfoView extends StatelessWidget {
               title: 'تائید',
               showLoading: isLoading,
               backgroundColor: ServiceType.homeService.serviceColor,
-              onTap: isLoading ? (){}:() => cubit.validateServices(),
+              onTap: () {
+                if (isLoading) return;
+                cubit.validateServices();
+              },
             ),
           );
         },

@@ -30,8 +30,10 @@ class GradePatternActionSheet extends StatelessWidget {
             icon: Icons.edit_outlined,
             title: 'ویرایش',
             isLoading: _isLoading(GradePatternOperation.edit),
-            enabled: !_hasLoading,
-            onTap: () => onActionSelected(GradePatternOperation.edit),
+            onTap: () {
+              if (_hasLoading) return;
+              onActionSelected(GradePatternOperation.edit);
+            },
           ),
           Divider(
             height: AppSize.s1,
@@ -43,8 +45,10 @@ class GradePatternActionSheet extends StatelessWidget {
             title: 'حذف',
             isDestructive: true,
             isLoading: _isLoading(GradePatternOperation.delete),
-            enabled: !_hasLoading,
-            onTap: () => onActionSelected(GradePatternOperation.delete),
+            onTap: () {
+              if (_hasLoading) return;
+              onActionSelected(GradePatternOperation.delete);
+            },
           ),
         ],
       ),

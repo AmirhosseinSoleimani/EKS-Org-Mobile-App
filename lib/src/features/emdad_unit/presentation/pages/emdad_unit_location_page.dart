@@ -277,7 +277,10 @@ class _LocationCard extends StatelessWidget {
           InkwellButtonWidget(
             title: 'ثبت تغییرات',
             showLoading: isSubmitting,
-            onTap: isSubmitting ? null : onSubmit,
+            onTap: () {
+              if (isSubmitting) return;
+              onSubmit();
+            },
           ),
         ],
       ),

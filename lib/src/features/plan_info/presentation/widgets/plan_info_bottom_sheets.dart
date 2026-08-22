@@ -283,9 +283,8 @@ class _PlanStatusSheetState extends State<_PlanStatusSheet> {
                 Expanded(
                   child: InkwellButtonWidget(
                     title: 'ثبت تغییرات',
-                    onTap: state.isSubmitting
-                        ? null
-                        : () async {
+                    onTap: () async {
+                      if (state.isSubmitting) return;
                       final planId = widget.plan.resolvedId;
 
                       if (planId == null) {

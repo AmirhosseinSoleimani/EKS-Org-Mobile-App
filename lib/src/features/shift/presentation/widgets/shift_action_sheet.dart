@@ -27,8 +27,10 @@ class ShiftActionSheet extends StatelessWidget {
               icon: Icons.edit_outlined,
               title: 'ویرایش',
               isLoading: _isLoading(ShiftOperation.edit),
-              enabled: !_hasLoading,
-              onTap: () => onActionSelected(ShiftOperation.edit),
+              onTap: () {
+                if (_hasLoading) return;
+                onActionSelected(ShiftOperation.edit);
+              },
             ),
             Divider(
               height: AppSize.s1,
@@ -40,8 +42,10 @@ class ShiftActionSheet extends StatelessWidget {
               title: 'حذف',
               isDestructive: true,
               isLoading: _isLoading(ShiftOperation.delete),
-              enabled: !_hasLoading,
-              onTap: () => onActionSelected(ShiftOperation.delete),
+              onTap: () {
+                if (_hasLoading) return;
+                onActionSelected(ShiftOperation.delete);
+              },
             ),
           ],
         ),
@@ -98,7 +102,12 @@ class _ShiftActionSheetItem extends StatelessWidget {
           fontWeight: FontWeight.w700,
         ),
       ),
-      onTap: enabled && !isLoading ? onTap : null,
+      onTap: enabled
+          ? () {
+              if (isLoading) return;
+              onTap();
+            }
+          : null,
     );
   }
 }

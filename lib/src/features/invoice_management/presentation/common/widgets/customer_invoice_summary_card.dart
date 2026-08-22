@@ -126,7 +126,10 @@ class CustomerInvoiceSummaryCard extends StatelessWidget {
           color: Colors.white,
           size: AppSize.s24,
         ),
-        onTap: isPrimaryLoading ? null : onPrimaryAction,
+        onTap: () {
+          if (isPrimaryLoading) return;
+          onPrimaryAction();
+        },
       ),
       operationAction: InkwellButtonWidget(
         title: 'جزئیات',

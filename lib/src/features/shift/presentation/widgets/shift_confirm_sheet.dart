@@ -72,7 +72,10 @@ class ShiftConfirmSheet extends StatelessWidget {
                     backgroundColor: theme.colorScheme.surface,
                     borderColor: theme.colorScheme.outline,
                     titleColor: theme.colorScheme.onSurface,
-                    onTap: isLoading ? null : () => Navigator.of(context).pop(),
+                    onTap: () {
+                      if (isLoading) return;
+                      Navigator.of(context).pop();
+                    },
                   ),
                 ),
               ],

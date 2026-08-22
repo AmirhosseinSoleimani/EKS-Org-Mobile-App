@@ -285,7 +285,12 @@ class _AddPersonCard extends StatelessWidget {
           InkwellButtonWidget(
             title: 'افزودن',
             showLoading: isSubmitting,
-            onTap: selectedPersonId == -1 || isSubmitting ? (){} : onSubmit,
+            onTap: selectedPersonId == -1
+                ? null
+                : () {
+                    if (isSubmitting) return;
+                    onSubmit();
+                  },
           ),
         ],
       ),
@@ -340,7 +345,12 @@ class _PersonCard extends StatelessWidget {
               ),
               IconButton(
                 tooltip: 'حذف',
-                onPressed: isSubmitting ? null : onDelete,
+                onPressed: onDelete == null
+                    ? null
+                    : () {
+                        if (isSubmitting) return;
+                        onDelete?.call();
+                      },
                 icon: Icon(
                   Icons.delete_outline_rounded,
                   color: colorScheme.error,
