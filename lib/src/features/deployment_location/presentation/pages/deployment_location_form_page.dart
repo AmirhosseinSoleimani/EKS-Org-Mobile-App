@@ -7,7 +7,7 @@ import 'package:eks_sana_plus_org/src/features/deployment_location/presentation/
 import 'package:eks_sana_plus_org/src/features/deployment_location/presentation/cubit/deployment_location_state.dart';
 import 'package:eks_sana_plus_org/src/features/deployment_location/presentation/widgets/deployment_location_area_fields.dart';
 import 'package:eks_sana_plus_org/src/features/deployment_location/presentation/widgets/deployment_location_area_utils.dart';
-import 'package:eks_sana_plus_org/src/features/deployment_location/presentation/widgets/deployment_location_form_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/features/deployment_location/presentation/widgets/deployment_location_map_selector.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/address_info_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/province_entity.dart';
@@ -116,11 +116,11 @@ class _DeploymentLocationFormViewState
 
           return Scaffold(
             backgroundColor: theme.colorScheme.surface,
-            appBar: DeploymentLocationFormAppBar(
+            appBar: SimpleAppBar(
               title: _isEdit
                   ? 'ویرایش محل استقرار'
                   : 'محل استقرار جدید',
-              onClose: () {
+              onBack: () {
                 if (state.isFormSubmitting) return;
                 context.pop(false);
               },

@@ -45,8 +45,8 @@ class _PasswordTextFormFieldWidgetState
       suffixIcon: IconButton(
         icon: Icon(
           _obscure ? Icons.visibility_off : Icons.visibility,
-          color: colorScheme.inverseSurface,
-          size: AppSize.s24,
+          color: colorScheme.onPrimaryFixed,
+          size: AppSize.s22,
         ),
         onPressed: () {
           setState(() {

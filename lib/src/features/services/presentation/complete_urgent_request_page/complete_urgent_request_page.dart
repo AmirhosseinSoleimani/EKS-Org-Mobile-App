@@ -11,7 +11,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_labe
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/submit_cancel_buttons.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/two_text_fields_row.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/widget_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/car_license_plate_widget/car_license_plate_widget.dart';
@@ -86,8 +86,9 @@ class _View extends StatelessWidget {
       },
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.onPrimary,
-        appBar: WidgetAppBar(
-          title: Row(
+        appBar: SimpleAppBar(
+          title: 'تکمیل درخواست اضطراری',
+          titleWidget: Row(
             children: [
               TitleMediumText(text: 'تکمیل درخواست اضطراری'),
               Space.w8,

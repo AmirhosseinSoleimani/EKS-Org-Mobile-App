@@ -78,36 +78,41 @@ class _ShiftActionSheetItem extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color =
-        isDestructive ? theme.colorScheme.error : theme.colorScheme.onPrimaryFixed;
-    final effectiveColor = enabled || isLoading ? color : color.withOpacity(0.45);
+    final color = isDestructive
+        ? theme.colorScheme.error
+        : theme.colorScheme.onPrimaryFixed;
+    final effectiveColor =
+        enabled || isLoading ? color : color.withOpacity(0.45);
 
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      leading: SizedBox(
-        width: AppSize.s24,
-        height: AppSize.s24,
-        child: isLoading
-            ? CircularProgressIndicator(
-                strokeWidth: 2,
-                color: effectiveColor,
-              )
-            : Icon(icon, color: effectiveColor, size: AppSize.s24),
-      ),
-      title: Text(
-        title,
-        textAlign: TextAlign.right,
-        style: theme.textTheme.bodyMedium?.copyWith(
-          color: effectiveColor,
-          fontWeight: FontWeight.w700,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: ListTile(
+        contentPadding: EdgeInsets.zero,
+        leading: SizedBox(
+          width: AppSize.s24,
+          height: AppSize.s24,
+          child: isLoading
+              ? CircularProgressIndicator(
+                  strokeWidth: 2,
+                  color: effectiveColor,
+                )
+              : Icon(icon, color: effectiveColor, size: AppSize.s24),
         ),
+        title: Text(
+          title,
+          textAlign: TextAlign.right,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: effectiveColor,
+            fontWeight: FontWeight.w700,
+          ),
+        ),
+        onTap: enabled
+            ? () {
+                if (isLoading) return;
+                onTap();
+              }
+            : null,
       ),
-      onTap: enabled
-          ? () {
-              if (isLoading) return;
-              onTap();
-            }
-          : null,
     );
   }
 }

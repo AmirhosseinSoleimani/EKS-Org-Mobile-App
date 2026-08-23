@@ -8,7 +8,7 @@ import 'package:eks_sana_plus_org/src/features/special_plan/presentation/cubit/s
 import 'package:eks_sana_plus_org/src/features/special_plan/presentation/cubit/special_plan_form_state.dart';
 import 'package:eks_sana_plus_org/src/features/special_plan/presentation/services/special_plan_date_formatter.dart';
 import 'package:eks_sana_plus_org/src/features/special_plan/presentation/widgets/special_plan_area_product_section.dart';
-import 'package:eks_sana_plus_org/src/features/special_plan/presentation/widgets/special_plan_form_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/features/special_plan/presentation/widgets/special_plan_general_info_section.dart';
 import 'package:eks_sana_plus_org/src/features/special_plan/presentation/widgets/special_plan_priority_section.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/discountable_area_entity.dart';
@@ -124,9 +124,9 @@ class _SpecialPlanFormViewState extends State<_SpecialPlanFormView> {
           _syncSelections(state);
           return Scaffold(
             backgroundColor: Theme.of(context).colorScheme.surface,
-            appBar: SpecialPlanFormAppBar(
+            appBar: SimpleAppBar(
               title: _isEdit ? 'ویرایش طرح ویژه' : 'افزودن طرح ویژه جدید',
-              onClose: () {
+              onBack: () {
                 if (state.isSubmitting) return;
                 context.pop(false);
               },

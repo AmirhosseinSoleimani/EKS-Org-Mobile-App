@@ -244,15 +244,20 @@ class _ShiftFormState extends State<ShiftForm> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   children: [
-                    SvgWidget(src: SvgAsset(SvgManager.swapDriving)),
+                    SvgWidget(
+                      src: SvgAsset(SvgManager.swapDriving),
+                      width: AppSize.s22,
+                      height: AppSize.s22,
+                    ),
                     Space.w8,
                     Text(
                       'اطلاعات شیفت',
                       style: theme.textTheme.titleMedium?.copyWith(
+                        fontSize: AppSize.s16,
                         fontWeight: FontWeight.w800,
+                        height: 1.2,
                       ),
                     ),
-
                   ],
                 ),
                 Space.h16,

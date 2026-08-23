@@ -6,7 +6,7 @@ import 'package:eks_sana_plus_org/src/features/leave/presentation/widgets/leave_
 import 'package:eks_sana_plus_org/src/features/leave/presentation/widgets/leave_status_badge.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/color_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/main_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
@@ -76,7 +76,7 @@ class LeaveDetailsPageView extends StatelessWidget {
 
         return Scaffold(
           backgroundColor: const Color(0xFFF8F6F5),
-          appBar: const MainAppBar(title: 'جزئیات مرخصی'),
+          appBar: const SimpleAppBar(title: 'جزئیات مرخصی'),
           body: state.isDetailsLoading
               ? const Center(child: CircularProgressIndicator())
               : details == null
@@ -439,23 +439,23 @@ class _CollapsedInfoTile extends StatelessWidget {
         ),
         title: Row(
           children: [
+            Text(
+              title,
+              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                    fontWeight: FontWeight.w700,
+                  ),
+            ),
+            const SizedBox(width: 8),
             Expanded(
               child: Text(
                 _text(summary),
-                textAlign: TextAlign.right,
+                textAlign: TextAlign.end,
                 maxLines: 1,
                 overflow: TextOverflow.ellipsis,
                 style: Theme.of(context).textTheme.bodySmall?.copyWith(
                       color: const Color(0xFF777777),
                     ),
               ),
-            ),
-            const SizedBox(width: 8),
-            Text(
-              title,
-              style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
             ),
           ],
         ),

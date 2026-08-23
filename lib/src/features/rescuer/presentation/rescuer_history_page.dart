@@ -1,6 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/rescuer_entity.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/san_history_entity.dart';
-import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/rescuer_full_screen_sheet_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
@@ -24,7 +24,10 @@ class RescuerHistoryPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: const Color(0xFFF4F4F4),
-      appBar: const RescuerFullScreenSheetAppBar(title: 'تاریخچه'),
+      appBar: SimpleAppBar(
+        title: 'تاریخچه',
+        onBack: () => Navigator.of(context).pop(false),
+      ),
       body: SafeArea(
         child: Column(
           children: [

@@ -17,6 +17,7 @@ import 'package:eks_sana_plus_org/src/shared/features/session/domain/manager/cur
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/use_cases/sync_current_session_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/input_formatter/persian_arabic_digits_to_english_formatter.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter/material.dart';
@@ -113,7 +114,10 @@ class _AddAgencyInfoPageState extends State<AddAgencyInfoPage> {
       textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor: theme.colorScheme.surface,
-        appBar: AddAgencyAppBar(onClose: () => context.pop(false)),
+        appBar: SimpleAppBar(
+          title: 'افزودن نمایندگی',
+          onBack: () => context.pop(false),
+        ),
         bottomNavigationBar: _isFormReady
             ? AddAgencyBottomActions(
                 isSubmitting: _isSubmitting,

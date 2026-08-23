@@ -133,38 +133,41 @@ class _ActionTile extends StatelessWidget {
       builder: (context, state) {
         final isLoading = loadingBuilder?.call(state) ?? false;
 
-        return ListTile(
-          leading: isLoading
-              ? SizedBox(
-                  width: AppSize.s24,
-                  height: AppSize.s24,
-                  child: CircularProgressIndicator(
-                    strokeWidth: AppSize.s2,
-                    color: color,
-                  ),
-                )
-              : Icon(icon, color: color),
-          title: BodyMediumText(
-            text: title,
-            color: color,
-            fontWeight: FontWeight.w600,
+        return Padding(
+          padding: const EdgeInsets.symmetric(vertical: 4),
+          child: ListTile(
+            leading: isLoading
+                ? SizedBox(
+                    width: AppSize.s24,
+                    height: AppSize.s24,
+                    child: CircularProgressIndicator(
+                      strokeWidth: AppSize.s2,
+                      color: color,
+                    ),
+                  )
+                : Icon(icon, color: color),
+            title: BodyMediumText(
+              text: title,
+              color: color,
+              fontWeight: FontWeight.w600,
+            ),
+            onTap: () async {
+              if (isLoading) return;
+
+              if (closeBeforeAction) {
+                Navigator.of(context).pop();
+              }
+
+              final completed = await onTap();
+              if (!completed || !context.mounted) return;
+
+              if (!closeBeforeAction) {
+                Navigator.of(context).pop();
+              }
+
+              onActionCompleted?.call();
+            },
           ),
-          onTap: () async {
-            if (isLoading) return;
-
-            if (closeBeforeAction) {
-              Navigator.of(context).pop();
-            }
-
-            final completed = await onTap();
-            if (!completed || !context.mounted) return;
-
-            if (!closeBeforeAction) {
-              Navigator.of(context).pop();
-            }
-
-            onActionCompleted?.call();
-          },
         );
       },
     );

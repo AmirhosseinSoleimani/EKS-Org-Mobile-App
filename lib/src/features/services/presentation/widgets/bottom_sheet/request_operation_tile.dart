@@ -21,31 +21,34 @@ class RequestOperationTile extends StatelessWidget {
         ? colorScheme.error
         : colorScheme.secondaryFixed;
 
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        onTap: onTap,
-        child: SizedBox(
-          height: 44,
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 8),
-            child: Row(
-              children: [
-                Icon(
-                  operation.icon,
-                  size: 22,
-                  color: foregroundColor,
-                ),
-                const SizedBox(width: 10),
-                Expanded(
-                  child: BodyMediumText(
-                    text: _resolveLabel(operation),
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: Material(
+        color: Colors.transparent,
+        child: InkWell(
+          onTap: onTap,
+          child: SizedBox(
+            height: 44,
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 8),
+              child: Row(
+                children: [
+                  Icon(
+                    operation.icon,
+                    size: 22,
                     color: foregroundColor,
-                    fontWeight: FontWeight.w500 ,
-                    textAlign: TextAlign.start,
                   ),
-                ),
-              ],
+                  const SizedBox(width: 10),
+                  Expanded(
+                    child: BodyMediumText(
+                      text: _resolveLabel(operation),
+                      color: foregroundColor,
+                      fontWeight: FontWeight.w500,
+                      textAlign: TextAlign.start,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

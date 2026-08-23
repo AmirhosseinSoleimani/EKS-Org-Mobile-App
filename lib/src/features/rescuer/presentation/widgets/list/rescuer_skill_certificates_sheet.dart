@@ -1,7 +1,7 @@
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/rescuer_entity.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/skill_certificate_entity.dart';
-import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/rescuer_full_screen_sheet_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/selection_widgets/selectable_check_item.dart';
@@ -59,8 +59,9 @@ class _RescuerSkillCertificatesSheetState
       textDirection: TextDirection.rtl,
       child: Scaffold(
         backgroundColor: Theme.of(context).colorScheme.surface,
-        appBar: const RescuerFullScreenSheetAppBar(
+        appBar: SimpleAppBar(
           title: 'گواهینامه مهارت ها',
+          onBack: () => Navigator.of(context).pop(false),
         ),
         body: SafeArea(
           top: false,

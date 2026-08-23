@@ -1,6 +1,6 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/representation/presentation/cubit/representation_cubit.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/main_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -29,7 +29,7 @@ class _DashboardView extends StatelessWidget {
     return BlocListener<RepresentationCubit, RepresentationState>(
       listener: (context, state) {},
       child: Scaffold(
-        appBar: const MainAppBar(title: "نمایندگی"),
+        appBar: const SimpleAppBar(title: "نمایندگی"),
         body: ScrollConfiguration(
           behavior: ScrollConfiguration.of(context).copyWith(
             dragDevices: {PointerDeviceKind.touch, PointerDeviceKind.mouse},

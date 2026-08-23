@@ -2,7 +2,7 @@ import 'dart:ui';
 
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/main_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:flutter/material.dart';
@@ -73,7 +73,7 @@ class EmdadVehiclePageView extends StatelessWidget {
       },
       builder: (context, state) {
         return Scaffold(
-          appBar: const MainAppBar(title: 'خودرو امدادی'),
+          appBar: const SimpleAppBar(title: 'خودرو امدادی'),
           body: ScrollConfiguration(
             behavior: ScrollConfiguration.of(context).copyWith(
               dragDevices: {PointerDeviceKind.touch, PointerDeviceKind.mouse},

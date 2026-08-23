@@ -121,7 +121,7 @@ class _ActionRow extends StatelessWidget {
         onTap();
       },
       child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 14),
+        padding: const EdgeInsets.symmetric(vertical: 4),
         child: Row(
           children: [
             if (isLoading)

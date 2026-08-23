@@ -71,16 +71,6 @@ class EmdadUnitActionSheet extends StatelessWidget {
               thickness: AppSize.s1,
               color: theme.colorScheme.onInverseSurface,
             ),
-        /*    _ActionTile(
-              icon: Icons.image_outlined,
-              title: 'ویرایش تصویر',
-              onTap: onEditImage,
-            ),*/
-            Divider(
-              height: AppSize.s1,
-              thickness: AppSize.s1,
-              color: theme.colorScheme.onInverseSurface,
-            ),
             _ActionTile(
               icon: Icons.delete_outlined,
               title: 'حذف',
@@ -110,22 +100,27 @@ class _ActionTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final color = isDestructive ? theme.colorScheme.error : theme.colorScheme.onPrimaryFixed;
+    final color = isDestructive
+        ? theme.colorScheme.error
+        : theme.colorScheme.onPrimaryFixed;
 
-    return ListTile(
-      contentPadding: EdgeInsets.zero,
-      leading: Icon(icon, color: color, size: AppSize.s24),
-      title: Text(
-        title,
-        style: theme.textTheme.bodyMedium?.copyWith(
-          color: color,
-          fontWeight: FontWeight.w700,
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 4),
+      child: ListTile(
+        contentPadding: EdgeInsets.zero,
+        leading: Icon(icon, color: color, size: AppSize.s24),
+        title: Text(
+          title,
+          style: theme.textTheme.bodyMedium?.copyWith(
+            color: color,
+            fontWeight: FontWeight.w700,
+          ),
         ),
+        onTap: () {
+          Navigator.of(context).pop();
+          onTap();
+        },
       ),
-      onTap: () {
-        Navigator.of(context).pop();
-        onTap();
-      },
     );
   }
 }

@@ -6,7 +6,7 @@ import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets/vehicle_info_form/vehicle_info_form_sections.dart';
 import 'package:eks_sana_plus_org/src/shared/input_formatter/persian_arabic_digits_to_english_formatter.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/full_screen_bottom_sheet_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter/gestures.dart';
@@ -87,22 +87,17 @@ class _AddVehicleInfoViewState extends State<_AddVehicleInfoView> {
 
             return Scaffold(
               backgroundColor: Theme.of(context).colorScheme.secondaryContainer,
+              appBar: SimpleAppBar(
+                title: 'افزودن خودروی جدید',
+                onBack: () => context.pop(),
+              ),
               body: SafeArea(
-                child: Column(
-                  children: [
-                    FullScreenBottomSheetAppBar(
-                      title: 'افزودن خودروی جدید',
-                      onClose: () => context.pop(),
-                    ),
-                    Expanded(
-                      child: _buildBody(
-                        context: context,
-                        state: state,
-                        isLoading: isLoading,
-                        isFailed: isFailed,
-                      ),
-                    ),
-                  ],
+                top: false,
+                child: _buildBody(
+                  context: context,
+                  state: state,
+                  isLoading: isLoading,
+                  isFailed: isFailed,
                 ),
               ),
               bottomNavigationBar: isReady

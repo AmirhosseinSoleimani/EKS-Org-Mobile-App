@@ -1,15 +1,15 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/Cartable_item_action_entity.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/archive_cartable_message_response_entity.dart';
-import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/domain/entities/cartable_item_entity.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/presentation/actions/cartable_action_codes.dart';
 import 'package:eks_sana_plus_org/src/features/cartable/presentation/cubit/cartable_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/request_detail_page.dart';
+import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/manager/current_session_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/main_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
@@ -89,7 +89,7 @@ class CartablePageView extends StatelessWidget {
         final data = state.data;
 
         return Scaffold(
-          appBar: const MainAppBar(
+          appBar: const SimpleAppBar(
             title: 'کارتابل',
           ),
           body: ScrollConfiguration(

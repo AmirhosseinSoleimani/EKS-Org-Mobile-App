@@ -32,7 +32,6 @@ import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_tex
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 import 'widgets/service_icon_widget.dart';
 
@@ -180,7 +179,7 @@ class ServicesPage extends StatelessWidget {
       case CurrentSessionMenuKeys.sanShift:
         return _ServiceMenuItemData(
           title: 'شیفت',
-          icon: Symbols.swap_driving_apps,
+          icon: Icons.swap_horiz_rounded,
           onTap: () => context.pushNamed(ShiftListPage.name),
         );
       case CurrentSessionMenuKeys.sanNavganServices:
@@ -198,19 +197,19 @@ class ServicesPage extends StatelessWidget {
       case CurrentSessionMenuKeys.sanGeneralContent:
         return _ServiceMenuItemData(
           title: 'بخش نامه',
-          icon: Symbols.developer_guide,
+          icon: Icons.menu_book_outlined,
           onTap: () => context.pushNamed(GeneralContentPage.name),
         );
       case CurrentSessionMenuKeys.sanVehicleModel:
         return _ServiceMenuItemData(
           title: 'نوع خودرو',
-          icon: Symbols.auto_towing,
+          icon: Icons.car_repair_outlined,
           onTap: () => context.pushNamed(VehicleModelPage.name),
         );
       case CurrentSessionMenuKeys.sanSpecialPlan:
         return _ServiceMenuItemData(
           title: 'طرح',
-          icon: Symbols.domain_verification,
+          icon: Icons.verified_outlined,
           onTap: () => context.pushNamed(SpecialPlanPage.name),
         );
       default:

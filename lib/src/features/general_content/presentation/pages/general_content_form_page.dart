@@ -6,7 +6,6 @@ import 'package:eks_sana_plus_org/src/features/general_content/presentation/cubi
 import 'package:eks_sana_plus_org/src/features/general_content/presentation/cubit/general_content_state.dart';
 import 'package:eks_sana_plus_org/src/features/general_content/presentation/widgets/form/general_content_form.dart';
 import 'package:eks_sana_plus_org/src/features/general_content/presentation/widgets/form/general_content_submit_controller.dart';
-import 'package:eks_sana_plus_org/src/features/general_content/presentation/widgets/form/general_content_form_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/sticky_form_action_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';

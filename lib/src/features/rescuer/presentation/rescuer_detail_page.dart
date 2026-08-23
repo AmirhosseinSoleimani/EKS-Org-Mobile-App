@@ -3,7 +3,7 @@ import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/rescuer_e
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/cubit/detail/rescuer_detail_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/detail/rescuer_detail_section_card.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/rescuer_avatar.dart';
-import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/rescuer_full_screen_sheet_app_bar.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/extensions/string_extensions.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
@@ -70,7 +70,10 @@ class _RescuerDetailView extends StatelessWidget {
       },
       child: Scaffold(
         backgroundColor: const Color(0xFFF4F4F4),
-        appBar: const RescuerFullScreenSheetAppBar(title: 'جزئیات امدادرسان'),
+        appBar: SimpleAppBar(
+          title: 'جزئیات امدادرسان',
+          onBack: () => Navigator.of(context).pop(false),
+        ),
         body: BlocBuilder<RescuerDetailCubit, RescuerDetailState>(
           builder: (context, state) {
             return state.maybeWhen(
