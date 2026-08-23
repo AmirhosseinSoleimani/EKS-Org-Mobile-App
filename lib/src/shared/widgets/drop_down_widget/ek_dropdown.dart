@@ -15,6 +15,7 @@ class EkDropDown extends StatefulWidget {
   final double? height;
   final double? width;
   final Function? onInitTap;
+  final VoidCallback? onTap;
   final Color? dropdownColor;
 
   final bool? autoSelect;
@@ -38,6 +39,7 @@ class EkDropDown extends StatefulWidget {
     this.autoSelect = false,
     this.focusNode,
     this.onInitTap,
+    this.onTap,
     this.dropdownColor,
   });
 
@@ -95,6 +97,7 @@ class _EkDropDownState extends State<EkDropDown> {
                     .textTheme
                     .bodyMedium
                     ?.copyWith(fontWeight: FontWeight.bold),
+                onTap: widget.onTap,
                 onChanged: (String? newValue) {
                   if (newValue != '') {
                     widget.onItemValue!(newValue!);
@@ -179,6 +182,7 @@ class _EkDropDownState extends State<EkDropDown> {
                 icon: SizedBox(),
                 style: Theme.of(context).textTheme.bodyMedium,
 
+                onTap: widget.onTap,
                 onChanged: (String? newValue) {
                   widget.onItemValue?.call(newValue ?? '');
 

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/leave/domain/entities/leave_status.dart';
 import 'package:eks_sana_plus_org/src/features/leave/presentation/cubit/leave_cubit.dart';
@@ -195,10 +197,13 @@ class LeavePageView extends StatelessWidget {
   }
 
   void _showFilters(BuildContext context) {
+    final cubit = context.read<LeaveCubit>();
+    unawaited(cubit.ensureReasonsLoaded());
+
     showFilterBottomSheet<void>(
       context: context,
       builder: (_) => BlocProvider.value(
-        value: context.read<LeaveCubit>(),
+        value: cubit,
         child: const LeaveFilterSheet(),
       ),
     );

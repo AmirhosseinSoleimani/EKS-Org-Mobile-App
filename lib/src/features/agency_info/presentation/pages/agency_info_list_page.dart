@@ -4,7 +4,6 @@ import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/ag
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/add_agency_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_action_pages.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_contracts_page.dart';
-import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_info_details_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_delete_action_view.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_detail_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_sheet.dart';
@@ -265,22 +264,11 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
           final item = items[index];
           return AgencyInfoSummaryCard(
             item: item,
-            onTap: () {}, //=> _openDetails(context, item),
             onAction: () => _showActionSheet(context, cubit, item),
           );
         },
       ),
     );
-  }
-
-  Future<void> _openDetails(BuildContext context, AgencyInfoEntity item) async {
-    final changed = await context.pushNamed(
-      AgencyInfoDetailsPage.name,
-      extra: item.id,
-    );
-    if (changed == true && context.mounted) {
-      context.read<AgencyInfoCubit>().fetchList(refresh: true);
-    }
   }
 
   void _onScroll() {
@@ -380,9 +368,10 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
         return AgencyServiceTypesPage.name;
       case AgencyInfoActionType.history:
         return AgencyHistoryPage.name;
-      case AgencyInfoActionType.changeStatus:
       case AgencyInfoActionType.complementaryInfo:
         return AgencyComplementaryInfoPage.name;
+      case AgencyInfoActionType.changeStatus:
+        return null;
       case AgencyInfoActionType.delete:
         return null;
     }

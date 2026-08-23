@@ -30,18 +30,22 @@ class AgencyInfoComplementaryInfoActionView extends StatelessWidget {
                   AgencyInfoActionLabelValueRow(
                     label: 'شناسه ملی',
                     value: information?.agencyNationalId,
+                    useSpaceBetween: true,
                   ),
                   AgencyInfoActionLabelValueRow(
                     label: 'کد تفصیلی',
                     value: information?.detailedCode,
+                    useSpaceBetween: true,
                   ),
                   AgencyInfoActionLabelValueRow(
                     label: 'شماره پیگیری',
                     value: information?.trackingNumber,
+                    useSpaceBetween: true,
                   ),
                   AgencyInfoActionLabelValueRow(
                     label: 'پرونده مالیاتی',
                     value: _taxFileStatus(information?.taxFileCompleted),
+                    useSpaceBetween: true,
                   ),
                 ],
               ),

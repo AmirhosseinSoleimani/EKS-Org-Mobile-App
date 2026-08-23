@@ -33,6 +33,10 @@ class PrettyDioLogger extends Interceptor {
   /// Width size per logPrint
   final int maxWidth;
 
+  /// Maximum number of characters printed for a single raw body/block.
+  /// Large API responses are truncated to keep debug logging off the UI hot path.
+  final int maxBodyCharacters;
+
   /// Log printer; defaults logPrint log to console.
   /// In flutter, you'd better use debugPrint.
   /// you can also write log in a file.
@@ -46,6 +50,7 @@ class PrettyDioLogger extends Interceptor {
       this.responseBody = true,
       this.error = true,
       this.maxWidth = 90,
+      this.maxBodyCharacters = 12000,
       this.compact = true,
       this.logPrint = print});
 
@@ -194,11 +199,27 @@ class PrettyDioLogger extends Interceptor {
   }
 
   void _printBlock(String msg) {
-    final lines = (msg.length / maxWidth).ceil();
+    final isTruncated = msg.length > maxBodyCharacters;
+    final printableMessage = isTruncated
+        ? msg.substring(0, maxBodyCharacters)
+        : msg;
+    final lines = (printableMessage.length / maxWidth).ceil();
+
     for (var i = 0; i < lines; ++i) {
       logPrint((i >= 0 ? '║ ' : '') +
-          msg.substring(i * maxWidth,
-              math.min<int>(i * maxWidth + maxWidth, msg.length)));
+          printableMessage.substring(
+            i * maxWidth,
+            math.min<int>(
+              i * maxWidth + maxWidth,
+              printableMessage.length,
+            ),
+          ));
+    }
+
+    if (isTruncated) {
+      logPrint(
+        '║ ... [truncated ${msg.length - maxBodyCharacters} characters]',
+      );
     }
   }
 

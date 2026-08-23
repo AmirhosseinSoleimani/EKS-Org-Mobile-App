@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:eks_sana_plus_org/src/features/leave/data/data_sources/leave_data_source.dart';
 import 'package:eks_sana_plus_org/src/features/leave/data/models/leave_details_model.dart';
 import 'package:eks_sana_plus_org/src/features/leave/data/models/leave_list_item_model.dart';
@@ -7,6 +9,7 @@ import 'package:eks_sana_plus_org/src/features/leave/data/models/params/get_leav
 import 'package:eks_sana_plus_org/src/features/leave/data/models/params/rollback_leave_request_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/leave/data/service/leave_service.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
+import 'package:flutter/foundation.dart';
 import 'package:injectable/injectable.dart';
 
 @LazySingleton(as: LeaveDataSource)
@@ -19,7 +22,11 @@ class LeaveDataSourceImpl extends LeaveDataSource {
   Future<BaseListResponse<LeaveListItemModel>> getLeaveReports(
     GetLeaveReportsParamModel param,
   ) async {
-    return _service.getLeaveReports(param.toQueryParameters());
+    final rawResponse = await _service.getLeaveReports(
+      param.toQueryParameters(),
+    );
+
+    return compute(_parseLeaveReportsResponse, rawResponse);
   }
 
   @override
@@ -50,4 +57,18 @@ class LeaveDataSourceImpl extends LeaveDataSource {
   Future<BaseResponse> deleteLeaveRequest(int id) async {
     return _service.deleteLeaveRequest(id);
   }
+}
+
+BaseListResponse<LeaveListItemModel> _parseLeaveReportsResponse(
+  String rawResponse,
+) {
+  final decoded = jsonDecode(rawResponse);
+  if (decoded is! Map) {
+    throw const FormatException('Invalid leave reports response.');
+  }
+
+  return BaseListResponse<LeaveListItemModel>.fromJson(
+    Map<String, dynamic>.from(decoded),
+    LeaveListItemModel.fromJson,
+  );
 }

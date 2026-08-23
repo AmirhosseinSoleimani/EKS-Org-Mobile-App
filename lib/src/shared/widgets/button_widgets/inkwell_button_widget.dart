@@ -21,6 +21,8 @@ class InkwellButtonWidget extends StatelessWidget {
     this.prefixIcon,
     this.borderStyle,
     this.borderWidth,
+    this.titleMaxLines,
+    this.titleOverflow,
   });
 
   final VoidCallback? onTap;
@@ -40,6 +42,8 @@ class InkwellButtonWidget extends StatelessWidget {
   final TextStyle? textStyle;
   final Color? loadingColor;
   final double? borderWidth;
+  final int? titleMaxLines;
+  final TextOverflow? titleOverflow;
 
   bool get _isLoading => showLoading ?? false;
 
@@ -124,6 +128,14 @@ class InkwellButtonWidget extends StatelessWidget {
   }
 
   Widget _buildTitleText(BuildContext context) {
+    final titleWidget = Text(
+      title ?? '',
+      maxLines: titleMaxLines,
+      overflow: titleOverflow,
+      textAlign: TextAlign.center,
+      style: _titleStyle(context),
+    );
+
     return Row(
       mainAxisSize: MainAxisSize.min,
       mainAxisAlignment: MainAxisAlignment.center,
@@ -132,11 +144,10 @@ class InkwellButtonWidget extends StatelessWidget {
           prefixIcon!,
           Space.w8,
         ],
-        Text(
-          title ?? '',
-          textAlign: TextAlign.center,
-          style: _titleStyle(context),
-        ),
+        if (titleMaxLines != null || titleOverflow != null)
+          Flexible(child: titleWidget)
+        else
+          titleWidget,
         if (suffixIcon != null) ...[
           Space.w8,
           suffixIcon!,

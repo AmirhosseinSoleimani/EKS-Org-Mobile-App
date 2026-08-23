@@ -20,15 +20,13 @@ class _LeaveService implements LeaveService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<BaseListResponse<LeaveListItemModel>> getLeaveReports(
-    Map<String, dynamic> query,
-  ) async {
+  Future<String> getLeaveReports(Map<String, dynamic> query) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     queryParameters.addAll(query);
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _options = _setStreamType<BaseListResponse<LeaveListItemModel>>(
+    final _options = _setStreamType<String>(
       Options(method: 'GET', headers: _headers, extra: _extra)
           .compose(
             _dio.options,
@@ -38,17 +36,8 @@ class _LeaveService implements LeaveService {
           )
           .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
     );
-    final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseListResponse<LeaveListItemModel> _value;
-    try {
-      _value = BaseListResponse<LeaveListItemModel>.fromJson(
-        _result.data!,
-        (json) => LeaveListItemModel.fromJson(json as Map<String, dynamic>),
-      );
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options, response: _result);
-      rethrow;
-    }
+    final _result = await _dio.fetch<String>(_options);
+    final _value = _result.data!;
     return _value;
   }
 

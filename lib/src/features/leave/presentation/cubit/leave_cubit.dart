@@ -55,11 +55,13 @@ class LeaveCubit extends Cubit<LeaveState> with LatestRequestGuard {
     LeaveTypeOption(title: 'ساعتی', type: LeaveType.hourly),
   ];
 
-  Future<void> init() async {
-    await Future.wait([
-      getReasons(),
-      getLeaveReports(),
-    ]);
+  bool _reasonsLoaded = false;
+
+  Future<void> init() => getLeaveReports();
+
+  Future<void> ensureReasonsLoaded() async {
+    if (_reasonsLoaded || state.isReasonsLoading) return;
+    await getReasons();
   }
 
   Future<void> getReasons() async {
@@ -69,6 +71,7 @@ class LeaveCubit extends Cubit<LeaveState> with LatestRequestGuard {
 
     result.when(
       success: (items, failures, resultCode) {
+        _reasonsLoaded = true;
         emit(
           state.copyWith(
             reasons: items,
@@ -449,6 +452,10 @@ class LeaveCubit extends Cubit<LeaveState> with LatestRequestGuard {
     LeaveStatus status,
   ) {
     final normalized = query.trim().toLowerCase();
+
+    if (status == LeaveStatus.all && normalized.isEmpty) {
+      return items;
+    }
 
     return items.where((item) {
       final matchesStatus =

@@ -1,4 +1,3 @@
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
@@ -61,6 +60,7 @@ class AddAgencyDropDown extends StatelessWidget {
     this.selectedTitle,
     this.placeholder = 'انتخاب کنید',
     this.mandatory = false,
+    this.onTap,
   });
 
   final String label;
@@ -69,6 +69,7 @@ class AddAgencyDropDown extends StatelessWidget {
   final String? selectedTitle;
   final String placeholder;
   final bool mandatory;
+  final VoidCallback? onTap;
 
   @override
   Widget build(BuildContext context) {
@@ -87,6 +88,7 @@ class AddAgencyDropDown extends StatelessWidget {
       mandatory: mandatory,
       selectedItem: selectedItem,
       onItemValue: onChanged,
+      onTap: onTap,
     );
   }
 }

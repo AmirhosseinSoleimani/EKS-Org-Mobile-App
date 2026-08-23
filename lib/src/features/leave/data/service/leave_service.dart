@@ -15,7 +15,7 @@ abstract class LeaveService {
   factory LeaveService(Dio dio) = _LeaveService;
 
   @GET('/api/StaffLeave/GetLeaveReports')
-  Future<BaseListResponse<LeaveListItemModel>> getLeaveReports(
+  Future<String> getLeaveReports(
     @Queries() Map<String, dynamic> query,
   );
 

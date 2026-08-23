@@ -64,20 +64,45 @@ class AgencyInfoActionLabelValueRow extends StatelessWidget {
     super.key,
     required this.label,
     required this.value,
+    this.useSpaceBetween = false,
   });
 
   final String label;
   final String? value;
+  final bool useSpaceBetween;
 
   @override
   Widget build(BuildContext context) {
+    final normalizedLabel = label.replaceFirst(RegExp(r':$'), '');
+    final normalizedValue = AgencyInfoActionFormatter.valueOrDash(value);
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: AppPadding.p4),
-      child: ListItemLabelValueText(
-        label: label.replaceFirst(RegExp(r':$'), ''),
-        value: AgencyInfoActionFormatter.valueOrDash(value),
-        maxLines: 2,
-      ),
+      child: useSpaceBetween
+          ? Row(
+              children: [
+                Expanded(
+                  child: ListItemLabelText(
+                    text: '$normalizedLabel:',
+                    maxLines: 2,
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+                Space.w16,
+                Expanded(
+                  child: ListItemValueText(
+                    text: normalizedValue,
+                    maxLines: 2,
+                    textAlign: TextAlign.end,
+                  ),
+                ),
+              ],
+            )
+          : ListItemLabelValueText(
+              label: normalizedLabel,
+              value: normalizedValue,
+              maxLines: 2,
+            ),
     );
   }
 }

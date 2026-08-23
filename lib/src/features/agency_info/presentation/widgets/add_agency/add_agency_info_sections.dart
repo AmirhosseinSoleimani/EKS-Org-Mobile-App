@@ -16,6 +16,7 @@ class AddAgencyInfoSection extends StatelessWidget {
     required this.agencyTypeItems,
     required this.selectedAgencyTypeTitle,
     required this.onAgencyTypeChanged,
+    required this.onAgencyTypeTap,
   });
 
   final TextEditingController codeController;
@@ -25,6 +26,7 @@ class AddAgencyInfoSection extends StatelessWidget {
   final List<String> agencyTypeItems;
   final String selectedAgencyTypeTitle;
   final ValueChanged<String> onAgencyTypeChanged;
+  final VoidCallback onAgencyTypeTap;
 
   @override
   Widget build(BuildContext context) {
@@ -53,6 +55,7 @@ class AddAgencyInfoSection extends StatelessWidget {
           selectedTitle: selectedAgencyTypeTitle,
           items: agencyTypeItems,
           onChanged: onAgencyTypeChanged,
+          onTap: onAgencyTypeTap,
         ),
       ],
     );
@@ -205,6 +208,7 @@ class AddAgencyAddressSection extends StatelessWidget {
     required this.cityItems,
     required this.selectedCityTitle,
     required this.onCityChanged,
+    required this.onCityTap,
     required this.numberFormatters,
     required this.requiredValidator,
   });
@@ -214,6 +218,7 @@ class AddAgencyAddressSection extends StatelessWidget {
   final List<String> cityItems;
   final String selectedCityTitle;
   final ValueChanged<String> onCityChanged;
+  final VoidCallback onCityTap;
   final List<TextInputFormatter> numberFormatters;
   final String? Function(String, String?) requiredValidator;
 
@@ -229,6 +234,7 @@ class AddAgencyAddressSection extends StatelessWidget {
           selectedTitle: selectedCityTitle,
           items: cityItems,
           onChanged: onCityChanged,
+          onTap: onCityTap,
         ),
         Space.h20,
         AddAgencyTextField(
