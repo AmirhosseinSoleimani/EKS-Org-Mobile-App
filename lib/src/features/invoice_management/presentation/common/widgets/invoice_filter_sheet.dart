@@ -2,12 +2,11 @@ import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/emdad_service_category_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/params/invoice_list_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/date_picker_widget/date_picker_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/switch_widgets/labeled_switch_field.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/text_form_field_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/switch_widgets/labeled_switch_field.dart';
 import 'package:flutter/material.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
@@ -106,7 +105,7 @@ class _InvoiceFilterSheetState
             selectedItem: _serviceType.label,
             onItemValue: _onServiceTypeChanged,
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           EkDropDown(
             [
               _all,
@@ -120,14 +119,14 @@ class _InvoiceFilterSheetState
             selectedItem: _category?.title?.trim() ?? _all,
             onItemValue: _onCategoryChanged,
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           TextFormFieldWidget(
             controller: _requestTrackCodeController,
             labelText: 'شماره درخواست',
             textInputType: TextInputType.number,
             textInputAction: TextInputAction.next,
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           DatePickerWidget(
             controller: _fromDateController,
             labelText: 'از تاریخ',
@@ -138,7 +137,7 @@ class _InvoiceFilterSheetState
               setState(() => _fromDate = value);
             },
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           DatePickerWidget(
             controller: _toDateController,
             labelText: 'تا تاریخ',
@@ -149,20 +148,20 @@ class _InvoiceFilterSheetState
               setState(() => _toDate = value);
             },
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           TextFormFieldWidget(
             controller: _agencyCodeController,
             labelText: 'کد نمایندگی',
             textInputAction: TextInputAction.next,
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           TextFormFieldWidget(
             controller: _emdadgarNameController,
             labelText: 'نام امدادگر',
             textInputAction: TextInputAction.done,
           ),
           if (widget.showSubscriptionField) ...[
-            Space.h12,
+            FilterBottomSheetScaffold.fieldGap,
             LabeledSwitchField(
               label: 'فقط درخواست‌های اشتراکی',
               value: _showSubscription,

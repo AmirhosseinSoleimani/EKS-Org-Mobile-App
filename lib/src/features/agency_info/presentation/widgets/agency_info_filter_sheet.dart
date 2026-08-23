@@ -1,5 +1,4 @@
 import 'package:eks_sana_plus_org/src/features/agency_info/domain/entities/params/agency_info_filter_param_entity.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/text_form_field_widget.dart';
@@ -158,13 +157,13 @@ class _AgencyInfoFilterSheetState extends State<AgencyInfoFilterSheet> {
           textInputType: TextInputType.number,
           textInputAction: TextInputAction.next,
         ),
-        Space.h12,
+        FilterBottomSheetScaffold.fieldGap,
         TextFormFieldWidget(
           controller: _nameController,
           labelText: 'نام نمایندگی',
           textInputAction: TextInputAction.next,
         ),
-        Space.h12,
+        FilterBottomSheetScaffold.fieldGap,
         EkDropDown(
           _typeTitles,
           label: 'نوع',
@@ -175,73 +174,73 @@ class _AgencyInfoFilterSheetState extends State<AgencyInfoFilterSheet> {
             });
           },
         ),
-        Space.h12,
+        FilterBottomSheetScaffold.fieldGap,
         TextFormFieldWidget(
           controller: _managerFirstNameController,
           labelText: 'نام مدیر',
           textInputAction: TextInputAction.next,
         ),
-        Space.h12,
+        FilterBottomSheetScaffold.fieldGap,
         TextFormFieldWidget(
           controller: _managerLastNameController,
           labelText: 'نام خانوادگی مدیر',
           textInputAction: TextInputAction.next,
         ),
-        Space.h12,
+        FilterBottomSheetScaffold.fieldGap,
         TextFormFieldWidget(
           controller: _nationalNoController,
           labelText: 'کد ملی مدیر',
           textInputType: TextInputType.number,
           textInputAction: TextInputAction.next,
         ),
-        Space.h12,
+        FilterBottomSheetScaffold.fieldGap,
         TextFormFieldWidget(
           controller: _economicCodeController,
           labelText: 'کد اقتصادی',
           textInputType: TextInputType.number,
           textInputAction: TextInputAction.next,
         ),
-        Space.h12,
+        FilterBottomSheetScaffold.fieldGap,
         TextFormFieldWidget(
           controller: _mobileController,
           labelText: 'شماره موبایل',
           textInputType: TextInputType.phone,
           textInputAction: TextInputAction.next,
         ),
-        Space.h12,
+        FilterBottomSheetScaffold.fieldGap,
         TextFormFieldWidget(
           controller: _provinceNameController,
           labelText: 'استان',
           textInputAction: TextInputAction.next,
         ),
-        Space.h12,
+        FilterBottomSheetScaffold.fieldGap,
         TextFormFieldWidget(
           controller: _cityNameController,
           labelText: 'شهر',
           textInputAction: TextInputAction.next,
         ),
-        Space.h12,
+        FilterBottomSheetScaffold.fieldGap,
         TextFormFieldWidget(
           controller: _detailedCodeController,
           labelText: 'کد تفصیلی',
           textInputType: TextInputType.number,
           textInputAction: TextInputAction.next,
         ),
-        Space.h12,
+        FilterBottomSheetScaffold.fieldGap,
         TextFormFieldWidget(
           controller: _agencyNationalIdController,
           labelText: 'شناسه ملی',
           textInputType: TextInputType.number,
           textInputAction: TextInputAction.next,
         ),
-        Space.h12,
+        FilterBottomSheetScaffold.fieldGap,
         TextFormFieldWidget(
           controller: _trackingNumberController,
           labelText: 'شماره پیگیری',
           textInputType: TextInputType.number,
           textInputAction: TextInputAction.done,
         ),
-        Space.h12,
+        FilterBottomSheetScaffold.fieldGap,
         EkDropDown(
           _booleanTitles,
           label: 'پرونده مالیاتی',
@@ -252,7 +251,7 @@ class _AgencyInfoFilterSheetState extends State<AgencyInfoFilterSheet> {
             });
           },
         ),
-        Space.h12,
+        FilterBottomSheetScaffold.fieldGap,
         EkDropDown(
           _statusTitles,
           label: 'وضعیت',
@@ -263,7 +262,6 @@ class _AgencyInfoFilterSheetState extends State<AgencyInfoFilterSheet> {
             });
           },
         ),
-        Space.h16,
       ],
     );
   }

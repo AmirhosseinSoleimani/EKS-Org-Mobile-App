@@ -1,6 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/params/vehicle_info_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_model_entity.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/car_license_plate_widget/car_license_plate_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
@@ -76,25 +75,25 @@ class _VehicleInfoFilterSheetState extends State<VehicleInfoFilterSheet> {
               setState(() => _vehicleModelId = _vehicleModelValue(value));
             },
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           TextFormFieldWidget(
             controller: _chassisController,
             labelText: 'شماره شاسی',
             textInputAction: TextInputAction.next,
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           TextFormFieldWidget(
             controller: _engineController,
             labelText: 'شماره موتور',
             textInputAction: TextInputAction.next,
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           TextFormFieldWidget(
             controller: _imeiController,
             labelText: 'IMEI',
             textInputAction: TextInputAction.next,
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           EkDropDown(
             const ['همه', 'فعال', 'غیرفعال'],
             label: 'انبارک',
@@ -102,7 +101,7 @@ class _VehicleInfoFilterSheetState extends State<VehicleInfoFilterSheet> {
             onItemValue: (value) =>
                 setState(() => _isDepotEnabled = _boolValue(value)),
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           EkDropDown(
             const ['همه', 'فعال', 'غیرفعال'],
             label: 'عیب یاب',
@@ -110,14 +109,14 @@ class _VehicleInfoFilterSheetState extends State<VehicleInfoFilterSheet> {
             onItemValue: (value) =>
                 setState(() => _isTroubleShooter = _boolValue(value)),
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           EkDropDown(
             const ['همه', 'فعال', 'غیرفعال'],
             label: 'وضعیت',
             selectedItem: _boolTitle(_isActive),
             onItemValue: (value) => setState(() => _isActive = _boolValue(value)),
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           EkDropDown(
             const ['همه', 'براساس نمایندگی', 'براساس خودرو'],
             label: 'مدل تسهیم انبارک',
@@ -125,7 +124,7 @@ class _VehicleInfoFilterSheetState extends State<VehicleInfoFilterSheet> {
             onItemValue: (value) =>
                 setState(() => _tashimType = _tashimValue(value)),
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           LicensePlateTextFormFieldWidget(
             controller: _plateController,
             mandatory: false,

@@ -107,7 +107,7 @@ class _DateRangeFilterSheetState extends State<DateRangeFilterSheet> {
               color: Theme.of(context).colorScheme.error,
             ),
           ],
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           JalaliRangeCalendar(
             key: ValueKey(
               '${_visibleDate.year}-${_visibleDate.month}-${_activePart.name}',
@@ -118,7 +118,6 @@ class _DateRangeFilterSheetState extends State<DateRangeFilterSheet> {
             lastDate: _maxSelectableToDate,
             onDateSelected: _selectDate,
           ),
-          Space.h12,
         ],
       ),
     );

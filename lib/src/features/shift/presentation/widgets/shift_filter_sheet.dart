@@ -1,6 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/shift/domain/entities/params/shift_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_enum_item_entity.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/text_form_field_widget.dart';
@@ -57,7 +56,7 @@ class _ShiftFilterSheetState extends State<ShiftFilterSheet> {
             textInputAction: TextInputAction.next,
             maxLength: 30,
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           EkDropDown(
             ['همه', ...typeItems.map(_typeLabel)],
             label: 'نوع',
@@ -68,7 +67,7 @@ class _ShiftFilterSheetState extends State<ShiftFilterSheet> {
               });
             },
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           TextFormFieldWidget(
             controller: _startTimeController,
             labelText: 'از ساعت',
@@ -76,7 +75,7 @@ class _ShiftFilterSheetState extends State<ShiftFilterSheet> {
             maxLength: 5,
             textInputFormatter: [_TimeInputFormatter()],
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           TextFormFieldWidget(
             controller: _endTimeController,
             labelText: 'تا ساعت',

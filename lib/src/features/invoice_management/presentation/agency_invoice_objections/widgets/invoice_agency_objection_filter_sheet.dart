@@ -1,6 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/agency_invoice_objections/models/invoice_agency_objection_filter_value.dart';
 import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/date_picker_widget/date_picker_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/text_form_field_widget.dart';
@@ -80,7 +79,7 @@ class _InvoiceAgencyObjectionFilterSheetState
             textInputType: TextInputType.number,
             textInputAction: TextInputAction.next,
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           DatePickerWidget(
             controller: _fromDateController,
             labelText: 'از تاریخ',
@@ -89,7 +88,7 @@ class _InvoiceAgencyObjectionFilterSheetState
             lastDate: _toDate,
             onTap: (value) => setState(() => _fromDate = value),
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           DatePickerWidget(
             controller: _toDateController,
             labelText: 'تا تاریخ',
@@ -98,13 +97,13 @@ class _InvoiceAgencyObjectionFilterSheetState
             firstDate: _fromDate,
             onTap: (value) => setState(() => _toDate = value),
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           TextFormFieldWidget(
             controller: _agencyCodeController,
             labelText: 'کد نمایندگی',
             textInputAction: TextInputAction.next,
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           TextFormFieldWidget(
             controller: _aidPerNameController,
             labelText: 'نام امدادگر',

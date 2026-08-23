@@ -1,7 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/imei/domain/entities/device_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/imei/presentation/cubit/imei_cubit.dart';
 import 'package:eks_sana_plus_org/src/shared/input_formatter/persian_arabic_digits_to_english_formatter.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/text_form_field_widget.dart';
@@ -35,7 +34,7 @@ class ImeiFilterSheet extends StatelessWidget {
               );
             },
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           TextFormFieldWidget(
             controller: cubit.filterSimNumberController,
             labelText: 'شماره سیم کارت',
@@ -45,12 +44,12 @@ class ImeiFilterSheet extends StatelessWidget {
               FilteringTextInputFormatter.digitsOnly,
             ],
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           TextFormFieldWidget(
             controller: cubit.filterAvlSerialController,
             labelText: 'سریال دستگاه',
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           TextFormFieldWidget(
             controller: cubit.filterImeiController,
             labelText: 'IMEI',
@@ -60,7 +59,7 @@ class ImeiFilterSheet extends StatelessWidget {
               FilteringTextInputFormatter.digitsOnly,
             ],
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           EkDropDown(
             const ['همه', 'فعال', 'غیرفعال'],
             label: 'وضعیت',

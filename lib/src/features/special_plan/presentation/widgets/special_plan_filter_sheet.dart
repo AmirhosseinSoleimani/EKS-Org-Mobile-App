@@ -2,7 +2,6 @@ import 'package:eks_sana_plus_org/src/features/special_plan/domain/entities/spec
 import 'package:eks_sana_plus_org/src/features/special_plan/presentation/widgets/special_plan_filter_controller.dart';
 import 'package:eks_sana_plus_org/src/shared/features/map/domain/entity/province_lookup_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/input_formatter/persian_arabic_digits_to_english_formatter.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/date_picker_widget/date_picker_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
@@ -42,7 +41,7 @@ class SpecialPlanFilterSheet extends StatelessWidget {
                 controller: controller.titleController,
                 labelText: 'عنوان',
               ),
-              Space.h12,
+              FilterBottomSheetScaffold.fieldGap,
               EkDropDown(
                 ['همه', ...products.map((item) => item.label)],
                 label: 'محصول',
@@ -51,7 +50,7 @@ class SpecialPlanFilterSheet extends StatelessWidget {
                   value == 'همه' ? null : _findProduct(value),
                 ),
               ),
-              Space.h12,
+              FilterBottomSheetScaffold.fieldGap,
               EkDropDown(
                 const ['همه', 'بله', 'خیر'],
                 label: 'اولویت بالا',
@@ -59,7 +58,7 @@ class SpecialPlanFilterSheet extends StatelessWidget {
                 onItemValue: (value) =>
                     controller.selectHighPriority(_booleanValue(value)),
               ),
-              Space.h12,
+              FilterBottomSheetScaffold.fieldGap,
               DatePickerWidget(
                 controller: controller.startDateController,
                 labelText: 'تاریخ شروع',
@@ -70,7 +69,7 @@ class SpecialPlanFilterSheet extends StatelessWidget {
                 lastDate: Jalali(1500, 12, 29),
                 onTap: controller.selectStartDate,
               ),
-              Space.h12,
+              FilterBottomSheetScaffold.fieldGap,
               DatePickerWidget(
                 controller: controller.endDateController,
                 labelText: 'تاریخ پایان',
@@ -81,7 +80,7 @@ class SpecialPlanFilterSheet extends StatelessWidget {
                 lastDate: Jalali(1500, 12, 29),
                 onTap: controller.selectEndDate,
               ),
-              Space.h12,
+              FilterBottomSheetScaffold.fieldGap,
               TextFormFieldWidget(
                 controller: controller.orderController,
                 labelText: 'شماره اولویت',
@@ -91,7 +90,7 @@ class SpecialPlanFilterSheet extends StatelessWidget {
                   FilteringTextInputFormatter.digitsOnly,
                 ],
               ),
-              Space.h12,
+              FilterBottomSheetScaffold.fieldGap,
               EkDropDown(
                 ['همه', ...provinces.map((item) => item.label)],
                 label: 'استان',
@@ -100,12 +99,12 @@ class SpecialPlanFilterSheet extends StatelessWidget {
                   value == 'همه' ? null : _findProvince(value),
                 ),
               ),
-              Space.h12,
+              FilterBottomSheetScaffold.fieldGap,
               TextFormFieldWidget(
                 controller: controller.cityController,
                 labelText: 'شهر',
               ),
-              Space.h12,
+              FilterBottomSheetScaffold.fieldGap,
               EkDropDown(
                 const ['همه', 'فعال', 'غیرفعال'],
                 label: 'وضعیت',
@@ -113,7 +112,7 @@ class SpecialPlanFilterSheet extends StatelessWidget {
                 onItemValue: (value) =>
                     controller.selectStatus(_statusValue(value)),
               ),
-              Space.h12,
+              FilterBottomSheetScaffold.fieldGap,
               EkDropDown(
                 const ['همه', 'بله', 'خیر'],
                 label: 'فقط خودروهای سایپایی',

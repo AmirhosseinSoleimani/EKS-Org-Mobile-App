@@ -3,6 +3,9 @@ import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_butt
 import 'package:flutter/material.dart';
 
 class FilterBottomSheetScaffold extends StatelessWidget {
+  static const double fieldSpacing = AppSize.s22;
+  static const Widget fieldGap = SizedBox(height: fieldSpacing);
+
   const FilterBottomSheetScaffold({
     super.key,
     required this.title,
@@ -69,7 +72,7 @@ class FilterBottomSheetScaffold extends StatelessWidget {
         AppPadding.p16,
         AppPadding.p16,
         AppPadding.p16,
-        AppPadding.p8,
+        AppPadding.p16,
       ),
       child: Text(
         title,

@@ -1,5 +1,4 @@
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/cubit/list/rescuer_list_cubit.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
@@ -30,7 +29,7 @@ class RescuerFilterForm extends StatelessWidget {
             controller: cubit.nameController,
             textInputAction: TextInputAction.next,
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           TextFormFieldWidget(
             labelText: 'کد ملی',
             controller: cubit.nationalNumberController,
@@ -39,7 +38,7 @@ class RescuerFilterForm extends StatelessWidget {
             maxLength: 10,
             textInputFormatter: [FilteringTextInputFormatter.digitsOnly],
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           TextFormFieldWidget(
             labelText: 'شماره همراه',
             controller: cubit.mobileController,
@@ -47,7 +46,7 @@ class RescuerFilterForm extends StatelessWidget {
             textInputAction: TextInputAction.next,
             textInputFormatter: [FilteringTextInputFormatter.digitsOnly],
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           TextFormFieldWidget(
             labelText: 'کد پرسنلی',
             controller: cubit.codeController,

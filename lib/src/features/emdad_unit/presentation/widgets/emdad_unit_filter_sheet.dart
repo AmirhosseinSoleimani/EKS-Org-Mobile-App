@@ -1,5 +1,4 @@
 import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/params/emdad_unit_filter_param_entity.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/text_form_field_widget.dart';
@@ -56,38 +55,38 @@ class _EmdadUnitFilterSheetState extends State<EmdadUnitFilterSheet> {
             labelText: 'عنوان',
             textInputAction: TextInputAction.next,
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           TextFormFieldWidget(
             controller: _personController,
             labelText: 'امدادرسان',
             textInputAction: TextInputAction.next,
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           TextFormFieldWidget(
             controller: _agencyController,
             labelText: 'نمایندگی',
             textInputAction: TextInputAction.next,
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           TextFormFieldWidget(
             controller: _vehicleController,
             labelText: 'خودرو',
             textInputAction: TextInputAction.next,
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           EkDropDown(
             const ['همه', 'نوع ۱', 'نوع ۲'],
             label: 'نوع مقر',
             selectedItem: _seatTypeTitle(_seatType),
             onItemValue: (value) => setState(() => _seatType = _seatTypeValue(value)),
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           TextFormFieldWidget(
             controller: _locationController,
             labelText: 'محل استقرار',
             textInputAction: TextInputAction.next,
           ),
-          Space.h12,
+          FilterBottomSheetScaffold.fieldGap,
           EkDropDown(
             const ['همه', '۱', '۲', '۳', '۴', '۵'],
             label: 'گرید',

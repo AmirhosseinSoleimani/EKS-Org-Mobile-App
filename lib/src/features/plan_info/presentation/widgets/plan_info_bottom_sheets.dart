@@ -147,18 +147,22 @@ class _PlanFilterSheetState extends State<_PlanFilterSheet> {
                 controller: cubit.titleController,
                 label: 'عنوان',
                 maxLength: 20,
+                bottomSpacing: FilterBottomSheetScaffold.fieldSpacing,
               ),
               _TextField(
                 controller: cubit.emdadUnitController,
                 label: 'واحد امدادی',
+                bottomSpacing: FilterBottomSheetScaffold.fieldSpacing,
               ),
               _TextField(
                 controller: cubit.shiftController,
                 label: 'شیفت',
+                bottomSpacing: FilterBottomSheetScaffold.fieldSpacing,
               ),
               _TextField(
                 controller: cubit.specialPlanController,
                 label: 'طرح',
+                bottomSpacing: FilterBottomSheetScaffold.fieldSpacing,
               ),
               _LookupField(
                 label: 'نوع مقر',
@@ -166,18 +170,22 @@ class _PlanFilterSheetState extends State<_PlanFilterSheet> {
                 items: state.seatTypes,
                 includeEmpty: true,
                 onChanged: (value) => setState(() => seatType = value),
+                bottomSpacing: FilterBottomSheetScaffold.fieldSpacing,
               ),
               _TextField(
                 controller: cubit.locationController,
                 label: 'محل استقرار',
+                bottomSpacing: FilterBottomSheetScaffold.fieldSpacing,
               ),
               _TextField(
                 controller: cubit.fromDateController,
                 label: 'تاریخ شروع',
+                bottomSpacing: FilterBottomSheetScaffold.fieldSpacing,
               ),
               _TextField(
                 controller: cubit.toDateController,
                 label: 'تاریخ پایان',
+                bottomSpacing: AppSize.s0,
               ),
             ],
           ),
@@ -387,18 +395,20 @@ class _TextField extends StatelessWidget {
   final String label;
   final int? maxLength;
   final int maxLines;
+  final double bottomSpacing;
 
   const _TextField({
     required this.controller,
     required this.label,
     this.maxLength,
     this.maxLines = 1,
+    this.bottomSpacing = AppPadding.p12,
   });
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppPadding.p12),
+      padding: EdgeInsets.only(bottom: bottomSpacing),
       child: TextFormFieldWidget(
         controller: controller,
         maxLength: maxLength,
@@ -415,6 +425,7 @@ class _LookupField extends StatelessWidget {
   final List<PlanLookupEntity> items;
   final bool includeEmpty;
   final ValueChanged<int?> onChanged;
+  final double bottomSpacing;
 
   const _LookupField({
     required this.label,
@@ -422,6 +433,7 @@ class _LookupField extends StatelessWidget {
     required this.items,
     required this.onChanged,
     this.includeEmpty = false,
+    this.bottomSpacing = AppPadding.p12,
   });
 
   @override
@@ -443,7 +455,7 @@ class _LookupField extends StatelessWidget {
     }
 
     return Padding(
-      padding: const EdgeInsets.only(bottom: AppPadding.p12),
+      padding: EdgeInsets.only(bottom: bottomSpacing),
       child: EkDropDown(
         titles,
         key: ValueKey('$label-${titles.join('|')}'),
