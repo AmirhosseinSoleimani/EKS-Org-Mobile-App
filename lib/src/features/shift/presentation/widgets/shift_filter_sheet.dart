@@ -58,12 +58,12 @@ class _ShiftFilterSheetState extends State<ShiftFilterSheet> {
           ),
           FilterBottomSheetScaffold.fieldGap,
           EkDropDown(
-            ['همه', ...typeItems.map(_typeLabel)],
+            typeItems.map(_typeLabel).toList(growable: false),
             label: 'نوع',
             selectedItem: _selectedTypeLabel(typeItems),
             onItemValue: (value) {
               setState(() {
-                _type = value == 'همه' ? null : _typeValue(typeItems, value);
+                _type = _typeValue(typeItems, value);
               });
             },
           ),
