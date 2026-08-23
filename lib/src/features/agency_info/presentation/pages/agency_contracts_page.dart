@@ -207,10 +207,6 @@ class _AgencyContractCard extends StatelessWidget {
             ],
           ),
           Space.h12,
-          Divider(
-            height: AppSize.s1,
-            color: theme.dividerColor.withOpacity(0.55),
-          ),
           Space.h8,
           AgencyInfoActionLabelValueRow(
             label: 'شماره قرارداد:',
@@ -256,7 +252,7 @@ class _AgencyContractCard extends StatelessWidget {
                       color: hasFile
                           ? colorScheme.primary
                           : colorScheme.onTertiaryFixed.withOpacity(0.55),
-                      fontWeight: FontWeight.w600,
+                      fontWeight: FontWeight.w500,
                     ),
                   ],
                 ),

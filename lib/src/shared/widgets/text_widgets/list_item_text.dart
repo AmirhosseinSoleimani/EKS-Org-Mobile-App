@@ -98,7 +98,7 @@ class ListItemValueText extends StatelessWidget {
       textDirection: textDirection,
       style: theme.textTheme.bodyMedium?.copyWith(
         color: theme.colorScheme.onTertiaryFixed,
-        fontWeight: FontWeight.w500,
+        fontWeight: FontWeight.w400,
       ),
     );
   }
@@ -171,14 +171,14 @@ class ListItemLabelValueText extends StatelessWidget {
             text: '$label: ',
             style: theme.textTheme.bodyMedium?.copyWith(
               color: color,
-              fontWeight: FontWeight.w700,
+              fontWeight: FontWeight.w500,
             ),
           ),
           TextSpan(
             text: _displayNullable(value, fallback),
             style: theme.textTheme.bodyMedium?.copyWith(
               color: color,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w400,
             ),
           ),
         ],

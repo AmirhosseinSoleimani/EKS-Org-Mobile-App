@@ -2,7 +2,9 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/abstract
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/home_service_request_entity.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_request_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/extensions/string_extensions.dart';
+import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/key_value_row.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/material.dart';
 
 class RequestDetailSection extends StatelessWidget {
@@ -17,6 +19,11 @@ class RequestDetailSection extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final baseFontSize = theme.textTheme.bodySmall?.fontSize ?? AppSize.s12;
+    final defaultFontSize = baseFontSize + AppSize.s2;
+    final resolvedLabelFontSize =  defaultFontSize;
+    final resolvedValueFontSize = defaultFontSize;
     return Column(
       children: [
         KeyValueRow(
@@ -126,9 +133,19 @@ class RequestDetailSection extends StatelessWidget {
           ),
           KeyValueRow(
             label: 'آدرس',
-            value: selectedRequest?.aidAddress ?? '-',
+            value: (selectedRequest?.aidAddress?.isNotEmpty ?? true)  ? '' :'-',
           ),
+          if(selectedRequest?.aidAddress?.isNotEmpty ?? false)...[
+            BodySmallText(
+              text: selectedRequest?.aidAddress ?? '-',
+              textAlign: TextAlign.start,
+              fontWeight:  FontWeight.normal,
+              fontSize: resolvedValueFontSize,
+            )
+          ]
+
         ],
+        Space.h4,
         KeyValueRow(
           label: 'توضیحات مشتری',
           value: selectedRequest?.description ?? '-',

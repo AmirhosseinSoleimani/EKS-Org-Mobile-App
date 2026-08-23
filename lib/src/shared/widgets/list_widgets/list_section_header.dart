@@ -28,7 +28,8 @@ class ListSectionHeader extends StatelessWidget {
             overflow: TextOverflow.ellipsis,
             style: theme.textTheme.titleMedium?.copyWith(
               color: theme.colorScheme.onSurface,
-              fontWeight: FontWeight.w500,
+              fontWeight: FontWeight.w600,
+              fontSize: AppSize.s16,
             ),
           ),
         ),
