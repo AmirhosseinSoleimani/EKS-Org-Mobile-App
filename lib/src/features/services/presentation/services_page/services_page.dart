@@ -514,6 +514,9 @@ class _MainServiceItem extends StatelessWidget {
 
   final _MainServiceItemData item;
 
+  static const double _iconSlotHeight = 50;
+  static const double _titleSlotHeight = AppSize.s48;
+
   @override
   Widget build(BuildContext context) {
     final colorScheme = Theme
@@ -539,15 +542,28 @@ class _MainServiceItem extends StatelessWidget {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    ServiceIconWidget(
-                      backgroundColor: item.backgroundColor,
-                      iconColor: colorScheme.onPrimary,
-                      imagePath: item.imagePath,
+                    SizedBox(
+                      height: _iconSlotHeight,
+                      child: Center(
+                        child: ServiceIconWidget(
+                          backgroundColor: item.backgroundColor,
+                          iconColor: colorScheme.onPrimary,
+                          imagePath: item.imagePath,
+                        ),
+                      ),
                     ),
                     Space.h8,
-                    BodyMediumText(
-                      text: item.title,
-                      textAlign: TextAlign.center,
+                    SizedBox(
+                      height: _titleSlotHeight,
+                      child: Align(
+                        alignment: Alignment.topCenter,
+                        child: BodyMediumText(
+                          text: item.title,
+                          textAlign: TextAlign.center,
+                          maxLines: 2,
+                          textOverflow: TextOverflow.ellipsis,
+                        ),
+                      ),
                     ),
                   ],
                 ),
