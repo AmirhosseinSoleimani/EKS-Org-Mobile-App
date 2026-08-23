@@ -4,11 +4,11 @@ import 'package:eks_sana_plus_org/src/features/shift/presentation/cubit/shift_li
 import 'package:eks_sana_plus_org/src/features/shift/presentation/pages/shift_form_page.dart';
 import 'package:eks_sana_plus_org/src/features/shift/presentation/widgets/shift_action_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/shift/presentation/widgets/shift_card.dart';
-import 'package:eks_sana_plus_org/src/features/shift/presentation/widgets/shift_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/shift/presentation/widgets/shift_filter_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
@@ -336,12 +336,17 @@ class _ShiftListView extends StatelessWidget {
         value: cubit,
         child: BlocBuilder<ShiftListCubit, ShiftListState>(
           builder: (context, state) {
-            return ShiftConfirmSheet(
+            return DeleteConfirmSheet(
               title: 'حذف شیفت',
               message: 'آیا از حذف این شیفت مطمئن هستید؟',
               confirmTitle: 'حذف',
-              isLoading: cubit.deletingItemId == id,
-              onConfirm: () => cubit.deleteItem(id),
+              isSubmitting: cubit.deletingItemId == id,
+              onConfirm: () async {
+                final deleted = await cubit.deleteItem(id);
+                if (deleted && context.mounted) {
+                  Navigator.of(context).pop();
+                }
+              },
             );
           },
         ),

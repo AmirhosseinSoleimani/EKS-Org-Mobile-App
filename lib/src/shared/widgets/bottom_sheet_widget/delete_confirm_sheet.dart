@@ -16,6 +16,7 @@ class DeleteConfirmSheet extends StatelessWidget {
     this.iconColor,
     this.iconBackgroundColor,
     this.isSubmitting = false,
+    this.messageMaxLines = 4,
   });
 
   final String title;
@@ -26,6 +27,7 @@ class DeleteConfirmSheet extends StatelessWidget {
   final Color? iconColor;
   final Color? iconBackgroundColor;
   final bool isSubmitting;
+  final int? messageMaxLines;
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +35,10 @@ class DeleteConfirmSheet extends StatelessWidget {
 
     return SafeArea(
       child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-
             Container(
               width: AppSize.s64,
               height: AppSize.s64,
@@ -64,7 +65,7 @@ class DeleteConfirmSheet extends StatelessWidget {
               textAlign: TextAlign.center,
               color: theme.colorScheme.onSurfaceVariant,
               lineHeight: 1.8,
-              maxLines: 4,
+              maxLines: messageMaxLines,
               textOverflow: TextOverflow.ellipsis,
             ),
             Space.h24,
@@ -81,9 +82,10 @@ class DeleteConfirmSheet extends StatelessWidget {
             InkwellButtonWidget(
               title: 'انصراف',
               backgroundColor: theme.colorScheme.onPrimary,
+              borderWidth: 2,
               borderColor:
-                  theme.colorScheme.outlineVariant.withOpacity(0.28),
-              titleColor: theme.colorScheme.onSurface,
+              Color(0x48626E33).withAlpha(25),
+              titleColor:  Color(0xFF48626E),
               onTap: () {
                 if (isSubmitting) return;
                 context.pop();

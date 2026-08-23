@@ -329,9 +329,9 @@ class ImeiCubit extends Cubit<ImeiState> with LatestRequestGuard {
     return success;
   }
 
-  Future<void> deleteItem(ImeiInfoEntity item) async {
+  Future<bool> deleteItem(ImeiInfoEntity item) async {
     final id = item.id;
-    if (id == null || state.isDeleting) return;
+    if (id == null || state.isDeleting) return false;
 
     emit(state.copyWith(
       isDeleting: true,
@@ -365,6 +365,7 @@ class ImeiCubit extends Cubit<ImeiState> with LatestRequestGuard {
     );
 
     if (success) await fetchList(refresh: true);
+    return success;
   }
 
   Future<void> exportReport() async {

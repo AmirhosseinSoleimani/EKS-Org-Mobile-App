@@ -4,7 +4,6 @@ import 'package:eks_sana_plus_org/src/features/agency_info/presentation/cubit/ag
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/add_agency_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_action_pages.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/pages/agency_contracts_page.dart';
-import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/action_views/agency_info_delete_action_view.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_detail_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_action_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/agency_info_filter_sheet.dart';
@@ -12,6 +11,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/presentation/widgets/
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
@@ -384,9 +384,24 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
   ) {
     BottomSheetMessage.showCustom(
       context: context,
-      content: AgencyInfoDeleteActionView(
-        item: item,
-        cubit: cubit,
+      content: BlocBuilder<AgencyInfoCubit, AgencyInfoState>(
+        bloc: cubit,
+        buildWhen: (previous, current) =>
+            previous.data.deletingAgencyId != current.data.deletingAgencyId,
+        builder: (sheetContext, state) {
+          return DeleteConfirmSheet(
+            title: 'حذف نمایندگی',
+            message: 'آیا نمایندگی ${item.title} حذف شود؟',
+            confirmTitle: 'حذف',
+            isSubmitting: state.data.deletingAgencyId == item.id,
+            onConfirm: () async {
+              final deleted = await cubit.deleteAgency(item);
+              if (deleted && sheetContext.mounted) {
+                Navigator.of(sheetContext).pop();
+              }
+            },
+          );
+        },
       ),
       actionWidget: const SizedBox.shrink(),
       isDismissible: false,

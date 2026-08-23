@@ -181,8 +181,10 @@ class LeavePageView extends StatelessWidget {
               confirmTitle: 'حذف',
               isSubmitting: state.isActionLoading,
               onConfirm: () async {
-                Navigator.of(sheetContext).pop();
-                await cubit.deleteRequest(id);
+                final deleted = await cubit.deleteRequest(id);
+                if (deleted && sheetContext.mounted) {
+                  Navigator.of(sheetContext).pop();
+                }
               },
             );
           },

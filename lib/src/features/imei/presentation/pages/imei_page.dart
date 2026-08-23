@@ -10,7 +10,7 @@ import 'package:eks_sana_plus_org/src/features/imei/presentation/widgets/imei_in
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
@@ -147,19 +147,29 @@ class _ImeiView extends StatelessWidget {
     ImeiCubit cubit,
     ImeiInfoEntity item,
   ) {
-    BottomSheetMessage.showNoticeWithAction(
+    BottomSheetMessage.showCustom(
       context: context,
-      data: const BottomSheetMessageModel(
-        title: 'حذف IMEI',
-        message: 'آیا از حذف این IMEI اطمینان دارید؟',
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      actionWidget: const SizedBox.shrink(),
+      isDismissible: false,
+      enableDrag: false,
+      content: BlocBuilder<ImeiCubit, ImeiState>(
+        bloc: cubit,
+        builder: (sheetContext, state) {
+          return DeleteConfirmSheet(
+            title: 'حذف IMEI',
+            message: 'آیا از حذف این IMEI اطمینان دارید؟',
+            confirmTitle: 'حذف',
+            isSubmitting: state.isDeleting,
+            onConfirm: () async {
+              final deleted = await cubit.deleteItem(item);
+              if (deleted && sheetContext.mounted) {
+                Navigator.of(sheetContext).pop();
+              }
+            },
+          );
+        },
       ),
-      positiveText: 'حذف',
-      cancelTxt: 'انصراف',
-      buttonColor: Theme.of(context).colorScheme.error,
-      onPositive: () {
-        context.pop();
-        cubit.deleteItem(item);
-      },
     );
   }
 }

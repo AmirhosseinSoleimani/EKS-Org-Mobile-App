@@ -4,7 +4,8 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/e
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/cubit/home_service_evaluation_second_step_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/widgets/edit_and_registration_part_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -219,56 +220,27 @@ class PartContainerWidget extends StatelessWidget {
   // ================= BOTTOM SHEET =================
 
   void _showDeleteBottomSheet(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    showModalBottomSheet(
+    BottomSheetMessage.showCustom(
       context: context,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(16)),
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      actionWidget: const SizedBox.shrink(),
+      isDismissible: false,
+      enableDrag: false,
+      content: Builder(
+        builder: (sheetContext) {
+          return DeleteConfirmSheet(
+            title: 'حذف قطعه',
+            message: 'آیا از حذف این قطعه اطمینان دارید؟',
+            confirmTitle: 'حذف',
+            onConfirm: () async {
+              _handleDelete(context);
+              if (sheetContext.mounted) {
+                Navigator.of(sheetContext).pop();
+              }
+            },
+          );
+        },
       ),
-      builder: (_) {
-        return Padding(
-          padding: const EdgeInsets.all(16),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Text(
-                'آیا از حذف این قطعه اطمینان دارید؟',
-                style: Theme.of(
-                  context,
-                ).textTheme.bodyMedium?.copyWith(fontWeight: FontWeight.bold),
-              ),
-
-              Space.h16,
-
-              Row(
-                children: [
-                  Expanded(
-                    child: InkwellButtonWidget(
-                      title: 'لغو',
-                      backgroundColor: colorScheme.surface,
-                      onTap: () => Navigator.pop(context),
-                    ),
-                  ),
-
-                  Space.w8,
-
-                  Expanded(
-                    child: InkwellButtonWidget(
-                      title: 'حذف',
-                      backgroundColor: ServiceType.homeService.serviceColor,
-                      onTap: () {
-                        _handleDelete(context);
-                        Navigator.pop(context);
-                      },
-                    ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        );
-      },
     );
   }
 

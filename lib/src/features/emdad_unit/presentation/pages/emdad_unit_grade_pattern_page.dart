@@ -5,11 +5,11 @@ import 'package:eks_sana_plus_org/src/features/grade_pattern/domain/entities/gra
 import 'package:eks_sana_plus_org/src/features/grade_pattern/domain/entities/grade_pattern_reference_entity.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/domain/entities/params/grade_pattern_reference_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/cubit/grade_pattern_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/widgets/grade_pattern_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/widgets/grade_pattern_details_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/drop_down_map_items_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/list_widgets/list_section_header.dart';
@@ -206,17 +206,34 @@ class _EmdadUnitGradePatternViewState
     final id = reference.id;
     final refId = widget.item.id;
     if (id == null || refId == null) return;
-    showModalBottomSheet<void>(
+    BottomSheetMessage.showCustom(
       context: context,
-      useSafeArea: true,
       backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
-      ),
-      builder: (_) => GradePatternConfirmSheet(
-        title: 'حذف الگوی گرید',
-        message: 'آیا الگوی گرید ${reference.gradePatternName ?? ''} حذف شود؟ این عمل غیرقابل بازگشت است.',
-        onConfirm: () => cubit.deleteReference(id, refId),
+      actionWidget: const SizedBox.shrink(),
+      isDismissible: false,
+      enableDrag: false,
+      content: BlocBuilder<GradePatternCubit, GradePatternState>(
+        bloc: cubit,
+        builder: (sheetContext, state) {
+          final isSubmitting = state.maybeWhen(
+            submitting: (_, __) => true,
+            orElse: () => false,
+          );
+
+          return DeleteConfirmSheet(
+            title: 'حذف الگوی گرید',
+            message:
+                'آیا الگوی گرید ${reference.gradePatternName ?? ''} حذف شود؟ این عمل غیرقابل بازگشت است.',
+            confirmTitle: 'حذف',
+            isSubmitting: isSubmitting,
+            onConfirm: () async {
+              final deleted = await cubit.deleteReference(id, refId);
+              if (deleted && sheetContext.mounted) {
+                Navigator.of(sheetContext).pop();
+              }
+            },
+          );
+        },
       ),
     );
   }

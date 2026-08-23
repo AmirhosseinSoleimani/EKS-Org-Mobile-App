@@ -265,9 +265,13 @@ class _PlanInfoView extends StatelessWidget {
                       confirmTitle: 'حذف',
                       isSubmitting: state.status == PlanInfoStatus.submitting,
                       onConfirm: () async {
-                        Navigator.of(context).pop();
                         final id = plan.resolvedId;
-                        if (id != null) cubit.deletePlan(id);
+                        if (id == null) return;
+
+                        final deleted = await cubit.deletePlan(id);
+                        if (deleted && context.mounted) {
+                          Navigator.of(context).pop();
+                        }
                       },
                     );
                   },

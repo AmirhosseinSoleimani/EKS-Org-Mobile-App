@@ -391,12 +391,14 @@ class PlanInfoCubit extends Cubit<PlanInfoState> with LatestRequestGuard {
     );
   }
 
-  Future<void> deletePlan(int id) async {
+  Future<bool> deletePlan(int id) async {
+    if (state.status == PlanInfoStatus.submitting) return false;
+
     emit(state.copyWith(status: PlanInfoStatus.submitting));
 
     final result = await _deletePlanUseCase(id);
 
-    await result.when<Future<void>>(
+    return result.when<Future<bool>>(
       success: (_, __, ___) async {
         emit(
           state.copyWith(
@@ -406,6 +408,7 @@ class PlanInfoCubit extends Cubit<PlanInfoState> with LatestRequestGuard {
         );
 
         await fetchPlans();
+        return true;
       },
       failure: (_, message) async {
         emit(
@@ -414,10 +417,12 @@ class PlanInfoCubit extends Cubit<PlanInfoState> with LatestRequestGuard {
             message: message ?? 'حذف برنامه‌ریزی با خطا مواجه شد',
           ),
         );
+        return false;
       },
-      expireToken: () async {},
+      expireToken: () async => false,
       connectionError: () async {
         emit(state.copyWith(status: PlanInfoStatus.connectionError));
+        return false;
       },
     );
   }

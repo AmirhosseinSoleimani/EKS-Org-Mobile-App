@@ -195,16 +195,29 @@ class _SkillsCertificatesView extends StatelessWidget {
   }) {
     BottomSheetMessage.showCustom(
       context: context,
-      content: DeleteConfirmSheet(
-        title: 'حذف گواهی نامه ریزی',
-        message: 'آیا مهارت ${skill.displayTitle} حذف شود؟',
-        confirmTitle: 'حذف',
-        onConfirm: () async {
-          Navigator.of(context).pop();
-          cubit.deleteSkill(skill);
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      actionWidget: const SizedBox.shrink(),
+      isDismissible: false,
+      enableDrag: false,
+      content: BlocBuilder<SkillsCertificatesCubit, SkillsCertificatesState>(
+        bloc: cubit,
+        buildWhen: (previous, current) =>
+            previous.data.deletingSkillId != current.data.deletingSkillId,
+        builder: (sheetContext, state) {
+          return DeleteConfirmSheet(
+            title: 'حذف گواهی نامه ریزی',
+            message: 'آیا مهارت ${skill.displayTitle} حذف شود؟',
+            confirmTitle: 'حذف',
+            isSubmitting: state.data.deletingSkillId == skill.id,
+            onConfirm: () async {
+              final deleted = await cubit.deleteSkill(skill);
+              if (deleted && sheetContext.mounted) {
+                Navigator.of(sheetContext).pop();
+              }
+            },
+          );
         },
       ),
-      actionWidget: SizedBox.shrink(),
     );
   }
 }

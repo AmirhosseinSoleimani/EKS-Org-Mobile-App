@@ -26,27 +26,37 @@ class KeyValueRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final theme = Theme.of(context);
+    final baseFontSize = theme.textTheme.bodySmall?.fontSize ?? AppSize.s12;
+    final defaultFontSize = baseFontSize + AppSize.s2;
+    final resolvedLabelFontSize = labelFontSize ?? defaultFontSize;
+    final resolvedValueFontSize = valueFontSize ?? defaultFontSize;
+
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
+      padding: const EdgeInsets.symmetric(vertical: AppPadding.p4),
       child: Row(
         mainAxisAlignment: mainAxisAlignment,
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              if (leadingWidget != null) ...[
-                leadingWidget!,
-                const SizedBox(width: 4),
-              ],
-              Flexible(
-                child: BodySmallText(
-                  text: label,
-                  fontWeight: boldLabel ? FontWeight.bold : FontWeight.normal,
-                  fontSize: labelFontSize,
+          Flexible(
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                if (leadingWidget != null) ...[
+                  leadingWidget!,
+                  Space.w4,
+                ],
+                Flexible(
+                  child: BodySmallText(
+                    text: label,
+                    fontWeight:
+                        boldLabel ? FontWeight.bold : FontWeight.normal,
+                    fontSize: resolvedLabelFontSize,
+                  ),
                 ),
-              ),
-            ],
+              ],
+            ),
           ),
           Space.w4,
           Flexible(
@@ -54,7 +64,7 @@ class KeyValueRow extends StatelessWidget {
               text: value,
               textAlign: TextAlign.end,
               fontWeight: boldValue ? FontWeight.bold : FontWeight.normal,
-              fontSize: valueFontSize,
+              fontSize: resolvedValueFontSize,
             ),
           ),
         ],

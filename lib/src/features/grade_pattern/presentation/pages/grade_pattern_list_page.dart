@@ -4,11 +4,11 @@ import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/cubit/
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/pages/grade_pattern_form_page.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/widgets/grade_pattern_action_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/widgets/grade_pattern_card.dart';
-import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/widgets/grade_pattern_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/presentation/widgets/grade_pattern_details_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
@@ -391,11 +391,17 @@ class _GradePatternListView extends StatelessWidget {
         value: cubit,
         child: BlocBuilder<GradePatternCubit, GradePatternState>(
           builder: (context, state) {
-            return GradePatternConfirmSheet(
+            return DeleteConfirmSheet(
               title: 'حذف الگوی گرید',
               message: 'آیا الگوی گرید ${item.name ?? ''} حذف شود؟',
-              isLoading: cubit.deletingItemId == id,
-              onConfirm: () => cubit.deleteItem(id),
+              confirmTitle: 'حذف',
+              isSubmitting: cubit.deletingItemId == id,
+              onConfirm: () async {
+                final deleted = await cubit.deleteItem(id);
+                if (deleted && context.mounted) {
+                  Navigator.of(context).pop();
+                }
+              },
             );
           },
         ),

@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:flutter/material.dart';
 
 class SearchAndFilterBox extends StatelessWidget {
@@ -12,72 +13,95 @@ class SearchAndFilterBox extends StatelessWidget {
     required this.onRefresh,
   });
 
+  static const double _controlHeight = AppSize.s40;
+  static const double _borderRadius = AppSize.s6;
+
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final outline = colorScheme.outline;
+    final theme = Theme.of(context);
+    final colorScheme = theme.colorScheme;
+    final foregroundColor = colorScheme.onPrimaryFixed;
+    final borderColor = colorScheme.secondaryContainer;
+    final backgroundColor = colorScheme.onPrimary;
+
+    final decoration = BoxDecoration(
+      color: backgroundColor,
+      borderRadius: BorderRadius.circular(_borderRadius),
+      border: Border.all(color: borderColor, width: AppSize.s1),
+      boxShadow: [
+        BoxShadow(
+          color: colorScheme.shadow.withOpacity(0.08),
+          blurRadius: AppSize.s8,
+          offset: const Offset(0, 2),
+        ),
+      ],
+    );
 
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-      child: PhysicalModel(
-        color: Colors.transparent,
-        shadowColor: Colors.black.withAlpha(80),
-        elevation: 12,
-        borderRadius: BorderRadius.circular(12),
-        child: Container(
-          color: Colors.transparent,
-          child: Row(
-            children: [
-              Expanded(
-                child: InkWell(
-                  onTap: onOpenFilter,
-                  child: AbsorbPointer(
-                    absorbing: true,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(6),
-                      ),
+      padding: const EdgeInsets.symmetric(
+        horizontal: AppPadding.p8,
+        vertical: AppPadding.p4,
+      ),
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: SizedBox(
+              height: _controlHeight,
+              child: DecoratedBox(
+                decoration: decoration,
+                child: Material(
+                  color: Colors.transparent,
+                  borderRadius: BorderRadius.circular(_borderRadius),
+                  child: InkWell(
+                    borderRadius: BorderRadius.circular(_borderRadius),
+                    onTap: onOpenFilter,
+                    child: AbsorbPointer(
                       child: TextField(
                         readOnly: true,
+                        style: theme.textTheme.bodyMedium?.copyWith(
+                          color: foregroundColor,
+                        ),
                         decoration: InputDecoration(
                           isDense: true,
                           hintText: 'جستجو و فیلتر',
-                          filled: true,
-                          fillColor: Colors.white,
+                          hintStyle: theme.textTheme.bodyMedium?.copyWith(
+                            color: foregroundColor,
+                          ),
                           prefixIcon: Icon(
                             Icons.search,
-                            size: 22,
-                            color: outline,
+                            size: AppSize.s22,
+                            color: foregroundColor,
                           ),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide.none,
+                          prefixIconConstraints: const BoxConstraints(
+                            minWidth: AppSize.s40,
+                            minHeight: _controlHeight,
                           ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide.none,
+                          border: InputBorder.none,
+                          enabledBorder: InputBorder.none,
+                          focusedBorder: InputBorder.none,
+                          contentPadding: const EdgeInsetsDirectional.only(
+                            start: AppPadding.p2,
+                            end: AppPadding.p10,
+                            top: AppPadding.p10,
+                            bottom: AppPadding.p10,
                           ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            borderSide: BorderSide.none,
-                          ),
-                          contentPadding: const EdgeInsets.symmetric(
-                            vertical: 12,
-                            horizontal: 10,
-                          ),
-                          hintStyle: Theme.of(context).textTheme.titleMedium,
                         ),
                       ),
                     ),
                   ),
                 ),
               ),
-              const SizedBox(width: 14),
-              _AnimatedRefreshButton(isLoading: isLoading, onTap: onRefresh),
-            ],
+            ),
           ),
-        ),
+          Space.w8,
+          _AnimatedRefreshButton(
+            isLoading: isLoading,
+            onTap: onRefresh,
+            decoration: decoration,
+            iconColor: foregroundColor,
+          ),
+        ],
       ),
     );
   }
@@ -86,30 +110,39 @@ class SearchAndFilterBox extends StatelessWidget {
 class _AnimatedRefreshButton extends StatelessWidget {
   final bool isLoading;
   final VoidCallback onTap;
+  final BoxDecoration decoration;
+  final Color iconColor;
 
-  const _AnimatedRefreshButton({required this.isLoading, required this.onTap});
+  const _AnimatedRefreshButton({
+    required this.isLoading,
+    required this.onTap,
+    required this.decoration,
+    required this.iconColor,
+  });
 
   @override
   Widget build(BuildContext context) {
-    final outline = Theme.of(context).colorScheme.outline;
-
-    return SizedBox(
-      width: 40,
-      height: 40,
-      child: Material(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(6),
-        child: InkWell(
-          borderRadius: BorderRadius.circular(6),
-          onTap: () {
-            if (isLoading) return;
-            onTap();
-          },
-          child: Center(
-            child: AnimatedRotation(
-              turns: isLoading ? 1 : 0,
-              duration: const Duration(seconds: 1),
-              child: Icon(Icons.sync, size: 24, color: outline),
+    return SizedBox.square(
+      dimension: SearchAndFilterBox._controlHeight,
+      child: DecoratedBox(
+        decoration: decoration,
+        child: Material(
+          color: Colors.transparent,
+          borderRadius: BorderRadius.circular(SearchAndFilterBox._borderRadius),
+          child: InkWell(
+            borderRadius:
+                BorderRadius.circular(SearchAndFilterBox._borderRadius),
+            onTap: isLoading ? null : onTap,
+            child: Center(
+              child: AnimatedRotation(
+                turns: isLoading ? 1 : 0,
+                duration: DurationConstant.d1000,
+                child: Icon(
+                  Icons.sync,
+                  size: AppSize.s22,
+                  color: iconColor,
+                ),
+              ),
             ),
           ),
         ),

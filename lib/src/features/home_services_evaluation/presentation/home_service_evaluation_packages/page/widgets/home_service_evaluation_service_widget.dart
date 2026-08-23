@@ -8,7 +8,8 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presenta
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/font_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -158,156 +159,12 @@ class HomeServiceEvaluationServiceWidget extends StatelessWidget {
                                         ),
                                         Space.w4,
                                         InkWell(
-                                          onTap: () {
-                                            showDialog(
-                                              context: context,
-                                              builder: (_) => AlertDialog(
-                                                backgroundColor: Colors.white,
-                                                contentPadding: EdgeInsets.zero,
-                                                shape: RoundedRectangleBorder(
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                        AppSize.s16,
-                                                      ),
-                                                ),
-                                                actions: [
-                                                  Padding(
-                                                    padding:
-                                                        const EdgeInsets.symmetric(
-                                                          horizontal:
-                                                              AppPadding.p12,
-                                                        ),
-                                                    child: InkwellButtonWidget(
-                                                      onTap: () async {
-                                                        cubit.removedLaborFromService(
-                                                          categoryId:
-                                                              entity
-                                                                  ?.categoryId ??
-                                                              0,
-                                                          serviceId:
-                                                              entity
-                                                                  ?.labors?[index]
-                                                                  .serviceId ??
-                                                              0,
-                                                          laborId:
-                                                              entity
-                                                                  ?.labors?[index]
-                                                                  .laborId ??
-                                                              0,
-                                                        );
-                                                        Navigator.of(
-                                                          context,
-                                                        ).pop();
-                                                      },
-                                                      backgroundColor:
-                                                          colorScheme.surface,
-                                                      title: 'حذف',
-                                                    ),
-                                                  ),
-                                                ],
-                                                content: SizedBox(
-                                                  width: double.infinity,
-                                                  child: SingleChildScrollView(
-                                                    child: Padding(
-                                                      padding:
-                                                          const EdgeInsets.all(
-                                                            AppPadding.p12,
-                                                          ),
-                                                      child: Column(
-                                                        mainAxisSize:
-                                                            MainAxisSize.min,
-                                                        children: [
-                                                          Padding(
-                                                            padding:
-                                                                const EdgeInsets.all(
-                                                                  AppPadding.p8,
-                                                                ),
-                                                            child: Align(
-                                                              alignment:
-                                                                  Alignment
-                                                                      .topLeft,
-                                                              child: GestureDetector(
-                                                                onTap: () {
-                                                                  Navigator.pop(
-                                                                    context,
-                                                                  );
-                                                                },
-                                                                child: const Icon(
-                                                                  Icons.close,
-                                                                  color: Colors
-                                                                      .black,
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Space.h16,
-                                                          Column(
-                                                            children: [
-                                                              Text(
-                                                                'آیا از حذف این دستمزد و قطعه اطمینان دارید؟',
-                                                                style: Theme.of(context)
-                                                                    .textTheme
-                                                                    .bodyMedium
-                                                                    ?.copyWith(
-                                                                      fontSize:
-                                                                          AppSize
-                                                                              .s16,
-                                                                    ),
-                                                              ),
-                                                              if (entity
-                                                                      ?.labors?[index]
-                                                                      .isMandatory ??
-                                                                  false) ...[
-                                                                Space.h8,
-                                                                Padding(
-                                                                  padding:
-                                                                      const EdgeInsets.all(
-                                                                        AppPadding
-                                                                            .p8,
-                                                                      ),
-                                                                  child: Row(
-                                                                    mainAxisAlignment:
-                                                                        MainAxisAlignment
-                                                                            .center,
-                                                                    crossAxisAlignment:
-                                                                        CrossAxisAlignment
-                                                                            .start,
-                                                                    children: [
-                                                                      Icon(
-                                                                        Icons.warning_amber_sharp,
-                                                                        size: AppSize
-                                                                            .s24,
-                                                                        color: colorScheme
-                                                                            .error,
-                                                                      ),
-                                                                      Space.w8,
-                                                                      Expanded(
-                                                                        child: Text(
-                                                                          'این دستمزد و قطعه برای سرویس انتخاب شده اجباری می باشد در صورت حذف امکان ثبت درخواست وجود نخواهد داشت',
-                                                                          style:
-                                                                              Theme.of(
-                                                                                context,
-                                                                              ).textTheme.bodyMedium?.copyWith(
-                                                                                fontSize: AppSize.s14,
-                                                                                color: colorScheme.error,
-                                                                              ),
-                                                                        ),
-                                                                      ),
-                                                                    ],
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ],
-                                                          ),
-                                                          Space.h24,
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
+                                          onTap: () =>
+                                              _showLaborDeleteConfirmation(
+                                                context,
+                                                cubit,
+                                                index,
                                               ),
-                                            );
-                                          },
                                           child: DecoratedBox(
                                             decoration: BoxDecoration(
                                               shape: BoxShape.circle,
@@ -642,6 +499,49 @@ class HomeServiceEvaluationServiceWidget extends StatelessWidget {
     String base64String = base64StringWithPrefix.split(',').last;
     Uint8List bytes = base64Decode(base64String);
     return Image.memory(bytes, fit: BoxFit.cover);
+  }
+
+  void _showLaborDeleteConfirmation(
+    BuildContext context,
+    HomeServiceEvaluationPackagesCubit cubit,
+    int laborIndex,
+  ) {
+    final labor = entity?.labors?[laborIndex];
+    if (labor == null) return;
+
+    final isMandatory = labor.isMandatory ?? false;
+    final message = isMandatory
+        ? 'آیا از حذف این دستمزد و قطعه اطمینان دارید؟\n\n'
+            'این دستمزد و قطعه برای سرویس انتخاب شده اجباری می باشد و در صورت حذف، امکان ثبت درخواست وجود نخواهد داشت.'
+        : 'آیا از حذف این دستمزد و قطعه اطمینان دارید؟';
+
+    BottomSheetMessage.showCustom(
+      context: context,
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      actionWidget: const SizedBox.shrink(),
+      isDismissible: false,
+      enableDrag: false,
+      content: Builder(
+        builder: (sheetContext) {
+          return DeleteConfirmSheet(
+            title: 'حذف دستمزد و قطعه',
+            message: message,
+            messageMaxLines: isMandatory ? 8 : 4,
+            confirmTitle: 'حذف',
+            onConfirm: () async {
+              cubit.removedLaborFromService(
+                categoryId: entity?.categoryId ?? 0,
+                serviceId: labor.serviceId ?? 0,
+                laborId: labor.laborId ?? 0,
+              );
+              if (sheetContext.mounted) {
+                Navigator.of(sheetContext).pop();
+              }
+            },
+          );
+        },
+      ),
+    );
   }
 
   void _selectHomeServicePackage({

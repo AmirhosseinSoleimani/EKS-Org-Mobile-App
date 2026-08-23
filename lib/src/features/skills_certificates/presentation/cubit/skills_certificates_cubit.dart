@@ -252,9 +252,9 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> with Latest
     );
   }
 
-  Future<void> deleteSkill(SkillCertificateEntity skill) async {
+  Future<bool> deleteSkill(SkillCertificateEntity skill) async {
     final id = skill.id;
-    if (id == null) return;
+    if (id == null || _data.deletingSkillId != null) return false;
 
     emit(SkillsCertificatesState.loading(data: _data.copyWith(
       deletingSkillId: id,
@@ -263,7 +263,7 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> with Latest
 
     final result = await _deleteSkillCertificateUseCase(id);
 
-    await result.when<Future<void>>(
+    return result.when<Future<bool>>(
       success: (_, __, ___) async {
         emit(SkillsCertificatesState.loaded(
           data: _data.copyWith(
@@ -272,6 +272,7 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> with Latest
           ),
         ));
         await fetchSkills();
+        return true;
       },
       failure: (_, message) async {
         emit(SkillsCertificatesState.error(
@@ -281,16 +282,19 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> with Latest
             message: message ?? 'حذف مهارت با خطا مواجه شد',
           ),
         ));
+        return false;
       },
       expireToken: () async {
         emit(SkillsCertificatesState.loaded(
           data: _data.copyWith(deletingSkillId: null),
         ));
+        return false;
       },
       connectionError: () async {
         emit(SkillsCertificatesState.connectionError(
           data: _data.copyWith(deletingSkillId: null),
         ));
+        return false;
       },
     );
   }
