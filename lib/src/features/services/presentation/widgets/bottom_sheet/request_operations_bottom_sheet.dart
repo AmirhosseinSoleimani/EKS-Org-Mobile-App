@@ -50,11 +50,7 @@ class RequestOperationsBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sections = _buildSections();
-    final divider = Divider(
-      height: 1,
-      thickness: 1,
-      color: Theme.of(context).dividerColor,
-    );
+
     final entries = <OperationBottomSheetEntry>[];
 
     for (var sectionIndex = 0;
@@ -63,8 +59,6 @@ class RequestOperationsBottomSheet extends StatelessWidget {
       final section = sections[sectionIndex];
       for (var itemIndex = 0; itemIndex < section.length; itemIndex++) {
         final operation = section[itemIndex];
-        final isSectionEnd = itemIndex == section.length - 1;
-        final hasNextSection = sectionIndex < sections.length - 1;
 
         entries.add(
           OperationBottomSheetEntry(
@@ -73,7 +67,7 @@ class RequestOperationsBottomSheet extends StatelessWidget {
               isDestructive: _destructiveOrder.contains(operation),
               onTap: () => onOperationSelected(operation),
             ),
-            dividerAfter: isSectionEnd && hasNextSection ? divider : null,
+            dividerAfter: null,
           ),
         );
       }

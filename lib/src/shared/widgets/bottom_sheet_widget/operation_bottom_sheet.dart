@@ -33,11 +33,14 @@ class OperationBottomSheet extends StatelessWidget {
         children: [
           for (var index = 0; index < entries.length; index++) ...[
             entries[index].child,
-            if (index < entries.length - 1)
+            if (index < entries.length - 1)...[
+              Space.h8,
               _OperationItemSpacing(
                 divider: entries[index].dividerAfter,
               ),
+            ],
           ],
+          Space.h8,
         ],
       ),
     );

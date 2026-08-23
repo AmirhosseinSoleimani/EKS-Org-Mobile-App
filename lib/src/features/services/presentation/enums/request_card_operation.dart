@@ -24,6 +24,7 @@ import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/en
 import 'package:eks_sana_plus_org/src/shared/features/invoice/presentation/pages/invoice_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/request_operation_access_entity.dart';
 import 'package:flutter/material.dart';
+import 'package:material_symbols_icons/material_symbols_icons.dart';
 
 enum RequestCardOperation {
   requestDetail(
@@ -34,25 +35,25 @@ enum RequestCardOperation {
   ),
   nonCooperationList(
     label: 'لیست عدم همکاری',
-    icon: Icons.menu_outlined,
+    icon: Icons.playlist_remove_outlined,
     color: Color(0xFFbf0000),
     routeName: NonCooperationPage.name,
   ),
   kartableCycle(
     label: 'چرخه کارتابل',
-    icon: Icons.repeat_outlined,
+    icon: Icons.all_inbox_outlined,
     color: Color(0xFFff9305),
     routeName: CartableCyclePage.name,
   ),
   requestStatusHistory(
-    label: 'تاریخچه وضعیت',
-    icon: Icons.history_outlined,
+    label: 'تاریخچه وضعیت درخواست',
+    icon: Icons.grading_outlined,
     color: Color(0xFF6d6a66),
     routeName: RequestStatusHistoryPage.name,
   ),
   onlineMap(
     label: 'نقشه آنلاین',
-    icon: Icons.map_outlined,
+    icon: Symbols.map_search,
     color: Color(0xFF8b64e6),
     routeName: OnlineMapPage.name,
   ),
@@ -64,13 +65,13 @@ enum RequestCardOperation {
   ),
   evaluationHistory(
     label: 'تاریخچه ارزیابی',
-    icon: Icons.calendar_today_outlined,
+    icon: Icons.view_timeline_outlined,
     color: Color(0xFF1bc4bc),
     routeName: EvaluationHistoryPage.name,
   ),
   chassisRequestHistory(
-    label: 'تاریخچه درخواست شاسی',
-    icon: Icons.car_crash_outlined,
+    label: 'تاریخچه بر اساس شماره شاسی',
+    icon: Symbols.car_gear,
     color: Color(0xFF8a63e6),
     routeName: ChassisRequestHistoryPage.name,
   ),
@@ -103,13 +104,13 @@ enum RequestCardOperation {
   cancelRequest(
     label: 'لغو درخواست',
     icon: Icons.close_outlined,
-    color: Color(0xFFbf0000),
+    color: Color(0xFFC30000),
     routeName: CancelRequestPage.name,
   ),
   completeUrgentRequest(
     label: 'تکمیل درخواست اضطراری',
     icon: Icons.open_in_new_outlined,
-    color: Color(0xFFbf0000),
+    color: Color(0xFFC30000),
     routeName: CompleteUrgentRequestPage.name,
   ),
   changeHomeServiceRequestTime(
@@ -126,7 +127,7 @@ enum RequestCardOperation {
   ),
   followUpRegister(
     label: 'ثبت پیگیری',
-    icon: Icons.headset_outlined,
+    icon: Icons.north_east_outlined,
     color: Color(0xFF864a1e),
     routeName: FollowUpRegisterPage.name,
   ),
@@ -149,9 +150,9 @@ enum RequestCardOperation {
     routeName: AssignAndCancelEmdadgarPage.name,
   ),
   cancelEmdadgar(
-    label: 'لغو امداد رسان',
-    icon: Icons.person_add_alt_outlined,
-    color: Color(0xFFE9408F),
+    label: 'لغو توسط امدادرسان',
+    icon: Symbols.person_cancel,
+    color: Color(0xFFC30000),
     routeName: AssignAndCancelEmdadgarPage.name,
   );
 

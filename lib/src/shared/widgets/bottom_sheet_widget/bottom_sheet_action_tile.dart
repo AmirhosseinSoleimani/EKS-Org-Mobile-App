@@ -29,7 +29,7 @@ class BottomSheetActionTile extends StatelessWidget {
     final effectiveColor = enabled ? color : color.withOpacity(0.45);
 
     return SizedBox(
-      height: AppSize.s48,
+      height: AppSize.s34,
       child: ListTile(
         dense: true,
         contentPadding: EdgeInsets.zero,

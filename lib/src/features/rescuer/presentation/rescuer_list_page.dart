@@ -10,6 +10,7 @@ import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/list
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/widgets/list/rescuer_skill_certificates_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
@@ -205,18 +206,66 @@ class _RescuerListView extends StatelessWidget {
           return true;
         },
         onDelete: () async {
-          final deleted = await cubit.deleteRescuer(id);
           if (context.mounted) Navigator.of(context).pop();
-          if (deleted && context.mounted) {
-            SnakeBarWidget.showSuccess(
-              context: context,
-              message: 'امدادرسان با موفقیت حذف شد',
-            );
-          }
-          return deleted;
+          await Future<void>.delayed(Duration.zero);
+          if (!context.mounted) return false;
+
+          await _confirmDelete(context, cubit, item);
+          return true;
         },
       ),
       actionWidget: const SizedBox.shrink(),
+    );
+  }
+
+  Future<void> _confirmDelete(
+    BuildContext context,
+    RescuerListCubit cubit,
+    RescuerEntity item,
+  ) async {
+    final id = item.id;
+    if (id == null) return;
+
+    final rescuerName = item.fullName.trim();
+    var isSubmitting = false;
+
+    await BottomSheetMessage.showCustom(
+      context: context,
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      actionWidget: const SizedBox.shrink(),
+      isDismissible: false,
+      enableDrag: false,
+      content: StatefulBuilder(
+        builder: (sheetContext, setSheetState) {
+          return DeleteConfirmSheet(
+            title: 'حذف امدادرسان',
+            message:
+                'آیا از حذف «${rescuerName.isNotEmpty ? rescuerName : 'این امدادرسان'}» مطمئن هستید؟',
+            confirmTitle: 'حذف',
+            isSubmitting: isSubmitting,
+            onConfirm: () async {
+              if (isSubmitting) return;
+              setSheetState(() => isSubmitting = true);
+
+              final deleted = await cubit.deleteRescuer(id);
+              if (!sheetContext.mounted) return;
+
+              if (deleted) {
+                Navigator.of(sheetContext).pop();
+                if (context.mounted) {
+                  SnakeBarWidget.showSuccess(
+                    context: context,
+                    message: 'امدادرسان با موفقیت حذف شد',
+                  );
+                }
+                return;
+              }
+
+              setSheetState(() => isSubmitting = false);
+            },
+          );
+        },
+      ),
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_info_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/cubit/vehicle_info_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/pages/add_vehicle_info_page.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/pages/vehicle_info_history_page.dart';
@@ -9,6 +10,7 @@ import 'package:eks_sana_plus_org/src/features/vehicle_info/presentation/widgets
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
@@ -199,12 +201,55 @@ class _VehicleInfoListViewState extends State<_VehicleInfoListView> {
             },
             onDelete: item.id == null
                 ? null
-                : () => cubit.deleteItem(item.id!),
+                : () => _confirmDelete(context, cubit, item),
             onHistory: () {
               context.pushNamed(
                 VehicleInfoHistoryPage.name,
                 extra: item,
               );
+            },
+          );
+        },
+      ),
+    );
+  }
+
+  void _confirmDelete(
+    BuildContext context,
+    VehicleInfoCubit cubit,
+    VehicleInfoEntity item,
+  ) {
+    final id = item.id;
+    if (id == null) return;
+
+    var isSubmitting = false;
+
+    BottomSheetMessage.showCustom(
+      context: context,
+      backgroundColor: Theme.of(context).colorScheme.onPrimary,
+      actionWidget: const SizedBox.shrink(),
+      isDismissible: false,
+      enableDrag: false,
+      content: StatefulBuilder(
+        builder: (sheetContext, setSheetState) {
+          return DeleteConfirmSheet(
+            title: 'حذف خودرو',
+            message: 'آیا از حذف «${item.title}» مطمئن هستید؟',
+            confirmTitle: 'حذف',
+            isSubmitting: isSubmitting,
+            onConfirm: () async {
+              if (isSubmitting) return;
+              setSheetState(() => isSubmitting = true);
+
+              final deleted = await cubit.deleteItem(id);
+              if (!sheetContext.mounted) return;
+
+              if (deleted) {
+                Navigator.of(sheetContext).pop();
+                return;
+              }
+
+              setSheetState(() => isSubmitting = false);
             },
           );
         },
