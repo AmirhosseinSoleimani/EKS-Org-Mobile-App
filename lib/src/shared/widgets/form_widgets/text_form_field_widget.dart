@@ -156,6 +156,11 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
         final defaultLabelColor =
             isFocus ? colorScheme.primary : colorScheme.onSurface;
         final effectiveLabelColor = widget.labelColor ?? defaultLabelColor;
+        final baseLabelStyle = widget.labelStyle ?? textTheme.bodyMedium;
+        final effectiveLabelStyle = baseLabelStyle?.copyWith(
+          fontSize: (baseLabelStyle.fontSize ?? AppSize.s14) + 3,
+          color: effectiveLabelColor,
+        );
         return TextFormField(
           onTap: widget.onTap,
           controller: _controller,
@@ -193,14 +198,12 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
                       children: [
                         TextSpan(
                           text: widget.labelText,
-                          style: textTheme.bodyMedium?.copyWith(
-                            color: effectiveLabelColor,
-                          ),
+                          style: effectiveLabelStyle,
                         ),
                         if (widget.mandatory ?? false)
                           TextSpan(
                             text: ' *',
-                            style: textTheme.bodyMedium?.copyWith(
+                            style: effectiveLabelStyle?.copyWith(
                               color: colorScheme.error,
                               fontWeight: FontWeight.w600,
                             ),
@@ -208,10 +211,7 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
                       ],
                     ),
                   ),
-            labelStyle: widget.labelStyle ??
-                textTheme.labelMedium?.copyWith(
-                  color: effectiveLabelColor,
-                ),
+            labelStyle: effectiveLabelStyle,
             hintTextDirection: widget.textDirection,
             floatingLabelBehavior: widget.floatingLabelBehavior,
             hintText: widget.hintText,

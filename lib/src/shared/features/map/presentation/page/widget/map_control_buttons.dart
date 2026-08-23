@@ -4,6 +4,8 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:go_router/go_router.dart';
 import 'package:latlong2/latlong.dart' as lat_lng;
 
+const double _mapControlScale = 0.85;
+
 class MapControlButtons extends StatelessWidget {
   final MapController mapController;
   final lat_lng.LatLng defaultCenter;
@@ -28,10 +30,10 @@ class MapControlButtons extends StatelessWidget {
       top: 16,
       end: 16,
       child: Container(
-        padding: const EdgeInsets.all(8),
+        padding: const EdgeInsets.all(AppPadding.p8 * _mapControlScale),
         decoration: BoxDecoration(
           color:  Colors.white.withAlpha(200),
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(AppSize.s12 * _mapControlScale),
         ),
         child: Column(
           children: [
@@ -42,7 +44,7 @@ class MapControlButtons extends StatelessWidget {
                 mapController.move(camera.center, camera.zoom + 1);
               },
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSize.s12 * _mapControlScale),
             CircleMapButton(
               icon: Icons.remove,
               onTap: () {
@@ -50,12 +52,12 @@ class MapControlButtons extends StatelessWidget {
                 mapController.move(camera.center, camera.zoom - 1);
               },
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSize.s12 * _mapControlScale),
             CircleMapButton(
               icon: isFullScreen ? Icons.fullscreen_exit : Icons.fullscreen,
               onTap: isFullScreen ? context.pop : onFullScreenTap,
             ),
-            const SizedBox(height: 12),
+            const SizedBox(height: AppSize.s12 * _mapControlScale),
             CircleMapButton(
               icon: Icons.my_location,
               onTap:
@@ -82,14 +84,18 @@ class CircleMapButton extends StatelessWidget {
     return Material(
       color: Colors.white,
       shape: const CircleBorder(),
-      elevation: 3,
+      elevation: 3 * _mapControlScale,
       child: InkWell(
         customBorder: const CircleBorder(),
         onTap: onTap,
         child: SizedBox(
-          width: AppSize.s40,
-          height: AppSize.s40,
-          child: Icon(icon, color: const Color(0xff6C35D4), size: 24),
+          width: AppSize.s40 * _mapControlScale,
+          height: AppSize.s40 * _mapControlScale,
+          child: Icon(
+            icon,
+            color: const Color(0xff6C35D4),
+            size: AppSize.s24 * _mapControlScale,
+          ),
         ),
       ),
     );
