@@ -7,8 +7,8 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/dro
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/form_section_container.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/searchable_dropdown_selector.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/formatter/thousands_separator_input_formatter.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_form_field_widget/text_form_field_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/formatter/thousands_separator_input_formatter.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/text_form_field_widget.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
