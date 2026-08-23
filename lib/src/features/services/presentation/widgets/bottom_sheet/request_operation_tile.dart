@@ -1,5 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/services/presentation/enums/request_card_operation.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_action_tile.dart';
 import 'package:flutter/material.dart';
 
 class RequestOperationTile extends StatelessWidget {
@@ -16,43 +16,11 @@ class RequestOperationTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
-    final foregroundColor = isDestructive
-        ? colorScheme.error
-        : colorScheme.secondaryFixed;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
-          onTap: onTap,
-          child: SizedBox(
-            height: 44,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8),
-              child: Row(
-                children: [
-                  Icon(
-                    operation.icon,
-                    size: 22,
-                    color: foregroundColor,
-                  ),
-                  const SizedBox(width: 10),
-                  Expanded(
-                    child: BodyMediumText(
-                      text: _resolveLabel(operation),
-                      color: foregroundColor,
-                      fontWeight: FontWeight.w500,
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                ],
-              ),
-            ),
-          ),
-        ),
-      ),
+    return BottomSheetActionTile(
+      icon: operation.icon,
+      title: _resolveLabel(operation),
+      isDestructive: isDestructive,
+      onTap: onTap,
     );
   }
 

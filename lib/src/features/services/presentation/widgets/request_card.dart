@@ -6,6 +6,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/request_det
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/bottom_sheet/request_operations_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/request_operation_access_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card_actions.dart';
 import 'package:flutter/material.dart';
@@ -122,7 +123,6 @@ class RequestCard extends StatelessWidget {
     );
   }
 
-
   String get _requestAddress {
     return [
       request.provinceName?.trim(),
@@ -152,20 +152,22 @@ class RequestCard extends StatelessWidget {
 
     if (operations.isEmpty) return;
 
-    await showModalBottomSheet<void>(
+    await BottomSheetMessage.showCustom(
       context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.transparent,
-      builder: (bottomSheetContext) {
-        return RequestOperationsBottomSheet(
+      backgroundColor: Colors.white,
+      topRadius: 28,
+      maxHeight: .82,
+      content: Builder(
+        builder: (bottomSheetContext) => RequestOperationsBottomSheet(
           operations: operations,
           onOperationSelected: (operation) => _openOperation(
             pageContext: context,
             bottomSheetContext: bottomSheetContext,
             operation: operation,
           ),
-        );
-      },
+        ),
+      ),
+      actionWidget: const SizedBox.shrink(),
     );
   }
 

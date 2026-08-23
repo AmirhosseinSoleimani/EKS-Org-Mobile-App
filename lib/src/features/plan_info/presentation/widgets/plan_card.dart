@@ -2,11 +2,11 @@ import 'package:eks_sana_plus_org/src/features/plan_info/domain/entities/plan_in
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_action_tile.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/operation_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card_models.dart';
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 
 class PlanCard extends StatelessWidget {
   const PlanCard({
@@ -151,78 +151,97 @@ class PlanCard extends StatelessWidget {
 
   void _showActionsSheet(BuildContext context) {
     final theme = Theme.of(context);
+    final divider = Divider(
+      height: AppSize.s1,
+      thickness: AppSize.s1,
+      color: theme.dividerColor,
+    );
 
     BottomSheetMessage.showCustom(
       backgroundColor: Colors.white,
       context: context,
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          BottomSheetActionTile(
-            icon: Icons.edit,
-            title: 'ویرایش',
-            onTap: () {
-              context.pop();
-              onEdit();
-            },
-          ),
-          Divider(color: theme.dividerColor),
-          BottomSheetActionTile(
-            icon: Icons.copy,
-            title: 'کپی',
-            onTap: () {
-              context.pop();
-              onCopy();
-            },
-          ),
-          Divider(color: theme.dividerColor),
-          BottomSheetActionTile(
-            icon: Icons.cancel_outlined,
-            title: 'لغو ماموریت',
-            onTap: () {
-              context.pop();
-              onCancelRequests();
-            },
-          ),
-          Divider(color: theme.dividerColor),
-          BottomSheetActionTile(
-            icon: Icons.bus_alert_outlined,
-            title: 'تغییر محل استقرار',
-            onTap: () {
-              context.pop();
-              onLocation();
-            },
-          ),
-          Divider(color: theme.dividerColor),
-          BottomSheetActionTile(
-            icon: Icons.toggle_off_outlined,
-            title: 'تغییر وضعیت',
-            onTap: () {
-              context.pop();
-              onStatus();
-            },
-          ),
-          Divider(color: theme.dividerColor),
-          BottomSheetActionTile(
-            icon: Icons.history_outlined,
-            title: 'تاریخچه',
-            onTap: () {
-              context.pop();
-              onHistory();
-            },
-          ),
-          Divider(color: theme.dividerColor),
-          BottomSheetActionTile(
-            icon: Icons.delete_forever_outlined,
-            title: 'حذف',
-            isDestructive: true,
-            onTap: () {
-              context.pop();
-              onDelete();
-            },
-          ),
-        ],
+      content: Builder(
+        builder: (sheetContext) => OperationBottomSheet(
+          entries: [
+            OperationBottomSheetEntry(
+              child: BottomSheetActionTile(
+                icon: Icons.edit,
+                title: 'ویرایش',
+                onTap: () {
+                  Navigator.of(sheetContext).pop();
+                  onEdit();
+                },
+              ),
+              dividerAfter: divider,
+            ),
+            OperationBottomSheetEntry(
+              child: BottomSheetActionTile(
+                icon: Icons.copy,
+                title: 'کپی',
+                onTap: () {
+                  Navigator.of(sheetContext).pop();
+                  onCopy();
+                },
+              ),
+              dividerAfter: divider,
+            ),
+            OperationBottomSheetEntry(
+              child: BottomSheetActionTile(
+                icon: Icons.cancel_outlined,
+                title: 'لغو ماموریت',
+                onTap: () {
+                  Navigator.of(sheetContext).pop();
+                  onCancelRequests();
+                },
+              ),
+              dividerAfter: divider,
+            ),
+            OperationBottomSheetEntry(
+              child: BottomSheetActionTile(
+                icon: Icons.bus_alert_outlined,
+                title: 'تغییر محل استقرار',
+                onTap: () {
+                  Navigator.of(sheetContext).pop();
+                  onLocation();
+                },
+              ),
+              dividerAfter: divider,
+            ),
+            OperationBottomSheetEntry(
+              child: BottomSheetActionTile(
+                icon: Icons.toggle_off_outlined,
+                title: 'تغییر وضعیت',
+                onTap: () {
+                  Navigator.of(sheetContext).pop();
+                  onStatus();
+                },
+              ),
+              dividerAfter: divider,
+            ),
+            OperationBottomSheetEntry(
+              child: BottomSheetActionTile(
+                icon: Icons.history_outlined,
+                title: 'تاریخچه',
+                onTap: () {
+                  Navigator.of(sheetContext).pop();
+                  onHistory();
+                },
+              ),
+              dividerAfter: divider,
+            ),
+            OperationBottomSheetEntry(
+              child: BottomSheetActionTile(
+                icon: Icons.delete_forever_outlined,
+                title: 'حذف',
+                isDestructive: true,
+                onTap: () {
+                  Navigator.of(sheetContext).pop();
+                  onDelete();
+                },
+              ),
+            ),
+          ],
+        ),
       ),
       actionWidget: const SizedBox.shrink(),
     );

@@ -36,7 +36,7 @@ class BottomSheetWidget extends StatelessWidget {
     this.isLoading,
     this.isSheetPop,
     this.dismissible,
-    this.maxHeight
+    this.maxHeight,
   });
 
   @override
@@ -44,111 +44,133 @@ class BottomSheetWidget extends StatelessWidget {
     final theme = Theme.of(context);
     final media = MediaQuery.of(context);
 
-    final maxHeight = media.size.height * (this.maxHeight ??0.7);
+    final sheetMaxHeight = media.size.height * (maxHeight ?? 0.7);
 
     final hasTitle = title.trim().isNotEmpty;
     final hasMessage = message.trim().isNotEmpty;
     final hasContent = contentWidget != null;
-    final hasCustomActions = actionWidget != null;
 
-    const horizontal = AppPadding.p16;
-    const top = AppPadding.p8;
-    const bottom = AppPadding.p16;
+    // `actionWidget == null` means the default action area must be shown.
+    // `SizedBox.shrink()` is used by custom sheets to explicitly request
+    // no action area at all.
+    final hasCustomActionWidget = actionWidget != null;
+    final hasVisibleCustomActionWidget =
+        hasCustomActionWidget && !_isShrinkWidget(actionWidget!);
+    final hasActionArea =
+        !hasCustomActionWidget || hasVisibleCustomActionWidget;
+
+    const horizontalPadding = AppPadding.p16;
+    const topPadding = AppPadding.p8;
+    const actionBottomPadding = AppPadding.p16;
+    const contentBottomPadding = AppPadding.p8;
+
+    final desiredBottomPadding =
+        hasActionArea ? actionBottomPadding : contentBottomPadding;
+    final safeBottomPadding = media.viewPadding.bottom;
+    final effectiveBottomPadding = safeBottomPadding > desiredBottomPadding
+        ? safeBottomPadding
+        : desiredBottomPadding;
 
     return AnimatedPadding(
       duration: const Duration(milliseconds: 150),
       curve: Curves.easeOut,
       padding: media.viewInsets,
-      child: SafeArea(
-        top: false,
-        child: Container(
-          width: double.infinity,
-          constraints: BoxConstraints(maxHeight: maxHeight),
-          decoration: BoxDecoration(
-            color: backgroundColor ?? theme.colorScheme.surface,
-            borderRadius: BorderRadius.vertical(
-              top: Radius.circular(borderRadius ?? AppSize.s24),
-            ),
+      child: Container(
+        width: double.infinity,
+        constraints: BoxConstraints(maxHeight: sheetMaxHeight),
+        decoration: BoxDecoration(
+          color: backgroundColor ?? theme.colorScheme.surface,
+          borderRadius: BorderRadius.vertical(
+            top: Radius.circular(borderRadius ?? AppSize.s24),
           ),
+        ),
+        // Keep the sheet background attached to the screen edge. Bottom
+        // spacing is centralized here and never stacks with SafeArea.
+        child: Padding(
+          padding: EdgeInsets.only(bottom: effectiveBottomPadding),
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: [
-
               Padding(
                 padding: const EdgeInsets.only(
-                  left: horizontal,
-                  right: horizontal,
-                  top: top,
+                  left: horizontalPadding,
+                  right: horizontalPadding,
+                  top: topPadding,
                 ),
                 child: Column(
                   children: [
                     _buildDragHandle(context),
-                    const SizedBox(height: 12),
-
+                    const SizedBox(height: AppSize.s12),
                     if (hasTitle)
                       _CenteredText(
                         text: title.trim(),
                         style: (textStyle ??
-                            theme.textTheme.titleMedium?.copyWith(
-                              fontSize: AppSize.s18,
-                              fontWeight: FontWeight.w700,
-                              color: theme.colorScheme.onSurface,
-                            )) ??
+                                theme.textTheme.titleMedium?.copyWith(
+                                  fontSize: AppSize.s18,
+                                  fontWeight: FontWeight.w700,
+                                  color: theme.colorScheme.onSurface,
+                                )) ??
                             const TextStyle(),
                       ),
-
-                    if (hasTitle && hasMessage) const SizedBox(height: 10),
-
+                    if (hasTitle && hasMessage)
+                      const SizedBox(height: AppSize.s10),
                     if (hasMessage)
                       Padding(
-                        padding: const EdgeInsets.all(16.0),
+                        padding: const EdgeInsets.all(AppPadding.p16),
                         child: _CenteredText(
                           text: message.trim(),
                           style: (textStyle ??
-                              theme.textTheme.bodyMedium?.copyWith(
-                                fontSize: AppSize.s16,
-                                height: 1.35,
-                                color: theme.colorScheme.onSurfaceVariant,
-                              )) ??
+                                  theme.textTheme.bodyMedium?.copyWith(
+                                    fontSize: AppSize.s16,
+                                    height: 1.35,
+                                    color:
+                                        theme.colorScheme.onSurfaceVariant,
+                                  )) ??
                               const TextStyle(),
                         ),
                       ),
                   ],
                 ),
               ),
-
-              if (!hasContent) const SizedBox(height: 8),
-
+              if (!hasContent && hasActionArea)
+                const SizedBox(height: AppSize.s8),
               if (hasContent)
                 Flexible(
                   child: SingleChildScrollView(
                     physics: const BouncingScrollPhysics(),
-                    padding: const EdgeInsets.fromLTRB(
-                      horizontal,
-                      12,
-                      horizontal,
-                      12,
+                    padding: EdgeInsets.fromLTRB(
+                      horizontalPadding,
+                      AppPadding.p12,
+                      horizontalPadding,
+                      hasActionArea ? AppPadding.p12 : AppPadding.p0,
                     ),
                     child: contentWidget!,
                   ),
                 ),
-
-              Padding(
-                padding: const EdgeInsets.fromLTRB(
-                  horizontal,
-                  8,
-                  horizontal,
-                  bottom,
+              if (hasActionArea)
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(
+                    horizontalPadding,
+                    AppPadding.p8,
+                    horizontalPadding,
+                    AppPadding.p0,
+                  ),
+                  child: hasVisibleCustomActionWidget
+                      ? actionWidget!
+                      : _buildActions(context),
                 ),
-                child: hasCustomActions
-                    ? actionWidget!
-                    : _buildActions(context),
-              ),
             ],
           ),
         ),
       ),
     );
+  }
+
+  bool _isShrinkWidget(Widget widget) {
+    return widget is SizedBox &&
+        widget.width == AppSize.s0 &&
+        widget.height == AppSize.s0 &&
+        widget.child == null;
   }
 
   Widget _buildDragHandle(BuildContext context) {
@@ -197,17 +219,17 @@ class BottomSheetWidget extends StatelessWidget {
               },
         child: loading
             ? const SizedBox(
-          width: AppSize.s20,
-          height: AppSize.s20,
-          child: CircularProgressIndicator(strokeWidth: AppSize.s2),
-        )
+                width: AppSize.s20,
+                height: AppSize.s20,
+                child: CircularProgressIndicator(strokeWidth: AppSize.s2),
+              )
             : _NoWrapButtonText(
-          text: positiveTxt ?? 'تایید',
-          style: theme.textTheme.labelLarge?.copyWith(
-            color: theme.colorScheme.onPrimary,
-            fontWeight: FontWeight.w600,
-          ),
-        ),
+                text: positiveTxt ?? 'تایید',
+                style: theme.textTheme.labelLarge?.copyWith(
+                  color: theme.colorScheme.onPrimary,
+                  fontWeight: FontWeight.w600,
+                ),
+              ),
       ),
     );
   }
@@ -247,10 +269,12 @@ class BottomSheetWidget extends StatelessWidget {
       backgroundColor: backgroundColor,
       foregroundColor: foregroundColor,
       elevation: 0,
-      padding: const EdgeInsets.symmetric(horizontal: 12),
+      padding: const EdgeInsets.symmetric(horizontal: AppPadding.p12),
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.circular(AppSize.s8),
-        side: borderColor != null ? BorderSide(color: borderColor) : BorderSide.none,
+        side: borderColor != null
+            ? BorderSide(color: borderColor)
+            : BorderSide.none,
       ),
     );
   }

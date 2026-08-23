@@ -1,5 +1,5 @@
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_action_tile.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/operation_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
 enum NavganGradePatternOperation {
@@ -18,12 +18,10 @@ class NavganGradePatternActionSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppPadding.p16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          BottomSheetActionTile(
+    return OperationBottomSheet(
+      entries: [
+        OperationBottomSheetEntry(
+          child: BottomSheetActionTile(
             icon: Icons.delete_outline_rounded,
             title: 'حذف',
             isDestructive: true,
@@ -33,8 +31,8 @@ class NavganGradePatternActionSheet extends StatelessWidget {
               onActionSelected(NavganGradePatternOperation.delete);
             },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 

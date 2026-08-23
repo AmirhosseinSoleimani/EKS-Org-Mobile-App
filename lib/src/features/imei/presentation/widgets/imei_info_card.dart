@@ -3,6 +3,7 @@ import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_action_tile.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/operation_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card_models.dart';
@@ -80,21 +81,27 @@ class ImeiInfoCard extends StatelessWidget {
     BottomSheetMessage.showCustom(
       backgroundColor: Colors.white,
       context: context,
-      content: Column(
-        mainAxisSize: MainAxisSize.min,
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          BottomSheetActionTile(
-            icon: Icons.edit_outlined,
-            title: 'ویرایش',
-            onTap: onEdit,
+      content: OperationBottomSheet(
+        entries: [
+          OperationBottomSheetEntry(
+            child: BottomSheetActionTile(
+              icon: Icons.edit_outlined,
+              title: 'ویرایش',
+              onTap: onEdit,
+            ),
+            dividerAfter: Divider(
+              height: AppSize.s1,
+              thickness: AppSize.s1,
+              color: colorScheme.onInverseSurface,
+            ),
           ),
-          Divider(color: colorScheme.onInverseSurface),
-          BottomSheetActionTile(
-            icon: Icons.delete_forever_outlined,
-            title: 'حذف',
-            onTap: onDelete,
-            isDestructive: true,
+          OperationBottomSheetEntry(
+            child: BottomSheetActionTile(
+              icon: Icons.delete_forever_outlined,
+              title: 'حذف',
+              onTap: onDelete,
+              isDestructive: true,
+            ),
           ),
         ],
       ),

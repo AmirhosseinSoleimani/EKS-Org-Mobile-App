@@ -1,5 +1,5 @@
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_action_tile.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/operation_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
 class VehicleModelActionSheet extends StatelessWidget {
@@ -21,45 +21,48 @@ class VehicleModelActionSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final isBusy = isDeleting || isServicesLoading;
-    return Directionality(
-      textDirection: TextDirection.rtl,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: AppPadding.p16),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            BottomSheetActionTile(
-              icon: Icons.miscellaneous_services_outlined,
-              title: 'سرویس‌ها',
-              isLoading: isServicesLoading,
-              onTap: () {
-                if (isBusy) return;
-                onServices();
-              },
-            ),
-            BottomSheetActionTile(
-              icon: Icons.edit_outlined,
-              title: 'ویرایش',
-              onTap: () {
-                if (isBusy) return;
-                onEdit();
-              },
-            ),
-            Divider(color: Theme.of(context).dividerColor),
-            BottomSheetActionTile(
-              icon: Icons.delete_outline,
-              title: 'حذف',
-              isDestructive: true,
-              isLoading: isDeleting,
-              onTap: () {
-                if (isBusy) return;
-                onDelete();
-              },
-            ),
-          ],
+
+    return OperationBottomSheet(
+      entries: [
+        OperationBottomSheetEntry(
+          child: BottomSheetActionTile(
+            icon: Icons.miscellaneous_services_outlined,
+            title: 'سرویس‌ها',
+            isLoading: isServicesLoading,
+            onTap: () {
+              if (isBusy) return;
+              onServices();
+            },
+          ),
         ),
-      ),
+        OperationBottomSheetEntry(
+          child: BottomSheetActionTile(
+            icon: Icons.edit_outlined,
+            title: 'ویرایش',
+            onTap: () {
+              if (isBusy) return;
+              onEdit();
+            },
+          ),
+          dividerAfter: Divider(
+            height: 1,
+            thickness: 1,
+            color: Theme.of(context).dividerColor,
+          ),
+        ),
+        OperationBottomSheetEntry(
+          child: BottomSheetActionTile(
+            icon: Icons.delete_outline,
+            title: 'حذف',
+            isDestructive: true,
+            isLoading: isDeleting,
+            onTap: () {
+              if (isBusy) return;
+              onDelete();
+            },
+          ),
+        ),
+      ],
     );
   }
 }

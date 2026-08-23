@@ -1,4 +1,6 @@
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_action_tile.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/operation_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
 class EmdadUnitActionSheet extends StatelessWidget {
@@ -20,107 +22,47 @@ class EmdadUnitActionSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
-    return SafeArea(
-      child: Padding(
-        padding: const EdgeInsets.fromLTRB(
-          AppPadding.p24,
-          AppPadding.p8,
-          AppPadding.p24,
-          AppPadding.p24,
-        ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Container(
-              width: AppSize.s60,
-              height: AppSize.s4,
-              decoration: BoxDecoration(
-                color: theme.colorScheme.onInverseSurface,
-                borderRadius: BorderRadius.circular(AppSize.s8),
-              ),
-            ),
-            Space.h20,
-            _ActionTile(
-              icon: Icons.group_outlined,
-              title: 'امدادرسان‌ها',
-              onTap: onPersons,
-            ),
-            Divider(
-              height: AppSize.s1,
-              thickness: AppSize.s1,
-              color: theme.colorScheme.onInverseSurface,
-            ),
-            _ActionTile(
-              icon: Icons.grading_outlined,
-              title: 'الگوی گرید',
-              onTap: onGradePatterns,
-            ),
-            Divider(
-              height: AppSize.s1,
-              thickness: AppSize.s1,
-              color: theme.colorScheme.onInverseSurface,
-            ),
-            _ActionTile(
-              icon: Icons.bus_alert_outlined,
-              title: 'تغییر محل استقرار',
-              onTap: onChangeLocation,
-            ),
-            Divider(
-              height: AppSize.s1,
-              thickness: AppSize.s1,
-              color: theme.colorScheme.onInverseSurface,
-            ),
-            _ActionTile(
-              icon: Icons.delete_outlined,
-              title: 'حذف',
-              isDestructive: true,
-              onTap: onDelete,
-            ),
-          ],
-        ),
-      ),
+    final divider = Divider(
+      height: AppSize.s1,
+      thickness: AppSize.s1,
+      color: theme.colorScheme.onInverseSurface,
     );
-  }
-}
 
-class _ActionTile extends StatelessWidget {
-  const _ActionTile({
-    required this.icon,
-    required this.title,
-    required this.onTap,
-    this.isDestructive = false,
-  });
-
-  final IconData icon;
-  final String title;
-  final VoidCallback onTap;
-  final bool isDestructive;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final color = isDestructive
-        ? theme.colorScheme.error
-        : theme.colorScheme.onPrimaryFixed;
-
-    return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: ListTile(
-        contentPadding: EdgeInsets.zero,
-        leading: Icon(icon, color: color, size: AppSize.s24),
-        title: Text(
-          title,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: color,
-            fontWeight: FontWeight.w700,
+    return OperationBottomSheet(
+      entries: [
+        OperationBottomSheetEntry(
+          child: BottomSheetActionTile(
+            icon: Icons.group_outlined,
+            title: 'امدادرسان‌ها',
+            onTap: onPersons,
+          ),
+          dividerAfter: divider,
+        ),
+        OperationBottomSheetEntry(
+          child: BottomSheetActionTile(
+            icon: Icons.grading_outlined,
+            title: 'الگوی گرید',
+            onTap: onGradePatterns,
+          ),
+          dividerAfter: divider,
+        ),
+        OperationBottomSheetEntry(
+          child: BottomSheetActionTile(
+            icon: Icons.bus_alert_outlined,
+            title: 'تغییر محل استقرار',
+            onTap: onChangeLocation,
+          ),
+          dividerAfter: divider,
+        ),
+        OperationBottomSheetEntry(
+          child: BottomSheetActionTile(
+            icon: Icons.delete_outlined,
+            title: 'حذف',
+            isDestructive: true,
+            onTap: onDelete,
           ),
         ),
-        onTap: () {
-          Navigator.of(context).pop();
-          onTap();
-        },
-      ),
+      ],
     );
   }
 }

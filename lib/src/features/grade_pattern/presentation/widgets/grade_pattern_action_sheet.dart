@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_action_tile.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/operation_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
 enum GradePatternOperation {
@@ -21,12 +22,10 @@ class GradePatternActionSheet extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: AppPadding.p16),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          BottomSheetActionTile(
+    return OperationBottomSheet(
+      entries: [
+        OperationBottomSheetEntry(
+          child: BottomSheetActionTile(
             icon: Icons.edit_outlined,
             title: 'ویرایش',
             isLoading: _isLoading(GradePatternOperation.edit),
@@ -35,12 +34,14 @@ class GradePatternActionSheet extends StatelessWidget {
               onActionSelected(GradePatternOperation.edit);
             },
           ),
-          Divider(
+          dividerAfter: Divider(
             height: AppSize.s1,
             thickness: AppSize.s1,
             color: theme.colorScheme.onInverseSurface,
           ),
-          BottomSheetActionTile(
+        ),
+        OperationBottomSheetEntry(
+          child: BottomSheetActionTile(
             icon: Icons.delete_outline_rounded,
             title: 'حذف',
             isDestructive: true,
@@ -50,8 +51,8 @@ class GradePatternActionSheet extends StatelessWidget {
               onActionSelected(GradePatternOperation.delete);
             },
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 
@@ -59,4 +60,3 @@ class GradePatternActionSheet extends StatelessWidget {
 
   bool _isLoading(GradePatternOperation action) => loadingAction == action;
 }
-

@@ -217,20 +217,35 @@ class _EmdadUnitListView extends StatelessWidget {
     EmdadUnitEntity item,
     EmdadUnitCubit cubit,
   ) {
-    showModalBottomSheet<void>(
+    BottomSheetMessage.showCustom(
       context: context,
-      useSafeArea: true,
       backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
+      topRadius: AppSize.s20,
+      content: Builder(
+        builder: (sheetContext) => EmdadUnitActionSheet(
+          onEditImage: () {
+            Navigator.of(sheetContext).pop();
+            _openImagePage(context, item, cubit);
+          },
+          onChangeLocation: () {
+            Navigator.of(sheetContext).pop();
+            _openLocationPage(context, item, cubit);
+          },
+          onPersons: () {
+            Navigator.of(sheetContext).pop();
+            _openPersonsPage(context, item, cubit);
+          },
+          onGradePatterns: () {
+            Navigator.of(sheetContext).pop();
+            _openGradePatternPage(context, item, cubit);
+          },
+          onDelete: () {
+            Navigator.of(sheetContext).pop();
+            _confirmDelete(context, item, cubit);
+          },
+        ),
       ),
-      builder: (_) => EmdadUnitActionSheet(
-        onEditImage: () => _openImagePage(context, item, cubit),
-        onChangeLocation: () => _openLocationPage(context, item, cubit),
-        onPersons: () => _openPersonsPage(context, item, cubit),
-        onGradePatterns: () => _openGradePatternPage(context, item, cubit),
-        onDelete: () => _confirmDelete(context, item, cubit),
-      ),
+      actionWidget: const SizedBox.shrink(),
     );
   }
 

@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_action_tile.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/operation_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
 class EmdadgarInvoiceOperationsSheet extends StatelessWidget {
@@ -13,19 +14,22 @@ class EmdadgarInvoiceOperationsSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        BottomSheetActionTile(
-          icon: Icons.info_outline,
-          title: 'مشاهده جزئیات',
-          onTap: onDetailsTap,
+    return OperationBottomSheet(
+      entries: [
+        OperationBottomSheetEntry(
+          child: BottomSheetActionTile(
+            icon: Icons.info_outline,
+            title: 'مشاهده جزئیات',
+            onTap: onDetailsTap,
+          ),
         ),
         if (onCorrectionTap != null)
-          BottomSheetActionTile(
-            icon: Icons.edit_outlined,
-            title: 'اصلاح صورت وضعیت',
-            onTap: onCorrectionTap!,
+          OperationBottomSheetEntry(
+            child: BottomSheetActionTile(
+              icon: Icons.edit_outlined,
+              title: 'اصلاح صورت وضعیت',
+              onTap: onCorrectionTap!,
+            ),
           ),
       ],
     );

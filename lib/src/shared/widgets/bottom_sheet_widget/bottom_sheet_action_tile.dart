@@ -26,32 +26,36 @@ class BottomSheetActionTile extends StatelessWidget {
     final color = isDestructive
         ? theme.colorScheme.error
         : theme.colorScheme.onPrimaryFixed;
-    final effectiveColor =
-        enabled || isLoading ? color : color.withOpacity(0.45);
+    final effectiveColor = enabled ? color : color.withOpacity(0.45);
 
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 8.0, vertical: 4.0),
+    return SizedBox(
+      height: AppSize.s48,
       child: ListTile(
+        dense: true,
         contentPadding: EdgeInsets.zero,
-        leading: SizedBox(
-          width: AppSize.s24,
-          height: AppSize.s24,
+        minVerticalPadding: AppPadding.p0,
+        minLeadingWidth: AppSize.s24,
+        horizontalTitleGap: AppSize.s12,
+        leading: SizedBox.square(
+          dimension: AppSize.s24,
           child: isLoading
               ? CircularProgressIndicator(
-                  strokeWidth: 2,
+                  strokeWidth: AppSize.s2,
                   color: effectiveColor,
                 )
-              : Icon(icon, color: effectiveColor, size: AppSize.s24),
+              : Icon(
+                  icon,
+                  color: effectiveColor,
+                  size: AppSize.s24,
+                ),
         ),
         title: BodyMediumText(
           text: title,
           color: effectiveColor,
           fontWeight: FontWeight.w700,
+          textAlign: TextAlign.start,
         ),
-        onTap: () {
-          if (!enabled || isLoading) return;
-          onTap();
-        },
+        onTap: enabled && !isLoading ? onTap : null,
       ),
     );
   }

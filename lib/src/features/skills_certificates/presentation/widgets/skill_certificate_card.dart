@@ -1,11 +1,11 @@
 import 'package:eks_sana_plus_org/src/features/skills_certificates/domain/entities/skill_certificate_entity.dart';
 import 'package:eks_sana_plus_org/src/features/skills_certificates/presentation/cubit/skills_certificates_cubit.dart';
-import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_action_tile.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/operation_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card_models.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -57,42 +57,47 @@ class SkillCertificateCard extends StatelessWidget {
   void _showActionsSheet(BuildContext context) {
     final colorScheme = Theme.of(context).colorScheme;
     final cubit = context.read<SkillsCertificatesCubit>();
+    final divider = Divider(color: colorScheme.onInverseSurface);
 
     BottomSheetMessage.showCustom(
       backgroundColor: Colors.white,
       context: context,
       content: BlocProvider.value(
         value: cubit,
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            _ActionTile(
-              icon: Icons.card_membership,
-              title: 'سرویس‌ها',
-              closeBeforeAction: false,
-              loadingBuilder: (state) => state.data.isServicesLoading,
-              onTap: onLoadServices,
-              onActionCompleted: onServicesLoaded,
+        child: OperationBottomSheet(
+          entries: [
+            OperationBottomSheetEntry(
+              child: _ActionTile(
+                icon: Icons.card_membership,
+                title: 'سرویس‌ها',
+                closeBeforeAction: false,
+                loadingBuilder: (state) => state.data.isServicesLoading,
+                onTap: onLoadServices,
+                onActionCompleted: onServicesLoaded,
+              ),
+              dividerAfter: divider,
             ),
-            Divider(color: colorScheme.onInverseSurface),
-            _ActionTile(
-              icon: Icons.edit_outlined,
-              title: 'ویرایش',
-              onTap: () async {
-                onEdit();
-                return true;
-              },
+            OperationBottomSheetEntry(
+              child: _ActionTile(
+                icon: Icons.edit_outlined,
+                title: 'ویرایش',
+                onTap: () async {
+                  onEdit();
+                  return true;
+                },
+              ),
+              dividerAfter: divider,
             ),
-            Divider(color: colorScheme.onInverseSurface),
-            _ActionTile(
-              icon: Icons.delete_forever_outlined,
-              title: 'حذف',
-              isDestructive: true,
-              onTap: () async {
-                onDelete();
-                return true;
-              },
+            OperationBottomSheetEntry(
+              child: _ActionTile(
+                icon: Icons.delete_forever_outlined,
+                title: 'حذف',
+                isDestructive: true,
+                onTap: () async {
+                  onDelete();
+                  return true;
+                },
+              ),
             ),
           ],
         ),
@@ -123,51 +128,31 @@ class _ActionTile extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final color = isDestructive
-        ? Theme.of(context).colorScheme.error
-        : Theme.of(context).colorScheme.onTertiaryFixed;
-
     return BlocBuilder<SkillsCertificatesCubit, SkillsCertificatesState>(
       buildWhen: (previous, current) =>
           loadingBuilder?.call(previous) != loadingBuilder?.call(current),
       builder: (context, state) {
         final isLoading = loadingBuilder?.call(state) ?? false;
 
-        return Padding(
-          padding: const EdgeInsets.symmetric(vertical: 4),
-          child: ListTile(
-            leading: isLoading
-                ? SizedBox(
-                    width: AppSize.s24,
-                    height: AppSize.s24,
-                    child: CircularProgressIndicator(
-                      strokeWidth: AppSize.s2,
-                      color: color,
-                    ),
-                  )
-                : Icon(icon, color: color),
-            title: BodyMediumText(
-              text: title,
-              color: color,
-              fontWeight: FontWeight.w600,
-            ),
-            onTap: () async {
-              if (isLoading) return;
+        return BottomSheetActionTile(
+          icon: icon,
+          title: title,
+          isDestructive: isDestructive,
+          isLoading: isLoading,
+          onTap: () async {
+            if (closeBeforeAction) {
+              Navigator.of(context).pop();
+            }
 
-              if (closeBeforeAction) {
-                Navigator.of(context).pop();
-              }
+            final completed = await onTap();
+            if (!completed || !context.mounted) return;
 
-              final completed = await onTap();
-              if (!completed || !context.mounted) return;
+            if (!closeBeforeAction) {
+              Navigator.of(context).pop();
+            }
 
-              if (!closeBeforeAction) {
-                Navigator.of(context).pop();
-              }
-
-              onActionCompleted?.call();
-            },
-          ),
+            onActionCompleted?.call();
+          },
         );
       },
     );

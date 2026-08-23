@@ -1,4 +1,5 @@
-import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_action_tile.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/operation_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
 class RescuerActionsBottomSheet extends StatelessWidget {
@@ -60,92 +61,47 @@ class _RescuerActionsContentState extends State<_RescuerActionsContent> {
 
   @override
   Widget build(BuildContext context) {
-    final colorScheme = Theme.of(context).colorScheme;
+    final divider = Divider(
+      height: 1,
+      thickness: 1,
+      color: Theme.of(context).dividerColor,
+    );
 
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        _ActionRow(
-          title: 'گواهینامه مهارت‌ها',
-          icon: Icons.card_membership_outlined,
-          isLoading: _loadingAction == _RescuerActionType.certificates,
-          onTap: () => _runAction(
-            _RescuerActionType.certificates,
-            widget.onSkillCertificates,
+    return OperationBottomSheet(
+      entries: [
+        OperationBottomSheetEntry(
+          child: BottomSheetActionTile(
+            title: 'گواهینامه مهارت‌ها',
+            icon: Icons.card_membership_outlined,
+            isLoading: _loadingAction == _RescuerActionType.certificates,
+            onTap: () => _runAction(
+              _RescuerActionType.certificates,
+              widget.onSkillCertificates,
+            ),
+          ),
+          dividerAfter: divider,
+        ),
+        OperationBottomSheetEntry(
+          child: BottomSheetActionTile(
+            title: 'تاریخچه',
+            icon: Icons.history,
+            isLoading: _loadingAction == _RescuerActionType.history,
+            onTap: () =>
+                _runAction(_RescuerActionType.history, widget.onHistory),
+          ),
+          dividerAfter: divider,
+        ),
+        OperationBottomSheetEntry(
+          child: BottomSheetActionTile(
+            title: 'حذف',
+            icon: Icons.delete_outline,
+            isDestructive: true,
+            isLoading: _loadingAction == _RescuerActionType.delete,
+            onTap: () =>
+                _runAction(_RescuerActionType.delete, widget.onDelete),
           ),
         ),
-        Divider(height: 1, color: Theme.of(context).dividerColor),
-        _ActionRow(
-          title: 'تاریخچه',
-          icon: Icons.history,
-          isLoading: _loadingAction == _RescuerActionType.history,
-          onTap: () => _runAction(_RescuerActionType.history, widget.onHistory),
-        ),
-        Divider(height: 1, color: Theme.of(context).dividerColor),
-        _ActionRow(
-          title: 'حذف',
-          icon: Icons.delete_outline,
-          color: colorScheme.error,
-          isLoading: _loadingAction == _RescuerActionType.delete,
-          onTap: () => _runAction(_RescuerActionType.delete, widget.onDelete),
-        ),
       ],
-    );
-  }
-}
-
-class _ActionRow extends StatelessWidget {
-  final String title;
-  final IconData icon;
-  final VoidCallback onTap;
-  final bool isLoading;
-  final Color? color;
-
-  const _ActionRow({
-    required this.title,
-    required this.icon,
-    required this.onTap,
-    required this.isLoading,
-    this.color,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    final effectiveColor =
-        color ?? Theme.of(context).colorScheme.onTertiaryFixed;
-
-    return InkWell(
-      onTap: () {
-        if (isLoading) return;
-        onTap();
-      },
-      child: Padding(
-        padding: const EdgeInsets.symmetric(vertical: 4),
-        child: Row(
-          children: [
-            if (isLoading)
-              SizedBox.square(
-                dimension: 20,
-                child: CircularProgressIndicator(
-                  strokeWidth: 2,
-                  color: effectiveColor,
-                ),
-              )
-            else
-              Icon(icon, color: effectiveColor, size: 22),
-            const SizedBox(width: 12),
-            Expanded(
-              child: BodyMediumText(
-                text: title,
-                color: effectiveColor,
-                textAlign: TextAlign.right,
-                fontWeight: FontWeight.w500,
-              ),
-            ),
-          ],
-        ),
-      ),
     );
   }
 }

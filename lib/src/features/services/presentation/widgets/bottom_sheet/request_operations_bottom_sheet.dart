@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/services/presentation/enums/request_card_operation.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/operation_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 
 import 'request_operation_tile.dart';
@@ -49,62 +50,36 @@ class RequestOperationsBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final sections = _buildSections();
-    final maxHeight = MediaQuery.sizeOf(context).height * 0.82;
+    final divider = Divider(
+      height: 1,
+      thickness: 1,
+      color: Theme.of(context).dividerColor,
+    );
+    final entries = <OperationBottomSheetEntry>[];
 
-    return Container(
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.vertical(top: Radius.circular(28)),
-      ),
-      child: SafeArea(
-        top: false,
-        child: ConstrainedBox(
-          constraints: BoxConstraints(maxHeight: maxHeight),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const SizedBox(height: 8),
-              _buildDragHandle(context),
-              const SizedBox(height: 10),
-              Flexible(
-                child: SingleChildScrollView(
-                  padding: const EdgeInsets.fromLTRB(22, 0, 22, 12),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      for (var index = 0;
-                          index < sections.length;
-                          index++) ...[
-                        if (index > 0) _buildDivider(context),
-                        ...sections[index].map(
-                          (operation) => RequestOperationTile(
-                            operation: operation,
-                            isDestructive:
-                                _destructiveOrder.contains(operation),
-                            onTap: () => onOperationSelected(operation),
-                          ),
-                        ),
-                      ],
-                    ],
-                  ),
-                ),
-              ),
-            ],
+    for (var sectionIndex = 0;
+        sectionIndex < sections.length;
+        sectionIndex++) {
+      final section = sections[sectionIndex];
+      for (var itemIndex = 0; itemIndex < section.length; itemIndex++) {
+        final operation = section[itemIndex];
+        final isSectionEnd = itemIndex == section.length - 1;
+        final hasNextSection = sectionIndex < sections.length - 1;
+
+        entries.add(
+          OperationBottomSheetEntry(
+            child: RequestOperationTile(
+              operation: operation,
+              isDestructive: _destructiveOrder.contains(operation),
+              onTap: () => onOperationSelected(operation),
+            ),
+            dividerAfter: isSectionEnd && hasNextSection ? divider : null,
           ),
-        ),
-      ),
-    );
-  }
+        );
+      }
+    }
 
-  Widget _buildDragHandle(BuildContext context) {
-    return Container(
-      width: 76,
-      height: 5,
-      decoration: BoxDecoration(
-        color: Theme.of(context).dividerColor,
-        borderRadius: BorderRadius.circular(20),
-      ),
-    );
+    return OperationBottomSheet(entries: entries);
   }
 
   List<List<RequestCardOperation>> _buildSections() {
@@ -134,13 +109,5 @@ class RequestOperationsBottomSheet extends StatelessWidget {
     Set<RequestCardOperation> visibleOperations,
   ) {
     return order.where(visibleOperations.contains).toList(growable: false);
-  }
-
-  Widget _buildDivider(BuildContext context) {
-    return Divider(
-      height: 1,
-      thickness: 1,
-      color: Theme.of(context).dividerColor,
-    );
   }
 }
