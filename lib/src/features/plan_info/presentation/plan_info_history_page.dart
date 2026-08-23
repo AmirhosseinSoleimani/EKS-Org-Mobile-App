@@ -10,6 +10,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/refresh_widgets/swipe_refresh_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -107,15 +108,27 @@ class _PlanInfoHistoryView extends StatelessWidget {
           body: BlocBuilder<PlanInfoCubit, PlanInfoState>(
             builder: (context, state) {
               if (state.status == PlanInfoStatus.connectionError) {
-                return const SizedBox.expand(
-                  child: Center(child: EmptyListWidget()),
+                return SwipeRefreshContainer(
+                  onRefresh: () async {
+                    final id = item.resolvedId;
+                    if (id == null) return;
+                    await cubit.loadHistory(refId: id);
+                  },
+                  child: const Center(child: EmptyListWidget()),
                 );
               }
 
               final isLoading = state.loadingHistoryRefId != null;
 
-              return CustomScrollView(
-                slivers: [
+              return RefreshIndicator(
+                onRefresh: () async {
+                  final id = item.resolvedId;
+                  if (id == null) return;
+                  await cubit.loadHistory(refId: id);
+                },
+                child: CustomScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  slivers: [
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(
                       AppPadding.p16,
@@ -165,7 +178,8 @@ class _PlanInfoHistoryView extends StatelessWidget {
                         ),
                       ),
                     ),
-                ],
+                  ],
+                ),
               );
             },
           ),

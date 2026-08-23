@@ -16,6 +16,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_butto
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filter_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/refresh_widgets/swipe_refresh_container.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -106,8 +107,9 @@ class _PlanInfoView extends StatelessWidget {
                   builder: (context, state) {
                     if (state.status == PlanInfoStatus.connectionError &&
                         state.items.isEmpty) {
-                      return const SizedBox.expand(
-                        child: Center(child: EmptyListWidget()),
+                      return SwipeRefreshContainer(
+                        onRefresh: cubit.fetchPlans,
+                        child: const Center(child: EmptyListWidget()),
                       );
                     }
 
@@ -117,12 +119,16 @@ class _PlanInfoView extends StatelessWidget {
 
                     final items = state.visibleItems;
                     if (items.isEmpty) {
-                      return const EmptyListWidget();
+                      return SwipeRefreshContainer(
+                        onRefresh: cubit.fetchPlans,
+                        child: const Center(child: EmptyListWidget()),
+                      );
                     }
 
                     return RefreshIndicator(
                       onRefresh: cubit.fetchPlans,
                       child: ListView.separated(
+                        physics: const AlwaysScrollableScrollPhysics(),
                         padding: const EdgeInsets.fromLTRB(
                           AppPadding.p16,
                           AppPadding.p0,
@@ -237,46 +243,21 @@ class _PlanInfoView extends StatelessWidget {
 
 
   Future<void> _confirmDelete(
-      BuildContext context,
-      PlanInfoCubit cubit,
-      PlanInfoEntity plan,) async {
-    if (plan.id == null) return;
-    await showModalBottomSheet<bool>(
+    BuildContext context,
+    PlanInfoCubit cubit,
+    PlanInfoEntity plan,
+  ) async {
+    final id = plan.resolvedId;
+    if (id == null) return;
+
+    await DeleteConfirmSheet.show(
       context: context,
-        isScrollControlled: true,
-        useSafeArea: true,
-        backgroundColor: Theme
-            .of(context)
-            .colorScheme
-            .onPrimary,
-        shape: const RoundedRectangleBorder(
-          borderRadius: BorderRadius.vertical(
-              top: Radius.circular(AppSize.s20)),
-      ),
-        builder: (_) =>
-            BlocProvider.value(
-                value: cubit,
-                child: BlocBuilder<PlanInfoCubit, PlanInfoState>(
-
-                  builder: (context, state) {
-                    return DeleteConfirmSheet(
-                      title: 'حذف برنامه ریزی',
-                      message: 'آیا از حذف این مورد مطمئن هستید؟ این عمل غیرقابل بازگشت است.',
-                      confirmTitle: 'حذف',
-                      isSubmitting: state.status == PlanInfoStatus.submitting,
-                      onConfirm: () async {
-                        final id = plan.resolvedId;
-                        if (id == null) return;
-
-                        final deleted = await cubit.deletePlan(id);
-                        if (deleted && context.mounted) {
-                          Navigator.of(context).pop();
-                        }
-                      },
-                    );
-                  },
-                )
-            )
+      title: 'حذف برنامه ریزی',
+      message: 'آیا از حذف این مورد مطمئن هستید؟ این عمل غیرقابل بازگشت است.',
+      confirmTitle: 'حذف',
+      onConfirm: () async {
+        await cubit.deletePlan(id);
+      },
     );
   }
 }

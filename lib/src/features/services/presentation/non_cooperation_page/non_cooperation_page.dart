@@ -11,6 +11,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_b
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/refresh_widgets/swipe_refresh_container.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -90,13 +91,15 @@ class _Body extends StatelessWidget {
             ),
           ),
           error: (_) => cubit.items.isEmpty
-              ? const SizedBox.expand(
-                  child: Center(child: EmptyListWidget()),
+              ? SwipeRefreshContainer(
+                  onRefresh: cubit.init,
+                  child: const Center(child: EmptyListWidget()),
                 )
               : const _LoadedView(),
           connectionError: () => cubit.items.isEmpty
-              ? const SizedBox.expand(
-                  child: Center(child: EmptyListWidget()),
+              ? SwipeRefreshContainer(
+                  onRefresh: cubit.init,
+                  child: const Center(child: EmptyListWidget()),
                 )
               : const _LoadedView(),
           orElse: () => const _LoadedView(),
@@ -120,28 +123,32 @@ class _LoadedView extends StatelessWidget {
           PointerDeviceKind.mouse,
         },
       ),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSize.s16),
-        child: Column(
-          children: [
-            ExpandableSection(
-              isExpanded: false,
-              header: RequestStatusSection(request: cubit.selectedBaseRequest),
-              child: RequestDetailSection(
-                selectedRequest: cubit.selectedBaseRequest,
-                showCustomerInfo: true,
+      child: RefreshIndicator(
+        onRefresh: cubit.init,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(AppSize.s16),
+          child: Column(
+            children: [
+              ExpandableSection(
+                isExpanded: false,
+                header: RequestStatusSection(request: cubit.selectedBaseRequest),
+                child: RequestDetailSection(
+                  selectedRequest: cubit.selectedBaseRequest,
+                  showCustomerInfo: true,
+                ),
               ),
-            ),
-            Space.h8,
-            NonCooperationListView(
-              items: cubit.items,
-              icon: const Icon(
-                Icons.do_not_disturb_on,
-                color: Colors.grey,
-                size: 20,
+              Space.h8,
+              NonCooperationListView(
+                items: cubit.items,
+                icon: const Icon(
+                  Icons.do_not_disturb_on,
+                  color: Colors.grey,
+                  size: 20,
+                ),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );

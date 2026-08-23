@@ -66,43 +66,59 @@ class _RequestListViewerState extends State<RequestListViewer> {
         ? widget.items.length + 1
         : widget.items.length;
 
-    if (itemCount < 1) {
-      return const EmptyListWidget();
-    }
+    return RefreshIndicator(
+      onRefresh: _refresh,
+      child: itemCount < 1
+          ? ListView(
+              controller: _controller,
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: const [
+                SizedBox(
+                  height: 320,
+                  child: Center(child: EmptyListWidget()),
+                ),
+              ],
+            )
+          : ListView.separated(
+              controller: _controller,
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.symmetric(horizontal: 16),
+              itemCount: itemCount + 1,
+              separatorBuilder: (context, index) =>
+                  SizedBox(height: index == 0 ? 0 : 16),
+              itemBuilder: (context, index) {
+                if (index == 0 && widget.totalCount > 0) {
+                  return const SizedBox();
+                }
 
-    return ListView.separated(
-      controller: _controller,
-      padding: const EdgeInsets.symmetric(horizontal: 16),
-      itemCount: itemCount + 1,
-      separatorBuilder: (context, index) =>
-          SizedBox(height: index == 0 ? 0 : 16),
-      itemBuilder: (context, index) {
-        if (index == 0 && widget.totalCount > 0) {
-          return const SizedBox();
-        }
+                final adjustedIndex = index - 1;
+                if (adjustedIndex >= widget.items.length) {
+                  return Center(
+                    child: CircularProgressIndicator(
+                      color: widget.items.first.serviceType?.serviceColor,
+                    ),
+                  );
+                }
 
-        final adjustedIndex = index - 1;
-        if (adjustedIndex >= widget.items.length) {
-          return Center(
-            child: CircularProgressIndicator(
-              color: widget.items.first.serviceType?.serviceColor,
+                final item = widget.items[adjustedIndex];
+                return RequestCard(
+                  request: item,
+                  serviceTitle: _resolveServiceTitle(item),
+                  serviceColor: item.serviceType?.serviceColor ??
+                      ServiceType.reliefService.serviceColor,
+                  serviceIcon: Icons.build,
+                  operationAccess: widget.operationAccess,
+                  onSelected: widget.onSelected,
+                  onRefreshAfterReturn: widget.onRefreshAfterReturn,
+                );
+              },
             ),
-          );
-        }
-
-        final item = widget.items[adjustedIndex];
-        return RequestCard(
-          request: item,
-          serviceTitle: _resolveServiceTitle(item),
-          serviceColor: item.serviceType?.serviceColor ??
-              ServiceType.reliefService.serviceColor,
-          serviceIcon: Icons.build,
-          operationAccess: widget.operationAccess,
-          onSelected: widget.onSelected,
-          onRefreshAfterReturn: widget.onRefreshAfterReturn,
-        );
-      },
     );
+  }
+
+
+  Future<void> _refresh() async {
+    await widget.onRefreshAfterReturn?.call();
   }
 
   String _resolveServiceTitle(BaseRequestEntity entity) {

@@ -23,6 +23,7 @@ class AgencyInfoComplementaryInfoActionView extends StatelessWidget {
         Space.h24,
         Expanded(
           child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
             padding: const EdgeInsets.only(bottom: AppPadding.p24),
             child: AgencyInfoActionCard(
               child: Column(

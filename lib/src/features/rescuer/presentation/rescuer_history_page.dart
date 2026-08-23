@@ -7,18 +7,33 @@ import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_te
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/material.dart';
 
-class RescuerHistoryPage extends StatelessWidget {
+class RescuerHistoryPage extends StatefulWidget {
   static const path = '/rescuer-history';
   static const name = 'rescuer-history';
 
   final RescuerEntity rescuer;
   final List<SanHistoryEntity> histories;
+  final Future<List<SanHistoryEntity>?> Function() onRefresh;
 
   const RescuerHistoryPage({
     super.key,
     required this.rescuer,
     required this.histories,
+    required this.onRefresh,
   });
+
+  @override
+  State<RescuerHistoryPage> createState() => _RescuerHistoryPageState();
+}
+
+class _RescuerHistoryPageState extends State<RescuerHistoryPage> {
+  late List<SanHistoryEntity> _histories;
+
+  @override
+  void initState() {
+    super.initState();
+    _histories = List<SanHistoryEntity>.of(widget.histories);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -29,29 +44,27 @@ class RescuerHistoryPage extends StatelessWidget {
         onBack: () => Navigator.of(context).pop(false),
       ),
       body: SafeArea(
-        child: Column(
-          children: [
-            Expanded(
-              child: SingleChildScrollView(
-                padding: const EdgeInsets.all(16),
-                child: Column(
-                  children: [
-                    _HistoryProfileCard(rescuer: rescuer),
-                    const SizedBox(height: 26),
-                    if (histories.isEmpty)
-                      const _EmptyHistoryCard()
-                    else
-                      ...histories.map(
-                        (item) => Padding(
-                          padding: const EdgeInsets.only(bottom: 24),
-                          child: _HistoryLogCard(item: item),
-                        ),
-                      ),
-                  ],
-                ),
-              ),
+        child: RefreshIndicator(
+          onRefresh: _refresh,
+          child: SingleChildScrollView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            padding: const EdgeInsets.all(16),
+            child: Column(
+              children: [
+                _HistoryProfileCard(rescuer: widget.rescuer),
+                const SizedBox(height: 26),
+                if (_histories.isEmpty)
+                  const _EmptyHistoryCard()
+                else
+                  ..._histories.map(
+                    (item) => Padding(
+                      padding: const EdgeInsets.only(bottom: 24),
+                      child: _HistoryLogCard(item: item),
+                    ),
+                  ),
+              ],
             ),
-          ],
+          ),
         ),
       ),
       bottomNavigationBar: Container(
@@ -82,6 +95,15 @@ class RescuerHistoryPage extends StatelessWidget {
         ),
       ),
     );
+  }
+
+  Future<void> _refresh() async {
+    final histories = await widget.onRefresh();
+    if (!mounted || histories == null) return;
+
+    setState(() {
+      _histories = List<SanHistoryEntity>.of(histories);
+    });
   }
 }
 

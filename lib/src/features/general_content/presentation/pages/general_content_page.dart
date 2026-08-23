@@ -24,6 +24,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/list_widgets/list_section_h
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/refresh_widgets/swipe_refresh_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -219,32 +220,17 @@ class _GeneralContentView extends StatelessWidget {
     GeneralContentEntity item,
     GeneralContentCubit cubit,
   ) {
-    var isSubmitting = false;
-    BottomSheetMessage.showCustom(
+    DeleteConfirmSheet.show(
       context: context,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      isDismissible: !isSubmitting,
-      content: StatefulBuilder(
-        builder: (context, setState) {
-          return DeleteConfirmSheet(
-            title: 'حذف بخشنامه',
-            message: 'آیا از حذف «${item.title ?? 'این بخشنامه'}» مطمئن هستید؟',
-            confirmTitle: 'حذف',
-            isSubmitting: isSubmitting,
-            onConfirm: () async {
-              setState(() => isSubmitting = true);
-              final success = await cubit.deleteContent(item);
-              if (context.mounted && success) context.pop();
-              if (context.mounted && !success) {
-                setState(() => isSubmitting = false);
-              }
-            },
-          );
-        },
-      ),
-      actionWidget: const SizedBox.shrink(),
+      title: 'حذف بخشنامه',
+      message: 'آیا از حذف «${item.title ?? 'این بخشنامه'}» مطمئن هستید؟',
+      confirmTitle: 'حذف',
+      onConfirm: () async {
+        await cubit.deleteContent(item);
+      },
     );
   }
+
 }
 
 class _GeneralContentList extends StatelessWidget {
@@ -268,12 +254,18 @@ class _GeneralContentList extends StatelessWidget {
 
     if (state.status == GeneralContentViewStatus.connectionError ||
         state.status == GeneralContentViewStatus.failure) {
-      return _ErrorView(onRetry: onRetry);
+      return SwipeRefreshContainer(
+        onRefresh: () async => onRetry(),
+        child: _ErrorView(onRetry: onRetry),
+      );
     }
 
     final records = state.visibleRecords;
     if (records.isEmpty) {
-      return const Center(child: EmptyListWidget());
+      return SwipeRefreshContainer(
+        onRefresh: () async => onRetry(),
+        child: const Center(child: EmptyListWidget()),
+      );
     }
 
     return RefreshIndicator(

@@ -20,6 +20,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/selection_widgets/selected_
 import 'package:eks_sana_plus_org/src/shared/widgets/selection_widgets/selection_select_all_tile.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/search_input_field.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/refresh_widgets/swipe_refresh_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -152,71 +153,86 @@ class _VehicleModelServicesViewState
     }
 
     if (state.serviceGroups.isEmpty || state.selectedVehicleModel == null) {
-      return const Center(child: EmptyListWidget());
+      return SwipeRefreshContainer(
+        onRefresh: () async {
+          final item = state.selectedVehicleModel;
+          if (item == null || state.isServicesSubmitting) return;
+          await cubit.fetchServiceGroups(item);
+        },
+        child: const Center(child: EmptyListWidget()),
+      );
     }
 
-    return ListView(
-      keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-      padding: const EdgeInsets.fromLTRB(
-        AppPadding.p16,
-        AppPadding.p16,
-        AppPadding.p16,
-        AppPadding.p32,
-      ),
-      children: [
-        VehicleModelServiceHeaderCard(item: state.selectedVehicleModel!),
-        Space.h24,
-        if (selectedCategories.isNotEmpty) ...[
-          SelectedItemsSection<EmdadServiceCategoryEntity>(
-            title: 'سرویس های انتخاب شده',
-            items: selectedCategories,
-            itemTitle: (category) => category.title ?? '---',
-            onRemove: state.isServicesSubmitting
-                ? null
-                : cubit.toggleServiceCategory,
-          ),
+    return RefreshIndicator(
+      onRefresh: () async {
+        final item = state.selectedVehicleModel;
+        if (item == null || state.isServicesSubmitting) return;
+        await cubit.fetchServiceGroups(item);
+      },
+      child: ListView(
+        physics: const AlwaysScrollableScrollPhysics(),
+        keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+        padding: const EdgeInsets.fromLTRB(
+          AppPadding.p16,
+          AppPadding.p16,
+          AppPadding.p16,
+          AppPadding.p32,
+        ),
+        children: [
+          VehicleModelServiceHeaderCard(item: state.selectedVehicleModel!),
           Space.h24,
-        ],
-        SearchInputField(
-          controller: _searchController,
-          hintText: 'جستجو',
-          onChanged: (value) => setState(() => _searchQuery = value),
-        ),
-        Space.h16,
-        SelectionSelectAllTile(
-          value: categories.isNotEmpty &&
-              categories.every((category) => category.selected),
-          enabled: !state.isServicesSubmitting,
-          onChanged: cubit.setAllServiceCategories,
-        ),
-        Space.h12,
-        if (visibleGroups.isEmpty)
-          const Padding(
-            padding: EdgeInsets.symmetric(vertical: AppPadding.p32),
-            child: Center(
-              child: Text('سرویسی با این عنوان یافت نشد.'),
+          if (selectedCategories.isNotEmpty) ...[
+            SelectedItemsSection<EmdadServiceCategoryEntity>(
+              title: 'سرویس های انتخاب شده',
+              items: selectedCategories,
+              itemTitle: (category) => category.title ?? '---',
+              onRemove: state.isServicesSubmitting
+                  ? null
+                  : cubit.toggleServiceCategory,
             ),
-          )
-        else
-          ...visibleGroups.map(
-            (group) => VehicleModelServiceGroupSection(
-              group: group,
-              enabled: !state.isServicesSubmitting,
-              onToggle: cubit.toggleServiceCategory,
-              isSettingsLoading: (category) =>
-                  state.isDefectsLoading &&
-                  state.loadingDefectServiceCategoryId == category.id,
-              onSettings: (category) {
-                if (state.isServicesSubmitting ||
-                    !category.selected ||
-                    state.isDefectsLoading) {
-                  return;
-                }
-                _openDefects(context, category);
-              },
-            ),
+            Space.h24,
+          ],
+          SearchInputField(
+            controller: _searchController,
+            hintText: 'جستجو',
+            onChanged: (value) => setState(() => _searchQuery = value),
           ),
-      ],
+          Space.h16,
+          SelectionSelectAllTile(
+            value: categories.isNotEmpty &&
+                categories.every((category) => category.selected),
+            enabled: !state.isServicesSubmitting,
+            onChanged: cubit.setAllServiceCategories,
+          ),
+          Space.h12,
+          if (visibleGroups.isEmpty)
+            const Padding(
+              padding: EdgeInsets.symmetric(vertical: AppPadding.p32),
+              child: Center(
+                child: Text('سرویسی با این عنوان یافت نشد.'),
+              ),
+            )
+          else
+            ...visibleGroups.map(
+              (group) => VehicleModelServiceGroupSection(
+                group: group,
+                enabled: !state.isServicesSubmitting,
+                onToggle: cubit.toggleServiceCategory,
+                isSettingsLoading: (category) =>
+                    state.isDefectsLoading &&
+                    state.loadingDefectServiceCategoryId == category.id,
+                onSettings: (category) {
+                  if (state.isServicesSubmitting ||
+                      !category.selected ||
+                      state.isDefectsLoading) {
+                    return;
+                  }
+                  _openDefects(context, category);
+                },
+              ),
+            ),
+        ],
+      ),
     );
   }
 

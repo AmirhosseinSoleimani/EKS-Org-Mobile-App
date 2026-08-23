@@ -160,6 +160,7 @@ class CartablePageView extends StatelessWidget {
                             item: item,
                             action: action,
                           ),
+                      onRefresh: cubit.refreshCartableItems,
                     ),
                   ),
                 ],

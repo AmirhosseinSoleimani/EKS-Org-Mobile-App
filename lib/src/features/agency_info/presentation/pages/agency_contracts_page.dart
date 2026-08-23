@@ -98,6 +98,7 @@ class _AgencyContractsView extends StatelessWidget {
           return RefreshIndicator(
             onRefresh: () => _reload(cubit),
             child: ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
               padding: const EdgeInsets.fromLTRB(
                 AppPadding.p16,
                 AppPadding.p16,

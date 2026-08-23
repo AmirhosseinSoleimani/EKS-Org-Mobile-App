@@ -24,6 +24,7 @@ class RescuerListViewer extends StatelessWidget {
     }
 
     return ListView.separated(
+      physics: const AlwaysScrollableScrollPhysics(),
       padding: const EdgeInsets.fromLTRB(16, 4, 16, 24),
       itemCount: items.length,
       separatorBuilder: (_, __) => const SizedBox(height: 16),

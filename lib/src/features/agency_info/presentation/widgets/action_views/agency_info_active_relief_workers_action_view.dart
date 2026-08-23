@@ -41,8 +41,17 @@ class AgencyInfoActiveReliefWorkersActionView extends StatelessWidget {
         ],
         Expanded(
           child: records.isEmpty
-              ? EmptyListWidget()
+              ? ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: const [
+                    SizedBox(
+                      height: AppSize.s300,
+                      child: Center(child: EmptyListWidget()),
+                    ),
+                  ],
+                )
               : ListView.separated(
+                  physics: const AlwaysScrollableScrollPhysics(),
                   padding: const EdgeInsets.only(bottom: AppPadding.p24),
                   itemCount: records.length,
                   separatorBuilder: (_, __) => Space.h12,

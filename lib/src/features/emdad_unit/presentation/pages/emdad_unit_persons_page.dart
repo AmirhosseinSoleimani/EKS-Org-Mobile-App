@@ -96,9 +96,12 @@ class _EmdadUnitPersonsViewState extends State<_EmdadUnitPersonsView> {
                 return const Center(child: CircularProgressIndicator());
               }
               final eligiblePersons = _eligiblePersons(state);
-              return ListView(
-                padding: const EdgeInsets.all(AppPadding.p16),
-                children: [
+              return RefreshIndicator(
+                onRefresh: () => cubit.loadPersons(widget.item),
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.all(AppPadding.p16),
+                  children: [
                   EmdadUnitSummaryCard(item: widget.item),
                   Space.h16,
                   _AddPersonCard(
@@ -126,7 +129,8 @@ class _EmdadUnitPersonsViewState extends State<_EmdadUnitPersonsView> {
                             : () => _confirmDelete(context, person, cubit),
                       ),
                     ),
-                ],
+                  ],
+                ),
               );
             },
           ),
@@ -185,33 +189,18 @@ class _EmdadUnitPersonsViewState extends State<_EmdadUnitPersonsView> {
   }
 
   Future<void> _confirmDelete(
-      BuildContext context,
-      EmdadUnitPersonEntity person,
-      EmdadUnitCubit cubit,
-      ) async {
-    await showModalBottomSheet<void>(
+    BuildContext context,
+    EmdadUnitPersonEntity person,
+    EmdadUnitCubit cubit,
+  ) async {
+    await DeleteConfirmSheet.show(
       context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
-      ),
-      builder: (_) => BlocProvider.value(
-        value: cubit,
-        child: BlocBuilder<EmdadUnitCubit, EmdadUnitState>(
-          builder: (context, state) => DeleteConfirmSheet(
-            title: 'حذف امدادرسان',
-            message: 'آیا از حذف این مورد مطمئن هستید؟ این عمل غیرقابل بازگشت است.',
-            confirmTitle: 'حذف',
-            isSubmitting: state.status == EmdadUnitViewStatus.submitting,
-            onConfirm: () async {
-              final ok = await cubit.deletePerson(person.id!);
-              if (ok && context.mounted) Navigator.of(context).pop();
-            },
-          ),
-        ),
-      ),
+      title: 'حذف امدادرسان',
+      message: 'آیا از حذف این مورد مطمئن هستید؟ این عمل غیرقابل بازگشت است.',
+      confirmTitle: 'حذف',
+      onConfirm: () async {
+        await cubit.deletePerson(person.id!);
+      },
     );
   }
 }

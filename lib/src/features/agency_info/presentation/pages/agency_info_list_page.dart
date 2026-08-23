@@ -382,32 +382,14 @@ class _AgencyInfoListViewState extends State<_AgencyInfoListView> {
     AgencyInfoCubit cubit,
     AgencyInfoEntity item,
   ) {
-    BottomSheetMessage.showCustom(
+    DeleteConfirmSheet.show(
       context: context,
-      content: BlocBuilder<AgencyInfoCubit, AgencyInfoState>(
-        bloc: cubit,
-        buildWhen: (previous, current) =>
-            previous.data.deletingAgencyId != current.data.deletingAgencyId,
-        builder: (sheetContext, state) {
-          return DeleteConfirmSheet(
-            title: 'حذف نمایندگی',
-            message: 'آیا نمایندگی ${item.title} حذف شود؟',
-            confirmTitle: 'حذف',
-            isSubmitting: state.data.deletingAgencyId == item.id,
-            onConfirm: () async {
-              final deleted = await cubit.deleteAgency(item);
-              if (deleted && sheetContext.mounted) {
-                Navigator.of(sheetContext).pop();
-              }
-            },
-          );
-        },
-      ),
-      actionWidget: const SizedBox.shrink(),
-      isDismissible: false,
-      enableDrag: false,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      maxHeight: 0.45,
+      title: 'حذف نمایندگی',
+      message: 'آیا نمایندگی ${item.title} حذف شود؟',
+      confirmTitle: 'حذف',
+      onConfirm: () async {
+        await cubit.deleteAgency(item);
+      },
     );
   }
 

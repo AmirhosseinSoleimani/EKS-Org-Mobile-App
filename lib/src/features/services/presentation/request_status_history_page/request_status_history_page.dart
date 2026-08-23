@@ -9,6 +9,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_b
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/refresh_widgets/swipe_refresh_container.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
@@ -92,13 +93,15 @@ class _Body extends StatelessWidget {
             ),
           ),
           error: (_) => cubit.items.isEmpty
-              ? const SizedBox.expand(
-                  child: Center(child: EmptyListWidget()),
+              ? SwipeRefreshContainer(
+                  onRefresh: cubit.init,
+                  child: const Center(child: EmptyListWidget()),
                 )
               : const RequestStatusHistoryLoadedView(),
           connectionError: () => cubit.items.isEmpty
-              ? const SizedBox.expand(
-                  child: Center(child: EmptyListWidget()),
+              ? SwipeRefreshContainer(
+                  onRefresh: cubit.init,
+                  child: const Center(child: EmptyListWidget()),
                 )
               : const RequestStatusHistoryLoadedView(),
           orElse: () => const RequestStatusHistoryLoadedView(),
@@ -122,43 +125,47 @@ class RequestStatusHistoryLoadedView extends StatelessWidget {
           PointerDeviceKind.mouse,
         },
       ),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(16),
-        child: Column(
-          children: [
-            ExpandableSection(
-              isExpanded: false,
-              header: RequestStatusSection(
-                request: cubit.selectedRequest,
-                showTitle: true,
-              ),
-              child: RequestDetailSection(
-                selectedRequest: cubit.selectedRequest,
-                showCustomerInfo: true,
-              ),
-            ),
-            if (cubit.emdadgarInfo != null) ...[
+      child: RefreshIndicator(
+        onRefresh: cubit.init,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(16),
+          child: Column(
+            children: [
               ExpandableSection(
-                brief: BodySmallText(
-                  text:
-                      "${cubit.emdadgarInfo?.agencyName ?? ''} | ${cubit.emdadgarInfo?.mobile ?? ""}",
-                ),
                 isExpanded: false,
-                header: const BodyMediumText(text: "اطلاعات امداد رسان"),
-                child: AgentInfoDetailSection(
-                  agentInfo: cubit.emdadgarInfo!,
+                header: RequestStatusSection(
+                  request: cubit.selectedRequest,
+                  showTitle: true,
+                ),
+                child: RequestDetailSection(
+                  selectedRequest: cubit.selectedRequest,
+                  showCustomerInfo: true,
+                ),
+              ),
+              if (cubit.emdadgarInfo != null) ...[
+                ExpandableSection(
+                  brief: BodySmallText(
+                    text:
+                        "${cubit.emdadgarInfo?.agencyName ?? ''} | ${cubit.emdadgarInfo?.mobile ?? ""}",
+                  ),
+                  isExpanded: false,
+                  header: const BodyMediumText(text: "اطلاعات امداد رسان"),
+                  child: AgentInfoDetailSection(
+                    agentInfo: cubit.emdadgarInfo!,
+                  ),
+                ),
+              ],
+              const SizedBox(height: 12),
+              RequestStatusHistoryListView(
+                icon: const Icon(
+                  Icons.history,
+                  color: Colors.grey,
+                  size: 20,
                 ),
               ),
             ],
-            const SizedBox(height: 12),
-            RequestStatusHistoryListView(
-              icon: const Icon(
-                Icons.history,
-                color: Colors.grey,
-                size: 20,
-              ),
-            ),
-          ],
+          ),
         ),
       ),
     );

@@ -69,10 +69,24 @@ class SearchReusablePage extends StatelessWidget {
                         return StreamBuilder<List<PartResponseEntity?>>(
                           stream: cubit.partResponseListSubject,
                           builder: (context, snapshot) {
-                            return (snapshot.data?.isNotEmpty ?? false)
-                                ? ListView.builder(
-                                    itemCount: snapshot.data?.length,
-                                    itemBuilder:
+                            return RefreshIndicator(
+                              onRefresh: () async {
+                                final query = cubit
+                                    .searchReusablePartController.text
+                                    .trim();
+                                if (query.length < 3) return;
+                                await cubit.getPart(
+                                  value: query,
+                                  laborIndex: laborIndex,
+                                  serviceIndex: serviceIndex,
+                                );
+                              },
+                              child: (snapshot.data?.isNotEmpty ?? false)
+                                  ? ListView.builder(
+                                      physics:
+                                          const AlwaysScrollableScrollPhysics(),
+                                      itemCount: snapshot.data?.length,
+                                      itemBuilder:
                                         (BuildContext context, int index) {
                                           return Column(
                                             crossAxisAlignment:
@@ -129,10 +143,22 @@ class SearchReusablePage extends StatelessWidget {
                                             ],
                                           );
                                         },
-                                  )
-                                : Center(
-                                    child: Text("موردی جهت نمایش وجود ندارد"),
-                                  );
+                                    )
+                                  : ListView(
+                                      physics:
+                                          const AlwaysScrollableScrollPhysics(),
+                                      children: const [
+                                        SizedBox(
+                                          height: AppSize.s200,
+                                          child: Center(
+                                            child: Text(
+                                              'موردی جهت نمایش وجود ندارد',
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                            );
                           },
                         );
                       },

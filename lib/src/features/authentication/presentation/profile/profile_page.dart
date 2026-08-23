@@ -155,33 +155,18 @@ class _ProfileBody extends StatelessWidget {
   ) async {
     final theme = Theme.of(context);
 
-    await BottomSheetMessage.showCustom(
+    await DeleteConfirmSheet.show(
       context: context,
-      backgroundColor: theme.colorScheme.onPrimary,
-      content: BlocProvider.value(
-        value: cubit,
-        child: BlocBuilder<ProfileCubit, ProfileState>(
-          buildWhen: (previous, current) =>
-              previous.isLoggingOut != current.isLoggingOut,
-          builder: (context, state) {
-            return DeleteConfirmSheet(
-              title: 'خروج از حساب کاربری',
-              message:
-                  'با خروج از حساب کاربری، به اطلاعات خود دسترسی نخواهید داشت، هر وقت بخواهید می‌توانید دوباره وارد شوید',
-              confirmTitle: 'خروج',
-              icon: Icons.info_outline_rounded,
-              iconColor: theme.colorScheme.error,
-              iconBackgroundColor: theme.colorScheme.error.withOpacity(0.16),
-              isSubmitting: state.isLoggingOut,
-              onConfirm: cubit.logout,
-            );
-          },
-        ),
-      ),
-      actionWidget: const SizedBox.shrink(),
+      title: 'خروج از حساب کاربری',
+      message:
+          'با خروج از حساب کاربری، به اطلاعات خود دسترسی نخواهید داشت، هر وقت بخواهید می‌توانید دوباره وارد شوید',
+      confirmTitle: 'خروج',
+      icon: Icons.info_outline_rounded,
+      iconColor: theme.colorScheme.error,
+      iconBackgroundColor: theme.colorScheme.error.withOpacity(0.16),
       isDismissible: true,
       enableDrag: true,
-      maxHeight: 0.58,
+      onConfirm: cubit.logout,
     );
   }
 }

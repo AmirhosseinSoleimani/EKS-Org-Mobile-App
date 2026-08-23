@@ -87,6 +87,7 @@ class LeavePageView extends StatelessWidget {
           body: RefreshIndicator(
             onRefresh: cubit.refresh,
             child: CustomScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
               slivers: [
                 SliverToBoxAdapter(
                   child: Padding(
@@ -169,34 +170,17 @@ class LeavePageView extends StatelessWidget {
   ) {
     if (id == null) return;
 
-    BottomSheetMessage.showCustom(
+    DeleteConfirmSheet.show(
       context: context,
-      content: BlocProvider.value(
-        value: cubit,
-        child: BlocBuilder<LeaveCubit, LeaveState>(
-          builder: (sheetContext, state) {
-            return DeleteConfirmSheet(
-              title: 'حذف درخواست مرخصی',
-              message: 'آیا از حذف این درخواست مرخصی مطمئن هستید؟',
-              confirmTitle: 'حذف',
-              isSubmitting: state.isActionLoading,
-              onConfirm: () async {
-                final deleted = await cubit.deleteRequest(id);
-                if (deleted && sheetContext.mounted) {
-                  Navigator.of(sheetContext).pop();
-                }
-              },
-            );
-          },
-        ),
-      ),
-      actionWidget: const SizedBox.shrink(),
-      isDismissible: false,
-      enableDrag: false,
-      backgroundColor: Colors.white,
-      maxHeight: 0.5,
+      title: 'حذف درخواست مرخصی',
+      message: 'آیا از حذف این درخواست مرخصی مطمئن هستید؟',
+      confirmTitle: 'حذف',
+      onConfirm: () async {
+        await cubit.deleteRequest(id);
+      },
     );
   }
+
 
   void _showFilters(BuildContext context) {
     final cubit = context.read<LeaveCubit>();

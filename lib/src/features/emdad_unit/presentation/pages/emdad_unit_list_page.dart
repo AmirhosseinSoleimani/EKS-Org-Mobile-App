@@ -21,6 +21,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filte
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/refresh_widgets/swipe_refresh_container.dart';
 import 'package:flutter/gestures.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:flutter/material.dart';
@@ -127,30 +128,39 @@ class _EmdadUnitListView extends StatelessWidget {
                             state.status == EmdadUnitViewStatus.connectionError) &&
                         state.items.isEmpty;
                     if (hasInitialLoadError) {
-                      return const SizedBox.expand(
-                        child: Center(child: EmptyListWidget()),
+                      return SwipeRefreshContainer(
+                        onRefresh: () => cubit.fetchList(refresh: true),
+                        child: const Center(child: EmptyListWidget()),
                       );
                     }
                     final items = cubit.visibleItems;
                     if (state.items.isEmpty) {
-                      return _MessageState(
-                        icon: Icons.inbox_outlined,
-                        title: state.filter.isActiveFilter
-                            ? 'نتیجه‌ای برای فیلترهای انتخابی یافت نشد'
-                            : 'رکوردی یافت نشد',
-                        actionTitle: state.filter.isActiveFilter ? 'پاک کردن فیلترها' : 'تلاش مجدد',
-                        onAction: state.filter.isActiveFilter
-                            ? cubit.clearFilter
-                            : () => cubit.fetchList(refresh: true),
+                      return SwipeRefreshContainer(
+                        onRefresh: () => cubit.fetchList(refresh: true),
+                        child: _MessageState(
+                          icon: Icons.inbox_outlined,
+                          title: state.filter.isActiveFilter
+                              ? 'نتیجه‌ای برای فیلترهای انتخابی یافت نشد'
+                              : 'رکوردی یافت نشد',
+                          actionTitle: state.filter.isActiveFilter
+                              ? 'پاک کردن فیلترها'
+                              : 'تلاش مجدد',
+                          onAction: state.filter.isActiveFilter
+                              ? cubit.clearFilter
+                              : () => cubit.fetchList(refresh: true),
+                        ),
                       );
                     }
 
                     if (items.isEmpty) {
-                      return _MessageState(
-                        icon: Icons.inbox_outlined,
-                        title: 'رکوردی با وضعیت انتخاب‌شده یافت نشد',
-                        actionTitle: 'نمایش همه',
-                        onAction: () => cubit.setPageStatusFilter(null),
+                      return SwipeRefreshContainer(
+                        onRefresh: () => cubit.fetchList(refresh: true),
+                        child: _MessageState(
+                          icon: Icons.inbox_outlined,
+                          title: 'رکوردی با وضعیت انتخاب‌شده یافت نشد',
+                          actionTitle: 'نمایش همه',
+                          onAction: () => cubit.setPageStatusFilter(null),
+                        ),
                       );
                     }
 
@@ -167,6 +177,7 @@ class _EmdadUnitListView extends StatelessWidget {
                           return false;
                         },
                         child: ListView.builder(
+                          physics: const AlwaysScrollableScrollPhysics(),
                           padding: const EdgeInsets.fromLTRB(
                             AppPadding.p16,
                             AppPadding.p8,
@@ -299,29 +310,15 @@ class _EmdadUnitListView extends StatelessWidget {
     EmdadUnitCubit cubit,
   ) async {
     if (item.id == null) return;
-    await showModalBottomSheet<bool>(
+
+    await DeleteConfirmSheet.show(
       context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
-      ),
-      builder: (_) => BlocProvider.value(
-        value: cubit,
-        child: BlocBuilder<EmdadUnitCubit, EmdadUnitState>(
-          builder: (context, state) => DeleteConfirmSheet(
-            title: 'حذف واحد امدادی',
-            message: 'آیا از حذف این مورد مطمئن هستید؟ این عمل غیرقابل بازگشت است.',
-            confirmTitle: 'حذف',
-            isSubmitting: state.status == EmdadUnitViewStatus.submitting,
-            onConfirm: () async {
-              final ok = await cubit.deleteItem(item.id!);
-              if (ok && context.mounted) Navigator.of(context).pop(true);
-            },
-          ),
-        ),
-      ),
+      title: 'حذف واحد امدادی',
+      message: 'آیا از حذف این مورد مطمئن هستید؟ این عمل غیرقابل بازگشت است.',
+      confirmTitle: 'حذف',
+      onConfirm: () async {
+        await cubit.deleteItem(item.id!);
+      },
     );
   }
 }

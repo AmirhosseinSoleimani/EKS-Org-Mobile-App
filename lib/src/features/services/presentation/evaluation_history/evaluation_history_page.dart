@@ -10,6 +10,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_b
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/refresh_widgets/swipe_refresh_container.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/gestures.dart';
@@ -92,13 +93,15 @@ class _Body extends StatelessWidget {
           ),
           loaded: () => const _LoadedView(),
           error: (_) => cubit.items.isEmpty
-              ? const SizedBox.expand(
-                  child: Center(child: EmptyListWidget()),
+              ? SwipeRefreshContainer(
+                  onRefresh: cubit.init,
+                  child: const Center(child: EmptyListWidget()),
                 )
               : const _LoadedView(),
           connectionError: () => cubit.items.isEmpty
-              ? const SizedBox.expand(
-                  child: Center(child: EmptyListWidget()),
+              ? SwipeRefreshContainer(
+                  onRefresh: cubit.init,
+                  child: const Center(child: EmptyListWidget()),
                 )
               : const _LoadedView(),
           orElse: () => const SizedBox.shrink(),
@@ -122,51 +125,55 @@ class _LoadedView extends StatelessWidget {
           PointerDeviceKind.mouse,
         },
       ),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSize.s16),
-        child: Column(
-          children: [
-            FilterBox(cubit: cubit),
-            ExpandableSection(
-              isExpanded: false,
-              header: RequestStatusSection(
-                request: cubit.selectedBaseRequest,
-                showTitle: true,
-              ),
-              child: RequestDetailSection(
-                selectedRequest: cubit.selectedBaseRequest,
-                showCustomerInfo: true,
-              ),
-            ),
-            if (cubit.emdadgarInfo != null) ...[
+      child: RefreshIndicator(
+        onRefresh: cubit.init,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(AppSize.s16),
+          child: Column(
+            children: [
+              FilterBox(cubit: cubit),
               ExpandableSection(
-                brief: BodySmallText(
-                  text:
-                  "${cubit.emdadgarInfo?.agencyName ?? ''} | ${cubit.emdadgarInfo?.mobile ?? ""}",
-                ),
                 isExpanded: false,
-                header: const BodyMediumText(text: "اطلاعات امداد رسان"),
-                child: AgentInfoDetailSection(
-                  agentInfo: cubit.emdadgarInfo!,
-                  selectedRequest: cubit.selectedBaseRequest,
+                header: RequestStatusSection(
+                  request: cubit.selectedBaseRequest,
+                  showTitle: true,
                 ),
+                child: RequestDetailSection(
+                  selectedRequest: cubit.selectedBaseRequest,
+                  showCustomerInfo: true,
+                ),
+              ),
+              if (cubit.emdadgarInfo != null) ...[
+                ExpandableSection(
+                  brief: BodySmallText(
+                    text:
+                        "${cubit.emdadgarInfo?.agencyName ?? ''} | ${cubit.emdadgarInfo?.mobile ?? ""}",
+                  ),
+                  isExpanded: false,
+                  header: const BodyMediumText(text: "اطلاعات امداد رسان"),
+                  child: AgentInfoDetailSection(
+                    agentInfo: cubit.emdadgarInfo!,
+                    selectedRequest: cubit.selectedBaseRequest,
+                  ),
+                ),
+              ],
+              Space.h8,
+              ValueListenableBuilder(
+                valueListenable: cubit.selectedEvaluationIsisAcceptedNotifier,
+                builder: (context, _, __) {
+                  return EvaluationListView(
+                    items: cubit.items,
+                    icon: const Icon(
+                      Icons.date_range_rounded,
+                      color: Colors.grey,
+                      size: 20,
+                    ),
+                  );
+                },
               ),
             ],
-            Space.h8,
-            ValueListenableBuilder(
-              valueListenable: cubit.selectedEvaluationIsisAcceptedNotifier,
-              builder: (context, _, __) {
-                return EvaluationListView(
-                  items: cubit.items,
-                  icon: const Icon(
-                    Icons.date_range_rounded,
-                    color: Colors.grey,
-                    size: 20,
-                  ),
-                );
-              },
-            ),
-          ],
+          ),
         ),
       ),
     );

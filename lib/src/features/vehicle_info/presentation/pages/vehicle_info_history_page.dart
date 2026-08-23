@@ -86,8 +86,15 @@ class _VehicleInfoHistoryView extends StatelessWidget {
             builder: (context, state) {
               final data = state.data;
               final isLoading = data.loadingHistoryRefId != null;
-              return CustomScrollView(
-                slivers: [
+              return RefreshIndicator(
+                onRefresh: () async {
+                  final id = item.id;
+                  if (id == null) return;
+                  await cubit.loadHistory(refId: id, type: 2);
+                },
+                child: CustomScrollView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  slivers: [
                   SliverPadding(
                     padding: const EdgeInsets.fromLTRB(
                       AppPadding.p16,
@@ -135,7 +142,8 @@ class _VehicleInfoHistoryView extends StatelessWidget {
                         ),
                       ),
                     ),
-                ],
+                  ],
+                ),
               );
             },
           ),

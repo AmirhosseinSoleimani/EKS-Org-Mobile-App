@@ -22,7 +22,8 @@ class ShiftCard extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-
+    print('fgfdgdfgdfgfdg');
+    print(item.startDateJalali);
     return AppSummaryCard(
       margin: const EdgeInsets.only(bottom: AppPadding.p12),
       title: _value(item.title),

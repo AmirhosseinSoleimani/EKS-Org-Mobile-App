@@ -38,8 +38,17 @@ class AgencyInfoContractsActionView extends StatelessWidget {
         Space.h16,
         Expanded(
           child: records.isEmpty
-              ? const EmptyListWidget()
+              ? ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: const [
+                    SizedBox(
+                      height: AppSize.s300,
+                      child: Center(child: EmptyListWidget()),
+                    ),
+                  ],
+                )
               : ListView.separated(
+                  physics: const AlwaysScrollableScrollPhysics(),
                   padding: const EdgeInsets.only(bottom: AppPadding.p24),
                   itemCount: records.length,
                   separatorBuilder: (_, __) => Space.h12,

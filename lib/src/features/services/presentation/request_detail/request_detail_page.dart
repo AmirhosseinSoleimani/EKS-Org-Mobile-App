@@ -94,24 +94,29 @@ class RequestDetailPage extends StatelessWidget {
                 PointerDeviceKind.mouse,
               },
             ),
-            child: SingleChildScrollView(
-              padding: const EdgeInsets.all(AppSize.s16),
-              child: BlocBuilder<RequestDetailCubit, RequestDetailState>(
-                builder: (context, state) {
-                  return state.maybeWhen(
-                    idle: () => const SizedBox.shrink(),
-                    loading: () => SizedBox(
-                      height: MediaQuery.of(context).size.height * 0.9,
-                      child: Center(
-                        child: CircularProgressIndicator(
-                          color: cubit.selectedRequest?.serviceType?.serviceColor ??
-                              serviceType?.serviceColor,
+            child: RefreshIndicator(
+              onRefresh: retry,
+              child: SingleChildScrollView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                padding: const EdgeInsets.all(AppSize.s16),
+                child: BlocBuilder<RequestDetailCubit, RequestDetailState>(
+                  builder: (context, state) {
+                    return state.maybeWhen(
+                      idle: () => const SizedBox.shrink(),
+                      loading: () => SizedBox(
+                        height: MediaQuery.of(context).size.height * 0.9,
+                        child: Center(
+                          child: CircularProgressIndicator(
+                            color:
+                                cubit.selectedRequest?.serviceType?.serviceColor ??
+                                    serviceType?.serviceColor,
+                          ),
                         ),
                       ),
-                    ),
-                    orElse: () => _LoadedContent(cubit: cubit),
-                  );
-                },
+                      orElse: () => _LoadedContent(cubit: cubit),
+                    );
+                  },
+                ),
               ),
             ),
           ),

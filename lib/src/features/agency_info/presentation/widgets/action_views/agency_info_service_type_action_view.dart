@@ -36,28 +36,28 @@ class AgencyInfoServiceTypeActionView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
+    return ListView(
+      physics: const AlwaysScrollableScrollPhysics(),
+      padding: const EdgeInsets.only(bottom: AppPadding.p24),
       children: [
         AgencyInfoActionAgencyHeader(item: item),
         Space.h24,
-        Expanded(
-          child: Align(
-            alignment: Alignment.topRight,
-            child: Directionality(
-              textDirection: TextDirection.rtl,
-              child: Wrap(
-                alignment: WrapAlignment.start,
-                spacing: AppSize.s8,
-                runSpacing: AppSize.s12,
-                children: _serviceOptions
-                    .map(
-                      (option) => _AgencyServiceTypeChip(
-                        title: option.title,
-                        selected: _isSelected(option),
-                      ),
-                    )
-                    .toList(),
-              ),
+        Align(
+          alignment: Alignment.topRight,
+          child: Directionality(
+            textDirection: TextDirection.rtl,
+            child: Wrap(
+              alignment: WrapAlignment.start,
+              spacing: AppSize.s8,
+              runSpacing: AppSize.s12,
+              children: _serviceOptions
+                  .map(
+                    (option) => _AgencyServiceTypeChip(
+                      title: option.title,
+                      selected: _isSelected(option),
+                    ),
+                  )
+                  .toList(),
             ),
           ),
         ),

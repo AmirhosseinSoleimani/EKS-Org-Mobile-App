@@ -18,6 +18,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filte
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/refresh_widgets/swipe_refresh_container.dart';
 import 'package:flutter/gestures.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:flutter/material.dart';
@@ -148,8 +149,9 @@ class _ShiftListView extends StatelessWidget {
                           orElse: () => false,
                         );
                         if (hasInitialLoadError) {
-                          return const SizedBox.expand(
-                            child: Center(child: EmptyListWidget()),
+                          return SwipeRefreshContainer(
+                            onRefresh: () => cubit.fetchList(refresh: true),
+                            child: const Center(child: EmptyListWidget()),
                           );
                         }
 
@@ -157,30 +159,36 @@ class _ShiftListView extends StatelessWidget {
                           loading: (_) => const Center(
                             child: CircularProgressIndicator(),
                           ),
-                          empty: (filter) => _MessageState(
-                            title: filter.hasActiveFilters
-                                ? 'نتیجه‌ای برای فیلترهای انتخابی یافت نشد'
-                                : 'شیفتی یافت نشد',
-                            actionTitle: filter.hasActiveFilters
-                                ? 'پاک کردن فیلترها'
-                                : 'بازخوانی',
-                            onAction: filter.hasActiveFilters
-                                ? cubit.clearFilter
-                                : () => cubit.fetchList(refresh: true),
+                          empty: (filter) => SwipeRefreshContainer(
+                            onRefresh: () => cubit.fetchList(refresh: true),
+                            child: _MessageState(
+                              title: filter.hasActiveFilters
+                                  ? 'نتیجه‌ای برای فیلترهای انتخابی یافت نشد'
+                                  : 'شیفتی یافت نشد',
+                              actionTitle: filter.hasActiveFilters
+                                  ? 'پاک کردن فیلترها'
+                                  : 'بازخوانی',
+                              onAction: filter.hasActiveFilters
+                                  ? cubit.clearFilter
+                                  : () => cubit.fetchList(refresh: true),
+                            ),
                           ),
                           orElse: () {
                             final items = cubit.visibleItems;
                             if (items.isEmpty) {
-                              return _MessageState(
-                                title: cubit.items.isEmpty
-                                    ? 'شیفتی یافت نشد'
-                                    : 'شیفتی با وضعیت انتخاب‌شده یافت نشد',
-                                actionTitle: cubit.items.isEmpty
-                                    ? 'بازخوانی'
-                                    : 'نمایش همه',
-                                onAction: cubit.items.isEmpty
-                                    ? () => cubit.fetchList(refresh: true)
-                                    : () => cubit.setPageStatusFilter(null),
+                              return SwipeRefreshContainer(
+                                onRefresh: () => cubit.fetchList(refresh: true),
+                                child: _MessageState(
+                                  title: cubit.items.isEmpty
+                                      ? 'شیفتی یافت نشد'
+                                      : 'شیفتی با وضعیت انتخاب‌شده یافت نشد',
+                                  actionTitle: cubit.items.isEmpty
+                                      ? 'بازخوانی'
+                                      : 'نمایش همه',
+                                  onAction: cubit.items.isEmpty
+                                      ? () => cubit.fetchList(refresh: true)
+                                      : () => cubit.setPageStatusFilter(null),
+                                ),
                               );
                             }
 
@@ -204,6 +212,7 @@ class _ShiftListView extends StatelessWidget {
                                   return false;
                                 },
                                 child: ListView.builder(
+                                  physics: const AlwaysScrollableScrollPhysics(),
                                   padding: const EdgeInsets.fromLTRB(
                                     AppPadding.p16,
                                     AppPadding.p8,
@@ -330,34 +339,17 @@ class _ShiftListView extends StatelessWidget {
     final id = item.id;
     if (id == null) return;
 
-    BottomSheetMessage.showCustom(
+    DeleteConfirmSheet.show(
       context: context,
-      content: BlocProvider.value(
-        value: cubit,
-        child: BlocBuilder<ShiftListCubit, ShiftListState>(
-          builder: (context, state) {
-            return DeleteConfirmSheet(
-              title: 'حذف شیفت',
-              message: 'آیا از حذف این شیفت مطمئن هستید؟',
-              confirmTitle: 'حذف',
-              isSubmitting: cubit.deletingItemId == id,
-              onConfirm: () async {
-                final deleted = await cubit.deleteItem(id);
-                if (deleted && context.mounted) {
-                  Navigator.of(context).pop();
-                }
-              },
-            );
-          },
-        ),
-      ),
-      actionWidget: const SizedBox.shrink(),
-      isDismissible: false,
-      enableDrag: false,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      maxHeight: 0.45,
+      title: 'حذف شیفت',
+      message: 'آیا از حذف این شیفت مطمئن هستید؟',
+      confirmTitle: 'حذف',
+      onConfirm: () async {
+        await cubit.deleteItem(id);
+      },
     );
   }
+
 
 }
 

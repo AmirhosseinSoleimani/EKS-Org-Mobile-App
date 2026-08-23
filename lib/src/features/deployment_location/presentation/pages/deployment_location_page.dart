@@ -20,6 +20,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/refresh_widgets/swipe_refresh_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -199,38 +200,18 @@ class _DeploymentLocationViewState extends State<_DeploymentLocationView> {
     DeploymentLocationEntity item,
     DeploymentLocationCubit cubit,
   ) {
-    var isSubmitting = false;
-
-    BottomSheetMessage.showCustom(
+    DeleteConfirmSheet.show(
       context: context,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      content: StatefulBuilder(
-        builder: (sheetContext, setState) {
-          return DeleteConfirmSheet(
-            title: 'حذف محل استقرار',
-            message:
-                'آیا از حذف «${item.title ?? 'این محل استقرار'}» مطمئن هستید؟',
-            confirmTitle: 'حذف',
-            isSubmitting: isSubmitting,
-            onConfirm: () async {
-              if (isSubmitting) return;
-              setState(() => isSubmitting = true);
-
-              final success = await cubit.deleteLocation(item);
-              if (!sheetContext.mounted) return;
-
-              if (success) {
-                Navigator.of(sheetContext).pop();
-                return;
-              }
-              setState(() => isSubmitting = false);
-            },
-          );
-        },
-      ),
-      actionWidget: const SizedBox.shrink(),
+      title: 'حذف محل استقرار',
+      message:
+          'آیا از حذف «${item.title ?? 'این محل استقرار'}» مطمئن هستید؟',
+      confirmTitle: 'حذف',
+      onConfirm: () async {
+        await cubit.deleteLocation(item);
+      },
     );
   }
+
 }
 
 class _DeploymentLocationList extends StatelessWidget {
@@ -258,12 +239,18 @@ class _DeploymentLocationList extends StatelessWidget {
 
     if (state.status == DeploymentLocationViewStatus.failure ||
         state.status == DeploymentLocationViewStatus.connectionError) {
-      return _ErrorView(onRetry: onRetry);
+      return SwipeRefreshContainer(
+        onRefresh: onRefresh,
+        child: _ErrorView(onRetry: onRetry),
+      );
     }
 
     final records = state.visibleRecords;
     if (records.isEmpty) {
-      return const Center(child: EmptyListWidget());
+      return SwipeRefreshContainer(
+        onRefresh: onRefresh,
+        child: const Center(child: EmptyListWidget()),
+      );
     }
 
     return Stack(

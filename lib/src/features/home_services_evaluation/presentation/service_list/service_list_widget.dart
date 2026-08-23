@@ -45,10 +45,17 @@ class ServiceListWidget extends StatelessWidget {
             selectServiceSuccess: () => Navigator.pop(context),
           ),
           builder: (BuildContext context, state) {
-            return ListView(
-              shrinkWrap: true,
-              physics: const BouncingScrollPhysics(),
-              children: [
+            final cubit = context.read<ServiceListCubit>();
+            return RefreshIndicator(
+              onRefresh: () async {
+                final query = cubit.searchLaborController.text.trim();
+                if (query.length < 3) return;
+                await cubit.getAllServices(query);
+              },
+              child: ListView(
+                shrinkWrap: true,
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: [
                 TextFormFieldWidget(
                   hintText: 'جستجو...',
                   hintStyle: TextStyle(color: Colors.grey[700]),
@@ -136,7 +143,8 @@ class ServiceListWidget extends StatelessWidget {
                     );
                   },
                 ),
-              ],
+                ],
+              ),
             );
           },
         ),

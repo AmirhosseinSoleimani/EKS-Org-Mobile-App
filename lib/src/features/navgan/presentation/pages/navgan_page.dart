@@ -15,6 +15,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/refresh_widgets/swipe_refresh_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -136,12 +137,18 @@ class _NavganList extends StatelessWidget {
 
     if (state.status == NavganViewStatus.connectionError ||
         state.status == NavganViewStatus.failure) {
-      return _ErrorView(onRetry: onRetry);
+      return SwipeRefreshContainer(
+        onRefresh: () async => onRetry(),
+        child: _ErrorView(onRetry: onRetry),
+      );
     }
 
     final records = state.records;
     if (records.isEmpty) {
-      return const Center(child: EmptyListWidget());
+      return SwipeRefreshContainer(
+        onRefresh: () async => onRetry(),
+        child: const Center(child: EmptyListWidget()),
+      );
     }
 
     return RefreshIndicator(

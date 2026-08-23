@@ -101,6 +101,7 @@ class _EmdadUnitGradePatternViewState
             return RefreshIndicator(
               onRefresh: () => cubit.loadReferences(widget.item.id ?? 0),
               child: ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
                 padding: const EdgeInsets.all(AppPadding.p16),
                 children: [
                   EmdadUnitSummaryCard(item: widget.item),
@@ -199,44 +200,26 @@ class _EmdadUnitGradePatternViewState
   }
 
   void _showDelete(
-      BuildContext context,
-      GradePatternCubit cubit,
-      GradePatternReferenceEntity reference,
-      ) {
+    BuildContext context,
+    GradePatternCubit cubit,
+    GradePatternReferenceEntity reference,
+  ) {
     final id = reference.id;
     final refId = widget.item.id;
     if (id == null || refId == null) return;
-    BottomSheetMessage.showCustom(
-      context: context,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      actionWidget: const SizedBox.shrink(),
-      isDismissible: false,
-      enableDrag: false,
-      content: BlocBuilder<GradePatternCubit, GradePatternState>(
-        bloc: cubit,
-        builder: (sheetContext, state) {
-          final isSubmitting = state.maybeWhen(
-            submitting: (_, __) => true,
-            orElse: () => false,
-          );
 
-          return DeleteConfirmSheet(
-            title: 'حذف الگوی گرید',
-            message:
-                'آیا الگوی گرید ${reference.gradePatternName ?? ''} حذف شود؟ این عمل غیرقابل بازگشت است.',
-            confirmTitle: 'حذف',
-            isSubmitting: isSubmitting,
-            onConfirm: () async {
-              final deleted = await cubit.deleteReference(id, refId);
-              if (deleted && sheetContext.mounted) {
-                Navigator.of(sheetContext).pop();
-              }
-            },
-          );
-        },
-      ),
+    DeleteConfirmSheet.show(
+      context: context,
+      title: 'حذف الگوی گرید',
+      message:
+          'آیا الگوی گرید ${reference.gradePatternName ?? ''} حذف شود؟ این عمل غیرقابل بازگشت است.',
+      confirmTitle: 'حذف',
+      onConfirm: () async {
+        await cubit.deleteReference(id, refId);
+      },
     );
   }
+
 }
 
 class _AssignCard extends StatelessWidget {

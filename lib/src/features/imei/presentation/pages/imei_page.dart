@@ -9,13 +9,13 @@ import 'package:eks_sana_plus_org/src/features/imei/presentation/widgets/imei_fi
 import 'package:eks_sana_plus_org/src/features/imei/presentation/widgets/imei_info_card.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/refresh_widgets/swipe_refresh_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -147,31 +147,17 @@ class _ImeiView extends StatelessWidget {
     ImeiCubit cubit,
     ImeiInfoEntity item,
   ) {
-    BottomSheetMessage.showCustom(
+    DeleteConfirmSheet.show(
       context: context,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      actionWidget: const SizedBox.shrink(),
-      isDismissible: false,
-      enableDrag: false,
-      content: BlocBuilder<ImeiCubit, ImeiState>(
-        bloc: cubit,
-        builder: (sheetContext, state) {
-          return DeleteConfirmSheet(
-            title: 'حذف IMEI',
-            message: 'آیا از حذف این IMEI اطمینان دارید؟',
-            confirmTitle: 'حذف',
-            isSubmitting: state.isDeleting,
-            onConfirm: () async {
-              final deleted = await cubit.deleteItem(item);
-              if (deleted && sheetContext.mounted) {
-                Navigator.of(sheetContext).pop();
-              }
-            },
-          );
-        },
-      ),
+      title: 'حذف IMEI',
+      message: 'آیا از حذف این IMEI اطمینان دارید؟',
+      confirmTitle: 'حذف',
+      onConfirm: () async {
+        await cubit.deleteItem(item);
+      },
     );
   }
+
 }
 
 class _ImeiList extends StatelessWidget {
@@ -197,14 +183,18 @@ class _ImeiList extends StatelessWidget {
 
     if (state.status == ImeiViewStatus.connectionError ||
         state.status == ImeiViewStatus.failure) {
-      return const SizedBox.expand(
-        child: Center(child: EmptyListWidget()),
+      return SwipeRefreshContainer(
+        onRefresh: () async => onRetry(),
+        child: const Center(child: EmptyListWidget()),
       );
     }
 
     final records = state.visibleRecords;
     if (records.isEmpty) {
-      return const Center(child: EmptyListWidget());
+      return SwipeRefreshContainer(
+        onRefresh: () async => onRetry(),
+        child: const Center(child: EmptyListWidget()),
+      );
     }
 
     return NotificationListener<ScrollNotification>(

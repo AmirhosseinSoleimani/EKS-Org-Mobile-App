@@ -6,7 +6,6 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presenta
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/widgets/search_part_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/widgets/selected_labor_list_item.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:flutter/material.dart';
@@ -130,27 +129,14 @@ class ServiceAddedContainerWidget extends StatelessWidget {
   }
 
   void _showDeleteBottomSheet(BuildContext context) {
-    BottomSheetMessage.showCustom(
+    DeleteConfirmSheet.show(
       context: context,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      actionWidget: const SizedBox.shrink(),
-      isDismissible: false,
-      enableDrag: false,
-      content: Builder(
-        builder: (sheetContext) {
-          return DeleteConfirmSheet(
-            title: 'حذف سرویس',
-            message: 'آیا از حذف این سرویس اطمینان دارید؟',
-            confirmTitle: 'حذف',
-            onConfirm: () async {
-              onTapDelete?.call();
-              if (sheetContext.mounted) {
-                Navigator.of(sheetContext).pop();
-              }
-            },
-          );
-        },
-      ),
+      title: 'حذف سرویس',
+      message: 'آیا از حذف این سرویس اطمینان دارید؟',
+      confirmTitle: 'حذف',
+      onConfirm: () async {
+        onTapDelete?.call();
+      },
     );
   }
 

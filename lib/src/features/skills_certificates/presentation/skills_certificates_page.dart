@@ -13,6 +13,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/refresh_widgets/swipe_refresh_container.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -115,8 +116,9 @@ class _SkillsCertificatesView extends StatelessWidget {
                       );
 
                       if (hasConnectionError && data.items.isEmpty) {
-                        return const SizedBox.expand(
-                          child: Center(child: EmptyListWidget()),
+                        return SwipeRefreshContainer(
+                          onRefresh: cubit.fetchSkills,
+                          child: const Center(child: EmptyListWidget()),
                         );
                       }
 
@@ -126,12 +128,16 @@ class _SkillsCertificatesView extends StatelessWidget {
 
                       final items = cubit.visibleItems;
                       if (items.isEmpty) {
-                        return const Center(child: EmptyListWidget());
+                        return SwipeRefreshContainer(
+                          onRefresh: cubit.fetchSkills,
+                          child: const Center(child: EmptyListWidget()),
+                        );
                       }
 
                       return RefreshIndicator(
                         onRefresh: cubit.fetchSkills,
                         child: ListView.separated(
+                          physics: const AlwaysScrollableScrollPhysics(),
                           padding: const EdgeInsets.fromLTRB(
                             AppPadding.p16,
                             AppPadding.p4,
@@ -193,31 +199,15 @@ class _SkillsCertificatesView extends StatelessWidget {
     required SkillsCertificatesCubit cubit,
     required SkillCertificateEntity skill,
   }) {
-    BottomSheetMessage.showCustom(
+    DeleteConfirmSheet.show(
       context: context,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      actionWidget: const SizedBox.shrink(),
-      isDismissible: false,
-      enableDrag: false,
-      content: BlocBuilder<SkillsCertificatesCubit, SkillsCertificatesState>(
-        bloc: cubit,
-        buildWhen: (previous, current) =>
-            previous.data.deletingSkillId != current.data.deletingSkillId,
-        builder: (sheetContext, state) {
-          return DeleteConfirmSheet(
-            title: 'حذف گواهی نامه ریزی',
-            message: 'آیا مهارت ${skill.displayTitle} حذف شود؟',
-            confirmTitle: 'حذف',
-            isSubmitting: state.data.deletingSkillId == skill.id,
-            onConfirm: () async {
-              final deleted = await cubit.deleteSkill(skill);
-              if (deleted && sheetContext.mounted) {
-                Navigator.of(sheetContext).pop();
-              }
-            },
-          );
-        },
-      ),
+      title: 'حذف گواهی نامه ریزی',
+      message: 'آیا مهارت ${skill.displayTitle} حذف شود؟',
+      confirmTitle: 'حذف',
+      onConfirm: () async {
+        await cubit.deleteSkill(skill);
+      },
     );
   }
+
 }

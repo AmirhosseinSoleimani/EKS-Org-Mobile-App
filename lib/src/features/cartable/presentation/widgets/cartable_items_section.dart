@@ -9,6 +9,7 @@ class CartableItemsSection extends StatelessWidget {
   final bool isLoading;
   final List<CartableItemEntity> items;
   final CartableItemActionTap onActionTap;
+  final Future<void> Function() onRefresh;
   final String? delegatingMessageGuid;
 
   const CartableItemsSection({
@@ -17,6 +18,7 @@ class CartableItemsSection extends StatelessWidget {
     required this.isLoading,
     required this.items,
     required this.onActionTap,
+    required this.onRefresh,
     this.delegatingMessageGuid,
   });
 
@@ -30,30 +32,40 @@ class CartableItemsSection extends StatelessWidget {
       return const _CartableItemsLoading();
     }
 
-    if (items.isEmpty) {
-      return const EmptyListWidget();
-    }
-
-    return ListView.separated(
-      keyboardDismissBehavior:
-      ScrollViewKeyboardDismissBehavior.onDrag,
-      padding: const EdgeInsets.only(
-        bottom: AppPadding.p16,
-      ),
-      itemCount: items.length,
-      separatorBuilder: (_, __) {
-        return const SizedBox(
-          height: AppSize.s12,
-        );
-      },
-      itemBuilder: (context, index) {
-        return CartableItemCard(
-          item: items[index],
-          onActionTap: onActionTap,
-          isDelegateLoading:
-              items[index].guid == delegatingMessageGuid,
-        );
-      },
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: items.isEmpty
+          ? ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: const [
+                SizedBox(
+                  height: AppSize.s300,
+                  child: Center(child: EmptyListWidget()),
+                ),
+              ],
+            )
+          : ListView.separated(
+              physics: const AlwaysScrollableScrollPhysics(),
+              keyboardDismissBehavior:
+                  ScrollViewKeyboardDismissBehavior.onDrag,
+              padding: const EdgeInsets.only(
+                bottom: AppPadding.p16,
+              ),
+              itemCount: items.length,
+              separatorBuilder: (_, __) {
+                return const SizedBox(
+                  height: AppSize.s12,
+                );
+              },
+              itemBuilder: (context, index) {
+                return CartableItemCard(
+                  item: items[index],
+                  onActionTap: onActionTap,
+                  isDelegateLoading:
+                      items[index].guid == delegatingMessageGuid,
+                );
+              },
+            ),
     );
   }
 }

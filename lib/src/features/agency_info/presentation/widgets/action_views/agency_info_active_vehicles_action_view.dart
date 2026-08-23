@@ -40,15 +40,24 @@ class AgencyInfoActiveVehiclesActionView extends StatelessWidget {
         ],
         Expanded(
           child: records.isEmpty
-              ? const EmptyListWidget()
+              ? ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: const [
+                    SizedBox(
+                      height: AppSize.s300,
+                      child: Center(child: EmptyListWidget()),
+                    ),
+                  ],
+                )
               : ListView.separated(
-            padding: const EdgeInsets.only(bottom: AppPadding.p24),
-            itemCount: records.length,
-            separatorBuilder: (_, __) => Space.h12,
-            itemBuilder: (context, index) {
-              return _AgencyVehicleItem(vehicle: records[index]);
-            },
-          ),
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  padding: const EdgeInsets.only(bottom: AppPadding.p24),
+                  itemCount: records.length,
+                  separatorBuilder: (_, __) => Space.h12,
+                  itemBuilder: (context, index) {
+                    return _AgencyVehicleItem(vehicle: records[index]);
+                  },
+                ),
         ),
       ],
     );

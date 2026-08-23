@@ -5,7 +5,6 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presenta
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_part/page/home_service_search_part_page.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/widgets/edit_and_registration_part_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_src.dart';
@@ -73,27 +72,14 @@ class ServiceCustomerContainerWidget extends StatelessWidget {
 
 
   void _showDeleteServiceBottomSheet(BuildContext context) {
-    BottomSheetMessage.showCustom(
+    DeleteConfirmSheet.show(
       context: context,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      actionWidget: const SizedBox.shrink(),
-      isDismissible: false,
-      enableDrag: false,
-      content: Builder(
-        builder: (sheetContext) {
-          return DeleteConfirmSheet(
-            title: 'حذف سرویس',
-            message: 'آیا از حذف این سرویس اطمینان دارید؟',
-            confirmTitle: 'حذف',
-            onConfirm: () async {
-              onTapDelete?.call();
-              if (sheetContext.mounted) {
-                Navigator.of(sheetContext).pop();
-              }
-            },
-          );
-        },
-      ),
+      title: 'حذف سرویس',
+      message: 'آیا از حذف این سرویس اطمینان دارید؟',
+      confirmTitle: 'حذف',
+      onConfirm: () async {
+        onTapDelete?.call();
+      },
     );
   }
 
@@ -130,32 +116,19 @@ class ServiceCustomerContainerWidget extends StatelessWidget {
     int laborIndex,
     bool? isEditablePart,
   ) {
-    BottomSheetMessage.showCustom(
+    DeleteConfirmSheet.show(
       context: context,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      actionWidget: const SizedBox.shrink(),
-      isDismissible: false,
-      enableDrag: false,
-      content: Builder(
-        builder: (sheetContext) {
-          return DeleteConfirmSheet(
-            title: 'حذف قطعه',
-            message: 'آیا از حذف این قطعه اطمینان دارید؟',
-            confirmTitle: 'حذف',
-            onConfirm: () async {
-              _handleDeletePart(
-                context,
-                entity,
-                laborIndex,
-                isEditablePart,
-              );
-              if (sheetContext.mounted) {
-                Navigator.of(sheetContext).pop();
-              }
-            },
-          );
-        },
-      ),
+      title: 'حذف قطعه',
+      message: 'آیا از حذف این قطعه اطمینان دارید؟',
+      confirmTitle: 'حذف',
+      onConfirm: () async {
+        _handleDeletePart(
+          context,
+          entity,
+          laborIndex,
+          isEditablePart,
+        );
+      },
     );
   }
 

@@ -12,6 +12,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_b
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/floating_action_button_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/loading_widget/loading_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
@@ -143,11 +144,26 @@ class _RescuerListView extends StatelessWidget {
   }
 
   Widget _buildList(BuildContext context, RescuerListCubit cubit) {
-    return RescuerListViewer(
-      items: cubit.filteredItems,
-      deletingRescuerId: cubit.deletingRescuerId,
-      onViewDetails: (item) => _openDetails(context, cubit, item),
-      onOperations: (item) => _showOperations(context, cubit, item),
+    final items = cubit.filteredItems;
+
+    return RefreshIndicator(
+      onRefresh: cubit.fetchRescuers,
+      child: items.isEmpty
+          ? ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: const [
+                SizedBox(
+                  height: 320,
+                  child: Center(child: EmptyListWidget()),
+                ),
+              ],
+            )
+          : RescuerListViewer(
+              items: items,
+              deletingRescuerId: cubit.deletingRescuerId,
+              onViewDetails: (item) => _openDetails(context, cubit, item),
+              onOperations: (item) => _showOperations(context, cubit, item),
+            ),
     );
   }
 
@@ -201,7 +217,11 @@ class _RescuerListView extends StatelessWidget {
 
           await BottomSheetMessage.showFullScreenCustom<void>(
             context: context,
-            content: RescuerHistoryPage(rescuer: item, histories: result),
+            content: RescuerHistoryPage(
+              rescuer: item,
+              histories: result,
+              onRefresh: () => cubit.loadHistory(id),
+            ),
           );
           return true;
         },
@@ -227,47 +247,27 @@ class _RescuerListView extends StatelessWidget {
     if (id == null) return;
 
     final rescuerName = item.fullName.trim();
-    var isSubmitting = false;
+    var deleted = false;
 
-    await BottomSheetMessage.showCustom(
+    await DeleteConfirmSheet.show(
       context: context,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      actionWidget: const SizedBox.shrink(),
-      isDismissible: false,
-      enableDrag: false,
-      content: StatefulBuilder(
-        builder: (sheetContext, setSheetState) {
-          return DeleteConfirmSheet(
-            title: 'حذف امدادرسان',
-            message:
-                'آیا از حذف «${rescuerName.isNotEmpty ? rescuerName : 'این امدادرسان'}» مطمئن هستید؟',
-            confirmTitle: 'حذف',
-            isSubmitting: isSubmitting,
-            onConfirm: () async {
-              if (isSubmitting) return;
-              setSheetState(() => isSubmitting = true);
-
-              final deleted = await cubit.deleteRescuer(id);
-              if (!sheetContext.mounted) return;
-
-              if (deleted) {
-                Navigator.of(sheetContext).pop();
-                if (context.mounted) {
-                  SnakeBarWidget.showSuccess(
-                    context: context,
-                    message: 'امدادرسان با موفقیت حذف شد',
-                  );
-                }
-                return;
-              }
-
-              setSheetState(() => isSubmitting = false);
-            },
-          );
-        },
-      ),
+      title: 'حذف امدادرسان',
+      message:
+          'آیا از حذف «${rescuerName.isNotEmpty ? rescuerName : 'این امدادرسان'}» مطمئن هستید؟',
+      confirmTitle: 'حذف',
+      onConfirm: () async {
+        deleted = await cubit.deleteRescuer(id);
+      },
     );
+
+    if (deleted && context.mounted) {
+      SnakeBarWidget.showSuccess(
+        context: context,
+        message: 'امدادرسان با موفقیت حذف شد',
+      );
+    }
   }
+
 
   Future<void> _loadReport(BuildContext context, RescuerListCubit cubit) async {
     final filePath = await cubit.loadReport();

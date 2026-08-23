@@ -23,8 +23,17 @@ class AgencyInfoHistoryActionView extends StatelessWidget {
         Space.h16,
         Expanded(
           child: histories.isEmpty
-              ? const EmptyListWidget()
+              ? ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  children: const [
+                    SizedBox(
+                      height: AppSize.s300,
+                      child: Center(child: EmptyListWidget()),
+                    ),
+                  ],
+                )
               : ListView.separated(
+                  physics: const AlwaysScrollableScrollPhysics(),
                   padding: const EdgeInsets.only(
                     top: AppPadding.p8,
                     bottom: AppPadding.p24,

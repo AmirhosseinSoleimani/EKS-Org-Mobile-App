@@ -16,6 +16,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/search_input_field.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_medium_text.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/refresh_widgets/swipe_refresh_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -97,8 +98,15 @@ class _VehicleInfoServicesViewState extends State<_VehicleInfoServicesView> {
               }
 
               if (data.serviceCategoryGroups.isEmpty) {
-                return const Center(
-                  child: Text('سرویسی برای این خودرو یافت نشد.'),
+                return SwipeRefreshContainer(
+                  onRefresh: () async {
+                    final id = item.id;
+                    if (id == null) return;
+                    await cubit.loadServiceCategories(id, grouped: true);
+                  },
+                  child: const Center(
+                    child: Text('سرویسی برای این خودرو یافت نشد.'),
+                  ),
                 );
               }
 
@@ -112,73 +120,81 @@ class _VehicleInfoServicesViewState extends State<_VehicleInfoServicesView> {
                 data.serviceCategoryGroups,
               );
 
-              return ListView(
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                padding: const EdgeInsets.fromLTRB(
-                  AppPadding.p16,
-                  AppPadding.p16,
-                  AppPadding.p16,
-                  AppPadding.p32,
-                ),
-                children: [
-                  VehicleServiceInfoCard(item: item),
-                  Space.h24,
-                  if (selectedCategories.isNotEmpty) ...[
-                    SelectedItemsSection<EmdadServiceCategoryEntity>(
-                      title: 'سرویس های انتخاب شده',
-                      items: selectedCategories,
-                      itemTitle: (category) => category.title,
-                      onRemove: data.isSubmitting
-                          ? null
-                          : (category) =>
-                              cubit.toggleServiceCategory(category.id),
-                    ),
+              return RefreshIndicator(
+                onRefresh: () async {
+                  final id = item.id;
+                  if (id == null) return;
+                  await cubit.loadServiceCategories(id, grouped: true);
+                },
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  padding: const EdgeInsets.fromLTRB(
+                    AppPadding.p16,
+                    AppPadding.p16,
+                    AppPadding.p16,
+                    AppPadding.p32,
+                  ),
+                  children: [
+                    VehicleServiceInfoCard(item: item),
                     Space.h24,
-                  ],
-                  SearchInputField(
-                    hintText: 'جستجو',
-                    controller: _searchController,
-                    onChanged: (value) {
-                      setState(() => _searchQuery = value);
-                    },
-                  ),
-                  Space.h16,
-                  SelectionSelectAllTile(
-                    value: categories.isNotEmpty &&
-                        categories.every(
-                          (category) => category.isSelectedForVehicle,
-                        ),
-                    enabled: !data.isSubmitting,
-                    onChanged: cubit.setAllServiceCategories,
-                  ),
-                  Space.h12,
-                  if (visibleGroups.isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: AppPadding.p32,
-                      ),
-                      child: Center(
-                        child: Text('سرویسی با این عنوان یافت نشد.'),
-                      ),
-                    )
-                  else
-                    ...visibleGroups.map(
-                      (group) => ServiceGroupSection(
-                        group: group,
-                        onSelect: data.isSubmitting
+                    if (selectedCategories.isNotEmpty) ...[
+                      SelectedItemsSection<EmdadServiceCategoryEntity>(
+                        title: 'سرویس های انتخاب شده',
+                        items: selectedCategories,
+                        itemTitle: (category) => category.title,
+                        onRemove: data.isSubmitting
                             ? null
-                            : cubit.toggleServiceCategory,
-                        onDefects: data.isSubmitting || item.id == null
-                            ? null
-                            : (categoryId) => _showDefects(
-                                  context,
-                                  item.id!,
-                                  categoryId,
-                                ),
+                            : (category) =>
+                                cubit.toggleServiceCategory(category.id),
                       ),
+                      Space.h24,
+                    ],
+                    SearchInputField(
+                      hintText: 'جستجو',
+                      controller: _searchController,
+                      onChanged: (value) {
+                        setState(() => _searchQuery = value);
+                      },
                     ),
-                ],
+                    Space.h16,
+                    SelectionSelectAllTile(
+                      value: categories.isNotEmpty &&
+                          categories.every(
+                            (category) => category.isSelectedForVehicle,
+                          ),
+                      enabled: !data.isSubmitting,
+                      onChanged: cubit.setAllServiceCategories,
+                    ),
+                    Space.h12,
+                    if (visibleGroups.isEmpty)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: AppPadding.p32,
+                        ),
+                        child: Center(
+                          child: Text('سرویسی با این عنوان یافت نشد.'),
+                        ),
+                      )
+                    else
+                      ...visibleGroups.map(
+                        (group) => ServiceGroupSection(
+                          group: group,
+                          onSelect: data.isSubmitting
+                              ? null
+                              : cubit.toggleServiceCategory,
+                          onDefects: data.isSubmitting || item.id == null
+                              ? null
+                              : (categoryId) => _showDefects(
+                                    context,
+                                    item.id!,
+                                    categoryId,
+                                  ),
+                        ),
+                      ),
+                  ],
+                ),
               );
             },
           ),

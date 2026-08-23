@@ -5,6 +5,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_b
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/refresh_widgets/swipe_refresh_container.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -98,8 +99,12 @@ class _SelectedServicesView extends StatelessWidget {
                       ),
                       loaded: () => _buildList(cubit),
                       loadingMore: () => _buildList(cubit),
-                      error: (message) => const _EmptyRequestListBody(),
-                      connectionError: () => const _EmptyRequestListBody(),
+                      error: (message) => _EmptyRequestListBody(
+                        onRefresh: cubit.fetchRequestList,
+                      ),
+                      connectionError: () => _EmptyRequestListBody(
+                        onRefresh: cubit.fetchRequestList,
+                      ),
                       orElse: () => _buildList(cubit, hasMore: false),
                     ),
                   ),
@@ -132,14 +137,15 @@ class _SelectedServicesView extends StatelessWidget {
 }
 
 class _EmptyRequestListBody extends StatelessWidget {
-  const _EmptyRequestListBody();
+  const _EmptyRequestListBody({required this.onRefresh});
+
+  final Future<void> Function() onRefresh;
 
   @override
   Widget build(BuildContext context) {
-    return const SizedBox.expand(
-      child: Center(
-        child: EmptyListWidget(),
-      ),
+    return SwipeRefreshContainer(
+      onRefresh: onRefresh,
+      child: const Center(child: EmptyListWidget()),
     );
   }
 }

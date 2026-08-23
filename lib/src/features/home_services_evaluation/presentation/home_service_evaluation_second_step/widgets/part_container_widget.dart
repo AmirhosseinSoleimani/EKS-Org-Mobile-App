@@ -4,7 +4,6 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/e
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/cubit/home_service_evaluation_second_step_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/widgets/edit_and_registration_part_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -220,27 +219,14 @@ class PartContainerWidget extends StatelessWidget {
   // ================= BOTTOM SHEET =================
 
   void _showDeleteBottomSheet(BuildContext context) {
-    BottomSheetMessage.showCustom(
+    DeleteConfirmSheet.show(
       context: context,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      actionWidget: const SizedBox.shrink(),
-      isDismissible: false,
-      enableDrag: false,
-      content: Builder(
-        builder: (sheetContext) {
-          return DeleteConfirmSheet(
-            title: 'حذف قطعه',
-            message: 'آیا از حذف این قطعه اطمینان دارید؟',
-            confirmTitle: 'حذف',
-            onConfirm: () async {
-              _handleDelete(context);
-              if (sheetContext.mounted) {
-                Navigator.of(sheetContext).pop();
-              }
-            },
-          );
-        },
-      ),
+      title: 'حذف قطعه',
+      message: 'آیا از حذف این قطعه اطمینان دارید؟',
+      confirmTitle: 'حذف',
+      onConfirm: () async {
+        _handleDelete(context);
+      },
     );
   }
 

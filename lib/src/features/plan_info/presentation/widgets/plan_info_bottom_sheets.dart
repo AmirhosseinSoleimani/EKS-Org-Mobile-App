@@ -60,19 +60,35 @@ class PlanInfoBottomSheets {
     await cubit.previewCancelation(id);
     if (!context.mounted) return;
 
-    showModalBottomSheet<void>(
+    await DeleteConfirmSheet.show(
       context: context,
-      isScrollControlled: true,
-      useSafeArea: true,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(AppSize.s20)),
-      ),
-      builder: (_) => BlocProvider.value(
-        value: cubit,
-        child: _PlanCancelationSheet(plan: plan),
-      ),
+      title: 'لغو ماموریت',
+      message: _buildCancelationMessage(cubit.state),
+      confirmTitle: 'لغو ماموریت',
+      icon: Icons.cancel_outlined,
+      onConfirm: () async {
+        await cubit.confirmCancelation(id);
+      },
     );
+  }
+
+  static String _buildCancelationMessage(PlanInfoState state) {
+    final requests = state.cancelation?.requests ?? const [];
+    if (requests.isEmpty) {
+      return 'درخواستی برای این برنامه یافت نشد. آیا از لغو ماموریت این برنامه‌ریزی مطمئن هستید؟';
+    }
+
+    final trackCodes = requests
+        .map((item) => item.trackCode?.toString().trim())
+        .whereType<String>()
+        .where((item) => item.isNotEmpty)
+        .join('، ');
+
+    if (trackCodes.isEmpty) {
+      return 'آیا از لغو ماموریت‌های این برنامه‌ریزی مطمئن هستید؟';
+    }
+
+    return 'آیا از لغو ماموریت‌های این برنامه‌ریزی مطمئن هستید؟\nکد پیگیری: $trackCodes';
   }
 
   static void showLocationInfo({
@@ -336,57 +352,6 @@ class _PlanStatusSheetState extends State<_PlanStatusSheet> {
   void dispose() {
     descriptionController.dispose();
     super.dispose();
-  }
-}
-
-class _PlanCancelationSheet extends StatelessWidget {
-  final PlanInfoEntity plan;
-
-  const _PlanCancelationSheet({required this.plan});
-
-  @override
-  Widget build(BuildContext context) {
-    final cubit = context.read<PlanInfoCubit>();
-
-    return BlocBuilder<PlanInfoCubit, PlanInfoState>(
-      builder: (context, state) {
-        return DeleteConfirmSheet(
-          title: 'لغو ماموریت',
-          message: _buildCancelationMessage(state),
-          confirmTitle: 'لغو ماموریت',
-          icon: Icons.cancel_outlined,
-          isSubmitting: state.isSubmitting,
-          onConfirm: () async {
-            final id = plan.resolvedId;
-            if (id == null) return;
-
-            final saved = await cubit.confirmCancelation(id);
-            if (saved && context.mounted) {
-              Navigator.of(context).pop();
-            }
-          },
-        );
-      },
-    );
-  }
-
-  String _buildCancelationMessage(PlanInfoState state) {
-    final requests = state.cancelation?.requests ?? const [];
-    if (requests.isEmpty) {
-      return 'درخواستی برای این برنامه یافت نشد. آیا از لغو ماموریت این برنامه‌ریزی مطمئن هستید؟';
-    }
-
-    final trackCodes = requests
-        .map((item) => item.trackCode?.toString().trim())
-        .whereType<String>()
-        .where((item) => item.isNotEmpty)
-        .join('، ');
-
-    if (trackCodes.isEmpty) {
-      return 'آیا از لغو ماموریت‌های این برنامه‌ریزی مطمئن هستید؟';
-    }
-
-    return 'آیا از لغو ماموریت‌های این برنامه‌ریزی مطمئن هستید؟\nکد پیگیری: $trackCodes';
   }
 }
 

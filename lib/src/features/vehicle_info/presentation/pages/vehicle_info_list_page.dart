@@ -19,6 +19,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filter_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/refresh_widgets/swipe_refresh_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -147,8 +148,9 @@ class _VehicleInfoListViewState extends State<_VehicleInfoListView> {
 
     final items = cubit.visibleItems;
     if (items.isEmpty) {
-      return const Center(
-        child: EmptyListWidget(),
+      return SwipeRefreshContainer(
+        onRefresh: () => cubit.fetchList(refresh: true),
+        child: const Center(child: EmptyListWidget()),
       );
     }
 
@@ -222,40 +224,17 @@ class _VehicleInfoListViewState extends State<_VehicleInfoListView> {
     final id = item.id;
     if (id == null) return;
 
-    var isSubmitting = false;
-
-    BottomSheetMessage.showCustom(
+    DeleteConfirmSheet.show(
       context: context,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      actionWidget: const SizedBox.shrink(),
-      isDismissible: false,
-      enableDrag: false,
-      content: StatefulBuilder(
-        builder: (sheetContext, setSheetState) {
-          return DeleteConfirmSheet(
-            title: 'حذف خودرو',
-            message: 'آیا از حذف «${item.title}» مطمئن هستید؟',
-            confirmTitle: 'حذف',
-            isSubmitting: isSubmitting,
-            onConfirm: () async {
-              if (isSubmitting) return;
-              setSheetState(() => isSubmitting = true);
-
-              final deleted = await cubit.deleteItem(id);
-              if (!sheetContext.mounted) return;
-
-              if (deleted) {
-                Navigator.of(sheetContext).pop();
-                return;
-              }
-
-              setSheetState(() => isSubmitting = false);
-            },
-          );
-        },
-      ),
+      title: 'حذف خودرو',
+      message: 'آیا از حذف «${item.title}» مطمئن هستید؟',
+      confirmTitle: 'حذف',
+      onConfirm: () async {
+        await cubit.deleteItem(id);
+      },
     );
   }
+
 
   void _onScroll() {
     if (!_scrollController.hasClients) {

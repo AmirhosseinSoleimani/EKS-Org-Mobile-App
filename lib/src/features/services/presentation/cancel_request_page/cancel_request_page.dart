@@ -109,11 +109,7 @@ class _View extends StatelessWidget {
                   loading: () => const SizedBox.shrink(),
                   orElse: () =>
                       SubmitCancelButtons(
-                        submitButtonColor: cubit
-                            .selectedRequest
-                            ?.serviceType
-                            ?.serviceColor ??
-                            ServiceType.reliefService.serviceColor,
+                        submitButtonColor: const Color(0xFFDA0000),
                         onSubmit: cubit.submit,
                         onCancel: () => Navigator.pop(context),
                         submitTitle: 'لغو درخواست',

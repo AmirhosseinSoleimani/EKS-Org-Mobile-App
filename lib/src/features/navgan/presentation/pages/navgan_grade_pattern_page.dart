@@ -83,6 +83,11 @@ class _NavganGradePatternView extends StatelessWidget {
               top: false,
               child: _GradePatternList(
                 state: state,
+                onRefresh: () async {
+                  final navgan = state.selectedNavgan;
+                  if (navgan == null) return;
+                  await cubit.fetchGradePatternReferences(navgan);
+                },
                 onDetails: (reference) =>
                     _showDetails(context, cubit, reference),
                 onOperations: (reference) =>
@@ -177,31 +182,18 @@ class _NavganGradePatternView extends StatelessWidget {
       return;
     }
 
-    BottomSheetMessage.showCustom(
+    DeleteConfirmSheet.show(
       context: context,
-      content: Builder(
-        builder: (sheetContext) {
-          return DeleteConfirmSheet(
-            title: 'حذف الگوی گرید',
-            message: 'آیا الگوی گرید ${reference.gradePatternName ?? '---'} حذف شود؟',
-            confirmTitle: 'حذف',
-            isSubmitting: cubit.state.isGradeDeleting,
-            onConfirm: () async {
-              final success = await cubit.deleteGradeReference(referenceId);
-              if (success && sheetContext.mounted) {
-                Navigator.of(sheetContext).pop();
-              }
-            },
-          );
-        },
-      ),
-      actionWidget: const SizedBox.shrink(),
-      isDismissible: false,
-      enableDrag: false,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      maxHeight: 0.5,
+      title: 'حذف الگوی گرید',
+      message:
+          'آیا الگوی گرید ${reference.gradePatternName ?? '---'} حذف شود؟',
+      confirmTitle: 'حذف',
+      onConfirm: () async {
+        await cubit.deleteGradeReference(referenceId);
+      },
     );
   }
+
 
   Future<void> _openForm(
     BuildContext context,
@@ -231,11 +223,13 @@ class _NavganGradePatternView extends StatelessWidget {
 class _GradePatternList extends StatelessWidget {
   const _GradePatternList({
     required this.state,
+    required this.onRefresh,
     required this.onDetails,
     required this.onOperations,
   });
 
   final NavganState state;
+  final Future<void> Function() onRefresh;
   final ValueChanged<GradePatternReferenceEntity> onDetails;
   final ValueChanged<GradePatternReferenceEntity> onOperations;
 
@@ -246,45 +240,58 @@ class _GradePatternList extends StatelessWidget {
     }
 
     final items = state.gradeReferences;
-    if (items.isEmpty) {
-      return const Center(child: EmptyListWidget());
-    }
 
-    return ListView.builder(
-      padding: const EdgeInsets.fromLTRB(
-        AppPadding.p16,
-        AppPadding.p16,
-        AppPadding.p16,
-        AppPadding.p100,
-      ),
-      itemCount: items.length + 1,
-      itemBuilder: (context, index) {
-        if (index == 0) {
-          return Column(
-            crossAxisAlignment: CrossAxisAlignment.stretch,
-            children: [
-              _NavganSummaryCard(navgan: state.selectedNavgan),
-              Space.h16,
-            ],
-          );
-        }
+    return RefreshIndicator(
+      onRefresh: onRefresh,
+      child: items.isEmpty
+          ? ListView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              children: const [
+                SizedBox(
+                  height: AppSize.s300,
+                  child: Center(child: EmptyListWidget()),
+                ),
+              ],
+            )
+          : ListView.builder(
+              physics: const AlwaysScrollableScrollPhysics(),
+              padding: const EdgeInsets.fromLTRB(
+                AppPadding.p16,
+                AppPadding.p16,
+                AppPadding.p16,
+                AppPadding.p100,
+              ),
+              itemCount: items.length + 1,
+              itemBuilder: (context, index) {
+                if (index == 0) {
+                  return Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      _NavganSummaryCard(navgan: state.selectedNavgan),
+                      Space.h16,
+                    ],
+                  );
+                }
 
-        final reference = items[index - 1];
-        final serviceType = ServiceType.fromValue(
-          reference.serviceTypeId ?? state.selectedNavgan?.emdadgarNavganType,
-        );
-        return GradePatternListCard(
-          item: reference.toUiModel(),
-          showSummary: false,
-          isDetailsLoading: state.isGradeDetailLoading &&
-              state.loadingGradeDetailId ==
-                  (reference.id ?? reference.gradePatternId),
-          statusLabelText: reference.serviceTypeTitle ?? serviceType.label,
-          statusLabelColor: serviceType.serviceColor,
-          onDetails: () => onDetails(reference),
-          onAction: () => onOperations(reference),
-        );
-      },
+                final reference = items[index - 1];
+                final serviceType = ServiceType.fromValue(
+                  reference.serviceTypeId ??
+                      state.selectedNavgan?.emdadgarNavganType,
+                );
+                return GradePatternListCard(
+                  item: reference.toUiModel(),
+                  showSummary: false,
+                  isDetailsLoading: state.isGradeDetailLoading &&
+                      state.loadingGradeDetailId ==
+                          (reference.id ?? reference.gradePatternId),
+                  statusLabelText:
+                      reference.serviceTypeTitle ?? serviceType.label,
+                  statusLabelColor: serviceType.serviceColor,
+                  onDetails: () => onDetails(reference),
+                  onAction: () => onOperations(reference),
+                );
+              },
+            ),
     );
   }
 }

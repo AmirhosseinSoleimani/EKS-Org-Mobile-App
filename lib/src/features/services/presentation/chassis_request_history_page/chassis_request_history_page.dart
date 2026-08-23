@@ -7,6 +7,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_b
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/refresh_widgets/swipe_refresh_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -84,11 +85,13 @@ class _Body extends StatelessWidget {
                 color: cubit.selectedRequest?.serviceType?.serviceColor),
           ),
           loaded: () => const _LoadedView(),
-          error: (_) => const SizedBox.expand(
-            child: Center(child: EmptyListWidget()),
+          error: (_) => SwipeRefreshContainer(
+            onRefresh: cubit.init,
+            child: const Center(child: EmptyListWidget()),
           ),
-          connectionError: () => const SizedBox.expand(
-            child: Center(child: EmptyListWidget()),
+          connectionError: () => SwipeRefreshContainer(
+            onRefresh: cubit.init,
+            child: const Center(child: EmptyListWidget()),
           ),
           orElse: () => const SizedBox.shrink(),
         );
@@ -111,9 +114,13 @@ class _LoadedView extends StatelessWidget {
           PointerDeviceKind.mouse,
         },
       ),
-      child: SingleChildScrollView(
-        padding: const EdgeInsets.all(AppSize.s16),
-        child: ChassisRequestHistoryListViewer(items: cubit.items),
+      child: RefreshIndicator(
+        onRefresh: cubit.init,
+        child: SingleChildScrollView(
+          physics: const AlwaysScrollableScrollPhysics(),
+          padding: const EdgeInsets.all(AppSize.s16),
+          child: ChassisRequestHistoryListViewer(items: cubit.items),
+        ),
       ),
     );
   }

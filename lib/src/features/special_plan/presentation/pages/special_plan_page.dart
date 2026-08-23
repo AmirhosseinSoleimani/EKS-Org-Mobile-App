@@ -216,35 +216,17 @@ class _SpecialPlanViewState extends State<_SpecialPlanView> {
     SpecialPlanEntity item,
     SpecialPlanListCubit cubit,
   ) {
-    var isSubmitting = false;
-    BottomSheetMessage.showCustom(
+    DeleteConfirmSheet.show(
       context: context,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      actionWidget: const SizedBox.shrink(),
-      content: StatefulBuilder(
-        builder: (sheetContext, setSheetState) {
-          return DeleteConfirmSheet(
-            title: 'حذف طرح',
-            message: 'آیا از حذف «${item.title ?? 'این طرح'}» مطمئن هستید؟',
-            confirmTitle: 'حذف طرح',
-            isSubmitting: isSubmitting,
-            onConfirm: () async {
-              if (isSubmitting) return;
-              setSheetState(() => isSubmitting = true);
-              final deleted = await cubit.deletePlan(item);
-              if (sheetContext.mounted && deleted) {
-                Navigator.of(sheetContext).pop(true);
-                return;
-              }
-              if (sheetContext.mounted) {
-                setSheetState(() => isSubmitting = false);
-              }
-            },
-          );
-        },
-      ),
+      title: 'حذف طرح',
+      message: 'آیا از حذف «${item.title ?? 'این طرح'}» مطمئن هستید؟',
+      confirmTitle: 'حذف طرح',
+      onConfirm: () async {
+        await cubit.deletePlan(item);
+      },
     );
   }
+
 }
 
 class _SpecialPlanList extends StatelessWidget {

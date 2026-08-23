@@ -19,6 +19,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filte
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/text_form_field_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/refresh_widgets/swipe_refresh_container.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -140,8 +141,9 @@ class _GradePatternListView extends StatelessWidget {
                         orElse: () => false,
                       );
                       if (hasInitialLoadError) {
-                        return const SizedBox.expand(
-                          child: Center(child: EmptyListWidget()),
+                        return SwipeRefreshContainer(
+                          onRefresh: () => cubit.fetchList(refresh: true),
+                          child: const Center(child: EmptyListWidget()),
                         );
                       }
 
@@ -149,32 +151,38 @@ class _GradePatternListView extends StatelessWidget {
                         loading: (_) => const Center(
                           child: CircularProgressIndicator(),
                         ),
-                        empty: (filter) => _MessageState(
-                          icon: Icons.inbox_outlined,
-                          title: filter.hasActiveFilters
-                              ? 'نتیجه‌ای برای فیلترهای انتخابی یافت نشد'
-                              : 'رکوردی یافت نشد',
-                          actionTitle: filter.hasActiveFilters
-                              ? 'پاک کردن فیلترها'
-                              : 'تلاش مجدد',
-                          onAction: filter.hasActiveFilters
-                              ? cubit.clearFilter
-                              : () => cubit.fetchList(refresh: true),
+                        empty: (filter) => SwipeRefreshContainer(
+                          onRefresh: () => cubit.fetchList(refresh: true),
+                          child: _MessageState(
+                            icon: Icons.inbox_outlined,
+                            title: filter.hasActiveFilters
+                                ? 'نتیجه‌ای برای فیلترهای انتخابی یافت نشد'
+                                : 'رکوردی یافت نشد',
+                            actionTitle: filter.hasActiveFilters
+                                ? 'پاک کردن فیلترها'
+                                : 'تلاش مجدد',
+                            onAction: filter.hasActiveFilters
+                                ? cubit.clearFilter
+                                : () => cubit.fetchList(refresh: true),
+                          ),
                         ),
                         orElse: () {
                           final items = cubit.visibleItems;
                           if (items.isEmpty) {
-                            return _MessageState(
-                              icon: Icons.inbox_outlined,
-                              title: cubit.items.isEmpty
-                                  ? 'رکوردی یافت نشد'
-                                  : 'رکوردی با وضعیت انتخاب‌شده یافت نشد',
-                              actionTitle: cubit.items.isEmpty
-                                  ? 'بازخوانی'
-                                  : 'نمایش همه',
-                              onAction: cubit.items.isEmpty
-                                  ? () => cubit.fetchList(refresh: true)
-                                  : () => cubit.setPageStatusFilter(null),
+                            return SwipeRefreshContainer(
+                              onRefresh: () => cubit.fetchList(refresh: true),
+                              child: _MessageState(
+                                icon: Icons.inbox_outlined,
+                                title: cubit.items.isEmpty
+                                    ? 'رکوردی یافت نشد'
+                                    : 'رکوردی با وضعیت انتخاب‌شده یافت نشد',
+                                actionTitle: cubit.items.isEmpty
+                                    ? 'بازخوانی'
+                                    : 'نمایش همه',
+                                onAction: cubit.items.isEmpty
+                                    ? () => cubit.fetchList(refresh: true)
+                                    : () => cubit.setPageStatusFilter(null),
+                              ),
                             );
                           }
 
@@ -204,6 +212,7 @@ class _GradePatternListView extends StatelessWidget {
                                   return false;
                                 },
                                 child: ListView.builder(
+                                  physics: const AlwaysScrollableScrollPhysics(),
                                   padding: const EdgeInsets.fromLTRB(
                                     AppPadding.p16,
                                     AppPadding.p8,
@@ -385,34 +394,18 @@ class _GradePatternListView extends StatelessWidget {
   ) {
     final id = item.id;
     if (id == null) return;
-    BottomSheetMessage.showCustom(
+
+    DeleteConfirmSheet.show(
       context: context,
-      content: BlocProvider.value(
-        value: cubit,
-        child: BlocBuilder<GradePatternCubit, GradePatternState>(
-          builder: (context, state) {
-            return DeleteConfirmSheet(
-              title: 'حذف الگوی گرید',
-              message: 'آیا الگوی گرید ${item.name ?? ''} حذف شود؟',
-              confirmTitle: 'حذف',
-              isSubmitting: cubit.deletingItemId == id,
-              onConfirm: () async {
-                final deleted = await cubit.deleteItem(id);
-                if (deleted && context.mounted) {
-                  Navigator.of(context).pop();
-                }
-              },
-            );
-          },
-        ),
-      ),
-      actionWidget: const SizedBox.shrink(),
-      isDismissible: false,
-      enableDrag: false,
-      backgroundColor: Theme.of(context).colorScheme.onPrimary,
-      maxHeight: 0.45,
+      title: 'حذف الگوی گرید',
+      message: 'آیا الگوی گرید ${item.name ?? ''} حذف شود؟',
+      confirmTitle: 'حذف',
+      onConfirm: () async {
+        await cubit.deleteItem(id);
+      },
     );
   }
+
 
   GradePatternEntity _resolveItem(
     GradePatternCubit cubit,

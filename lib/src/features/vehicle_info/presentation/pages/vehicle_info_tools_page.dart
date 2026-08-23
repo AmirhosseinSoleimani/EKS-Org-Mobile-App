@@ -11,6 +11,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/selection_widgets/selected_
 import 'package:eks_sana_plus_org/src/shared/widgets/selection_widgets/selection_select_all_tile.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/search_input_field.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/refresh_widgets/swipe_refresh_container.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
@@ -72,8 +73,15 @@ class _VehicleInfoToolsView extends StatelessWidget {
               }
 
               if (data.tools.isEmpty) {
-                return const Center(
-                  child: Text('ابزاری برای این خودرو یافت نشد.'),
+                return SwipeRefreshContainer(
+                  onRefresh: () async {
+                    final id = item.id;
+                    if (id == null) return;
+                    await cubit.loadTools(id);
+                  },
+                  child: const Center(
+                    child: Text('ابزاری برای این خودرو یافت نشد.'),
+                  ),
                 );
               }
 
@@ -81,57 +89,65 @@ class _VehicleInfoToolsView extends StatelessWidget {
                   .where((tool) => tool.isSelectable)
                   .toList(growable: false);
 
-              return ListView(
-                keyboardDismissBehavior:
-                    ScrollViewKeyboardDismissBehavior.onDrag,
-                padding: const EdgeInsets.fromLTRB(
-                  AppPadding.p16,
-                  AppPadding.p16,
-                  AppPadding.p16,
-                  AppPadding.p32,
-                ),
-                children: [
-                  VehicleServiceInfoCard(item: item),
-                  Space.h24,
-                  if (selectedTools.isNotEmpty) ...[
-                    SelectedItemsSection<VehicleToolEntity>(
-                      title: 'ابزارهای انتخاب شده',
-                      items: selectedTools,
-                      itemTitle: (tool) => tool.emdadToolsTitle,
-                      onRemove: data.isSubmitting
-                          ? null
-                          : (tool) => cubit.toggleTool(tool.emdadToolsId),
-                    ),
+              return RefreshIndicator(
+                onRefresh: () async {
+                  final id = item.id;
+                  if (id == null) return;
+                  await cubit.loadTools(id);
+                },
+                child: ListView(
+                  physics: const AlwaysScrollableScrollPhysics(),
+                  keyboardDismissBehavior:
+                      ScrollViewKeyboardDismissBehavior.onDrag,
+                  padding: const EdgeInsets.fromLTRB(
+                    AppPadding.p16,
+                    AppPadding.p16,
+                    AppPadding.p16,
+                    AppPadding.p32,
+                  ),
+                  children: [
+                    VehicleServiceInfoCard(item: item),
                     Space.h24,
-                  ],
-                  SearchInputField(
-                    hintText: 'جستجو',
-                    controller: cubit.toolsSearchController,
-                    onChanged: cubit.onToolsSearchChanged,
-                  ),
-                  Space.h16,
-                  SelectionSelectAllTile(
-                    value: data.tools.every((tool) => tool.isSelectable),
-                    enabled: !data.isSubmitting,
-                    onChanged: cubit.setAllTools,
-                  ),
-                  Space.h12,
-                  if (data.filteredTools.isEmpty)
-                    const Padding(
-                      padding: EdgeInsets.symmetric(
-                        vertical: AppPadding.p32,
+                    if (selectedTools.isNotEmpty) ...[
+                      SelectedItemsSection<VehicleToolEntity>(
+                        title: 'ابزارهای انتخاب شده',
+                        items: selectedTools,
+                        itemTitle: (tool) => tool.emdadToolsTitle,
+                        onRemove: data.isSubmitting
+                            ? null
+                            : (tool) => cubit.toggleTool(tool.emdadToolsId),
                       ),
-                      child: Center(
-                        child: Text('ابزاری با این عنوان یافت نشد.'),
-                      ),
-                    )
-                  else
-                    VehicleToolsSection(
-                      tools: data.filteredTools,
-                      onSelect:
-                          data.isSubmitting ? null : cubit.toggleTool,
+                      Space.h24,
+                    ],
+                    SearchInputField(
+                      hintText: 'جستجو',
+                      controller: cubit.toolsSearchController,
+                      onChanged: cubit.onToolsSearchChanged,
                     ),
-                ],
+                    Space.h16,
+                    SelectionSelectAllTile(
+                      value: data.tools.every((tool) => tool.isSelectable),
+                      enabled: !data.isSubmitting,
+                      onChanged: cubit.setAllTools,
+                    ),
+                    Space.h12,
+                    if (data.filteredTools.isEmpty)
+                      const Padding(
+                        padding: EdgeInsets.symmetric(
+                          vertical: AppPadding.p32,
+                        ),
+                        child: Center(
+                          child: Text('ابزاری با این عنوان یافت نشد.'),
+                        ),
+                      )
+                    else
+                      VehicleToolsSection(
+                        tools: data.filteredTools,
+                        onSelect:
+                            data.isSubmitting ? null : cubit.toggleTool,
+                      ),
+                  ],
+                ),
               );
             },
           ),
