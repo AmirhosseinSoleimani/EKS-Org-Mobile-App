@@ -76,7 +76,7 @@ class RequestStatusHistoryListView extends StatelessWidget {
                           children: [
                             KeyValueRow(
                               label: _displayText(item.title),
-                              valueFontSize: 14,
+                              valueFontSize: 12,
                               boldLabel: true,
                               value: _historyDateTime(item),
                             ),
@@ -162,12 +162,14 @@ class RequestStatusHistoryListView extends StatelessWidget {
   String _historyDateTime(RequestStatusHistoryItemEntity item) {
     final date = item.insertDateTimeJalali?.toString().trim() ?? '';
     final time = item.insertTime?.toString().trim() ?? '';
+    final splitTime = time.split(':');
+    final formattedTime = "${splitTime[0]}:${splitTime[1]}" ;
 
     if (date.isEmpty && time.isEmpty) return '-';
     if (date.isEmpty) return time;
-    if (time.isEmpty || date.contains(time)) return date;
+    if (formattedTime.isEmpty || date.contains(time)) return date;
 
-    return '$date - $time';
+    return '$date - $formattedTime';
   }
 
   String _displayText(String? value) {

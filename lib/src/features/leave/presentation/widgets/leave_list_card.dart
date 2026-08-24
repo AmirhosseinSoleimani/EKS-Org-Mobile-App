@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/leave/domain/entities/leave_list_item_entity.dart';
 import 'package:eks_sana_plus_org/src/features/leave/presentation/widgets/leave_status_badge.dart';
+import 'package:eks_sana_plus_org/src/features/leave/domain/entities/leave_status.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/color_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_action_tile.dart';
@@ -88,26 +89,28 @@ class LeaveListCard extends StatelessWidget {
   }
 
   void _showActionsSheet(BuildContext context) {
+    final entries = <OperationBottomSheetEntry>[];
+
+    if (LeaveStatus.fromCode(item.statusCode) == LeaveStatus.registered) {
+      entries.add(
+        OperationBottomSheetEntry(
+          child: BottomSheetActionTile(
+            icon: Icons.delete_forever_outlined,
+            title: 'حذف',
+            isDestructive: true,
+            onTap: () {
+              Navigator.of(context).pop();
+              onDelete();
+            },
+          ),
+        ),
+      );
+    }
+
     BottomSheetMessage.showCustom(
       context: context,
       backgroundColor: Colors.white,
-      content: Builder(
-        builder: (sheetContext) => OperationBottomSheet(
-          entries: [
-            OperationBottomSheetEntry(
-              child: BottomSheetActionTile(
-                icon: Icons.delete_forever_outlined,
-                title: 'حذف',
-                isDestructive: true,
-                onTap: () {
-                  Navigator.of(sheetContext).pop();
-                  onDelete();
-                },
-              ),
-            ),
-          ],
-        ),
-      ),
+      content: OperationBottomSheet(entries: entries),
       actionWidget: const SizedBox.shrink(),
     );
   }
