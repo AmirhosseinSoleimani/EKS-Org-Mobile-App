@@ -29,25 +29,25 @@ import 'package:material_symbols_icons/material_symbols_icons.dart';
 enum RequestCardOperation {
   requestDetail(
     label: 'جزئیات درخواست',
-    icon: Icons.search_outlined,
+    icon: Symbols.search,
     color: Color(0xFF8a63e6),
     routeName: RequestDetailPage.name,
   ),
   nonCooperationList(
     label: 'لیست عدم همکاری',
-    icon: Icons.playlist_remove_outlined,
+    icon: Symbols.playlist_remove,
     color: Color(0xFFbf0000),
     routeName: NonCooperationPage.name,
   ),
   kartableCycle(
     label: 'چرخه کارتابل',
-    icon: Icons.all_inbox_outlined,
+    icon: Symbols.all_inbox,
     color: Color(0xFFff9305),
     routeName: CartableCyclePage.name,
   ),
   requestStatusHistory(
     label: 'تاریخچه وضعیت درخواست',
-    icon: Icons.grading_outlined,
+    icon: Symbols.grading,
     color: Color(0xFF6d6a66),
     routeName: RequestStatusHistoryPage.name,
   ),
@@ -59,13 +59,13 @@ enum RequestCardOperation {
   ),
   requestControlInfo(
     label: 'اطلاعات کنترلی',
-    icon: Icons.apps_outlined,
+    icon: Symbols.apps,
     color: Color(0xFFffd000),
     routeName: ControlInfoPage.name,
   ),
   evaluationHistory(
     label: 'تاریخچه ارزیابی',
-    icon: Icons.view_timeline_outlined,
+    icon: Symbols.view_timeline,
     color: Color(0xFF1bc4bc),
     routeName: EvaluationHistoryPage.name,
   ),
@@ -77,75 +77,75 @@ enum RequestCardOperation {
   ),
   requestPreInvoice(
     label: 'پیش فاکتور',
-    icon: Icons.description_outlined,
+    icon: Symbols.description,
     color: Color(0xFFff9305),
     routeName: InvoicePage.name,
     invoiceType: InvoiceType.preInvoice,
   ),
   customerInvoice(
     label: 'فاکتور مشتری',
-    icon: Icons.description_outlined,
+    icon: Symbols.description,
     color: Color(0xFFff7a0c),
     routeName: InvoicePage.name,
     invoiceType: InvoiceType.invoice,
   ),
   emdadgarInvoice(
     label: 'صورت وضعیت',
-    icon: Icons.description_outlined,
+    icon: Symbols.description,
     color: Color(0xFF3eb021),
     routeName: EmdadgarInvoicePage.name,
   ),
   updateRequest(
     label: 'ویرایش درخواست',
-    icon: Icons.edit_outlined,
+    icon: Symbols.edit,
     color: Color(0xFF369aff),
     routeName: UpdateRequestPage.name,
   ),
   cancelRequest(
     label: 'لغو درخواست',
-    icon: Icons.close_outlined,
+    icon: Symbols.close,
     color: Color(0xFFC30000),
     routeName: CancelRequestPage.name,
   ),
   completeUrgentRequest(
     label: 'تکمیل درخواست اضطراری',
-    icon: Icons.open_in_new_outlined,
+    icon: Symbols.open_in_new,
     color: Color(0xFFC30000),
     routeName: CompleteUrgentRequestPage.name,
   ),
   changeHomeServiceRequestTime(
     label: 'ویرایش زمان درخواست',
-    icon: Icons.access_time_outlined,
+    icon: Symbols.access_time,
     color: Color(0xFFff9b00),
     routeName: ChangeHomeServiceRequestTimePage.name,
   ),
   changeHomeServiceRequestAddress(
     label: 'ویرایش آدرس درخواست',
-    icon: Icons.location_on_outlined,
+    icon: Symbols.location_on,
     color: Color(0xFF1bc5bd),
     routeName: ChangeHomeServiceRequestAddressPage.name,
   ),
   followUpRegister(
     label: 'ثبت پیگیری',
-    icon: Icons.north_east_outlined,
+    icon: Symbols.north_east,
     color: Color(0xFF864a1e),
     routeName: FollowUpRegisterPage.name,
   ),
   aidServiceFactorRegister(
     label: 'ثبت فاکتور',
-    icon: Icons.insert_drive_file_outlined,
+    icon: Symbols.insert_drive_file,
     color: Color(0xFF3699FF),
     routeName: EvaluationAidServiceRequestPage.name,
   ),
   homeServiceFactorRegister(
     label: 'ثبت فاکتور',
-    icon: Icons.insert_drive_file_outlined,
+    icon: Symbols.insert_drive_file,
     color: Color(0xFF3699FF),
     routeName: HomeServiceEvaluationFirstStep.name,
   ),
   assignEmdadgar(
     label: 'تخصیص',
-    icon: Icons.person_add_alt_outlined,
+    icon: Symbols.person_add_alt,
     color: Color(0xFF3eb122),
     routeName: AssignAndCancelEmdadgarPage.name,
   ),
@@ -154,21 +154,100 @@ enum RequestCardOperation {
     icon: Symbols.person_cancel,
     color: Color(0xFFC30000),
     routeName: AssignAndCancelEmdadgarPage.name,
+  ),
+
+  // TODO: Implement the mobile Technical Report History page/flow.
+  technicalReportHistory(
+    label: 'تاریخچه گزارش فنی مهندسی',
+    icon: Icons.list_alt, // Web: fa-list-alt
+    color: Color(0xFFE9408F),
+  ),
+
+  // TODO: Implement the mobile incomplete-request completion flow.
+  completeIncompleteRequest(
+    label: 'بررسی و تکمیل درخواست',
+    icon: Icons.open_in_new, // Web: fa-external-link-alt
+    color: Color(0xFF3699FF),
+  ),
+
+  // TODO: Implement the mobile invoice modification/approval flow.
+  invoiceModification(
+    label: 'اصلاح و تایید فاکتور',
+    icon: Icons.edit, // Web: fa-pencil-alt
+    color: Color(0xFF3699FF),
+  ),
+
+  // TODO: Implement the mobile request-copy/recovery flow.
+  serviceRequestCopy(
+    label: 'کپی درخواست',
+    icon: Icons.add, // Web: fa-plus
+    color: Color(0xFF1BC5BD),
+  ),
+
+  // TODO: Implement the mobile external-fleet assistance permission flow.
+  externalEmdadNavgan(
+    label: 'مجوز امداد خارج از ناوگان',
+    icon: Icons.directions_car, // Web: fa-car
+    color: Color(0xFFC30000),
+  ),
+
+  // TODO: Implement the mobile cancel-external-fleet assistance flow.
+  cancelExternalEmdadNavgan(
+    label: 'لغو امداد خارج از ناوگان',
+    icon: Icons.close, // Web: fa-times
+    color: Color(0xFFC30000),
+  ),
+
+  // TODO: Implement the mobile assignment/dispatch history page/flow.
+  assignDispatchHistory(
+    label: 'تاریخچه تخصیص/اعزام',
+    icon: Icons.person, // Web: fa-male
+    color: Color(0xFF6D6A66),
+  ),
+
+  // TODO: Implement the mobile sent-SMS history page/flow.
+  smsHistory(
+    label: 'تاریخچه پیامک های ارسالی',
+    icon: Icons.chat, // Web: fa-comments
+    color: Color(0xFF6D6A66),
+  ),
+
+  // TODO: Implement the mobile request-images page/flow.
+  requestImages(
+    label: 'تصاویر',
+    icon: Icons.image, // Web: fa-image
+    color: Color(0xFF3699FF),
+  ),
+
+  // TODO: Implement Aid Service rollback/open-request + invoice-cancel flow.
+  aidRollbackInvoice(
+    label: 'بازکردن درخواست / لغو فاکتور',
+    icon: Icons.undo, // Web Aid: fa-undo
+    color: Color(0xFF6D6A66),
+  ),
+
+  // TODO: Implement Home Service rollback/open-request + invoice-cancel flow.
+  homeRollbackInvoice(
+    label: 'بازکردن درخواست / لغو فاکتور',
+    icon: Icons.access_time, // Web Home: fa-clock
+    color: Color(0xFF6D6A66),
   );
 
   final String label;
   final IconData icon;
   final Color color;
-  final String routeName;
+  final String? routeName;
   final InvoiceType? invoiceType;
 
   const RequestCardOperation({
     required this.label,
     required this.icon,
     required this.color,
-    required this.routeName,
+    this.routeName,
     this.invoiceType,
   });
+
+  bool get isImplemented => routeName != null;
 
   Object? routeExtra(int? requestId) => invoiceType ?? requestId;
 }
@@ -337,6 +416,57 @@ extension OperationItemVisibility on RequestCardOperation {
                     rawStatus >= RequestStatus.dispatched.value &&
                     rawStatus <= RequestStatus.inProgress.value)) &&
             operationAccess.assignCancel;
+
+      case RequestCardOperation.technicalReportHistory:
+        return isRelief &&
+            (status == RequestStatus.canceled || status == RequestStatus.closed);
+
+      case RequestCardOperation.completeIncompleteRequest:
+        return isRelief && rawStatus == RequestStatus.waitingForDetails.value;
+
+      case RequestCardOperation.invoiceModification:
+        return isRelief &&
+            status == RequestStatus.closed &&
+            request.requestState != 1 &&
+            operationAccess.invoiceModification;
+
+      case RequestCardOperation.serviceRequestCopy:
+        if (!operationAccess.serviceRequestCopy) return false;
+        return (isRelief || isHome) &&
+            (status == RequestStatus.canceled || status == RequestStatus.closed);
+
+      case RequestCardOperation.externalEmdadNavgan:
+        return isRelief &&
+            (request.hamlAzad ?? false) &&
+            status == RequestStatus.waitingAssignment &&
+            operationAccess.externalEmdadNavgan;
+
+      case RequestCardOperation.cancelExternalEmdadNavgan:
+        return isRelief &&
+            (request.hamlAzad ?? false) &&
+            request.reasonHamlAzadId != null &&
+            status != RequestStatus.canceled &&
+            status != RequestStatus.completed &&
+            operationAccess.cancelExternalEmdadNavgan;
+
+      case RequestCardOperation.assignDispatchHistory:
+        return (isRelief || isHome) && operationAccess.viewAssignHistory;
+
+      case RequestCardOperation.smsHistory:
+        return (isRelief || isHome) && operationAccess.smsHistory;
+
+      case RequestCardOperation.requestImages:
+        return (isRelief || isHome) && (request.hasDocuments ?? false);
+
+      case RequestCardOperation.aidRollbackInvoice:
+        return isRelief &&
+            (status == RequestStatus.closed || request.cancelReasonId != null) &&
+            operationAccess.invoiceCancel;
+
+      case RequestCardOperation.homeRollbackInvoice:
+        return isHome &&
+            (status == RequestStatus.closed || status == RequestStatus.canceled) &&
+            operationAccess.invoiceCancel;
     }
   }
 }

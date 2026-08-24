@@ -67,6 +67,8 @@ abstract class BaseRequestEntity {
   final int? garantyCarTipId;
   final String? garantySiteDescription;
   final String? invoiceDocumentGuid;
+  final bool? hasDocuments;
+  final int? requestState;
   final int? cancelReasonId;
   final bool? addressHasBeenSet;
   final String? requestDateTime;
@@ -173,6 +175,8 @@ abstract class BaseRequestEntity {
     this.garantyCarTipId,
     this.garantySiteDescription,
     this.invoiceDocumentGuid,
+    this.hasDocuments,
+    this.requestState,
     this.cancelReasonId,
     this.addressHasBeenSet,
     this.requestDateTime,

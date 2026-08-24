@@ -74,10 +74,6 @@ class _SelectedServicesView extends StatelessWidget {
             );
           },
           builder: (context, state) {
-            if (cubit.operationAccess != null && !cubit.canViewRequests) {
-              return const _AccessDeniedBody();
-            }
-
             return ScrollConfiguration(
               behavior: ScrollConfiguration.of(context).copyWith(
                 dragDevices: {
@@ -146,21 +142,6 @@ class _EmptyRequestListBody extends StatelessWidget {
     return SwipeRefreshContainer(
       onRefresh: onRefresh,
       child: const Center(child: EmptyListWidget()),
-    );
-  }
-}
-
-class _AccessDeniedBody extends StatelessWidget {
-  const _AccessDeniedBody();
-
-  @override
-  Widget build(BuildContext context) {
-    return Center(
-      child: Text(
-        'شما دسترسی لازم برای مشاهده درخواست های امدادی را ندارید.',
-        style: Theme.of(context).textTheme.bodyMedium,
-        textAlign: TextAlign.center,
-      ),
     );
   }
 }

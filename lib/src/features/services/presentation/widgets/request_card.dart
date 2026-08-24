@@ -7,6 +7,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/bot
 import 'package:eks_sana_plus_org/src/features/services/domain/entities/request_operation_access_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card_actions.dart';
 import 'package:flutter/material.dart';
@@ -65,30 +66,32 @@ class RequestCard extends StatelessWidget {
           SummaryCardActions(
             operationActionFlex: 50,
             primaryActionFlex: 50,
-            primaryAction: InkwellButtonWidget(
-              title: 'مشاهده جزئیات',
-              backgroundColor: serviceColor,
-              prefixIcon: const Icon(
-                Icons.visibility_outlined,
-                color: Colors.white,
-                size: AppSize.s20,
-              ),
-              onTap: () async {
-                await Future.sync(() => onSelected(request));
-                if (!context.mounted) return;
+            primaryAction: operationAccess.canView
+                ? InkwellButtonWidget(
+                    title: 'مشاهده جزئیات',
+                    backgroundColor: serviceColor,
+                    prefixIcon: const Icon(
+                      Icons.visibility_outlined,
+                      color: Colors.white,
+                      size: AppSize.s20,
+                    ),
+                    onTap: () async {
+                      await Future.sync(() => onSelected(request));
+                      if (!context.mounted) return;
 
-                final requestId = request.id;
-                if (requestId == null) return;
+                      final requestId = request.id;
+                      if (requestId == null) return;
 
-                await context.pushNamed(
-                  RequestDetailPage.name,
-                  extra: requestId,
-                );
-                if (!context.mounted) return;
+                      await context.pushNamed(
+                        RequestDetailPage.name,
+                        extra: requestId,
+                      );
+                      if (!context.mounted) return;
 
-                await Future.sync(() => onRefreshAfterReturn?.call());
-              },
-            ),
+                      await Future.sync(() => onRefreshAfterReturn?.call());
+                    },
+                  )
+                : null,
             onOperation: () => _showOperationsBottomSheet(context),
             isOperationLoading: false,
           ),
@@ -178,11 +181,21 @@ class RequestCard extends StatelessWidget {
   }) async {
     Navigator.of(bottomSheetContext).pop();
 
+    final routeName = operation.routeName;
+    if (!operation.isImplemented || routeName == null) {
+      // TODO: Replace this notice with the real operation flow when its page is implemented.
+      SnakeBarWidget.showNotice(
+        context: pageContext,
+        message: 'این قابلیت به‌زودی در دسترس شما قرار می‌گیرد.',
+      );
+      return;
+    }
+
     await Future.sync(() => onSelected(request));
     if (!pageContext.mounted) return;
 
     await pageContext.pushNamed(
-      operation.routeName,
+      routeName,
       extra: operation.routeExtra(request.id),
     );
     if (!pageContext.mounted) return;

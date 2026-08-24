@@ -38,8 +38,6 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> with LatestRe
 
   RequestOperationAccessEntity? get operationAccess => _operationAccess;
 
-  bool get canViewRequests => _operationAccess?.canView == true;
-
   final List<BaseRequestEntity> _items = [];
 
   List<BaseRequestEntity> get items => List.unmodifiable(_items);
@@ -113,11 +111,6 @@ class ReliefRequestListCubit extends Cubit<ReliefRequestListState> with LatestRe
     final hasOperationAccess = await _ensureOperationAccess();
     if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
     if (!hasOperationAccess) return;
-
-    if (!canViewRequests) {
-      _safeEmit(const ReliefRequestListState.loaded());
-      return;
-    }
 
     final param = _buildFilterParam();
     final result = await _getReliefRequestListUseCase(param);

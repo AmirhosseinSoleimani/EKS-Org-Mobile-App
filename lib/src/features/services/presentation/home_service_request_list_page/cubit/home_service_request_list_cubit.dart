@@ -38,8 +38,6 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> wit
 
   RequestOperationAccessEntity? get operationAccess => _operationAccess;
 
-  bool get canViewRequests => _operationAccess?.canView == true;
-
   final List<BaseRequestEntity> requestList = <BaseRequestEntity>[];
 
   static const CurrentSessionEnumItemEntity _allStatus =
@@ -127,11 +125,6 @@ class HomeServiceRequestListCubit extends Cubit<HomeServiceRequestListState> wit
     final hasOperationAccess = await _ensureOperationAccess();
     if (!isLatestRequest(requestVersion, 'list') || isClosed) return;
     if (!hasOperationAccess) return;
-
-    if (!canViewRequests) {
-      _safeEmit(const HomeServiceRequestListState.loaded());
-      return;
-    }
 
     final params = _buildFilterParam();
     final result = await _getHomeServiceRequestListUseCase(params);

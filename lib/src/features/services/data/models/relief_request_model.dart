@@ -127,6 +127,8 @@ class ReliefRequestModel extends ReliefRequestEntity {
     super.insertDateTime,
     super.insertDateTimeJalali,
     super.invoiceDocumentGuid,
+    super.hasDocuments,
+    super.requestState,
     super.cancelReasonId,
     super.addressHasBeenSet,
     super.isSaipa,
@@ -265,6 +267,10 @@ class ReliefRequestModel extends ReliefRequestEntity {
       garantySiteDescription: json['garanty_SiteDescription'] ?? json['garantySiteDescription'],
 
       invoiceDocumentGuid: json['invoiceDocumentGuid'],
+      hasDocuments: json['hasDocuments'] == true ||
+          json['hasDocuments'] == 1 ||
+          json['hasDocuments']?.toString().toLowerCase() == 'true',
+      requestState: (json['requestState'] as num?)?.toInt(),
       cancelReasonId: json['cancelReasonId'],
       addressHasBeenSet: json['addressHasBeenSet'],
       requestDateTimeJalali: json['requestDateTimeJalali'],

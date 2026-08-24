@@ -53,10 +53,7 @@ class RequestFilterParamModel extends RequestFilterParamEntity {
       filters.add(_filter('trackCode', 'eq', trackCode));
     }
 
-    final mobile = int.tryParse(_normalized(callMobileNumber));
-    if (mobile != null) {
-      filters.add(_filter('customerMobileNumber', 'eq', mobile));
-    }
+    _addTextFilter(filters, 'customerMobileNumber', callMobileNumber);
 
     _addTextFilter(filters, 'chassisNumber', chassisNumber);
     _addTextFilter(filters, 'emdadgarTitle', rescuerName);

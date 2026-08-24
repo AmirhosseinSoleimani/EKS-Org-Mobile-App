@@ -20,6 +20,12 @@ class RequestOperationsBottomSheet extends StatelessWidget {
     RequestCardOperation.followUpRegister,
     RequestCardOperation.updateRequest,
     RequestCardOperation.evaluationHistory,
+    RequestCardOperation.technicalReportHistory,
+    RequestCardOperation.completeIncompleteRequest,
+    RequestCardOperation.invoiceModification,
+    RequestCardOperation.serviceRequestCopy,
+    RequestCardOperation.aidRollbackInvoice,
+    RequestCardOperation.homeRollbackInvoice,
     RequestCardOperation.requestPreInvoice,
     RequestCardOperation.emdadgarInvoice,
     RequestCardOperation.changeHomeServiceRequestTime,
@@ -27,6 +33,7 @@ class RequestOperationsBottomSheet extends StatelessWidget {
     RequestCardOperation.aidServiceFactorRegister,
     RequestCardOperation.homeServiceFactorRegister,
     RequestCardOperation.assignEmdadgar,
+    RequestCardOperation.externalEmdadNavgan,
     RequestCardOperation.completeUrgentRequest,
     RequestCardOperation.requestControlInfo,
   ];
@@ -36,6 +43,9 @@ class RequestOperationsBottomSheet extends StatelessWidget {
     RequestCardOperation.kartableCycle,
     RequestCardOperation.requestStatusHistory,
     RequestCardOperation.chassisRequestHistory,
+    RequestCardOperation.assignDispatchHistory,
+    RequestCardOperation.smsHistory,
+    RequestCardOperation.requestImages,
   ];
 
   static const List<RequestCardOperation> _mapOrder = [
@@ -45,6 +55,7 @@ class RequestOperationsBottomSheet extends StatelessWidget {
   static const List<RequestCardOperation> _destructiveOrder = [
     RequestCardOperation.cancelEmdadgar,
     RequestCardOperation.cancelRequest,
+    RequestCardOperation.cancelExternalEmdadNavgan,
   ];
 
   @override
