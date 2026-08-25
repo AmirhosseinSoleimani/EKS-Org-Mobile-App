@@ -84,6 +84,7 @@ class EvaluationMainFormController {
     kilometerController.text = _formatNumber(lastEvaluation.customerKilometer);
 
     descriptionController.text = lastEvaluation.description ?? '';
+    isFreewayTollPaid.value = lastEvaluation.payAvarezi == true;
   }
 
   void setServiceTitle(String? title) {

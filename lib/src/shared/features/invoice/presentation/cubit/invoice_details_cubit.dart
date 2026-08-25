@@ -27,11 +27,13 @@ class InvoiceDetailsState {
 class InvoiceDetailsCubit extends Cubit<InvoiceDetailsState> {
   InvoiceDetailsCubit(
     this._getPreInvoiceUseCase,
-    this._requestContextLoader,
-  ) : super(const InvoiceDetailsState());
+    this._requestContextLoader, {
+    this.emdadgarEvaluationId,
+  }) : super(const InvoiceDetailsState());
 
   final GetPreInvoiceUseCase _getPreInvoiceUseCase;
   final InvoiceRequestContextLoader _requestContextLoader;
+  final int? emdadgarEvaluationId;
 
   InvoiceRequestContext? selectedRequest;
   InvoiceEntity? invoiceEntity;
@@ -66,10 +68,13 @@ class InvoiceDetailsCubit extends Cubit<InvoiceDetailsState> {
 
   Future<void> _loadInvoice() async {
     final request = selectedRequest!;
+    final evaluationId = emdadgarEvaluationId;
     final result = await _getPreInvoiceUseCase(
       ServiceInvoiceParamEntity(
-        serviceRequestId: request.requestId,
+        serviceRequestId: evaluationId == null ? request.requestId : null,
+        emdadgarEvaluationId: evaluationId,
         serviceType: request.serviceType?.value ?? 1,
+        invoiceStatus: evaluationId == null ? 0 : null,
       ),
     );
 

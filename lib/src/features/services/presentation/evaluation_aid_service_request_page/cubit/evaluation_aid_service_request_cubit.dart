@@ -41,6 +41,7 @@ import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/enums/evaluation_aid_service_page_mode.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/enums/evaluation_service_category_view_type.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/error_handling/user_facing_error_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -257,7 +258,7 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
         transportForm.setRepresentationList(data);
 
         transportForm.syncSelectedRepresentationByValue(
-          lastEvaluationEntity?.lastEvaluation,
+          lastEvaluationEntity?.lastEvaluation?.representationCode,
         );
       },
       failure: (error, failures) {
@@ -286,8 +287,8 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     transportForm.fillFromLastEvaluation(
       acceptanceCode: lastEvaluation.acceptanceCode,
       transportDistanceKm: lastEvaluation.distanceHamlCustomer,
-      endWorkDate: transportForm.formattedEndWorkDateTimeForServer,
-      representationValue: lastEvaluation.id,
+      endWorkDate: lastEvaluation.endWorkDate,
+      representationValue: lastEvaluation.representationCode,
     );
   }
 
@@ -602,6 +603,7 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     final result = await getServiceDetailEvaluation();
 
     if (result == FetchResultType.success) {
+      _safeEmit(const EvaluationAidServiceRequestState.loaded());
       return true;
     }
 
@@ -651,6 +653,12 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
       success: (data, _, _) {
         lastEvaluationEntity = data;
         mainForm.fillFromLastEvaluation(data.lastEvaluation);
+        _syncServiceDetailSelections();
+        fillTransportFormFromLastEvaluation();
+        if (selectedServiceCategory.value?.evaluationViewType ==
+            EvaluationServiceCategoryViewType.transport) {
+          unawaited(getRepresentationList());
+        }
         fetchResult = FetchResultType.success;
       },
       connectionError: () {
@@ -663,14 +671,49 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
 
     return fetchResult;
   }
+  void _syncServiceDetailSelections() {
+    final lastEvaluation = lastEvaluationEntity?.lastEvaluation;
+
+    final defectId = lastEvaluation?.defectInfoId ?? selectedRequest?.defectId;
+    if (defectId != null && defectId > 0) {
+      selectedDefect.value = _findDefectById(defectId);
+    }
+
+    final categoryId = lastEvaluation?.emdadServiceCategoryId ??
+        lastEvaluation?.serviceCategoryId ??
+        selectedRequest?.emdadServiceCategoryId;
+    if (categoryId != null && categoryId > 0) {
+      selectedServiceCategory.value = _findServiceCategoryById(categoryId);
+    }
+  }
+
+  DefectEntity? _findDefectById(int id) {
+    for (final item in defectList) {
+      if (item.id == id) return item;
+    }
+    return null;
+  }
+
+  ServiceCategoryEntity? _findServiceCategoryById(int id) {
+    for (final item in serviceCategoryList) {
+      if (item.id == id) return item;
+    }
+    return null;
+  }
+
   Future<FetchResultType> getServiceDetailEvaluation() async {
     final param = ServiceDetailForEvaluationParamEntity(
       serviceType: ServiceType.reliefService,
       aidServiceRequestId: selectedRequest?.id,
       emdadgarDefectInfoId:
-      selectedDefect.value?.id ?? selectedRequest?.defectId ?? 0,
+      selectedDefect.value?.id ??
+          lastEvaluationEntity?.lastEvaluation?.defectInfoId ??
+          selectedRequest?.defectId ??
+          0,
       emdadgarServiceCategoryId:
       selectedServiceCategory.value?.id ??
+          lastEvaluationEntity?.lastEvaluation?.emdadServiceCategoryId ??
+          lastEvaluationEntity?.lastEvaluation?.serviceCategoryId ??
           selectedRequest?.emdadServiceCategoryId ??
           0,
       serviceRequestId: selectedRequest?.id ?? 0,
@@ -703,23 +746,22 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
   }
 
   void _emitError([String? message]) {
+    final userMessage = _fallbackError(message ?? _errorMessage);
     _safeEmit(
       EvaluationAidServiceRequestState.error(
         message: BottomSheetMessageModel(
           title: 'خطا',
-          message: message ?? _errorMessage ?? _fallbackError(),
+          message: userMessage,
         ),
       ),
     );
   }
 
   String _fallbackError([String? msg]) {
-    if (msg
-        ?.trim()
-        .isNotEmpty == true) {
-      return msg!;
-    }
-    return 'درخواست شما با خطا مواجه شد، لطفا با پشتیبانی تماس بگیرید';
+    return UserFacingErrorMessage.resolve(
+      msg,
+      fallback: 'درخواست شما با خطا مواجه شد، لطفا با پشتیبانی تماس بگیرید',
+    );
   }
 
   void retryLastAction() => _retryAction?.call();

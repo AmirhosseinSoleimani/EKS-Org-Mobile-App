@@ -276,10 +276,10 @@ class ReliefRequestModel extends ReliefRequestEntity {
       requestDateTimeJalali: json['requestDateTimeJalali'],
 
       defectId: json['defectId'],
-      defectTitle: json['defectTitle'],
+      defectTitle: _firstNonBlank([json['defectTitle'], json['defectInfoTitle']]),
       isUrgentRequest: json['isUrgentRequest'] ?? false,
       isUrgentRequestCompleted: json['isUrgentRequestCompleted'] ?? false,
-      emdadServiceTitle: json['emdadServiceTitle'],
+      emdadServiceTitle: _firstNonBlank([json['emdadServiceTitle'], json['serviceTitle']]),
       hamlReasonTitle: json['hamlReasonTitle'],
       wheelQuestionTitle: json['wheelQuestionTitle'],
 
@@ -315,6 +315,16 @@ class ReliefRequestModel extends ReliefRequestEntity {
       return int.tryParse(value);
     }
 
+    return null;
+  }
+
+  static String? _firstNonBlank(Iterable<dynamic> values) {
+    for (final value in values) {
+      final text = value?.toString().trim();
+      if (text != null && text.isNotEmpty && text.toLowerCase() != 'null') {
+        return text;
+      }
+    }
     return null;
   }
 

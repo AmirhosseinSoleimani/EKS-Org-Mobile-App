@@ -80,8 +80,13 @@ class EmdadgarInvoiceDetailsCubit extends Cubit<EmdadgarInvoiceDetailsState> {
         ),
       _ => _getEmdadgarInvoiceUseCase(
           ServiceInvoiceParamEntity(
-            serviceRequestId: args.serviceRequestId,
+            emdadgarEvaluationId: args.evaluationId,
             serviceType: serviceType.value,
+            invoiceStatus: switch (args.stage) {
+              EmdadgarInvoiceStage.current => 2,
+              EmdadgarInvoiceStage.finalCorrection => 1,
+              _ => null,
+            },
           ),
         ),
     };
@@ -92,16 +97,13 @@ class EmdadgarInvoiceDetailsCubit extends Cubit<EmdadgarInvoiceDetailsState> {
       return 'نوع سرویس برای دریافت صورت وضعیت مشخص نیست.';
     }
 
-    if (args.stage == EmdadgarInvoiceStage.initial) {
-      if (args.evaluationId == null) {
-        return 'شناسه ارزیابی برای دریافت صورت وضعیت اولیه موجود نیست.';
-      }
-      return null;
+    final evaluationId = args.evaluationId;
+    if (evaluationId == null || evaluationId <= 0) {
+      return args.stage == EmdadgarInvoiceStage.initial
+          ? 'شناسه ارزیابی برای دریافت صورت وضعیت اولیه موجود نیست.'
+          : 'شناسه ارزیابی برای دریافت صورت وضعیت موجود نیست.';
     }
 
-    if (args.serviceRequestId == null) {
-      return 'شناسه درخواست برای دریافت صورت وضعیت موجود نیست.';
-    }
     return null;
   }
 

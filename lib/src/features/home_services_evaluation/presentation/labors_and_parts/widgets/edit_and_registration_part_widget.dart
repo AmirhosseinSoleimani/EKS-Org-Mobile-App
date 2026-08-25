@@ -165,16 +165,7 @@ class EditAndRegistrationPartWidget extends StatelessWidget {
       physics: const BouncingScrollPhysics(),
       children: [
         _partMarkContainer(context: context),
-        BlocBuilder<LaborsAndPartsCubit, LaborsAndPartsState>(
-          builder: (BuildContext context, LaborsAndPartsState state) {
-            return state.maybeWhen(
-              partPriceSuccess: () => _successPartPriceWidget(context: context),
-              reusablePriceSuccess: () =>
-                  _successPartPriceWidget(context: context),
-              orElse: () => const SizedBox(),
-            );
-          },
-        ),
+        _successPartPriceWidget(context: context),
       ],
     );
   }
@@ -195,13 +186,7 @@ class EditAndRegistrationPartWidget extends StatelessWidget {
                     children: [
                       Checkbox(
                         value: snapshot.data?.isActive ?? false,
-                        onChanged: (value) {
-                          final reusable = cubit.reusableSubject.valueOrNull;
-                          final updateReusable = reusable?.copyWith(
-                            isActive: value,
-                          );
-                          cubit.reusableSubject.add(updateReusable);
-                        },
+                        onChanged: cubit.setReusableActive,
                       ),
                       Text(
                         'داغی دارد',
@@ -209,57 +194,69 @@ class EditAndRegistrationPartWidget extends StatelessWidget {
                       ),
                     ],
                   ),
-                  Space.h12,
-                  TextFormFieldWidget(
-                    onTap: () => Navigator.of(context).push(
-                      PageRouteBuilder(
-                        pageBuilder: (context, animation, secondaryAnimation) =>
-                            BlocProvider.value(
-                              value: cubit,
-                              child: SearchReusablePage(
-                                laborIndex: laborIndex,
-                                serviceIndex: serviceIndex,
-                              ),
-                            ),
-                        transitionDuration: const Duration(milliseconds: 500),
-                        reverseTransitionDuration: const Duration(
-                          milliseconds: 500,
-                        ),
-                        transitionsBuilder:
-                            (context, animation, secondaryAnimation, child) {
-                              final slideUpAnimation =
-                                  Tween<Offset>(
-                                    begin: const Offset(0, 1),
-                                    end: Offset.zero,
-                                  ).animate(
-                                    CurvedAnimation(
-                                      parent: animation,
-                                      curve: Curves.easeOut,
-                                      reverseCurve: Curves.easeIn,
+                  if (snapshot.data?.isActive == true) ...[
+                    Space.h12,
+                    TextFormFieldWidget(
+                      onTap: () {
+                        cubit.prepareReusableSearch();
+                        Navigator.of(context).push(
+                          PageRouteBuilder(
+                            pageBuilder:
+                                (context, animation, secondaryAnimation) =>
+                                    BlocProvider.value(
+                                      value: cubit,
+                                      child: SearchReusablePage(
+                                        laborIndex: laborIndex,
+                                        serviceIndex: serviceIndex,
+                                        isCustomerService:
+                                            isEditablePart == true ||
+                                            changeCustomerPart == true,
+                                      ),
                                     ),
-                                  );
+                            transitionDuration:
+                                const Duration(milliseconds: 500),
+                            reverseTransitionDuration: const Duration(
+                              milliseconds: 500,
+                            ),
+                            transitionsBuilder: (
+                              context,
+                              animation,
+                              secondaryAnimation,
+                              child,
+                            ) {
+                              final slideUpAnimation = Tween<Offset>(
+                                begin: const Offset(0, 1),
+                                end: Offset.zero,
+                              ).animate(
+                                CurvedAnimation(
+                                  parent: animation,
+                                  curve: Curves.easeOut,
+                                  reverseCurve: Curves.easeIn,
+                                ),
+                              );
                               return SlideTransition(
                                 position: slideUpAnimation,
                                 child: child,
                               );
                             },
-                      ),
-                    ),
-                    hintText: (cubit.reusableTitleController.text.isNotEmpty)
-                        ? 'نام قطعه داغی'
-                        : 'انتخاب قطعه داغی',
-                    readOnly: true,
-                    mandatory: true,
-                    controller: cubit.reusableTitleController,
-                  ),
-                  Space.h16,
-                  if (cubit.reusableSubject.valueOrNull?.price != -1)
-                    TextFormFieldWidget(
-                      hintText: 'قیمت قطعه داغی',
+                          ),
+                        );
+                      },
+                      labelText: 'نام قطعه داغی',
+                      hintText: 'قطعه داغی را انتخاب کنید',
                       readOnly: true,
                       mandatory: true,
-                      controller: cubit.reusablePriceController,
+                      controller: cubit.reusableTitleController,
                     ),
+                    Space.h16,
+                    if (snapshot.data?.price != -1)
+                      TextFormFieldWidget(
+                        labelText: 'قیمت قطعه داغی',
+                        readOnly: true,
+                        mandatory: true,
+                        controller: cubit.reusablePriceController,
+                      ),
+                  ],
                 ],
               );
             } else {

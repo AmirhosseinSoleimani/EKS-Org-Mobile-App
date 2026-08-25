@@ -35,7 +35,7 @@ class InvoiceListFilterParamEntity {
 
   factory InvoiceListFilterParamEntity.withDefaultDateRange({
     DateTime? now,
-    ServiceType serviceType = ServiceType.reliefService,
+    ServiceType? serviceType = ServiceType.reliefService,
     int? pageSize,
     int? skip,
   }) {

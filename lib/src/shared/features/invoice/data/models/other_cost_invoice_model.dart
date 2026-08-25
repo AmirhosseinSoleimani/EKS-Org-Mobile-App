@@ -32,6 +32,8 @@ class OtherCostReceptionModel extends OtherCostReceptionEntity {
     super.companyPrice,
     super.companyPriceWithZarib,
     super.customerPrice,
+    super.customerBasePrice,
+    super.customerDiscountPrice,
     super.id,
     super.invoiceId,
     super.title,
@@ -44,6 +46,9 @@ class OtherCostReceptionModel extends OtherCostReceptionEntity {
       title: json['title']?.toString(),
       companyPrice: (json['companyPrice'] as num?)?.toInt(),
       customerPrice: (json['customerPrice'] as num?)?.toInt(),
+      customerBasePrice: (json['customerBasePrice'] as num?)?.toInt(),
+      customerDiscountPrice:
+          (json['customerDiscountPrice'] as num?)?.toInt(),
       companyPriceWithZarib:
           (json['companyPriceWithZarib'] as num?)?.toInt(),
     );

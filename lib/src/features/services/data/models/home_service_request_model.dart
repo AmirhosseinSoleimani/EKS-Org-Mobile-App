@@ -231,7 +231,11 @@ class HomeServiceRequestModel extends HomeServiceRequestEntity {
 
       vip: json['vip'] ?? false,
       vipConditionTitle: json['vipConditionTitle'],
-      emdadProductTitle: json['emdadProductTitle'] ?? _extractSelectedServiceTitle(json),
+      emdadProductTitle: _firstNonBlank([
+        json['emdadProductTitle'],
+        _extractSelectedServiceTitle(json),
+        json['emdadServiceCategoryTitle'],
+      ]),
 
       // ===== NEW BASE FIELDS =====
 
@@ -288,7 +292,7 @@ class HomeServiceRequestModel extends HomeServiceRequestEntity {
   static String? _extractSelectedServiceTitle(Map<String, dynamic> json) {
     final rawCategories = json['serviceCategories'] ?? json['services'];
     if (rawCategories is! List) {
-      return json['emdadServiceCategoryTitle']?.toString();
+      return _cleanText(json['emdadServiceCategoryTitle']);
     }
 
     final categoryTexts = <String>[];
@@ -296,15 +300,15 @@ class HomeServiceRequestModel extends HomeServiceRequestEntity {
     for (final rawCategory in rawCategories) {
       if (rawCategory is! Map) continue;
       final category = Map<String, dynamic>.from(rawCategory);
-      final categoryTitle = category['serviceCategoryTitle']?.toString().trim();
+      final categoryTitle = _cleanText(category['serviceCategoryTitle']);
       final rawServices = category['services'] ?? category['packageServices'];
 
       final serviceTitles = <String>[];
       if (rawServices is List) {
         for (final rawService in rawServices) {
           if (rawService is! Map) continue;
-          final title = rawService['serviceTitle']?.toString().trim();
-          if (title != null && title.isNotEmpty) {
+          final title = _cleanText(rawService['serviceTitle']);
+          if (title != null) {
             serviceTitles.add(title);
           }
         }
@@ -312,11 +316,11 @@ class HomeServiceRequestModel extends HomeServiceRequestEntity {
 
       if (serviceTitles.isNotEmpty) {
         categoryTexts.add(
-          categoryTitle != null && categoryTitle.isNotEmpty
+          categoryTitle != null
               ? '$categoryTitle: ${serviceTitles.join('، ')}'
               : serviceTitles.join('، '),
         );
-      } else if (categoryTitle != null && categoryTitle.isNotEmpty) {
+      } else if (categoryTitle != null) {
         categoryTexts.add(categoryTitle);
       }
     }
@@ -325,7 +329,23 @@ class HomeServiceRequestModel extends HomeServiceRequestEntity {
       return categoryTexts.join(' | ');
     }
 
-    return json['emdadServiceCategoryTitle']?.toString();
+    return _cleanText(json['emdadServiceCategoryTitle']);
+  }
+
+  static String? _firstNonBlank(Iterable<dynamic> values) {
+    for (final value in values) {
+      final text = _cleanText(value);
+      if (text != null) return text;
+    }
+    return null;
+  }
+
+  static String? _cleanText(dynamic value) {
+    final text = value?.toString().trim();
+    if (text == null || text.isEmpty || text.toLowerCase() == 'null') {
+      return null;
+    }
+    return text;
   }
 
 }

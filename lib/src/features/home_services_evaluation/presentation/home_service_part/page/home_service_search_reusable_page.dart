@@ -1,35 +1,33 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/part_response_entity.dart';
-import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/cubit/labors_and_parts_cubit.dart';
-import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/cubit/labors_and_parts_state.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_part/cubit/home_service_part_cubit.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_part/cubit/home_service_part_state.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/text_form_field_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-class SearchReusablePage extends StatelessWidget {
-  final int laborIndex;
-  final int serviceIndex;
-  final bool isCustomerService;
-
-  const SearchReusablePage({
+class HomeServiceSearchReusablePage extends StatelessWidget {
+  const HomeServiceSearchReusablePage({
     super.key,
     required this.laborIndex,
     required this.serviceIndex,
-    this.isCustomerService = false,
   });
+
+  final int laborIndex;
+  final int serviceIndex;
 
   @override
   Widget build(BuildContext context) {
-    final cubit = context.read<LaborsAndPartsCubit>();
+    final cubit = context.read<HomeServicePartCubit>();
 
     return Scaffold(
       appBar: SimpleAppBar(title: 'انتخاب قطعه داغی'),
       body: SafeArea(
         child: Padding(
-          padding: const EdgeInsets.all(16.0),
-          child: BlocConsumer<LaborsAndPartsCubit, LaborsAndPartsState>(
+          padding: const EdgeInsets.all(AppSize.s16),
+          child: BlocConsumer<HomeServicePartCubit, HomeServicePartState>(
             listener: (context, state) {
               state.whenOrNull(
                 reusablePriceSuccess: () => Navigator.of(context).pop(),
@@ -38,7 +36,6 @@ class SearchReusablePage extends StatelessWidget {
             builder: (context, state) {
               final isLoading = state.maybeWhen(
                 loading: () => true,
-                partLoading: () => true,
                 reusablePriceLoading: () => true,
                 orElse: () => false,
               );
@@ -53,8 +50,13 @@ class SearchReusablePage extends StatelessWidget {
                     hintText: 'حداقل ۳ کاراکتر وارد کنید',
                     mandatory: true,
                     onChanged: (value) {
-                      if (value.trim().length >= 3) {
-                        _searchParts(cubit, value.trim());
+                      final query = value.trim();
+                      if (query.length >= 3) {
+                        cubit.getCustomerPart(
+                          value: query,
+                          laborIndex: laborIndex,
+                          serviceIndex: serviceIndex,
+                        );
                       }
                     },
                   ),
@@ -80,7 +82,12 @@ class SearchReusablePage extends StatelessWidget {
                                       .searchReusablePartController.text
                                       .trim();
                                   if (query.length < 3) return;
-                                  await _searchParts(cubit, query);
+
+                                  await cubit.getCustomerPart(
+                                    value: query,
+                                    laborIndex: laborIndex,
+                                    serviceIndex: serviceIndex,
+                                  );
                                 },
                                 child: items.isEmpty
                                     ? ListView(
@@ -118,14 +125,14 @@ class SearchReusablePage extends StatelessWidget {
                                                       serial: item.serial,
                                                       name: name,
                                                     ),
-                                            child: SizedBox(
-                                              width: double.infinity,
-                                              child: Padding(
-                                                padding:
-                                                    const EdgeInsets.symmetric(
-                                                  vertical: 12,
-                                                  horizontal: 12,
-                                                ),
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                vertical: AppSize.s12,
+                                                horizontal: AppSize.s12,
+                                              ),
+                                              child: SizedBox(
+                                                width: double.infinity,
                                                 child: Text(
                                                   title,
                                                   style: Theme.of(context)
@@ -147,25 +154,6 @@ class SearchReusablePage extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-
-  Future<void> _searchParts(
-    LaborsAndPartsCubit cubit,
-    String query,
-  ) {
-    if (isCustomerService) {
-      return cubit.getCustomerPart(
-        value: query,
-        laborIndex: laborIndex,
-        serviceIndex: serviceIndex,
-      );
-    }
-
-    return cubit.getPart(
-      value: query,
-      laborIndex: laborIndex,
-      serviceIndex: serviceIndex,
     );
   }
 

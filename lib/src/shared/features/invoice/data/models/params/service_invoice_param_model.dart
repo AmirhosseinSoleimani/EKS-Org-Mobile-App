@@ -4,12 +4,25 @@ class ServiceInvoiceParamModel extends ServiceInvoiceParamEntity {
   ServiceInvoiceParamModel({
     super.serviceRequestId,
     super.serviceType,
+    super.emdadgarEvaluationId,
     super.invoiceStatus,
   });
 
-  Map<String,dynamic> toJson() => {
-    'ServiceType': serviceType,
-    'ServiceRequestId': serviceRequestId,
-        'invoiceStatus': invoiceStatus,
-      };
+  Map<String, dynamic> toJson() {
+    final json = <String, dynamic>{
+      'ServiceType': serviceType,
+    };
+
+    if (serviceRequestId != null) {
+      json['ServiceRequestId'] = serviceRequestId;
+    }
+    if (emdadgarEvaluationId != null) {
+      json['emdadgarEvaluationId'] = emdadgarEvaluationId;
+    }
+    if (invoiceStatus != null) {
+      json['invoiceStatus'] = invoiceStatus;
+    }
+
+    return json;
+  }
 }

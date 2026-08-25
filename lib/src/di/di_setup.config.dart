@@ -2657,14 +2657,6 @@ _i174.GetIt $initGetIt(
       gh<_i955.GetRequestStatusHistoryUseCase>(),
     ),
   );
-  gh.factory<_i47.CustomerPreInvoiceCubit>(
-    () => _i47.CustomerPreInvoiceCubit(
-      gh<_i138.GetCustomerPreInvoicesUseCase>(),
-      gh<_i700.GetEmdadCategoriesUseCase>(),
-      gh<_i470.ExportExcelUseCase>(),
-      gh<_i369.SetSelectedRequestItemUseCase>(),
-    ),
-  );
   gh.factory<_i772.VehicleInfoCubit>(
     () => _i772.VehicleInfoCubit(
       gh<_i579.GetVehicleInfoListUseCase>(),
@@ -2833,6 +2825,17 @@ _i174.GetIt $initGetIt(
   gh.lazySingleton<_i940.SubmitNavganServiceCategoriesUseCase>(
     () => _i940.SubmitNavganServiceCategoriesUseCase(
       gh<_i1025.NavganRepository>(),
+    ),
+  );
+  gh.factory<_i47.CustomerPreInvoiceCubit>(
+    () => _i47.CustomerPreInvoiceCubit(
+      gh<_i138.GetCustomerPreInvoicesUseCase>(),
+      gh<_i245.GetCustomerInvoiceDetailsUseCase>(),
+      gh<_i74.FinalizeCustomerInvoiceUseCase>(),
+      gh<_i129.GetCustomerInvoiceDocumentUrlsUseCase>(),
+      gh<_i700.GetEmdadCategoriesUseCase>(),
+      gh<_i470.ExportExcelUseCase>(),
+      gh<_i369.SetSelectedRequestItemUseCase>(),
     ),
   );
   gh.lazySingleton<_i531.AcceptEvaluationUseCase>(

@@ -23,6 +23,7 @@ class AidServiceEvaluationSubmitParamEntity {
   final int? emdadgarEvaluationId;
   final int? emdadServiceCategoryId;
   final int? representationId;
+  final bool? payAvarezi;
 
 
   final ServicesAndLaborsAndPartsEvaluationEntity
@@ -48,6 +49,7 @@ class AidServiceEvaluationSubmitParamEntity {
     this.distanceHamlCustomer,
     this.emdadServiceCategoryId,
     this.emdadgarEvaluationId,
+    this.payAvarezi,
     required this.servicesAndLaborsAndPartsEvaluationPayload,
   });
 
@@ -70,6 +72,7 @@ class AidServiceEvaluationSubmitParamEntity {
     int? emdadServiceCategoryId,
     int? emdadgarEvaluationId,
     int? representationId,
+    bool? payAvarezi,
     String? description,
     ServicesAndLaborsAndPartsEvaluationEntity?
     servicesAndLaborsAndPartsEvaluationPayload,
@@ -94,6 +97,7 @@ class AidServiceEvaluationSubmitParamEntity {
       representationId: representationId ?? this.representationId,
       distanceHamlCustomer: distanceHamlCustomer ?? this.distanceHamlCustomer,
       emdadgarEvaluationId: emdadgarEvaluationId ?? this.emdadgarEvaluationId,
+      payAvarezi: payAvarezi ?? this.payAvarezi,
       servicesAndLaborsAndPartsEvaluationPayload:
       servicesAndLaborsAndPartsEvaluationPayload ??
           this.servicesAndLaborsAndPartsEvaluationPayload,
@@ -121,6 +125,7 @@ class AidServiceEvaluationSubmitParamEntity {
       representaionCode: representaionCode,
       distanceHamlCustomer: distanceHamlCustomer,
       emdadgarEvaluationId: emdadgarEvaluationId,
+      payAvarezi: payAvarezi,
       servicesAndLaborsAndPartsEvaluationPayload:
           servicesAndLaborsAndPartsEvaluationPayload,
     );

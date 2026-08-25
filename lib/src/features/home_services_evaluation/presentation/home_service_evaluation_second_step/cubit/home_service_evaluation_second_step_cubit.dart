@@ -12,6 +12,7 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/u
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/usecase/get_last_evaluation_usecase.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/usecase/post_evaluation_usecase.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/error_handling/user_facing_error_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:injectable/injectable.dart';
@@ -189,15 +190,6 @@ class HomeServiceEvaluationSecondStepCubit
       lastEvaluationEntity.images = evaluationKilometerImageList;
     }
 
-    final imageMandatory = _hasMandatoryImage(
-      payload.evaluationServiceEntity ?? [],
-    );
-
-    if (imageMandatory) {
-      emit(const HomeServiceEvaluationSecondStepState.submitNeedPhotoSuccess());
-      return;
-    }
-
     final result = await _postEvaluationUseCase.call(lastEvaluationEntity);
 
     result.whenOrNull(
@@ -213,20 +205,6 @@ class HomeServiceEvaluationSecondStepCubit
         _emitSubmitError(msg ?? '');
       },
     );
-  }
-
-  bool _hasMandatoryImage(List<EvaluationServiceEntity> services) {
-    final hasServiceMandatoryImage = services.any(
-      (service) => service.isImageMandatory == true,
-    );
-
-    final hasLaborMandatoryImage = services
-        .expand<EvaluationLaborResponseEntity>(
-          (service) => service.evaluationLabors ?? [],
-        )
-        .any((labor) => labor.isImageMandatory == true);
-
-    return hasServiceMandatoryImage || hasLaborMandatoryImage;
   }
 
   Future<void> fetchOtherService() async {
@@ -318,11 +296,10 @@ class HomeServiceEvaluationSecondStepCubit
   }
 
   String _safeMessage(String message) {
-    final trimmed = message.trim();
-
-    if (trimmed.isNotEmpty) return trimmed;
-
-    return 'درخواست با خطا مواجه شد، لطفا با پشتیبانی تماس بگیرید';
+    return UserFacingErrorMessage.resolve(
+      message,
+      fallback: 'درخواست با خطا مواجه شد، لطفا با پشتیبانی تماس بگیرید',
+    );
   }
 
   void deletePart({
@@ -361,7 +338,11 @@ class HomeServiceEvaluationSecondStepCubit
       return;
     }
 
-    service.evaluationLabors?.removeAt(laborIndex);
+    final updatedLabors = List<EvaluationLaborResponseEntity>.of(
+      service.evaluationLabors ?? const <EvaluationLaborResponseEntity>[],
+    );
+    updatedLabors.removeAt(laborIndex);
+    service.evaluationLabors = updatedLabors;
 
     refresh();
   }

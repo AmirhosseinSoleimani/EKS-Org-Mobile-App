@@ -4,7 +4,7 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/e
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/reusable_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_part/cubit/home_service_part_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_part/cubit/home_service_part_state.dart';
-import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/widgets/search_reusable_page.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_part/page/home_service_search_reusable_page.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/form_section_container.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
@@ -130,16 +130,7 @@ class HomeServicePartPage extends StatelessWidget {
       children: [
         _partMarkContainer(context: context),
 
-        BlocBuilder<HomeServicePartCubit, HomeServicePartState>(
-          builder: (context, state) {
-            return state.maybeWhen(
-              partPriceSuccess: () => _successPartPriceWidget(context: context),
-              reusablePriceSuccess: () =>
-                  _successPartPriceWidget(context: context),
-              orElse: () => const SizedBox(),
-            );
-          },
-        ),
+        _successPartPriceWidget(context: context),
       ],
     );
   }
@@ -159,13 +150,7 @@ class HomeServicePartPage extends StatelessWidget {
                     children: [
                       Checkbox(
                         value: snapshot.data?.isActive ?? false,
-                        onChanged: (value) {
-                          final reusable = cubit.reusableSubject.valueOrNull;
-
-                          cubit.reusableSubject.add(
-                            reusable?.copyWith(isActive: value),
-                          );
-                        },
+                        onChanged: cubit.setReusableActive,
                       ),
                       Text(
                         'داغی دارد',
@@ -174,37 +159,38 @@ class HomeServicePartPage extends StatelessWidget {
                     ],
                   ),
 
-                  Space.h12,
-                  TextFormFieldWidget(
-                    onTap: () => Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (_) => BlocProvider.value(
-                          value: cubit,
-                          child: SearchReusablePage(
-                            laborIndex: laborIndex,
-                            serviceIndex: serviceIndex,
-                          ),
-                        ),
-                      ),
-                    ),
-                    labelText: (cubit.reusableTitleController.text.isNotEmpty)
-                        ? 'نام قطعه داغی'
-                        : 'انتخاب قطعه داغی',
-                    readOnly: true,
-
-                    mandatory: true,
-                    controller: cubit.reusableTitleController,
-                  ),
-
-                  Space.h16,
-
-                  if (cubit.reusableSubject.valueOrNull?.price != -1)
+                  if (snapshot.data?.isActive == true) ...[
+                    Space.h12,
                     TextFormFieldWidget(
-                      labelText: 'قیمت قطعه داغی',
+                      onTap: () {
+                        cubit.prepareReusableSearch();
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (_) => BlocProvider.value(
+                              value: cubit,
+                              child: HomeServiceSearchReusablePage(
+                                laborIndex: laborIndex,
+                                serviceIndex: serviceIndex,
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                      labelText: 'نام قطعه داغی',
+                      hintText: 'قطعه داغی را انتخاب کنید',
                       readOnly: true,
                       mandatory: true,
-                      controller: cubit.reusablePriceController,
+                      controller: cubit.reusableTitleController,
                     ),
+                    Space.h16,
+                    if (snapshot.data?.price != -1)
+                      TextFormFieldWidget(
+                        labelText: 'قیمت قطعه داغی',
+                        readOnly: true,
+                        mandatory: true,
+                        controller: cubit.reusablePriceController,
+                      ),
+                  ],
                 ],
               );
             }

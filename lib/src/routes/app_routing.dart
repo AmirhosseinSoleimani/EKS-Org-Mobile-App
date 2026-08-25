@@ -250,13 +250,22 @@ class Routes {
         GoRoute(
           path: InvoicePage.path,
           name: InvoicePage.name,
-          pageBuilder: (context, state) => getPage(
-            child: InvoicePage(
-              requestContextLoader: createServiceInvoiceRequestContextLoader(),
-              invoiceType: state.extra! as InvoiceType,
-            ),
-            state: state,
-          ),
+          pageBuilder: (context, state) {
+            final extra = state.extra;
+            final args = extra is InvoicePageArgs
+                ? extra
+                : InvoicePageArgs(invoiceType: extra! as InvoiceType);
+
+            return getPage(
+              child: InvoicePage(
+                requestContextLoader:
+                    createServiceInvoiceRequestContextLoader(),
+                invoiceType: args.invoiceType,
+                emdadgarEvaluationId: args.emdadgarEvaluationId,
+              ),
+              state: state,
+            );
+          },
         ),
         GoRoute(
           path: OnlineMapPage.path,

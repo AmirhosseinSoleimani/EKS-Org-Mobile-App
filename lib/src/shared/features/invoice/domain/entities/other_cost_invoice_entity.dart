@@ -31,12 +31,16 @@ class OtherCostReceptionEntity {
     this.title,
     this.companyPrice,
     this.customerPrice,
+    this.customerBasePrice,
+    this.customerDiscountPrice,
     this.invoiceId,
     this.companyPriceWithZarib
   });
 
   final int? id;
   final int? customerPrice;
+  final int? customerBasePrice;
+  final int? customerDiscountPrice;
   final int? companyPrice;
   final int? invoiceId;
   final int? companyPriceWithZarib;
@@ -49,7 +53,9 @@ class OtherCostReceptionEntity {
         title: title,
         companyPrice: companyPrice,
         companyPriceWithZarib: companyPriceWithZarib,
-        customerPrice: customerPrice
+        customerPrice: customerPrice,
+        customerBasePrice: customerBasePrice,
+        customerDiscountPrice: customerDiscountPrice
     );
   }
 }

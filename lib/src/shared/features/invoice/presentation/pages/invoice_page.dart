@@ -17,11 +17,22 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+class InvoicePageArgs {
+  const InvoicePageArgs({
+    required this.invoiceType,
+    this.emdadgarEvaluationId,
+  });
+
+  final InvoiceType invoiceType;
+  final int? emdadgarEvaluationId;
+}
+
 class InvoicePage extends StatelessWidget {
   const InvoicePage({
     super.key,
     required this.requestContextLoader,
     required this.invoiceType,
+    this.emdadgarEvaluationId,
   });
 
   static const path = '/invoice-page';
@@ -29,6 +40,7 @@ class InvoicePage extends StatelessWidget {
 
   final InvoiceRequestContextLoader requestContextLoader;
   final InvoiceType invoiceType;
+  final int? emdadgarEvaluationId;
 
   @override
   Widget build(BuildContext context) {
@@ -36,6 +48,7 @@ class InvoicePage extends StatelessWidget {
       create: (_) => InvoiceDetailsCubit(
         getIt<GetPreInvoiceUseCase>(),
         requestContextLoader,
+        emdadgarEvaluationId: emdadgarEvaluationId,
       )..init(),
       child: _View(invoiceType: invoiceType),
     );

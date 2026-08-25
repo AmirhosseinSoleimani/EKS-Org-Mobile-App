@@ -23,6 +23,7 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/u
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/cubit/home_service_evaluation_second_step_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/cubit/labors_and_parts_state.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/error_handling/user_facing_error_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -231,7 +232,16 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
         ),
       );
     }
+    final preferredMark = (isEditablePart ?? false)
+        ? evaluationPartEntity?.mark
+        : null;
+
+    _resetReusableSelection();
+
     if (isEditablePart ?? false) {
+      _hydrateReusableSelection(evaluationPartEntity);
+      priceController.text = evaluationPartEntity?.partPrice?.toString() ?? '';
+      countController.text = evaluationPartEntity?.count?.toString() ?? '1';
       selectPartResponseEntity.value = PartResponseEntity(
         name: evaluationPartEntity?.partName ?? '',
         serial: evaluationPartEntity?.serial.toString(),
@@ -257,13 +267,16 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
       }
     }
 
-    final partMarkResult = await _getPartMark();
+    final partMarkResult = await _getPartMark(preferredMark: preferredMark);
     if (partMarkResult == 'Success') {
       return emit(const LaborsAndPartsState.success());
     } else {
       return emit(
         LaborsAndPartsState.error(
-          message: BottomSheetMessageModel(title: '', message: partMarkResult),
+          message: BottomSheetMessageModel(
+            title: 'مارک قطعه',
+            message: partMarkResult,
+          ),
         ),
       );
     }
@@ -298,8 +311,11 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
           emit(
             LaborsAndPartsState.error(
               message: BottomSheetMessageModel(
-                title: '',
-                message: failures?.listToString() ?? 'بروز خطا در سیستم',
+                title: 'خطا',
+                message: UserFacingErrorMessage.resolve(
+                  failures?.listToString(),
+                  fallback: 'دریافت قیمت قطعه با خطا مواجه شد.',
+                ),
               ),
             ),
           );
@@ -442,6 +458,8 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
       );
       return;
     }
+    if (!_validateReusableSelection()) return;
+
     if (isEditablePart ?? false) {
       final partsEvaluation = HomeServiceEvaluationSecondStepCubit
           .customerServiceList?[serviceIndex]
@@ -449,8 +467,9 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
           .parts;
       final partSelected = partsEvaluation?[partIndex];
       partSelected?.mark = selectPartResponseEntity.value?.mark;
-      partSelected?.partPrice = int.tryParse(priceController.text);
-      partSelected?.count = int.tryParse(countController.text);
+      partSelected?.partPrice = _parseInt(priceController.text);
+      partSelected?.count = _parseInt(countController.text);
+      _applyReusableFields(partSelected);
       emit(const LaborsAndPartsState.submitEditPartMarkSuccess());
     } else {
       HomeServiceEvaluationSecondStepCubit
@@ -458,7 +477,7 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
           .evaluationLabors?[laborIndex]
           .parts?[partIndex] = EvaluationPartResponseModel(
         mark: selectPartResponseEntity.value?.mark,
-        partPrice: int.tryParse(priceController.text),
+        partPrice: _parseInt(priceController.text),
         partGroupId: selectPartResponseEntity.value?.partGroupId,
         partGroupName: selectPartResponseEntity.value?.partGroupName,
         partName: selectPartResponseEntity.value?.name,
@@ -475,26 +494,27 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
             .evaluationLabors?[laborIndex]
             .laborId,
         costCenterObject: selectPartCostCenterEntity.value,
-        count: int.tryParse(countController.text),
+        count: _parseInt(countController.text),
         costCenterList: selectPartResponseEntity.value?.allowableCostCenterList,
-        reusablePartName: _reusableSubject.valueOrNull?.name,
-        reusablePartSerial: _reusableSubject.valueOrNull?.serial,
-        reusablePrice: _reusableSubject.valueOrNull?.price,
+        reusablePartName: _reusablePartName,
+        reusablePartSerial: _reusablePartSerial,
+        reusablePrice: _reusablePartPrice,
         garantyKilometerKilometer:
             selectPartResponseEntity.value?.garantyKilometerKilometer,
         garantyDurationDayKilometer:
             selectPartResponseEntity.value?.garantyDurationDayKilometer,
-        isReusable: _reusableSubject.valueOrNull?.hasReusable,
+        isReusable: _isReusableActive,
+        hasReusable: _hasReusable,
         serial: int.tryParse(selectPartResponseEntity.value?.serial ?? '0'),
       );
       emit(const LaborsAndPartsState.submitAddPartMarkSuccess());
     }
   }
 
-  Future<String> _getPartMark() async {
-    emit(LaborsAndPartsState.markLoading());
+  Future<String> _getPartMark({String? preferredMark}) async {
+    emit(const LaborsAndPartsState.markLoading());
     String resultMessage = '';
-    PartMarkRequestEntity entity = PartMarkRequestEntity(
+    final entity = PartMarkRequestEntity(
       serial: selectPartResponseEntity.value?.serial,
       serviceRequestId: _activeServiceRequestSubject.valueOrNull?.id,
       defectId: _activeServiceRequestSubject.valueOrNull?.defectId,
@@ -504,19 +524,53 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
     final result = await _getPartMarkHomeServiceUseCase.call(entity);
     result.whenOrNull(
       success: (data, failures, resultCode) async {
-        markList.value = [const PartMarkResponseEntity(mark: 'لطفا یک گزینه را انتخاب کنید')];
-        if (resultCode == 0) {
-          markList.value = List<PartMarkResponseEntity>.from(data);
-          selectPartResponseEntity.value = selectPartResponseEntity.value?.copyWith(
-            mark: markList.value.first.mark,
-          );
-          resultMessage = 'Success';
-        } else {
+        if (resultCode != 0) {
           resultMessage = failures?.listToString() ?? '';
+          return;
         }
+
+        final marks = data.whereType<PartMarkResponseEntity>().toList();
+        if (marks.isEmpty) {
+          markList.value = const [];
+          selectedMark.value = null;
+          resultMessage = 'برای قطعه انتخاب‌شده مارکی تعریف نشده است.';
+          return;
+        }
+
+        final normalizedPreferredMark = preferredMark?.trim() ?? '';
+        if (normalizedPreferredMark.isNotEmpty) {
+          var selected = marks.firstWhere(
+            (item) => item.mark == normalizedPreferredMark,
+            orElse: () => PartMarkResponseEntity(mark: normalizedPreferredMark),
+          );
+
+          if (!marks.any((item) => item.mark == normalizedPreferredMark)) {
+            marks.insert(0, selected);
+          }
+
+          markList.value = marks;
+          selectedMark.value = selected;
+          selectPartResponseEntity.value = selectPartResponseEntity.value?.copyWith(
+            mark: selected.mark,
+          );
+        } else {
+          const placeholder = PartMarkResponseEntity(
+            mark: 'لطفا یک گزینه را انتخاب کنید',
+          );
+          markList.value = [placeholder, ...marks];
+          selectedMark.value = placeholder;
+          selectPartResponseEntity.value = selectPartResponseEntity.value?.copyWith(
+            mark: placeholder.mark,
+          );
+        }
+
+        resultMessage = 'Success';
       },
       failure: (error, msg) {
-        resultMessage = msg ?? 'خطای غیر منتظره با پشتیبانی تماس بگیرید';
+        resultMessage = UserFacingErrorMessage.resolve(
+          msg,
+          fallback: 'دریافت مارک قطعه با خطا مواجه شد.',
+        );
       },
     );
     return resultMessage;
@@ -536,11 +590,12 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
       success: (data, failures, resultCode) async {
         if (resultCode == 0) {
           maxPartPrice = data?.price.toString();
+          reusableTitleController.clear();
+          reusablePriceController.clear();
           _reusableSubject.add(
             ReusableEntity(
               hasReusable: data?.hasReusable ?? false,
               isActive: data?.hasReusable ?? false,
-              name: '',
               price: -1,
             ),
           );
@@ -555,8 +610,11 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
           emit(
             LaborsAndPartsState.error(
               message: BottomSheetMessageModel(
-                title: '',
-                message: failures?.listToString() ?? 'بروز خطا در سیستم',
+                title: 'خطا',
+                message: UserFacingErrorMessage.resolve(
+                  failures?.listToString(),
+                  fallback: 'دریافت قیمت قطعه با خطا مواجه شد.',
+                ),
               ),
             ),
           );
@@ -564,8 +622,14 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
       },
       failure: (error, msg) {
         emit(
-          LaborsAndPartsState.notice(
-            message: BottomSheetMessageModel(title: '', message: msg ?? ''),
+          LaborsAndPartsState.error(
+            message: BottomSheetMessageModel(
+              title: 'خطا',
+              message: UserFacingErrorMessage.resolve(
+                msg,
+                fallback: 'دریافت قیمت قطعه با خطا مواجه شد.',
+              ),
+            ),
           ),
         );
       },
@@ -580,11 +644,12 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
     result.whenOrNull(
       success: (data, failures, resultCode) async {
         if (resultCode == 0) {
+          final reusableName = _cleanOptionalText(name);
           reusablePriceController.text = data?.reusablePrice.toString() ?? '-';
-          reusableTitleController.text = name ?? '';
+          reusableTitleController.text = reusableName ?? '';
           reusableSubject.add(
             ReusableEntity(
-              name: name,
+              name: reusableName,
               price: data?.reusablePrice,
               isActive: true,
               hasReusable: true,
@@ -596,8 +661,11 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
           emit(
             LaborsAndPartsState.error(
               message: BottomSheetMessageModel(
-                title: '',
-                message: failures?.listToString() ?? 'بروز خطا در سیستم',
+                title: 'داغی قطعه',
+                message: UserFacingErrorMessage.resolve(
+                  failures?.listToString(),
+                  fallback: 'دریافت قیمت قطعه داغی با خطا مواجه شد.',
+                ),
               ),
             ),
           );
@@ -607,8 +675,11 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
         emit(
           LaborsAndPartsState.error(
             message: BottomSheetMessageModel(
-              title: '',
-              message: msg ?? 'بروز خطا در سیستم',
+              title: 'داغی قطعه',
+              message: UserFacingErrorMessage.resolve(
+                msg,
+                fallback: 'دریافت قیمت قطعه داغی با خطا مواجه شد.',
+              ),
             ),
           ),
         );
@@ -634,6 +705,8 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
       );
       return;
     }
+    if (!_validateReusableSelection()) return;
+
     if (isEditablePart ?? false) {
       final partsEvaluation = HomeServiceEvaluationSecondStepCubit
           .customerServiceList?[serviceIndex]
@@ -641,8 +714,9 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
           .parts;
       final partSelected = partsEvaluation?[partIndex];
       partSelected?.mark = selectPartResponseEntity.value?.mark;
-      partSelected?.partPrice = int.tryParse(priceController.text);
-      partSelected?.count = int.tryParse(countController.text);
+      partSelected?.partPrice = _parseInt(priceController.text);
+      partSelected?.count = _parseInt(countController.text);
+      _applyReusableFields(partSelected);
       emit(const LaborsAndPartsState.submitEditPartMarkSuccess());
     } else {
       HomeServiceEvaluationSecondStepCubit
@@ -652,7 +726,7 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
           ?.add(
             EvaluationPartResponseEntity(
               mark: selectPartResponseEntity.value?.mark,
-              partPrice: int.tryParse(priceController.text),
+              partPrice: _parseInt(priceController.text),
               partGroupId: selectPartResponseEntity.value?.partGroupId,
               partGroupName: selectPartResponseEntity.value?.partGroupName,
               partName: selectPartResponseEntity.value?.name,
@@ -669,20 +743,132 @@ class LaborsAndPartsCubit extends Cubit<LaborsAndPartsState> {
                   .evaluationLabors?[laborIndex]
                   .laborId,
               costCenterObject: selectPartCostCenterEntity.value,
-              count: int.tryParse(countController.text),
+              count: _parseInt(countController.text),
               costCenterList: selectPartResponseEntity.value?.allowableCostCenterList,
-              reusablePartName: _reusableSubject.valueOrNull?.name,
-              reusablePartSerial: _reusableSubject.valueOrNull?.serial,
-              reusablePrice: _reusableSubject.valueOrNull?.price,
+              reusablePartName: _reusablePartName,
+              reusablePartSerial: _reusablePartSerial,
+              reusablePrice: _reusablePartPrice,
               garantyKilometerKilometer:
                   selectPartResponseEntity.value?.garantyKilometerKilometer,
               garantyDurationDayKilometer:
                   selectPartResponseEntity.value?.garantyDurationDayKilometer,
-              isReusable: _reusableSubject.valueOrNull?.hasReusable,
+              isReusable: _isReusableActive,
+              hasReusable: _hasReusable,
               serial: int.tryParse(selectPartResponseEntity.value?.serial ?? '0'),
             ),
           );
       emit(const LaborsAndPartsState.submitAddPartMarkSuccess());
     }
   }
+
+  void prepareReusableSearch() {
+    searchReusablePartController.clear();
+    _partResponseListSubject.add(const <PartResponseEntity?>[]);
+  }
+
+  void setReusableActive(bool? value) {
+    final reusable = _reusableSubject.valueOrNull;
+    if (reusable?.hasReusable != true) return;
+
+    if (value == true) {
+      _reusableSubject.add(reusable!.copyWith(isActive: true));
+      return;
+    }
+
+    reusableTitleController.clear();
+    reusablePriceController.clear();
+    _reusableSubject.add(
+      const ReusableEntity(
+        hasReusable: true,
+        isActive: false,
+        price: -1,
+      ),
+    );
+  }
+
+  void _resetReusableSelection() {
+    reusableTitleController.clear();
+    reusablePriceController.clear();
+    _reusableSubject.add(
+      const ReusableEntity(
+        hasReusable: false,
+        isActive: false,
+        price: -1,
+      ),
+    );
+  }
+
+  void _hydrateReusableSelection(EvaluationPartResponseEntity? part) {
+    final hasReusable = part?.hasReusable == true || part?.isReusable == true;
+    final isActive = hasReusable && part?.isReusable == true;
+    final name = isActive ? _cleanOptionalText(part?.reusablePartName) : null;
+    final serial = isActive ? _cleanOptionalText(part?.reusablePartSerial) : null;
+    final price = isActive ? part?.reusablePrice : null;
+
+    reusableTitleController.text = name ?? '';
+    reusablePriceController.text = price?.toString() ?? '';
+    _reusableSubject.add(
+      ReusableEntity(
+        hasReusable: hasReusable,
+        isActive: isActive,
+        name: name,
+        serial: serial,
+        price: price ?? -1,
+      ),
+    );
+  }
+
+  bool _validateReusableSelection() {
+    if (!_isReusableActive || _reusablePartName != null) return true;
+
+    emit(
+      LaborsAndPartsState.notice(
+        message: const BottomSheetMessageModel(
+          title: 'داغی قطعه',
+          message: 'قطعه داغی اجباری می باشد',
+        ),
+      ),
+    );
+    return false;
+  }
+
+  void _applyReusableFields(EvaluationPartResponseEntity? part) {
+    if (part == null) return;
+
+    part.hasReusable = _hasReusable;
+    part.isReusable = _isReusableActive;
+    part.reusablePartName = _reusablePartName;
+    part.reusablePartSerial = _reusablePartSerial;
+    part.reusablePrice = _reusablePartPrice;
+  }
+
+  bool get _hasReusable =>
+      _reusableSubject.valueOrNull?.hasReusable == true;
+
+  bool get _isReusableActive =>
+      _hasReusable && _reusableSubject.valueOrNull?.isActive == true;
+
+  String? get _reusablePartName => _isReusableActive
+      ? _cleanOptionalText(_reusableSubject.valueOrNull?.name)
+      : null;
+
+  String? get _reusablePartSerial => _isReusableActive
+      ? _cleanOptionalText(_reusableSubject.valueOrNull?.serial)
+      : null;
+
+  int? get _reusablePartPrice =>
+      _isReusableActive ? _reusableSubject.valueOrNull?.price : null;
+
+  String? _cleanOptionalText(Object? value) {
+    final text = value?.toString().trim();
+    if (text == null || text.isEmpty || text.toLowerCase() == 'null') {
+      return null;
+    }
+    return text;
+  }
+
+  int? _parseInt(String value) {
+    return int.tryParse(value.replaceAll(',', '').trim());
+  }
+
 }

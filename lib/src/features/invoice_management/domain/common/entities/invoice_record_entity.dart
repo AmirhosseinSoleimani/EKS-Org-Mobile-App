@@ -266,6 +266,7 @@ class InvoiceStateEntity {
     this.hasObjection,
     this.isFinalized,
     this.serviceType,
+    this.serviceTypeTitle,
     this.serviceTitle,
     this.productTitle,
     this.serviceGivenCode,
@@ -293,6 +294,7 @@ class InvoiceStateEntity {
   final bool? hasObjection;
   final bool? isFinalized;
   final int? serviceType;
+  final String? serviceTypeTitle;
   final String? serviceTitle;
   final String? productTitle;
   final int? serviceGivenCode;
@@ -321,6 +323,7 @@ class InvoiceStateEntity {
       hasObjection: hasObjection,
       isFinalized: isFinalized,
       serviceType: serviceType,
+      serviceTypeTitle: serviceTypeTitle,
       serviceTitle: serviceTitle,
       productTitle: productTitle,
       serviceGivenCode: serviceGivenCode,

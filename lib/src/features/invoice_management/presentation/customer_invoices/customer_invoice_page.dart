@@ -271,12 +271,24 @@ class _CustomerInvoiceViewState extends State<_CustomerInvoiceView> {
     CustomerInvoiceCubit cubit,
     InvoiceRecordEntity item,
   ) async {
+    final evaluationId = item.identity?.evaluationId;
+    if (evaluationId == null || evaluationId <= 0) {
+      SnakeBarWidget.showError(
+        context: context,
+        message: 'شناسه ارزیابی برای دریافت فاکتور موجود نیست.',
+      );
+      return;
+    }
+
     final requestId = await cubit.cacheSelectedRequest(item);
     if (requestId == null || !context.mounted) return;
 
     await context.push(
       InvoicePage.path,
-      extra: InvoiceType.invoice,
+      extra: InvoicePageArgs(
+        invoiceType: InvoiceType.invoice,
+        emdadgarEvaluationId: evaluationId,
+      ),
     );
   }
 

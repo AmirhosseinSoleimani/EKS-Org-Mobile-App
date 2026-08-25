@@ -75,12 +75,14 @@ class ServiceDetailSection extends StatelessWidget {
             textInputAction: TextInputAction.done,
             maxLines: 3,
           ),
-          Space.h16,
-          LabeledCheckboxRow(
-            title: 'عوارض آزاد راهی پرداخت شد',
-            notifier: cubit.mainForm.isFreewayTollPaid,
-            activeColor: ServiceType.reliefService.serviceColor,
-          ),
+          if (cubit.lastEvaluationEntity?.avarezi == true) ...[
+            Space.h16,
+            LabeledCheckboxRow(
+              title: 'عوارض آزاد راهی پرداخت شد',
+              notifier: cubit.mainForm.isFreewayTollPaid,
+              activeColor: ServiceType.reliefService.serviceColor,
+            ),
+          ],
         ],
       ),
     );

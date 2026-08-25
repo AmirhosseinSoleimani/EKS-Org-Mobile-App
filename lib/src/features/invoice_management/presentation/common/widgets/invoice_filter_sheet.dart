@@ -6,6 +6,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/date_picker_widget/date_pic
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/text_form_field_widget.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/switch_widgets/labeled_switch_field.dart';
 import 'package:flutter/material.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
@@ -15,6 +16,11 @@ class InvoiceFilterSheet extends StatefulWidget {
     super.key,
     this.title = 'فیلترها',
     this.showSubscriptionField = true,
+    this.allowAllServiceTypes = false,
+    this.requireDateRange = false,
+    this.requestTrackCodeMaxLength,
+    this.agencyCodeMaxLength,
+    this.emdadgarNameMaxLength,
     required this.initialFilter,
     required this.categories,
     required this.onApply,
@@ -23,18 +29,21 @@ class InvoiceFilterSheet extends StatefulWidget {
 
   final String title;
   final bool showSubscriptionField;
+  final bool allowAllServiceTypes;
+  final bool requireDateRange;
+  final int? requestTrackCodeMaxLength;
+  final int? agencyCodeMaxLength;
+  final int? emdadgarNameMaxLength;
   final InvoiceListFilterParamEntity initialFilter;
   final List<EmdadServiceCategoryEntity> categories;
   final ValueChanged<InvoiceListFilterParamEntity> onApply;
   final VoidCallback onClear;
 
   @override
-  State<InvoiceFilterSheet> createState() =>
-      _InvoiceFilterSheetState();
+  State<InvoiceFilterSheet> createState() => _InvoiceFilterSheetState();
 }
 
-class _InvoiceFilterSheetState
-    extends State<InvoiceFilterSheet> {
+class _InvoiceFilterSheetState extends State<InvoiceFilterSheet> {
   static const String _all = 'همه';
 
   late final TextEditingController _requestTrackCodeController;
@@ -43,7 +52,7 @@ class _InvoiceFilterSheetState
   late final TextEditingController _fromDateController;
   late final TextEditingController _toDateController;
 
-  late ServiceType _serviceType;
+  ServiceType? _serviceType;
   EmdadServiceCategoryEntity? _category;
   Jalali? _fromDate;
   Jalali? _toDate;
@@ -65,7 +74,8 @@ class _InvoiceFilterSheetState
       text: filter.emdadgarName ?? '',
     );
 
-    _serviceType = filter.serviceType ?? ServiceType.reliefService;
+    _serviceType = filter.serviceType ??
+        (widget.allowAllServiceTypes ? null : ServiceType.reliefService);
     _category = _findCategory(filter.givenCode);
     _fromDate = _jalaliFromApiDate(filter.fromDate);
     _toDate = _jalaliFromApiDate(filter.toDate);
@@ -92,6 +102,10 @@ class _InvoiceFilterSheetState
   @override
   Widget build(BuildContext context) {
     final filteredCategories = _filteredCategories;
+    final serviceTypeItems = <String>[
+      if (widget.allowAllServiceTypes) _all,
+      ...ServiceType.values.map((item) => item.label),
+    ];
 
     return FilterBottomSheetScaffold(
       title: widget.title,
@@ -100,9 +114,9 @@ class _InvoiceFilterSheetState
       child: Column(
         children: [
           EkDropDown(
-            ServiceType.values.map((item) => item.label).toList(),
+            serviceTypeItems,
             label: 'نوع خدمت',
-            selectedItem: _serviceType.label,
+            selectedItem: _serviceType?.label ?? _all,
             onItemValue: _onServiceTypeChanged,
           ),
           FilterBottomSheetScaffold.fieldGap,
@@ -114,7 +128,7 @@ class _InvoiceFilterSheetState
                   .whereType<String>()
                   .where((item) => item.isNotEmpty),
             ],
-            key: ValueKey(_serviceType.value),
+            key: ValueKey(_serviceType?.value ?? -1),
             label: 'دسته خدمت',
             selectedItem: _category?.title?.trim() ?? _all,
             onItemValue: _onCategoryChanged,
@@ -125,11 +139,13 @@ class _InvoiceFilterSheetState
             labelText: 'شماره درخواست',
             textInputType: TextInputType.number,
             textInputAction: TextInputAction.next,
+            maxLength: widget.requestTrackCodeMaxLength,
           ),
           FilterBottomSheetScaffold.fieldGap,
           DatePickerWidget(
             controller: _fromDateController,
             labelText: 'از تاریخ',
+            mandatory: widget.requireDateRange,
             hintText: 'انتخاب تاریخ',
             initialDate: _fromDate,
             lastDate: _toDate,
@@ -141,6 +157,7 @@ class _InvoiceFilterSheetState
           DatePickerWidget(
             controller: _toDateController,
             labelText: 'تا تاریخ',
+            mandatory: widget.requireDateRange,
             hintText: 'انتخاب تاریخ',
             initialDate: _toDate,
             firstDate: _fromDate,
@@ -153,12 +170,14 @@ class _InvoiceFilterSheetState
             controller: _agencyCodeController,
             labelText: 'کد نمایندگی',
             textInputAction: TextInputAction.next,
+            maxLength: widget.agencyCodeMaxLength,
           ),
           FilterBottomSheetScaffold.fieldGap,
           TextFormFieldWidget(
             controller: _emdadgarNameController,
             labelText: 'نام امدادگر',
             textInputAction: TextInputAction.done,
+            maxLength: widget.emdadgarNameMaxLength,
           ),
           if (widget.showSubscriptionField) ...[
             FilterBottomSheetScaffold.fieldGap,
@@ -176,20 +195,28 @@ class _InvoiceFilterSheetState
   }
 
   List<EmdadServiceCategoryEntity> get _filteredCategories {
+    final serviceType = _serviceType;
+    if (serviceType == null) return const <EmdadServiceCategoryEntity>[];
+
     return widget.categories
-        .where((item) => item.serviceTypeId == _serviceType.value)
+        .where((item) => item.serviceTypeId == serviceType.value)
         .toList();
   }
 
   void _onServiceTypeChanged(String value) {
     setState(() {
+      if (widget.allowAllServiceTypes && value == _all) {
+        _serviceType = null;
+        _category = null;
+        return;
+      }
+
       _serviceType = ServiceType.values.firstWhere(
         (item) => item.label == value,
       );
 
       final category = _category;
-      if (category != null &&
-          category.serviceTypeId != _serviceType.value) {
+      if (category != null && category.serviceTypeId != _serviceType?.value) {
         _category = null;
       }
     });
@@ -206,6 +233,14 @@ class _InvoiceFilterSheetState
   }
 
   void _apply() {
+    if (widget.requireDateRange && (_fromDate == null || _toDate == null)) {
+      SnakeBarWidget.showError(
+        context: context,
+        message: 'وارد کردن تاریخ الزامیست.',
+      );
+      return;
+    }
+
     widget.onApply(
       InvoiceListFilterParamEntity(
         serviceType: _serviceType,

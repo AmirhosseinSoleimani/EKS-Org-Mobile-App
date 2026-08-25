@@ -52,11 +52,11 @@ class RequestDetailSection extends StatelessWidget {
         if (selectedRequest is ReliefRequestEntity) ...[
           KeyValueRow(
             label: 'ایراد خودرو',
-            value: reliefRequest?.defectTitle ?? '-',
+            value: _displayText(reliefRequest?.defectTitle),
           ),
           KeyValueRow(
             label: 'سرویس خودرو',
-            value: reliefRequest?.emdadServiceTitle ?? '-',
+            value: _displayText(reliefRequest?.emdadServiceTitle),
           ),
           if (reliefRequest?.emdadServiceCategoryId == 21) ...[
             KeyValueRow(
@@ -71,9 +71,10 @@ class RequestDetailSection extends StatelessWidget {
         ] else if (selectedRequest is HomeServiceRequestEntity)
           KeyValueRow(
             label: 'سرویس درخواستی',
-            value: homeServiceRequest?.emdadProductTitle ??
-                homeServiceRequest?.emdadServiceCategoryTitle ??
-                '-',
+            value: _firstNonBlank([
+              homeServiceRequest?.emdadProductTitle,
+              homeServiceRequest?.emdadServiceCategoryTitle,
+            ]),
           ),
         if (selectedRequest?.hamlAzad == true &&
             selectedRequest?.reasonHamlAzadId != null) ...[
@@ -173,6 +174,18 @@ class RequestDetailSection extends StatelessWidget {
         : selectedRequest?.callMobileNumber;
     return mobile?.toLocalMobile() ?? '-';
   }
+
+  String _firstNonBlank(Iterable<String?> values) {
+    for (final value in values) {
+      final text = value?.trim();
+      if (text != null && text.isNotEmpty && text.toLowerCase() != 'null') {
+        return text;
+      }
+    }
+    return '-';
+  }
+
+  String _displayText(String? value) => _firstNonBlank([value]);
 
   ReliefRequestEntity? get reliefRequest =>
       selectedRequest is ReliefRequestEntity

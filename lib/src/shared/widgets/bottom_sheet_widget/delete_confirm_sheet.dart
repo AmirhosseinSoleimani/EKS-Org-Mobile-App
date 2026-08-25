@@ -113,7 +113,7 @@ class _DeleteConfirmSheetState extends State<DeleteConfirmSheet> {
               title: widget.confirmTitle,
               backgroundColor: theme.colorScheme.error,
               showLoading: _isSubmitting,
-              onTap: _isSubmitting ? null : _handleConfirm,
+              onTap: _isSubmitting ? (){} : _handleConfirm,
             ),
             Space.h12,
             InkwellButtonWidget(

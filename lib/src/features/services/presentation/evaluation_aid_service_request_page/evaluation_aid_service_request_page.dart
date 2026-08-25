@@ -14,6 +14,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/expandable_
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/request_detail_section.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/agent_info_detail_section.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/request_status_section.dart';
+import 'package:eks_sana_plus_org/src/shared/extensions/string_extensions.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/widgets/time_distance_form_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
@@ -164,7 +165,14 @@ class _LoadedView extends StatelessWidget {
           children: [
             ExpandableSection(
               isExpanded: false,
-              header: RequestStatusSection(request: cubit.selectedRequest),
+              header: RequestStatusSection(
+                request: cubit.selectedRequest,
+                showTitle: true,
+                subscriptionOverride:
+                    cubit.emdadgarServiceDetailEntity?.hasSubscription,
+                guarantyOverride:
+                    cubit.emdadgarServiceDetailEntity?.hasGaranty,
+              ),
               child: RequestDetailSection(
                 selectedRequest: cubit.selectedRequest,
                 showCustomerInfo: true,
@@ -173,7 +181,7 @@ class _LoadedView extends StatelessWidget {
             if (cubit.emdadgarInfo != null) ...[
               ExpandableSection(
                 isExpanded: false,
-                header: const BodyMediumText(text: "اطلاعات امداد رسان"),
+                header: _AgentSectionHeader(cubit: cubit),
                 child: AgentInfoDetailSection(
                   agentInfo: cubit.emdadgarInfo!,
                   selectedRequest: cubit.selectedRequest,
@@ -254,3 +262,53 @@ class _LoadedView extends StatelessWidget {
 
   SizedBox _formElementGap() => Space.h8;
 }
+
+class _AgentSectionHeader extends StatelessWidget {
+  const _AgentSectionHeader({required this.cubit});
+
+  final EvaluationAidServiceRequestCubit cubit;
+
+  @override
+  Widget build(BuildContext context) {
+    final name = _firstNonBlank([
+      cubit.selectedRequest?.emFullName,
+      cubit.emdadgarInfo?.aidPerName1,
+    ]);
+    final rawMobile = _firstNonBlank([
+      cubit.selectedRequest?.emMobileNumber1,
+      cubit.emdadgarInfo?.mobile,
+      cubit.emdadgarInfo?.irancellMobile,
+    ]);
+    final mobile = rawMobile == '-' ? '-' : rawMobile.toLocalMobile();
+
+    return Row(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const BodyMediumText(
+          text: 'اطلاعات امدادرسان',
+          fontWeight: FontWeight.w600,
+        ),
+        Space.w8,
+        Expanded(
+          child: BodyMediumText(
+            text: '$name | $mobile',
+            maxLines: 2,
+            textOverflow: TextOverflow.ellipsis,
+            textAlign: TextAlign.end,
+          ),
+        ),
+      ],
+    );
+  }
+
+  String _firstNonBlank(Iterable<String?> values) {
+    for (final value in values) {
+      final text = value?.trim();
+      if (text != null && text.isNotEmpty && text.toLowerCase() != 'null') {
+        return text;
+      }
+    }
+    return '-';
+  }
+}
+

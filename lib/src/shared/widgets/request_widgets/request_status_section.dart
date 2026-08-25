@@ -10,11 +10,15 @@ import 'status_label.dart';
 class RequestStatusSection extends StatelessWidget {
   final BaseRequestEntity? request;
   final bool showTitle;
+  final bool? subscriptionOverride;
+  final bool? guarantyOverride;
 
   const RequestStatusSection({
     super.key,
     required this.request,
     this.showTitle = false,
+    this.subscriptionOverride,
+    this.guarantyOverride,
   });
 
   @override
@@ -121,7 +125,8 @@ class RequestStatusSection extends StatelessWidget {
   }
 
   void _addSubscription(List<_RequestStatusLabelData> labels) {
-    final isSubscription = request?.isSubscription == true;
+    final isSubscription =
+        subscriptionOverride ?? (request?.isSubscription == true);
     labels.add(
       _RequestStatusLabelData(
         text: isSubscription ? 'مشترک' : 'غیر مشترک',
@@ -156,7 +161,8 @@ class RequestStatusSection extends StatelessWidget {
 
   void _addGuaranty(List<_RequestStatusLabelData> labels) {
     final isGuaranty =
-        request?.isGuaranty == true || request?.garantyIsGaranty == true;
+        guarantyOverride ??
+        (request?.isGuaranty == true || request?.garantyIsGaranty == true);
     labels.add(
       _RequestStatusLabelData(
         text: isGuaranty ? 'گارانتی دارد' : 'گارانتی ندارد',

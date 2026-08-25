@@ -22,6 +22,7 @@ class AidServiceEvaluationSubmitParamModel
     super.distanceHamlCustomer,
     super.representationId,
     super.emdadServiceCategoryId,
+    super.payAvarezi,
     required super.servicesAndLaborsAndPartsEvaluationPayload,
   });
 
@@ -40,11 +41,13 @@ class AidServiceEvaluationSubmitParamModel
       'DefectInfoId': defectInfoId,
       'Description': description,
       'representaionCode': representaionCode,
+      'representation': representation,
       'acceptanceCode': acceptanceCode,
       'representationId': representationId,
       'emdadgarEvaluationId': emdadgarEvaluationId,
       'emdadServiceCategoryId': emdadServiceCategoryId,
       'distanceHamlCustomer': distanceHamlCustomer,
+      'payAvarezi': payAvarezi,
       'servicesAndLaborsAndPartsEvaluationPayload':
           servicesAndLaborsAndPartsEvaluationPayload.toModel().toJson(),
     };

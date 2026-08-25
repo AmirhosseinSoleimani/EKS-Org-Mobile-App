@@ -41,6 +41,7 @@ class PartReceptionEntity {
     this.basePrice,
     this.discountPrice,
     this.description,
+    this.partReusableDescription,
     this.hasReusable,
     this.reusablePrice,
     this.isCausing,
@@ -66,6 +67,7 @@ class PartReceptionEntity {
   final int? basePrice;
   final int? discountPrice;
   final String? description;
+  final String? partReusableDescription;
   final bool? hasReusable;
   final int? reusablePrice;
   final bool? isCausing;
@@ -92,6 +94,7 @@ class PartReceptionEntity {
       basePrice: basePrice,
       discountPrice: discountPrice,
       description: description,
+      partReusableDescription: partReusableDescription,
       hasReusable: hasReusable,
       reusablePrice: reusablePrice,
       isCausing: isCausing,

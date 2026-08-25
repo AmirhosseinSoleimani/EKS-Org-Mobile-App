@@ -84,6 +84,7 @@ class AidServiceEvaluationSubmitParamBuilder {
       confirmValidation: false,
       defectInfoId: selectedDefect?.id ?? selectedRequest?.defectId,
       description: mainForm.descriptionController.text.trim(),
+      payAvarezi: mainForm.isFreewayTollPaid.value,
 
       servicesAndLaborsAndPartsEvaluationPayload:
           ServicesAndLaborsAndPartsEvaluationEntity(
