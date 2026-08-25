@@ -15,7 +15,7 @@ class CustomerInvoiceSummaryCard extends StatelessWidget {
     required this.item,
     required this.serviceColor,
     required this.primaryActionTitle,
-    required this.onPrimaryAction,
+    this.onPrimaryAction,
     required this.onDetails,
     this.isPrimaryLoading = false,
     this.showPrimaryAction = true,
@@ -24,7 +24,7 @@ class CustomerInvoiceSummaryCard extends StatelessWidget {
   final InvoiceRecordEntity item;
   final Color serviceColor;
   final String primaryActionTitle;
-  final VoidCallback onPrimaryAction;
+  final VoidCallback? onPrimaryAction;
   final VoidCallback onDetails;
   final bool isPrimaryLoading;
   final bool showPrimaryAction;
@@ -43,7 +43,7 @@ class CustomerInvoiceSummaryCard extends StatelessWidget {
 
     return AppSummaryCard(
       titleLabel: 'شماره درخواست',
-      title: 'REQ-$requestTrackCode}',
+      title: 'REQ-$requestTrackCode',
       badges: [
         StatusLabel(
           text: InvoicePresentationFormatter.display(state?.invoiceStatusTitle),
@@ -124,26 +124,26 @@ class CustomerInvoiceSummaryCard extends StatelessWidget {
               title: primaryActionTitle,
               backgroundColor: serviceColor,
               showLoading: isPrimaryLoading,
-              prefixIcon: const Icon(
+              titleMaxLines: 1,
+              titleOverflow: TextOverflow.ellipsis,
+              prefixIcon: Icon(
                 Icons.receipt_long_outlined,
-                color: Colors.white,
+                color: onPrimaryAction == null
+                    ? theme.colorScheme.onSecondaryFixed
+                    : Colors.white,
                 size: AppSize.s24,
               ),
-              onTap: () {
-                if (isPrimaryLoading) return;
-                onPrimaryAction();
-              },
+              onTap: isPrimaryLoading ? null : onPrimaryAction,
             )
           : null,
       operationAction: InkwellButtonWidget(
         title: 'جزئیات',
-
         backgroundColor: theme.colorScheme.secondaryContainer,
         titleColor: theme.colorScheme.onSurfaceVariant,
         prefixIcon: Icon(
           Icons.info_outline_rounded,
           color: theme.colorScheme.onSurfaceVariant,
-          fontWeight:  FontWeight.w500,
+          fontWeight: FontWeight.w500,
           size: AppSize.s24,
         ),
         onTap: onDetails,

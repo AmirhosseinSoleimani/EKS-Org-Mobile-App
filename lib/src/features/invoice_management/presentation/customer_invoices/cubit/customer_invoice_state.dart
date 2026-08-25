@@ -42,8 +42,6 @@ class CustomerInvoiceState {
   final String? errorMessage;
   final String? successMessage;
 
-  int? get selectedStatus => filter.invoiceStatus;
-
   CustomerInvoiceState copyWith({
     CustomerInvoiceViewStatus? status,
     List<InvoiceRecordEntity>? items,

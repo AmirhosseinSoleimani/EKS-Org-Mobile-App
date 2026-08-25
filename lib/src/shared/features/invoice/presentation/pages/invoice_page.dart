@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/enums/invoice_type.dart';
+import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/invoice_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/use_case/get_pre_invoice_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/presentation/cubit/invoice_details_cubit.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/presentation/invoice_request_context_loader.dart';
@@ -17,14 +18,23 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
+typedef InvoiceDocumentOpener = Future<void> Function(
+  BuildContext context,
+  String invoiceGuid,
+);
+
 class InvoicePageArgs {
   const InvoicePageArgs({
     required this.invoiceType,
     this.emdadgarEvaluationId,
+    this.initialRequestContext,
+    this.onOpenDocument,
   });
 
   final InvoiceType invoiceType;
   final int? emdadgarEvaluationId;
+  final InvoiceRequestContext? initialRequestContext;
+  final InvoiceDocumentOpener? onOpenDocument;
 }
 
 class InvoicePage extends StatelessWidget {
@@ -33,6 +43,8 @@ class InvoicePage extends StatelessWidget {
     required this.requestContextLoader,
     required this.invoiceType,
     this.emdadgarEvaluationId,
+    this.initialRequestContext,
+    this.onOpenDocument,
   });
 
   static const path = '/invoice-page';
@@ -41,6 +53,8 @@ class InvoicePage extends StatelessWidget {
   final InvoiceRequestContextLoader requestContextLoader;
   final InvoiceType invoiceType;
   final int? emdadgarEvaluationId;
+  final InvoiceRequestContext? initialRequestContext;
+  final InvoiceDocumentOpener? onOpenDocument;
 
   @override
   Widget build(BuildContext context) {
@@ -49,16 +63,24 @@ class InvoicePage extends StatelessWidget {
         getIt<GetPreInvoiceUseCase>(),
         requestContextLoader,
         emdadgarEvaluationId: emdadgarEvaluationId,
+        initialRequestContext: initialRequestContext,
       )..init(),
-      child: _View(invoiceType: invoiceType),
+      child: _View(
+        invoiceType: invoiceType,
+        onOpenDocument: onOpenDocument,
+      ),
     );
   }
 }
 
 class _View extends StatelessWidget {
-  const _View({required this.invoiceType});
+  const _View({
+    required this.invoiceType,
+    this.onOpenDocument,
+  });
 
   final InvoiceType invoiceType;
+  final InvoiceDocumentOpener? onOpenDocument;
 
   @override
   Widget build(BuildContext context) {
@@ -77,7 +99,6 @@ class _View extends StatelessWidget {
                   context.pop();
                   cubit.init();
                 },
-
               );
             }
             break;
@@ -96,16 +117,23 @@ class _View extends StatelessWidget {
       },
       child: Scaffold(
         appBar: SimpleAppBar(title: invoiceType.title),
-        body: _Body(invoiceType: invoiceType),
+        body: _Body(
+          invoiceType: invoiceType,
+          onOpenDocument: onOpenDocument,
+        ),
       ),
     );
   }
 }
 
 class _Body extends StatelessWidget {
-  const _Body({required this.invoiceType});
+  const _Body({
+    required this.invoiceType,
+    this.onOpenDocument,
+  });
 
   final InvoiceType invoiceType;
+  final InvoiceDocumentOpener? onOpenDocument;
 
   @override
   Widget build(BuildContext context) {
@@ -125,16 +153,23 @@ class _Body extends StatelessWidget {
           );
         }
 
-        return _LoadedView(invoiceType: invoiceType);
+        return _LoadedView(
+          invoiceType: invoiceType,
+          onOpenDocument: onOpenDocument,
+        );
       },
     );
   }
 }
 
 class _LoadedView extends StatelessWidget {
-  const _LoadedView({required this.invoiceType});
+  const _LoadedView({
+    required this.invoiceType,
+    this.onOpenDocument,
+  });
 
   final InvoiceType invoiceType;
+  final InvoiceDocumentOpener? onOpenDocument;
 
   @override
   Widget build(BuildContext context) {
@@ -187,10 +222,24 @@ class _LoadedView extends StatelessWidget {
                 invoice: cubit.invoiceEntity,
                 type: request?.serviceType ?? ServiceType.homeService,
                 invoiceType: invoiceType,
+                onOpenDocument: _documentAction(context, cubit.invoiceEntity),
               ),
           ],
         ),
       ),
     );
+  }
+
+  Future<void> Function()? _documentAction(
+    BuildContext context,
+    InvoiceEntity? invoice,
+  ) {
+    final opener = onOpenDocument;
+    final invoiceGuid = invoice?.invoiceGuid?.trim();
+    if (opener == null || invoiceGuid == null || invoiceGuid.isEmpty) {
+      return null;
+    }
+
+    return () => opener(context, invoiceGuid);
   }
 }

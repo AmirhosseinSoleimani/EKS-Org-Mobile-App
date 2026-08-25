@@ -7,7 +7,6 @@ import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdow
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/form_widgets/text_form_field_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/switch_widgets/labeled_switch_field.dart';
 import 'package:flutter/material.dart';
 import 'package:persian_datetime_picker/persian_datetime_picker.dart';
 
@@ -56,7 +55,7 @@ class _InvoiceFilterSheetState extends State<InvoiceFilterSheet> {
   EmdadServiceCategoryEntity? _category;
   Jalali? _fromDate;
   Jalali? _toDate;
-  bool _showSubscription = false;
+  bool? _showSubscription;
 
   @override
   void initState() {
@@ -79,7 +78,7 @@ class _InvoiceFilterSheetState extends State<InvoiceFilterSheet> {
     _category = _findCategory(filter.givenCode);
     _fromDate = _jalaliFromApiDate(filter.fromDate);
     _toDate = _jalaliFromApiDate(filter.toDate);
-    _showSubscription = filter.showSubscription == true;
+    _showSubscription = filter.showSubscription;
 
     _fromDateController = TextEditingController(
       text: _formatJalali(_fromDate),
@@ -181,12 +180,11 @@ class _InvoiceFilterSheetState extends State<InvoiceFilterSheet> {
           ),
           if (widget.showSubscriptionField) ...[
             FilterBottomSheetScaffold.fieldGap,
-            LabeledSwitchField(
-              label: 'فقط درخواست‌های اشتراکی',
-              value: _showSubscription,
-              onChanged: (value) {
-                setState(() => _showSubscription = value);
-              },
+            EkDropDown(
+              const [_all, 'مشترک', 'غیر مشترک'],
+              label: 'وضعیت اشتراک',
+              selectedItem: _subscriptionLabel,
+              onItemValue: _onSubscriptionChanged,
             ),
           ],
         ],
@@ -232,6 +230,22 @@ class _InvoiceFilterSheetState extends State<InvoiceFilterSheet> {
     });
   }
 
+  String get _subscriptionLabel {
+    if (_showSubscription == true) return 'مشترک';
+    if (_showSubscription == false) return 'غیر مشترک';
+    return _all;
+  }
+
+  void _onSubscriptionChanged(String value) {
+    setState(() {
+      _showSubscription = switch (value) {
+        'مشترک' => true,
+        'غیر مشترک' => false,
+        _ => null,
+      };
+    });
+  }
+
   void _apply() {
     if (widget.requireDateRange && (_fromDate == null || _toDate == null)) {
       SnakeBarWidget.showError(
@@ -250,7 +264,7 @@ class _InvoiceFilterSheetState extends State<InvoiceFilterSheet> {
         toDate: JalaliDateHelper.formatServerDateOnly(_toDate?.toDateTime()),
         invoiceStatus: widget.initialFilter.invoiceStatus,
         showSubscription: widget.showSubscriptionField
-            ? (_showSubscription ? true : null)
+            ? _showSubscription
             : widget.initialFilter.showSubscription,
         categoryGivenCode: _category?.title,
         agencyCode: _normalized(_agencyCodeController.text),

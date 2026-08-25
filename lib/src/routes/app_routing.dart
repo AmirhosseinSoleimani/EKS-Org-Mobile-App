@@ -262,6 +262,8 @@ class Routes {
                     createServiceInvoiceRequestContextLoader(),
                 invoiceType: args.invoiceType,
                 emdadgarEvaluationId: args.emdadgarEvaluationId,
+                initialRequestContext: args.initialRequestContext,
+                onOpenDocument: args.onOpenDocument,
               ),
               state: state,
             );

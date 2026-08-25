@@ -6,15 +6,17 @@ import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/c
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_invoices/cubit/customer_invoice_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/widgets/invoice_filter_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/request_detail_page.dart';
+import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/enums/invoice_type.dart';
+import 'package:eks_sana_plus_org/src/shared/features/invoice/presentation/invoice_request_context_loader.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/presentation/pages/invoice_page.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/list_filter_toolbar.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/status_filter_dropdown.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_button.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filters_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:flutter/gestures.dart';
@@ -22,6 +24,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_botto
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class CustomerInvoicePage extends StatelessWidget {
   const CustomerInvoicePage({super.key});
@@ -48,13 +51,6 @@ class _CustomerInvoiceView extends StatefulWidget {
 
 class _CustomerInvoiceViewState extends State<_CustomerInvoiceView> {
   final ScrollController _scrollController = ScrollController();
-
-  static const _statusOptions = <StatusFilterOption<int?>>[
-    StatusFilterOption<int?>(value: null, label: 'همه'),
-    StatusFilterOption<int?>(value: 0, label: 'اولیه'),
-    StatusFilterOption<int?>(value: 1, label: 'ارزیابی شده'),
-    StatusFilterOption<int?>(value: 2, label: 'تایید شده'),
-  ];
 
   @override
   void initState() {
@@ -103,15 +99,17 @@ class _CustomerInvoiceViewState extends State<_CustomerInvoiceView> {
                     ),
                     child: Column(
                       children: [
-                        ListFilterToolbar<int?>(
-                          onFilterTap: () => _showFilter(
-                            context,
-                            cubit,
-                            state,
-                          ),
-                          statusValue: state.selectedStatus,
-                          statusOptions: _statusOptions,
-                          onStatusChanged: cubit.setStatusFilter,
+                        FiltersRow(
+                          filters: [
+                            FilterButton(
+                              title: 'فیلترها',
+                              onTap: () => _showFilter(
+                                context,
+                                cubit,
+                                state,
+                              ),
+                            ),
+                          ],
                         ),
                         Space.h16,
                         ReportButtonWidget(
@@ -201,11 +199,18 @@ class _CustomerInvoiceViewState extends State<_CustomerInvoiceView> {
 
           final item = state.items[index];
 
+          final evaluationId = item.identity?.evaluationId;
+          final canOpenInvoice = item.state?.customerInvoiceVisible == true &&
+              evaluationId != null &&
+              evaluationId > 0;
+
           return CustomerInvoiceSummaryCard(
             item: item,
             serviceColor: serviceColor,
-            primaryActionTitle: 'فاکتور',
-            onPrimaryAction: () => _openInvoice(context, cubit, item),
+            primaryActionTitle: 'مشاهده فاکتور',
+            onPrimaryAction: canOpenInvoice
+                ? () => _openInvoice(context, cubit, item)
+                : null,
             onDetails: () => _openRequestDetails(context, cubit, item),
           );
         },
@@ -246,7 +251,6 @@ class _CustomerInvoiceViewState extends State<_CustomerInvoiceView> {
         message: success,
       );
     }
-
   }
 
   void _showFilter(
@@ -260,6 +264,11 @@ class _CustomerInvoiceViewState extends State<_CustomerInvoiceView> {
         title: 'فیلتر فاکتورهای مشتری',
         initialFilter: state.filter,
         categories: state.categories,
+        allowAllServiceTypes: true,
+        requireDateRange: true,
+        requestTrackCodeMaxLength: 9,
+        agencyCodeMaxLength: 15,
+        emdadgarNameMaxLength: 50,
         onApply: cubit.applyFilter,
         onClear: cubit.clearFilter,
       ),
@@ -280,15 +289,71 @@ class _CustomerInvoiceViewState extends State<_CustomerInvoiceView> {
       return;
     }
 
-    final requestId = await cubit.cacheSelectedRequest(item);
-    if (requestId == null || !context.mounted) return;
+    final serviceType = ServiceType.fromValue(item.state?.serviceType);
+    final requestContext = InvoiceRequestContext(
+      requestId: item.identity?.serviceRequestId,
+      serviceType: serviceType,
+      isGuaranty: item.state?.isGaranty == true,
+      isSubscription: item.state?.subscription == true,
+    );
 
     await context.push(
       InvoicePage.path,
       extra: InvoicePageArgs(
         invoiceType: InvoiceType.invoice,
         emdadgarEvaluationId: evaluationId,
+        initialRequestContext: requestContext,
+        onOpenDocument: (invoiceContext, invoiceGuid) =>
+            _openCustomerInvoiceDocument(
+          invoiceContext,
+          cubit,
+          invoiceGuid,
+        ),
       ),
+    );
+  }
+
+  Future<void> _openCustomerInvoiceDocument(
+    BuildContext context,
+    CustomerInvoiceCubit cubit,
+    String invoiceGuid,
+  ) async {
+    final result = await cubit.getCustomerInvoiceDocumentUrls(invoiceGuid);
+    if (!context.mounted) return;
+
+    await result.when<Future<void>>(
+      success: (urls, failures, resultCode) async {
+        final rawUrl = urls.htmlViewUrl?.trim();
+        final uri = rawUrl == null || rawUrl.isEmpty
+            ? null
+            : Uri.tryParse(rawUrl);
+
+        if (uri == null || !await launchUrl(uri)) {
+          if (!context.mounted) return;
+          SnakeBarWidget.showError(
+            context: context,
+            message: 'لینک مشاهده فاکتور در دسترس نیست.',
+          );
+        }
+      },
+      failure: (error, failures) async {
+        SnakeBarWidget.showError(
+          context: context,
+          message: failures ?? 'دریافت فایل فاکتور با خطا مواجه شد.',
+        );
+      },
+      expireToken: () async {
+        SnakeBarWidget.showError(
+          context: context,
+          message: 'نشست کاربری منقضی شده است.',
+        );
+      },
+      connectionError: () async {
+        SnakeBarWidget.showError(
+          context: context,
+          message: 'اتصال به سرور برقرار نیست.',
+        );
+      },
     );
   }
 

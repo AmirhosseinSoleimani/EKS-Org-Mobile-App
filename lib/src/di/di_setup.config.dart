@@ -2783,6 +2783,7 @@ _i174.GetIt $initGetIt(
   gh.factory<_i105.CustomerInvoiceCubit>(
     () => _i105.CustomerInvoiceCubit(
       gh<_i61.GetCustomerInvoicesUseCase>(),
+      gh<_i129.GetCustomerInvoiceDocumentUrlsUseCase>(),
       gh<_i700.GetEmdadCategoriesUseCase>(),
       gh<_i470.ExportExcelUseCase>(),
       gh<_i369.SetSelectedRequestItemUseCase>(),

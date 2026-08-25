@@ -1,7 +1,9 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/emdad_service_category_entity.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/invoice_document_urls_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/invoice_record_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/params/invoice_list_filter_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/use_cases/get_customer_invoice_document_urls_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/use_cases/get_emdad_categories_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/customer_invoices/use_cases/get_customer_invoices_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/customer_invoices/utils/customer_invoice_excel_report_factory.dart';
@@ -21,6 +23,7 @@ part 'customer_invoice_state.dart';
 class CustomerInvoiceCubit extends Cubit<CustomerInvoiceState> with LatestRequestGuard {
   CustomerInvoiceCubit(
     this._getCustomerInvoicesUseCase,
+    this._getCustomerInvoiceDocumentUrlsUseCase,
     this._getEmdadCategoriesUseCase,
     this._exportExcelUseCase,
     this._setSelectedRequestItemUseCase,
@@ -37,6 +40,8 @@ class CustomerInvoiceCubit extends Cubit<CustomerInvoiceState> with LatestReques
   static const Object _unset = Object();
 
   final GetCustomerInvoicesUseCase _getCustomerInvoicesUseCase;
+  final GetCustomerInvoiceDocumentUrlsUseCase
+      _getCustomerInvoiceDocumentUrlsUseCase;
   final GetEmdadCategoriesUseCase _getEmdadCategoriesUseCase;
   final ExportExcelUseCase _exportExcelUseCase;
   final SetSelectedRequestItemUseCase _setSelectedRequestItemUseCase;
@@ -149,6 +154,7 @@ class CustomerInvoiceCubit extends Cubit<CustomerInvoiceState> with LatestReques
     emit(
       state.copyWith(
         filter: InvoiceListFilterParamEntity.withDefaultDateRange(
+          serviceType: null,
           pageSize: pageSize,
           skip: 0,
         ),
@@ -159,19 +165,10 @@ class CustomerInvoiceCubit extends Cubit<CustomerInvoiceState> with LatestReques
     await fetchList(refresh: true);
   }
 
-  Future<void> setStatusFilter(int? status) async {
-    emit(
-      state.copyWith(
-        filter: _copyFilter(
-          state.filter,
-          invoiceStatus: status,
-          pageSize: pageSize,
-          skip: 0,
-        ),
-      ),
-    );
-
-    await fetchList(refresh: true);
+  Future<ApiResult<InvoiceDocumentUrlsEntity>> getCustomerInvoiceDocumentUrls(
+    String invoiceGuid,
+  ) {
+    return _getCustomerInvoiceDocumentUrlsUseCase(invoiceGuid);
   }
 
   Future<int?> cacheSelectedRequest(InvoiceRecordEntity item) async {

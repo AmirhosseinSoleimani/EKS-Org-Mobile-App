@@ -1,5 +1,4 @@
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/invoice_record_entity.dart';
-import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/entities/excel_export_column.dart';
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/entities/excel_export_request.dart';
 
@@ -8,7 +7,7 @@ class CustomerInvoiceExcelReportFactory {
 
   static ExcelExportRequest create(List<InvoiceRecordEntity> items) {
     return ExcelExportRequest.fromItems<InvoiceRecordEntity>(
-      fileNamePrefix: 'customer_invoice_report',
+      fileNamePrefix: 'گزارش فاکتور های مشتری',
       sheetName: 'فاکتورهای مشتری',
       items: items,
       columns: [
@@ -20,12 +19,28 @@ class CustomerInvoiceExcelReportFactory {
           width: 20,
         ),
         ExcelExportColumn(
-          title: 'نام امدادخواه',
-          valueBuilder: (item, _) => item.customer?.fullName,
+          title: 'تاریخ و ساعت درخواست',
+          valueBuilder: (item, _) =>
+              item.identity?.serviceRequestInsertDataTimeJalali,
           width: 24,
         ),
         ExcelExportColumn(
-          title: 'نمایندگی',
+          title: 'تاریخ اعزام',
+          valueBuilder: (item, _) => item.identity?.assignDateJalali,
+          width: 18,
+        ),
+        ExcelExportColumn(
+          title: 'ساعت اعزام',
+          valueBuilder: (item, _) => item.identity?.assignDateTimeJalali,
+          width: 18,
+        ),
+        ExcelExportColumn(
+          title: 'کد اشتراک',
+          valueBuilder: (item, _) => item.state?.subscriptionCode,
+          width: 18,
+        ),
+        ExcelExportColumn(
+          title: 'نام نمایندگی',
           valueBuilder: (item, _) =>
               item.agency?.agencyName ?? item.agency?.representationName,
           width: 26,
@@ -37,63 +52,155 @@ class CustomerInvoiceExcelReportFactory {
           width: 18,
         ),
         ExcelExportColumn(
-          title: 'امدادگر',
+          title: 'استان نمایندگی',
+          valueBuilder: (item, _) => item.agency?.agencyProvinceName,
+          width: 20,
+        ),
+        ExcelExportColumn(
+          title: 'شهر نمایندگی',
+          valueBuilder: (item, _) => item.agency?.agencyCityName,
+          width: 20,
+        ),
+        ExcelExportColumn(
+          title: 'کد امدادرسان',
+          valueBuilder: (item, _) => item.agency?.emdadgarId,
+          width: 18,
+        ),
+        ExcelExportColumn(
+          title: 'نام امدادرسان',
           valueBuilder: (item, _) => item.agency?.emdadgarName,
+          width: 24,
+        ),
+        ExcelExportColumn(
+          title: 'گروه وزنی خودرو',
+          valueBuilder: (item, _) => item.operation?.wageGroupTypeTitle,
           width: 22,
         ),
         ExcelExportColumn(
-          title: 'خودرو',
+          title: 'شماره پلاک خودرو امدادرسان',
+          valueBuilder: (item, _) => item.agency?.emdadgarPlate,
+          width: 26,
+        ),
+        ExcelExportColumn(
+          title: 'نوع ناوگان',
+          valueBuilder: (item, _) => item.agency?.navganType,
+          width: 20,
+        ),
+        ExcelExportColumn(
+          title: 'آدرس امدادخواه',
+          valueBuilder: (item, _) => item.customer?.aidAddress,
+          width: 32,
+        ),
+        ExcelExportColumn(
+          title: 'نام خودرو',
           valueBuilder: (item, _) => item.vehicle?.carName,
           width: 22,
         ),
         ExcelExportColumn(
           title: 'شماره شاسی',
           valueBuilder: (item, _) => item.vehicle?.chassisNumber,
-          width: 22,
+          width: 24,
         ),
         ExcelExportColumn(
-          title: 'خدمت',
-          valueBuilder: (item, _) => item.state?.serviceTitle,
-          width: 32,
+          title: 'استان مشتری',
+          valueBuilder: (item, _) => item.customer?.provinceName,
+          width: 20,
         ),
         ExcelExportColumn(
-          title: 'وضعیت فاکتور',
-          valueBuilder: (item, _) => item.state?.invoiceStatusTitle,
+          title: 'شهر مشتری',
+          valueBuilder: (item, _) => item.customer?.cityName,
+          width: 20,
+        ),
+        ExcelExportColumn(
+          title: 'وضعیت اشتراک',
+          valueBuilder: (item, _) =>
+              item.state?.subscription == true ? 'مشترک' : 'غیرمشترک',
           width: 18,
         ),
         ExcelExportColumn(
-          title: 'مبلغ مشتری',
-          valueBuilder: (item, _) => item.amounts?.customerTotalPrice,
+          title: 'عنوان بسته سرویس',
+          valueBuilder: (item, _) => item.state?.productTitle,
+          width: 26,
+        ),
+        ExcelExportColumn(
+          title: 'ایراد اظهاری مشتری',
+          valueBuilder: (item, _) => item.vehicle?.serviceRequestDefectTitle,
+          width: 30,
+        ),
+        ExcelExportColumn(
+          title: 'نوع خدمت',
+          valueBuilder: (item, _) => item.state?.serviceTypeTitle,
           width: 20,
         ),
         ExcelExportColumn(
-          title: 'مبلغ شرکت',
-          valueBuilder: (item, _) => item.amounts?.companyTotalPrice,
-          width: 20,
+          title: 'سرویس ارائه شده',
+          valueBuilder: (item, _) => item.state?.serviceGivenTitle,
+          width: 28,
         ),
         ExcelExportColumn(
-          title: 'گارانتی',
-          valueBuilder: (item, _) => item.state?.isGaranty == true ? 'بله' : 'خیر',
-          width: 14,
+          title: 'مسافت طی شده',
+          valueBuilder: (item, _) => item.operation?.distanceToCustomer,
+          width: 18,
         ),
         ExcelExportColumn(
-          title: 'اشتراکی',
-          valueBuilder: (item, _) => item.state?.subscription == true ? 'بله' : 'خیر',
-          width: 14,
+          title: 'مسافت حمل',
+          valueBuilder: (item, _) => item.operation?.distanceHamlCustomer,
+          width: 18,
         ),
         ExcelExportColumn(
-          title: 'ثبت کننده',
-          valueBuilder: (item, _) => item.audit?.insertUserName,
+          title: 'استفاده از دکل',
+          valueBuilder: (item, _) =>
+              item.operation?.useDakal == true ? 'بله' : 'خیر',
+          width: 18,
+        ),
+        ExcelExportColumn(
+          title: 'مدت زمان توقف(دقیقه)',
+          valueBuilder: (item, _) => item.operation?.stopTime,
           width: 22,
         ),
         ExcelExportColumn(
-          title: 'تاریخ ثبت',
-          valueBuilder: (item, _) => JalaliDateHelper.formatStringJalaliDateTime(
-            item.audit?.insertDateTimeJalali,
-          ),
+          title: 'ایام تعطیل/شب',
+          valueBuilder: (item, _) =>
+              item.operation?.nightOrHoliday == true ? 'بله' : 'خیر',
+          width: 18,
+        ),
+        ExcelExportColumn(
+          title: '(عنوان) ایام تعطیل/شب/روز',
+          valueBuilder: (item, _) => item.operation?.nightOrHolidayTitle,
+          width: 28,
+        ),
+        ExcelExportColumn(
+          title: 'تاریخ فاکتور',
+          valueBuilder: (item, _) =>
+              _orDash(item.identity?.customerInvoiceDateTimeJalali),
+          width: 22,
+        ),
+        ExcelExportColumn(
+          title: 'ثبت کننده فاکتور',
+          valueBuilder: (item, _) => _orDash(item.audit?.insertUserName),
+          width: 24,
+        ),
+        ExcelExportColumn(
+          title: 'تاریخ ثبت فاکتور',
+          valueBuilder: (item, _) => _orDash(item.audit?.insertDateTimeJalali),
+          width: 22,
+        ),
+        ExcelExportColumn(
+          title: 'ویرایش کننده فاکتور',
+          valueBuilder: (item, _) => _orDash(item.audit?.updateUserName),
+          width: 24,
+        ),
+        ExcelExportColumn(
+          title: 'تاریخ ویرایش فاکتور',
+          valueBuilder: (item, _) => _orDash(item.audit?.updateDateTimeJalali),
           width: 22,
         ),
       ],
     );
+  }
+
+  static String _orDash(String? value) {
+    final normalized = value?.trim();
+    return normalized == null || normalized.isEmpty ? '---' : normalized;
   }
 }

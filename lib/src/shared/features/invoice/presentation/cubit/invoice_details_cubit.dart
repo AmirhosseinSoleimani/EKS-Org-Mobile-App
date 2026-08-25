@@ -29,17 +29,20 @@ class InvoiceDetailsCubit extends Cubit<InvoiceDetailsState> {
     this._getPreInvoiceUseCase,
     this._requestContextLoader, {
     this.emdadgarEvaluationId,
+    this.initialRequestContext,
   }) : super(const InvoiceDetailsState());
 
   final GetPreInvoiceUseCase _getPreInvoiceUseCase;
   final InvoiceRequestContextLoader _requestContextLoader;
   final int? emdadgarEvaluationId;
+  final InvoiceRequestContext? initialRequestContext;
 
   InvoiceRequestContext? selectedRequest;
   InvoiceEntity? invoiceEntity;
 
   Future<void> init() async {
-    selectedRequest = await _requestContextLoader.loadCached();
+    selectedRequest =
+        initialRequestContext ?? await _requestContextLoader.loadCached();
 
     if (selectedRequest == null) {
       _safeEmit(
@@ -56,11 +59,13 @@ class InvoiceDetailsCubit extends Cubit<InvoiceDetailsState> {
 
     _safeEmit(const InvoiceDetailsState(status: InvoiceDetailsStatus.loading));
 
-    final refreshedRequest = await _requestContextLoader.refresh(
-      selectedRequest!,
-    );
-    if (refreshedRequest != null) {
-      selectedRequest = refreshedRequest;
+    if (selectedRequest?.requestId != null) {
+      final refreshedRequest = await _requestContextLoader.refresh(
+        selectedRequest!,
+      );
+      if (refreshedRequest != null) {
+        selectedRequest = refreshedRequest;
+      }
     }
 
     await _loadInvoice();

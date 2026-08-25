@@ -12,17 +12,26 @@ import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_butt
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:flutter/material.dart';
 
-class InvoiceViewerWidget extends StatelessWidget {
+class InvoiceViewerWidget extends StatefulWidget {
   const InvoiceViewerWidget({
     super.key,
     required this.type,
     required this.invoice,
     required this.invoiceType,
+    this.onOpenDocument,
   });
 
   final ServiceType type;
   final InvoiceEntity? invoice;
   final InvoiceType invoiceType;
+  final Future<void> Function()? onOpenDocument;
+
+  @override
+  State<InvoiceViewerWidget> createState() => _InvoiceViewerWidgetState();
+}
+
+class _InvoiceViewerWidgetState extends State<InvoiceViewerWidget> {
+  bool _isOpeningDocument = false;
 
   @override
   Widget build(BuildContext context) {
@@ -30,7 +39,29 @@ class InvoiceViewerWidget extends StatelessWidget {
       mainAxisSize: MainAxisSize.min,
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
-        SumAllInvoiceWidget.homeService(entity: invoice?.sumAllInvoice),
+        if (widget.onOpenDocument != null) ...[
+          Align(
+            alignment: AlignmentDirectional.centerEnd,
+            child: IconButton(
+              tooltip: 'چاپ فاکتور',
+              onPressed: _isOpeningDocument ? null : _openDocument,
+              icon: _isOpeningDocument
+                  ? SizedBox.square(
+                      dimension: AppSize.s20,
+                      child: CircularProgressIndicator(
+                        strokeWidth: AppSize.s2,
+                        color: widget.type.serviceColor,
+                      ),
+                    )
+                  : Icon(
+                      Icons.download_rounded,
+                      color: widget.type.serviceColor,
+                    ),
+            ),
+          ),
+          Space.h8,
+        ],
+        SumAllInvoiceWidget.homeService(entity: widget.invoice?.sumAllInvoice),
         Space.h16,
         TextButton(
           onPressed: () => _showDetailsBottomSheet(context),
@@ -41,7 +72,7 @@ class InvoiceViewerWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               BodyMediumText(
-                text: invoiceType.detailsTitle,
+                text: widget.invoiceType.detailsTitle,
                 color: Theme.of(context).colorScheme.secondary,
               ),
               Space.w4,
@@ -56,17 +87,31 @@ class InvoiceViewerWidget extends StatelessWidget {
     );
   }
 
+  Future<void> _openDocument() async {
+    final callback = widget.onOpenDocument;
+    if (callback == null || _isOpeningDocument) return;
+
+    setState(() => _isOpeningDocument = true);
+    try {
+      await callback();
+    } finally {
+      if (mounted) {
+        setState(() => _isOpeningDocument = false);
+      }
+    }
+  }
+
   void _showDetailsBottomSheet(BuildContext context) {
     BottomSheetMessage.showCustom(
       context: context,
       isDismissible: true,
       enableDrag: true,
       actionWidget: InkwellButtonWidget(
-        backgroundColor: type.serviceColor,
+        backgroundColor: widget.type.serviceColor,
         title: 'بستن',
         onTap: () => Navigator.pop(context),
       ),
-      content: _InvoiceDetailsBottomSheetContent(invoice: invoice),
+      content: _InvoiceDetailsBottomSheetContent(invoice: widget.invoice),
     );
   }
 }
