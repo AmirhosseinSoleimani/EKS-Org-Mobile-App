@@ -26,6 +26,12 @@ class EmdadgarInvoiceRecordEntity extends InvoiceRecordEntity {
     this.privateCarType,
     this.agencyGrade,
     this.agencyWithoutTax,
+    this.agencyType,
+    this.trafficPlanCost,
+    this.trafficPlanCostWithCoefficient,
+    this.highwayTicketCost,
+    this.highwayTicketCostWithCoefficient,
+    this.finalizedDateTimeJalali,
   });
 
   final EmdadgarSettlementEntity? settlement;
@@ -41,6 +47,12 @@ class EmdadgarInvoiceRecordEntity extends InvoiceRecordEntity {
   final int? privateCarType;
   final String? agencyGrade;
   final int? agencyWithoutTax;
+  final String? agencyType;
+  final int? trafficPlanCost;
+  final int? trafficPlanCostWithCoefficient;
+  final int? highwayTicketCost;
+  final int? highwayTicketCostWithCoefficient;
+  final String? finalizedDateTimeJalali;
 
   EmdadgarInvoiceRecordModel  toModel() {
     return EmdadgarInvoiceRecordModel(
@@ -65,6 +77,12 @@ class EmdadgarInvoiceRecordEntity extends InvoiceRecordEntity {
       privateCarType: privateCarType,
       agencyGrade: agencyGrade,
       agencyWithoutTax: agencyWithoutTax,
+      agencyType: agencyType,
+      trafficPlanCost: trafficPlanCost,
+      trafficPlanCostWithCoefficient: trafficPlanCostWithCoefficient,
+      highwayTicketCost: highwayTicketCost,
+      highwayTicketCostWithCoefficient: highwayTicketCostWithCoefficient,
+      finalizedDateTimeJalali: finalizedDateTimeJalali,
     );
   }
 }

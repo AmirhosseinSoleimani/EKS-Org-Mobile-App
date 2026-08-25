@@ -25,7 +25,7 @@ class EmdadgarInvoiceSummaryCard extends StatelessWidget {
   final EmdadgarInvoiceRecordEntity item;
   final bool selected;
   final ValueChanged<bool> onSelectionChanged;
-  final VoidCallback onInvoiceTap;
+  final VoidCallback? onInvoiceTap;
   final VoidCallback onOperationsTap;
   final bool selectionEnabled;
 

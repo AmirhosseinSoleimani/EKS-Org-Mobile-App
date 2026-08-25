@@ -18,4 +18,10 @@ class CustomerPreInvoiceOnTheFlyUseCase
     final result = _repository.customerPreInvoiceOnTheFly(arg);
     return result;
   }
+
+  Future<ApiResult<InvoiceEntity?>> emdadgar(
+    AcceptEvaluationParamEntity arg,
+  ) async {
+    return _repository.emdadgarPreInvoiceOnTheFly(arg);
+  }
 }

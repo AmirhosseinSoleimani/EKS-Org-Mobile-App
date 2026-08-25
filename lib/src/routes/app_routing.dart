@@ -368,9 +368,21 @@ class Routes {
           path: EvaluationInvoicePage.path,
           name: EvaluationInvoicePage.name,
           pageBuilder: (context, state) {
-            final String id = (state.extra as int? ?? 0).toString();
+            final extra = state.extra;
+            final args = extra is EvaluationInvoicePageArgs
+                ? extra
+                : EvaluationInvoicePageArgs(
+                    emdadgarEvaluationId: switch (extra) {
+                      int value => value.toString(),
+                      String value => value,
+                      _ => '0',
+                    },
+                  );
             return getPage(
-              child: EvaluationInvoicePage(emdadgarEvaluationId: id),
+              child: EvaluationInvoicePage(
+                emdadgarEvaluationId: args.emdadgarEvaluationId,
+                flow: args.flow,
+              ),
               state: state,
             );
           },

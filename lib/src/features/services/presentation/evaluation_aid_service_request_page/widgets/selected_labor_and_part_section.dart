@@ -18,6 +18,7 @@ class SelectedLaborAndPartSection extends StatelessWidget {
   final ValueChanged<EvaluationSelectedLaborEntity> onEditLabor;
   final ValueChanged<EvaluationSelectedLaborEntity> onDeleteLabor;
   final ValueChanged<EvaluationSelectedLaborEntity> onToggleShowMoreParts;
+  final bool editable;
 
   const SelectedLaborAndPartSection({
     super.key,
@@ -28,6 +29,7 @@ class SelectedLaborAndPartSection extends StatelessWidget {
     required this.onEditLabor,
     required this.onDeleteLabor,
     required this.onToggleShowMoreParts,
+    this.editable = true,
   });
 
   @override
@@ -44,17 +46,19 @@ class SelectedLaborAndPartSection extends StatelessWidget {
             textAlign: TextAlign.start,
           ),
           Space.h32,
-          InkwellButtonWidget(
-            title: 'افزودن اجرت',
-            prefixIcon: Icon(Icons.add, color: colorScheme.primary),
-            titleColor: colorScheme.primary,
-            borderColor: colorScheme.primary,
-            splashColor: colorScheme.primary.withAlpha(50),
-            backgroundColor: Colors.transparent,
-            onTap: onAddLabor,
-            height: 45,
-          ),
-          Space.h16,
+          if (editable) ...[
+            InkwellButtonWidget(
+              title: 'افزودن اجرت',
+              prefixIcon: Icon(Icons.add, color: colorScheme.primary),
+              titleColor: colorScheme.primary,
+              borderColor: colorScheme.primary,
+              splashColor: colorScheme.primary.withAlpha(50),
+              backgroundColor: Colors.transparent,
+              onTap: onAddLabor,
+              height: 45,
+            ),
+            Space.h16,
+          ],
           _buildSelectedLaborsList(),
         ],
       ),
@@ -90,6 +94,7 @@ class SelectedLaborAndPartSection extends StatelessWidget {
                             onAddPart: () => onAddPart(labor),
                             onEdit: () => onEditLabor(labor),
                             onDelete: () => onDeleteLabor(labor),
+                            editable: editable,
                             onToggleShowMoreParts: () =>
                                 onToggleShowMoreParts(labor),
                           ),

@@ -50,6 +50,15 @@ abstract class EvaluationRemoteDataSource {
   Future<BaseSingleResponse> acceptEvaluation(
       AcceptEvaluationParamModel param);
 
+  Future<BaseSingleResponse> acceptInvoiceOperatorEvaluation(
+      AcceptEvaluationParamModel param);
+
+  Future<BaseSingleResponse> acceptHesabdariAmendment(
+      AcceptEvaluationParamModel param);
+
+  Future<BaseSingleResponse> acceptDaraeiAmendment(
+      AcceptEvaluationParamModel param);
+
   Future<BaseSingleResponse<
       EmdadgarServiceDetailModel>> getServiceDetailAndCheckSubscriptionForEmdagar(ServiceDetailForEvaluationParamModel param);
 
@@ -63,6 +72,12 @@ abstract class EvaluationRemoteDataSource {
       LastEvaluationParamModel param);
 
   Future<BaseSingleResponse<PostEvaluationResponseModel>> submitEvaluationForAidService(
+      AidServiceEvaluationSubmitParamModel param);
+
+  Future<BaseSingleResponse<dynamic>> submitTrackerEvaluation(
+      AidServiceEvaluationSubmitParamModel param);
+
+  Future<BaseSingleResponse<dynamic>> submitInvoiceOperatorEvaluation(
       AidServiceEvaluationSubmitParamModel param);
 
   Future<BaseSingleResponse<dynamic>> submitHesabdariEvaluation(

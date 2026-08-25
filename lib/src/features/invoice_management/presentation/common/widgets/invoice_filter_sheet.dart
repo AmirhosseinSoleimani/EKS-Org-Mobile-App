@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/emdad_service_category_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/params/invoice_list_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
+import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_enum_item_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/date_picker_widget/date_picker_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/drop_down_widget/ek_dropdown.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
@@ -15,6 +16,9 @@ class InvoiceFilterSheet extends StatefulWidget {
     super.key,
     this.title = 'فیلترها',
     this.showSubscriptionField = true,
+    this.showObjectionField = false,
+    this.showInvoiceStatusField = false,
+    this.invoiceStatusItems,
     this.allowAllServiceTypes = false,
     this.requireDateRange = false,
     this.requestTrackCodeMaxLength,
@@ -28,6 +32,9 @@ class InvoiceFilterSheet extends StatefulWidget {
 
   final String title;
   final bool showSubscriptionField;
+  final bool showObjectionField;
+  final bool showInvoiceStatusField;
+  final List<CurrentSessionEnumItemEntity>? invoiceStatusItems;
   final bool allowAllServiceTypes;
   final bool requireDateRange;
   final int? requestTrackCodeMaxLength;
@@ -56,6 +63,8 @@ class _InvoiceFilterSheetState extends State<InvoiceFilterSheet> {
   Jalali? _fromDate;
   Jalali? _toDate;
   bool? _showSubscription;
+  bool? _hasObjection;
+  int? _invoiceStatus;
 
   @override
   void initState() {
@@ -79,6 +88,8 @@ class _InvoiceFilterSheetState extends State<InvoiceFilterSheet> {
     _fromDate = _jalaliFromApiDate(filter.fromDate);
     _toDate = _jalaliFromApiDate(filter.toDate);
     _showSubscription = filter.showSubscription;
+    _hasObjection = filter.hasObjection;
+    _invoiceStatus = filter.invoiceStatus;
 
     _fromDateController = TextEditingController(
       text: _formatJalali(_fromDate),
@@ -187,6 +198,26 @@ class _InvoiceFilterSheetState extends State<InvoiceFilterSheet> {
               onItemValue: _onSubscriptionChanged,
             ),
           ],
+          if (widget.showObjectionField) ...[
+            FilterBottomSheetScaffold.fieldGap,
+            EkDropDown(
+              const [_all, 'دارد'],
+              label: 'اعتراض نمایندگی',
+              selectedItem: _hasObjection == true ? 'دارد' : _all,
+              onItemValue: (value) {
+                setState(() => _hasObjection = value == 'دارد' ? true : null);
+              },
+            ),
+          ],
+          if (widget.showInvoiceStatusField) ...[
+            FilterBottomSheetScaffold.fieldGap,
+            EkDropDown(
+              [_all, ..._invoiceStatusOptions.map((item) => item.title!)],
+              label: 'وضعیت صورت وضعیت',
+              selectedItem: _invoiceStatusLabel,
+              onItemValue: _onInvoiceStatusChanged,
+            ),
+          ],
         ],
       ),
     );
@@ -236,6 +267,53 @@ class _InvoiceFilterSheetState extends State<InvoiceFilterSheet> {
     return _all;
   }
 
+  List<CurrentSessionEnumItemEntity> get _invoiceStatusOptions {
+    final configured = widget.invoiceStatusItems;
+    if (configured != null) {
+      return configured
+          .where((item) =>
+              item.value != null &&
+              item.title?.trim().isNotEmpty == true)
+          .toList(growable: false);
+    }
+
+    return const <CurrentSessionEnumItemEntity>[
+      CurrentSessionEnumItemEntity(value: 0, title: 'اولیه'),
+      CurrentSessionEnumItemEntity(value: 1, title: 'ارزیابی شده'),
+      CurrentSessionEnumItemEntity(value: 2, title: 'تایید شده'),
+      CurrentSessionEnumItemEntity(value: 3, title: 'نهایی شده'),
+    ];
+  }
+
+  String get _invoiceStatusLabel {
+    final status = _invoiceStatus;
+    if (status == null) return _all;
+
+    for (final item in _invoiceStatusOptions) {
+      if (item.value == status) return item.title!.trim();
+    }
+
+    return _all;
+  }
+
+  void _onInvoiceStatusChanged(String value) {
+    setState(() {
+      if (value == _all) {
+        _invoiceStatus = null;
+        return;
+      }
+
+      for (final item in _invoiceStatusOptions) {
+        if (item.title?.trim() == value) {
+          _invoiceStatus = item.value;
+          return;
+        }
+      }
+
+      _invoiceStatus = null;
+    });
+  }
+
   void _onSubscriptionChanged(String value) {
     setState(() {
       _showSubscription = switch (value) {
@@ -262,10 +340,15 @@ class _InvoiceFilterSheetState extends State<InvoiceFilterSheet> {
         requestTrackCode: _normalized(_requestTrackCodeController.text),
         fromDate: JalaliDateHelper.formatServerDateOnly(_fromDate?.toDateTime()),
         toDate: JalaliDateHelper.formatServerDateOnly(_toDate?.toDateTime()),
-        invoiceStatus: widget.initialFilter.invoiceStatus,
+        invoiceStatus: widget.showInvoiceStatusField
+            ? _invoiceStatus
+            : widget.initialFilter.invoiceStatus,
         showSubscription: widget.showSubscriptionField
             ? _showSubscription
             : widget.initialFilter.showSubscription,
+        hasObjection: widget.showObjectionField
+            ? _hasObjection
+            : widget.initialFilter.hasObjection,
         categoryGivenCode: _category?.title,
         agencyCode: _normalized(_agencyCodeController.text),
         emdadgarName: _normalized(_emdadgarNameController.text),

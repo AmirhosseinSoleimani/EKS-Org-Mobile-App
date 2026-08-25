@@ -1,7 +1,11 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/emdad_service_category_entity.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/invoice_operation_access_entity.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/invoice_document_urls_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/params/invoice_list_filter_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/use_cases/get_customer_invoice_document_urls_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/use_cases/get_emdad_categories_use_case.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/use_cases/get_invoice_operation_access_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/bulk_invoice_accept_result_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/emdadgar_invoice_page_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/emdadgar_invoice_record_entity.dart';
@@ -21,6 +25,8 @@ import 'package:eks_sana_plus_org/src/features/services/domain/entities/relief_r
 import 'package:eks_sana_plus_org/src/features/services/domain/usecases/set_selected_request_item_use_case.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/usecase/export_excel_use_case.dart';
+import 'package:eks_sana_plus_org/src/shared/features/session/domain/entity/current_session_enum_item_entity.dart';
+import 'package:eks_sana_plus_org/src/shared/features/session/domain/manager/current_session_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -40,12 +46,15 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
     this._getDefiniteInvoicesUseCase,
     this._acceptInitialInvoicesUseCase,
     this._acceptInvoicesUseCase,
+    this._getInvoiceOperationAccessUseCase,
     this._getEmdadCategoriesUseCase,
     this._setSelectedRequestItemUseCase,
+    this._getCustomerInvoiceDocumentUrlsUseCase,
+    this._currentSessionManager,
     this._exportExcelUseCase,
   ) : super(const EmdadgarInvoiceState.idle());
 
-  static const int pageSize = 25;
+  static const int pageSize = 0;
   static const Object _unset = Object();
 
   final GetInitialEmdadgarInvoicesUseCase _getInitialInvoicesUseCase;
@@ -56,8 +65,12 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
   final GetDefiniteEmdadgarInvoicesUseCase _getDefiniteInvoicesUseCase;
   final AcceptInitialEmdadgarInvoicesUseCase _acceptInitialInvoicesUseCase;
   final AcceptEmdadgarInvoicesUseCase _acceptInvoicesUseCase;
+  final GetInvoiceOperationAccessUseCase _getInvoiceOperationAccessUseCase;
   final GetEmdadCategoriesUseCase _getEmdadCategoriesUseCase;
   final SetSelectedRequestItemUseCase _setSelectedRequestItemUseCase;
+  final GetCustomerInvoiceDocumentUrlsUseCase
+      _getCustomerInvoiceDocumentUrlsUseCase;
+  final CurrentSessionManager _currentSessionManager;
   final ExportExcelUseCase _exportExcelUseCase;
 
   final itemsNotifier = ValueNotifier<List<EmdadgarInvoiceRecordEntity>>(
@@ -75,6 +88,8 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
     pageSize: pageSize,
     skip: 0,
   );
+  InvoiceOperationAccessEntity operationAccess =
+      const InvoiceOperationAccessEntity();
   EmdadgarInvoiceStage selectedStage = EmdadgarInvoiceStage.initial;
   int totalCount = 0;
   bool hasMore = false;
@@ -82,11 +97,27 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
 
   VoidCallback? _retryAction;
   String? _successMessage;
+  BottomSheetMessageModel? _bulkResultMessage;
   int _listRequestVersion = 0;
+  final Map<EmdadgarInvoiceStage, InvoiceListFilterParamEntity> _stageFilters =
+      <EmdadgarInvoiceStage, InvoiceListFilterParamEntity>{};
 
   List<EmdadgarInvoiceRecordEntity> get items => itemsNotifier.value;
   Set<int> get selectedRequestIds => selectedRequestIdsNotifier.value;
-  bool get supportsSelection => selectedStage.supportsBulkAccept;
+  List<CurrentSessionEnumItemEntity> get invoiceStatusItems =>
+      _currentSessionManager.currentSession?.enums?.invoiceStatus ??
+      const <CurrentSessionEnumItemEntity>[];
+  bool get supportsSelection =>
+      selectedStage.supportsBulkAccept &&
+      operationAccess.batchConfirmation == true;
+
+  bool get canEditInvoiceBaseForm => operationAccess.hasAdminAccess == true;
+  bool get canEditKilometer =>
+      operationAccess.hasAdminAccess == true ||
+      operationAccess.hasMaliAmaliatAccess == true;
+  bool get canEditLaborAndPart =>
+      operationAccess.hasAdminAccess == true ||
+      operationAccess.hasTechAccess == true;
   bool get isAllSelected =>
       supportsSelection &&
       items.isNotEmpty &&
@@ -99,12 +130,12 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
     EmdadgarInvoiceStage initialStage = EmdadgarInvoiceStage.initial,
   }) async {
     selectedStage = initialStage;
+    filter = _stageFilters[initialStage] ?? _defaultFilter();
     _retryAction = () => initialize(initialStage: initialStage);
     _safeEmit(const EmdadgarInvoiceState.loading());
 
-    final categoriesLoaded = await fetchCategories();
-    if (!categoriesLoaded) return;
-
+    await fetchOperationAccess(reportError: false);
+    await fetchCategories(reportError: false);
     await fetchList(refresh: true);
   }
 
@@ -116,7 +147,38 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
     return message;
   }
 
-  Future<bool> fetchCategories() async {
+  BottomSheetMessageModel? consumeBulkResultMessage() {
+    final message = _bulkResultMessage;
+    _bulkResultMessage = null;
+    return message;
+  }
+
+  Future<bool> fetchOperationAccess({bool reportError = true}) async {
+    final result = await _getInvoiceOperationAccessUseCase();
+    var loaded = false;
+
+    result.when(
+      success: (data, _, __) {
+        operationAccess = data;
+        loaded = true;
+      },
+      failure: (error, message) {
+        if (reportError) _emitError(message ?? error.toString());
+      },
+      expireToken: () {
+        if (reportError) _emitError('نشست کاربری منقضی شده است.');
+      },
+      connectionError: () {
+        if (reportError) {
+          _safeEmit(const EmdadgarInvoiceState.connectionError());
+        }
+      },
+    );
+
+    return loaded;
+  }
+
+  Future<bool> fetchCategories({bool reportError = true}) async {
     final result = await _getEmdadCategoriesUseCase();
     var loaded = false;
 
@@ -128,13 +190,15 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
         loaded = true;
       },
       failure: (error, message) {
-        _emitError(message ?? error.toString());
+        if (reportError) _emitError(message ?? error.toString());
       },
       expireToken: () {
-        _emitError('نشست کاربری منقضی شده است.');
+        if (reportError) _emitError('نشست کاربری منقضی شده است.');
       },
       connectionError: () {
-        _safeEmit(const EmdadgarInvoiceState.connectionError());
+        if (reportError) {
+          _safeEmit(const EmdadgarInvoiceState.connectionError());
+        }
       },
     );
 
@@ -144,9 +208,12 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
   Future<void> setStage(EmdadgarInvoiceStage stage) async {
     if (stage == selectedStage) return;
 
+    _stageFilters[selectedStage] = filter;
     selectedStage = stage;
     _clearListForRefresh();
-    filter = _copyFilter(filter, pageSize: pageSize, skip: 0);
+    filter = _stageFilters[stage] ?? _defaultFilter();
+    filter = _normalizeFilterForStage(filter);
+    _stageFilters[stage] = filter;
 
     await fetchList(refresh: true);
   }
@@ -156,7 +223,7 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
 
     _retryAction = () => fetchList(refresh: refresh);
 
-    final nextSkip = refresh ? 0 : items.length;
+    final nextSkip = pageSize == 0 ? 0 : (refresh ? 0 : items.length);
     final requestFilter = _copyFilter(
       filter,
       pageSize: pageSize,
@@ -186,11 +253,13 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
     result.when(
       success: (page, _, __) {
         final received = page.records ?? const <EmdadgarInvoiceRecordEntity>[];
-        final records = refresh ? received : [...items, ...received];
+        final records = pageSize == 0 || refresh
+            ? received
+            : [...items, ...received];
 
         itemsNotifier.value = records;
         totalCount = page.count ?? records.length;
-        hasMore = records.length < totalCount;
+        hasMore = pageSize > 0 && records.length < totalCount;
         hasLoadedOnce = true;
         paginationLoadingNotifier.value = false;
 
@@ -224,28 +293,41 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
       pageSize: pageSize,
       skip: 0,
     );
+    _stageFilters[selectedStage] = filter;
     _clearListForRefresh();
     await fetchList(refresh: true);
   }
 
   Future<void> applyFilter(InvoiceListFilterParamEntity value) async {
-    filter = _copyFilter(
-      value,
-      showSubscription: filter.showSubscription,
-      pageSize: pageSize,
-      skip: 0,
+    filter = _normalizeFilterForStage(
+      _copyFilter(
+        value,
+        showSubscription: filter.showSubscription,
+        pageSize: pageSize,
+        skip: 0,
+      ),
     );
+    _stageFilters[selectedStage] = filter;
     _clearListForRefresh();
     await fetchList(refresh: true);
   }
 
   Future<void> clearFilter() async {
     filter = InvoiceListFilterParamEntity.withDefaultDateRange(
+      serviceType: null,
       pageSize: pageSize,
       skip: 0,
     );
+    _stageFilters[selectedStage] = filter;
     _clearListForRefresh();
     await fetchList(refresh: true);
+  }
+
+  InvoiceListFilterParamEntity _defaultFilter() {
+    return InvoiceListFilterParamEntity.withDefaultDateRange(
+      pageSize: pageSize,
+      skip: 0,
+    );
   }
 
   void _clearListForRefresh() {
@@ -283,6 +365,12 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
     selectedRequestIdsNotifier.value = <int>{};
   }
 
+  Future<ApiResult<InvoiceDocumentUrlsEntity>> getCustomerInvoiceDocumentUrls(
+    String invoiceGuid,
+  ) {
+    return _getCustomerInvoiceDocumentUrlsUseCase(invoiceGuid);
+  }
+
   Future<int?> cacheSelectedRequest(EmdadgarInvoiceRecordEntity item) async {
     final request = _mapToServiceRequest(item);
     if (request == null) {
@@ -309,6 +397,33 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
         })
         .toList(growable: false);
 
+    await _confirmItems(
+      selectedItems,
+      retryAction: confirmSelected,
+      clearSelectedItems: true,
+    );
+  }
+
+  Future<void> confirmItem(EmdadgarInvoiceRecordEntity item) async {
+    if (item.finalizeEmdadgarInvoiceVisible != true) return;
+
+    if (!selectedStage.supportsBulkAccept) {
+      _emitError('محدودیت دسترسی');
+      return;
+    }
+
+    await _confirmItems(
+      <EmdadgarInvoiceRecordEntity>[item],
+      retryAction: () => confirmItem(item),
+      clearSelectedItems: false,
+    );
+  }
+
+  Future<void> _confirmItems(
+    List<EmdadgarInvoiceRecordEntity> selectedItems, {
+    required VoidCallback retryAction,
+    required bool clearSelectedItems,
+  }) async {
     if (selectedItems.isEmpty || confirmLoadingNotifier.value) return;
 
     final hasIncompleteItem = selectedItems.any((item) {
@@ -322,7 +437,7 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
       return;
     }
 
-    _retryAction = confirmSelected;
+    _retryAction = retryAction;
     confirmLoadingNotifier.value = true;
 
     final param = BulkInvoiceAcceptParamEntity(
@@ -338,84 +453,83 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
     );
 
     final result = await _acceptSelectedInvoices(param);
-    result.when(
-      success: (_, __, ___) async {
+    await result.when<Future<void>>(
+      success: (data, _, __) async {
         confirmLoadingNotifier.value = false;
-        clearSelection();
-        _successMessage = 'صورت وضعیت‌های انتخاب‌شده با موفقیت تایید شدند.';
+        if (clearSelectedItems) clearSelection();
+        _bulkResultMessage = _buildBulkResultMessage(data);
         await fetchList(refresh: true);
       },
-      failure: (error, message) {
+      failure: (error, message) async {
         confirmLoadingNotifier.value = false;
         _emitError(message ?? error.toString());
       },
-      expireToken: () {
+      expireToken: () async {
         confirmLoadingNotifier.value = false;
         _emitError('نشست کاربری منقضی شده است.');
       },
-      connectionError: () {
+      connectionError: () async {
         confirmLoadingNotifier.value = false;
         _safeEmit(const EmdadgarInvoiceState.connectionError());
       },
     );
   }
 
+  BottomSheetMessageModel _buildBulkResultMessage(
+    BulkInvoiceAcceptResultEntity result,
+  ) {
+    final messages = result.messageList
+            ?.map((item) => item.trim())
+            .where((item) => item.isNotEmpty)
+            .toList(growable: false) ??
+        const <String>[];
+    final lines = <String>[
+      'تعداد کل: ${result.totalCount ?? 0}',
+      'موفق: ${result.succeedCount ?? 0}',
+      'ناموفق: ${result.failuresCount ?? 0}',
+      'قبلاً تولید شده: ${result.alreadyGeneratedInvoicesCount ?? 0}',
+      if (messages.isNotEmpty) '',
+      if (messages.isNotEmpty) 'جزئیات:',
+      ...messages.map((message) => '• $message'),
+    ];
+
+    return BottomSheetMessageModel(
+      title: 'نتیجه تایید صورت وضعیت',
+      message: lines.join('\n'),
+    );
+  }
+
   Future<void> exportReport() async {
     if (reportLoadingNotifier.value) return;
+    if (items.isEmpty) {
+      _emitError('داده‌ای برای تهیه گزارش وجود ندارد.');
+      return;
+    }
 
     _retryAction = exportReport;
     reportLoadingNotifier.value = true;
 
-    final reportStage = selectedStage;
-    final listResult = await _getStageInvoices(
-      _copyFilter(filter, pageSize: 0, skip: 0),
-      stage: reportStage,
+    final exportResult = await _exportExcelUseCase(
+      EmdadgarInvoiceExcelReportFactory.create(items),
     );
 
-    await listResult.when<Future<void>>(
-      success: (page, _, __) async {
-        final reportItems = page.records ?? const <EmdadgarInvoiceRecordEntity>[];
-        if (reportItems.isEmpty) {
-          reportLoadingNotifier.value = false;
-          _emitError('داده‌ای برای تهیه گزارش وجود ندارد.');
-          return;
-        }
-
-        final exportResult = await _exportExcelUseCase(
-          EmdadgarInvoiceExcelReportFactory.create(reportItems),
-        );
-
-        exportResult.when(
-          success: (data, _, __) {
-            reportLoadingNotifier.value = false;
-            _successMessage = data.isBrowserDownload
-                ? 'دانلود گزارش صورت وضعیت‌ها آغاز شد.'
-                : 'گزارش صورت وضعیت‌ها ذخیره شد.';
-            _safeEmit(const EmdadgarInvoiceState.loaded());
-          },
-          failure: (error, message) {
-            reportLoadingNotifier.value = false;
-            _emitError(message ?? error.toString());
-          },
-          expireToken: () {
-            reportLoadingNotifier.value = false;
-            _emitError('نشست کاربری منقضی شده است.');
-          },
-          connectionError: () {
-            reportLoadingNotifier.value = false;
-            _safeEmit(const EmdadgarInvoiceState.connectionError());
-          },
-        );
+    exportResult.when(
+      success: (data, _, __) {
+        reportLoadingNotifier.value = false;
+        _successMessage = data.isBrowserDownload
+            ? 'دانلود گزارش صورت وضعیت‌ها آغاز شد.'
+            : 'گزارش صورت وضعیت‌ها ذخیره شد.';
+        _safeEmit(const EmdadgarInvoiceState.loaded());
       },
-      failure: (error, message) async {
+      failure: (error, message) {
         reportLoadingNotifier.value = false;
         _emitError(message ?? error.toString());
       },
-      expireToken: () async {
+      expireToken: () {
         reportLoadingNotifier.value = false;
         _emitError('نشست کاربری منقضی شده است.');
       },
-      connectionError: () async {
+      connectionError: () {
         reportLoadingNotifier.value = false;
         _safeEmit(const EmdadgarInvoiceState.connectionError());
       },
@@ -444,10 +558,58 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
     return switch (selectedStage) {
       EmdadgarInvoiceStage.initial => _acceptInitialInvoicesUseCase(param),
       EmdadgarInvoiceStage.current => _acceptInvoicesUseCase(param),
-      _ => throw StateError(
+      EmdadgarInvoiceStage.finalApproval =>
+        _acceptInvoicesUseCase.acceptFinalApproval(param),
+      EmdadgarInvoiceStage.finalCorrection =>
+        _acceptInvoicesUseCase.acceptFinalCorrection(param),
+      EmdadgarInvoiceStage.taxpayerFinal => throw StateError(
           'Bulk accept is not supported for ${selectedStage.name}.',
         ),
     };
+  }
+
+  InvoiceListFilterParamEntity _normalizeFilterForStage(
+    InvoiceListFilterParamEntity value,
+  ) {
+    return switch (selectedStage) {
+      EmdadgarInvoiceStage.initial => _copyFilter(
+          value,
+          invoiceStatus: null,
+        ),
+      EmdadgarInvoiceStage.current => value,
+      EmdadgarInvoiceStage.finalApproval => _copyFilter(
+          value,
+          invoiceStatus: null,
+          hasObjection: null,
+        ),
+      EmdadgarInvoiceStage.finalCorrection => _copyFilter(
+          value,
+          invoiceStatus: null,
+          hasObjection: null,
+        ),
+      EmdadgarInvoiceStage.taxpayerFinal => _copyFilter(
+          value,
+          invoiceStatus: null,
+          hasObjection: null,
+        ),
+    };
+  }
+
+  bool canOpenInvoice(EmdadgarInvoiceRecordEntity item) {
+    final hasEvaluation = item.identity?.evaluationId != null;
+    final hasServiceType = item.state?.serviceType != null;
+    if (!hasEvaluation || !hasServiceType) return false;
+
+    if (selectedStage == EmdadgarInvoiceStage.initial) {
+      return item.previewEmdadgarInvoiceVisible == true &&
+          item.state?.serviceType == ServiceType.reliefService.value;
+    }
+
+    return item.emdadgarInvoiceVisible == true;
+  }
+
+  bool canFinalizeItem(EmdadgarInvoiceRecordEntity item) {
+    return item.finalizeEmdadgarInvoiceVisible == true;
   }
 
   BaseRequestEntity? _mapToServiceRequest(EmdadgarInvoiceRecordEntity item) {

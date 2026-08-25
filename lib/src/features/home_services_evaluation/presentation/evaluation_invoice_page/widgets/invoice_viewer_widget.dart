@@ -14,9 +14,14 @@ import 'other_cost_invoice_widget.dart';
 import 'part_invoice_widget.dart';
 
 class InvoiceViewerWidget extends StatelessWidget {
-  const InvoiceViewerWidget({super.key, required this.type});
+  const InvoiceViewerWidget({
+    super.key,
+    required this.type,
+    this.detailsTitle = 'مشاهده جزئیات پیش‌فاکتور',
+  });
 
   final ServiceType type;
+  final String detailsTitle;
 
   @override
   Widget build(BuildContext context) {
@@ -38,7 +43,7 @@ class InvoiceViewerWidget extends StatelessWidget {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               BodyMediumText(
-                text: 'مشاهده جزئیات پیش‌فاکتور',
+                text: detailsTitle,
                 color: Theme.of(context).colorScheme.secondary,
               ),
               Space.w4,

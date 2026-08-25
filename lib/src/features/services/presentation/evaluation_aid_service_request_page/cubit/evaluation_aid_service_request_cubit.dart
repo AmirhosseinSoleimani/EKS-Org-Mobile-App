@@ -449,7 +449,7 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
   }) async {
     _retryAction = () => submitEvaluationForAidService(flow: flow);
 
-    final validationMessage = _validateEvaluationForm();
+    final validationMessage = _validateEvaluationForm(flow);
 
     if (validationMessage != null) {
       _emitError(validationMessage);
@@ -483,6 +483,10 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     final result = switch (flow) {
       EvaluationAidServiceSubmitFlow.standard =>
         await _submitEvaluationForAidServiceUseCase(param),
+      EvaluationAidServiceSubmitFlow.customerCorrection =>
+        await _submitEvaluationForAidServiceUseCase.customerCorrection(param),
+      EvaluationAidServiceSubmitFlow.emdadgarCorrection =>
+        await _submitEvaluationForAidServiceUseCase.emdadgarCorrection(param),
       EvaluationAidServiceSubmitFlow.hesabdari =>
         await _submitEvaluationForAidServiceUseCase.hesabdari(param),
       EvaluationAidServiceSubmitFlow.daraei =>
@@ -507,13 +511,37 @@ class EvaluationAidServiceRequestCubit extends Cubit<EvaluationAidServiceRequest
     );
   }
 
-  String? _validateEvaluationForm() {
+  String? _validateEvaluationForm(EvaluationAidServiceSubmitFlow flow) {
+    if (flow != EvaluationAidServiceSubmitFlow.standard) {
+      if (mainForm.assignDateController.text.trim().isEmpty ||
+          mainForm.arriveDateController.text.trim().isEmpty) {
+        return 'وارد کردن تاریخ الزامیست';
+      }
+
+      if (mainForm.assignTimeController.text.trim().isEmpty ||
+          mainForm.arriveTimeController.text.trim().isEmpty) {
+        return 'وارد کردن ساعت حضور الزامیست';
+      }
+    }
+
     if (selectedDefect.value == null) {
       return 'لطفاً ایراد خودرو را انتخاب کنید';
     }
 
     if (selectedServiceCategory.value == null) {
       return 'لطفاً نوع امداد را انتخاب کنید';
+    }
+
+    if (flow != EvaluationAidServiceSubmitFlow.standard &&
+        selectedServiceCategory.value?.evaluationViewType ==
+            EvaluationServiceCategoryViewType.transport) {
+      if (transportForm.endWorkDateController.text.trim().isEmpty) {
+        return 'وارد کردن تاریخ اتمام کار الزامیست';
+      }
+
+      if (transportForm.endWorkTimeController.text.trim().isEmpty) {
+        return 'وارد کردن ساعت اتمام کار الزامیست';
+      }
     }
 
     final kilometerText = _normalizeNumberText(

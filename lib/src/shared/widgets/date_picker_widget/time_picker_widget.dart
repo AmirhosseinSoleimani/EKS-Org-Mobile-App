@@ -15,12 +15,14 @@ class TimePickerWidget extends StatelessWidget {
     required this.controller,
     required this.onTimeSelected,
     required this.suffixIcon,
+    this.enabled = true,
   });
 
   final String label;
   final TextEditingController controller;
   final ValueChanged<DateTime> onTimeSelected;
   final Widget? suffixIcon;
+  final bool enabled;
 
   @override
   Widget build(BuildContext context) {
@@ -31,7 +33,7 @@ class TimePickerWidget extends StatelessWidget {
       readOnly: true,
       textDirection: TextDirection.ltr,
       textAlign: TextAlign.right,
-      onTap: () => _pickTime(context),
+      onTap: enabled ? () => _pickTime(context) : null,
       suffixIcon: suffixIcon,
     );
   }

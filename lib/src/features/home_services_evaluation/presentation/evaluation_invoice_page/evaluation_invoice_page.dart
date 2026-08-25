@@ -20,23 +20,39 @@ class EvaluationInvoicePage extends StatelessWidget {
   static const path = "/evaluation-invoice-page";
   static const name = "evaluation-invoice-page";
   final String emdadgarEvaluationId;
+  final EvaluationInvoiceFlow flow;
 
-  const EvaluationInvoicePage({super.key, required this.emdadgarEvaluationId});
+  const EvaluationInvoicePage({
+    super.key,
+    required this.emdadgarEvaluationId,
+    this.flow = EvaluationInvoiceFlow.customer,
+  });
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (_) =>
-          getIt<EvaluationInvoiceCubit>()..init(emdadgarEvaluationId),
-      child: _View(emdadgarEvaluationId),
+          getIt<EvaluationInvoiceCubit>()..init(emdadgarEvaluationId, flow: flow),
+      child: _View(emdadgarEvaluationId, flow),
     );
   }
 }
 
+class EvaluationInvoicePageArgs {
+  const EvaluationInvoicePageArgs({
+    required this.emdadgarEvaluationId,
+    this.flow = EvaluationInvoiceFlow.customer,
+  });
+
+  final String emdadgarEvaluationId;
+  final EvaluationInvoiceFlow flow;
+}
+
 class _View extends StatelessWidget {
   final String emdadgarEvaluationId;
+  final EvaluationInvoiceFlow flow;
 
-  const _View(this.emdadgarEvaluationId);
+  const _View(this.emdadgarEvaluationId, this.flow);
 
   @override
   Widget build(BuildContext context) {
@@ -64,11 +80,11 @@ class _View extends StatelessWidget {
                 buttonColor: cubit.selectedRequest?.serviceType?.serviceColor,
                 data: BottomSheetMessageModel(
                   title: '',
-                  message: 'عملیات با موفقیت انجام شد',
+                  message: cubit.flow.successMessage,
                 ),
                 onPositive: () {
                   context.pop();
-                  context.pop();
+                  context.pop(true);
                 },
               );
             },
@@ -76,7 +92,7 @@ class _View extends StatelessWidget {
               BottomSheetMessage.showCustom(
                 context: context,
                 content: NoInternetBottomSheet(
-                  onRetry: () => cubit.init(emdadgarEvaluationId),
+                  onRetry: () => cubit.init(emdadgarEvaluationId, flow: flow),
                 ),
                 actionWidget: const SizedBox.shrink(),
                 isDismissible: false,
@@ -86,7 +102,7 @@ class _View extends StatelessWidget {
           );
         },
         child: Scaffold(
-          appBar: SimpleAppBar(title: "پیش فاکتور"),
+          appBar: SimpleAppBar(title: flow.pageTitle),
           body: _Body(),
           bottomNavigationBar:
               BlocBuilder<EvaluationInvoiceCubit, EvaluationInvoiceState>(
@@ -167,6 +183,9 @@ class _LoadedView extends StatelessWidget {
                 type:
                     cubit.selectedRequest?.serviceType ??
                     ServiceType.homeService,
+                detailsTitle: cubit.flow.usesEmdadgarPreInvoice
+                    ? 'مشاهده جزئیات پیش صورت وضعیت'
+                    : 'مشاهده جزئیات پیش‌فاکتور',
               ),
           ],
         ),

@@ -15,6 +15,7 @@ class SelectedLaborListItem extends StatelessWidget {
   final VoidCallback onEdit;
   final VoidCallback onDelete;
   final VoidCallback onToggleShowMoreParts;
+  final bool editable;
 
   const SelectedLaborListItem({
     super.key,
@@ -25,6 +26,7 @@ class SelectedLaborListItem extends StatelessWidget {
     required this.onEdit,
     required this.onDelete,
     required this.onToggleShowMoreParts,
+    this.editable = true,
   });
 
   static const _borderRadius = 6.0;
@@ -59,12 +61,14 @@ class SelectedLaborListItem extends StatelessWidget {
             animationDuration: _animationDuration,
             onToggleShowMore: onToggleShowMoreParts,
           ),
-          Space.h12,
-          _LaborActionButtons(
-            onAddPart: onAddPart,
-            onEdit: onEdit,
-            onDelete: onDelete,
-          ),
+          if (editable) ...[
+            Space.h12,
+            _LaborActionButtons(
+              onAddPart: onAddPart,
+              onEdit: onEdit,
+              onDelete: onDelete,
+            ),
+          ],
         ],
       ),
     );

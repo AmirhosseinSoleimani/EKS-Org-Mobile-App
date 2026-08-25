@@ -12,10 +12,12 @@ enum EmdadgarInvoiceStage {
   finalApproval(
     title: 'تایید نهایی',
     sectionTitle: 'صورت وضعیت های تایید نهایی',
+    supportsBulkAccept: true,
   ),
   finalCorrection(
     title: 'تایید و اصلاح',
     sectionTitle: 'صورت وضعیت های نهایی (تایید و اصلاح)',
+    supportsBulkAccept: true,
   ),
   taxpayerFinal(
     title: 'قطعی مودیان',

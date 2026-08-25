@@ -15,11 +15,13 @@ import '../../../../evaluation/domain/entities/defect_entity.dart';
 class ServiceDetailSection extends StatelessWidget {
   final EvaluationAidServiceRequestCubit cubit;
   final bool showServiceField;
+  final bool editable;
 
   const ServiceDetailSection({
     super.key,
     required this.cubit,
     this.showServiceField = true,
+    this.editable = true,
   });
 
   @override
@@ -41,6 +43,7 @@ class ServiceDetailSection extends StatelessWidget {
             selectedNotifier: cubit.selectedDefect,
             items: cubit.defectList,
             itemTitleBuilder: (item) => item.title ?? '',
+            enabled: editable,
             onSelect: (item) => cubit.selectDefect(item),
           ),
           Space.h16,
@@ -49,7 +52,7 @@ class ServiceDetailSection extends StatelessWidget {
             placeholder: 'انتخاب نوع امداد',
             selectedNotifier: cubit.selectedServiceCategory,
             items: cubit.serviceCategoryList,
-            enabled: cubit.serviceCategoryList.isNotEmpty,
+            enabled: editable && cubit.serviceCategoryList.isNotEmpty,
             itemTitleBuilder: (item) => item.title ?? '',
             onSelect: (item) => cubit.setSelectedServiceCategory(item),
           ),
@@ -74,6 +77,7 @@ class ServiceDetailSection extends StatelessWidget {
             textAlign: TextAlign.start,
             textInputAction: TextInputAction.done,
             maxLines: 3,
+            readOnly: !editable,
           ),
           if (cubit.lastEvaluationEntity?.avarezi == true) ...[
             Space.h16,
@@ -81,6 +85,7 @@ class ServiceDetailSection extends StatelessWidget {
               title: 'عوارض آزاد راهی پرداخت شد',
               notifier: cubit.mainForm.isFreewayTollPaid,
               activeColor: ServiceType.reliefService.serviceColor,
+              enabled: editable,
             ),
           ],
         ],

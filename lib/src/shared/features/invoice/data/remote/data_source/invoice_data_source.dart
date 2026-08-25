@@ -12,4 +12,7 @@ abstract class InvoiceDataSource {
 
   Future<BaseSingleResponse<InvoiceModel?>> customerPreInvoiceOnTheFly(
       AcceptEvaluationParamModel param);
+
+  Future<BaseSingleResponse<InvoiceModel?>> emdadgarPreInvoiceOnTheFly(
+      AcceptEvaluationParamModel param);
 }

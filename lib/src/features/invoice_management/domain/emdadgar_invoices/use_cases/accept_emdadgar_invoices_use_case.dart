@@ -15,4 +15,16 @@ class AcceptEmdadgarInvoicesUseCase {
   ) {
     return _repository.acceptInvoices(param);
   }
+
+  Future<ApiResult<BulkInvoiceAcceptResultEntity>> acceptFinalApproval(
+    BulkInvoiceAcceptParamEntity param,
+  ) {
+    return _repository.acceptFinalApprovalInvoices(param);
+  }
+
+  Future<ApiResult<BulkInvoiceAcceptResultEntity>> acceptFinalCorrection(
+    BulkInvoiceAcceptParamEntity param,
+  ) {
+    return _repository.acceptFinalCorrectionInvoices(param);
+  }
 }

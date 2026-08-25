@@ -77,6 +77,25 @@ class FinalizeInvoiceRemoteDataSourceImpl extends EvaluationRemoteDataSource {
   }
 
   @override
+  Future<BaseSingleResponse> acceptInvoiceOperatorEvaluation(
+    AcceptEvaluationParamModel param,
+  ) async => await _service.invoiceOperatorEvaluationAccept(param.toJson());
+
+  @override
+  Future<BaseSingleResponse> acceptHesabdariAmendment(
+    AcceptEvaluationParamModel param,
+  ) async => await _service.amendmentInvoiceByHesabdari({
+    'request': param.toJson(),
+  });
+
+  @override
+  Future<BaseSingleResponse> acceptDaraeiAmendment(
+    AcceptEvaluationParamModel param,
+  ) async => await _service.amendmentInvoiceByDaraei({
+    'request': param.toJson(),
+  });
+
+  @override
   Future<BaseSingleResponse<
       EmdadgarServiceDetailModel>> getServiceDetailAndCheckSubscriptionForEmdagar(
       ServiceDetailForEvaluationParamModel param) async {
@@ -123,6 +142,16 @@ class FinalizeInvoiceRemoteDataSourceImpl extends EvaluationRemoteDataSource {
   @override
   Future<BaseSingleResponse<PostEvaluationResponseModel>> submitEvaluationForAidService(AidServiceEvaluationSubmitParamModel param)
   async => await _service.aidServiceEvaluationPost(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<dynamic>> submitTrackerEvaluation(
+    AidServiceEvaluationSubmitParamModel param,
+  ) async => await _service.insertTrackerEvaluation(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<dynamic>> submitInvoiceOperatorEvaluation(
+    AidServiceEvaluationSubmitParamModel param,
+  ) async => await _service.insertInvoiceOperatorEvaluation(param.toJson());
 
   @override
   Future<BaseSingleResponse<dynamic>> submitHesabdariEvaluation(

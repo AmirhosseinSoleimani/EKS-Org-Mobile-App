@@ -26,6 +26,7 @@ import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/servic
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/service_package_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/service_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/repositories/evaluation_repository.dart';
+import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result_converter.dart';
 import 'package:injectable/injectable.dart';
@@ -92,6 +93,48 @@ class EvaluationRepositoryImpl extends EvaluationRepository {
       final result = await _remoteDataSource
           .acceptEvaluation(param.toModel());
       return result.toApiResult();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<void>> acceptInvoiceOperatorEvaluation(
+    AcceptEvaluationParamEntity param,
+  ) async {
+    try {
+      final result = await _remoteDataSource.acceptInvoiceOperatorEvaluation(
+        param.toModel(),
+      );
+      return result.toApiResult<void>();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<void>> acceptHesabdariAmendment(
+    AcceptEvaluationParamEntity param,
+  ) async {
+    try {
+      final result = await _remoteDataSource.acceptHesabdariAmendment(
+        param.toModel(),
+      );
+      return result.toApiResult<void>();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<void>> acceptDaraeiAmendment(
+    AcceptEvaluationParamEntity param,
+  ) async {
+    try {
+      final result = await _remoteDataSource.acceptDaraeiAmendment(
+        param.toModel(),
+      );
+      return result.toApiResult<void>();
     } catch (e, s) {
       return e.toApiResult(s);
     }
@@ -195,31 +238,102 @@ class EvaluationRepositoryImpl extends EvaluationRepository {
     }
   }
   @override
-  Future<ApiResult<void>> submitHesabdariEvaluation(
+  Future<ApiResult<PostEvaluationResponseEntity>> submitTrackerEvaluation(
     AidServiceEvaluationSubmitParamEntity param,
   ) async {
     try {
-      final result = await _remoteDataSource.submitHesabdariEvaluation(
+      final result = await _remoteDataSource.submitTrackerEvaluation(
         param.toModel(),
       );
-      return result.toApiResult<void>();
+      return _mapDynamicEvaluationResult(result);
     } catch (e, s) {
       return e.toApiResult(s);
     }
   }
 
   @override
-  Future<ApiResult<void>> submitDaraeiEvaluation(
+  Future<ApiResult<PostEvaluationResponseEntity>> submitInvoiceOperatorEvaluation(
+    AidServiceEvaluationSubmitParamEntity param,
+  ) async {
+    try {
+      final result = await _remoteDataSource.submitInvoiceOperatorEvaluation(
+        param.toModel(),
+      );
+      return _mapDynamicEvaluationResult(result);
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<PostEvaluationResponseEntity>> submitHesabdariEvaluation(
+    AidServiceEvaluationSubmitParamEntity param,
+  ) async {
+    try {
+      final result = await _remoteDataSource.submitHesabdariEvaluation(
+        param.toModel(),
+      );
+      return _mapDynamicEvaluationResult(result);
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
+
+  @override
+  Future<ApiResult<PostEvaluationResponseEntity>> submitDaraeiEvaluation(
     AidServiceEvaluationSubmitParamEntity param,
   ) async {
     try {
       final result = await _remoteDataSource.submitDaraeiEvaluation(
         param.toModel(),
       );
-      return result.toApiResult<void>();
+      return _mapDynamicEvaluationResult(result);
     } catch (e, s) {
       return e.toApiResult(s);
     }
+  }
+
+  ApiResult<PostEvaluationResponseEntity> _mapDynamicEvaluationResult(
+    BaseSingleResponse<dynamic> result,
+  ) {
+    final mapped = result.toApiResult<dynamic>();
+    return mapped.when(
+      success: (data, failures, resultCode) {
+        final id = _evaluationId(data);
+        if (id == null || id.isEmpty || id == '0') {
+          return ApiResult<PostEvaluationResponseEntity>.failure(
+            failures: failures?.join('\n') ??
+                'شناسه ارزیابی از پاسخ سرویس دریافت نشد.',
+          );
+        }
+        return ApiResult<PostEvaluationResponseEntity>.success(
+          data: PostEvaluationResponseEntity(id: id),
+          failures: failures,
+          resultCode: resultCode,
+        );
+      },
+      failure: (error, failures) =>
+          ApiResult<PostEvaluationResponseEntity>.failure(
+            error: error,
+            failures: failures,
+          ),
+      expireToken: () =>
+          const ApiResult<PostEvaluationResponseEntity>.expireToken(),
+      connectionError: () =>
+          const ApiResult<PostEvaluationResponseEntity>.connectionError(),
+    );
+  }
+
+  String? _evaluationId(dynamic data) {
+    if (data == null) return null;
+    if (data is Map) {
+      final value = data['id'] ??
+          data['Id'] ??
+          data['evaluationId'] ??
+          data['emdadgarEvaluationId'];
+      return value?.toString();
+    }
+    return data.toString();
   }
 
 }

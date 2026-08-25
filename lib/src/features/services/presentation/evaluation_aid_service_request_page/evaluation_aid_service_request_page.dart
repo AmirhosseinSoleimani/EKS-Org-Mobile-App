@@ -3,6 +3,7 @@ import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/representation_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/service_category_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/evaluation_invoice_page/evaluation_invoice_page.dart';
+import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/evaluation_invoice_page/cubit/evaluation_invoice_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/bottom_sheet/add_part_and_labor_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/cubit/evaluation_aid_service_request_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/enums/evaluation_aid_service_page_mode.dart';
@@ -61,13 +62,27 @@ class _View extends StatelessWidget {
     >(
       listener: (context, state) {
         state.whenOrNull(
-          submitSuccess: (id) {
-            if (args.mode.openInvoiceAfterSubmit) {
-              context.push(
-                EvaluationInvoicePage.path,
-                extra: int.tryParse(id),
-              );
-            } else {
+          submitSuccess: (id) async {
+            final shouldOpenPreview =
+                args.mode.openInvoiceAfterSubmit ||
+                args.submitFlow != EvaluationAidServiceSubmitFlow.standard;
+
+            if (!shouldOpenPreview) {
+              context.pop(true);
+              return;
+            }
+
+            final finalized = await context.push<bool>(
+              EvaluationInvoicePage.path,
+              extra: EvaluationInvoicePageArgs(
+                emdadgarEvaluationId: id,
+                flow: _invoiceFlow(args.submitFlow),
+              ),
+            );
+
+            if (finalized == true &&
+                context.mounted &&
+                args.mode != EvaluationAidServicePageMode.registration) {
               context.pop(true);
             }
           },
@@ -110,7 +125,7 @@ class _View extends StatelessWidget {
                           ServiceType.reliefService.serviceColor,
                     ),
                   ),
-                  orElse: () => _LoadedView(mode: args.mode),
+                  orElse: () => _LoadedView(args: args),
                 );
               },
             ),
@@ -145,12 +160,28 @@ class _View extends StatelessWidget {
       ),
     );
   }
+
+  EvaluationInvoiceFlow _invoiceFlow(EvaluationAidServiceSubmitFlow flow) {
+    return switch (flow) {
+      EvaluationAidServiceSubmitFlow.standard => EvaluationInvoiceFlow.customer,
+      EvaluationAidServiceSubmitFlow.customerCorrection =>
+        EvaluationInvoiceFlow.customer,
+      EvaluationAidServiceSubmitFlow.emdadgarCorrection =>
+        EvaluationInvoiceFlow.emdadgar,
+      EvaluationAidServiceSubmitFlow.hesabdari =>
+        EvaluationInvoiceFlow.hesabdari,
+      EvaluationAidServiceSubmitFlow.daraei =>
+        EvaluationInvoiceFlow.daraei,
+    };
+  }
 }
 
 class _LoadedView extends StatelessWidget {
-  const _LoadedView({required this.mode});
+  const _LoadedView({required this.args});
 
-  final EvaluationAidServicePageMode mode;
+  final EvaluationAidServicePageArgs args;
+
+  EvaluationAidServicePageMode get mode => args.mode;
 
   @override
   Widget build(BuildContext context) {
@@ -200,9 +231,24 @@ class _LoadedView extends StatelessWidget {
               onAssignTimeChange: cubit.mainForm.setAssignTime,
               onArriveDateChange: cubit.mainForm.setArriveDate,
               onArriveTimeChange: cubit.mainForm.setArriveTime,
+              dateTimeReadOnly:
+                  mode == EvaluationAidServicePageMode.statementCorrection &&
+                  !args.editInvoiceBaseForm,
+              kilometerReadOnly:
+                  mode == EvaluationAidServicePageMode.statementCorrection &&
+                  !args.editKilometer,
+              customerDistanceReadOnly:
+                  mode == EvaluationAidServicePageMode.statementCorrection &&
+                  !args.editKilometer,
             ),
             _formElementGap(),
-            ServiceDetailSection(cubit: cubit, showServiceField: mode.showServiceField),
+            ServiceDetailSection(
+              cubit: cubit,
+              showServiceField: mode.showServiceField,
+              editable:
+                  mode != EvaluationAidServicePageMode.statementCorrection ||
+                  args.editInvoiceBaseForm,
+            ),
             if (mode.showDynamicSections) ...[
               _formElementGap(),
               ValueListenableBuilder<ServiceCategoryEntity?>(
@@ -214,6 +260,12 @@ class _LoadedView extends StatelessWidget {
                       controller: cubit.transportForm,
                       representationTitleBuilder: (item) => item.label,
                       onSelectRepresentation: cubit.transportForm.setSelectedRepresentation,
+                      baseEditable:
+                          mode != EvaluationAidServicePageMode.statementCorrection ||
+                          args.editInvoiceBaseForm,
+                      distanceEditable:
+                          mode != EvaluationAidServicePageMode.statementCorrection ||
+                          args.editKilometer,
                     ),
                     laborAndPartSection: SelectedLaborAndPartSection(
                       selectedLaborsListenable: cubit.selectedLaborsNotifier,
@@ -249,6 +301,9 @@ class _LoadedView extends StatelessWidget {
                       onDeleteLabor: cubit.removeSelectedLabor,
                       onToggleShowMoreParts:
                           cubit.toggleSelectedLaborPartsVisibility,
+                      editable:
+                          mode != EvaluationAidServicePageMode.statementCorrection ||
+                          args.editLaborAndPart,
                     ),
                   );
                 },

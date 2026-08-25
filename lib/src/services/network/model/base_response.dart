@@ -101,7 +101,9 @@ class BaseSingleResponse<T> extends BaseResponse {
       resultCode: baseResponse.resultCode,
       data: rawData is Map
           ? create(Map<String, dynamic>.from(rawData))
-          : null,
+          : rawData is T
+              ? rawData
+              : null,
     );
   }
 }

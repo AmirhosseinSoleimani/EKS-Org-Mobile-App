@@ -27,8 +27,16 @@ abstract class EmdadgarInvoiceDataSource {
     BulkInvoiceAcceptParamModel request,
   );
 
+  Future<BulkInvoiceAcceptResultModel> acceptFinalApprovalInvoices(
+    BulkInvoiceAcceptParamModel request,
+  );
+
   Future<EmdadgarInvoicePageModel> getFinalApprovalInvoices(
     InvoiceListFilterRequestModel request,
+  );
+
+  Future<BulkInvoiceAcceptResultModel> acceptFinalCorrectionInvoices(
+    BulkInvoiceAcceptParamModel request,
   );
 
   Future<EmdadgarInvoicePageModel> getFinalCorrectionInvoices(

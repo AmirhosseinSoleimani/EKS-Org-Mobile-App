@@ -27,8 +27,16 @@ abstract class EmdadgarInvoiceRepository {
     BulkInvoiceAcceptParamEntity param,
   );
 
+  Future<ApiResult<BulkInvoiceAcceptResultEntity>> acceptFinalApprovalInvoices(
+    BulkInvoiceAcceptParamEntity param,
+  );
+
   Future<ApiResult<EmdadgarInvoicePageEntity>> getFinalApprovalInvoices(
     InvoiceListFilterParamEntity param,
+  );
+
+  Future<ApiResult<BulkInvoiceAcceptResultEntity>> acceptFinalCorrectionInvoices(
+    BulkInvoiceAcceptParamEntity param,
   );
 
   Future<ApiResult<EmdadgarInvoicePageEntity>> getFinalCorrectionInvoices(

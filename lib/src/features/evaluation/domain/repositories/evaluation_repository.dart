@@ -57,6 +57,15 @@ abstract class EvaluationRepository {
   Future<ApiResult<void>> acceptEvaluation(
       AcceptEvaluationParamEntity param);
 
+  Future<ApiResult<void>> acceptInvoiceOperatorEvaluation(
+      AcceptEvaluationParamEntity param);
+
+  Future<ApiResult<void>> acceptHesabdariAmendment(
+      AcceptEvaluationParamEntity param);
+
+  Future<ApiResult<void>> acceptDaraeiAmendment(
+      AcceptEvaluationParamEntity param);
+
   Future<ApiResult<
       EmdadgarServiceDetailEntity>> getServiceDetailAndCheckSubscriptionForEmdagar(
       ServiceDetailForEvaluationParamEntity param);
@@ -68,10 +77,16 @@ abstract class EvaluationRepository {
       ApiResult<PostEvaluationResponseEntity>> submitEvaluationForAidService(
       AidServiceEvaluationSubmitParamEntity param);
 
-  Future<ApiResult<void>> submitHesabdariEvaluation(
+  Future<ApiResult<PostEvaluationResponseEntity>> submitTrackerEvaluation(
       AidServiceEvaluationSubmitParamEntity param);
 
-  Future<ApiResult<void>> submitDaraeiEvaluation(
+  Future<ApiResult<PostEvaluationResponseEntity>> submitInvoiceOperatorEvaluation(
+      AidServiceEvaluationSubmitParamEntity param);
+
+  Future<ApiResult<PostEvaluationResponseEntity>> submitHesabdariEvaluation(
+      AidServiceEvaluationSubmitParamEntity param);
+
+  Future<ApiResult<PostEvaluationResponseEntity>> submitDaraeiEvaluation(
       AidServiceEvaluationSubmitParamEntity param);
 
   Future<ApiResult<List<RepresentationEntity>>> getRepresentationList(RepresentationParamEntity param);

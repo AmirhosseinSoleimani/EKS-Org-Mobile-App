@@ -12,6 +12,7 @@ class DateTimePickerSection extends StatelessWidget {
 
   final void Function(DateTime?) onDateChange;
   final void Function(DateTime) onTimeChange;
+  final bool enabled;
 
   const DateTimePickerSection({
     super.key,
@@ -21,6 +22,7 @@ class DateTimePickerSection extends StatelessWidget {
     required this.timeController,
     required this.onDateChange,
     required this.onTimeChange,
+    this.enabled = true,
   });
 
   @override
@@ -33,6 +35,7 @@ class DateTimePickerSection extends StatelessWidget {
             controller: dateController,
             labelText: dateLabel,
             hintText: 'انتخاب تاریخ',
+            openPickerOnTap: enabled,
             onTap: (picked) => onDateChange(picked?.toDateTime()),
           ),
         ),
@@ -43,6 +46,7 @@ class DateTimePickerSection extends StatelessWidget {
             label: timeLabel,
             controller: timeController,
             onTimeSelected: onTimeChange,
+            enabled: enabled,
           ),
         ),
       ],

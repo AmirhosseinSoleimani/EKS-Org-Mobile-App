@@ -26,38 +26,24 @@ class SubmitEvaluationForAidServiceUseCase
   Future<ApiResult<PostEvaluationResponseEntity>> hesabdari(
     AidServiceEvaluationSubmitParamEntity arg,
   ) async {
-    return _mapCorrectionResult(
-      await evaluationRepository.submitHesabdariEvaluation(arg),
-    );
+    return evaluationRepository.submitHesabdariEvaluation(arg);
   }
 
   Future<ApiResult<PostEvaluationResponseEntity>> daraei(
     AidServiceEvaluationSubmitParamEntity arg,
   ) async {
-    return _mapCorrectionResult(
-      await evaluationRepository.submitDaraeiEvaluation(arg),
-    );
+    return evaluationRepository.submitDaraeiEvaluation(arg);
   }
 
-  ApiResult<PostEvaluationResponseEntity> _mapCorrectionResult(
-    ApiResult<void> result,
-  ) {
-    return result.when(
-      success: (_, failures, resultCode) =>
-          ApiResult<PostEvaluationResponseEntity>.success(
-            data: PostEvaluationResponseEntity(id: '0'),
-            failures: failures,
-            resultCode: resultCode,
-          ),
-      failure: (error, failures) =>
-          ApiResult<PostEvaluationResponseEntity>.failure(
-            error: error,
-            failures: failures,
-          ),
-      expireToken: () =>
-          const ApiResult<PostEvaluationResponseEntity>.expireToken(),
-      connectionError: () =>
-          const ApiResult<PostEvaluationResponseEntity>.connectionError(),
-    );
+  Future<ApiResult<PostEvaluationResponseEntity>> customerCorrection(
+    AidServiceEvaluationSubmitParamEntity arg,
+  ) async {
+    return evaluationRepository.submitTrackerEvaluation(arg);
+  }
+
+  Future<ApiResult<PostEvaluationResponseEntity>> emdadgarCorrection(
+    AidServiceEvaluationSubmitParamEntity arg,
+  ) async {
+    return evaluationRepository.submitInvoiceOperatorEvaluation(arg);
   }
 }

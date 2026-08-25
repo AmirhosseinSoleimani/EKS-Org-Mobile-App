@@ -1,3 +1,4 @@
+import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/emdadgar_invoice_record_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/enums/emdadgar_invoice_stage.dart';
@@ -8,6 +9,10 @@ import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/e
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/evaluation_aid_service_request_page.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/evaluation_aid_service_request_page/enums/evaluation_aid_service_page_mode.dart';
 import 'package:eks_sana_plus_org/src/features/services/presentation/request_detail/request_detail_page.dart';
+import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
+import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/enums/invoice_type.dart';
+import 'package:eks_sana_plus_org/src/shared/features/invoice/presentation/invoice_request_context_loader.dart';
+import 'package:eks_sana_plus_org/src/shared/features/invoice/presentation/pages/invoice_page.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/domain/policies/current_session_access_policy.dart';
 import 'package:eks_sana_plus_org/src/shared/features/session/presentation/widgets/current_session_access_builder.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
@@ -20,6 +25,7 @@ import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_botto
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 import 'widgets/emdadgar_invoice_header.dart';
 import 'widgets/emdadgar_invoice_list.dart';
@@ -222,6 +228,12 @@ class _EmdadgarInvoiceViewState extends State<_EmdadgarInvoiceView> {
         );
       },
       loaded: () {
+        final bulkResult = cubit.consumeBulkResultMessage();
+        if (bulkResult != null && context.mounted) {
+          BottomSheetMessage.showNotice(context: context, data: bulkResult);
+          return;
+        }
+
         final message = cubit.consumeSuccessMessage();
         if (message == null || !context.mounted) return;
         SnakeBarWidget.showSuccess(context: context, message: message);
@@ -235,6 +247,17 @@ class _EmdadgarInvoiceViewState extends State<_EmdadgarInvoiceView> {
       builder: (_) => InvoiceFilterSheet(
         title: 'فیلتر صورت وضعیت ها',
         showSubscriptionField: false,
+        showObjectionField:
+            cubit.selectedStage == EmdadgarInvoiceStage.initial ||
+            cubit.selectedStage == EmdadgarInvoiceStage.current,
+        showInvoiceStatusField:
+            cubit.selectedStage == EmdadgarInvoiceStage.current,
+        invoiceStatusItems: cubit.invoiceStatusItems,
+        allowAllServiceTypes: true,
+        requireDateRange: true,
+        requestTrackCodeMaxLength: 9,
+        agencyCodeMaxLength: 15,
+        emdadgarNameMaxLength: 50,
         initialFilter: cubit.filter,
         categories: cubit.categories,
         onApply: cubit.applyFilter,
@@ -264,51 +287,235 @@ class _EmdadgarInvoiceViewState extends State<_EmdadgarInvoiceView> {
   ) async {
     await BottomSheetMessage.showCustom(
       context: context,
-      maxHeight: .32,
+      maxHeight: .58,
       content: EmdadgarInvoiceOperationsSheet(
         onDetailsTap: () {
           Navigator.of(context).pop();
           _openRequestDetails(context, cubit, item);
         },
-        onCorrectionTap: _correctionFlow(item) == null
-            ? null
-            : () {
+        onCustomerPreInvoiceTap: item.state?.customerPreInvoiceVisible == true
+            ? () {
                 Navigator.of(context).pop();
-                _openCorrection(context, cubit, item);
-              },
+                _openCustomerInvoice(
+                  context,
+                  cubit,
+                  item,
+                  InvoiceType.preInvoice,
+                );
+              }
+            : null,
+        onCustomerInvoiceTap: item.state?.customerInvoiceVisible == true
+            ? () {
+                Navigator.of(context).pop();
+                _openCustomerInvoice(
+                  context,
+                  cubit,
+                  item,
+                  InvoiceType.invoice,
+                );
+              }
+            : null,
+        onCustomerCorrectionTap: _canUseCorrection(
+          item,
+          EvaluationAidServiceSubmitFlow.customerCorrection,
+        )
+            ? () {
+                Navigator.of(context).pop();
+                _openCorrection(
+                  context,
+                  cubit,
+                  item,
+                  EvaluationAidServiceSubmitFlow.customerCorrection,
+                );
+              }
+            : null,
+        onEmdadgarCorrectionTap: _canUseCorrection(
+          item,
+          EvaluationAidServiceSubmitFlow.emdadgarCorrection,
+        )
+            ? () {
+                Navigator.of(context).pop();
+                _openCorrection(
+                  context,
+                  cubit,
+                  item,
+                  EvaluationAidServiceSubmitFlow.emdadgarCorrection,
+                );
+              }
+            : null,
+        onHesabdariCorrectionTap: _canUseCorrection(
+          item,
+          EvaluationAidServiceSubmitFlow.hesabdari,
+        )
+            ? () {
+                Navigator.of(context).pop();
+                _openCorrection(
+                  context,
+                  cubit,
+                  item,
+                  EvaluationAidServiceSubmitFlow.hesabdari,
+                );
+              }
+            : null,
+        onDaraeiCorrectionTap: _canUseCorrection(
+          item,
+          EvaluationAidServiceSubmitFlow.daraei,
+        )
+            ? () {
+                Navigator.of(context).pop();
+                _openCorrection(
+                  context,
+                  cubit,
+                  item,
+                  EvaluationAidServiceSubmitFlow.daraei,
+                );
+              }
+            : null,
+        onAcceptTap: cubit.canFinalizeItem(item)
+            ? () {
+                Navigator.of(context).pop();
+                _showItemConfirmation(context, cubit, item);
+              }
+            : null,
       ),
       actionWidget: const SizedBox.shrink(),
     );
   }
 
-  EvaluationAidServiceSubmitFlow? _correctionFlow(
+  bool _canUseCorrection(
     EmdadgarInvoiceRecordEntity item,
+    EvaluationAidServiceSubmitFlow flow,
   ) {
-    if (item.checkAmendmentHesabdari == true) {
-      return EvaluationAidServiceSubmitFlow.hesabdari;
+    if (item.state?.serviceType != ServiceType.reliefService.value) {
+      return false;
     }
-    if (item.checkAmendmentDaraei == true) {
-      return EvaluationAidServiceSubmitFlow.daraei;
+
+    return switch (flow) {
+      EvaluationAidServiceSubmitFlow.customerCorrection =>
+        item.state?.checkCustomerInvoiceVisible == true,
+      EvaluationAidServiceSubmitFlow.emdadgarCorrection =>
+        item.checkEmdadgarInvoiceVisible == true,
+      EvaluationAidServiceSubmitFlow.hesabdari =>
+        item.checkAmendmentHesabdari == true,
+      EvaluationAidServiceSubmitFlow.daraei =>
+        item.checkAmendmentDaraei == true,
+      EvaluationAidServiceSubmitFlow.standard => false,
+    };
+  }
+
+  Future<void> _openCustomerInvoice(
+    BuildContext context,
+    EmdadgarInvoiceCubit cubit,
+    EmdadgarInvoiceRecordEntity item,
+    InvoiceType invoiceType,
+  ) async {
+    final evaluationId = item.identity?.evaluationId;
+    final serviceTypeValue = item.state?.serviceType;
+    if (evaluationId == null || evaluationId <= 0 || serviceTypeValue == null) {
+      SnakeBarWidget.showError(
+        context: context,
+        message: 'اطلاعات لازم برای دریافت فاکتور مشتری کامل نیست.',
+      );
+      return;
     }
-    return null;
+
+    final serviceType = ServiceType.fromValue(serviceTypeValue);
+    final requestContext = InvoiceRequestContext(
+      requestId: item.identity?.serviceRequestId,
+      serviceType: serviceType,
+      isGuaranty: item.state?.isGaranty == true,
+      isSubscription: item.state?.subscription == true,
+    );
+
+    await context.push(
+      InvoicePage.path,
+      extra: InvoicePageArgs(
+        invoiceType: invoiceType,
+        emdadgarEvaluationId: evaluationId,
+        initialRequestContext: requestContext,
+        onOpenDocument: (invoiceContext, invoiceGuid) =>
+            _openCustomerInvoiceDocument(
+          invoiceContext,
+          cubit,
+          invoiceGuid,
+        ),
+      ),
+    );
+  }
+
+  Future<void> _openCustomerInvoiceDocument(
+    BuildContext context,
+    EmdadgarInvoiceCubit cubit,
+    String invoiceGuid,
+  ) async {
+    final result = await cubit.getCustomerInvoiceDocumentUrls(invoiceGuid);
+    if (!context.mounted) return;
+
+    await result.when<Future<void>>(
+      success: (urls, failures, resultCode) async {
+        final rawUrl = urls.htmlViewUrl?.trim();
+        final uri = rawUrl == null || rawUrl.isEmpty
+            ? null
+            : Uri.tryParse(rawUrl);
+
+        if (uri == null || !await launchUrl(uri)) {
+          if (!context.mounted) return;
+          SnakeBarWidget.showError(
+            context: context,
+            message: 'لینک مشاهده فاکتور در دسترس نیست.',
+          );
+        }
+      },
+      failure: (error, failures) async {
+        SnakeBarWidget.showError(
+          context: context,
+          message: failures ?? 'دریافت فایل فاکتور با خطا مواجه شد.',
+        );
+      },
+      expireToken: () async {
+        SnakeBarWidget.showError(
+          context: context,
+          message: 'نشست کاربری منقضی شده است.',
+        );
+      },
+      connectionError: () async {
+        SnakeBarWidget.showError(
+          context: context,
+          message: 'اتصال به سرور برقرار نیست.',
+        );
+      },
+    );
   }
 
   Future<void> _openCorrection(
     BuildContext context,
     EmdadgarInvoiceCubit cubit,
     EmdadgarInvoiceRecordEntity item,
+    EvaluationAidServiceSubmitFlow flow,
   ) async {
-    final flow = _correctionFlow(item);
-    if (flow == null) return;
+    if (!_canUseCorrection(item, flow)) return;
 
     final id = await cubit.cacheSelectedRequest(item);
     if (id == null || !context.mounted) return;
 
+    final restrictedByOperationAccess =
+        flow == EvaluationAidServiceSubmitFlow.hesabdari ||
+        flow == EvaluationAidServiceSubmitFlow.daraei;
+
     final changed = await context.push<bool>(
       EvaluationAidServiceRequestPage.path,
       extra: EvaluationAidServicePageArgs(
-        mode: EvaluationAidServicePageMode.statementCorrection,
+        mode: flow == EvaluationAidServiceSubmitFlow.customerCorrection
+            ? EvaluationAidServicePageMode.customerInvoiceCorrection
+            : EvaluationAidServicePageMode.statementCorrection,
         submitFlow: flow,
+        editInvoiceBaseForm: restrictedByOperationAccess
+            ? cubit.canEditInvoiceBaseForm
+            : true,
+        editKilometer:
+            restrictedByOperationAccess ? cubit.canEditKilometer : true,
+        editLaborAndPart:
+            restrictedByOperationAccess ? cubit.canEditLaborAndPart : true,
       ),
     );
 
@@ -335,9 +542,29 @@ class _EmdadgarInvoiceViewState extends State<_EmdadgarInvoiceView> {
       context: context,
       maxHeight: .52,
       content: EmdadgarInvoiceConfirmationSheet(
+        selectedCount: cubit.selectedRequestIds.length,
         onConfirm: () {
           Navigator.of(context).pop();
           cubit.confirmSelected();
+        },
+      ),
+      actionWidget: const SizedBox.shrink(),
+    );
+  }
+
+  Future<void> _showItemConfirmation(
+    BuildContext context,
+    EmdadgarInvoiceCubit cubit,
+    EmdadgarInvoiceRecordEntity item,
+  ) {
+    return BottomSheetMessage.showCustom(
+      context: context,
+      maxHeight: .52,
+      content: EmdadgarInvoiceConfirmationSheet(
+        selectedCount: 1,
+        onConfirm: () {
+          Navigator.of(context).pop();
+          cubit.confirmItem(item);
         },
       ),
       actionWidget: const SizedBox.shrink(),

@@ -19,6 +19,23 @@ part 'evaluation_invoice_cubit.freezed.dart';
 
 part 'evaluation_invoice_state.dart';
 
+enum EvaluationInvoiceFlow {
+  customer,
+  emdadgar,
+  hesabdari,
+  daraei;
+
+  bool get usesEmdadgarPreInvoice => this != EvaluationInvoiceFlow.customer;
+
+  String get pageTitle => usesEmdadgarPreInvoice
+      ? 'پیش صورت وضعیت نماینده'
+      : 'پیش فاکتور مشتری';
+
+  String get successMessage => usesEmdadgarPreInvoice
+      ? 'صورت وضعیت نماینده با موفقیت نهایی سازی شد'
+      : 'فاکتور مشتری با موفقیت نهایی سازی شد';
+}
+
 @injectable
 class EvaluationInvoiceCubit extends Cubit<EvaluationInvoiceState> {
   final CustomerPreInvoiceOnTheFlyUseCase _customerPreInvoiceOnTheFlyUseCase;
@@ -38,15 +55,20 @@ class EvaluationInvoiceCubit extends Cubit<EvaluationInvoiceState> {
   BaseRequestEntity? selectedRequest;
   InvoiceEntity? invoiceEntity;
   String? emdadgarEvaluationId;
+  EvaluationInvoiceFlow flow = EvaluationInvoiceFlow.customer;
 
   VoidCallback? _retryAction;
   void retryLastAction() => _retryAction?.call();
 
 
-  Future<void> init(String emdadgarEvaluationId) async {
-    _retryAction = () => init(emdadgarEvaluationId);
+  Future<void> init(
+    String emdadgarEvaluationId, {
+    EvaluationInvoiceFlow flow = EvaluationInvoiceFlow.customer,
+  }) async {
+    _retryAction = () => init(emdadgarEvaluationId, flow: flow);
 
     this.emdadgarEvaluationId = emdadgarEvaluationId;
+    this.flow = flow;
     selectedRequest = await _fetchSelectedRequestItemUseCase();
 
     if (selectedRequest == null) {
@@ -84,10 +106,11 @@ class EvaluationInvoiceCubit extends Cubit<EvaluationInvoiceState> {
   Future<void> _loadPreInvoiceInfo() async {
     final param = AcceptEvaluationParamEntity(
       emdadgarEvaluationId: emdadgarEvaluationId,
-      serviceRequestId: selectedRequest!.id,
       serviceType: selectedRequest!.serviceType ?? ServiceType.reliefService,
     );
-    final result = await _customerPreInvoiceOnTheFlyUseCase(param);
+    final result = flow.usesEmdadgarPreInvoice
+        ? await _customerPreInvoiceOnTheFlyUseCase.emdadgar(param)
+        : await _customerPreInvoiceOnTheFlyUseCase(param);
 
     result.whenOrNull(
       success: (data, failures, resultCode) {
@@ -119,7 +142,15 @@ class EvaluationInvoiceCubit extends Cubit<EvaluationInvoiceState> {
     final param = AcceptEvaluationParamEntity(serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
         emdadgarEvaluationId: emdadgarEvaluationId.toString());
 
-    final result = await _acceptEvaluationUseCase(param);
+    final result = switch (flow) {
+      EvaluationInvoiceFlow.customer => await _acceptEvaluationUseCase(param),
+      EvaluationInvoiceFlow.emdadgar =>
+        await _acceptEvaluationUseCase.invoiceOperator(param),
+      EvaluationInvoiceFlow.hesabdari =>
+        await _acceptEvaluationUseCase.hesabdari(param),
+      EvaluationInvoiceFlow.daraei =>
+        await _acceptEvaluationUseCase.daraei(param),
+    };
     result.whenOrNull(
       success: (data, failures, resultCode) {
         _safeEmit(EvaluationInvoiceState.submitSuccess());

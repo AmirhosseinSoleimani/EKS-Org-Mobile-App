@@ -41,9 +41,19 @@ class EmdadgarInvoiceDataSourceImpl implements EmdadgarInvoiceDataSource {
   ) => _service.acceptInvoices(request);
 
   @override
+  Future<BulkInvoiceAcceptResultModel> acceptFinalApprovalInvoices(
+    BulkInvoiceAcceptParamModel request,
+  ) => _service.acceptFinalApprovalInvoices(request);
+
+  @override
   Future<EmdadgarInvoicePageModel> getFinalApprovalInvoices(
     InvoiceListFilterRequestModel request,
   ) => _service.getFinalApprovalInvoices(request);
+
+  @override
+  Future<BulkInvoiceAcceptResultModel> acceptFinalCorrectionInvoices(
+    BulkInvoiceAcceptParamModel request,
+  ) => _service.acceptFinalCorrectionInvoices(request);
 
   @override
   Future<EmdadgarInvoicePageModel> getFinalCorrectionInvoices(

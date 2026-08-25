@@ -9,4 +9,7 @@ abstract class InvoiceRepository {
 
   Future<ApiResult<InvoiceEntity?>> customerPreInvoiceOnTheFly(
       AcceptEvaluationParamEntity param);
+
+  Future<ApiResult<InvoiceEntity?>> emdadgarPreInvoiceOnTheFly(
+      AcceptEvaluationParamEntity param);
 }

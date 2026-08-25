@@ -65,7 +65,9 @@ class EmdadgarInvoiceList extends StatelessWidget {
                         onSelectionChanged: (selected) =>
                             cubit.setItemSelected(item, selected),
                         selectionEnabled: cubit.supportsSelection,
-                        onInvoiceTap: () => onInvoiceTap(item),
+                        onInvoiceTap: cubit.canOpenInvoice(item)
+                            ? () => onInvoiceTap(item)
+                            : null,
                         onOperationsTap: () => onOperationsTap(item),
                       );
                     },

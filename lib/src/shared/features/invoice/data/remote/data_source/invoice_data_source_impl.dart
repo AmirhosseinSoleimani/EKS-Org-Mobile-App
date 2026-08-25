@@ -28,4 +28,9 @@ class InvoiceDataSourceImpl extends InvoiceDataSource {
   Future<BaseSingleResponse<InvoiceModel?>> customerPreInvoiceOnTheFly(
       AcceptEvaluationParamModel param) async =>
       await _service.customerPreInvoiceOnTheFly(param.toJson());
+
+  @override
+  Future<BaseSingleResponse<InvoiceModel?>> emdadgarPreInvoiceOnTheFly(
+      AcceptEvaluationParamModel param) async =>
+      await _service.emdadgarPreInvoiceOnTheFly(param.toJson());
 }

@@ -77,6 +77,16 @@ abstract class EvaluationService {
   Future<BaseSingleResponse<PostEvaluationResponseModel>>
   aidServiceEvaluationPost(@Body() Map<String, dynamic> body);
 
+  @POST('/api/AidServiceEvaluation/InsertTrackerEvaluation')
+  Future<BaseSingleResponse<dynamic>> insertTrackerEvaluation(
+    @Body() Map<String, dynamic> body,
+  );
+
+  @POST('/api/AidServiceEvaluation/InsertInvoiceOperatorEvaluation')
+  Future<BaseSingleResponse<dynamic>> insertInvoiceOperatorEvaluation(
+    @Body() Map<String, dynamic> body,
+  );
+
   @POST('/api/AidServiceEvaluation/InsertHesabdariEvaluation')
   Future<BaseSingleResponse<dynamic>> insertHesabdariEvaluation(
     @Body() Map<String, dynamic> body,
@@ -93,6 +103,21 @@ abstract class EvaluationService {
 
   @POST('/api/AidServiceEvaluation/EvaluationAccept')
   Future<BaseSingleResponse<AcceptEvaluationResponseModel?>> aidEvaluationAccept(@Body() Map<String, dynamic> body);
+
+  @POST('/api/AidServiceEvaluation/InvoiceOperatorEvaluationAccept')
+  Future<BaseSingleResponse<dynamic>> invoiceOperatorEvaluationAccept(
+    @Body() Map<String, dynamic> body,
+  );
+
+  @POST('/api/AidServiceEvaluation/AmendmentInvoiceByHesabdari')
+  Future<BaseSingleResponse<dynamic>> amendmentInvoiceByHesabdari(
+    @Body() Map<String, dynamic> body,
+  );
+
+  @POST('/api/AidServiceEvaluation/AmendmentInvoiceByDaraei')
+  Future<BaseSingleResponse<dynamic>> amendmentInvoiceByDaraei(
+    @Body() Map<String, dynamic> body,
+  );
 
   @POST('/api/HomeServiceEvaluation/EvaluationAccept')
   Future<BaseSingleResponse<AcceptEvaluationResponseModel?>> homeServiceEvaluationAccept(@Body() Map<String, dynamic> body);

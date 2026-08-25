@@ -14,12 +14,16 @@ class TransportInformationSection<T extends DropdownItem>
   final EvaluationTransportInformationFormController<T> controller;
   final String Function(T item) representationTitleBuilder;
   final ValueChanged<T>? onSelectRepresentation;
+  final bool baseEditable;
+  final bool distanceEditable;
 
   const TransportInformationSection({
     super.key,
     required this.controller,
     required this.representationTitleBuilder,
     this.onSelectRepresentation,
+    this.baseEditable = true,
+    this.distanceEditable = true,
   });
 
   @override
@@ -59,7 +63,7 @@ class TransportInformationSection<T extends DropdownItem>
               selectedNotifier: controller.selectedRepresentation,
               items: items,
               isLoading: isLoading,
-              enabled: items.isNotEmpty && !isLoading,
+              enabled: baseEditable && items.isNotEmpty && !isLoading,
               itemTitleBuilder: representationTitleBuilder,
               onSelect: (item) {
                 controller.setSelectedRepresentation(item);
@@ -81,6 +85,7 @@ class TransportInformationSection<T extends DropdownItem>
       textInputFormatter: [
         FilteringTextInputFormatter.digitsOnly,
       ],
+      readOnly: !baseEditable,
     );
   }
 
@@ -93,6 +98,7 @@ class TransportInformationSection<T extends DropdownItem>
       textInputFormatter: [
         FilteringTextInputFormatter.digitsOnly,
       ],
+      readOnly: !distanceEditable,
     );
   }
 
@@ -104,6 +110,7 @@ class TransportInformationSection<T extends DropdownItem>
       timeController: controller.endWorkTimeController,
       onDateChange: controller.setEndWorkDate,
       onTimeChange: controller.setEndWorkTime,
+      enabled: baseEditable,
     );
   }
 }

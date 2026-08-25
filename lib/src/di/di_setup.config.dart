@@ -2670,6 +2670,15 @@ _i174.GetIt $initGetIt(
       gh<_i470.ExportExcelUseCase>(),
     ),
   );
+  gh.factory<_i105.CustomerInvoiceCubit>(
+    () => _i105.CustomerInvoiceCubit(
+      gh<_i61.GetCustomerInvoicesUseCase>(),
+      gh<_i129.GetCustomerInvoiceDocumentUrlsUseCase>(),
+      gh<_i700.GetEmdadCategoriesUseCase>(),
+      gh<_i470.ExportExcelUseCase>(),
+      gh<_i369.SetSelectedRequestItemUseCase>(),
+    ),
+  );
   gh.lazySingleton<_i147.CreateEmdadVehicleUseCase>(
     () => _i147.CreateEmdadVehicleUseCase(gh<_i139.EmdadVehicleRepository>()),
   );
@@ -2731,6 +2740,23 @@ _i174.GetIt $initGetIt(
       gh<_i1058.CurrentSessionManager>(),
     ),
   );
+  gh.factory<_i487.EmdadgarInvoiceCubit>(
+    () => _i487.EmdadgarInvoiceCubit(
+      gh<_i476.GetInitialEmdadgarInvoicesUseCase>(),
+      gh<_i694.GetEmdadgarInvoicesUseCase>(),
+      gh<_i762.GetFinalApprovalEmdadgarInvoicesUseCase>(),
+      gh<_i631.GetFinalCorrectionEmdadgarInvoicesUseCase>(),
+      gh<_i322.GetDefiniteEmdadgarInvoicesUseCase>(),
+      gh<_i952.AcceptInitialEmdadgarInvoicesUseCase>(),
+      gh<_i729.AcceptEmdadgarInvoicesUseCase>(),
+      gh<_i866.GetInvoiceOperationAccessUseCase>(),
+      gh<_i700.GetEmdadCategoriesUseCase>(),
+      gh<_i369.SetSelectedRequestItemUseCase>(),
+      gh<_i129.GetCustomerInvoiceDocumentUrlsUseCase>(),
+      gh<_i1058.CurrentSessionManager>(),
+      gh<_i470.ExportExcelUseCase>(),
+    ),
+  );
   gh.factory<_i362.EmdadgarInvoiceCubit>(
     () => _i362.EmdadgarInvoiceCubit(
       gh<_i204.GetEmdadgarInvoiceUseCase>(),
@@ -2778,15 +2804,6 @@ _i174.GetIt $initGetIt(
       gh<_i226.GetActiveServiceRequestUseCase>(),
       gh<_i983.GetPartPriceHomeServiceUseCase>(),
       gh<_i91.GetReusablePriceUseCase>(),
-    ),
-  );
-  gh.factory<_i105.CustomerInvoiceCubit>(
-    () => _i105.CustomerInvoiceCubit(
-      gh<_i61.GetCustomerInvoicesUseCase>(),
-      gh<_i129.GetCustomerInvoiceDocumentUrlsUseCase>(),
-      gh<_i700.GetEmdadCategoriesUseCase>(),
-      gh<_i470.ExportExcelUseCase>(),
-      gh<_i369.SetSelectedRequestItemUseCase>(),
     ),
   );
   gh.factory<_i757.AppCubit>(
@@ -2900,20 +2917,6 @@ _i174.GetIt $initGetIt(
       gh<_i657.AddAgencyVehicleUseCase>(),
       gh<_i1058.CurrentSessionManager>(),
       gh<_i695.SyncCurrentSessionUseCase>(),
-    ),
-  );
-  gh.factory<_i487.EmdadgarInvoiceCubit>(
-    () => _i487.EmdadgarInvoiceCubit(
-      gh<_i476.GetInitialEmdadgarInvoicesUseCase>(),
-      gh<_i694.GetEmdadgarInvoicesUseCase>(),
-      gh<_i762.GetFinalApprovalEmdadgarInvoicesUseCase>(),
-      gh<_i631.GetFinalCorrectionEmdadgarInvoicesUseCase>(),
-      gh<_i322.GetDefiniteEmdadgarInvoicesUseCase>(),
-      gh<_i952.AcceptInitialEmdadgarInvoicesUseCase>(),
-      gh<_i729.AcceptEmdadgarInvoicesUseCase>(),
-      gh<_i700.GetEmdadCategoriesUseCase>(),
-      gh<_i369.SetSelectedRequestItemUseCase>(),
-      gh<_i470.ExportExcelUseCase>(),
     ),
   );
   gh.factory<_i93.NavganCubit>(

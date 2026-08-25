@@ -77,11 +77,35 @@ class EmdadgarInvoiceRepositoryImpl implements EmdadgarInvoiceRepository {
   }
 
   @override
+  Future<ApiResult<BulkInvoiceAcceptResultEntity>> acceptFinalApprovalInvoices(
+    BulkInvoiceAcceptParamEntity param,
+  ) async {
+    try {
+      final result = await _dataSource.acceptFinalApprovalInvoices(param.toModel());
+      return ApiResult.success(data: result, resultCode: 0);
+    } catch (error, stackTrace) {
+      return error.toApiResult(stackTrace);
+    }
+  }
+
+  @override
   Future<ApiResult<EmdadgarInvoicePageEntity>> getFinalApprovalInvoices(
     InvoiceListFilterParamEntity param,
   ) async {
     try {
       final result = await _dataSource.getFinalApprovalInvoices(param.toModel());
+      return ApiResult.success(data: result, resultCode: 0);
+    } catch (error, stackTrace) {
+      return error.toApiResult(stackTrace);
+    }
+  }
+
+  @override
+  Future<ApiResult<BulkInvoiceAcceptResultEntity>> acceptFinalCorrectionInvoices(
+    BulkInvoiceAcceptParamEntity param,
+  ) async {
+    try {
+      final result = await _dataSource.acceptFinalCorrectionInvoices(param.toModel());
       return ApiResult.success(data: result, resultCode: 0);
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);

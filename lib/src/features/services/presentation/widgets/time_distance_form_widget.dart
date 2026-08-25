@@ -35,6 +35,7 @@ class TimeDistanceFormSection extends StatelessWidget {
 
   final bool kilometerReadOnly;
   final bool customerDistanceReadOnly;
+  final bool dateTimeReadOnly;
 
   final bool hasBorder;
 
@@ -63,6 +64,7 @@ class TimeDistanceFormSection extends StatelessWidget {
     this.customerDistanceKeyboardType = TextInputType.number,
     this.kilometerReadOnly = false,
     this.customerDistanceReadOnly = false,
+    this.dateTimeReadOnly = false,
     this.hasBorder = false,
   });
 
@@ -104,6 +106,7 @@ class TimeDistanceFormSection extends StatelessWidget {
             timeController: assignTimeController,
             onDateChange: onAssignDateChange,
             onTimeChange: onAssignTimeChange,
+            enabled: !dateTimeReadOnly,
           ),
 
           _formElementGap(),
@@ -115,6 +118,7 @@ class TimeDistanceFormSection extends StatelessWidget {
             timeController: arriveTimeController,
             onDateChange: onArriveDateChange,
             onTimeChange: onArriveTimeChange,
+            enabled: !dateTimeReadOnly,
           ),
         ],
       ),

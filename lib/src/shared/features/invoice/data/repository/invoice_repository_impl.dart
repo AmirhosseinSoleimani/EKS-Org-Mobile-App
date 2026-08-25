@@ -46,4 +46,17 @@ class InvoiceRepositoryImpl extends InvoiceRepository {
       return e.toApiResult(s);
     }
   }
+
+  @override
+  Future<ApiResult<InvoiceEntity?>> emdadgarPreInvoiceOnTheFly(
+      AcceptEvaluationParamEntity param) async {
+    try {
+      final result = await _dataSource.emdadgarPreInvoiceOnTheFly(
+        param.toModel(),
+      );
+      return result.toApiResult();
+    } catch (e, s) {
+      return e.toApiResult(s);
+    }
+  }
 }

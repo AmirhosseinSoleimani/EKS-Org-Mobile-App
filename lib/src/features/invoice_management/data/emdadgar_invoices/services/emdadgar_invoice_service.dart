@@ -73,6 +73,16 @@ class EmdadgarInvoiceService {
     return BulkInvoiceAcceptResultModel.fromResponse(response.data);
   }
 
+  Future<BulkInvoiceAcceptResultModel> acceptFinalApprovalInvoices(
+    BulkInvoiceAcceptParamModel request,
+  ) async {
+    final response = await _dio.post<dynamic>(
+      '/api/AidServiceEvaluation/BulkFinancialOperatorInvoiceAccept',
+      data: request.toJson(),
+    );
+    return BulkInvoiceAcceptResultModel.fromResponse(response.data);
+  }
+
   Future<EmdadgarInvoicePageModel> getFinalApprovalInvoices(
     InvoiceListFilterRequestModel request,
   ) async {
@@ -81,6 +91,16 @@ class EmdadgarInvoiceService {
       data: request.toJson(),
     );
     return EmdadgarInvoicePageModel.fromResponse(response.data);
+  }
+
+  Future<BulkInvoiceAcceptResultModel> acceptFinalCorrectionInvoices(
+    BulkInvoiceAcceptParamModel request,
+  ) async {
+    final response = await _dio.post<dynamic>(
+      '/api/AidServiceEvaluation/BulkDefiniteInvoiceAccept',
+      data: request.toJson(),
+    );
+    return BulkInvoiceAcceptResultModel.fromResponse(response.data);
   }
 
   Future<EmdadgarInvoicePageModel> getFinalCorrectionInvoices(

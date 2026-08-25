@@ -1,4 +1,6 @@
+import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/invoice_document_urls_entity.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/entities/params/invoice_details_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/use_cases/get_emdadgar_invoice_document_urls_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/enums/emdadgar_invoice_stage.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/use_cases/get_initial_emdadgar_invoice_details_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoice_details/cubit/emdadgar_invoice_details_state.dart';
@@ -14,11 +16,14 @@ class EmdadgarInvoiceDetailsCubit extends Cubit<EmdadgarInvoiceDetailsState> {
   EmdadgarInvoiceDetailsCubit(
     this._getInitialInvoiceDetailsUseCase,
     this._getEmdadgarInvoiceUseCase,
+    this._getEmdadgarInvoiceDocumentUrlsUseCase,
   ) : super(const EmdadgarInvoiceDetailsState());
 
   final GetInitialEmdadgarInvoiceDetailsUseCase
       _getInitialInvoiceDetailsUseCase;
   final GetEmdadgarInvoiceUseCase _getEmdadgarInvoiceUseCase;
+  final GetEmdadgarInvoiceDocumentUrlsUseCase
+      _getEmdadgarInvoiceDocumentUrlsUseCase;
 
   EmdadgarInvoiceDetailsArgs? _args;
 
@@ -90,6 +95,12 @@ class EmdadgarInvoiceDetailsCubit extends Cubit<EmdadgarInvoiceDetailsState> {
           ),
         ),
     };
+  }
+
+  Future<ApiResult<InvoiceDocumentUrlsEntity>> getDocumentUrls(
+    String invoiceGuid,
+  ) {
+    return _getEmdadgarInvoiceDocumentUrlsUseCase(invoiceGuid);
   }
 
   String? _validate(EmdadgarInvoiceDetailsArgs args) {

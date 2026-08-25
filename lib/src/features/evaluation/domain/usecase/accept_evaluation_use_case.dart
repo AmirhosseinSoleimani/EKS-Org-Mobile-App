@@ -22,4 +22,22 @@ class AcceptEvaluationUseCase
   ) async {
     return await evaluationRepository.acceptEvaluation(arg);
   }
+
+  Future<ApiResult<void>> invoiceOperator(
+    AcceptEvaluationParamEntity arg,
+  ) async {
+    return evaluationRepository.acceptInvoiceOperatorEvaluation(arg);
+  }
+
+  Future<ApiResult<void>> hesabdari(
+    AcceptEvaluationParamEntity arg,
+  ) async {
+    return evaluationRepository.acceptHesabdariAmendment(arg);
+  }
+
+  Future<ApiResult<void>> daraei(
+    AcceptEvaluationParamEntity arg,
+  ) async {
+    return evaluationRepository.acceptDaraeiAmendment(arg);
+  }
 }

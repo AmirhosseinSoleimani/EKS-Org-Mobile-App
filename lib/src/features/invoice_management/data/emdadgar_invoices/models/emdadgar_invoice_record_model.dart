@@ -27,6 +27,12 @@ class EmdadgarInvoiceRecordModel extends EmdadgarInvoiceRecordEntity {
     super.privateCarType,
     super.agencyGrade,
     super.agencyWithoutTax,
+    super.agencyType,
+    super.trafficPlanCost,
+    super.trafficPlanCostWithCoefficient,
+    super.highwayTicketCost,
+    super.highwayTicketCostWithCoefficient,
+    super.finalizedDateTimeJalali,
   });
 
   factory EmdadgarInvoiceRecordModel.fromJson(Map<String, dynamic> json) {
@@ -62,6 +68,15 @@ class EmdadgarInvoiceRecordModel extends EmdadgarInvoiceRecordEntity {
       privateCarType: JsonValueReader.intValue(json['khodroShakhsi']),
       agencyGrade: JsonValueReader.stringValue(json['agencyGrade']),
       agencyWithoutTax: JsonValueReader.intValue(json['agencyWithoutTax']),
+      agencyType: JsonValueReader.stringValue(json['agencyType']),
+      trafficPlanCost: JsonValueReader.intValue(json['tarhTicketCost']),
+      trafficPlanCostWithCoefficient:
+          JsonValueReader.intValue(json['tarhTicketCostWithZarib']),
+      highwayTicketCost: JsonValueReader.intValue(json['highwayTicketCost']),
+      highwayTicketCostWithCoefficient:
+          JsonValueReader.intValue(json['highwayTicketCostWithZarib']),
+      finalizedDateTimeJalali:
+          JsonValueReader.stringValue(json['finalizedDateTimeJalali']),
       settlement: EmdadgarSettlementModel(
         amounts: EmdadgarSettlementAmountsModel(
           priceAfterCoefficients:

@@ -1,23 +1,27 @@
 import 'dart:ui';
 
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
+import 'package:eks_sana_plus_org/src/features/invoice_management/domain/common/use_cases/get_emdadgar_invoice_document_urls_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/enums/emdadgar_invoice_stage.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/use_cases/get_initial_emdadgar_invoice_details_use_case.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoice_details/cubit/emdadgar_invoice_details_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoice_details/cubit/emdadgar_invoice_details_state.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoice_details/models/emdadgar_invoice_details_args.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/emdadgar_invoice_details/widgets/emdadgar_invoice_details_status_row.dart';
+import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/enums/invoice_type.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/use_case/get_emdadgar_invoice_use_case.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/presentation/widgets/invoice_viewer_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 class EmdadgarInvoiceDetailsPage extends StatelessWidget {
   const EmdadgarInvoiceDetailsPage({
@@ -36,6 +40,7 @@ class EmdadgarInvoiceDetailsPage extends StatelessWidget {
       create: (_) => EmdadgarInvoiceDetailsCubit(
         getIt<GetInitialEmdadgarInvoiceDetailsUseCase>(),
         getIt<GetEmdadgarInvoiceUseCase>(),
+        getIt<GetEmdadgarInvoiceDocumentUrlsUseCase>(),
       )..load(args),
       child: _EmdadgarInvoiceDetailsView(args: args),
     );
@@ -154,10 +159,77 @@ class _LoadedContent extends StatelessWidget {
                 invoiceType: args.stage == EmdadgarInvoiceStage.initial
                     ? InvoiceType.preInvoice
                     : InvoiceType.invoice,
+                onOpenDocument:
+                    state.invoice?.invoiceGuid?.trim().isNotEmpty == true
+                    ? () => _openDocument(
+                        context,
+                        state.invoice!.invoiceGuid!,
+                      )
+                    : null,
               ),
           ],
         ),
       ),
+    );
+  }
+
+  Future<void> _openDocument(BuildContext context, String invoiceGuid) async {
+    final cubit = context.read<EmdadgarInvoiceDetailsCubit>();
+    final result = await cubit.getDocumentUrls(invoiceGuid);
+    if (!context.mounted) return;
+
+    await result.when<Future<void>>(
+      success: (urls, _, __) async {
+        final rawUrl = urls.htmlViewUrl?.trim();
+        final uri = rawUrl == null || rawUrl.isEmpty
+            ? null
+            : Uri.tryParse(rawUrl);
+        if (uri == null || !await launchUrl(uri)) {
+          if (!context.mounted) return;
+          BottomSheetMessage.showError(
+            context: context,
+            data: const BottomSheetMessageModel(
+              title: 'خطا',
+              message: 'لینک مشاهده صورت وضعیت در دسترس نیست.',
+            ),
+            isDismissible: true,
+            enableDrag: true,
+          );
+        }
+      },
+      failure: (_, message) async {
+        BottomSheetMessage.showError(
+          context: context,
+          data: BottomSheetMessageModel(
+            title: 'خطا',
+            message: message ?? 'دریافت فایل صورت وضعیت با خطا مواجه شد.',
+          ),
+          isDismissible: true,
+          enableDrag: true,
+        );
+      },
+      expireToken: () async {
+        BottomSheetMessage.showError(
+          context: context,
+          data: const BottomSheetMessageModel(
+            title: 'خطا',
+            message: 'نشست کاربری منقضی شده است.',
+          ),
+          isDismissible: true,
+          enableDrag: true,
+        );
+      },
+      connectionError: () async {
+        BottomSheetMessage.showError(
+          context: context,
+          data: const BottomSheetMessageModel(
+            title: 'خطا',
+            message: 'اتصال به سرور برقرار نیست.',
+          ),
+          isDismissible: true,
+          enableDrag: true,
+        );
+      },
     );
   }
 }

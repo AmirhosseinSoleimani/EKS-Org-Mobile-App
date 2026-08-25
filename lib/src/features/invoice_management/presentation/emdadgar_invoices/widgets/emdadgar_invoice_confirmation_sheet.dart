@@ -7,9 +7,11 @@ class EmdadgarInvoiceConfirmationSheet extends StatelessWidget {
   const EmdadgarInvoiceConfirmationSheet({
     super.key,
     required this.onConfirm,
+    required this.selectedCount,
   });
 
   final VoidCallback onConfirm;
+  final int selectedCount;
 
   @override
   Widget build(BuildContext context) {
@@ -45,7 +47,7 @@ class EmdadgarInvoiceConfirmationSheet extends StatelessWidget {
         ),
         Space.h12,
         Text(
-          'آیا از تایید موارد انتخاب شده اطمینان دارید؟',
+          'آیا از تایید $selectedCount صورت وضعیت انتخاب شده اطمینان دارید؟',
           textAlign: TextAlign.center,
           style: theme.textTheme.bodyMedium?.copyWith(
             color: theme.colorScheme.onSurfaceVariant,

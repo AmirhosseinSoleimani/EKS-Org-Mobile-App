@@ -8,8 +8,9 @@ class AcceptEvaluationParamModel extends AcceptEvaluationParamEntity {
   });
 
   Map<String,dynamic> toJson() => {
-    'serviceRequestId': serviceRequestId,
-    'emdadgarEvaluationId': emdadgarEvaluationId,
+    if (serviceRequestId != null) 'serviceRequestId': serviceRequestId,
+    if (emdadgarEvaluationId != null)
+      'emdadgarEvaluationId': emdadgarEvaluationId,
     'serviceType': serviceType.value,
   };
 }
