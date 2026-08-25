@@ -290,6 +290,12 @@ class CustomerPreInvoiceCubit extends Cubit<CustomerPreInvoiceState>
   Future<void> exportReport() async {
     if (state.isReportLoading) return;
 
+    final items = state.items;
+    if (items.isEmpty) {
+      _emitError('داده‌ای برای تهیه گزارش وجود ندارد.');
+      return;
+    }
+
     emit(
       state.copyWith(
         status: CustomerPreInvoiceViewStatus.reportLoading,
@@ -299,73 +305,35 @@ class CustomerPreInvoiceCubit extends Cubit<CustomerPreInvoiceState>
       ),
     );
 
-    final result = await _getCustomerPreInvoicesUseCase(
-      _copyFilter(
-        state.filter,
-        pageSize: 0,
-        skip: 0,
-      ),
+    final exportResult = await _exportExcelUseCase(
+      CustomerPreInvoiceExcelReportFactory.create(items),
     );
 
-    await result.when<Future<void>>(
-      success: (page, failures, resultCode) async {
-        final items = page.records ?? const <InvoiceRecordEntity>[];
-
-        if (items.isEmpty) {
-          _emitError(
-            'داده‌ای برای تهیه گزارش وجود ندارد.',
-            clearReportLoading: true,
-          );
-          return;
-        }
-
-        final exportResult = await _exportExcelUseCase(
-          CustomerPreInvoiceExcelReportFactory.create(items),
-        );
-
-        exportResult.when(
-          success: (data, failures, resultCode) {
-            emit(
-              state.copyWith(
-                status: CustomerPreInvoiceViewStatus.reportSuccess,
-                isReportLoading: false,
-                successMessage: data.isBrowserDownload
-                    ? 'دانلود گزارش پیش فاکتورهای مشتری آغاز شد.'
-                    : 'گزارش پیش فاکتورهای مشتری ذخیره شد.',
-                clearErrorMessage: true,
-              ),
-            );
-          },
-          failure: (error, failures) => _emitError(
-            failures ?? 'ذخیره گزارش با خطا مواجه شد.',
-            clearReportLoading: true,
-          ),
-          expireToken: () => _emitError(
-            'نشست کاربری منقضی شده است.',
-            clearReportLoading: true,
-          ),
-          connectionError: () => _emitError(
-            'ذخیره گزارش با خطا مواجه شد.',
-            clearReportLoading: true,
+    exportResult.when(
+      success: (data, failures, resultCode) {
+        emit(
+          state.copyWith(
+            status: CustomerPreInvoiceViewStatus.reportSuccess,
+            isReportLoading: false,
+            successMessage: data.isBrowserDownload
+                ? 'دانلود گزارش پیش فاکتورهای مشتری آغاز شد.'
+                : 'گزارش پیش فاکتورهای مشتری ذخیره شد.',
+            clearErrorMessage: true,
           ),
         );
       },
-      failure: (error, failures) async => _emitError(
-        failures,
+      failure: (error, failures) => _emitError(
+        failures ?? 'ذخیره گزارش با خطا مواجه شد.',
         clearReportLoading: true,
       ),
-      expireToken: () async => _emitError(
+      expireToken: () => _emitError(
         'نشست کاربری منقضی شده است.',
         clearReportLoading: true,
       ),
-      connectionError: () async {
-        emit(
-          state.copyWith(
-            status: CustomerPreInvoiceViewStatus.connectionError,
-            isReportLoading: false,
-          ),
-        );
-      },
+      connectionError: () => _emitError(
+        'ذخیره گزارش با خطا مواجه شد.',
+        clearReportLoading: true,
+      ),
     );
   }
 

@@ -18,7 +18,6 @@ class CustomerInvoiceSummaryCard extends StatelessWidget {
     this.onPrimaryAction,
     required this.onDetails,
     this.isPrimaryLoading = false,
-    this.showPrimaryAction = true,
   });
 
   final InvoiceRecordEntity item;
@@ -27,7 +26,6 @@ class CustomerInvoiceSummaryCard extends StatelessWidget {
   final VoidCallback? onPrimaryAction;
   final VoidCallback onDetails;
   final bool isPrimaryLoading;
-  final bool showPrimaryAction;
 
   @override
   Widget build(BuildContext context) {
@@ -119,23 +117,21 @@ class CustomerInvoiceSummaryCard extends StatelessWidget {
       primaryActionFlex: 50,
       operationActionFlex: 50,
       actionSpacing: AppSize.s8,
-      primaryAction: showPrimaryAction
-          ? InkwellButtonWidget(
-              title: primaryActionTitle,
-              backgroundColor: serviceColor,
-              showLoading: isPrimaryLoading,
-              titleMaxLines: 1,
-              titleOverflow: TextOverflow.ellipsis,
-              prefixIcon: Icon(
-                Icons.receipt_long_outlined,
-                color: onPrimaryAction == null
-                    ? theme.colorScheme.onSecondaryFixed
-                    : Colors.white,
-                size: AppSize.s24,
-              ),
-              onTap: isPrimaryLoading ? null : onPrimaryAction,
-            )
-          : null,
+      primaryAction: InkwellButtonWidget(
+        title: primaryActionTitle,
+        backgroundColor: serviceColor,
+        showLoading: isPrimaryLoading,
+        titleMaxLines: 1,
+        titleOverflow: TextOverflow.ellipsis,
+        prefixIcon: Icon(
+          Icons.receipt_long_outlined,
+          color: onPrimaryAction == null
+              ? theme.colorScheme.onSecondaryFixed
+              : Colors.white,
+          size: AppSize.s24,
+        ),
+        onTap: isPrimaryLoading ? null : onPrimaryAction,
+      ),
       operationAction: InkwellButtonWidget(
         title: 'جزئیات',
         backgroundColor: theme.colorScheme.secondaryContainer,

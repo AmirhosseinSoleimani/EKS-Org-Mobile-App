@@ -8,15 +8,10 @@ class CustomerPreInvoiceExcelReportFactory {
 
   static ExcelExportRequest create(List<InvoiceRecordEntity> items) {
     return ExcelExportRequest.fromItems<InvoiceRecordEntity>(
-      fileNamePrefix: 'customer_pre_invoice_report',
-      sheetName: 'پیش فاکتورهای مشتری',
+      fileNamePrefix: 'گزارش فاکتور های مشتری',
+      sheetName: 'data',
       items: items,
       columns: [
-        ExcelExportColumn(
-          title: 'ردیف',
-          valueBuilder: (_, index) => index + 1,
-          width: 10,
-        ),
         ExcelExportColumn(
           title: 'شماره درخواست',
           valueBuilder: (item, _) =>

@@ -173,20 +173,29 @@ class _CustomerPreInvoiceView extends StatelessWidget {
         itemBuilder: (context, index) {
           final item = state.items[index];
           final evaluationId = item.identity?.evaluationId;
+          final serviceTypeValue = item.state?.serviceType;
+          final hasValidServiceType = ServiceType.values.any(
+            (serviceType) => serviceType.value == serviceTypeValue,
+          );
+          final canOpenPreInvoice =
+              item.state?.customerPreInvoiceVisible == true &&
+              evaluationId != null &&
+              evaluationId > 0 &&
+              hasValidServiceType;
 
           final itemServiceColor =
-              ServiceType.fromValue(item.state?.serviceType).serviceColor;
+              ServiceType.fromValue(serviceTypeValue).serviceColor;
 
           return CustomerInvoiceSummaryCard(
             item: item,
             serviceColor: itemServiceColor,
             primaryActionTitle: 'پیش فاکتور',
-            showPrimaryAction:
-                item.state?.customerPreInvoiceVisible == true,
             isPrimaryLoading:
                 evaluationId != null &&
                 state.previewLoadingEvaluationId == evaluationId,
-            onPrimaryAction: () => _openInvoice(context, cubit, item),
+            onPrimaryAction: canOpenPreInvoice
+                ? () => _openInvoice(context, cubit, item)
+                : null,
             onDetails: () => _openRequestDetails(context, cubit, item),
           );
         },
