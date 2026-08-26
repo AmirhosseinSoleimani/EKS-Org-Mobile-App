@@ -18,6 +18,7 @@ import 'package:eks_sana_plus_org/src/shared/features/session/presentation/widge
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/internet/no_internet_bottom_sheet.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/snake_bar_widget/snake_bar_widget.dart';
 import 'package:flutter/gestures.dart';
@@ -467,22 +468,64 @@ class _EmdadgarInvoiceViewState extends State<_EmdadgarInvoiceView> {
         }
       },
       failure: (error, failures) async {
-        SnakeBarWidget.showError(
-          context: context,
+        await _showApiError(
+          context,
           message: failures ?? 'دریافت فایل فاکتور با خطا مواجه شد.',
+          onRetry: () => _openCustomerInvoiceDocument(
+            context,
+            cubit,
+            invoiceGuid,
+          ),
         );
       },
-      expireToken: () async {
-        SnakeBarWidget.showError(
-          context: context,
-          message: 'نشست کاربری منقضی شده است.',
-        );
-      },
+      expireToken: () async {},
       connectionError: () async {
-        SnakeBarWidget.showError(
+        await BottomSheetMessage.showCustom(
           context: context,
-          message: 'اتصال به سرور برقرار نیست.',
+          content: NoInternetBottomSheet(
+            onRetry: () => _openCustomerInvoiceDocument(
+              context,
+              cubit,
+              invoiceGuid,
+            ),
+          ),
+          actionWidget: const SizedBox.shrink(),
+          isDismissible: false,
+          enableDrag: false,
         );
+      },
+    );
+  }
+
+  Future<void> _showApiError(
+    BuildContext context, {
+    required String message,
+    VoidCallback? onRetry,
+  }) async {
+    if (!context.mounted) return;
+
+    final data = BottomSheetMessageModel(
+      title: 'خطا',
+      message: message,
+    );
+
+    if (onRetry == null) {
+      await BottomSheetMessage.showError(
+        context: context,
+        data: data,
+        isDismissible: true,
+        enableDrag: true,
+        onButtonTap: () => context.pop(),
+      );
+      return;
+    }
+
+    await BottomSheetMessage.showErrorWithAction(
+      context: context,
+      data: data,
+      onPositive: () {
+        context.pop();
+        onRetry();
       },
     );
   }

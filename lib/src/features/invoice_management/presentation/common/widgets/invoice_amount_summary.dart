@@ -76,14 +76,36 @@ class _AmountRow extends StatelessWidget {
           ),
         ),
         Space.w8,
-        Text(
-          value,
-          textDirection: TextDirection.rtl,
-          style: theme.textTheme.bodyMedium?.copyWith(
-            color: valueColor,
-            fontWeight: isEmphasized ? FontWeight.w800 : FontWeight.w600,
-            fontSize: isEmphasized ? AppSize.s16 : AppSize.s12,
-          ),
+        Builder(
+          builder: (context) {
+            final valueStyle = theme.textTheme.bodyMedium?.copyWith(
+              color: valueColor,
+              fontWeight: isEmphasized ? FontWeight.w800 : FontWeight.w600,
+              fontSize: isEmphasized ? AppSize.s16 : AppSize.s12,
+            );
+            final hasRialUnit = value.trim().endsWith('ریال');
+            final amountText = hasRialUnit
+                ? value.replaceFirst(RegExp(r'\s*ریال\s*$'), '').trim()
+                : value;
+
+            return Row(
+              mainAxisSize: MainAxisSize.min,
+              textDirection: TextDirection.rtl,
+              children: [
+                Text(
+                  amountText,
+                  textDirection: TextDirection.ltr,
+                  style: valueStyle,
+                ),
+                if (hasRialUnit)
+                  Text(
+                    ' ریال',
+                    textDirection: TextDirection.rtl,
+                    style: valueStyle,
+                  ),
+              ],
+            );
+          },
         ),
       ],
     );

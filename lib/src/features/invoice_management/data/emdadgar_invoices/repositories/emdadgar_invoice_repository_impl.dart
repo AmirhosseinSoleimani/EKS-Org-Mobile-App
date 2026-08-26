@@ -22,7 +22,7 @@ class EmdadgarInvoiceRepositoryImpl implements EmdadgarInvoiceRepository {
   ) async {
     try {
       final result = await _dataSource.getInitialInvoices(param.toModel());
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<EmdadgarInvoicePageEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -46,7 +46,7 @@ class EmdadgarInvoiceRepositoryImpl implements EmdadgarInvoiceRepository {
   ) async {
     try {
       final result = await _dataSource.acceptInitialInvoices(param.toModel());
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<BulkInvoiceAcceptResultEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -58,7 +58,7 @@ class EmdadgarInvoiceRepositoryImpl implements EmdadgarInvoiceRepository {
   ) async {
     try {
       final result = await _dataSource.getInvoices(param.toModel());
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<EmdadgarInvoicePageEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -70,7 +70,7 @@ class EmdadgarInvoiceRepositoryImpl implements EmdadgarInvoiceRepository {
   ) async {
     try {
       final result = await _dataSource.acceptInvoices(param.toModel());
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<BulkInvoiceAcceptResultEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -82,7 +82,7 @@ class EmdadgarInvoiceRepositoryImpl implements EmdadgarInvoiceRepository {
   ) async {
     try {
       final result = await _dataSource.acceptFinalApprovalInvoices(param.toModel());
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<BulkInvoiceAcceptResultEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -94,7 +94,7 @@ class EmdadgarInvoiceRepositoryImpl implements EmdadgarInvoiceRepository {
   ) async {
     try {
       final result = await _dataSource.getFinalApprovalInvoices(param.toModel());
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<EmdadgarInvoicePageEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -106,7 +106,7 @@ class EmdadgarInvoiceRepositoryImpl implements EmdadgarInvoiceRepository {
   ) async {
     try {
       final result = await _dataSource.acceptFinalCorrectionInvoices(param.toModel());
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<BulkInvoiceAcceptResultEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -118,7 +118,7 @@ class EmdadgarInvoiceRepositoryImpl implements EmdadgarInvoiceRepository {
   ) async {
     try {
       final result = await _dataSource.getFinalCorrectionInvoices(param.toModel());
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<EmdadgarInvoicePageEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -130,7 +130,7 @@ class EmdadgarInvoiceRepositoryImpl implements EmdadgarInvoiceRepository {
   ) async {
     try {
       final result = await _dataSource.getDefiniteInvoices(param.toModel());
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<EmdadgarInvoicePageEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }

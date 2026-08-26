@@ -60,9 +60,7 @@ class EmdadgarInvoiceDetailsCubit extends Cubit<EmdadgarInvoiceDetailsState> {
       failure: (error, message) {
         _emitError(message ?? error.toString());
       },
-      expireToken: () {
-        _emitError('نشست کاربری منقضی شده است.');
-      },
+      expireToken: () {},
       connectionError: () {
         _safeEmit(const EmdadgarInvoiceDetailsState(
           status: EmdadgarInvoiceDetailsStatus.connectionError,

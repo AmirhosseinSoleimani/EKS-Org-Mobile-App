@@ -11,6 +11,7 @@ import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/report_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/filter_widgets/filter_bottom_sheet_scaffold.dart';
@@ -223,9 +224,10 @@ class _CustomerPreInvoiceView extends StatelessWidget {
 
     final error = state.errorMessage;
     if (error != null && error.trim().isNotEmpty) {
-      SnakeBarWidget.showError(
-        context: context,
+      await _showApiError(
+        context,
         message: error,
+        onRetry: cubit.retryLastAction,
       );
     }
 
@@ -314,17 +316,13 @@ class _CustomerPreInvoiceView extends StatelessWidget {
         }
       },
       failure: (error, failures) async {
-        SnakeBarWidget.showError(
-          context: context,
+        await _showApiError(
+          context,
           message: failures ?? 'دریافت پیش فاکتور با خطا مواجه شد.',
+          onRetry: () => _openInvoice(context, cubit, item),
         );
       },
-      expireToken: () async {
-        SnakeBarWidget.showError(
-          context: context,
-          message: 'نشست کاربری منقضی شده است.',
-        );
-      },
+      expireToken: () async {},
       connectionError: () async {
         await BottomSheetMessage.showCustom(
           context: context,
@@ -347,26 +345,25 @@ class _CustomerPreInvoiceView extends StatelessWidget {
     final result = await cubit.finalizePreInvoice(item);
     if (!context.mounted) return false;
 
-    return result.when<bool>(
-      success: (data, failures, resultCode) => true,
-      failure: (error, failures) {
-        SnakeBarWidget.showError(
-          context: context,
+    return result.when<Future<bool>>(
+      success: (data, failures, resultCode) async => true,
+      failure: (error, failures) async {
+        await _showApiError(
+          context,
           message: failures ?? 'نهایی سازی فاکتور با خطا مواجه شد.',
         );
         return false;
       },
-      expireToken: () {
-        SnakeBarWidget.showError(
+      expireToken: () async => false,
+      connectionError: () async {
+        await BottomSheetMessage.showCustom(
           context: context,
-          message: 'نشست کاربری منقضی شده است.',
-        );
-        return false;
-      },
-      connectionError: () {
-        SnakeBarWidget.showError(
-          context: context,
-          message: 'اتصال به سرور برقرار نیست.',
+          content: NoInternetBottomSheet(
+            onRetry: () => _finalizeInvoice(context, cubit, item),
+          ),
+          actionWidget: const SizedBox.shrink(),
+          isDismissible: false,
+          enableDrag: false,
         );
         return false;
       },
@@ -397,22 +394,64 @@ class _CustomerPreInvoiceView extends StatelessWidget {
         }
       },
       failure: (error, failures) async {
-        SnakeBarWidget.showError(
-          context: context,
+        await _showApiError(
+          context,
           message: failures ?? 'دریافت فایل فاکتور با خطا مواجه شد.',
+          onRetry: () => _openCustomerInvoiceDocument(
+            context,
+            cubit,
+            invoiceGuid,
+          ),
         );
       },
-      expireToken: () async {
-        SnakeBarWidget.showError(
-          context: context,
-          message: 'نشست کاربری منقضی شده است.',
-        );
-      },
+      expireToken: () async {},
       connectionError: () async {
-        SnakeBarWidget.showError(
+        await BottomSheetMessage.showCustom(
           context: context,
-          message: 'اتصال به سرور برقرار نیست.',
+          content: NoInternetBottomSheet(
+            onRetry: () => _openCustomerInvoiceDocument(
+              context,
+              cubit,
+              invoiceGuid,
+            ),
+          ),
+          actionWidget: const SizedBox.shrink(),
+          isDismissible: false,
+          enableDrag: false,
         );
+      },
+    );
+  }
+
+  Future<void> _showApiError(
+    BuildContext context, {
+    required String message,
+    VoidCallback? onRetry,
+  }) async {
+    if (!context.mounted) return;
+
+    final data = BottomSheetMessageModel(
+      title: 'خطا',
+      message: message,
+    );
+
+    if (onRetry == null) {
+      await BottomSheetMessage.showError(
+        context: context,
+        data: data,
+        isDismissible: true,
+        enableDrag: true,
+        onButtonTap: () => context.pop(),
+      );
+      return;
+    }
+
+    await BottomSheetMessage.showErrorWithAction(
+      context: context,
+      data: data,
+      onPositive: () {
+        context.pop();
+        onRetry();
       },
     );
   }

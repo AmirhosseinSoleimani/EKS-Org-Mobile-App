@@ -49,18 +49,18 @@ class CustomerInvoiceCubit extends Cubit<CustomerInvoiceState> with LatestReques
   void Function()? _retryAction;
 
   Future<void> initialize() async {
-    await Future.wait<void>([
-      fetchCategories(),
-      fetchList(refresh: true),
-    ]);
+    _retryAction = initialize;
+    final categoriesLoaded = await fetchCategories();
+    if (!categoriesLoaded || isClosed) return;
+    await fetchList(refresh: true);
   }
 
   void retryLastAction() => _retryAction?.call();
 
-  Future<void> fetchCategories() async {
+  Future<bool> fetchCategories() async {
     final result = await _getEmdadCategoriesUseCase();
 
-    result.whenOrNull(
+    return result.when<bool>(
       success: (items, failures, resultCode) {
         emit(
           state.copyWith(
@@ -68,6 +68,20 @@ class CustomerInvoiceCubit extends Cubit<CustomerInvoiceState> with LatestReques
             clearErrorMessage: true,
           ),
         );
+        return true;
+      },
+      failure: (error, failures) {
+        _emitError(failures ?? error.toString());
+        return false;
+      },
+      expireToken: () => false,
+      connectionError: () {
+        emit(
+          state.copyWith(
+            status: CustomerInvoiceViewStatus.connectionError,
+          ),
+        );
+        return false;
       },
     );
   }
@@ -122,7 +136,14 @@ class CustomerInvoiceCubit extends Cubit<CustomerInvoiceState> with LatestReques
         );
       },
       failure: (error, failures) => _emitError(failures),
-      expireToken: () => _emitError('نشست کاربری منقضی شده است.'),
+      expireToken: () {
+        emit(
+          state.copyWith(
+            isInitialLoading: false,
+            isPaginationLoading: false,
+          ),
+        );
+      },
       connectionError: () {
         emit(
           state.copyWith(
@@ -210,6 +231,8 @@ class CustomerInvoiceCubit extends Cubit<CustomerInvoiceState> with LatestReques
   Future<void> exportReport() async {
     if (state.isReportLoading) return;
 
+    _retryAction = exportReport;
+
     emit(
       state.copyWith(
         status: CustomerInvoiceViewStatus.reportLoading,
@@ -274,10 +297,13 @@ class CustomerInvoiceCubit extends Cubit<CustomerInvoiceState> with LatestReques
         failures,
         clearReportLoading: true,
       ),
-      expireToken: () async => _emitError(
-        'نشست کاربری منقضی شده است.',
-        clearReportLoading: true,
-      ),
+      expireToken: () async {
+        emit(
+          state.copyWith(
+            isReportLoading: false,
+          ),
+        );
+      },
       connectionError: () async {
         emit(
           state.copyWith(

@@ -15,17 +15,15 @@ class EmdadgarInvoiceService {
 
   final Dio _dio;
 
-
-  Future<EmdadgarInvoicePageModel> getInitialInvoices(
+  Future<BaseSingleResponse<EmdadgarInvoicePageModel>> getInitialInvoices(
     InvoiceListFilterRequestModel request,
   ) async {
     final response = await _dio.post<dynamic>(
       '/api/Invoice/ReportEmdadgarPreInvoice',
       data: request.toJson(),
     );
-    return EmdadgarInvoicePageModel.fromResponse(response.data);
+    return _pageResponse(response.data);
   }
-
 
   Future<BaseSingleResponse<InvoiceModel?>> getInitialInvoiceDetails(
     InvoiceDetailsRequestModel request,
@@ -34,93 +32,119 @@ class EmdadgarInvoiceService {
       '/api/Invoice/EmdadgarPreInvoice',
       data: request.toJson(),
     );
-    final data = ResponseJsonReader.object(response.data);
+    final resultCode = ResponseJsonReader.resultCode(response.data);
+    final data = resultCode == 0
+        ? ResponseJsonReader.object(response.data)
+        : null;
     return BaseSingleResponse<InvoiceModel?>(
-      resultCode: ResponseJsonReader.resultCode(response.data),
-      data: data.isEmpty ? null : InvoiceModel.fromJson(data),
+      resultCode: resultCode,
+      data: data == null || data.isEmpty ? null : InvoiceModel.fromJson(data),
       failures: ResponseJsonReader.failures(response.data),
     );
   }
 
-  Future<BulkInvoiceAcceptResultModel> acceptInitialInvoices(
+  Future<BaseSingleResponse<BulkInvoiceAcceptResultModel>>
+      acceptInitialInvoices(
     BulkInvoiceAcceptParamModel request,
   ) async {
     final response = await _dio.post<dynamic>(
       '/api/AidServiceEvaluation/BulkInvoiceOperatorInvoiceAccept',
       data: request.toJson(),
     );
-    return BulkInvoiceAcceptResultModel.fromResponse(response.data);
+    return _bulkResponse(response.data);
   }
 
-
-  Future<EmdadgarInvoicePageModel> getInvoices(
+  Future<BaseSingleResponse<EmdadgarInvoicePageModel>> getInvoices(
     InvoiceListFilterRequestModel request,
   ) async {
     final response = await _dio.post<dynamic>(
       '/api/Invoice/ReportEmdadgarInvoice',
       data: request.toJson(),
     );
-    return EmdadgarInvoicePageModel.fromResponse(response.data);
+    return _pageResponse(response.data);
   }
 
-  Future<BulkInvoiceAcceptResultModel> acceptInvoices(
+  Future<BaseSingleResponse<BulkInvoiceAcceptResultModel>> acceptInvoices(
     BulkInvoiceAcceptParamModel request,
   ) async {
     final response = await _dio.post<dynamic>(
       '/api/AidServiceEvaluation/BulkAdminOperatorInvoiceAccept',
       data: request.toJson(),
     );
-    return BulkInvoiceAcceptResultModel.fromResponse(response.data);
+    return _bulkResponse(response.data);
   }
 
-  Future<BulkInvoiceAcceptResultModel> acceptFinalApprovalInvoices(
+  Future<BaseSingleResponse<BulkInvoiceAcceptResultModel>>
+      acceptFinalApprovalInvoices(
     BulkInvoiceAcceptParamModel request,
   ) async {
     final response = await _dio.post<dynamic>(
       '/api/AidServiceEvaluation/BulkFinancialOperatorInvoiceAccept',
       data: request.toJson(),
     );
-    return BulkInvoiceAcceptResultModel.fromResponse(response.data);
+    return _bulkResponse(response.data);
   }
 
-  Future<EmdadgarInvoicePageModel> getFinalApprovalInvoices(
+  Future<BaseSingleResponse<EmdadgarInvoicePageModel>>
+      getFinalApprovalInvoices(
     InvoiceListFilterRequestModel request,
   ) async {
     final response = await _dio.post<dynamic>(
       '/api/Invoice/ReportEmdadgarAmaliatFinalInvoice',
       data: request.toJson(),
     );
-    return EmdadgarInvoicePageModel.fromResponse(response.data);
+    return _pageResponse(response.data);
   }
 
-  Future<BulkInvoiceAcceptResultModel> acceptFinalCorrectionInvoices(
+  Future<BaseSingleResponse<BulkInvoiceAcceptResultModel>>
+      acceptFinalCorrectionInvoices(
     BulkInvoiceAcceptParamModel request,
   ) async {
     final response = await _dio.post<dynamic>(
       '/api/AidServiceEvaluation/BulkDefiniteInvoiceAccept',
       data: request.toJson(),
     );
-    return BulkInvoiceAcceptResultModel.fromResponse(response.data);
+    return _bulkResponse(response.data);
   }
 
-  Future<EmdadgarInvoicePageModel> getFinalCorrectionInvoices(
+  Future<BaseSingleResponse<EmdadgarInvoicePageModel>>
+      getFinalCorrectionInvoices(
     InvoiceListFilterRequestModel request,
   ) async {
     final response = await _dio.post<dynamic>(
       '/api/Invoice/ReportEmdadgarFinalInvoice',
       data: request.toJson(),
     );
-    return EmdadgarInvoicePageModel.fromResponse(response.data);
+    return _pageResponse(response.data);
   }
 
-
-  Future<EmdadgarInvoicePageModel> getDefiniteInvoices(
+  Future<BaseSingleResponse<EmdadgarInvoicePageModel>> getDefiniteInvoices(
     InvoiceListFilterRequestModel request,
   ) async {
     final response = await _dio.post<dynamic>(
       '/api/Invoice/ReportEmdadgarDefiniteInvoice',
       data: request.toJson(),
     );
-    return EmdadgarInvoicePageModel.fromResponse(response.data);
+    return _pageResponse(response.data);
+  }
+
+  BaseSingleResponse<EmdadgarInvoicePageModel> _pageResponse(dynamic raw) {
+    final resultCode = ResponseJsonReader.resultCode(raw);
+    return BaseSingleResponse<EmdadgarInvoicePageModel>(
+      resultCode: resultCode,
+      data: resultCode == 0 ? EmdadgarInvoicePageModel.fromResponse(raw) : null,
+      failures: ResponseJsonReader.failures(raw),
+    );
+  }
+
+  BaseSingleResponse<BulkInvoiceAcceptResultModel> _bulkResponse(dynamic raw) {
+    final resultCode = ResponseJsonReader.resultCode(raw);
+    return BaseSingleResponse<BulkInvoiceAcceptResultModel>(
+      resultCode: resultCode,
+      data: resultCode == 0
+          ? BulkInvoiceAcceptResultModel.fromResponse(raw)
+          : null,
+      failures: ResponseJsonReader.failures(raw),
+    );
   }
 }

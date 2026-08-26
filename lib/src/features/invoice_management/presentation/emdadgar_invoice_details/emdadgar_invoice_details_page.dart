@@ -208,17 +208,7 @@ class _LoadedContent extends StatelessWidget {
           enableDrag: true,
         );
       },
-      expireToken: () async {
-        BottomSheetMessage.showError(
-          context: context,
-          data: const BottomSheetMessageModel(
-            title: 'خطا',
-            message: 'نشست کاربری منقضی شده است.',
-          ),
-          isDismissible: true,
-          enableDrag: true,
-        );
-      },
+      expireToken: () async {},
       connectionError: () async {
         BottomSheetMessage.showError(
           context: context,

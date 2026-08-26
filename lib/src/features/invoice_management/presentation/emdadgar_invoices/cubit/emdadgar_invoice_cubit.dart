@@ -134,8 +134,12 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
     _retryAction = () => initialize(initialStage: initialStage);
     _safeEmit(const EmdadgarInvoiceState.loading());
 
-    await fetchOperationAccess(reportError: false);
-    await fetchCategories(reportError: false);
+    final operationAccessLoaded = await fetchOperationAccess();
+    if (!operationAccessLoaded || isClosed) return;
+
+    final categoriesLoaded = await fetchCategories();
+    if (!categoriesLoaded || isClosed) return;
+
     await fetchList(refresh: true);
   }
 
@@ -165,9 +169,7 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
       failure: (error, message) {
         if (reportError) _emitError(message ?? error.toString());
       },
-      expireToken: () {
-        if (reportError) _emitError('نشست کاربری منقضی شده است.');
-      },
+      expireToken: () {},
       connectionError: () {
         if (reportError) {
           _safeEmit(const EmdadgarInvoiceState.connectionError());
@@ -192,9 +194,7 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
       failure: (error, message) {
         if (reportError) _emitError(message ?? error.toString());
       },
-      expireToken: () {
-        if (reportError) _emitError('نشست کاربری منقضی شده است.');
-      },
+      expireToken: () {},
       connectionError: () {
         if (reportError) {
           _safeEmit(const EmdadgarInvoiceState.connectionError());
@@ -276,7 +276,6 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
       expireToken: () {
         hasLoadedOnce = true;
         paginationLoadingNotifier.value = false;
-        _emitError('نشست کاربری منقضی شده است.');
       },
       connectionError: () {
         hasLoadedOnce = true;
@@ -466,7 +465,6 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
       },
       expireToken: () async {
         confirmLoadingNotifier.value = false;
-        _emitError('نشست کاربری منقضی شده است.');
       },
       connectionError: () async {
         confirmLoadingNotifier.value = false;
@@ -527,7 +525,6 @@ class EmdadgarInvoiceCubit extends Cubit<EmdadgarInvoiceState> {
       },
       expireToken: () {
         reportLoadingNotifier.value = false;
-        _emitError('نشست کاربری منقضی شده است.');
       },
       connectionError: () {
         reportLoadingNotifier.value = false;

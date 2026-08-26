@@ -16,7 +16,7 @@ class EmdadgarInvoiceDataSourceImpl implements EmdadgarInvoiceDataSource {
   final EmdadgarInvoiceService _service;
 
   @override
-  Future<EmdadgarInvoicePageModel> getInitialInvoices(
+  Future<BaseSingleResponse<EmdadgarInvoicePageModel>> getInitialInvoices(
     InvoiceListFilterRequestModel request,
   ) => _service.getInitialInvoices(request);
 
@@ -26,42 +26,47 @@ class EmdadgarInvoiceDataSourceImpl implements EmdadgarInvoiceDataSource {
   ) => _service.getInitialInvoiceDetails(request);
 
   @override
-  Future<BulkInvoiceAcceptResultModel> acceptInitialInvoices(
+  Future<BaseSingleResponse<BulkInvoiceAcceptResultModel>>
+      acceptInitialInvoices(
     BulkInvoiceAcceptParamModel request,
   ) => _service.acceptInitialInvoices(request);
 
   @override
-  Future<EmdadgarInvoicePageModel> getInvoices(
+  Future<BaseSingleResponse<EmdadgarInvoicePageModel>> getInvoices(
     InvoiceListFilterRequestModel request,
   ) => _service.getInvoices(request);
 
   @override
-  Future<BulkInvoiceAcceptResultModel> acceptInvoices(
+  Future<BaseSingleResponse<BulkInvoiceAcceptResultModel>> acceptInvoices(
     BulkInvoiceAcceptParamModel request,
   ) => _service.acceptInvoices(request);
 
   @override
-  Future<BulkInvoiceAcceptResultModel> acceptFinalApprovalInvoices(
+  Future<BaseSingleResponse<BulkInvoiceAcceptResultModel>>
+      acceptFinalApprovalInvoices(
     BulkInvoiceAcceptParamModel request,
   ) => _service.acceptFinalApprovalInvoices(request);
 
   @override
-  Future<EmdadgarInvoicePageModel> getFinalApprovalInvoices(
+  Future<BaseSingleResponse<EmdadgarInvoicePageModel>>
+      getFinalApprovalInvoices(
     InvoiceListFilterRequestModel request,
   ) => _service.getFinalApprovalInvoices(request);
 
   @override
-  Future<BulkInvoiceAcceptResultModel> acceptFinalCorrectionInvoices(
+  Future<BaseSingleResponse<BulkInvoiceAcceptResultModel>>
+      acceptFinalCorrectionInvoices(
     BulkInvoiceAcceptParamModel request,
   ) => _service.acceptFinalCorrectionInvoices(request);
 
   @override
-  Future<EmdadgarInvoicePageModel> getFinalCorrectionInvoices(
+  Future<BaseSingleResponse<EmdadgarInvoicePageModel>>
+      getFinalCorrectionInvoices(
     InvoiceListFilterRequestModel request,
   ) => _service.getFinalCorrectionInvoices(request);
 
   @override
-  Future<EmdadgarInvoicePageModel> getDefiniteInvoices(
+  Future<BaseSingleResponse<EmdadgarInvoicePageModel>> getDefiniteInvoices(
     InvoiceListFilterRequestModel request,
   ) => _service.getDefiniteInvoices(request);
 }

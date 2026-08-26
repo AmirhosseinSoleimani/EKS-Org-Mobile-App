@@ -59,18 +59,18 @@ class CustomerPreInvoiceCubit extends Cubit<CustomerPreInvoiceState>
   void Function()? _retryAction;
 
   Future<void> initialize() async {
-    await Future.wait<void>([
-      fetchCategories(),
-      fetchList(refresh: true),
-    ]);
+    _retryAction = initialize;
+    final categoriesLoaded = await fetchCategories();
+    if (!categoriesLoaded || isClosed) return;
+    await fetchList(refresh: true);
   }
 
   void retryLastAction() => _retryAction?.call();
 
-  Future<void> fetchCategories() async {
+  Future<bool> fetchCategories() async {
     final result = await _getEmdadCategoriesUseCase();
 
-    result.whenOrNull(
+    return result.when<bool>(
       success: (items, failures, resultCode) {
         emit(
           state.copyWith(
@@ -78,6 +78,20 @@ class CustomerPreInvoiceCubit extends Cubit<CustomerPreInvoiceState>
             clearErrorMessage: true,
           ),
         );
+        return true;
+      },
+      failure: (error, failures) {
+        _emitError(failures ?? error.toString());
+        return false;
+      },
+      expireToken: () => false,
+      connectionError: () {
+        emit(
+          state.copyWith(
+            status: CustomerPreInvoiceViewStatus.connectionError,
+          ),
+        );
+        return false;
       },
     );
   }
@@ -122,7 +136,13 @@ class CustomerPreInvoiceCubit extends Cubit<CustomerPreInvoiceState>
         );
       },
       failure: (error, failures) => _emitError(failures),
-      expireToken: () => _emitError('نشست کاربری منقضی شده است.'),
+      expireToken: () {
+        emit(
+          state.copyWith(
+            isInitialLoading: false,
+          ),
+        );
+      },
       connectionError: () {
         emit(
           state.copyWith(
@@ -289,6 +309,8 @@ class CustomerPreInvoiceCubit extends Cubit<CustomerPreInvoiceState>
 
   Future<void> exportReport() async {
     if (state.isReportLoading) return;
+
+    _retryAction = exportReport;
 
     final items = state.items;
     if (items.isEmpty) {

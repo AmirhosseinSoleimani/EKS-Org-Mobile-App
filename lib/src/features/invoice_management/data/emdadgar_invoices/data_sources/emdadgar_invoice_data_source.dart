@@ -7,7 +7,7 @@ import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart'
 import 'package:eks_sana_plus_org/src/shared/features/invoice/data/models/invoice_model.dart';
 
 abstract class EmdadgarInvoiceDataSource {
-  Future<EmdadgarInvoicePageModel> getInitialInvoices(
+  Future<BaseSingleResponse<EmdadgarInvoicePageModel>> getInitialInvoices(
     InvoiceListFilterRequestModel request,
   );
 
@@ -15,35 +15,40 @@ abstract class EmdadgarInvoiceDataSource {
     InvoiceDetailsRequestModel request,
   );
 
-  Future<BulkInvoiceAcceptResultModel> acceptInitialInvoices(
+  Future<BaseSingleResponse<BulkInvoiceAcceptResultModel>>
+      acceptInitialInvoices(
     BulkInvoiceAcceptParamModel request,
   );
 
-  Future<EmdadgarInvoicePageModel> getInvoices(
+  Future<BaseSingleResponse<EmdadgarInvoicePageModel>> getInvoices(
     InvoiceListFilterRequestModel request,
   );
 
-  Future<BulkInvoiceAcceptResultModel> acceptInvoices(
+  Future<BaseSingleResponse<BulkInvoiceAcceptResultModel>> acceptInvoices(
     BulkInvoiceAcceptParamModel request,
   );
 
-  Future<BulkInvoiceAcceptResultModel> acceptFinalApprovalInvoices(
+  Future<BaseSingleResponse<BulkInvoiceAcceptResultModel>>
+      acceptFinalApprovalInvoices(
     BulkInvoiceAcceptParamModel request,
   );
 
-  Future<EmdadgarInvoicePageModel> getFinalApprovalInvoices(
+  Future<BaseSingleResponse<EmdadgarInvoicePageModel>>
+      getFinalApprovalInvoices(
     InvoiceListFilterRequestModel request,
   );
 
-  Future<BulkInvoiceAcceptResultModel> acceptFinalCorrectionInvoices(
+  Future<BaseSingleResponse<BulkInvoiceAcceptResultModel>>
+      acceptFinalCorrectionInvoices(
     BulkInvoiceAcceptParamModel request,
   );
 
-  Future<EmdadgarInvoicePageModel> getFinalCorrectionInvoices(
+  Future<BaseSingleResponse<EmdadgarInvoicePageModel>>
+      getFinalCorrectionInvoices(
     InvoiceListFilterRequestModel request,
   );
 
-  Future<EmdadgarInvoicePageModel> getDefiniteInvoices(
+  Future<BaseSingleResponse<EmdadgarInvoicePageModel>> getDefiniteInvoices(
     InvoiceListFilterRequestModel request,
   );
 }

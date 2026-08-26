@@ -204,6 +204,16 @@ class _RepresentativeAmount extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+    final formattedAmount = InvoicePresentationFormatter.rial(amount);
+    final hasRialUnit = formattedAmount.trim().endsWith('ریال');
+    final amountText = hasRialUnit
+        ? formattedAmount.replaceFirst(RegExp(r'\s*ریال\s*$'), '').trim()
+        : formattedAmount;
+    final amountStyle = theme.textTheme.titleMedium?.copyWith(
+      color: theme.colorScheme.primary.darken(),
+      fontWeight: FontWeight.w800,
+      fontSize: AppSize.s18,
+    );
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -232,14 +242,22 @@ class _RepresentativeAmount extends StatelessWidget {
             child: FittedBox(
               fit: BoxFit.scaleDown,
               alignment: Alignment.centerLeft,
-              child: Text(
-                InvoicePresentationFormatter.rial(amount),
-                textDirection: TextDirection.rtl,
-                style: theme.textTheme.titleMedium?.copyWith(
-                  color: theme.colorScheme.primary.darken(),
-                  fontWeight: FontWeight.w800,
-                  fontSize: AppSize.s18,
-                ),
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                textDirection: TextDirection.ltr,
+                children: [
+                  Text(
+                    amountText,
+                    textDirection: TextDirection.ltr,
+                    style: amountStyle,
+                  ),
+                  if (hasRialUnit)
+                    Text(
+                      ' ریال',
+                      textDirection: TextDirection.rtl,
+                      style: amountStyle,
+                    ),
+                ],
               ),
             ),
           ),
