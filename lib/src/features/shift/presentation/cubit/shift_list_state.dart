@@ -1,7 +1,7 @@
 part of 'shift_list_cubit.dart';
 
 @freezed
-class ShiftListState with _$ShiftListState {
+sealed class ShiftListState with _$ShiftListState {
   const factory ShiftListState.initial() = _Initial;
 
   const factory ShiftListState.loading({
@@ -49,34 +49,4 @@ class ShiftListState with _$ShiftListState {
     required List<ShiftEntity> items,
     required ShiftFilterParamEntity filter,
   }) = _Exporting;
-
-  @override
-  List<DiagnosticsNode> debugDescribeChildren() {
-    // TODO: implement debugDescribeChildren
-    throw UnimplementedError();
-  }
-
-  @override
-  DiagnosticsNode toDiagnosticsNode({String? name, DiagnosticsTreeStyle? style}) {
-    // TODO: implement toDiagnosticsNode
-    throw UnimplementedError();
-  }
-
-  @override
-  String toStringDeep({String prefixLineOne = '', String? prefixOtherLines, DiagnosticLevel minLevel = DiagnosticLevel.debug, int wrapWidth = 65}) {
-    // TODO: implement toStringDeep
-    throw UnimplementedError();
-  }
-
-  @override
-  String toStringShallow({String joiner = ', ', DiagnosticLevel minLevel = DiagnosticLevel.debug}) {
-    // TODO: implement toStringShallow
-    throw UnimplementedError();
-  }
-
-  @override
-  String toStringShort() {
-    // TODO: implement toStringShort
-    throw UnimplementedError();
-  }
 }

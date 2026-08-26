@@ -1,5 +1,4 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
-import 'package:eks_sana_plus_org/src/common/utils/extensions/string_ext.dart';
 import 'package:eks_sana_plus_org/src/di/di_setup.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/cost_center_entity.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/evaluation_labor_response_entity.dart';
@@ -8,6 +7,7 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presenta
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/cubit/labors_and_parts_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/cubit/labors_and_parts_state.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/utils/invoice_presentation_formatter.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/simple_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message_model.dart';
@@ -174,14 +174,19 @@ class LaborRegistrationPageBody extends StatelessWidget {
                         stream: cubit.priceLaborSubject,
                         builder: (context, snapshot) {
                           if (snapshot.data?.isNotEmpty ?? false) {
+                            final price = num.tryParse(snapshot.data ?? '');
                             return TextFormFieldWidget(
                               labelText: 'قیمت',
                               controller: TextEditingController(
-                                text: snapshot.data
-                                    .toString()
-                                    .splitPriceByComma()
-                                    .addPriceTag()
-                                    .convertNumberWithLanguage(),
+                                text: InvoicePresentationFormatter.amount(price),
+                              ),
+                              textDirection: TextDirection.ltr,
+                              suffixIcon: const Center(
+                                widthFactor: 1,
+                                child: Text(
+                                  'ریال',
+                                  textDirection: TextDirection.rtl,
+                                ),
                               ),
                             );
                           } else {

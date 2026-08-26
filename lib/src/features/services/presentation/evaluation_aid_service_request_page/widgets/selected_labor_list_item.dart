@@ -1,6 +1,7 @@
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/evaluation_selected_labor_entity.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/evaluation_selected_part_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/amount_row/amount_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
@@ -87,7 +88,13 @@ class _LaborHeaderRow extends StatelessWidget {
       children: [
         Expanded(child: TitleLargeText(text: labor.name, fontSize: 14)),
         Space.w8,
-        TitleLargeText(text: labor.price.toRialPrice(), fontSize: 14),
+        AmountRow(
+          amount: labor.price,
+          valueStyle: Theme.of(context).textTheme.titleLarge?.copyWith(
+                fontSize: 14,
+              ),
+          fitValue: true,
+        ),
       ],
     );
   }
@@ -359,25 +366,16 @@ class _SelectedLaborPartRow extends StatelessWidget {
               ),
             ),
             const Spacer(),
-            BodySmallText(
-              text: part.price.toRialPrice(),
-              color: colorScheme.onPrimaryFixed,
-              textAlign: TextAlign.end,
-              maxLines: 1,
+            AmountRow(
+              amount: part.price,
+              valueStyle: Theme.of(context).textTheme.bodySmall?.copyWith(
+                    color: colorScheme.onPrimaryFixed,
+                  ),
+              fitValue: true,
             ),
           ],
         );
       },
     );
-  }
-}
-
-extension RialPriceFormatter on num {
-  String toRialPrice() {
-    final value = toStringAsFixed(
-      0,
-    ).replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (match) => ',');
-
-    return '$value ریال';
   }
 }

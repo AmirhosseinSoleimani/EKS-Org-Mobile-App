@@ -1,6 +1,7 @@
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/entity/evaluation_part_response_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/amount_row/amount_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/bottom_sheet_message.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_src.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/svg_widget/svg_widget.dart';
@@ -124,9 +125,12 @@ class _InfoRow extends StatelessWidget {
               fontWeight: FontWeight.w400,
             ),
           ),
-          Text(
-            part.partPrice?.toRialPrice() ?? '',
-            style: TextStyle(color: color.onSurface, fontWeight: FontWeight.bold),
+          AmountRow(
+            amount: part.partPrice,
+            valueStyle: TextStyle(
+              color: color.onSurface,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         ],
       ),
@@ -230,15 +234,5 @@ class _ActionItem extends StatelessWidget {
         ),
       ),
     );
-  }
-}
-
-extension RialPriceFormatter on num {
-  String toRialPrice() {
-    final value = toStringAsFixed(
-      0,
-    ).replaceAllMapped(RegExp(r'\B(?=(\d{3})+(?!\d))'), (m) => ',');
-
-    return '$value ریال';
   }
 }

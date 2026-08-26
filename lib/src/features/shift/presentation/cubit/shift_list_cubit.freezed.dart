@@ -105,10 +105,7 @@ return deleting(_that);case _Success():
 return success(_that);case _Failure():
 return failure(_that);case _ConnectionError():
 return connectionError(_that);case _Exporting():
-return exporting(_that);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return exporting(_that);}
 }
 /// A variant of `map` that fallback to returning `null`.
 ///
@@ -194,10 +191,7 @@ return deleting(_that.items,_that.deletingItemId);case _Success():
 return success(_that.action,_that.message);case _Failure():
 return failure(_that.message,_that.items);case _ConnectionError():
 return connectionError(_that.filter,_that.items);case _Exporting():
-return exporting(_that.items,_that.filter);case _:
-  throw StateError('Unexpected subclass');
-
-}
+return exporting(_that.items,_that.filter);}
 }
 /// A variant of `when` that fallback to returning `null`
 ///

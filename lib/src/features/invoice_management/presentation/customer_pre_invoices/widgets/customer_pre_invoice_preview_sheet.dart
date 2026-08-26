@@ -1,5 +1,4 @@
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
-import 'package:eks_sana_plus_org/src/common/utils/extensions/string_ext.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/details_invoice_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/invoice_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/labor_invoice_entity.dart';
@@ -7,6 +6,7 @@ import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/ot
 import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/part_invoice_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/sum_all_invoice_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/amount_row/amount_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/full_screen_bottom_sheet_app_bar.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
@@ -293,12 +293,24 @@ class _CustomerTotalsCard extends StatelessWidget {
               color: serviceType.serviceColor.withValues(alpha: .08),
               borderRadius: BorderRadius.circular(AppSize.s8),
             ),
-            child: Text(
-              'مبلغ قابل پرداخت مشتری: ${_money(entity?.customerPaymentPrice)} ریال',
-              textAlign: TextAlign.center,
-              style: Theme.of(context).textTheme.titleMedium?.copyWith(
-                    fontWeight: FontWeight.w700,
-                  ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text(
+                  'مبلغ قابل پرداخت مشتری:',
+                  style: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                ),
+                Space.w8,
+                AmountRow(
+                  amount: entity?.customerPaymentPrice,
+                  valueStyle: Theme.of(context).textTheme.titleMedium?.copyWith(
+                        fontWeight: FontWeight.w700,
+                      ),
+                  fitValue: true,
+                ),
+              ],
             ),
           ),
         ],
@@ -322,10 +334,10 @@ class _DetailsSection extends StatelessWidget {
             _ItemCard(
               children: [
                 _ValueRow(label: 'شرح', value: item.aidItemTypeStr),
-                _ValueRow(label: 'قیمت پایه مشتری', value: _money(item.customerBasePrice)),
-                _ValueRow(label: 'تخفیف مشتری', value: _money(item.customerDiscountPrice)),
-                _ValueRow(label: 'قیمت نهایی مشتری', value: _money(item.customerPrice)),
-                _ValueRow(label: 'عهده شرکت/گارانتی', value: _money(item.companyPrice)),
+                _amountValueRow(context, label: 'قیمت پایه مشتری', amount: item.customerBasePrice),
+                _amountValueRow(context, label: 'تخفیف مشتری', amount: item.customerDiscountPrice),
+                _amountValueRow(context, label: 'قیمت نهایی مشتری', amount: item.customerPrice),
+                _amountValueRow(context, label: 'عهده شرکت/گارانتی', amount: item.companyPrice),
               ],
             ),
           _TotalsRow(
@@ -354,9 +366,9 @@ class _LaborSection extends StatelessWidget {
               children: [
                 _ValueRow(label: 'کد تعمیرات', value: item.laborCode),
                 _ValueRow(label: 'شرح عملیات/تعمیرات', value: item.laborDescription),
-                _ValueRow(label: 'هزینه سرویس', value: _money(item.basePrice)),
-                _ValueRow(label: 'تخفیف', value: _money(item.discountPrice)),
-                _ValueRow(label: 'هزینه نهایی', value: _money(item.price)),
+                _amountValueRow(context, label: 'هزینه سرویس', amount: item.basePrice),
+                _amountValueRow(context, label: 'تخفیف', amount: item.discountPrice),
+                _amountValueRow(context, label: 'هزینه نهایی', amount: item.price),
                 _ValueRow(label: 'مرکز هزینه', value: item.nahveMohasebeDescription),
               ],
             ),
@@ -392,14 +404,13 @@ class _PartSection extends StatelessWidget {
                     item.description,
                   ]),
                 ),
-                _ValueRow(label: 'قیمت واحد', value: _money(item.basePrice)),
-                _ValueRow(label: 'تخفیف', value: _money(item.discountPrice)),
-                _ValueRow(label: 'قیمت نهایی', value: _money(item.partPriceRial)),
-                _ValueRow(
+                _amountValueRow(context, label: 'قیمت واحد', amount: item.basePrice),
+                _amountValueRow(context, label: 'تخفیف', amount: item.discountPrice),
+                _amountValueRow(context, label: 'قیمت نهایی', amount: item.partPriceRial),
+                _amountValueRow(
+                  context,
                   label: 'قیمت کل',
-                  value: _money(
-                    (item.partPriceRial ?? 0) * (item.replaceCount ?? 0),
-                  ),
+                  amount: (item.partPriceRial ?? 0) * (item.replaceCount ?? 0),
                 ),
                 _ValueRow(label: 'مرکز هزینه', value: item.nahveMohasebeDescription),
               ],
@@ -426,10 +437,10 @@ class _OtherCostsSection extends StatelessWidget {
             _ItemCard(
               children: [
                 _ValueRow(label: 'شرح', value: item.title),
-                _ValueRow(label: 'قیمت پایه مشتری', value: _money(item.customerBasePrice)),
-                _ValueRow(label: 'تخفیف مشتری', value: _money(item.customerDiscountPrice)),
-                _ValueRow(label: 'قیمت نهایی مشتری', value: _money(item.customerPrice)),
-                _ValueRow(label: 'عهده شرکت/گارانتی', value: _money(item.companyPrice)),
+                _amountValueRow(context, label: 'قیمت پایه مشتری', amount: item.customerBasePrice),
+                _amountValueRow(context, label: 'تخفیف مشتری', amount: item.customerDiscountPrice),
+                _amountValueRow(context, label: 'قیمت نهایی مشتری', amount: item.customerPrice),
+                _amountValueRow(context, label: 'عهده شرکت/گارانتی', amount: item.companyPrice),
               ],
             ),
           _TotalsRow(
@@ -646,17 +657,19 @@ class _AmountPairRow extends StatelessWidget {
         children: [
           Expanded(flex: 2, child: Text(label, style: style)),
           Expanded(
-            child: Text(
-              _money(customer),
-              textAlign: TextAlign.center,
-              style: style,
+            child: AmountRow(
+              amount: customer,
+              showRial: false,
+              valueStyle: style,
+              valueAlignment: Alignment.center,
             ),
           ),
           Expanded(
-            child: Text(
-              _money(company),
-              textAlign: TextAlign.center,
-              style: style,
+            child: AmountRow(
+              amount: company,
+              showRial: false,
+              valueStyle: style,
+              valueAlignment: Alignment.center,
             ),
           ),
         ],
@@ -689,28 +702,42 @@ class _SingleTotalRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            'جمع کل',
-            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  fontWeight: FontWeight.w700,
-                ),
+    return AmountRow(
+      label: 'جمع کل',
+      amount: value,
+      isEmphasized: true,
+      labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w700,
           ),
-        ),
-        Text(
-          '${_money(value)} ریال',
-          style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                fontWeight: FontWeight.w700,
-              ),
-        ),
-      ],
+      valueStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+            fontWeight: FontWeight.w700,
+          ),
     );
   }
 }
 
-String _money(num? value) => '${value ?? 0}'.splitPriceByComma();
+
+Widget _amountValueRow(
+  BuildContext context, {
+  required String label,
+  required num? amount,
+}) {
+  final theme = Theme.of(context);
+  return AmountRow(
+    label: label,
+    amount: amount,
+    labelFlex: 2,
+    valueFlex: 3,
+    padding: const EdgeInsets.symmetric(vertical: AppPadding.p4),
+    crossAxisAlignment: CrossAxisAlignment.start,
+    labelStyle: theme.textTheme.bodySmall?.copyWith(
+      color: theme.colorScheme.onSurfaceVariant,
+    ),
+    valueStyle: theme.textTheme.bodyMedium?.copyWith(
+      fontWeight: FontWeight.w600,
+    ),
+  );
+}
 
 String _text(String? value, {String fallback = '---'}) {
   final normalized = value?.trim();

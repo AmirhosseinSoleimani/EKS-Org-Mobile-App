@@ -1,4 +1,4 @@
-import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/utils/invoice_presentation_formatter.dart';
+import 'package:eks_sana_plus_org/src/shared/utils/invoice_presentation_formatter.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/list_widgets/list_section_header.dart';
 import 'package:flutter/material.dart';
 

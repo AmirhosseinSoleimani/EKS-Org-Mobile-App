@@ -1,8 +1,8 @@
-import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/utils/invoice_presentation_formatter.dart';
+import 'package:eks_sana_plus_org/src/shared/utils/invoice_presentation_formatter.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/invoice_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/app_bar_widget/full_screen_bottom_sheet_app_bar.dart';
-import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/key_value_row.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/amount_row/amount_row.dart';
 import 'package:flutter/material.dart';
 
 class InvoicePreviewSheet extends StatelessWidget {
@@ -33,42 +33,30 @@ class InvoicePreviewSheet extends StatelessWidget {
                 _Section(
                   title: 'خلاصه هزینه‌ها',
                   children: [
-                    KeyValueRow(
+                    AmountRow(
                       label: 'پرداخت مشتری',
-                      value: InvoicePresentationFormatter.rial(
-                        sum?.customerPaymentPrice,
-                      ),
-                      boldValue: true,
+                      amount: sum?.customerPaymentPrice,
+                      isEmphasized: true,
                     ),
-                    KeyValueRow(
+                    AmountRow(
                       label: 'جمع اقلام مشتری',
-                      value: InvoicePresentationFormatter.rial(
-                        sum?.totalAllItemsCustomer,
-                      ),
+                      amount: sum?.totalAllItemsCustomer,
                     ),
-                    KeyValueRow(
+                    AmountRow(
                       label: 'جمع اقلام شرکت',
-                      value: InvoicePresentationFormatter.rial(
-                        sum?.totalAllItemsCompany,
-                      ),
+                      amount: sum?.totalAllItemsCompany,
                     ),
-                    KeyValueRow(
+                    AmountRow(
                       label: 'اجرت مشتری',
-                      value: InvoicePresentationFormatter.rial(
-                        sum?.laborCustomerTotal,
-                      ),
+                      amount: sum?.laborCustomerTotal,
                     ),
-                    KeyValueRow(
+                    AmountRow(
                       label: 'قطعات مشتری',
-                      value: InvoicePresentationFormatter.rial(
-                        sum?.partCustomerTotal,
-                      ),
+                      amount: sum?.partCustomerTotal,
                     ),
-                    KeyValueRow(
+                    AmountRow(
                       label: sum?.taxTotalCustomerText ?? 'مالیات مشتری',
-                      value: InvoicePresentationFormatter.rial(
-                        sum?.taxTotalCustomer,
-                      ),
+                      amount: sum?.taxTotalCustomer,
                     ),
                   ],
                 ),
@@ -78,13 +66,11 @@ class InvoicePreviewSheet extends StatelessWidget {
                     title: invoice.detailsInvoice?.title ?? 'جزئیات هزینه‌ها',
                     children: invoice.detailsInvoice!.invoiceItems!
                         .map(
-                          (item) => KeyValueRow(
+                          (item) => AmountRow(
                             label: InvoicePresentationFormatter.display(
                               item.aidItemTypeStr,
                             ),
-                            value: InvoicePresentationFormatter.rial(
-                              item.customerPrice ?? item.companyPrice,
-                            ),
+                            amount: item.customerPrice ?? item.companyPrice,
                           ),
                         )
                         .toList(),
@@ -96,11 +82,11 @@ class InvoicePreviewSheet extends StatelessWidget {
                     title: invoice.laborInvoice?.title ?? 'اجرت‌ها',
                     children: invoice.laborInvoice!.laborReception!
                         .map(
-                          (item) => KeyValueRow(
+                          (item) => AmountRow(
                             label: InvoicePresentationFormatter.display(
                               item.laborDescription,
                             ),
-                            value: InvoicePresentationFormatter.rial(item.price),
+                            amount: item.price,
                           ),
                         )
                         .toList(),
@@ -112,13 +98,11 @@ class InvoicePreviewSheet extends StatelessWidget {
                     title: invoice.partInvoice?.title ?? 'قطعات',
                     children: invoice.partInvoice!.partReception!
                         .map(
-                          (item) => KeyValueRow(
+                          (item) => AmountRow(
                             label: InvoicePresentationFormatter.display(
                               item.commodityDescription,
                             ),
-                            value: InvoicePresentationFormatter.rial(
-                              item.partPriceRial,
-                            ),
+                            amount: item.partPriceRial,
                           ),
                         )
                         .toList(),

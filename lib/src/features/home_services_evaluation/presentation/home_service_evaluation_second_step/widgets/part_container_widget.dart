@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/e
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_second_step/cubit/home_service_evaluation_second_step_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/labors_and_parts/widgets/edit_and_registration_part_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/amount_row/amount_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -179,9 +180,14 @@ class PartContainerWidget extends StatelessWidget {
                 'تعداد: ${entity.count.toString().convertNumberWithLanguage()}',
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
-              Text(
-                'قیمت واحد: ${(entity.partPrice).toString().splitPriceByComma().addPriceTag().convertNumberWithLanguage()}',
-                style: Theme.of(context).textTheme.bodyMedium,
+              Flexible(
+                child: AmountRow(
+                  label: 'قیمت واحد',
+                  amount: entity.partPrice,
+                  labelStyle: Theme.of(context).textTheme.bodyMedium,
+                  valueStyle: Theme.of(context).textTheme.bodyMedium,
+                  fitValue: true,
+                ),
               ),
             ],
           ),
@@ -194,9 +200,14 @@ class PartContainerWidget extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Text(
-                'قیمت کل: ${((entity.partPrice ?? 0) * (entity.count ?? 0)).toString().splitPriceByComma().addPriceTag().convertNumberWithLanguage()}',
-                style: Theme.of(context).textTheme.bodyMedium,
+              Expanded(
+                child: AmountRow(
+                  label: 'قیمت کل',
+                  amount: (entity.partPrice ?? 0) * (entity.count ?? 0),
+                  labelStyle: Theme.of(context).textTheme.bodyMedium,
+                  valueStyle: Theme.of(context).textTheme.bodyMedium,
+                  fitValue: true,
+                ),
               ),
               Text(
                 entity.costCenterObject?.name ?? '',

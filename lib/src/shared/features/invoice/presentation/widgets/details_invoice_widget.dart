@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/common/utils/extensions/string_ext.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/details_invoice_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/amount_row/amount_row.dart';
 import 'package:flutter/material.dart';
 
 class DetailsInvoiceWidget extends StatelessWidget {
@@ -128,30 +129,26 @@ class DetailsInvoiceWidget extends StatelessWidget {
                       ),
                       Expanded(
                         flex: 1,
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            '${entity?.invoiceItems?[index].customerPrice}'
-                                .splitPriceByComma(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .displayMedium
-                                ?.copyWith(fontSize: AppSize.s12),
-                          ),
+                        child: AmountRow(
+                          amount: entity?.invoiceItems?[index].customerPrice,
+                          showRial: false,
+                          valueStyle: Theme.of(context)
+                              .textTheme
+                              .displayMedium
+                              ?.copyWith(fontSize: AppSize.s12),
+                          valueAlignment: Alignment.center,
                         ),
                       ),
                       Expanded(
                         flex: 1,
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            '${entity?.invoiceItems?[index].companyPrice}'
-                                .splitPriceByComma(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .displayMedium
-                                ?.copyWith(fontSize: AppSize.s12),
-                          ),
+                        child: AmountRow(
+                          amount: entity?.invoiceItems?[index].companyPrice,
+                          showRial: false,
+                          valueStyle: Theme.of(context)
+                              .textTheme
+                              .displayMedium
+                              ?.copyWith(fontSize: AppSize.s12),
+                          valueAlignment: Alignment.center,
                         ),
                       )
                     ],
@@ -184,34 +181,28 @@ class DetailsInvoiceWidget extends StatelessWidget {
                 ),
                 Expanded(
                   flex: 1,
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      ((entity?.customerTotal ?? 0) > 0)
-                          ? '${entity?.customerTotal} ریال'.splitPriceByComma()
-                          : '${entity?.customerTotal}'.splitPriceByComma(),
-                      style: Theme.of(context)
-                          .textTheme
-                          .displayMedium
-                          ?.copyWith(
-                              fontSize: AppSize.s14,
-                              fontWeight: FontWeight.w600),
-                    ),
+                  child: AmountRow(
+                    amount: entity?.customerTotal,
+                    showRial: (entity?.customerTotal ?? 0) > 0,
+                    valueStyle: Theme.of(context)
+                        .textTheme
+                        .displayMedium
+                        ?.copyWith(
+                            fontSize: AppSize.s14,
+                            fontWeight: FontWeight.w600),
+                    valueAlignment: Alignment.center,
                   ),
                 ),
                 Expanded(
                   flex: 1,
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      ((entity?.companyTotal ?? 0) > 0)
-                          ? '${entity?.companyTotal} ریال'.splitPriceByComma()
-                          : '${entity?.companyTotal}'.splitPriceByComma(),
-                      style:
-                          Theme.of(context).textTheme.displayMedium?.copyWith(
-                                fontSize: AppSize.s14,
-                              ),
-                    ),
+                  child: AmountRow(
+                    amount: entity?.companyTotal,
+                    showRial: (entity?.companyTotal ?? 0) > 0,
+                    valueStyle:
+                        Theme.of(context).textTheme.displayMedium?.copyWith(
+                              fontSize: AppSize.s14,
+                            ),
+                    valueAlignment: Alignment.center,
                   ),
                 )
               ],

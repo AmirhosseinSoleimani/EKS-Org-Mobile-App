@@ -8,6 +8,7 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presenta
 import 'package:eks_sana_plus_org/src/shared/resources/assets_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/font_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/amount_row/amount_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/bottom_sheet_widget/delete_confirm_sheet.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_animate/flutter_animate.dart';
@@ -200,12 +201,10 @@ class HomeServiceEvaluationServiceWidget extends StatelessWidget {
                                         ),
                                         Space.w4,
                                         Expanded(
-                                          child: Text(
-                                            '${entity?.labors?[index].laborPrice} ریال'
-                                                .splitPriceByComma(),
-                                            style: const TextStyle(
-                                              fontFamily: FontConstants
-                                                  .fontFamilyPersian,
+                                          child: AmountRow(
+                                            amount: entity?.labors?[index].laborPrice,
+                                            valueStyle: const TextStyle(
+                                              fontFamily: FontConstants.fontFamilyPersian,
                                               fontSize: AppSize.s16,
                                               fontWeight: FontWeight.w500,
                                               color: Colors.black,
@@ -279,8 +278,7 @@ class HomeServiceEvaluationServiceWidget extends StatelessWidget {
                                                       Space.w4,
                                                       Expanded(
                                                         child: Text(
-                                                          '${entity?.labors?[index].parts?[partIndex].partTitle} ریال'
-                                                              .splitPriceByComma(),
+                                                          entity?.labors?[index].parts?[partIndex].partTitle ?? '-',
                                                           style: const TextStyle(
                                                             fontFamily:
                                                                 FontConstants
@@ -310,36 +308,18 @@ class HomeServiceEvaluationServiceWidget extends StatelessWidget {
                                                       ),
                                                       Space.w4,
                                                       Expanded(
-                                                        child: RichText(
-                                                          text: TextSpan(
-                                                            text: 'قیمت : ',
-                                                            style: Theme.of(context)
-                                                                .textTheme
-                                                                .titleMedium
-                                                                ?.copyWith(
-                                                                  fontSize:
-                                                                      AppSize
-                                                                          .s14,
-                                                                ),
-                                                            children: [
-                                                              TextSpan(
-                                                                text: '${entity?.labors?[index].parts?[partIndex].partPrice} ریال'
-                                                                    .splitPriceByComma(),
-                                                                style: const TextStyle(
-                                                                  fontFamily:
-                                                                      FontConstants
-                                                                          .fontFamilyPersian,
-                                                                  fontSize:
-                                                                      AppSize
-                                                                          .s14,
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w500,
-                                                                  color: Colors
-                                                                      .black,
-                                                                ),
-                                                              ),
-                                                            ],
+                                                        child: AmountRow(
+                                                          label: 'قیمت',
+                                                          amount: entity?.labors?[index].parts?[partIndex].partPrice,
+                                                          labelStyle: Theme.of(context)
+                                                              .textTheme
+                                                              .titleMedium
+                                                              ?.copyWith(fontSize: AppSize.s14),
+                                                          valueStyle: const TextStyle(
+                                                            fontFamily: FontConstants.fontFamilyPersian,
+                                                            fontSize: AppSize.s14,
+                                                            fontWeight: FontWeight.w500,
+                                                            color: Colors.black,
                                                           ),
                                                         ),
                                                       ),
@@ -365,41 +345,21 @@ class HomeServiceEvaluationServiceWidget extends StatelessWidget {
                                                         ),
                                                         Space.w4,
                                                         Expanded(
-                                                          child: RichText(
-                                                            text: TextSpan(
-                                                              text:
-                                                                  'قیمت (با احتساب داغی) : ',
-                                                              style: const TextStyle(
-                                                                fontFamily:
-                                                                    FontConstants
-                                                                        .fontFamilyPersian,
-                                                                fontSize:
-                                                                    AppSize.s14,
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w500,
-                                                                color: Colors
-                                                                    .black,
-                                                              ),
-                                                              children: [
-                                                                TextSpan(
-                                                                  text: '${(entity?.labors?[index].parts?[partIndex].partPrice ?? 0) - (entity?.labors?[index].parts?[partIndex].reusablePrice ?? 0)} ریال'
-                                                                      .splitPriceByComma(),
-                                                                  style: const TextStyle(
-                                                                    fontFamily:
-                                                                        FontConstants
-                                                                            .fontFamilyPersian,
-                                                                    fontSize:
-                                                                        AppSize
-                                                                            .s14,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w500,
-                                                                    color: Colors
-                                                                        .black,
-                                                                  ),
-                                                                ),
-                                                              ],
+                                                          child: AmountRow(
+                                                            label: 'قیمت (با احتساب داغی)',
+                                                            amount: (entity?.labors?[index].parts?[partIndex].partPrice ?? 0) -
+                                                                (entity?.labors?[index].parts?[partIndex].reusablePrice ?? 0),
+                                                            labelStyle: const TextStyle(
+                                                              fontFamily: FontConstants.fontFamilyPersian,
+                                                              fontSize: AppSize.s14,
+                                                              fontWeight: FontWeight.w500,
+                                                              color: Colors.black,
+                                                            ),
+                                                            valueStyle: const TextStyle(
+                                                              fontFamily: FontConstants.fontFamilyPersian,
+                                                              fontSize: AppSize.s14,
+                                                              fontWeight: FontWeight.w500,
+                                                              color: Colors.black,
                                                             ),
                                                           ),
                                                         ),

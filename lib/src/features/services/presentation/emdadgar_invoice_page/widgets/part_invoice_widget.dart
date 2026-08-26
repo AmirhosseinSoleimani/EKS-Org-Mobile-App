@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/common/utils/extensions/string_ext.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/part_invoice_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/amount_row/amount_row.dart';
 import 'package:flutter/material.dart';
 
 class PartInvoiceWidget extends StatelessWidget {
@@ -126,16 +127,14 @@ class PartInvoiceWidget extends StatelessWidget {
                       ),
                       Expanded(
                         flex: 1,
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            '${entity?.partReception?[index].partPriceRial}'
-                                .splitPriceByComma(),
-                            style: Theme.of(context)
-                                .textTheme
-                                .displayMedium
-                                ?.copyWith(fontSize: AppSize.s12),
-                          ),
+                        child: AmountRow(
+                          amount: entity?.partReception?[index].partPriceRial,
+                          showRial: false,
+                          valueStyle: Theme.of(context)
+                              .textTheme
+                              .displayMedium
+                              ?.copyWith(fontSize: AppSize.s12),
+                          valueAlignment: Alignment.center,
                         ),
                       ),
                       Expanded(
@@ -182,16 +181,14 @@ class PartInvoiceWidget extends StatelessWidget {
                 ),
                 Expanded(
                   flex: 1,
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      '${entity?.total} ریال'.splitPriceByComma(),
-                      style:
-                          Theme.of(context).textTheme.displayMedium?.copyWith(
-                                fontSize: AppSize.s14,
-                                fontWeight: FontWeight.w600,
-                              ),
-                    ),
+                  child: AmountRow(
+                    amount: entity?.total,
+                    valueStyle:
+                        Theme.of(context).textTheme.displayMedium?.copyWith(
+                              fontSize: AppSize.s14,
+                              fontWeight: FontWeight.w600,
+                            ),
+                    valueAlignment: Alignment.center,
                   ),
                 )
               ],

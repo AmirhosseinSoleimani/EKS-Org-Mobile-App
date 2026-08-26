@@ -1,6 +1,6 @@
-import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/utils/invoice_presentation_formatter.dart';
 import 'package:eks_sana_plus_org/src/shared/extensions/color_extension.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/amount_row/amount_row.dart';
 import 'package:flutter/material.dart';
 
 class InvoiceAmountSummary extends StatelessWidget {
@@ -28,86 +28,20 @@ class InvoiceAmountSummary extends StatelessWidget {
       ),
       child: Column(
         children: [
-          _AmountRow(
+          AmountRow(
             label: 'مبلغ پرداختی شرکت',
-            value: InvoicePresentationFormatter.rial(companyAmount),
+            amount: companyAmount,
             valueColor: theme.colorScheme.onSurfaceVariant,
-            isEmphasized: false,
           ),
           Space.h8,
-          _AmountRow(
+          AmountRow(
             label: 'مبلغ پرداختی مشتری',
-            value: InvoicePresentationFormatter.rial(customerAmount),
+            amount: customerAmount,
             valueColor: highlightColor.darken(),
             isEmphasized: true,
           ),
         ],
       ),
-    );
-  }
-}
-
-class _AmountRow extends StatelessWidget {
-  const _AmountRow({
-    required this.label,
-    required this.value,
-    required this.valueColor,
-    required this.isEmphasized,
-  });
-
-  final String label;
-  final String value;
-  final Color valueColor;
-  final bool isEmphasized;
-
-  @override
-  Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-
-    return Row(
-      children: [
-        Expanded(
-          child: Text(
-            '$label:',
-            style: theme.textTheme.bodyMedium?.copyWith(
-              color: theme.colorScheme.onSurfaceVariant,
-              fontWeight: isEmphasized ? FontWeight.w700 : FontWeight.w500,
-            ),
-          ),
-        ),
-        Space.w8,
-        Builder(
-          builder: (context) {
-            final valueStyle = theme.textTheme.bodyMedium?.copyWith(
-              color: valueColor,
-              fontWeight: isEmphasized ? FontWeight.w800 : FontWeight.w600,
-              fontSize: isEmphasized ? AppSize.s16 : AppSize.s12,
-            );
-            final hasRialUnit = value.trim().endsWith('ریال');
-            final amountText = hasRialUnit
-                ? value.replaceFirst(RegExp(r'\s*ریال\s*$'), '').trim()
-                : value;
-
-            return Row(
-              mainAxisSize: MainAxisSize.min,
-              textDirection: TextDirection.rtl,
-              children: [
-                Text(
-                  amountText,
-                  textDirection: TextDirection.ltr,
-                  style: valueStyle,
-                ),
-                if (hasRialUnit)
-                  Text(
-                    ' ریال',
-                    textDirection: TextDirection.rtl,
-                    style: valueStyle,
-                  ),
-              ],
-            );
-          },
-        ),
-      ],
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/features/home_services_evaluation/domain/e
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_packages/cubit/home_service_evaluation_packages_cubit.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/presentation/home_service_evaluation_packages/cubit/home_service_evaluation_packages_state.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/amount_row/amount_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/empty_lsit.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
@@ -82,12 +83,22 @@ class HomeServiceEvaluationPackageWidget extends StatelessWidget {
                           Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              BodyMediumText(
-                                text:
-                                'دستمزد: ${_formatPrice(item?.laborPrice ?? 0)}',
-                                fontSize: 13,
-                                fontWeight: FontWeight.bold,
-                                color: colorScheme.onPrimaryFixed,
+                              Expanded(
+                                child: AmountRow(
+                                  label: 'دستمزد',
+                                  amount: item?.laborPrice ?? 0,
+                                  labelStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color: colorScheme.onPrimaryFixed,
+                                      ),
+                                  valueStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                        fontSize: 13,
+                                        fontWeight: FontWeight.bold,
+                                        color: colorScheme.onPrimaryFixed,
+                                      ),
+                                  fitValue: true,
+                                ),
                               ),
 
                               Row(
@@ -242,13 +253,11 @@ class HomeServiceEvaluationPackageWidget extends StatelessWidget {
                                                       )
                                                     ],
                                                   ),
-                                                  BodyMediumText(text:
-                                                  _formatPrice(
-                                                    group.parts?[partIndex]
-                                                        .partPrice ?? 0,
-                                                  ),
-                                                    fontWeight: FontWeight.w600,
-
+                                                  AmountRow(
+                                                    amount: group.parts?[partIndex].partPrice ?? 0,
+                                                    valueStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                                                          fontWeight: FontWeight.w600,
+                                                        ),
                                                   ),
                                                 ],
                                               ),
@@ -317,15 +326,6 @@ class HomeServiceEvaluationPackageWidget extends StatelessWidget {
     );
   }
 
-  String _formatPrice(int price) {
-    String value = price.toStringAsFixed(0);
 
-    value = value.replaceAllMapped(
-      RegExp(r'\B(?=(\d{3})+(?!\d))'),
-          (match) => ',',
-    );
-
-    return '$value ریال';
-  }
 }
 

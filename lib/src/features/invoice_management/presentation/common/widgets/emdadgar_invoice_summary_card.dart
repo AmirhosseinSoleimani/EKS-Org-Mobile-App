@@ -1,10 +1,10 @@
 import 'package:eks_sana_plus_org/src/features/invoice_management/domain/emdadgar_invoices/entities/emdadgar_invoice_record_entity.dart';
-import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/utils/invoice_presentation_formatter.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/presentation/common/models/emdadgar_invoice_status_style.dart';
 import 'package:eks_sana_plus_org/src/shared/date_helper/jalali_date_helper.dart';
 import 'package:eks_sana_plus_org/src/shared/extensions/color_extension.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
 import 'package:eks_sana_plus_org/src/shared/theme/app_semantic_colors.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/amount_row/amount_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/request_widgets/status_label.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/summary_card/summary_card.dart';
@@ -204,16 +204,6 @@ class _RepresentativeAmount extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    final formattedAmount = InvoicePresentationFormatter.rial(amount);
-    final hasRialUnit = formattedAmount.trim().endsWith('ریال');
-    final amountText = hasRialUnit
-        ? formattedAmount.replaceFirst(RegExp(r'\s*ریال\s*$'), '').trim()
-        : formattedAmount;
-    final amountStyle = theme.textTheme.titleMedium?.copyWith(
-      color: theme.colorScheme.primary.darken(),
-      fontWeight: FontWeight.w800,
-      fontSize: AppSize.s18,
-    );
 
     return Container(
       padding: const EdgeInsets.symmetric(
@@ -225,43 +215,16 @@ class _RepresentativeAmount extends StatelessWidget {
         borderRadius: BorderRadius.circular(AppSize.s8),
         border: Border.all(color: theme.dividerColor),
       ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Text(
-              'جمع مبلغ پرداختی به نماینده:',
-              style: theme.textTheme.bodyMedium?.copyWith(
-                color: theme.colorScheme.onSurface,
-                fontWeight: FontWeight.w700,
-              ),
-            ),
-          ),
-          Space.w8,
-          Flexible(
-            child: FittedBox(
-              fit: BoxFit.scaleDown,
-              alignment: Alignment.centerLeft,
-              child: Row(
-                mainAxisSize: MainAxisSize.min,
-                textDirection: TextDirection.ltr,
-                children: [
-                  Text(
-                    amountText,
-                    textDirection: TextDirection.ltr,
-                    style: amountStyle,
-                  ),
-                  if (hasRialUnit)
-                    Text(
-                      ' ریال',
-                      textDirection: TextDirection.rtl,
-                      style: amountStyle,
-                    ),
-                ],
-              ),
-            ),
-          ),
-        ],
+      child: AmountRow(
+        label: 'جمع مبلغ پرداختی به نماینده',
+        amount: amount,
+        valueColor: theme.colorScheme.primary.darken(),
+        isEmphasized: true,
+        valueStyle: theme.textTheme.titleMedium?.copyWith(
+          fontWeight: FontWeight.w800,
+          fontSize: AppSize.s18,
+        ),
+        fitValue: true,
       ),
     );
   }

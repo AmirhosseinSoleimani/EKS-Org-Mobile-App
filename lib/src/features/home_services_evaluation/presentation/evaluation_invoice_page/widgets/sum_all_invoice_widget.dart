@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/common/utils/extensions/string_ext.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/sum_all_invoice_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/amount_row/amount_row.dart';
 import 'package:flutter/material.dart';
 
 import 'invoice_row.dart';
@@ -122,42 +123,31 @@ class SumAllInvoiceWidget extends StatelessWidget {
                     ),
                     Expanded(
                       flex: 1,
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          ((entity?.totalAllItemsCustomer ?? 0) > 0)
-                              ? '${entity?.totalAllItemsCustomer.toString() ?? '0'} ریال'
-                                  .splitPriceByComma()
-                              : (entity?.totalAllItemsCustomer.toString() ??
-                                      '0')
-                                  .splitPriceByComma(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .displayMedium
-                              ?.copyWith(
-                                  fontSize: AppSize.s10,
-                                  fontWeight: FontWeight.w600),
-                        ),
+                      child: AmountRow(
+                        amount: entity?.totalAllItemsCustomer,
+                        showRial: (entity?.totalAllItemsCustomer ?? 0) > 0,
+                        valueStyle: Theme.of(context)
+                            .textTheme
+                            .displayMedium
+                            ?.copyWith(
+                                fontSize: AppSize.s10,
+                                fontWeight: FontWeight.w600),
+                        valueAlignment: Alignment.center,
                       ),
                     ),
                     Expanded(
                       flex: 1,
-                      child: Align(
-                        alignment: Alignment.center,
-                        child: Text(
-                          ((entity?.totalAllItemsCompany ?? 0) > 0)
-                              ? '${entity?.totalAllItemsCompany.toString() ?? '0'} ریال'
-                                  .splitPriceByComma()
-                              : (entity?.totalAllItemsCompany.toString() ?? '0')
-                                  .splitPriceByComma(),
-                          style: Theme.of(context)
-                              .textTheme
-                              .displayMedium
-                              ?.copyWith(
-                                fontSize: AppSize.s10,
-                                fontWeight: FontWeight.w600,
-                              ),
-                        ),
+                      child: AmountRow(
+                        amount: entity?.totalAllItemsCompany,
+                        showRial: (entity?.totalAllItemsCompany ?? 0) > 0,
+                        valueStyle: Theme.of(context)
+                            .textTheme
+                            .displayMedium
+                            ?.copyWith(
+                              fontSize: AppSize.s10,
+                              fontWeight: FontWeight.w600,
+                            ),
+                        valueAlignment: Alignment.center,
                       ),
                     ),
                   ],
@@ -178,38 +168,37 @@ class SumAllInvoiceWidget extends StatelessWidget {
             ? 'جمع کل هزینه های خدماتی'
             : 'جمع کل هزینه های امدادی',
         customerValue:
-            entity?.detailEmdadInvoiceTotalCustomer.toString() ?? '0',
-        companyValue: entity?.detailEmdadInvoiceTotalCompany.toString() ?? '0',
+            entity?.detailEmdadInvoiceTotalCustomer ?? 0,
+        companyValue: entity?.detailEmdadInvoiceTotalCompany ?? 0,
       ),
       InvoiceRow(
         label: 'جمع کل اجرت‌ها',
-        customerValue: entity?.laborCustomerTotal.toString() ?? '0',
-        companyValue: entity?.laborCompanyTotal.toString() ?? '0',
+        customerValue: entity?.laborCustomerTotal ?? 0,
+        companyValue: entity?.laborCompanyTotal ?? 0,
       ),
       InvoiceRow(
         label: 'جمع کل هزینه قطعات',
-        customerValue: entity?.partCustomerTotal.toString() ?? '0',
-        companyValue: entity?.partCompanyTotal.toString() ?? '0',
+        customerValue: entity?.partCustomerTotal ?? 0,
+        companyValue: entity?.partCompanyTotal ?? 0,
       ),
       InvoiceRow(
         label: 'جمع کل سایر هزینه ها',
-        customerValue: entity?.totalOtherCostCustomerPrice.toString() ?? '0',
-        companyValue: entity?.totalOtherCostCompanyPrice.toString() ?? '0',
+        customerValue: entity?.totalOtherCostCustomerPrice ?? 0,
+        companyValue: entity?.totalOtherCostCompanyPrice ?? 0,
       ),
       InvoiceRow(
         label: entity?.taxTotalCustomerText ?? '',
-        customerValue: entity?.taxTotalCustomer.toString() ?? '0',
-        companyValue: entity?.taxTotalCompany.toString() ?? '0',
+        customerValue: entity?.taxTotalCustomer ?? 0,
+        companyValue: entity?.taxTotalCompany ?? 0,
       ),
       InvoiceRow(
         label: 'جمع تخفیف',
         customerValue: (entity?.discountTotalPrice != null &&
                 (entity?.discountTotalPrice ?? -1) > 0)
-            ? ((entity?.totalReusableCustomerPrice ?? 0) -
-                    (entity?.discountTotalPrice ?? 0))
-                .toString()
-            : entity?.totalReusableCustomerPrice.toString() ?? '0',
-        companyValue: entity?.totalReusableCompanyPrice.toString() ?? '0',
+            ? (entity?.totalReusableCustomerPrice ?? 0) -
+                (entity?.discountTotalPrice ?? 0)
+            : entity?.totalReusableCustomerPrice ?? 0,
+        companyValue: entity?.totalReusableCompanyPrice ?? 0,
       ),
     ];
 
@@ -241,26 +230,24 @@ class SumAllInvoiceWidget extends StatelessWidget {
               ),
               Expanded(
                 flex: 1,
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    row.customerValue.splitPriceByComma(),
-                    style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                          fontSize: AppSize.s12,
-                        ),
-                  ),
+                child: AmountRow(
+                  amount: row.customerValue,
+                  showRial: false,
+                  valueStyle: Theme.of(context).textTheme.displayMedium?.copyWith(
+                        fontSize: AppSize.s12,
+                      ),
+                  valueAlignment: Alignment.center,
                 ),
               ),
               Expanded(
                 flex: 1,
-                child: Align(
-                  alignment: Alignment.center,
-                  child: Text(
-                    row.companyValue.splitPriceByComma(),
-                    style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                          fontSize: AppSize.s12,
-                        ),
-                  ),
+                child: AmountRow(
+                  amount: row.companyValue,
+                  showRial: false,
+                  valueStyle: Theme.of(context).textTheme.displayMedium?.copyWith(
+                        fontSize: AppSize.s12,
+                      ),
+                  valueAlignment: Alignment.center,
                 ),
               ),
             ],

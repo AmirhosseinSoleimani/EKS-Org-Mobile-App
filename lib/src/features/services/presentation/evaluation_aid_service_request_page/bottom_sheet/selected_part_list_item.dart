@@ -1,5 +1,6 @@
 import 'package:eks_sana_plus_org/src/features/evaluation/domain/entities/param/evaluation_selected_part_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/amount_row/amount_row.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_small_text.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,7 @@ class SelectedPartListItem extends StatelessWidget {
           children: [
             Expanded(child: _buildDetailsColumn()),
             const SizedBox(width: 8),
-            _buildActionAndPriceColumn(),
+            _buildActionAndPriceColumn(context),
           ],
         ),
       ),
@@ -68,7 +69,7 @@ class SelectedPartListItem extends StatelessWidget {
     );
   }
 
-  Widget _buildActionAndPriceColumn() {
+  Widget _buildActionAndPriceColumn(BuildContext context) {
     return Column(
       mainAxisSize: MainAxisSize.max,
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -88,23 +89,16 @@ class SelectedPartListItem extends StatelessWidget {
         ),
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 8.0),
-          child: BodyMediumText(
-            text: _formatPrice(item.price),
-            fontWeight: FontWeight.w700,
+          child: AmountRow(
+            amount: item.price,
+            valueStyle: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  fontWeight: FontWeight.w700,
+                ),
           ),
         ),
       ],
     );
   }
 
-  String _formatPrice(num price) {
-    String value = price.toStringAsFixed(0);
 
-    value = value.replaceAllMapped(
-      RegExp(r'\B(?=(\d{3})+(?!\d))'),
-      (match) => ',',
-    );
-
-    return '$value ریال';
-  }
 }

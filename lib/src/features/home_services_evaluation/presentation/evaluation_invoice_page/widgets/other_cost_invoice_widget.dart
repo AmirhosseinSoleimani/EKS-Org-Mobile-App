@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/common/utils/extensions/string_ext.dart';
 import 'package:eks_sana_plus_org/src/shared/features/invoice/domain/entities/other_cost_invoice_entity.dart';
 import 'package:eks_sana_plus_org/src/shared/resources/value_manager.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/amount_row/amount_row.dart';
 import 'package:flutter/material.dart';
 
 class OtherCostInvoiceWidget extends StatelessWidget {
@@ -114,28 +115,24 @@ class OtherCostInvoiceWidget extends StatelessWidget {
                       ),
                       Expanded(
                         flex: 1,
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            '${entity?.otherCostReceptions?[index].customerPrice}'
-                                .splitPriceByComma(),
-                            style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                                fontSize: AppSize.s12
-                            ),
-                          ),
+                        child: AmountRow(
+                          amount: entity?.otherCostReceptions?[index].customerPrice,
+                          showRial: false,
+                          valueStyle: Theme.of(context).textTheme.displayMedium?.copyWith(
+                                fontSize: AppSize.s12,
+                              ),
+                          valueAlignment: Alignment.center,
                         ),
                       ),
                       Expanded(
                         flex: 1,
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Text(
-                            '${entity?.otherCostReceptions?[index].companyPrice}'
-                                .splitPriceByComma(),
-                            style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                                fontSize: AppSize.s12
-                            ),
-                          ),
+                        child: AmountRow(
+                          amount: entity?.otherCostReceptions?[index].companyPrice,
+                          showRial: false,
+                          valueStyle: Theme.of(context).textTheme.displayMedium?.copyWith(
+                                fontSize: AppSize.s12,
+                              ),
+                          valueAlignment: Alignment.center,
                         ),
                       )
                     ],
@@ -167,28 +164,22 @@ class OtherCostInvoiceWidget extends StatelessWidget {
                 ),
                 Expanded(
                   flex: 1,
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      '${entity?.customerTotalPrice} ریال'
-                          .splitPriceByComma(),
-                      style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                          fontSize: AppSize.s14
-                      ),
-                    ),
+                  child: AmountRow(
+                    amount: entity?.customerTotalPrice,
+                    valueStyle: Theme.of(context).textTheme.displayMedium?.copyWith(
+                          fontSize: AppSize.s14,
+                        ),
+                    valueAlignment: Alignment.center,
                   ),
                 ),
                 Expanded(
                   flex: 1,
-                  child: Align(
-                    alignment: Alignment.center,
-                    child: Text(
-                      '${entity?.companyTotalPrice} ریال'
-                          .splitPriceByComma(),
-                      style: Theme.of(context).textTheme.displayMedium?.copyWith(
-                          fontSize: AppSize.s14
-                      ),
-                    ),
+                  child: AmountRow(
+                    amount: entity?.companyTotalPrice,
+                    valueStyle: Theme.of(context).textTheme.displayMedium?.copyWith(
+                          fontSize: AppSize.s14,
+                        ),
+                    valueAlignment: Alignment.center,
                   ),
                 )
               ],

@@ -1,10 +1,10 @@
+import 'package:eks_sana_plus_org/src/shared/widgets/amount_row/amount_row.dart';
 import 'package:flutter/material.dart';
-
 
 class InvoiceRow extends StatelessWidget {
   final String label;
-  final String customerValue;
-  final String companyValue;
+  final num? customerValue;
+  final num? companyValue;
 
   const InvoiceRow({
     super.key,
@@ -15,42 +15,31 @@ class InvoiceRow extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    const valueStyle = TextStyle(
+      fontWeight: FontWeight.bold,
+      fontSize: 12.0,
+    );
+
     return Row(
       children: [
         Expanded(
           flex: 2,
-          child: Text(
-            label,
-            style: const TextStyle(
-              fontWeight: FontWeight.bold,
-              fontSize: 12.0,
-            ),
+          child: Text(label, style: valueStyle),
+        ),
+        Expanded(
+          child: AmountRow(
+            amount: customerValue,
+            showRial: false,
+            valueStyle: valueStyle,
+            valueAlignment: Alignment.center,
           ),
         ),
         Expanded(
-          flex: 1,
-          child: Align(
-            alignment: Alignment.center,
-            child: Text(
-              customerValue,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12.0,
-              ),
-            ),
-          ),
-        ),
-        Expanded(
-          flex: 1,
-          child: Align(
-            alignment: Alignment.center,
-            child: Text(
-              companyValue,
-              style: const TextStyle(
-                fontWeight: FontWeight.bold,
-                fontSize: 12.0,
-              ),
-            ),
+          child: AmountRow(
+            amount: companyValue,
+            showRial: false,
+            valueStyle: valueStyle,
+            valueAlignment: Alignment.center,
           ),
         ),
       ],
