@@ -1,34 +1,29 @@
-import 'package:eks_sana_plus_org/src/common/constants/reason_type.dart';
 import 'package:eks_sana_plus_org/src/common/constants/service_type.dart';
 import 'package:eks_sana_plus_org/src/features/services/data/models/params/cancel_reason_param_model.dart';
 
 class CancelReasonParamEntity {
-  final int? reasonId;
+  final int type;
   final ServiceType serviceType;
-  final ReasonType reasonType;
+
   const CancelReasonParamEntity({
+    required this.type,
     required this.serviceType,
-    required this.reasonType,
-    this.reasonId,
   });
 
   CancelReasonParamModel toModel() {
     return CancelReasonParamModel(
-      reasonId: reasonId,
-      reasonType: reasonType,
+      type: type,
       serviceType: serviceType,
     );
   }
 
   CancelReasonParamEntity copyWith({
-    int? reasonId,
+    int? type,
     ServiceType? serviceType,
-    ReasonType? reasonType,
   }) {
     return CancelReasonParamEntity(
-      reasonId: reasonId ?? this.reasonId,
+      type: type ?? this.type,
       serviceType: serviceType ?? this.serviceType,
-      reasonType: reasonType ?? this.reasonType,
     );
   }
 }

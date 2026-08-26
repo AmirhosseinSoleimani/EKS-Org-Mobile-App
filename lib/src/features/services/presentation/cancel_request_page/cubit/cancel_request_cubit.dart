@@ -173,7 +173,9 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
       }
     }
 
-    final cancelTypesResult = await _fetchCancelReasonList();
+    final cancelTypesResult = await _fetchCancelReasonList(
+      type: _primaryCancelReasonType,
+    );
     if (cancelTypesResult.result != FetchResultType.success) {
       return cancelTypesResult.result;
     }
@@ -255,8 +257,8 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
   }
 
   Future<({FetchResultType result, List<CancelRequestReasonEntity> items})>
-      _fetchCancelReasonList({int? reasonId}) async {
-    final param = getReasonParam(reasonId);
+      _fetchCancelReasonList({required int type}) async {
+    final param = getReasonParam(type);
     final result = await _getCancelReasonRequestUseCase(param);
 
     var fetchResult = FetchResultType.failure;
@@ -282,13 +284,18 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
     return (result: fetchResult, items: items);
   }
 
-  CancelReasonParamEntity getReasonParam(int? reasonId) {
-
+  int get _primaryCancelReasonType {
     final requestStatus = RequestStatus.fromValue(selectedRequest?.requestStatus);
-    final param = CancelReasonParamEntity(reasonId: reasonId,
-    serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
-    reasonType: requestStatus.isBeforeDispatch ? ReasonType.beforeDispatch: ReasonType.afterDispatch);
-    return param;
+    return requestStatus.isBeforeDispatch
+        ? ReasonType.beforeDispatch.value
+        : ReasonType.afterDispatch.value;
+  }
+
+  CancelReasonParamEntity getReasonParam(int type) {
+    return CancelReasonParamEntity(
+      type: type,
+      serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
+    );
   }
 
   void _emitError([String? message]) {
@@ -321,7 +328,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
 
     if (showSecondDropDown.value) {
       final cancelReasonsResult = await _fetchCancelReasonList(
-        reasonId: value?.id,
+        type: value!.detailType!,
       );
 
       if (!_handleFetchFailure(cancelReasonsResult.result)) return;

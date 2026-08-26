@@ -138,9 +138,10 @@ class AssignAndCancelEmdadgarCubit extends Cubit<AssignAndCancelEmdadgarState> w
 
     final param = CancelReasonParamEntity(
       serviceType: selectedRequest?.serviceType ?? ServiceType.reliefService,
-      reasonType: action == ServiceAssignAction.cancelMission
-          ? ReasonType.cancelEmdadgar
-          : ReasonType.nonCooperation,);
+      type: action == ServiceAssignAction.cancelMission
+          ? ReasonType.cancelEmdadgar.value
+          : ReasonType.nonCooperation.value,
+    );
 
     _safeEmit(
         AssignAndCancelEmdadgarState.getReasonListLoading(action: action));

@@ -102,7 +102,7 @@ abstract class RequestService {
   Future<BaseSingleResponse<UpdateServiceResponseModel>> updateServiceRequest(
       @Body() Map<String, dynamic> query);
 
-  @POST('/api/CancelReason/getCancelReasonList')
+  @POST('/api/CancelReason/GetByFilterJson')
   Future<BaseListResponse<CancelRequestReasonModel>> getCancelReasons(
       @Body() Map<String, dynamic> query);
 
