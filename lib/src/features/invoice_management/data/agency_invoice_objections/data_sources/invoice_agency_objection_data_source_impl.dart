@@ -8,6 +8,7 @@ import 'package:eks_sana_plus_org/src/features/invoice_management/data/agency_in
 import 'package:eks_sana_plus_org/src/features/invoice_management/data/agency_invoice_objections/models/service_request_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/data/agency_invoice_objections/services/invoice_agency_objection_service.dart';
 import 'package:injectable/injectable.dart';
+import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 
 @LazySingleton(as: InvoiceAgencyObjectionDataSource)
 class InvoiceAgencyObjectionDataSourceImpl
@@ -17,26 +18,26 @@ class InvoiceAgencyObjectionDataSourceImpl
   final InvoiceAgencyObjectionService _service;
 
   @override
-  Future<InvoiceAgencyObjectionPageModel> getObjections(
+  Future<BaseSingleResponse<InvoiceAgencyObjectionPageModel>> getObjections(
     InvoiceAgencyObjectionFilterParamModel request,
   ) => _service.getObjections(request);
 
   @override
-  Future<EmdadgarAssignmentModel?> getEmdadgar(
+  Future<BaseSingleResponse<EmdadgarAssignmentModel?>> getEmdadgar(
     ServiceRequestParamModel request,
   ) => _service.getEmdadgar(request);
 
   @override
-  Future<InvoiceAgencyObjectionModel> getObjection(
+  Future<BaseSingleResponse<InvoiceAgencyObjectionModel>> getObjection(
     ServiceRequestParamModel request,
   ) => _service.getObjection(request);
 
   @override
-  Future<ServiceRequestCompactModel?> getServiceRequest(
+  Future<BaseSingleResponse<ServiceRequestCompactModel?>> getServiceRequest(
     ServiceRequestParamModel request,
   ) => _service.getServiceRequest(request);
 
   @override
-  Future<ServiceRequestOperationAccessModel> getOperationAccess() =>
+  Future<BaseSingleResponse<ServiceRequestOperationAccessModel>> getOperationAccess() =>
       _service.getOperationAccess();
 }

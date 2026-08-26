@@ -4,7 +4,7 @@ import 'package:eks_sana_plus_org/src/features/shift/data/models/shift_page_mode
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 
 abstract class ShiftDataSource {
-  Future<ShiftPageModel> getByFilter(ShiftFilterRequestModel request);
+  Future<BaseSingleResponse<ShiftPageModel>> getByFilter(ShiftFilterRequestModel request);
 
   Future<BaseSingleResponse<ShiftModel>> getById(int id);
 

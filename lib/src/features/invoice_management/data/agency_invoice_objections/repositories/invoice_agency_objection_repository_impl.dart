@@ -24,7 +24,7 @@ class InvoiceAgencyObjectionRepositoryImpl
   ) async {
     try {
       final result = await _dataSource.getObjections(param.toModel());
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<InvoiceAgencyObjectionPageEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -36,7 +36,7 @@ class InvoiceAgencyObjectionRepositoryImpl
   ) async {
     try {
       final result = await _dataSource.getEmdadgar(param.toModel());
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<EmdadgarAssignmentEntity?>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -48,7 +48,7 @@ class InvoiceAgencyObjectionRepositoryImpl
   ) async {
     try {
       final result = await _dataSource.getObjection(param.toModel());
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<InvoiceAgencyObjectionEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -60,7 +60,7 @@ class InvoiceAgencyObjectionRepositoryImpl
   ) async {
     try {
       final result = await _dataSource.getServiceRequest(param.toModel());
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<ServiceRequestCompactEntity?>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -70,7 +70,7 @@ class InvoiceAgencyObjectionRepositoryImpl
   Future<ApiResult<ServiceRequestOperationAccessEntity>> getOperationAccess() async {
     try {
       final result = await _dataSource.getOperationAccess();
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<ServiceRequestOperationAccessEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }

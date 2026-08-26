@@ -5,7 +5,7 @@ import 'package:eks_sana_plus_org/src/features/grade_pattern/data/models/grade_p
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 
 abstract class GradePatternDataSource {
-  Future<GradePatternPageModel> getByFilter(
+  Future<BaseSingleResponse<GradePatternPageModel>> getByFilter(
     GradePatternFilterRequestModel request,
   );
 

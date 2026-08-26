@@ -17,7 +17,7 @@ class InvoiceCommonRepositoryImpl implements InvoiceCommonRepository {
   Future<ApiResult<InvoiceOperationAccessEntity>> getOperationAccess() async {
     try {
       final result = await _dataSource.getOperationAccess();
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<InvoiceOperationAccessEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -27,7 +27,7 @@ class InvoiceCommonRepositoryImpl implements InvoiceCommonRepository {
   Future<ApiResult<List<EmdadServiceCategoryEntity>>> getEmdadCategories() async {
     try {
       final result = await _dataSource.getEmdadCategories();
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<EmdadServiceCategoryEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -39,7 +39,7 @@ class InvoiceCommonRepositoryImpl implements InvoiceCommonRepository {
   ) async {
     try {
       final result = await _dataSource.getCustomerDocumentUrls(invoiceGuid);
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<InvoiceDocumentUrlsEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -51,7 +51,7 @@ class InvoiceCommonRepositoryImpl implements InvoiceCommonRepository {
   ) async {
     try {
       final result = await _dataSource.getEmdadgarDocumentUrls(invoiceGuid);
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<InvoiceDocumentUrlsEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }

@@ -16,12 +16,15 @@ class VehicleInfoService {
 
   final Dio _dio;
 
-  Future<VehicleInfoPageModel> getVehicles(VehicleInfoFilterRequestModel request) async {
+  Future<BaseSingleResponse<VehicleInfoPageModel>> getVehicles(VehicleInfoFilterRequestModel request) async {
     final response = await _dio.post<Map<String, dynamic>>(
       '/api/VehicleInfo/GetByFilterJson',
       data: request.toJson(),
     );
-    return VehicleInfoPageModel.fromJson(response.data ?? {});
+    return BaseSingleResponse<VehicleInfoPageModel>.fromRootJson(
+      response.data ?? {},
+      VehicleInfoPageModel.fromJson,
+    );
   }
 
   Future<BaseSingleResponse<VehicleInfoModel>> getVehicleById(int id) async {
@@ -53,12 +56,15 @@ class VehicleInfoService {
     return BaseResponse.fromJson(response.data ?? {});
   }
 
-  Future<VehicleModelPageModel> getVehicleModels(VehicleInfoFilterRequestModel request) async {
+  Future<BaseSingleResponse<VehicleModelPageModel>> getVehicleModels(VehicleInfoFilterRequestModel request) async {
     final response = await _dio.post<Map<String, dynamic>>(
       '/api/VehicleModel/GetByFilterJson',
       data: request.toJson(),
     );
-    return VehicleModelPageModel.fromJson(response.data ?? {});
+    return BaseSingleResponse<VehicleModelPageModel>.fromRootJson(
+      response.data ?? {},
+      VehicleModelPageModel.fromJson,
+    );
   }
 
   Future<BaseListResponse<EmdadServiceCategoryGroupModel>> getServiceCategories(int id) async {

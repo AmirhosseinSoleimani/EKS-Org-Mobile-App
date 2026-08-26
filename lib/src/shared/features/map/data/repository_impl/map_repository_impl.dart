@@ -78,7 +78,7 @@ class MapRepositoryImpl extends MapRepository {
   @override
   Future<ApiResult<List<ProvinceEntity>>> getProvinceList() async {
     try {
-      return (await _dataSource.getProvinceList()).toApiResultList();
+      return (await _dataSource.getProvinceList()).toApiResult();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }

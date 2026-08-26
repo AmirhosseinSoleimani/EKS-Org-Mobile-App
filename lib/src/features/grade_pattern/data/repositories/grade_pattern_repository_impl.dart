@@ -1,5 +1,3 @@
-import 'package:eks_sana_plus_org/src/common/event_bus/app_event_bus.dart';
-import 'package:eks_sana_plus_org/src/common/utils/extensions/iterable_ext.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/data/data_sources/grade_pattern_data_source.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/data/models/grade_pattern_filter_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/domain/entities/grade_pattern_entity.dart';
@@ -8,7 +6,6 @@ import 'package:eks_sana_plus_org/src/features/grade_pattern/domain/entities/gra
 import 'package:eks_sana_plus_org/src/features/grade_pattern/domain/entities/params/grade_pattern_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/domain/entities/params/grade_pattern_reference_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/grade_pattern/domain/repositories/grade_pattern_repository.dart';
-import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result_converter.dart';
 import 'package:injectable/injectable.dart';
@@ -25,7 +22,7 @@ class GradePatternRepositoryImpl extends GradePatternRepository {
   ) async {
     try {
       final result = await _dataSource.getByFilter(param.toModel());
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<GradePatternPageEntity>();
     } catch (e, s) {
       return e.toApiResult(s);
     }
@@ -69,7 +66,7 @@ class GradePatternRepositoryImpl extends GradePatternRepository {
   Future<ApiResult<void>> deleteById(int id) async {
     try {
       final result = await _dataSource.deleteById(id);
-      return _mapBaseResponse(result);
+      return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);
     }
@@ -108,7 +105,7 @@ class GradePatternRepositoryImpl extends GradePatternRepository {
   ) async {
     try {
       final result = await _dataSource.referencePost(param.toJson());
-      return _mapBaseResponse(result);
+      return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);
     }
@@ -118,27 +115,9 @@ class GradePatternRepositoryImpl extends GradePatternRepository {
   Future<ApiResult<void>> deleteReferenceById(int id) async {
     try {
       final result = await _dataSource.referenceDeleteById(id);
-      return _mapBaseResponse(result);
+      return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);
-    }
-  }
-
-  ApiResult<void> _mapBaseResponse(BaseResponse response) {
-    switch (response.resultCode) {
-      case 0:
-        return const ApiResult.success(data: null, resultCode: 0);
-      case 3:
-        AppEventBus.emit(AppEvent.tokenExpired);
-        return const ApiResult.expireToken();
-      case 1:
-      case 2:
-      case 4:
-      default:
-        return ApiResult.failure(
-          failures: response.failures?.listToString() ??
-              'خطای غیرمنتظره، لطفا با شماره 096550 تماس بگیرید',
-        );
     }
   }
 }

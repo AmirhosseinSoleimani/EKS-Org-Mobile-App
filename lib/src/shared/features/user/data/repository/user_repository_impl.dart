@@ -46,7 +46,7 @@ class UserRepositoryImpl extends UserRepository {
   Future<ApiResult<List<JobResponseEntity>?>> fetchUserJobs() async {
     try {
       final result = await _dataSource.fetchUserJobs();
-      return result.toApiResultList();
+      return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);
     }

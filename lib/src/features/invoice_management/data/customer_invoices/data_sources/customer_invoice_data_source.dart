@@ -5,11 +5,11 @@ import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart'
 import 'package:eks_sana_plus_org/src/shared/features/invoice/data/models/invoice_model.dart';
 
 abstract class CustomerInvoiceDataSource {
-  Future<InvoiceRecordPageModel> getPreInvoices(
+  Future<BaseSingleResponse<InvoiceRecordPageModel>> getPreInvoices(
     InvoiceListFilterRequestModel request,
   );
 
-  Future<InvoiceRecordPageModel> getInvoices(
+  Future<BaseSingleResponse<InvoiceRecordPageModel>> getInvoices(
     InvoiceListFilterRequestModel request,
   );
 

@@ -25,9 +25,12 @@ class SpecialPlanService {
       options: _jsonOptions,
     );
     final root = _root(response.data);
+    final resultCode = _resultCode(root);
     return BaseSingleResponse<SpecialPlanPageModel>(
-      resultCode: _resultCode(root),
-      data: SpecialPlanPageModel.fromResponse(response.data),
+      resultCode: resultCode,
+      data: resultCode == 0
+          ? SpecialPlanPageModel.fromResponse(response.data)
+          : null,
       failures: _failures(root),
     );
   }
@@ -46,17 +49,20 @@ class SpecialPlanService {
       options: _jsonOptions,
     );
     final root = _root(response.data);
-    final products = SpecialPlanJsonHelper.records(response.data)
-        .whereType<Map>()
-        .map(
-          (item) => SpecialPlanProductModel.fromJson(
-            Map<String, dynamic>.from(item),
-          ),
-        )
-        .where((item) => item.id > 0 && item.title.isNotEmpty)
-        .toList(growable: false);
+    final resultCode = _resultCode(root);
+    final products = resultCode == 0
+        ? SpecialPlanJsonHelper.records(response.data)
+            .whereType<Map>()
+            .map(
+              (item) => SpecialPlanProductModel.fromJson(
+                Map<String, dynamic>.from(item),
+              ),
+            )
+            .where((item) => item.id > 0 && item.title.isNotEmpty)
+            .toList(growable: false)
+        : null;
     return BaseSingleResponse<List<SpecialPlanProductModel>>(
-      resultCode: _resultCode(root),
+      resultCode: resultCode,
       data: products,
       failures: _failures(root),
     );

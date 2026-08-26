@@ -15,14 +15,17 @@ class EmdadUnitService {
   final Dio _dio;
 
   @POST('/api/EmdadUnit/GetByFilterJson')
-  Future<EmdadUnitPageModel> getByFilter(
+  Future<BaseSingleResponse<EmdadUnitPageModel>> getByFilter(
       EmdadUnitFilterRequestModel request,
       ) async {
     final response = await _dio.post<Map<String, dynamic>>(
       '/api/EmdadUnit/GetByFilterJson',
       data: request.toJson(),
     );
-    return EmdadUnitPageModel.fromJson(response.data ?? {});
+    return BaseSingleResponse<EmdadUnitPageModel>.fromRootJson(
+      response.data ?? {},
+      EmdadUnitPageModel.fromJson,
+    );
   }
 
   @GET('/api/EmdadUnit/GetById')

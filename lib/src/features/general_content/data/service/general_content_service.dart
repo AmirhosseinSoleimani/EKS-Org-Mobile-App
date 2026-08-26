@@ -89,9 +89,10 @@ class GeneralContentService {
 
   BaseSingleResponse<GeneralContentPageModel> _pageResponse(dynamic data) {
     final json = _normalizePageResponse(data);
+    final resultCode = _readResultCode(json);
     return BaseSingleResponse<GeneralContentPageModel>(
-      resultCode: _readResultCode(json),
-      data: GeneralContentPageModel.fromJson(json),
+      resultCode: resultCode,
+      data: resultCode == 0 ? GeneralContentPageModel.fromJson(json) : null,
       failures: _readFailures(json),
     );
   }
@@ -100,13 +101,16 @@ class GeneralContentService {
     dynamic data,
   ) {
     final json = _normalizeListResponse(data);
-    final items = _readItemList(json)
-        .map(GeneralContentTargetModel.fromJson)
-        .where((item) => item.id != null)
-        .toList();
+    final resultCode = _readResultCode(json);
+    final items = resultCode == 0
+        ? _readItemList(json)
+            .map(GeneralContentTargetModel.fromJson)
+            .where((item) => item.id != null)
+            .toList()
+        : null;
 
     return BaseSingleResponse<List<GeneralContentTargetModel>>(
-      resultCode: _readResultCode(json),
+      resultCode: resultCode,
       data: items,
       failures: _readFailures(json),
     );
@@ -116,14 +120,17 @@ class GeneralContentService {
     dynamic data,
   ) {
     final json = _normalizeSingleResponse(data);
+    final resultCode = _readResultCode(json);
     final rawData = GeneralContentJsonHelper.responseData(json);
     final itemJson = rawData is Map
         ? Map<String, dynamic>.from(rawData)
         : const <String, dynamic>{};
 
     return BaseSingleResponse<GeneralContentTargetModel>(
-      resultCode: _readResultCode(json),
-      data: GeneralContentTargetModel.fromJson(itemJson),
+      resultCode: resultCode,
+      data: resultCode == 0
+          ? GeneralContentTargetModel.fromJson(itemJson)
+          : null,
       failures: _readFailures(json),
     );
   }

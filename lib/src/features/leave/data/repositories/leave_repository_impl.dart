@@ -55,13 +55,7 @@ class LeaveRepositoryImpl extends LeaveRepository {
     try {
       final response =
           await _dataSource.changeStaffRequestStatus(param.toModel());
-      if (response.resultCode == 0) {
-        return const ApiResult.success(data: null);
-      }
-      return ApiResult.failure(
-        failures: response.failures?.join('\n') ??
-            'تغییر وضعیت مرخصی با خطا مواجه شد.',
-      );
+      return response.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);
     }
@@ -74,13 +68,7 @@ class LeaveRepositoryImpl extends LeaveRepository {
     try {
       final response =
           await _dataSource.rollbackStaffLeaveRequest(param.toModel());
-      if (response.resultCode == 0) {
-        return const ApiResult.success(data: null);
-      }
-      return ApiResult.failure(
-        failures: response.failures?.join('\n') ??
-            'بازگشت وضعیت مرخصی با خطا مواجه شد.',
-      );
+      return response.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);
     }
@@ -90,13 +78,7 @@ class LeaveRepositoryImpl extends LeaveRepository {
   Future<ApiResult<void>> deleteLeaveRequest(int id) async {
     try {
       final response = await _dataSource.deleteLeaveRequest(id);
-      if (response.resultCode == 0) {
-        return const ApiResult.success(data: null);
-      }
-      return ApiResult.failure(
-        failures: response.failures?.join('\n') ??
-            'حذف درخواست مرخصی با خطا مواجه شد.',
-      );
+      return response.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);
     }

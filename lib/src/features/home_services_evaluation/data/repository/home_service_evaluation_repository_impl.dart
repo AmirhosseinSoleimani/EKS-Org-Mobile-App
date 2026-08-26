@@ -77,10 +77,7 @@ class HomeServiceEvaluationRepositoryImpl extends HomeServiceEvaluationRepositor
   Future<ApiResult<List<PartMarkResponseEntity?>>> getPartMarks(PartMarkRequestEntity? entity) async {
     try {
       final result = await _dataSource.getPartMarks(entity?.toModel());
-      return ApiResult.success(
-          data: result.data ?? [],
-          failures: result.failures,
-          resultCode: result.resultCode);
+      return result.toApiResult<PartMarkResponseEntity?>();
     } catch (e, s) {
       return e.toApiResult(s);
     }
@@ -100,10 +97,7 @@ class HomeServiceEvaluationRepositoryImpl extends HomeServiceEvaluationRepositor
   Future<ApiResult<List<LaborResponseEntity?>>> getLabors(LaborRequestEntity? entity) async {
     try {
       final result = await _dataSource.getLabors(entity?.toModel());
-      return ApiResult.success(
-          data: result.data ?? <LaborResponseEntity>[],
-          failures: result.failures,
-          resultCode: result.resultCode);
+      return result.toApiResult<LaborResponseEntity?>();
     } catch (e, s) {
       return e.toApiResult(s);
     }
@@ -113,10 +107,7 @@ class HomeServiceEvaluationRepositoryImpl extends HomeServiceEvaluationRepositor
   Future<ApiResult<List<PartResponseEntity?>>> getParts(PartRequestEntity? entity) async {
     try {
       final result = await _dataSource.getParts(entity?.toModel());
-      return ApiResult.success(
-          data: result.data ?? <PartResponseEntity?>[],
-          failures: result.failures,
-          resultCode: result.resultCode);
+      return result.toApiResult<PartResponseEntity?>();
     } catch (e, s) {
       return e.toApiResult(s);
     }
@@ -262,11 +253,13 @@ class HomeServiceEvaluationRepositoryImpl extends HomeServiceEvaluationRepositor
       InsertHomeServiceCategoryResponseEntity>?>> fetchHomeServiceCategories() async {
     try {
       final result = await _dataSource.fetchHomeServiceCategories();
-      return ApiResult.success(
-        data: result?.data ?? <InsertHomeServiceCategoryResponseEntity>[],
-        failures: result?.failures,
-        resultCode: result?.resultCode,
-      );
+      if (result == null) {
+        return const ApiResult.success(
+          data: <InsertHomeServiceCategoryResponseEntity>[],
+          resultCode: 0,
+        );
+      }
+      return result.toApiResult<InsertHomeServiceCategoryResponseEntity>();
     } catch (e, s) {
       return e.toApiResult(s);
     }
@@ -279,10 +272,7 @@ class HomeServiceEvaluationRepositoryImpl extends HomeServiceEvaluationRepositor
     try {
       final result = await _dataSource.fetchHomeServicePackage(
           entity?.toModel());
-      return ApiResult.success(
-          data: result.data ?? <InsertHomeServicePackageResponseEntity>[],
-          failures: result.failures,
-          resultCode: result.resultCode);
+      return result.toApiResult<InsertHomeServicePackageResponseEntity?>();
     } catch (e, s) {
       return e.toApiResult(s);
     }

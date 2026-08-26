@@ -22,9 +22,16 @@ class RescuerService {
       data: body,
     );
 
-    return BaseSingleResponse<AddRescuerResponseModel>.fromJson(
-      _normalizeSingleResponse(response.data),
-      AddRescuerResponseModel.fromJson,
+    final normalizedResponse = _normalizeSingleResponse(response.data);
+    final baseResponse = BaseResponse.fromJson(normalizedResponse);
+    final rawData = normalizedResponse['data'] ?? normalizedResponse['Data'];
+
+    return BaseSingleResponse<AddRescuerResponseModel>(
+      resultCode: baseResponse.resultCode,
+      failures: baseResponse.failures,
+      data: baseResponse.resultCode == 0 && rawData != null
+          ? AddRescuerResponseModel.fromJson(rawData)
+          : null,
     );
   }
 

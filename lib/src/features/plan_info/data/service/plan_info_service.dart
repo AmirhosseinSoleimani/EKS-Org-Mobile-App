@@ -214,12 +214,8 @@ class PlanInfoService {
   BaseSingleResponse<String> _stringMutationResponse(dynamic data) {
     if (data is Map) {
       final json = Map<String, dynamic>.from(data);
-      final rawFailures = json['failures'] ?? json['Failures'];
-      final failures = rawFailures is List
-          ? rawFailures.map((item) => item.toString()).toList()
-          : rawFailures?.toString().trim().isNotEmpty == true
-              ? <String>[rawFailures.toString()]
-              : <String>[];
+      final failures =
+          BaseResponse.fromJson(json).failures ?? const <String>[];
 
       return BaseSingleResponse<String>(
         resultCode: _readInt(json['resultCode'] ?? json['ResultCode']) ?? 0,

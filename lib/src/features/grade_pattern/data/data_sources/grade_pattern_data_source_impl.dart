@@ -14,7 +14,7 @@ class GradePatternDataSourceImpl extends GradePatternDataSource {
   final GradePatternService _service;
 
   @override
-  Future<GradePatternPageModel> getByFilter(
+  Future<BaseSingleResponse<GradePatternPageModel>> getByFilter(
     GradePatternFilterRequestModel request,
   ) {
     return _service.getByFilter(request);

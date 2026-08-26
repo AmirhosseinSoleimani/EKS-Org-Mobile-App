@@ -12,14 +12,17 @@ class GradePatternService {
 
   final Dio _dio;
 
-  Future<GradePatternPageModel> getByFilter(
+  Future<BaseSingleResponse<GradePatternPageModel>> getByFilter(
     GradePatternFilterRequestModel request,
   ) async {
     final response = await _dio.post<Map<String, dynamic>>(
       '/api/GradePattern/GetByFilterJson',
       data: request.toJson(),
     );
-    return GradePatternPageModel.fromJson(response.data ?? {});
+    return BaseSingleResponse<GradePatternPageModel>.fromRootJson(
+      response.data ?? {},
+      GradePatternPageModel.fromJson,
+    );
   }
 
   Future<BaseSingleResponse<GradePatternModel>> getById(int id) async {

@@ -34,7 +34,7 @@ class AgencyInfoService {
 
   final Dio _dio;
 
-  Future<AgencyInfoPageModel> getByFilter(
+  Future<BaseSingleResponse<AgencyInfoPageModel>> getByFilter(
     AgencyInfoFilterRequestModel request,
   ) async {
     final response = await _dio.post<Map<String, dynamic>>(
@@ -42,7 +42,10 @@ class AgencyInfoService {
       data: request.toJson(),
     );
 
-    return AgencyInfoPageModel.fromJson(response.data ?? {});
+    return BaseSingleResponse<AgencyInfoPageModel>.fromRootJson(
+      response.data ?? {},
+      AgencyInfoPageModel.fromJson,
+    );
   }
 
   Future<BaseSingleResponse<AgencyInfoModel>> getById(int id) async {
@@ -80,12 +83,8 @@ class AgencyInfoService {
     final data = response.data;
     if (data is Map) {
       final json = Map<String, dynamic>.from(data);
-      final rawFailures = json['failures'] ?? json['Failures'];
-      final failures = rawFailures is List
-          ? rawFailures.map((item) => item.toString()).toList()
-          : rawFailures?.toString().trim().isNotEmpty == true
-              ? <String>[rawFailures.toString()]
-              : <String>[];
+      final failures =
+          BaseResponse.fromJson(json).failures ?? const <String>[];
 
       return BaseSingleResponse<String>(
         resultCode: _readInt(json['resultCode'] ?? json['ResultCode']) ?? 0,
@@ -137,16 +136,16 @@ class AgencyInfoService {
   _addAgencyVehicleMutationResponse(dynamic data) {
     if (data is Map) {
       final json = Map<String, dynamic>.from(data);
-      final rawFailures = json['failures'] ?? json['Failures'];
-      final failures = rawFailures is List
-          ? rawFailures.map((item) => item.toString()).toList()
-          : rawFailures?.toString().trim().isNotEmpty == true
-          ? <String>[rawFailures.toString()]
-          : <String>[];
+      final failures =
+          BaseResponse.fromJson(json).failures ?? const <String>[];
 
+      final resultCode =
+          _readInt(json['resultCode'] ?? json['ResultCode']) ?? 0;
       return BaseSingleResponse<AddAgencyVehicleResponseModel>(
-        resultCode: _readInt(json['resultCode'] ?? json['ResultCode']) ?? 0,
-        data: AddAgencyVehicleResponseModel.fromResponse(json),
+        resultCode: resultCode,
+        data: resultCode == 0
+            ? AddAgencyVehicleResponseModel.fromResponse(json)
+            : null,
         failures: failures,
       );
     }
@@ -158,67 +157,83 @@ class AgencyInfoService {
     );
   }
 
-  Future<AgencyContractPageModel> getContracts(
+  Future<BaseSingleResponse<AgencyContractPageModel>> getContracts(
       AgencyContractFilterRequestModel request,) async {
     final response = await _dio.post<dynamic>(
       '/api/AgencyContract/GetByFilterJson',
       data: request.toJson(),
     );
 
-    return AgencyContractPageModel.fromJson(
-        _normalizePageResponse(response.data));
+    return BaseSingleResponse<AgencyContractPageModel>.fromRootJson(
+      _normalizePageResponse(response.data),
+      AgencyContractPageModel.fromJson,
+    );
   }
 
-  Future<AgencyPersonPageModel> getCurrentPersons(
+  Future<BaseSingleResponse<AgencyPersonPageModel>> getCurrentPersons(
       AgencyInfoIdRequestModel request,) async {
     final response = await _dio.post<dynamic>(
       '/api/AgencyPerson/GetByFilterJson',
       data: request.toFilterJson(),
     );
 
-    return AgencyPersonPageModel.fromJson(
-        _normalizePageResponse(response.data));
+    return BaseSingleResponse<AgencyPersonPageModel>.fromRootJson(
+      _normalizePageResponse(response.data),
+      AgencyPersonPageModel.fromJson,
+    );
   }
 
-  Future<PersonInfoSearchPageModel> searchPersons(
+  Future<BaseSingleResponse<PersonInfoSearchPageModel>> searchPersons(
       PersonInfoSearchRequestModel request,) async {
     final response = await _dio.post<dynamic>(
       '/api/PersonInfo/GetByFilterJson',
       data: request.toJson(),
     );
 
-    return PersonInfoSearchPageModel.fromJson(
-        _normalizePageResponse(response.data));
+    return BaseSingleResponse<PersonInfoSearchPageModel>.fromRootJson(
+      _normalizePageResponse(response.data),
+      PersonInfoSearchPageModel.fromJson,
+    );
   }
 
-  Future<AgencyVehiclePageModel> getCurrentVehicles(
+  Future<BaseSingleResponse<AgencyVehiclePageModel>> getCurrentVehicles(
       AgencyInfoIdRequestModel request,) async {
     final response = await _dio.post<dynamic>(
       '/api/AgencyVehicle/GetByFilterJson',
       data: request.toFilterJson(),
     );
 
-    return AgencyVehiclePageModel.fromJson(
-        _normalizePageResponse(response.data));
+    return BaseSingleResponse<AgencyVehiclePageModel>.fromRootJson(
+      _normalizePageResponse(response.data),
+      AgencyVehiclePageModel.fromJson,
+    );
   }
 
-  Future<VehicleInfoSearchPageModel> searchVehicles(
+  Future<BaseSingleResponse<VehicleInfoSearchPageModel>> searchVehicles(
       VehicleInfoSearchRequestModel request,) async {
     final response = await _dio.post<dynamic>(
       '/api/VehicleInfo/GetByFilterJson',
       data: request.toJson(),
     );
 
-    return VehicleInfoSearchPageModel.fromJson(
-        _normalizePageResponse(response.data));
+    return BaseSingleResponse<VehicleInfoSearchPageModel>.fromRootJson(
+      _normalizePageResponse(response.data),
+      VehicleInfoSearchPageModel.fromJson,
+    );
   }
 
-  Future<void> changeStatus(ChangeAgencyStatusRequestModel request) async {
-    await _dio.put<dynamic>(
+  Future<BaseResponse> changeStatus(ChangeAgencyStatusRequestModel request) async {
+    final response = await _dio.put<dynamic>(
       '/api/AgencyInfo/ChangeStatus',
       queryParameters: request.toQueryParameters(),
       data: request.toJson(),
     );
+
+    final data = response.data;
+    if (data is Map) {
+      return BaseResponse.fromJson(Map<String, dynamic>.from(data));
+    }
+    return BaseResponse(resultCode: 0);
   }
 
   Future<BaseSingleResponse<void>> deleteAgency(
@@ -232,12 +247,8 @@ class AgencyInfoService {
     final data = response.data;
     if (data is Map) {
       final json = Map<String, dynamic>.from(data);
-      final rawFailures = json['failures'] ?? json['Failures'];
-      final failures = rawFailures is List
-          ? rawFailures.map((item) => item.toString()).toList()
-          : rawFailures?.toString().trim().isNotEmpty == true
-              ? <String>[rawFailures.toString()]
-              : <String>[];
+      final failures =
+          BaseResponse.fromJson(json).failures ?? const <String>[];
 
       return BaseSingleResponse<void>(
         resultCode: _readInt(json['resultCode'] ?? json['ResultCode']) ?? 0,
@@ -331,12 +342,8 @@ class AgencyInfoService {
   BaseSingleResponse<String> _stringMutationResponse(dynamic data) {
     if (data is Map) {
       final json = Map<String, dynamic>.from(data);
-      final rawFailures = json['failures'] ?? json['Failures'];
-      final failures = rawFailures is List
-          ? rawFailures.map((item) => item.toString()).toList()
-          : rawFailures?.toString().trim().isNotEmpty == true
-              ? <String>[rawFailures.toString()]
-              : <String>[];
+      final failures =
+          BaseResponse.fromJson(json).failures ?? const <String>[];
 
       return BaseSingleResponse<String>(
         resultCode: _readInt(json['resultCode'] ?? json['ResultCode']) ?? 0,
@@ -414,7 +421,7 @@ class AgencyInfoService {
     return int.tryParse(value?.toString() ?? '');
   }
 
-  Future<AgencyInfoReportModel> getReport(
+  Future<BaseSingleResponse<AgencyInfoReportModel>> getReport(
     AgencyInfoFilterRequestModel request,
   ) async {
     final response = await _dio.post<Map<String, dynamic>>(
@@ -422,7 +429,10 @@ class AgencyInfoService {
       data: request.toJson(),
     );
 
-    return AgencyInfoReportModel.fromJson(response.data ?? {});
+    return BaseSingleResponse<AgencyInfoReportModel>.fromRootJson(
+      response.data ?? {},
+      AgencyInfoReportModel.fromJson,
+    );
   }
 
 }

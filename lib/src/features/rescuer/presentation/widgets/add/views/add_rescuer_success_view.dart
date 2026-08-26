@@ -1,4 +1,5 @@
 import 'package:eks_sana_plus_org/src/features/rescuer/presentation/add_rescuer_page.dart';
+import 'package:eks_sana_plus_org/src/shared/widgets/button_widgets/inkwell_button_widget.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_text.dart';
 import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/title_large_text.dart';
 import 'package:flutter/material.dart';
@@ -10,6 +11,9 @@ class AddRescuerSuccessView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final colorScheme = Theme
+        .of(context)
+        .colorScheme;
     return Scaffold(
       backgroundColor: const Color(0xFFF4F4F4),
       body: SafeArea(
@@ -20,39 +24,34 @@ class AddRescuerSuccessView extends StatelessWidget {
               padding: const EdgeInsets.all(20),
               child: Column(
                 children: [
-                  SizedBox(
-                    width: double.infinity,
-                    child: ElevatedButton.icon(
-                      onPressed: () => Navigator.of(context).pop(
-                        AddRescuerResult(rescuerId: id),
-                      ),
-                      icon: const Icon(Icons.list),
-                      label: const BodyMediumText(
-                        text: 'بازگشت به لیست',
-                        color: Colors.white,
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                      ),
+                  InkwellButtonWidget(
+                    titleColor: colorScheme.onPrimary,
+                    borderWidth: 2,
+                    borderColor: colorScheme.primary,
+                    loadingColor: colorScheme.primary,
+                    backgroundColor: colorScheme.primary,
+                    title: 'بازگشت به لیست',
+                    prefixIcon:  Icon(Icons.list,color:colorScheme.onPrimary),
+                    onTap:  () => Navigator.of(context).pop(
+                      AddRescuerResult(rescuerId: id),
                     ),
                   ),
                   const SizedBox(height: 10),
-                  SizedBox(
-                    width: double.infinity,
-                    child: OutlinedButton.icon(
-                      onPressed: () => Navigator.of(context).pop(
-                        AddRescuerResult(
-                          rescuerId: id,
-                          viewProfile: true,
-                        ),
-                      ),
-                      icon: const Icon(Icons.account_circle_outlined),
-                      label: const BodyMediumText(text: 'مشاهده پروفایل'),
-                      style: OutlinedButton.styleFrom(
-                        padding: const EdgeInsets.symmetric(vertical: 15),
-                      ),
-                    ),
-                  ),
+                  InkwellButtonWidget(
+                    titleColor: colorScheme.primary,
+                    borderWidth: 2,
+                    borderColor: colorScheme.primary,
+                    loadingColor: colorScheme.primary,
+                    backgroundColor: colorScheme.onPrimary,
+                    title: 'مشاهده پروفایل',
+                    prefixIcon: Icon(Icons.account_circle_outlined, color: colorScheme.primary,),
+                    onTap: () =>
+                        Navigator.of(context).pop(
+                          AddRescuerResult(
+                            rescuerId: id,
+                            viewProfile: true,
+                          ),
+                        ),),
                 ],
               ),
             ),

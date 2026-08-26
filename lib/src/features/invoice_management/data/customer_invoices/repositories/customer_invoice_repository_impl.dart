@@ -22,7 +22,7 @@ class CustomerInvoiceRepositoryImpl implements CustomerInvoiceRepository {
       final result = await _dataSource.getPreInvoices(
         param.toModel(),
       );
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<InvoiceRecordPageEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -36,7 +36,7 @@ class CustomerInvoiceRepositoryImpl implements CustomerInvoiceRepository {
       final result = await _dataSource.getInvoices(
         param.toModel(),
       );
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<InvoiceRecordPageEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }

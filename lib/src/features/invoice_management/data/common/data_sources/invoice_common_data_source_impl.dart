@@ -2,6 +2,7 @@ import 'package:eks_sana_plus_org/src/features/invoice_management/data/common/da
 import 'package:eks_sana_plus_org/src/features/invoice_management/data/common/models/emdad_service_category_model.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/data/common/models/invoice_document_urls_model.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/data/common/models/invoice_operation_access_model.dart';
+import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 import 'package:eks_sana_plus_org/src/features/invoice_management/data/common/services/invoice_common_service.dart';
 import 'package:injectable/injectable.dart';
 
@@ -12,22 +13,22 @@ class InvoiceCommonDataSourceImpl implements InvoiceCommonDataSource {
   final InvoiceCommonService _service;
 
   @override
-  Future<InvoiceOperationAccessModel> getOperationAccess() {
+  Future<BaseSingleResponse<InvoiceOperationAccessModel>> getOperationAccess() {
     return _service.getOperationAccess();
   }
 
   @override
-  Future<List<EmdadServiceCategoryModel>> getEmdadCategories() {
+  Future<BaseListResponse<EmdadServiceCategoryModel>> getEmdadCategories() {
     return _service.getEmdadCategories();
   }
 
   @override
-  Future<InvoiceDocumentUrlsModel> getCustomerDocumentUrls(String invoiceGuid) {
+  Future<BaseSingleResponse<InvoiceDocumentUrlsModel>> getCustomerDocumentUrls(String invoiceGuid) {
     return _service.getCustomerDocumentUrls(invoiceGuid);
   }
 
   @override
-  Future<InvoiceDocumentUrlsModel> getEmdadgarDocumentUrls(String invoiceGuid) {
+  Future<BaseSingleResponse<InvoiceDocumentUrlsModel>> getEmdadgarDocumentUrls(String invoiceGuid) {
     return _service.getEmdadgarDocumentUrls(invoiceGuid);
   }
 }

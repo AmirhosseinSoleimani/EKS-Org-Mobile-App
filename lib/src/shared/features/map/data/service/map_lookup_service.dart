@@ -40,14 +40,17 @@ class MapLookupService {
     final root = rawResponse is Map
         ? Map<String, dynamic>.from(rawResponse)
         : <String, dynamic>{};
-    final records = _readRecords(rawResponse);
-    final models = records
-        .whereType<Map>()
-        .map((item) => mapper(Map<String, dynamic>.from(item)))
-        .toList(growable: false);
+    final resultCode =
+        _integer(root['resultCode'] ?? root['ResultCode']) ?? 0;
+    final models = resultCode == 0
+        ? _readRecords(rawResponse)
+            .whereType<Map>()
+            .map((item) => mapper(Map<String, dynamic>.from(item)))
+            .toList(growable: false)
+        : null;
 
     return BaseSingleResponse<List<T>>(
-      resultCode: _integer(root['resultCode'] ?? root['ResultCode']) ?? 0,
+      resultCode: resultCode,
       data: models,
       failures: _failures(root),
     );

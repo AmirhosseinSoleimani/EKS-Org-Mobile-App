@@ -42,7 +42,7 @@ class AgencyInfoRepositoryImpl extends AgencyInfoRepository {
   ) async {
     try {
       final result = await _dataSource.getByFilter(param.toModel());
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<AgencyInfoPageEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -119,7 +119,7 @@ class AgencyInfoRepositoryImpl extends AgencyInfoRepository {
       AgencyContractParamEntity param,) async {
     try {
       final result = await _dataSource.getContracts(param.toModel());
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<AgencyContractPageEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -130,7 +130,7 @@ class AgencyInfoRepositoryImpl extends AgencyInfoRepository {
       AgencyInfoIdParamEntity param,) async {
     try {
       final result = await _dataSource.getCurrentPersons(param.toModel());
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<AgencyPersonPageEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -141,7 +141,7 @@ class AgencyInfoRepositoryImpl extends AgencyInfoRepository {
       PersonInfoSearchParamEntity param,) async {
     try {
       final result = await _dataSource.searchPersons(param.toModel());
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<PersonInfoSearchPageEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -152,7 +152,7 @@ class AgencyInfoRepositoryImpl extends AgencyInfoRepository {
       AgencyInfoIdParamEntity param,) async {
     try {
       final result = await _dataSource.getCurrentVehicles(param.toModel());
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<AgencyVehiclePageEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -163,7 +163,7 @@ class AgencyInfoRepositoryImpl extends AgencyInfoRepository {
       VehicleInfoSearchParamEntity param,) async {
     try {
       final result = await _dataSource.searchVehicles(param.toModel());
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<VehicleInfoSearchPageEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -173,8 +173,8 @@ class AgencyInfoRepositoryImpl extends AgencyInfoRepository {
   Future<ApiResult<void>> changeStatus(
       ChangeAgencyStatusParamEntity param,) async {
     try {
-      await _dataSource.changeStatus(param.toModel());
-      return ApiResult.success(data: null, resultCode: 0);
+      final result = await _dataSource.changeStatus(param.toModel());
+      return result.toApiResult();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -230,7 +230,7 @@ class AgencyInfoRepositoryImpl extends AgencyInfoRepository {
       ) async {
     try {
       final result = await _dataSource.getReport(param.toModel());
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<AgencyInfoReportEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }

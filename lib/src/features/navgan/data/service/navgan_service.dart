@@ -161,9 +161,10 @@ class NavganService {
 
   BaseSingleResponse<NavganPageModel> _pageResponse(dynamic data) {
     final json = _normalizePageResponse(data);
+    final resultCode = _readResultCode(json);
     return BaseSingleResponse<NavganPageModel>(
-      resultCode: _readResultCode(json),
-      data: NavganPageModel.fromJson(json),
+      resultCode: resultCode,
+      data: resultCode == 0 ? NavganPageModel.fromJson(json) : null,
       failures: _readFailures(json),
     );
   }
@@ -172,9 +173,12 @@ class NavganService {
       dynamic data,
       ) {
     final json = _normalizeListResponse(data);
-    final items = _readItemList(json).map(GradePatternModel.fromJson).toList();
+    final resultCode = _readResultCode(json);
+    final items = resultCode == 0
+        ? _readItemList(json).map(GradePatternModel.fromJson).toList()
+        : null;
     return BaseSingleResponse<List<GradePatternModel>>(
-      resultCode: _readResultCode(json),
+      resultCode: resultCode,
       data: items,
       failures: _readFailures(json),
     );
@@ -184,14 +188,15 @@ class NavganService {
       dynamic data,
       ) {
     final json = _normalizeSingleResponse(data);
+    final resultCode = _readResultCode(json);
     final rawData = NavganJsonHelper.responseData(json);
     final itemJson = rawData is Map
         ? Map<String, dynamic>.from(rawData)
         : const <String, dynamic>{};
 
     return BaseSingleResponse<GradePatternModel>(
-      resultCode: _readResultCode(json),
-      data: GradePatternModel.fromJson(itemJson),
+      resultCode: resultCode,
+      data: resultCode == 0 ? GradePatternModel.fromJson(itemJson) : null,
       failures: _readFailures(json),
     );
   }
@@ -200,11 +205,13 @@ class NavganService {
       dynamic data,
       ) {
     final json = _normalizeListResponse(data);
-    final items =
-    _readItemList(json).map(NavganServiceGroupModel.fromJson).toList();
+    final resultCode = _readResultCode(json);
+    final items = resultCode == 0
+        ? _readItemList(json).map(NavganServiceGroupModel.fromJson).toList()
+        : null;
 
     return BaseSingleResponse<List<NavganServiceGroupModel>>(
-      resultCode: _readResultCode(json),
+      resultCode: resultCode,
       data: items,
       failures: _readFailures(json),
     );
@@ -212,10 +219,13 @@ class NavganService {
 
   BaseSingleResponse<List<NavganDefectModel>> _defectListResponse(dynamic data) {
     final json = _normalizeListResponse(data);
-    final items = _readItemList(json).map(NavganDefectModel.fromJson).toList();
+    final resultCode = _readResultCode(json);
+    final items = resultCode == 0
+        ? _readItemList(json).map(NavganDefectModel.fromJson).toList()
+        : null;
 
     return BaseSingleResponse<List<NavganDefectModel>>(
-      resultCode: _readResultCode(json),
+      resultCode: resultCode,
       data: items,
       failures: _readFailures(json),
     );

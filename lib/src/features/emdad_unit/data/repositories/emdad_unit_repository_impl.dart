@@ -1,5 +1,3 @@
-import 'package:eks_sana_plus_org/src/common/event_bus/app_event_bus.dart';
-import 'package:eks_sana_plus_org/src/common/utils/extensions/iterable_ext.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/data/data_sources/emdad_unit_data_source.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/data/models/emdad_unit_filter_request_model.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/emdad_unit_entity.dart';
@@ -12,7 +10,6 @@ import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/params
 import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/params/emdad_unit_filter_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/entities/params/update_emdad_unit_image_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/emdad_unit/domain/repositories/emdad_unit_repository.dart';
-import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result_converter.dart';
 import 'package:injectable/injectable.dart';
@@ -29,7 +26,7 @@ class EmdadUnitRepositoryImpl extends EmdadUnitRepository {
       ) async {
     try {
       final result = await _dataSource.getByFilter(param.toModel());
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<EmdadUnitPageEntity>();
     } catch (e, s) {
       return e.toApiResult(s);
     }
@@ -69,7 +66,7 @@ class EmdadUnitRepositoryImpl extends EmdadUnitRepository {
   Future<ApiResult<void>> deleteById(int id) async {
     try {
       final result = await _dataSource.deleteById(id);
-      return _mapBaseResponse(result);
+      return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);
     }
@@ -98,7 +95,7 @@ class EmdadUnitRepositoryImpl extends EmdadUnitRepository {
   Future<ApiResult<void>> assignPerson(AssignEmdadUnitPersonParamEntity param) async {
     try {
       final result = await _dataSource.assignPerson(param.toJson());
-      return _mapBaseResponse(result);
+      return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);
     }
@@ -108,7 +105,7 @@ class EmdadUnitRepositoryImpl extends EmdadUnitRepository {
   Future<ApiResult<void>> deletePersonById(int id) async {
     try {
       final result = await _dataSource.deletePersonById(id);
-      return _mapBaseResponse(result);
+      return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);
     }
@@ -118,7 +115,7 @@ class EmdadUnitRepositoryImpl extends EmdadUnitRepository {
   Future<ApiResult<void>> changeLocation(ChangeEmdadUnitLocationParamEntity param) async {
     try {
       final result = await _dataSource.changeLocation(param.toJson());
-      return _mapBaseResponse(result);
+      return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);
     }
@@ -185,23 +182,5 @@ class EmdadUnitRepositoryImpl extends EmdadUnitRepository {
         ),
       ],
     );
-  }
-
-  ApiResult<void> _mapBaseResponse(BaseResponse response) {
-    switch (response.resultCode) {
-      case 0:
-        return const ApiResult.success(data: null, resultCode: 0);
-      case 3:
-        AppEventBus.emit(AppEvent.tokenExpired);
-        return const ApiResult.expireToken();
-      case 1:
-      case 2:
-      case 4:
-      default:
-        return ApiResult.failure(
-          failures: response.failures?.listToString() ??
-              'خطای غیرمنتظره، لطفا با شماره 096550 تماس بگیرید',
-        );
-    }
   }
 }

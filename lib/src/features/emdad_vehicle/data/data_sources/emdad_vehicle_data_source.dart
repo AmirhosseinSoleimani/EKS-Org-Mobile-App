@@ -43,7 +43,7 @@ abstract class EmdadVehicleDataSource {
     GetVehicleDefectsParamModel param,
   );
 
-  Future<BaseSingleResponse<void>> submitVehicleDefectLimitation(
+  Future<BaseResponse> submitVehicleDefectLimitation(
     SubmitVehicleDefectLimitationParamModel param,
   );
 

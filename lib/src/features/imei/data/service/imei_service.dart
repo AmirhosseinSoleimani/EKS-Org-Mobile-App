@@ -84,25 +84,29 @@ class ImeiService {
 
   BaseSingleResponse<ImeiInfoPageModel> _pageResponse(dynamic data) {
     final json = _normalizePageResponse(data);
+    final resultCode = _readResultCode(json);
     return BaseSingleResponse<ImeiInfoPageModel>(
-      resultCode: _readResultCode(json),
-      data: ImeiInfoPageModel.fromJson(json),
+      resultCode: resultCode,
+      data: resultCode == 0 ? ImeiInfoPageModel.fromJson(json) : null,
       failures: _readFailures(json),
     );
   }
 
   BaseSingleResponse<List<DeviceInfoModel>> _deviceListResponse(dynamic data) {
     final json = _normalizeListResponse(data);
+    final resultCode = _readResultCode(json);
     final rawData = json['data'] ?? json['Data'];
     final itemJson = rawData == null
         ? ImeiJsonHelper.pageRecords(json)
         : rawData is Map
-        ? ImeiJsonHelper.pageRecords(json)
-        : ImeiJsonHelper.mapList(rawData);
-    final items = itemJson.map(DeviceInfoModel.fromJson).toList();
+            ? ImeiJsonHelper.pageRecords(json)
+            : ImeiJsonHelper.mapList(rawData);
+    final items = resultCode == 0
+        ? itemJson.map(DeviceInfoModel.fromJson).toList()
+        : null;
 
     return BaseSingleResponse<List<DeviceInfoModel>>(
-      resultCode: _readResultCode(json),
+      resultCode: resultCode,
       data: items,
       failures: _readFailures(json),
     );
@@ -110,14 +114,15 @@ class ImeiService {
 
   BaseSingleResponse<ImeiInfoModel> _singleImeiResponse(dynamic data) {
     final json = _normalizeSingleResponse(data);
+    final resultCode = _readResultCode(json);
     final rawData = ImeiJsonHelper.responseData(json);
     final itemJson = rawData is Map
         ? Map<String, dynamic>.from(rawData)
         : const <String, dynamic>{};
 
     return BaseSingleResponse<ImeiInfoModel>(
-      resultCode: _readResultCode(json),
-      data: ImeiInfoModel.fromJson(itemJson),
+      resultCode: resultCode,
+      data: resultCode == 0 ? ImeiInfoModel.fromJson(itemJson) : null,
       failures: _readFailures(json),
     );
   }

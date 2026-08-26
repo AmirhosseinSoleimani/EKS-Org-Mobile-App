@@ -13,24 +13,38 @@ class CustomerInvoiceService {
 
   final Dio _dio;
 
-  Future<InvoiceRecordPageModel> getPreInvoices(
+  Future<BaseSingleResponse<InvoiceRecordPageModel>> getPreInvoices(
     InvoiceListFilterRequestModel request,
   ) async {
     final response = await _dio.post<dynamic>(
       '/api/Invoice/ReportCustomerPreInvoice',
       data: request.toJson(),
     );
-    return InvoiceRecordPageModel.fromResponse(response.data);
+    final resultCode = ResponseJsonReader.resultCode(response.data);
+    return BaseSingleResponse<InvoiceRecordPageModel>(
+      resultCode: resultCode,
+      failures: ResponseJsonReader.failures(response.data),
+      data: resultCode == 0
+          ? InvoiceRecordPageModel.fromResponse(response.data)
+          : null,
+    );
   }
 
-  Future<InvoiceRecordPageModel> getInvoices(
+  Future<BaseSingleResponse<InvoiceRecordPageModel>> getInvoices(
     InvoiceListFilterRequestModel request,
   ) async {
     final response = await _dio.post<dynamic>(
       '/api/Invoice/ReportCustomerInvoice',
       data: request.toJson(),
     );
-    return InvoiceRecordPageModel.fromResponse(response.data);
+    final resultCode = ResponseJsonReader.resultCode(response.data);
+    return BaseSingleResponse<InvoiceRecordPageModel>(
+      resultCode: resultCode,
+      failures: ResponseJsonReader.failures(response.data),
+      data: resultCode == 0
+          ? InvoiceRecordPageModel.fromResponse(response.data)
+          : null,
+    );
   }
 
   Future<BaseSingleResponse<InvoiceModel?>> getDetails(
@@ -58,10 +72,13 @@ class CustomerInvoiceService {
   }
 
   BaseSingleResponse<InvoiceModel?> _invoiceResponse(dynamic raw) {
+    final resultCode = ResponseJsonReader.resultCode(raw);
     final data = ResponseJsonReader.object(raw);
     return BaseSingleResponse<InvoiceModel?>(
-      resultCode: ResponseJsonReader.resultCode(raw),
-      data: data.isEmpty ? null : InvoiceModel.fromJson(data),
+      resultCode: resultCode,
+      data: resultCode == 0 && data.isNotEmpty
+          ? InvoiceModel.fromJson(data)
+          : null,
       failures: ResponseJsonReader.failures(raw),
     );
   }

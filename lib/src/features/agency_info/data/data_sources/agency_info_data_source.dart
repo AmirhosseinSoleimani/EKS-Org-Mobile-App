@@ -27,7 +27,7 @@ import 'package:eks_sana_plus_org/src/features/agency_info/data/models/vehicle_i
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 
 abstract class AgencyInfoDataSource {
-  Future<AgencyInfoPageModel> getByFilter(AgencyInfoFilterRequestModel request);
+  Future<BaseSingleResponse<AgencyInfoPageModel>> getByFilter(AgencyInfoFilterRequestModel request);
   Future<BaseSingleResponse<AgencyInfoModel>> getById(int id);
   Future<BaseListResponse<AgencyInfoModel>> getByName(String title);
   Future<BaseSingleResponse<String>> addAgency(
@@ -46,27 +46,27 @@ abstract class AgencyInfoDataSource {
     AddAgencyVehicleRequestModel request,
   );
 
-  Future<AgencyContractPageModel> getContracts(
+  Future<BaseSingleResponse<AgencyContractPageModel>> getContracts(
     AgencyContractFilterRequestModel request,
   );
 
-  Future<AgencyPersonPageModel> getCurrentPersons(
+  Future<BaseSingleResponse<AgencyPersonPageModel>> getCurrentPersons(
     AgencyInfoIdRequestModel request,
   );
 
-  Future<PersonInfoSearchPageModel> searchPersons(
+  Future<BaseSingleResponse<PersonInfoSearchPageModel>> searchPersons(
     PersonInfoSearchRequestModel request,
   );
 
-  Future<AgencyVehiclePageModel> getCurrentVehicles(
+  Future<BaseSingleResponse<AgencyVehiclePageModel>> getCurrentVehicles(
     AgencyInfoIdRequestModel request,
   );
 
-  Future<VehicleInfoSearchPageModel> searchVehicles(
+  Future<BaseSingleResponse<VehicleInfoSearchPageModel>> searchVehicles(
     VehicleInfoSearchRequestModel request,
   );
 
-  Future<void> changeStatus(ChangeAgencyStatusRequestModel request);
+  Future<BaseResponse> changeStatus(ChangeAgencyStatusRequestModel request);
 
   Future<BaseSingleResponse<void>> deleteAgency(
     DeleteAgencyRequestModel request,
@@ -83,5 +83,5 @@ abstract class AgencyInfoDataSource {
     AgencyHistoryRequestModel request,
   );
 
-  Future<AgencyInfoReportModel> getReport(AgencyInfoFilterRequestModel request);
+  Future<BaseSingleResponse<AgencyInfoReportModel>> getReport(AgencyInfoFilterRequestModel request);
 }

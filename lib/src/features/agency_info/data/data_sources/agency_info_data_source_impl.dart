@@ -36,7 +36,7 @@ class AgencyInfoDataSourceImpl extends AgencyInfoDataSource {
   final AgencyInfoService _service;
 
   @override
-  Future<AgencyInfoPageModel> getByFilter(AgencyInfoFilterRequestModel request) {
+  Future<BaseSingleResponse<AgencyInfoPageModel>> getByFilter(AgencyInfoFilterRequestModel request) {
     return _service.getByFilter(request);
   }
 
@@ -79,37 +79,37 @@ class AgencyInfoDataSourceImpl extends AgencyInfoDataSource {
   }
 
   @override
-  Future<AgencyContractPageModel> getContracts(
+  Future<BaseSingleResponse<AgencyContractPageModel>> getContracts(
       AgencyContractFilterRequestModel request,) {
     return _service.getContracts(request);
   }
 
   @override
-  Future<AgencyPersonPageModel> getCurrentPersons(
+  Future<BaseSingleResponse<AgencyPersonPageModel>> getCurrentPersons(
       AgencyInfoIdRequestModel request,) {
     return _service.getCurrentPersons(request);
   }
 
   @override
-  Future<PersonInfoSearchPageModel> searchPersons(
+  Future<BaseSingleResponse<PersonInfoSearchPageModel>> searchPersons(
       PersonInfoSearchRequestModel request,) {
     return _service.searchPersons(request);
   }
 
   @override
-  Future<AgencyVehiclePageModel> getCurrentVehicles(
+  Future<BaseSingleResponse<AgencyVehiclePageModel>> getCurrentVehicles(
       AgencyInfoIdRequestModel request,) {
     return _service.getCurrentVehicles(request);
   }
 
   @override
-  Future<VehicleInfoSearchPageModel> searchVehicles(
+  Future<BaseSingleResponse<VehicleInfoSearchPageModel>> searchVehicles(
       VehicleInfoSearchRequestModel request,) {
     return _service.searchVehicles(request);
   }
 
   @override
-  Future<void> changeStatus(ChangeAgencyStatusRequestModel request) {
+  Future<BaseResponse> changeStatus(ChangeAgencyStatusRequestModel request) {
     return _service.changeStatus(request);
   }
 
@@ -139,7 +139,7 @@ class AgencyInfoDataSourceImpl extends AgencyInfoDataSource {
   }
 
   @override
-  Future<AgencyInfoReportModel> getReport(AgencyInfoFilterRequestModel request) {
+  Future<BaseSingleResponse<AgencyInfoReportModel>> getReport(AgencyInfoFilterRequestModel request) {
     return _service.getReport(request);
   }
 }

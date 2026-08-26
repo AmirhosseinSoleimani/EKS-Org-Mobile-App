@@ -62,16 +62,10 @@ class EmdadVehicleDataSourceImpl extends EmdadVehicleDataSource {
       await _service.getVehicleDefects(param.toJson());
 
   @override
-  Future<BaseSingleResponse<void>> submitVehicleDefectLimitation(
+  Future<BaseResponse> submitVehicleDefectLimitation(
     SubmitVehicleDefectLimitationParamModel param,
-  ) async {
-    await _service.submitVehicleDefectLimitation(param.toJson());
-    return BaseSingleResponse<void>(
-      resultCode: 0,
-      failures: null,
-      data: null,
-    );
-  }
+  ) =>
+      _service.submitVehicleDefectLimitation(param.toJson());
 
   @override
   Future<BaseSingleResponse<SubmitVehicleServicesResponseModel>>

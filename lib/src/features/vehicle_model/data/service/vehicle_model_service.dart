@@ -124,18 +124,22 @@ class VehicleModelService {
 
   BaseSingleResponse<VehicleModelPageModel> _pageResponse(dynamic data) {
     final json = _normalizePageResponse(data);
+    final resultCode = _readResultCode(json);
     return BaseSingleResponse<VehicleModelPageModel>(
-      resultCode: _readResultCode(json),
-      data: VehicleModelPageModel.fromJson(json),
+      resultCode: resultCode,
+      data: resultCode == 0 ? VehicleModelPageModel.fromJson(json) : null,
       failures: _readFailures(json),
     );
   }
 
   BaseSingleResponse<List<VehicleNavganModel>> _navganListResponse(dynamic data) {
     final json = _normalizeListResponse(data);
-    final items = _readItemList(json).map(VehicleNavganModel.fromJson).toList();
+    final resultCode = _readResultCode(json);
+    final items = resultCode == 0
+        ? _readItemList(json).map(VehicleNavganModel.fromJson).toList()
+        : null;
     return BaseSingleResponse<List<VehicleNavganModel>>(
-      resultCode: _readResultCode(json),
+      resultCode: resultCode,
       data: items,
       failures: _readFailures(json),
     );
@@ -145,10 +149,12 @@ class VehicleModelService {
     dynamic data,
   ) {
     final json = _normalizeListResponse(data);
-    final items =
-        _readItemList(json).map(VehicleServiceGroupModel.fromJson).toList();
+    final resultCode = _readResultCode(json);
+    final items = resultCode == 0
+        ? _readItemList(json).map(VehicleServiceGroupModel.fromJson).toList()
+        : null;
     return BaseSingleResponse<List<VehicleServiceGroupModel>>(
-      resultCode: _readResultCode(json),
+      resultCode: resultCode,
       data: items,
       failures: _readFailures(json),
     );
@@ -156,9 +162,12 @@ class VehicleModelService {
 
   BaseSingleResponse<List<VehicleDefectModel>> _defectListResponse(dynamic data) {
     final json = _normalizeListResponse(data);
-    final items = _readItemList(json).map(VehicleDefectModel.fromJson).toList();
+    final resultCode = _readResultCode(json);
+    final items = resultCode == 0
+        ? _readItemList(json).map(VehicleDefectModel.fromJson).toList()
+        : null;
     return BaseSingleResponse<List<VehicleDefectModel>>(
-      resultCode: _readResultCode(json),
+      resultCode: resultCode,
       data: items,
       failures: _readFailures(json),
     );

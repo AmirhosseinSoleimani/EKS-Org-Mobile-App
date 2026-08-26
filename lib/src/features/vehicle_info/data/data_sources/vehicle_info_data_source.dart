@@ -9,12 +9,12 @@ import 'package:eks_sana_plus_org/src/features/vehicle_info/data/models/vehicle_
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 
 abstract class VehicleInfoDataSource {
-  Future<VehicleInfoPageModel> getVehicles(VehicleInfoFilterRequestModel request);
+  Future<BaseSingleResponse<VehicleInfoPageModel>> getVehicles(VehicleInfoFilterRequestModel request);
   Future<BaseSingleResponse<VehicleInfoModel>> getVehicleById(int id);
   Future<BaseResponse> createVehicle(Map<String, dynamic> body);
   Future<BaseResponse> editVehicle(Map<String, dynamic> body);
   Future<BaseResponse> deleteVehicle(int id);
-  Future<VehicleModelPageModel> getVehicleModels(VehicleInfoFilterRequestModel request);
+  Future<BaseSingleResponse<VehicleModelPageModel>> getVehicleModels(VehicleInfoFilterRequestModel request);
   Future<BaseListResponse<EmdadServiceCategoryGroupModel>> getServiceCategories(int id);
   Future<BaseResponse> submitServiceCategories(Map<String, dynamic> body);
   Future<BaseListResponse<VehicleToolModel>> getVehicleTools(Map<String, dynamic> body);

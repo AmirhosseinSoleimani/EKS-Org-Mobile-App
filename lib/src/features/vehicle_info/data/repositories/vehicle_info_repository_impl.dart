@@ -1,7 +1,6 @@
-import 'package:eks_sana_plus_org/src/common/event_bus/app_event_bus.dart';
-import 'package:eks_sana_plus_org/src/common/utils/extensions/iterable_ext.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/data/data_sources/vehicle_info_data_source.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/data/models/vehicle_info_filter_request_model.dart';
+import 'package:eks_sana_plus_org/src/features/vehicle_info/data/models/vehicle_model_model.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/emdad_service_category_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/params/create_or_edit_vehicle_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/params/vehicle_history_param.dart';
@@ -15,7 +14,6 @@ import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehi
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_model_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/entities/vehicle_tool_entity.dart';
 import 'package:eks_sana_plus_org/src/features/vehicle_info/domain/repositories/vehicle_info_repository.dart';
-import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result_converter.dart';
 import 'package:injectable/injectable.dart';
@@ -30,7 +28,7 @@ class VehicleInfoRepositoryImpl extends VehicleInfoRepository {
   Future<ApiResult<VehicleInfoPageEntity>> getVehicles(VehicleInfoFilterParamEntity param) async {
     try {
       final result = await _dataSource.getVehicles(param.toModel());
-      return ApiResult.success(data: result, resultCode: 0);
+      return result.toApiResult<VehicleInfoPageEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -49,7 +47,7 @@ class VehicleInfoRepositoryImpl extends VehicleInfoRepository {
   @override
   Future<ApiResult<void>> createVehicle(CreateOrEditVehicleParamEntity param) async {
     try {
-      return _mapBaseResponse(await _dataSource.createVehicle(param.toJson()));
+      return (await _dataSource.createVehicle(param.toJson())).toApiResult();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -58,7 +56,7 @@ class VehicleInfoRepositoryImpl extends VehicleInfoRepository {
   @override
   Future<ApiResult<void>> editVehicle(CreateOrEditVehicleParamEntity param) async {
     try {
-      return _mapBaseResponse(await _dataSource.editVehicle(param.toJson()));
+      return (await _dataSource.editVehicle(param.toJson())).toApiResult();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -67,7 +65,7 @@ class VehicleInfoRepositoryImpl extends VehicleInfoRepository {
   @override
   Future<ApiResult<void>> deleteVehicle(int id) async {
     try {
-      return _mapBaseResponse(await _dataSource.deleteVehicle(id));
+      return (await _dataSource.deleteVehicle(id)).toApiResult();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -85,7 +83,19 @@ class VehicleInfoRepositoryImpl extends VehicleInfoRepository {
             : const [],
       );
       final result = await _dataSource.getVehicleModels(request);
-      return ApiResult.success(data: result.records, resultCode: 0);
+      return result.toApiResult<VehicleModelPageModel>().when(
+        success: (data, failures, resultCode) => ApiResult.success(
+          data: data.records.cast<VehicleModelEntity>(),
+          failures: failures,
+          resultCode: resultCode,
+        ),
+        failure: (error, failures) => ApiResult.failure(
+          error: error,
+          failures: failures,
+        ),
+        expireToken: () => const ApiResult.expireToken(),
+        connectionError: () => const ApiResult.connectionError(),
+      );
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -104,7 +114,7 @@ class VehicleInfoRepositoryImpl extends VehicleInfoRepository {
   @override
   Future<ApiResult<void>> submitServiceCategories(SubmitVehicleServiceCategoriesParamEntity param) async {
     try {
-      return _mapBaseResponse(await _dataSource.submitServiceCategories(param.toJson()));
+      return (await _dataSource.submitServiceCategories(param.toJson())).toApiResult();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -123,7 +133,7 @@ class VehicleInfoRepositoryImpl extends VehicleInfoRepository {
   @override
   Future<ApiResult<void>> submitVehicleTools(SubmitVehicleToolsParamEntity param) async {
     try {
-      return _mapBaseResponse(await _dataSource.submitVehicleTools(param.toJson()));
+      return (await _dataSource.submitVehicleTools(param.toJson())).toApiResult();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -142,7 +152,7 @@ class VehicleInfoRepositoryImpl extends VehicleInfoRepository {
   @override
   Future<ApiResult<void>> insertBatchServiceCategories(InsertBatchVehicleServiceCategoriesParamEntity param) async {
     try {
-      return _mapBaseResponse(await _dataSource.insertBatchServiceCategories(param.toJson()));
+      return (await _dataSource.insertBatchServiceCategories(param.toJson())).toApiResult();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -161,7 +171,7 @@ class VehicleInfoRepositoryImpl extends VehicleInfoRepository {
   @override
   Future<ApiResult<void>> submitDefectLimitation(SubmitVehicleDefectLimitationParamEntity param) async {
     try {
-      return _mapBaseResponse(await _dataSource.submitDefectLimitation(param.toJson()));
+      return (await _dataSource.submitDefectLimitation(param.toJson())).toApiResult();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
     }
@@ -174,30 +184,6 @@ class VehicleInfoRepositoryImpl extends VehicleInfoRepository {
       return result.toApiResult<VehicleHistoryEntity>();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);
-    }
-  }
-
-  ApiResult<void> _mapBaseResponse(BaseResponse response) {
-    switch (response.resultCode) {
-      case 0:
-        return const ApiResult.success(data: null, resultCode: 0);
-      case 3:
-        AppEventBus.emit(AppEvent.tokenExpired);
-        return const ApiResult.expireToken();
-      case 4:
-        return const ApiResult.failure(
-          failures: 'سرویس با مشکل مواجه شده است. لطفاً کمی بعد دوباره تلاش کنید.',
-        );
-      case 1:
-      case 2:
-        return ApiResult.failure(
-          failures: response.failures?.listToString() ??
-              'در انجام عملیات خطایی رخ داده است. لطفاً دوباره تلاش کنید.',
-        );
-      default:
-        return const ApiResult.failure(
-          failures: 'پاسخ نامعتبر از سرویس دریافت شد. لطفاً دوباره تلاش کنید.',
-        );
     }
   }
 }

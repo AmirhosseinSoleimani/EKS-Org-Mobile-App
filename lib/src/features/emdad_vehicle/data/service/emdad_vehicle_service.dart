@@ -46,7 +46,7 @@ abstract class EmdadVehicleService {
   );
 
   @POST('/api/VehicleInfo/SubmitVehicleInfoDefectLimitation')
-  Future<void> submitVehicleDefectLimitation(
+  Future<BaseResponse> submitVehicleDefectLimitation(
     @Body() Map<String, dynamic> body,
   );
 

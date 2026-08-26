@@ -45,7 +45,7 @@ class EvaluationRepositoryImpl extends EvaluationRepository {
       final result = await _remoteDataSource.getDefectsList(
         serviceRequestId,
       );
-      return result.toApiResultList();
+      return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);
     }
@@ -58,7 +58,7 @@ class EvaluationRepositoryImpl extends EvaluationRepository {
     try {
       final result = await _remoteDataSource
           .getServiceCategoryList(param.toModel());
-      return result.toApiResultList();
+      return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);
     }

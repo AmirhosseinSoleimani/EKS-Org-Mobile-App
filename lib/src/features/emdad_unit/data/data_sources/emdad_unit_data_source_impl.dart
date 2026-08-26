@@ -15,7 +15,7 @@ class EmdadUnitDataSourceImpl extends EmdadUnitDataSource {
   final EmdadUnitService _service;
 
   @override
-  Future<EmdadUnitPageModel> getByFilter(EmdadUnitFilterRequestModel request) {
+  Future<BaseSingleResponse<EmdadUnitPageModel>> getByFilter(EmdadUnitFilterRequestModel request) {
     return _service.getByFilter(request);
   }
 

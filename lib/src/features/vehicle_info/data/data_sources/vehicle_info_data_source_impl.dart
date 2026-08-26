@@ -18,7 +18,7 @@ class VehicleInfoDataSourceImpl extends VehicleInfoDataSource {
   final VehicleInfoService _service;
 
   @override
-  Future<VehicleInfoPageModel> getVehicles(VehicleInfoFilterRequestModel request) => _service.getVehicles(request);
+  Future<BaseSingleResponse<VehicleInfoPageModel>> getVehicles(VehicleInfoFilterRequestModel request) => _service.getVehicles(request);
   @override
   Future<BaseSingleResponse<VehicleInfoModel>> getVehicleById(int id) => _service.getVehicleById(id);
   @override
@@ -28,7 +28,7 @@ class VehicleInfoDataSourceImpl extends VehicleInfoDataSource {
   @override
   Future<BaseResponse> deleteVehicle(int id) => _service.deleteVehicle(id);
   @override
-  Future<VehicleModelPageModel> getVehicleModels(VehicleInfoFilterRequestModel request) => _service.getVehicleModels(request);
+  Future<BaseSingleResponse<VehicleModelPageModel>> getVehicleModels(VehicleInfoFilterRequestModel request) => _service.getVehicleModels(request);
   @override
   Future<BaseListResponse<EmdadServiceCategoryGroupModel>> getServiceCategories(int id) => _service.getServiceCategories(id);
   @override

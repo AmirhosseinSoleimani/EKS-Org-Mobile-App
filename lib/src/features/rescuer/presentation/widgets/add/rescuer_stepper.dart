@@ -16,56 +16,69 @@ class RescuerStepper extends StatelessWidget {
         (index) => Expanded(
           child: Column(
             children: [
-              Row(
-                children: [
-                  if (index > 0)
-                    Expanded(
-                      child: Container(
-                        height: 2,
-                        color: index <= current
-                            ? const Color(0xFF00A878)
-                            : Colors.grey.shade300,
-                      ),
+              SizedBox(
+                height: 40,
+                child: Stack(
+                  alignment: Alignment.center,
+                  children: [
+                    Row(
+                      children: [
+                        Expanded(
+                          child: Container(
+                            height: 2,
+                            color: index > 0
+                                ? index <= current
+                                      ? const Color(0xFF00A878)
+                                      : Colors.grey.shade300
+                                : Colors.transparent,
+                          ),
+                        ),
+                        Expanded(
+                          child: Container(
+                            height: 2,
+                            color: index < 3
+                                ? index < current
+                                      ? const Color(0xFF00A878)
+                                      : Colors.grey.shade300
+                                : Colors.transparent,
+                          ),
+                        ),
+                      ],
                     ),
-                  Container(
-                    width: 40,
-                    height: 40,
-                    decoration: BoxDecoration(
-                      shape: BoxShape.circle,
-                      color: index == current
-                          ? Theme.of(context).colorScheme.primary
-                          : Colors.white,
-                      border: Border.all(
-                        color: index < current
-                            ? const Color(0xFF00A878)
-                            : index == current
+                    Container(
+                      width: 40,
+                      height: 40,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        color: index == current
                             ? Theme.of(context).colorScheme.primary
-                            : Colors.grey.shade300,
-                        width: 2,
+                            : Colors.white,
+                        border: Border.all(
+                          color: index < current
+                              ? const Color(0xFF00A878)
+                              : index == current
+                              ? Theme.of(context).colorScheme.primary
+                              : Colors.grey.shade300,
+                          width: 2,
+                        ),
+                      ),
+                      child: Center(
+                        child: index < current
+                            ? const Icon(
+                                Icons.check,
+                                color: Color(0xFF00A878),
+                              )
+                            : BodySmallText(
+                                text: '${index + 1}',
+                                color: index == current
+                                    ? Colors.white
+                                    : Colors.grey,
+                                fontWeight: FontWeight.w700,
+                              ),
                       ),
                     ),
-                    child: Center(
-                      child: index < current
-                          ? const Icon(Icons.check, color: Color(0xFF00A878))
-                          : BodySmallText(
-                              text: '${index + 1}',
-                              color: index == current
-                                  ? Colors.white
-                                  : Colors.grey,
-                              fontWeight: FontWeight.w700,
-                            ),
-                    ),
-                  ),
-                  if (index < 3)
-                    Expanded(
-                      child: Container(
-                        height: 2,
-                        color: index < current
-                            ? const Color(0xFF00A878)
-                            : Colors.grey.shade300,
-                      ),
-                    ),
-                ],
+                  ],
+                ),
               ),
               const SizedBox(height: 6),
               BodySmallText(

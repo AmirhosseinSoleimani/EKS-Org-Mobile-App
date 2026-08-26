@@ -76,7 +76,7 @@ class PlanInfoRepositoryImpl extends PlanInfoRepository {
   Future<ApiResult<List<PlanLookupEntity>>> getStatusReasons() async {
     try {
       final result = await _dataSource.getStatusReasons();
-      return result.toApiResultList();
+      return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);
     }
@@ -98,7 +98,7 @@ class PlanInfoRepositoryImpl extends PlanInfoRepository {
   ) async {
     try {
       final result = await _dataSource.getPlanReport(param.toModel());
-      return result.toApiResultList();
+      return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);
     }

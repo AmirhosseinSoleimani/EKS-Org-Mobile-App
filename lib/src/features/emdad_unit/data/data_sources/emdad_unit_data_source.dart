@@ -6,7 +6,7 @@ import 'package:eks_sana_plus_org/src/features/emdad_unit/data/models/lookup_mod
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 
 abstract class EmdadUnitDataSource {
-  Future<EmdadUnitPageModel> getByFilter(EmdadUnitFilterRequestModel request);
+  Future<BaseSingleResponse<EmdadUnitPageModel>> getByFilter(EmdadUnitFilterRequestModel request);
   Future<BaseSingleResponse<EmdadUnitModel>> getById(int id);
   Future<BaseSingleResponse<EmdadUnitModel>> create(Map<String, dynamic> body);
   Future<BaseSingleResponse<EmdadUnitModel>> update(Map<String, dynamic> body);

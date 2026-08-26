@@ -54,7 +54,7 @@ abstract final class ResponseJsonReader {
 
   static List<String> failures(dynamic raw) {
     final map = JsonValueReader.mapValue(raw);
-    final value = map['failures'] ?? map['Failures'];
+    final value = map['failures'] ?? map['Failures'] ?? map['message'] ?? map['Message'];
     if (value is List) return value.map((item) => item.toString()).toList();
     final text = JsonValueReader.stringValue(value);
     return text == null ? const <String>[] : <String>[text];

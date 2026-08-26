@@ -11,9 +11,19 @@ class BaseResponse {
 
   BaseResponse({this.resultCode, this.failures});
 
+  bool get hasFailures =>
+      failures?.any((failure) => failure.trim().isNotEmpty) == true;
+
+  bool get isErrorEnvelope =>
+      (resultCode != null && resultCode != 0) ||
+      (resultCode == null && hasFailures);
+
   factory BaseResponse.fromJson(Map<String, dynamic> json) {
     final rawResultCode = json['resultCode'] ?? json['ResultCode'];
-    final rawFailures = json['failures'] ?? json['Failures'];
+    final rawFailures = json['failures'] ??
+        json['Failures'] ??
+        json['message'] ??
+        json['Message'];
 
     return BaseResponse(
       resultCode: rawResultCode is int
@@ -27,10 +37,15 @@ class BaseResponse {
     if (rawFailures == null) return null;
 
     if (rawFailures is List) {
-      return rawFailures.map((failure) => failure.toString()).toList();
+      final failures = rawFailures
+          .map((failure) => failure.toString().trim())
+          .where((failure) => failure.isNotEmpty)
+          .toList();
+      return failures.isEmpty ? null : failures;
     }
 
-    return [rawFailures.toString()];
+    final failure = rawFailures.toString().trim();
+    return failure.isEmpty ? null : [failure];
   }
 }
 
@@ -49,6 +64,16 @@ class BaseListResponse<T> extends BaseResponse {
     T Function(Map<String, dynamic>) create,
   ) {
     final baseResponse = BaseResponse.fromJson(json);
+
+    // Error responses must reach ApiResultConverter untouched. Parsing an
+    // error payload can throw before resultCode (especially code 3) is handled.
+    if (baseResponse.isErrorEnvelope) {
+      return BaseListResponse<T>(
+        resultCode: baseResponse.resultCode,
+        failures: baseResponse.failures,
+      );
+    }
+
     final parsedData = <T>[];
     final rawData = json['data'] ?? json['Data'];
 
@@ -72,7 +97,7 @@ class BaseListResponse<T> extends BaseResponse {
     }
 
     return BaseListResponse<T>(
-      resultCode: baseResponse.resultCode,
+      resultCode: baseResponse.resultCode ?? 0,
       failures: baseResponse.failures,
       data: parsedData,
     );
@@ -89,16 +114,47 @@ class BaseSingleResponse<T> extends BaseResponse {
     this.data,
   });
 
+  factory BaseSingleResponse.fromRootJson(
+    Map<String, dynamic> json,
+    T Function(Map<String, dynamic>) create,
+  ) {
+    final baseResponse = BaseResponse.fromJson(json);
+
+    if (baseResponse.isErrorEnvelope) {
+      return BaseSingleResponse<T>(
+        failures: baseResponse.failures,
+        resultCode: baseResponse.resultCode,
+      );
+    }
+
+    return BaseSingleResponse<T>(
+      failures: baseResponse.failures,
+      resultCode: baseResponse.resultCode ?? 0,
+      data: create(json),
+    );
+  }
+
   factory BaseSingleResponse.fromJson(
     Map<String, dynamic> json,
     T Function(Map<String, dynamic>) create,
   ) {
     final baseResponse = BaseResponse.fromJson(json);
+
+    // Do not parse data on error responses. This guarantees resultCode 3 is
+    // handled by the global token-expired flow instead of being masked by a
+    // model parsing exception.
+    if (baseResponse.isErrorEnvelope) {
+      return BaseSingleResponse<T>(
+        failures: baseResponse.failures,
+        resultCode: baseResponse.resultCode,
+      );
+    }
+
     final rawData = json['data'] ?? json['Data'];
 
     return BaseSingleResponse<T>(
       failures: baseResponse.failures,
-      resultCode: baseResponse.resultCode,
+      resultCode: baseResponse.resultCode ?? 0,
       data: rawData is Map
           ? create(Map<String, dynamic>.from(rawData))
           : rawData is T

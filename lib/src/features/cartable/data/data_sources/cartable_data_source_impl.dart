@@ -41,11 +41,9 @@ class CartableDataSourceImpl extends CartableDataSource {
     return BaseSingleResponse<ArchiveCartableMessageResponseModel>(
       resultCode: response.resultCode,
       failures: response.failures,
-      data: response.data == null
-          ? null
-          : ArchiveCartableMessageResponseModel.fromJson(
-        response.data,
-      ),
+      data: response.resultCode == 0 && response.data != null
+          ? ArchiveCartableMessageResponseModel.fromJson(response.data)
+          : null,
     );
   }
 

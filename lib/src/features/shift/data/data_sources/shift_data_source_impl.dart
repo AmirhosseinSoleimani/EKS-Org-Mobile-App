@@ -13,9 +13,15 @@ class ShiftDataSourceImpl extends ShiftDataSource {
   final ShiftService _service;
 
   @override
-  Future<ShiftPageModel> getByFilter(ShiftFilterRequestModel request) async {
+  Future<BaseSingleResponse<ShiftPageModel>> getByFilter(ShiftFilterRequestModel request) async {
     final response = await _service.getByFilter(request.toJson());
-    return ShiftPageModel.fromJson(response);
+    final json = response is Map<String, dynamic>
+        ? response
+        : Map<String, dynamic>.from(response as Map);
+    return BaseSingleResponse<ShiftPageModel>.fromRootJson(
+      json,
+      ShiftPageModel.fromJson,
+    );
   }
 
   @override

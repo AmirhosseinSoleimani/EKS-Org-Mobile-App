@@ -73,20 +73,24 @@ class DeploymentLocationService {
 
   BaseSingleResponse<DeploymentLocationPageModel> _pageResponse(dynamic data) {
     final json = _normalizePageResponse(data);
+    final resultCode = _readResultCode(json);
     return BaseSingleResponse<DeploymentLocationPageModel>(
-      resultCode: _readResultCode(json),
-      data: DeploymentLocationPageModel.fromJson(json),
+      resultCode: resultCode,
+      data: resultCode == 0 ? DeploymentLocationPageModel.fromJson(json) : null,
       failures: _readFailures(json),
     );
   }
 
   BaseSingleResponse<DeploymentLocationModel> _itemResponse(dynamic data) {
     final json = _normalizeObjectResponse(data);
+    final resultCode = _readResultCode(json);
     return BaseSingleResponse<DeploymentLocationModel>(
-      resultCode: _readResultCode(json),
-      data: DeploymentLocationModel.fromJson(
-        DeploymentLocationJsonHelper.objectData(json),
-      ),
+      resultCode: resultCode,
+      data: resultCode == 0
+          ? DeploymentLocationModel.fromJson(
+              DeploymentLocationJsonHelper.objectData(json),
+            )
+          : null,
       failures: _readFailures(json),
     );
   }

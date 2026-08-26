@@ -207,7 +207,7 @@ class RequestRepositoryImpl extends RequestRepository {
       CancelReasonParamEntity param) async {
     try {
       final result = await _dataSource.getCancelReasons(param.toModel());
-      return result.toApiResultList();
+      return result.toApiResult();
     } catch (e, s) {
       return e.toApiResult(s);
     }

@@ -14,12 +14,12 @@ class CustomerInvoiceDataSourceImpl implements CustomerInvoiceDataSource {
   final CustomerInvoiceService _service;
 
   @override
-  Future<InvoiceRecordPageModel> getPreInvoices(
+  Future<BaseSingleResponse<InvoiceRecordPageModel>> getPreInvoices(
     InvoiceListFilterRequestModel request,
   ) => _service.getPreInvoices(request);
 
   @override
-  Future<InvoiceRecordPageModel> getInvoices(
+  Future<BaseSingleResponse<InvoiceRecordPageModel>> getInvoices(
     InvoiceListFilterRequestModel request,
   ) => _service.getInvoices(request);
 
