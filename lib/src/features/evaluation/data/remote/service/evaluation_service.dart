@@ -6,7 +6,6 @@ import 'package:eks_sana_plus_org/src/features/evaluation/data/models/last_evalu
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/part_mark_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/part_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/part_price_model.dart';
-import 'package:eks_sana_plus_org/src/features/evaluation/data/models/post_evaluation_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/representation_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/service_category_model.dart';
 import 'package:eks_sana_plus_org/src/features/evaluation/data/models/service_package_model.dart';
@@ -74,8 +73,9 @@ abstract class EvaluationService {
   );
 
   @POST('/api/AidServiceEvaluation/post')
-  Future<BaseSingleResponse<PostEvaluationResponseModel>>
-  aidServiceEvaluationPost(@Body() Map<String, dynamic> body);
+  Future<BaseSingleResponse<dynamic>> aidServiceEvaluationPost(
+    @Body() Map<String, dynamic> body,
+  );
 
   @POST('/api/AidServiceEvaluation/InsertTrackerEvaluation')
   Future<BaseSingleResponse<dynamic>> insertTrackerEvaluation(
@@ -98,8 +98,9 @@ abstract class EvaluationService {
   );
 
   @POST('/api/HomeServiceEvaluation/post')
-  Future<BaseSingleResponse<PostEvaluationResponseModel>>
-  homeServiceEvaluationPost(@Body() Map<String, dynamic> body);
+  Future<BaseSingleResponse<dynamic>> homeServiceEvaluationPost(
+    @Body() Map<String, dynamic> body,
+  );
 
   @POST('/api/AidServiceEvaluation/EvaluationAccept')
   Future<BaseSingleResponse<AcceptEvaluationResponseModel?>> aidEvaluationAccept(@Body() Map<String, dynamic> body);

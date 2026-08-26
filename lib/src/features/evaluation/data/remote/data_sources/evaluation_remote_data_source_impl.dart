@@ -63,9 +63,11 @@ class FinalizeInvoiceRemoteDataSourceImpl extends EvaluationRemoteDataSource {
   @override
   Future<BaseSingleResponse<PostEvaluationResponseModel>> postEvaluation(
       ServiceEvaluationParamModel param) async {
-    return (param.serviceType == ServiceType.reliefService)
+    final response = (param.serviceType == ServiceType.reliefService)
         ? await _service.aidServiceEvaluationPost(param.toJson())
         : await _service.homeServiceEvaluationPost(param.toJson());
+
+    return _mapPostEvaluationResponse(response);
   }
 
   @override
@@ -140,8 +142,25 @@ class FinalizeInvoiceRemoteDataSourceImpl extends EvaluationRemoteDataSource {
   async => await _service.getLastEvaluation(param.toJson());
 
   @override
-  Future<BaseSingleResponse<PostEvaluationResponseModel>> submitEvaluationForAidService(AidServiceEvaluationSubmitParamModel param)
-  async => await _service.aidServiceEvaluationPost(param.toJson());
+  Future<BaseSingleResponse<PostEvaluationResponseModel>>
+      submitEvaluationForAidService(
+    AidServiceEvaluationSubmitParamModel param,
+  ) async {
+    final response = await _service.aidServiceEvaluationPost(param.toJson());
+    return _mapPostEvaluationResponse(response);
+  }
+
+  BaseSingleResponse<PostEvaluationResponseModel> _mapPostEvaluationResponse(
+    BaseSingleResponse<dynamic> response,
+  ) {
+    return BaseSingleResponse<PostEvaluationResponseModel>(
+      resultCode: response.resultCode,
+      failures: response.failures,
+      data: response.resultCode == 0 && response.data != null
+          ? PostEvaluationResponseModel.fromValue(response.data)
+          : null,
+    );
+  }
 
   @override
   Future<BaseSingleResponse<dynamic>> submitTrackerEvaluation(

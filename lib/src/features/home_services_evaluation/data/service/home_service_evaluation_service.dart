@@ -2,7 +2,6 @@
 import 'package:dio/dio.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/distance_to_customer_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/emdadgar_evaluation_accept_response_model.dart';
-import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/evaluation_post_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/evaluation_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/home_service_package_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/home_services_evaluation/data/model/insert_home_service_category_response_model.dart';
@@ -30,7 +29,7 @@ abstract class HomeServiceEvaluationService {
   factory HomeServiceEvaluationService(Dio dio) = _HomeServiceEvaluationService;
 
   @POST('/api/HomeServiceEvaluation/Post')
-  Future<BaseSingleResponse<EvaluationPostResponseModel?>> postEvaluation(
+  Future<BaseSingleResponse<dynamic>> postEvaluation(
     @Body() Map<String, dynamic> body,
   );
 

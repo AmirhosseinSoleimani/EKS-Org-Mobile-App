@@ -105,8 +105,14 @@ class HomeServiceEvaluationDataSourceImpl
   Future<BaseSingleResponse<EvaluationPostResponseModel?>> postEvaluation(
     LastEvaluationModel? model,
   ) async {
-    final result = await _service.postEvaluation(model?.toJson() ?? {});
-    return result;
+    final response = await _service.postEvaluation(model?.toJson() ?? {});
+    return BaseSingleResponse<EvaluationPostResponseModel?>(
+      resultCode: response.resultCode,
+      failures: response.failures,
+      data: response.resultCode == 0 && response.data != null
+          ? EvaluationPostResponseModel.fromValue(response.data)
+          : null,
+    );
   }
 
   @override

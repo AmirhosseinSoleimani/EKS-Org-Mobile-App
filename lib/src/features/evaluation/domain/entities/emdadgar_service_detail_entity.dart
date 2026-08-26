@@ -19,6 +19,9 @@ class EmdadgarServiceDetailEntity {
   final bool? hasSubscription;
   final bool? hasGaranty;
   final String? garantyStartDate;
+  final int? productId;
+  final String? productTitle;
+  final int? subscriptionId;
 
   final bool? isSubscribedByNationalCode;
   final bool? isImageMadatory;
@@ -40,6 +43,9 @@ class EmdadgarServiceDetailEntity {
     this.hasSubscription,
     this.hasGaranty,
     this.garantyStartDate,
+    this.productId,
+    this.productTitle,
+    this.subscriptionId,
     this.isSubscribedByNationalCode,
     this.isImageMadatory,
     this.needImage,
@@ -63,6 +69,9 @@ class EmdadgarServiceDetailEntity {
     bool? hasSubscription,
     bool? hasGaranty,
     String? garantyStartDate,
+    int? productId,
+    String? productTitle,
+    int? subscriptionId,
     bool? isSubscribedByNationalCode,
     bool? isImageMadatory,
     bool? needImage,
@@ -84,6 +93,9 @@ class EmdadgarServiceDetailEntity {
       hasSubscription: hasSubscription ?? this.hasSubscription,
       hasGaranty: hasGaranty ?? this.hasGaranty,
       garantyStartDate: garantyStartDate ?? this.garantyStartDate,
+      productId: productId ?? this.productId,
+      productTitle: productTitle ?? this.productTitle,
+      subscriptionId: subscriptionId ?? this.subscriptionId,
       isSubscribedByNationalCode:
       isSubscribedByNationalCode ?? this.isSubscribedByNationalCode,
       isImageMadatory: isImageMadatory ?? this.isImageMadatory,

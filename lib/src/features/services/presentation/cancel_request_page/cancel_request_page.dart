@@ -60,16 +60,23 @@ class _View extends StatelessWidget {
             BottomSheetMessage.showErrorWithAction(
               context: context,
               data: message,
+              positiveText: cubit.hasRetryAction ? 'تلاش مجدد' : 'تایید',
               onPositive: () {
                 context.pop();
-                cubit.init();
+                if (cubit.hasRetryAction) {
+                  cubit.retryLastAction();
+                }
               },
             );
           },
           connectionError: () {
             BottomSheetMessage.showCustom(
               context: context,
-              content: NoInternetBottomSheet(onRetry: cubit.init),
+              content: NoInternetBottomSheet(
+                onRetry: cubit.hasRetryAction
+                    ? cubit.retryLastAction
+                    : cubit.init,
+              ),
               actionWidget: const SizedBox.shrink(),
               isDismissible: false,
               enableDrag: false,
@@ -204,22 +211,44 @@ class _LoadedView extends StatelessWidget {
                     selectedNotifier: cubit.selectedCancelType,
                     items: cubit.cancelRequestType,
                     itemTitleBuilder: (item) => item.title ?? "",
-                    onSelect: (item) => cubit.setSelectedCancelType(item),
+                    onSelect: (item) async {
+                      await cubit.setSelectedCancelType(item);
+                      if (!context.mounted) return;
+
+                      final limitation = cubit.takeLimitationDescription();
+                      if (limitation == null || limitation.isEmpty) return;
+
+                      await BottomSheetMessage.showNoticeWithAction(
+                        context: context,
+                        data: BottomSheetMessageModel(
+                          title: 'توجه',
+                          message: limitation,
+                        ),
+                        onPositive: () => Navigator.of(context).pop(),
+                      );
+                    },
                   ),
                   Space.h16,
                   if (showSecondDropDown) ...[
-                    DropdownSelector<CancelRequestReasonEntity>(
-                      label: "دلیل لغو",
-                      placeholder: "انتخاب دلیل کنسلی",
-                      selectedNotifier: cubit.selectedCancelReason,
-                      items: cubit.cancelRequestReasonNotifier.value,
-                      enabled: cubit.cancelRequestReasonNotifier.value
-                          .isNotEmpty,
-                      isLoading: cubit.cancelRequestReasonNotifier.value
-                          .isEmpty &&
-                          cubit.selectedCancelType.value != null,
-                      itemTitleBuilder: (item) => item.title ?? "",
-                      onSelect: (item) => cubit.setSelectedCancelReason(item),
+                    ValueListenableBuilder<List<CancelRequestReasonEntity>>(
+                      valueListenable: cubit.cancelRequestReasonNotifier,
+                      builder: (context, cancelReasons, _) {
+                        return DropdownSelector<CancelRequestReasonEntity>(
+                          key: ValueKey(
+                            'cancel-reason-details-${cubit.selectedCancelType.value?.id}',
+                          ),
+                          label: "دلیل لغو",
+                          placeholder: "انتخاب دلیل کنسلی",
+                          selectedNotifier: cubit.selectedCancelReason,
+                          items: cancelReasons,
+                          enabled: cancelReasons.isNotEmpty,
+                          isLoading: cancelReasons.isEmpty &&
+                              cubit.selectedCancelType.value != null,
+                          itemTitleBuilder: (item) => item.title ?? "",
+                          onSelect: (item) =>
+                              cubit.setSelectedCancelReason(item),
+                        );
+                      },
                     ),
                     Space.h16,
                   ],
@@ -231,6 +260,7 @@ class _LoadedView extends StatelessWidget {
                       timeController: cubit.dispatchTimeController,
                       onDateChange: cubit.setDispatchDate,
                       onTimeChange: cubit.setDispatchTime,
+                      enabled: false,
                     ),
                     Space.h24,
                     DateTimePickerSection(
@@ -284,21 +314,24 @@ void _showInvoiceBottomSheet(BuildContext context, InvoiceEntity invoice) {
         );
         return SubmitCancelButtons(
           submitButtonColor: context
-              .read<CancelRequestCubit>()
-              .selectedRequest
-              ?.serviceType
-              ?.serviceColor ?? ServiceType.reliefService.serviceColor,
-      onSubmit: context
-          .read<CancelRequestCubit>()
-          .acceptEvaluation,
-      onCancel: () => Navigator.pop(context),
+                  .read<CancelRequestCubit>()
+                  .selectedRequest
+                  ?.serviceType
+                  ?.serviceColor ??
+              ServiceType.reliefService.serviceColor,
+          onSubmit: context.read<CancelRequestCubit>().acceptEvaluation,
+          onCancel: () => Navigator.pop(context),
           submitTitle: 'تایید نهایی',
           isLoading: isLoading,
         );
       },
     ),
-    content: InvoiceBottomSheetContent(invoiceEntity: invoice),
-
+    content: InvoiceBottomSheetContent(
+      invoiceEntity: invoice,
+      serviceType:
+          context.read<CancelRequestCubit>().selectedRequest?.serviceType ??
+              ServiceType.reliefService,
+    ),
   );
 }
 

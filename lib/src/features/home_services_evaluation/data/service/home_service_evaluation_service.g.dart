@@ -20,7 +20,7 @@ class _HomeServiceEvaluationService implements HomeServiceEvaluationService {
   final ParseErrorLogger? errorLogger;
 
   @override
-  Future<BaseSingleResponse<EvaluationPostResponseModel?>> postEvaluation(
+  Future<BaseSingleResponse<dynamic>> postEvaluation(
     Map<String, dynamic> body,
   ) async {
     final _extra = <String, dynamic>{};
@@ -28,32 +28,25 @@ class _HomeServiceEvaluationService implements HomeServiceEvaluationService {
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body);
-    final _options =
-        _setStreamType<BaseSingleResponse<EvaluationPostResponseModel?>>(
-          Options(method: 'POST', headers: _headers, extra: _extra)
-              .compose(
-                _dio.options,
-                '/api/HomeServiceEvaluation/Post',
-                queryParameters: queryParameters,
-                data: _data,
-              )
-              .copyWith(
-                baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl),
-              ),
-        );
+    final _options = _setStreamType<BaseSingleResponse<dynamic>>(
+      Options(method: 'POST', headers: _headers, extra: _extra)
+          .compose(
+            _dio.options,
+            '/api/HomeServiceEvaluation/Post',
+            queryParameters: queryParameters,
+            data: _data,
+          )
+          .copyWith(baseUrl: _combineBaseUrls(_dio.options.baseUrl, baseUrl)),
+    );
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
-    late BaseSingleResponse<EvaluationPostResponseModel?> _value;
+    late BaseSingleResponse<dynamic> _value;
     try {
-      _value = BaseSingleResponse<EvaluationPostResponseModel?>.fromJson(
+      _value = BaseSingleResponse<dynamic>.fromJson(
         _result.data!,
-        (json) => json == null
-            ? null
-            : EvaluationPostResponseModel.fromJson(
-                json as Map<String, dynamic>,
-              ),
+        (json) => json as dynamic,
       );
-    } on Object catch (e, s) {
-      errorLogger?.logError(e, s, _options, response: _result);
+    } on Object catch (e, st) {
+      errorLogger?.logError(e, st, _options, response: _result);
       rethrow;
     }
     return _value;
