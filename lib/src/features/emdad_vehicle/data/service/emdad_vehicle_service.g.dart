@@ -211,7 +211,7 @@ class _EmdadVehicleService implements EmdadVehicleService {
     final _result = await _dio.fetch<Map<String, dynamic>>(_options);
     late BaseResponse _value;
     try {
-      _value = BaseResponse.fromJson(_result.data ?? <String, dynamic>{});
+      _value = BaseResponse.fromJson(_result.data!);
     } on Object catch (e, s) {
       errorLogger?.logError(e, s, _options, response: _result);
       rethrow;

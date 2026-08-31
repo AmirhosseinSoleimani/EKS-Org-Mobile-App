@@ -27,18 +27,7 @@ bool _isSuccess(BaseResponse response) {
   return response.failures?.any((failure) => failure.trim().isNotEmpty) != true;
 }
 
-ApiResult<T> _baseResponseToApiResult<T>(
-  BaseResponse response, {
-  required T data,
-}) {
-  if (_isSuccess(response)) {
-    return ApiResult<T>.success(
-      data: data,
-      failures: response.failures,
-      resultCode: response.resultCode ?? 0,
-    );
-  }
-
+ApiResult<T> _baseResponseFailureToApiResult<T>(BaseResponse response) {
   switch (response.resultCode) {
     case 3:
       AppEventBus.emit(AppEvent.tokenExpired);
@@ -52,6 +41,21 @@ ApiResult<T> _baseResponseToApiResult<T>(
         failures: _failureMessage(response),
       );
   }
+}
+
+ApiResult<T> _baseResponseToApiResult<T>(
+  BaseResponse response, {
+  required T data,
+}) {
+  if (!_isSuccess(response)) {
+    return _baseResponseFailureToApiResult<T>(response);
+  }
+
+  return ApiResult<T>.success(
+    data: data,
+    failures: response.failures,
+    resultCode: response.resultCode ?? 0,
+  );
 }
 
 extension ErrorApiResultExtension on Object {
@@ -76,18 +80,28 @@ extension BaseResponseApiResultExtension on BaseResponse {
 
 extension SuccessApiResultExtension<T> on BaseSingleResponse<T> {
   ApiResult<R> toApiResult<R>() {
-    return _baseResponseToApiResult<R>(
-      this,
+    if (!_isSuccess(this)) {
+      return _baseResponseFailureToApiResult<R>(this);
+    }
+
+    return ApiResult<R>.success(
       data: data as dynamic,
+      failures: failures,
+      resultCode: resultCode ?? 0,
     );
   }
 }
 
 extension SuccessApiListResultExtension<T> on BaseListResponse<T> {
   ApiResult<List<R>> toApiResult<R>() {
-    return _baseResponseToApiResult<List<R>>(
-      this,
+    if (!_isSuccess(this)) {
+      return _baseResponseFailureToApiResult<List<R>>(this);
+    }
+
+    return ApiResult<List<R>>.success(
       data: data == null ? <R>[] : data!.cast<R>(),
+      failures: failures,
+      resultCode: resultCode ?? 0,
     );
   }
 

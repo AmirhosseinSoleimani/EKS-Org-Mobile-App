@@ -410,8 +410,8 @@ class _EvaluationService implements EvaluationService {
         _result.data!,
         (json) => json as dynamic,
       );
-    } on Object catch (e, st) {
-      errorLogger?.logError(e, st, _options, response: _result);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
     return _value;
@@ -575,8 +575,8 @@ class _EvaluationService implements EvaluationService {
         _result.data!,
         (json) => json as dynamic,
       );
-    } on Object catch (e, st) {
-      errorLogger?.logError(e, st, _options, response: _result);
+    } on Object catch (e, s) {
+      errorLogger?.logError(e, s, _options, response: _result);
       rethrow;
     }
     return _value;

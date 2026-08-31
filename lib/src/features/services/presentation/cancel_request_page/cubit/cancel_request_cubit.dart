@@ -507,12 +507,16 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
 
       result.whenOrNull(
         success: (data, _, _) {
-          if (data.distanceKilometer == null) return;
-          kilometerController.text = data.distanceKilometer.toString();
           kilometerReadOnlyListenable.value =
-              data.isDistanceKilometerEditable == false;
+              data.isDistanceKilometerEditable != true;
+
+          final distanceKilometer = data.distanceKilometer;
+          if (distanceKilometer != null) {
+            kilometerController.text = distanceKilometer.toString();
+          }
         },
-        connectionError: () => emit(const CancelRequestState.connectionError()),
+        connectionError: () =>
+            _safeEmit(const CancelRequestState.connectionError()),
         failure: (error, failures) => _emitError(failures ?? error.toString()),
       );
     } finally {
@@ -573,12 +577,23 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
   bool get isDateTimeSectionVisible =>
       showDateTimeSection.value;
 
+  String? validateDescription(String? value) {
+    if (value?.trim().isEmpty ?? true) {
+      return 'توضیحات اجباری است';
+    }
+    return null;
+  }
+
   Future<void> submit() async {
     _retryAction = null;
 
     final cancelType = selectedCancelType.value;
     if (cancelType?.id == null) {
       _emitError('دلیل لغو را انتخاب کنید');
+      return;
+    }
+
+    if (formKey.currentState?.validate() != true) {
       return;
     }
 
@@ -609,9 +624,9 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
       cancelReasonDetailId: selectedCancelReason.value?.id,
       assignDate: dispatchDateTime,
       endWorkDate: cancelDateTime,
-      distanceToCustomer: double.tryParse(kilometerController.text),
+      distanceToCustomer: double.tryParse(kilometerController.text.trim()),
       customerKilometer: selectedRequest?.kilometer,
-      description: descriptionController.text,
+      description: descriptionController.text.trim(),
       servicesAndLaborsAndPartsEvaluationPayload:
           ServicesAndLaborsAndPartsEvaluationPayloadEntity(
         evaluationServices: [
@@ -691,7 +706,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
       serviceRequestId: selectedRequest?.id,
       cancelReason: selectedCancelType.value?.id,
       cancelReasonDetailId: selectedCancelReason.value?.id,
-      cancelDesc: descriptionController.text,
+      cancelDesc: descriptionController.text.trim(),
       needCopy: false,
     );
     final result = await _cancelServiceRequestUseCase(param);
@@ -702,7 +717,8 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
         _safeEmit(CancelRequestState.submitSuccess());
       },
       failure: (error, failures) => _emitError(failures ?? error.toString()),
-      connectionError: () => emit(const CancelRequestState.connectionError()),
+      connectionError: () =>
+          _safeEmit(const CancelRequestState.connectionError()),
     );
   }
 
