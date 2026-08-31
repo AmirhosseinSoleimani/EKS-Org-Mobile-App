@@ -114,6 +114,9 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
 
   String? _errorMessage;
   String? _limitationDescription;
+  bool _successFromInvoiceFlow = false;
+
+  bool get successFromInvoiceFlow => _successFromInvoiceFlow;
 
   VoidCallback? _retryAction;
 
@@ -714,6 +717,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
     result.whenOrNull(
       success: (data, failures, resultCode) {
         _retryAction = null;
+        _successFromInvoiceFlow = false;
         _safeEmit(CancelRequestState.submitSuccess());
       },
       failure: (error, failures) => _emitError(failures ?? error.toString()),
@@ -741,6 +745,7 @@ class CancelRequestCubit extends Cubit<CancelRequestState> {
     result.whenOrNull(
       success: (data, failures, resultCode) {
         _retryAction = null;
+        _successFromInvoiceFlow = true;
         _safeEmit(const CancelRequestState.submitSuccess());
       },
       failure: (error, failures) => _emitError(failures ?? error.toString()),

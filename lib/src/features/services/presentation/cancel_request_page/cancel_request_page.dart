@@ -91,8 +91,11 @@ class _View extends StatelessWidget {
               buttonColor: cubit.selectedRequest?.serviceType?.serviceColor ??
                   ServiceType.reliefService.serviceColor,
               onPositive: () {
-                context.pop();
-                context.pop();
+                final popCount = cubit.successFromInvoiceFlow ? 3 : 2;
+                for (var index = 0; index < popCount; index++) {
+                  if (!context.canPop()) break;
+                  context.pop();
+                }
               },
             );
           },
@@ -310,25 +313,25 @@ class _LoadedView extends StatelessWidget {
 }
 
 void _showInvoiceBottomSheet(BuildContext context, InvoiceEntity invoice) {
+  final cubit = context.read<CancelRequestCubit>();
+  final serviceType =
+      cubit.selectedRequest?.serviceType ?? ServiceType.reliefService;
+
   BottomSheetMessage.showCustom(
     context: context,
     isDismissible: true,
     enableDrag: true,
     actionWidget: BlocBuilder<CancelRequestCubit, CancelRequestState>(
-      builder: (context, state) {
+      bloc: cubit,
+      builder: (sheetContext, state) {
         final isLoading = state.maybeWhen(
           submitLoading: () => true,
           orElse: () => false,
         );
         return SubmitCancelButtons(
-          submitButtonColor: context
-                  .read<CancelRequestCubit>()
-                  .selectedRequest
-                  ?.serviceType
-                  ?.serviceColor ??
-              ServiceType.reliefService.serviceColor,
-          onSubmit: context.read<CancelRequestCubit>().acceptEvaluation,
-          onCancel: () => Navigator.pop(context),
+          submitButtonColor: serviceType.serviceColor,
+          onSubmit: cubit.acceptEvaluation,
+          onCancel: () => Navigator.of(sheetContext).pop(),
           submitTitle: 'تایید نهایی',
           isLoading: isLoading,
         );
@@ -336,10 +339,7 @@ void _showInvoiceBottomSheet(BuildContext context, InvoiceEntity invoice) {
     ),
     content: InvoiceBottomSheetContent(
       invoiceEntity: invoice,
-      serviceType:
-          context.read<CancelRequestCubit>().selectedRequest?.serviceType ??
-              ServiceType.reliefService,
+      serviceType: serviceType,
     ),
   );
 }
-
