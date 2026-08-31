@@ -41,6 +41,7 @@ class RescuerModel extends RescuerEntity {
     super.certificatesTitle,
     super.isActive,
     super.isDeleted,
+    super.reportFields,
   });
 
   factory RescuerModel.fromJson(Map<String, dynamic> json) {
@@ -86,6 +87,7 @@ class RescuerModel extends RescuerEntity {
       certificatesTitle: json['certificatesTitle']?.toString(),
       isActive: json['isActive'] as bool?,
       isDeleted: json['isDeleted'] as bool?,
+      reportFields: Map<String, dynamic>.unmodifiable(json),
     );
   }
 }

@@ -21,6 +21,7 @@ class SpecialPlanEntity {
     this.updateDateTimeJalali,
     this.provinceTitle,
     this.cityTitle,
+    this.message,
     this.zoneInfoList = const [],
     this.isDeleted,
     this.isActive,
@@ -45,6 +46,7 @@ class SpecialPlanEntity {
   final String? updateDateTimeJalali;
   final String? provinceTitle;
   final String? cityTitle;
+  final String? message;
   final List<SpecialPlanZoneEntity> zoneInfoList;
   final bool? isDeleted;
   final bool? isActive;

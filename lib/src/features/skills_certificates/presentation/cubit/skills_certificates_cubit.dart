@@ -142,10 +142,11 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> with Latest
     await fetchSkills();
   }
 
-  void changeActiveFilter(bool? value) {
+  Future<void> changeActiveFilter(bool? value) async {
     emit(SkillsCertificatesState.loaded(
       data: _data.copyWith(activeFilter: value),
     ));
+    await fetchSkills();
   }
 
   Future<SkillCertificateEntity?> getSkillById(int id) async {
@@ -471,12 +472,11 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> with Latest
       message: null,
     )));
 
-    final result = await _getSkillCertificatesReportUseCase(
-      _buildFilterParam(pageSize: 0),
-    );
+    final result = await _getSkillsCertificatesUseCase(_buildFilterParam());
 
     await result.when<Future<void>>(
-      success: (items, _, __) async {
+      success: (page, _, __) async {
+        final items = page.items;
         if (items.isEmpty) {
           emit(SkillsCertificatesState.error(
             data: _data.copyWith(isReportLoading: false),
@@ -568,6 +568,7 @@ class SkillsCertificatesCubit extends Cubit<SkillsCertificatesState> with Latest
       skip: _skip,
       pageSize: pageSize ?? _pageSize,
       title: titleFilterController.text,
+      isActive: _data.activeFilter,
     );
   }
 

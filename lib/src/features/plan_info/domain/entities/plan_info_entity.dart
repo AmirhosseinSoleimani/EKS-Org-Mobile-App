@@ -51,6 +51,7 @@ class PlanInfoEntity {
   final String? updateDateTimeJalali;
   final List<PlanPersonEntity> emdadUnitPersons;
   final String? emdadUnitPersonNames;
+  final Map<String, dynamic> reportFields;
 
   const PlanInfoEntity({
     this.id,
@@ -85,6 +86,7 @@ class PlanInfoEntity {
     this.updateDateTimeJalali,
     this.emdadUnitPersons = const [],
     this.emdadUnitPersonNames,
+    this.reportFields = const {},
   });
 
   int? get resolvedId => id ?? planId;
@@ -108,5 +110,12 @@ class PlanInfoEntity {
         .join('، ');
 
     return names.isEmpty ? '---' : names;
+  }
+
+  Object? reportValue(String key) {
+    if (reportFields.containsKey(key)) return reportFields[key];
+    if (key.isEmpty) return null;
+    final pascalKey = '${key[0].toUpperCase()}${key.substring(1)}';
+    return reportFields[pascalKey];
   }
 }

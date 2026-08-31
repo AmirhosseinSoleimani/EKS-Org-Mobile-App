@@ -10,6 +10,7 @@ class SkillCertificateExcelReportFactory {
       fileNamePrefix: 'skill_certificates_report',
       sheetName: 'گزارش گواهینامه مهارت',
       items: items,
+      includeRowNumber: false,
       columns: [
         ExcelExportColumn(title: 'عنوان', valueBuilder: (item, _) => item.title, width: 28),
         ExcelExportColumn(title: 'وضعیت', valueBuilder: (item, _) => item.isActive ? 'فعال' : 'غیرفعال', width: 14),

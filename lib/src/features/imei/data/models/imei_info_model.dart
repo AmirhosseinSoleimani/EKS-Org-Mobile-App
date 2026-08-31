@@ -13,6 +13,7 @@ class ImeiInfoModel extends ImeiInfoEntity {
     super.updateUserFullName,
     super.insertDateTime,
     super.insertDateTimeJalali,
+    super.updateDateTimeJalali,
     super.isActive,
   });
 
@@ -28,6 +29,7 @@ class ImeiInfoModel extends ImeiInfoEntity {
       updateUserFullName: ImeiJsonHelper.string(json['updateUserFullName']),
       insertDateTime: ImeiJsonHelper.string(json['insertDateTime']),
       insertDateTimeJalali: ImeiJsonHelper.string(json['insertDateTimeJalali']),
+      updateDateTimeJalali: ImeiJsonHelper.string(json['updateDateTimeJalali']),
       isActive: ImeiJsonHelper.boolean(json['isActive']),
     );
   }
@@ -44,6 +46,7 @@ class ImeiInfoModel extends ImeiInfoEntity {
       'updateUserFullName': updateUserFullName,
       'insertDateTime': insertDateTime,
       'insertDateTimeJalali': insertDateTimeJalali,
+      'updateDateTimeJalali': updateDateTimeJalali,
       'isActive': isActive,
     };
   }

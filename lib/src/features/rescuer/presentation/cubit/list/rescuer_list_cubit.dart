@@ -205,7 +205,8 @@ class RescuerListCubit extends Cubit<RescuerListState> with LatestRequestGuard {
 
       await result.when<Future<void>>(
         success: (items, failures, resultCode) async {
-          if (items.isEmpty) {
+          final reportItems = _filterItems(items);
+          if (reportItems.isEmpty) {
             _safeEmit(RescuerListState.actionError(
               data: state.data,
               message: 'داده‌ای برای تهیه گزارش وجود ندارد.',
@@ -214,7 +215,7 @@ class RescuerListCubit extends Cubit<RescuerListState> with LatestRequestGuard {
           }
 
           final exportResult = await _exportExcelUseCase(
-            RescuerExcelReportFactory.create(items),
+            RescuerExcelReportFactory.create(reportItems),
           );
           exportResult.when(
             success: (data, failures, resultCode) {

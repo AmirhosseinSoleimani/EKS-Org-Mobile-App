@@ -12,6 +12,7 @@ class ImeiInfoEntity {
     this.updateUserFullName,
     this.insertDateTime,
     this.insertDateTimeJalali,
+    this.updateDateTimeJalali,
     this.isActive,
   });
 
@@ -25,6 +26,7 @@ class ImeiInfoEntity {
   final String? updateUserFullName;
   final String? insertDateTime;
   final String? insertDateTimeJalali;
+  final String? updateDateTimeJalali;
   final bool? isActive;
 
   ImeiInfoModel toModel() {
@@ -39,6 +41,7 @@ class ImeiInfoEntity {
       updateUserFullName: updateUserFullName,
       insertDateTime: insertDateTime,
       insertDateTimeJalali: insertDateTimeJalali,
+      updateDateTimeJalali: updateDateTimeJalali,
       isActive: isActive,
     );
   }

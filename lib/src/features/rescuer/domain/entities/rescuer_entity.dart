@@ -40,6 +40,7 @@ class RescuerEntity {
   final String? certificatesTitle;
   final bool? isActive;
   final bool? isDeleted;
+  final Map<String, dynamic> reportFields;
 
   const RescuerEntity({
     this.id,
@@ -81,6 +82,7 @@ class RescuerEntity {
     this.certificatesTitle,
     this.isActive,
     this.isDeleted,
+    this.reportFields = const {},
   });
 
   String get fullName => [firstName, lastName]
@@ -130,6 +132,7 @@ class RescuerEntity {
       certificatesTitle: certificatesTitle,
       isActive: isActive,
       isDeleted: isDeleted,
+      reportFields: reportFields,
     );
   }
 
@@ -173,6 +176,7 @@ class RescuerEntity {
     String? certificatesTitle,
     bool? isActive,
     bool? isDeleted,
+    Map<String, dynamic>? reportFields,
   }) {
     return RescuerEntity(
       id: id ?? this.id,
@@ -219,6 +223,9 @@ class RescuerEntity {
       certificatesTitle: certificatesTitle ?? this.certificatesTitle,
       isActive: isActive ?? this.isActive,
       isDeleted: isDeleted ?? this.isDeleted,
+      reportFields: reportFields ?? this.reportFields,
     );
   }
+
+  Object? reportValue(String key) => reportFields[key];
 }

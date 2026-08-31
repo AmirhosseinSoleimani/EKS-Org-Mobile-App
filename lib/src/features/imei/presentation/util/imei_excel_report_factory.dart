@@ -14,17 +14,12 @@ class ImeiExcelReportFactory {
       items: records,
       columns: [
         ExcelExportColumn<ImeiInfoEntity>(
-          title: 'شناسه',
-          valueBuilder: (item, _) => item.id,
-          width: 12,
-        ),
-        ExcelExportColumn<ImeiInfoEntity>(
           title: 'نوع دستگاه',
           valueBuilder: (item, _) => item.deviceName,
           width: 24,
         ),
         ExcelExportColumn<ImeiInfoEntity>(
-          title: 'شماره سیم‌کارت',
+          title: 'شماره سیم کارت',
           valueBuilder: (item, _) => item.simNumber,
           width: 20,
         ),
@@ -45,24 +40,23 @@ class ImeiExcelReportFactory {
           width: 14,
         ),
         ExcelExportColumn<ImeiInfoEntity>(
-          title: 'ثبت‌کننده',
+          title: 'نام ثبت کننده',
           valueBuilder: (item, _) => item.insertUserFullName,
           width: 22,
         ),
         ExcelExportColumn<ImeiInfoEntity>(
-          title: 'تاریخ ثبت',
-          valueBuilder: (item, _) {
-            final jalaliDate = item.insertDateTimeJalali?.trim();
-            if (jalaliDate?.isNotEmpty == true) {
-              return jalaliDate;
-            }
-            return item.insertDateTime;
-          },
+          title: 'تاریخ و زمان ثبت',
+          valueBuilder: (item, _) => item.insertDateTimeJalali,
           width: 22,
         ),
         ExcelExportColumn<ImeiInfoEntity>(
-          title: 'ویرایش‌کننده',
+          title: 'نام ویرایش کننده',
           valueBuilder: (item, _) => item.updateUserFullName,
+          width: 22,
+        ),
+        ExcelExportColumn<ImeiInfoEntity>(
+          title: 'تاریخ و زمان ویرایش',
+          valueBuilder: (item, _) => item.updateDateTimeJalali,
           width: 22,
         ),
       ],

@@ -14,12 +14,17 @@ class AgencyInfoEntity {
     this.address,
     this.mobileNumber,
     this.telephone,
+    this.email,
+    this.fax,
     this.postalCode,
     this.nationalNumber,
+    this.agencyNationalId,
     this.economicCode,
     this.detailCode,
     this.trackingNumber,
     this.taxStatusTitle,
+    this.taxFileCompleted,
+    this.statusTitle,
     this.isActive,
     this.insertUserFullName,
     this.updateUserFullName,
@@ -39,12 +44,17 @@ class AgencyInfoEntity {
   final String? address;
   final String? mobileNumber;
   final String? telephone;
+  final String? email;
+  final String? fax;
   final String? postalCode;
   final String? nationalNumber;
+  final String? agencyNationalId;
   final String? economicCode;
   final String? detailCode;
   final String? trackingNumber;
   final String? taxStatusTitle;
+  final bool? taxFileCompleted;
+  final String? statusTitle;
   final bool? isActive;
   final String? insertUserFullName;
   final String? updateUserFullName;
@@ -85,12 +95,17 @@ class AgencyInfoEntity {
     String? address,
     String? mobileNumber,
     String? telephone,
+    String? email,
+    String? fax,
     String? postalCode,
     String? nationalNumber,
+    String? agencyNationalId,
     String? economicCode,
     String? detailCode,
     String? trackingNumber,
     String? taxStatusTitle,
+    bool? taxFileCompleted,
+    String? statusTitle,
     bool? isActive,
     String? insertUserFullName,
     String? updateUserFullName,
@@ -110,12 +125,17 @@ class AgencyInfoEntity {
       address: address ?? this.address,
       mobileNumber: mobileNumber ?? this.mobileNumber,
       telephone: telephone ?? this.telephone,
+      email: email ?? this.email,
+      fax: fax ?? this.fax,
       postalCode: postalCode ?? this.postalCode,
       nationalNumber: nationalNumber ?? this.nationalNumber,
+      agencyNationalId: agencyNationalId ?? this.agencyNationalId,
       economicCode: economicCode ?? this.economicCode,
       detailCode: detailCode ?? this.detailCode,
       trackingNumber: trackingNumber ?? this.trackingNumber,
       taxStatusTitle: taxStatusTitle ?? this.taxStatusTitle,
+      taxFileCompleted: taxFileCompleted ?? this.taxFileCompleted,
+      statusTitle: statusTitle ?? this.statusTitle,
       isActive: isActive ?? this.isActive,
       insertUserFullName: insertUserFullName ?? this.insertUserFullName,
       updateUserFullName: updateUserFullName ?? this.updateUserFullName,
@@ -140,12 +160,17 @@ class AgencyInfoEntity {
       address: address,
       mobileNumber: mobileNumber,
       telephone: telephone,
+      email: email,
+      fax: fax,
       postalCode: postalCode,
       nationalNumber: nationalNumber,
+      agencyNationalId: agencyNationalId,
       economicCode: economicCode,
       detailCode: detailCode,
       trackingNumber: trackingNumber,
       taxStatusTitle: taxStatusTitle,
+      taxFileCompleted: taxFileCompleted,
+      statusTitle: statusTitle,
       isActive: isActive,
       insertUserFullName: insertUserFullName,
       updateUserFullName: updateUserFullName,

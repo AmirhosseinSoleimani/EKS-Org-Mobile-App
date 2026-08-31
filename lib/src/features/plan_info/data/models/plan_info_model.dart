@@ -74,6 +74,7 @@ class PlanInfoModel extends PlanInfoEntity {
     super.updateDateTimeJalali,
     super.emdadUnitPersons,
     super.emdadUnitPersonNames,
+    super.reportFields,
   });
 
   factory PlanInfoModel.fromJson(Map<String, dynamic>? json) {
@@ -119,6 +120,7 @@ class PlanInfoModel extends PlanInfoEntity {
               .toList()
           : const [],
       emdadUnitPersonNames: _asString(json['emdadUnitPersonNames']),
+      reportFields: Map<String, dynamic>.unmodifiable(json),
     );
   }
 }

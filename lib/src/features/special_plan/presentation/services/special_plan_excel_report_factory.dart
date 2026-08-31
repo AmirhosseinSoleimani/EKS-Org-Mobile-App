@@ -12,75 +12,19 @@ class SpecialPlanExcelReportFactory {
     required List<SpecialPlanProductEntity> products,
   }) {
     String productTitle(SpecialPlanEntity item) {
-      final title = item.productTitle?.trim();
-      if (title?.isNotEmpty == true) return title!;
-      for (final product in products) {
-        if (product.id == item.productId) return product.title;
-      }
-      return '---';
+      return item.productTitle?.trim() ?? '';
     }
 
     return ExcelExportRequest.fromItems<SpecialPlanEntity>(
       fileNamePrefix: 'special_plans_report',
       sheetName: 'گزارش طرح‌ها',
       items: records,
+      includeRowNumber: false,
       columns: [
         ExcelExportColumn(
-          title: 'شناسه',
-          valueBuilder: (item, _) => item.id,
-          width: 12,
-        ),
-        ExcelExportColumn(
-          title: 'عنوان طرح',
+          title: 'عنوان',
           valueBuilder: (item, _) => item.title,
           width: 28,
-        ),
-        ExcelExportColumn(
-          title: 'محصول',
-          valueBuilder: (item, _) => productTitle(item),
-          width: 28,
-        ),
-        ExcelExportColumn(
-          title: 'شناسه محصول',
-          valueBuilder: (item, _) => item.productId,
-          width: 14,
-        ),
-        ExcelExportColumn(
-          title: 'محدوده جغرافیایی',
-          valueBuilder: (item, _) => item.displayAreaTitle,
-          width: 26,
-        ),
-        ExcelExportColumn(
-          title: 'شناسه محدوده',
-          valueBuilder: (item, _) => item.areaBaseInfoId,
-          width: 14,
-        ),
-        ExcelExportColumn(
-          title: 'تاریخ شروع',
-          valueBuilder: (item, _) =>
-              SpecialPlanDateFormatter.jalaliDate(item.startDate),
-          width: 16,
-        ),
-        ExcelExportColumn(
-          title: 'تاریخ پایان',
-          valueBuilder: (item, _) =>
-              SpecialPlanDateFormatter.jalaliDate(item.endDate),
-          width: 16,
-        ),
-        ExcelExportColumn(
-          title: 'شماره اولویت',
-          valueBuilder: (item, _) => item.orderNo,
-          width: 14,
-        ),
-        ExcelExportColumn(
-          title: 'اولویت بالا',
-          valueBuilder: (item, _) => item.hasHighPriority,
-          width: 14,
-        ),
-        ExcelExportColumn(
-          title: 'فقط خودروهای سایپایی',
-          valueBuilder: (item, _) => item.onlySaipaCars,
-          width: 22,
         ),
         ExcelExportColumn(
           title: 'وضعیت',
@@ -89,19 +33,74 @@ class SpecialPlanExcelReportFactory {
           width: 14,
         ),
         ExcelExportColumn(
-          title: 'ثبت‌کننده',
+          title: 'محصول',
+          valueBuilder: (item, _) => productTitle(item),
+          width: 28,
+        ),
+        ExcelExportColumn(
+          title: 'شماره اولویت',
+          valueBuilder: (item, _) => item.orderNo,
+          width: 14,
+        ),
+        ExcelExportColumn(
+          title: 'اولویت بالا',
+          valueBuilder: (item, _) =>
+              item.hasHighPriority == true ? 'دارد' : 'ندارد',
+          width: 14,
+        ),
+        ExcelExportColumn(
+          title: 'فقط خودروهای سایپایی',
+          valueBuilder: (item, _) =>
+              item.onlySaipaCars == true ? 'فعال' : 'غیرفعال',
+          width: 22,
+        ),
+        ExcelExportColumn(
+          title: 'استان',
+          valueBuilder: (item, _) => item.provinceTitle,
+          width: 18,
+        ),
+        ExcelExportColumn(
+          title: 'شهر',
+          valueBuilder: (item, _) => item.cityTitle,
+          width: 18,
+        ),
+        ExcelExportColumn(
+          title: 'زمان شروع',
+          valueBuilder: (item, _) =>
+              SpecialPlanDateFormatter.jalaliDate(item.startDate),
+          width: 16,
+        ),
+        ExcelExportColumn(
+          title: 'زمان پایان',
+          valueBuilder: (item, _) =>
+              SpecialPlanDateFormatter.jalaliDate(item.endDate),
+          width: 16,
+        ),
+        ExcelExportColumn(
+          title: 'پیام',
+          valueBuilder: (item, _) => item.message,
+          width: 32,
+        ),
+        ExcelExportColumn(
+          title: 'نام ثبت کننده',
           valueBuilder: (item, _) => item.insertUserFullName,
           width: 22,
         ),
         ExcelExportColumn(
-          title: 'تاریخ ثبت',
+          title: 'تاریخ و زمان ثبت',
           valueBuilder: (item, _) => item.insertDateTimeJalali ??
               SpecialPlanDateFormatter.jalaliDateTime(item.insertDateTime),
           width: 22,
         ),
         ExcelExportColumn(
-          title: 'ویرایش‌کننده',
+          title: 'نام ویرایش کننده',
           valueBuilder: (item, _) => item.updateUserFullName,
+          width: 22,
+        ),
+        ExcelExportColumn(
+          title: 'تاریخ و زمان ویرایش',
+          valueBuilder: (item, _) => item.updateDateTimeJalali ??
+              SpecialPlanDateFormatter.jalaliDateTime(item.updateDateTime),
           width: 22,
         ),
       ],

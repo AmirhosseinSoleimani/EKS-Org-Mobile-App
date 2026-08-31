@@ -23,6 +23,7 @@ class SpecialPlanModel extends SpecialPlanEntity {
     super.updateDateTimeJalali,
     super.provinceTitle,
     super.cityTitle,
+    super.message,
     super.zoneInfoList,
     super.isDeleted,
     super.isActive,
@@ -85,6 +86,9 @@ class SpecialPlanModel extends SpecialPlanEntity {
       ),
       cityTitle: SpecialPlanJsonHelper.string(
         json['cityTitle'] ?? json['CityTitle'],
+      ),
+      message: SpecialPlanJsonHelper.string(
+        json['message'] ?? json['Message'],
       ),
       zoneInfoList: zones is List
           ? zones
