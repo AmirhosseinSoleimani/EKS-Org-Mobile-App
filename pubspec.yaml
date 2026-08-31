@@ -80,10 +80,19 @@ dev_dependencies:
   retrofit_generator: ^10.2.5
   json_serializable: ^6.8.0
   enum_to_string: ^2.0.1
+  flutter_launcher_icons: ^0.14.4
 
 #  js: ^0.7.1
-#  flutter_launcher_icons: ^0.14.4
 #  analyzer: ^10.0.1
+
+flutter_launcher_icons:
+  android: true
+  ios: true
+  image_path: assets/images/png/logo_no_bg.png
+  min_sdk_android: 21
+  remove_alpha_ios: true
+  adaptive_icon_background: "#FFFFFF"
+  adaptive_icon_foreground: assets/images/png/logo_no_bg.png
 
 flutter:
   uses-material-design: true

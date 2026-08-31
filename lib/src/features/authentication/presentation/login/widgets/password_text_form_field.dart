@@ -35,6 +35,7 @@ class _PasswordTextFormFieldWidgetState
       mandatory: true,
       controller: widget.controller,
       autofocus: false,
+      showMandatoryIndicator: false,
       textInputType: TextInputType.text,
       textAlign: TextAlign.start,
       textInputAction: TextInputAction.next,

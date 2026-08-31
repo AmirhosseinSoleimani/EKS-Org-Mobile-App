@@ -23,6 +23,7 @@ class UserNameTextFormFieldWidget extends StatelessWidget {
       mandatory: true,
       controller: controller,
       autofocus: false,
+      showMandatoryIndicator: false,
       textInputType: TextInputType.name,
       textAlign: TextAlign.start,
       textInputAction: TextInputAction.next,

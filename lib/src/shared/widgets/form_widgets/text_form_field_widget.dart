@@ -12,6 +12,7 @@ class TextFormFieldWidget extends StatefulWidget {
     this.hintText,
     this.readOnly,
     this.mandatory,
+    this.showMandatoryIndicator = true,
     this.prefixIcon,
     this.textInputFormatter,
     this.hintStyle,
@@ -74,6 +75,7 @@ class TextFormFieldWidget extends StatefulWidget {
   final TextStyle? labelStyle;
   final Color? labelColor;
   final bool? mandatory;
+  final bool showMandatoryIndicator;
   final int? maxLines;
   final EdgeInsetsGeometry? contentPadding;
   final bool? autofocus;
@@ -200,7 +202,8 @@ class _TextFormFieldWidgetState extends State<TextFormFieldWidget> {
                           text: widget.labelText,
                           style: effectiveLabelStyle,
                         ),
-                        if (widget.mandatory ?? false)
+                        if ((widget.mandatory ?? false) &&
+                            widget.showMandatoryIndicator)
                           TextSpan(
                             text: ' *',
                             style: effectiveLabelStyle?.copyWith(
