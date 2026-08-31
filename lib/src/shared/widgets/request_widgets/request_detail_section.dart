@@ -134,17 +134,8 @@ class RequestDetailSection extends StatelessWidget {
           ),
           KeyValueRow(
             label: 'آدرس',
-            value: (selectedRequest?.aidAddress?.isNotEmpty ?? true)  ? '' :'-',
+            value: selectedRequest?.aidAddress ?? '-',
           ),
-          if(selectedRequest?.aidAddress?.isNotEmpty ?? false)...[
-            BodySmallText(
-              text: selectedRequest?.aidAddress ?? '-',
-              textAlign: TextAlign.start,
-              fontWeight:  FontWeight.normal,
-              fontSize: resolvedValueFontSize,
-            )
-          ]
-
         ],
         Space.h4,
         KeyValueRow(
