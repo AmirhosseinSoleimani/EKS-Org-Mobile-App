@@ -22,14 +22,16 @@ class ExcelExportRequest {
       throw ArgumentError.value(columns, 'columns', 'حداقل یک ستون لازم است.');
     }
 
+    final reversedColumns = columns.reversed.toList(growable: false);
+
     final headers = <String>[
+      ...reversedColumns.map((column) => column.title.trim()),
       if (includeRowNumber) 'ردیف',
-      ...columns.map((column) => column.title.trim()),
     ];
 
     final widths = <double>[
+      ...reversedColumns.map((column) => column.width),
       if (includeRowNumber) 10,
-      ...columns.map((column) => column.width),
     ];
 
     final rows = List<List<String>>.generate(
@@ -37,10 +39,10 @@ class ExcelExportRequest {
       (index) {
         final item = items[index];
         return <String>[
-          if (includeRowNumber) '${index + 1}',
-          ...columns.map(
+          ...reversedColumns.map(
             (column) => _normalize(column.valueBuilder(item, index)),
           ),
+          if (includeRowNumber) '${index + 1}',
         ];
       },
       growable: false,

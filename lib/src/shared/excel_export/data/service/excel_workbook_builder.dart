@@ -1,5 +1,16 @@
+import 'dart:typed_data';
+
 import 'package:eks_sana_plus_org/src/shared/excel_export/domain/entities/excel_export_request.dart';
 import 'package:excel/excel.dart';
+
+Uint8List buildExcelWorkbookInBackground(ExcelExportRequest request) {
+  return Uint8List.fromList(
+    const ExcelWorkbookBuilder().build(
+      request,
+      webFileName: 'report.xlsx',
+    ),
+  );
+}
 
 class ExcelWorkbookBuilder {
   const ExcelWorkbookBuilder();

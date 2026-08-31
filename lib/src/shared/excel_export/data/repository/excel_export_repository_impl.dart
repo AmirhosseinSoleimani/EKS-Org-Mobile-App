@@ -18,8 +18,8 @@ class ExcelExportRepositoryImpl implements ExcelExportRepository {
 
   @override
   Future<ApiResult<ExcelExportResult>> export(
-      ExcelExportRequest request,
-      ) async {
+    ExcelExportRequest request,
+  ) async {
     try {
       if (request.rows.isEmpty) {
         return ApiResult.failure(
@@ -30,12 +30,17 @@ class ExcelExportRepositoryImpl implements ExcelExportRepository {
       final fileName = _buildFileName(request.fileNamePrefix);
       final fullFileName = '$fileName.xlsx';
 
-      final bytes = Uint8List.fromList(
-        _workbookBuilder.build(
-          request,
-          webFileName: kIsWeb ? fullFileName : 'report_at_${DateTime.now()}',
-        ),
-      );
+      // Give Flutter one frame to paint the loading state before starting the
+      // isolate and transferring the report data.
+      await Future<void>.delayed(const Duration(milliseconds: 16));
+      final bytes = kIsWeb
+          ? Uint8List.fromList(
+              _workbookBuilder.build(
+                request,
+                webFileName: fullFileName,
+              ),
+            )
+          : await compute(buildExcelWorkbookInBackground, request);
 
       // excel.save() itself starts the browser download on Web.
       // Calling FileSaver here as well would download the same file twice.
@@ -73,7 +78,6 @@ class ExcelExportRepositoryImpl implements ExcelExportRepository {
       );
     } catch (error, stacktrace) {
       return error.toApiResult(stacktrace);
-
     }
   }
 
