@@ -14,7 +14,6 @@ import 'package:eks_sana_plus_org/src/shared/widgets/text_widgets/body_medium_te
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
-import 'package:material_symbols_icons/symbols.dart';
 
 class LeaveDetailsPage extends StatelessWidget {
   static const path = '/leave-details-page';
@@ -386,7 +385,7 @@ class _BottomActions extends StatelessWidget {
                     backgroundColor: const Color(0xFFDB950C),
                     showLoading: state.isActionLoading,
                     prefixIcon: const Icon(
-                      Symbols.undo_rounded,
+                      Icons.undo_rounded,
                       color: Colors.white,
                     ),
                     onTap: () async {
@@ -470,13 +469,11 @@ class _InfoPair extends StatelessWidget {
     required this.label,
     this.value,
     this.customValue,
-    this.ltr = false,
   });
 
   final String label;
   final String? value;
   final Widget? customValue;
-  final bool ltr;
 
   @override
   Widget build(BuildContext context) {
@@ -497,7 +494,7 @@ class _InfoPair extends StatelessWidget {
           customValue ??
               Text(
                 _text(value),
-                textDirection: ltr ? TextDirection.ltr : TextDirection.rtl,
+                textDirection:  TextDirection.rtl,
                 textAlign: TextAlign.right,
                 style: Theme.of(context).textTheme.bodyMedium?.copyWith(
                       color: const Color(0xFF1F1F1F),
@@ -514,13 +511,11 @@ class _InfoRow extends StatelessWidget {
   const _InfoRow({
     required this.label,
     this.value,
-    this.customValue,
     this.ltr = false,
   });
 
   final String label;
   final String? value;
-  final Widget? customValue;
   final bool ltr;
 
   @override
@@ -539,16 +534,15 @@ class _InfoRow extends StatelessWidget {
             ),
           ),
           Space.w8,
-          customValue ??
-              Text(
-                _text(value),
-                textDirection: ltr ? TextDirection.ltr : TextDirection.rtl,
-                textAlign: TextAlign.right,
-                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                  color: const Color(0xFF1F1F1F),
-                  fontWeight: FontWeight.w500,
-                ),
-              ),
+          Text(
+            _text(value),
+            textDirection: ltr ? TextDirection.ltr : TextDirection.rtl,
+            textAlign: TextAlign.right,
+            style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+              color: const Color(0xFF1F1F1F),
+              fontWeight: FontWeight.w500,
+            ),
+          ),
         ],
       ),
     );

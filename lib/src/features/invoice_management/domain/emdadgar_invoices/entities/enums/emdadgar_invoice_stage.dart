@@ -5,7 +5,7 @@ enum EmdadgarInvoiceStage {
     supportsBulkAccept: true,
   ),
   current(
-    title: 'صورت وضعیت',
+    title: 'صورت وضعیت ها',
     sectionTitle: 'صورت وضعیت ها',
     supportsBulkAccept: true,
   ),
