@@ -30,6 +30,7 @@ class OverlayDropdownFormField<T extends DropdownItem> extends StatefulWidget {
     this.hintText = 'انتخاب کنید',
     this.validator,
     this.itemTitleBuilder,
+    this.autovalidateMode = AutovalidateMode.disabled,
   });
 
   final String labelText;
@@ -41,6 +42,7 @@ class OverlayDropdownFormField<T extends DropdownItem> extends StatefulWidget {
   final String hintText;
   final FormFieldValidator<T>? validator;
   final String Function(T)? itemTitleBuilder;
+  final AutovalidateMode autovalidateMode;
 
   @override
   State<OverlayDropdownFormField<T>> createState() =>
@@ -50,7 +52,26 @@ class OverlayDropdownFormField<T extends DropdownItem> extends StatefulWidget {
 class _OverlayDropdownFormFieldState<T extends DropdownItem>
     extends State<OverlayDropdownFormField<T>> {
   final GlobalKey _fieldKey = GlobalKey();
+  final GlobalKey<FormFieldState<T>> _formFieldKey =
+      GlobalKey<FormFieldState<T>>();
   OverlayEntry? _overlayEntry;
+
+  @override
+  void didUpdateWidget(covariant OverlayDropdownFormField<T> oldWidget) {
+    super.didUpdateWidget(oldWidget);
+
+    if (oldWidget.value != widget.value &&
+        _formFieldKey.currentState?.value != widget.value) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        if (!mounted) return;
+        _formFieldKey.currentState?.didChange(widget.value);
+      });
+    }
+
+    if ((!widget.enabled || widget.items.isEmpty) && _overlayEntry != null) {
+      _removeOverlay();
+    }
+  }
 
   @override
   void dispose() {
@@ -81,6 +102,11 @@ class _OverlayDropdownFormFieldState<T extends DropdownItem>
         onSelect: (item) {
           fieldState.didChange(item);
           widget.onChanged(item);
+
+          if (fieldState.hasError) {
+            fieldState.validate();
+          }
+
           _removeOverlay();
         },
       ),
@@ -90,12 +116,25 @@ class _OverlayDropdownFormFieldState<T extends DropdownItem>
 
   String _title(T item) => widget.itemTitleBuilder?.call(item) ?? item.label;
 
+  String? _validate(T? value) {
+    final customError = widget.validator?.call(value);
+    if (customError != null) return customError;
+
+    if (widget.mandatory && value == null) {
+      return '${widget.labelText} الزامی است';
+    }
+
+    return null;
+  }
+
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
     return FormField<T>(
+      key: _formFieldKey,
       initialValue: widget.value,
-      validator: widget.validator,
+      validator: _validate,
+      autovalidateMode: widget.autovalidateMode,
       builder: (fieldState) {
         final selected = fieldState.value;
         final hasError = fieldState.hasError;

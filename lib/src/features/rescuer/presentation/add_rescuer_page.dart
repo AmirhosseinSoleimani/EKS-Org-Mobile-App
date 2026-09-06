@@ -62,7 +62,7 @@ class _AddRescuerView extends StatelessWidget {
           backgroundColor: const Color(0xFFF4F4F4),
           appBar: SimpleAppBar(
             title: 'افزودن امدادرسان',
-            onBack: () => Navigator.of(context).pop(false),
+            onBack: () => Navigator.of(context).pop<AddRescuerResult>(),
           ),
           body: Column(
             children: [
@@ -88,7 +88,7 @@ class _AddRescuerView extends StatelessWidget {
             loading: state.isLoading,
             onNext: state.currentStep == 3 ? cubit.submit : cubit.next,
             onPrevious: state.currentStep == 0
-                ? () => Navigator.of(context).pop()
+                ? () => Navigator.of(context).pop<AddRescuerResult>()
                 : cubit.previous,
           ),
         );

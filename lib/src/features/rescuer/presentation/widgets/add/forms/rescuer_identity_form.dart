@@ -94,6 +94,10 @@ class RescuerIdentityForm extends StatelessWidget {
               items: cubit.cities,
               mandatory: true,
               itemTitleBuilder: (item) => item.cityName ?? item.title ?? '-',
+              validator: (value) => RescuerFormValidator.requiredSelection(
+                value,
+                'محل تولد',
+              ),
               onChanged: (value) => cubit.birthCity = value,
             ),
           ],

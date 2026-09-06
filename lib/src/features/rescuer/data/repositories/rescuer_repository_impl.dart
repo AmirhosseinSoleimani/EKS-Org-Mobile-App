@@ -79,7 +79,7 @@ class RescuerRepositoryImpl extends RescuerRepository {
 
   @override
   Future<ApiResult<SubmitSkillCertificatesResponseEntity>>
-  submitSkillCertificates(SubmitSkillCertificatesParamEntity param) async {
+      submitSkillCertificates(SubmitSkillCertificatesParamEntity param) async {
     try {
       final response = await _dataSource.submitSkillCertificates(
         param.toModel(),

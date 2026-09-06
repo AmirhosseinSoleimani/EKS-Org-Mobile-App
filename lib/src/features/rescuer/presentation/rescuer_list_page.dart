@@ -197,17 +197,13 @@ class _RescuerListView extends StatelessWidget {
       context: context,
       content: RescuerActionsBottomSheet(
         onSkillCertificates: () async {
-          final result = await cubit.loadSkillCertificates(id);
           if (context.mounted) Navigator.of(context).pop();
-          if (result == null || !context.mounted) return false;
+          if (!context.mounted) return false;
 
           final successMessage =
               await BottomSheetMessage.showFullScreenCustom<String>(
             context: context,
-            content: RescuerSkillCertificatesSheet(
-              rescuer: item,
-              items: result,
-            ),
+            content: RescuerSkillCertificatesSheet(rescuer: item),
           );
 
           if (successMessage?.isNotEmpty != true || !context.mounted) {

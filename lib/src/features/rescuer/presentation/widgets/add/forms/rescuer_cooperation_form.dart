@@ -104,9 +104,13 @@ class RescuerCooperationForm extends StatelessWidget {
               items: cubit.statusItems,
               mandatory: true,
               itemTitleBuilder: (item) => item.label,
+              validator: (value) => RescuerFormValidator.requiredSelection(
+                value,
+                'وضعیت',
+              ),
               onChanged: (item) {
                 if (item == null) return;
-                cubit.isActive = item.value;
+                cubit.setActive(item.value);
               },
             ),
           ],

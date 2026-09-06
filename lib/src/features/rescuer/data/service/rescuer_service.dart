@@ -93,24 +93,20 @@ class RescuerService {
   }
 
   Future<BaseSingleResponse<SubmitSkillCertificatesResponseModel>>
-  submitSkillCertificates(Map<String, dynamic> body) async {
+      submitSkillCertificates(Map<String, dynamic> body) async {
     final response = await _dio.post<dynamic>(
       '/api/PersonInfo/SubmitSkillCertificates',
       data: body,
     );
 
-    final normalizedResponse = Map<String, dynamic>.from(
-      _normalizeSingleResponse(response.data),
-    );
+    final normalizedResponse = _normalizeSingleResponse(response.data);
     normalizedResponse['data'] = _normalizeSubmitSkillCertificatesData(
       normalizedResponse['data'],
     );
 
     return BaseSingleResponse<SubmitSkillCertificatesResponseModel>.fromJson(
       normalizedResponse,
-      (json) => SubmitSkillCertificatesResponseModel.fromJson(
-        json as Map<String, dynamic>,
-      ),
+      (json) => SubmitSkillCertificatesResponseModel.fromJson(json),
     );
   }
 
@@ -155,6 +151,32 @@ class RescuerService {
     };
   }
 
+  Map<String, dynamic> _normalizeSubmitSkillCertificatesData(
+    dynamic data,
+  ) {
+    if (data is String) {
+      final message = data.trim();
+      return {
+        'message': message.isEmpty
+            ? 'اطلاعات با موفقیت ثبت شد'
+            : message,
+      };
+    }
+
+    if (data is Map<String, dynamic>) {
+      final rawMessage =
+          data['message'] ?? data['Message'] ?? data['data'] ?? data['Data'];
+      final message = rawMessage?.toString().trim();
+      return {
+        'message': message == null || message.isEmpty
+            ? 'اطلاعات با موفقیت ثبت شد'
+            : message,
+      };
+    }
+
+    return {'message': 'اطلاعات با موفقیت ثبت شد'};
+  }
+
   Map<String, dynamic> _normalizeSingleResponse(dynamic data) {
     if (data is Map<String, dynamic> && data.containsKey('resultCode')) {
       return data;
@@ -165,27 +187,5 @@ class RescuerService {
       'failures': null,
       'data': data,
     };
-  }
-
-  Map<String, dynamic> _normalizeSubmitSkillCertificatesData(dynamic data) {
-    if (data is String) {
-      final message = data.trim();
-      return {
-        'message': message.isEmpty ? 'اطلاعات با موفقیت ثبت شد' : message,
-      };
-    }
-
-    if (data is Map<String, dynamic>) {
-      final message =
-          data['message'] ?? data['Message'] ?? data['data'] ?? data['Data'];
-      final normalizedMessage = message?.toString().trim();
-      return {
-        'message': normalizedMessage?.isNotEmpty == true
-            ? normalizedMessage
-            : 'اطلاعات با موفقیت ثبت شد',
-      };
-    }
-
-    return {'message': 'اطلاعات با موفقیت ثبت شد'};
   }
 }

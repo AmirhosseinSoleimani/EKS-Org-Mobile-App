@@ -45,7 +45,7 @@ class RescuerContactForm extends StatelessWidget {
             ),
             const SizedBox(height: 16),
             OverlayDropdownFormField<ProvinceEntity>(
-              labelText:  'محل صدور شناسنامه',
+              labelText: 'محل صدور شناسنامه',
               value: cubit.issuingCity,
               items: cubit.cities,
               mandatory: true,
@@ -53,7 +53,7 @@ class RescuerContactForm extends StatelessWidget {
               onChanged: (value) => cubit.issuingCity = value,
               validator: (value) => RescuerFormValidator.requiredSelection(
                 value,
-                'شهر محل سکونت',
+                'محل صدور شناسنامه',
               ),
             ),
             const SizedBox(height: 16),
@@ -62,7 +62,10 @@ class RescuerContactForm extends StatelessWidget {
               value: cubit.addressCity,
               cities: cubit.cities,
               mandatory: true,
-
+              validator: (value) => RescuerFormValidator.requiredSelection(
+                value,
+                'شهر محل سکونت',
+              ),
               onChanged: (value) => cubit.addressCity = value,
             ),
             const SizedBox(height: 16),

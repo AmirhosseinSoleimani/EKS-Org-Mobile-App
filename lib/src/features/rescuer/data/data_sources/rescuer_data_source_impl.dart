@@ -50,7 +50,7 @@ class RescuerDataSourceImpl extends RescuerDataSource {
 
   @override
   Future<BaseSingleResponse<SubmitSkillCertificatesResponseModel>>
-  submitSkillCertificates(SubmitSkillCertificatesParamModel param) {
+      submitSkillCertificates(SubmitSkillCertificatesParamModel param) {
     return _service.submitSkillCertificates(param.toJson());
   }
 
