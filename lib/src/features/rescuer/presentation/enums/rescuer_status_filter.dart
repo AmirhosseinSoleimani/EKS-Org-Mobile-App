@@ -35,12 +35,6 @@ enum RescuerStatusFilter implements DropdownItem<int> {
 
   @override
   Widget? leading(BuildContext context) {
-    final color = switch (this) {
-      RescuerStatusFilter.all => Theme.of(context).colorScheme.onSurfaceVariant,
-      RescuerStatusFilter.active => Colors.green,
-      RescuerStatusFilter.inactive => Theme.of(context).colorScheme.error,
-    };
-
-    return Icon(Icons.circle, size: 10, color: color);
+    return null;
   }
 }
