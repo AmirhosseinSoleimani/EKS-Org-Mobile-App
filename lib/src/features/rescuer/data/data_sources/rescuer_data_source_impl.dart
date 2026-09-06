@@ -4,9 +4,11 @@ import 'package:eks_sana_plus_org/src/features/rescuer/data/models/delete_rescue
 import 'package:eks_sana_plus_org/src/features/rescuer/data/models/params/add_rescuer_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/data/models/params/get_rescuer_report_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/data/models/params/get_rescuers_param_model.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/data/models/params/submit_skill_certificates_param_model.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/data/models/rescuer_model.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/data/models/san_history_model.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/data/models/skill_certificate_model.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/data/models/submit_skill_certificates_response_model.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/data/service/rescuer_service.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 import 'package:injectable/injectable.dart';
@@ -44,6 +46,12 @@ class RescuerDataSourceImpl extends RescuerDataSource {
     int id,
   ) {
     return _service.getSkillCertificates(id);
+  }
+
+  @override
+  Future<BaseSingleResponse<SubmitSkillCertificatesResponseModel>>
+  submitSkillCertificates(SubmitSkillCertificatesParamModel param) {
+    return _service.submitSkillCertificates(param.toJson());
   }
 
   @override

@@ -4,9 +4,11 @@ import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/delete_re
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/params/add_rescuer_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/params/get_rescuer_report_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/params/get_rescuers_param_entity.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/params/submit_skill_certificates_param_entity.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/rescuer_entity.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/san_history_entity.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/skill_certificate_entity.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/domain/entities/submit_skill_certificates_response_entity.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/domain/repositories/rescuer_repository.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result.dart';
 import 'package:eks_sana_plus_org/src/services/network/network_state/result/api_result_converter.dart';
@@ -69,6 +71,19 @@ class RescuerRepositoryImpl extends RescuerRepository {
   ) async {
     try {
       final response = await _dataSource.getSkillCertificates(id);
+      return response.toApiResult();
+    } catch (error, stackTrace) {
+      return error.toApiResult(stackTrace);
+    }
+  }
+
+  @override
+  Future<ApiResult<SubmitSkillCertificatesResponseEntity>>
+  submitSkillCertificates(SubmitSkillCertificatesParamEntity param) async {
+    try {
+      final response = await _dataSource.submitSkillCertificates(
+        param.toModel(),
+      );
       return response.toApiResult();
     } catch (error, stackTrace) {
       return error.toApiResult(stackTrace);

@@ -4,6 +4,7 @@ import 'package:eks_sana_plus_org/src/features/rescuer/data/models/delete_rescue
 import 'package:eks_sana_plus_org/src/features/rescuer/data/models/rescuer_model.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/data/models/san_history_model.dart';
 import 'package:eks_sana_plus_org/src/features/rescuer/data/models/skill_certificate_model.dart';
+import 'package:eks_sana_plus_org/src/features/rescuer/data/models/submit_skill_certificates_response_model.dart';
 import 'package:eks_sana_plus_org/src/services/network/model/base_response.dart';
 import 'package:injectable/injectable.dart';
 
@@ -91,6 +92,28 @@ class RescuerService {
     );
   }
 
+  Future<BaseSingleResponse<SubmitSkillCertificatesResponseModel>>
+  submitSkillCertificates(Map<String, dynamic> body) async {
+    final response = await _dio.post<dynamic>(
+      '/api/PersonInfo/SubmitSkillCertificates',
+      data: body,
+    );
+
+    final normalizedResponse = Map<String, dynamic>.from(
+      _normalizeSingleResponse(response.data),
+    );
+    normalizedResponse['data'] = _normalizeSubmitSkillCertificatesData(
+      normalizedResponse['data'],
+    );
+
+    return BaseSingleResponse<SubmitSkillCertificatesResponseModel>.fromJson(
+      normalizedResponse,
+      (json) => SubmitSkillCertificatesResponseModel.fromJson(
+        json as Map<String, dynamic>,
+      ),
+    );
+  }
+
   Future<BaseListResponse<SanHistoryModel>> getHistory(int id) async {
     final response = await _dio.get<dynamic>(
       '/api/SanHistory/GetSanLogHistoriesById',
@@ -142,5 +165,27 @@ class RescuerService {
       'failures': null,
       'data': data,
     };
+  }
+
+  Map<String, dynamic> _normalizeSubmitSkillCertificatesData(dynamic data) {
+    if (data is String) {
+      final message = data.trim();
+      return {
+        'message': message.isEmpty ? 'اطلاعات با موفقیت ثبت شد' : message,
+      };
+    }
+
+    if (data is Map<String, dynamic>) {
+      final message =
+          data['message'] ?? data['Message'] ?? data['data'] ?? data['Data'];
+      final normalizedMessage = message?.toString().trim();
+      return {
+        'message': normalizedMessage?.isNotEmpty == true
+            ? normalizedMessage
+            : 'اطلاعات با موفقیت ثبت شد',
+      };
+    }
+
+    return {'message': 'اطلاعات با موفقیت ثبت شد'};
   }
 }

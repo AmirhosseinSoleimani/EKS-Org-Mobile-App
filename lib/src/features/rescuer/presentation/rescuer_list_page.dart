@@ -201,12 +201,25 @@ class _RescuerListView extends StatelessWidget {
           if (context.mounted) Navigator.of(context).pop();
           if (result == null || !context.mounted) return false;
 
-          await BottomSheetMessage.showFullScreenCustom<void>(
+          final successMessage =
+              await BottomSheetMessage.showFullScreenCustom<String>(
             context: context,
             content: RescuerSkillCertificatesSheet(
               rescuer: item,
               items: result,
             ),
+          );
+
+          if (successMessage?.isNotEmpty != true || !context.mounted) {
+            return false;
+          }
+
+          await cubit.fetchRescuers();
+          if (!context.mounted) return true;
+
+          SnakeBarWidget.showSuccess(
+            context: context,
+            message: successMessage!,
           );
           return true;
         },
